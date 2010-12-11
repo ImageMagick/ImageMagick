@@ -7143,11 +7143,11 @@ static MagickBooleanType CompressColormapTransFirst(Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    After Remap:");
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    i      (red,green,blue,opacity)");
+        "        i    (red,green,blue,opacity)");
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    %d    (%d,%d,%d,%d)",
+          "       %d    (%d,%d,%d,%d)",
            (int) i,
            (int) image->colormap[i].red,
            (int) image->colormap[i].green,
@@ -7292,13 +7292,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
 
-  /*
-    Sometimes we get PseudoClass images whose RGB values don't match
-    the colors in the colormap.  This code syncs the RGB values.
-  */
-  if (image->depth <= 8 && image->taint && image->storage_class == PseudoClass)
-     (void) SyncImage(image);
-
 #if (MAGICKCORE_QUANTUM_DEPTH > 16)
   /* PNG does not handle depths greater than 16 so reduce it even
    * if lossy
@@ -7315,100 +7308,224 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 #ifdef PNG_BUILD_PALETTE
   if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
+#if 0
       (mng_info->write_png_colortype == 0 && image->depth <= 8))
+#else
+      (mng_info->write_png_colortype == 0))
+#endif
 
     {
       /*
-        Sometimes we get DirectClass images that have 256 colors or fewer.
-        This code will convert them to PseudoClass and build a colormap.
+       * Sometimes we get DirectClass images that have 256 colors or fewer.
+       * This code will convert them to PseudoClass and build a colormap.
+       *
+       * Also, sommetimes we get PseudoClass images with an out-of-date
+       * colormap.  This code will replace it with a new one.
+       */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "    Enter BUILD_PALETTE:");
 
-        As of version 6.6.5 it fails to account for opacity, but not always.
-      */
-      if (image->storage_class != PseudoClass)
+      if (logging != MagickFalse)
         {
-          (void) SyncImage(image);
-          image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-          image_colors=image->colors;
-
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Enter BUILD_PALETTE:");
-
-          if (logging != MagickFalse && image->colormap != NULL)
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "      i     (red,green,blue,opacity)");
-
-            for (i=0; i < (ssize_t) image->colors; i++)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "      %d  (%d,%d,%d,%d)",
-                   (int) i,
-                   (int) image->colormap[i].red,
-                   (int) image->colormap[i].green,
-                   (int) image->colormap[i].blue,
-                   (int) image->colormap[i].opacity);
-            }
-          }
-
+                "      image->columns=%.20g",(double) image->columns);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "      image->colors=%d",(int) image->colors);
+                "      image->rows=%.20g",(double) image->rows);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      image_matte=%.20g",(double) image->matte);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      image->depth=%.20g",(double) image->depth);
+         }
 
-          if (image->colors <= 256)
-            {
-              if (image->matte != MagickFalse)
-                {
-                  /* Sometimes SetImageType(image,PaletteMatteType)
-                   * loses the transparency.  We work around this
-                   * problem by making a trial clone, setting it
-                   * to PaletteMatteType, and counting the colors
-                   * to see if any were lost.  If not, we also
-                   * set the image to PaletteMatteType.  Otherwise
-                   * we return without changing it.  In any case
-                   * we destroy the clone.
-                   */
+       image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
+       image_colors=image->colors;
 
-                  ExceptionInfo
-                    *exception;
+       if (logging != MagickFalse && image->colormap != NULL)
+       {
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "        i    (red,green,blue,opacity)");
 
-                  Image
-                    *clone_image;
+         for (i=0; i < (ssize_t) image->colors; i++)
+         {
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "        %d    (%d,%d,%d,%d)",
+                (int) i,
+                (int) image->colormap[i].red,
+                (int) image->colormap[i].green,
+                (int) image->colormap[i].blue,
+                (int) image->colormap[i].opacity);
+         }
+       }
 
-                  exception=(&image->exception);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "      image->colors=%d",(int) image->colors);
+
+       if (image->colors <= 256)
+         {
+           if (image->matte != MagickFalse)
+             {
+               /* Sometimes SetImageType(image,PaletteMatteType)
+                * loses the transparency.  We work around this
+                * problem by usng a trial clone.  After creating
+                * a colormap for it and copying the colormap to
+                * image, we destroy the clone.
+                *
+                * To do: We probably don't need the clone.
+                */
+
+               ExceptionInfo
+                 *exception;
+
+               Image
+                 *clone_image;
+
+               register const PixelPacket
+                 *q;
+
+               register IndexPacket
+                 *indexes;
+
+               exception=(&image->exception);
         
-                  clone_image=CloneImage(image, 0, 0, MagickTrue, exception);
+               clone_image=CloneImage(image, 0, 0, MagickTrue, exception);
 
-                  image_colors=GetNumberColors(clone_image,(FILE *) NULL,
-                     &clone_image->exception);
+               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "       clone_image->depth=%.20g",
+                    (double) clone_image->depth);
+
+               if (clone_image->colormap == NULL)
+               {
+                 /*
+                   Initialize clone_image colormap.
+                 */
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "      initializing clone_image->colormap");
+                 if (AcquireImageColormap(clone_image,256) ==
+                     MagickFalse)
+                       ThrowWriterException(ResourceLimitError,
+                          "MemoryAllocationFailed");
+               }
+
+               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "      copy colors out of clone_image");
+
+               for (y=0; y < (ssize_t) image->rows; y++)
+               {
+                 q=GetVirtualPixels(image,0,y,image->columns,1,
+                     exception);
+           
+                 if (q == (PixelPacket *) NULL)
+                   break;
+
+                 if (y == 0)
+                   {
+                    /* Initialize the colormap */
+                     clone_image->colormap[0]=*q;
+                     image_colors=1;
+     
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      Adding colormap[%d]=(%d,%d,%d,%d)",
+                        (int) 0,
+                        (int) clone_image->colormap[0].red,
+                        (int) clone_image->colormap[0].green,
+                        (int) clone_image->colormap[0].blue,
+                        (int) clone_image->colormap[0].opacity);
+
+                    }
+     
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                     {
+                        for (i=0; i<image_colors; i++)
+                          {
+                            if ((clone_image->colormap[i].opacity ==
+                                q->opacity) &&
+                                (IsColorEqual(&clone_image->colormap[i],
+                                (PixelPacket *) q)))
+                              break;
+                          }
+        
+                        if (i < image_colors)
+                          {
+                            q++;
+                            continue;
+                          }
+        
+                        if (image_colors++ == 256)
+                          break;
+        
+                        clone_image->colormap[i]=*q;
+        
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      Adding colormap[%d]=(%d,%d,%d,%d)",
+                           (int) i,
+                           (int) clone_image->colormap[i].red,
+                           (int) clone_image->colormap[i].green,
+                           (int) clone_image->colormap[i].blue,
+                           (int) clone_image->colormap[i].opacity);
+        
+                        q++;
+                     }
+                  }
+
 
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "      Before SetImageType, clone_colors=%d",
-                         (int) image_colors);
+                        "      clone_image has %d colors",(int)image_colors);
+                 
 
-                  (void) SetImageType(clone_image,PaletteMatteType);
+                  /*
+                    Initialize image colormap.
+                  */
+                  if (image->colormap != NULL)
+                     image->colormap=(PixelPacket *)
+                        RelinquishMagickMemory(image->colormap);
+ 
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      AcquireImageColormap");
+                  if (AcquireImageColormap(image,image_colors) ==
+                      MagickFalse)
+                        ThrowWriterException(ResourceLimitError,
+                           "MemoryAllocationFailed");
+          
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      Copying colormap from clone");
 
-                  image_colors=GetNumberColors(clone_image,(FILE *) NULL,
-                     &clone_image->exception);
+                  for (i=0; i<image_colors; i++)
+                     image->colormap[i] = clone_image->colormap[i];
 
                   (void) DestroyImage(clone_image);
 
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "      After SetImageType, clone_colors=%d",
-                         (int) image_colors);
+                  for (y=0; y < (ssize_t) image->rows; y++)
+                  {
+                    q=GetAuthenticPixels(image,0,y,image->columns,1,
+                        exception);
+              
+                    if (q == (PixelPacket *) NULL)
+                      break;
 
-                  if (image_colors == image->colors)
+                    indexes=GetAuthenticIndexQueue(image);
+
+                    for (x=0; x < (ssize_t) image->columns; x++)
                     {
-                      (void) SetImageType(image,PaletteMatteType);
-
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "      After SetImageType, image_colors=%d",
-                          (int) image->colors);
-
-                      image_colors = image->colors;
-
-                      (void) SyncImage(image);
+                      for (i=0; i<image_colors; i++)
+                      {
+                        if ((image->colormap[i].opacity == q->opacity) &&
+                            (IsColorEqual(&image->colormap[i],
+                            (PixelPacket *) q)))
+                        {
+                          indexes[x]=(IndexPacket) i;
+                          break;
+                        }
+                      }
+                      q++;
                     }
-                }
 
+                  if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                     break;
+                  }
+
+                  image->colors = image_colors;
+                  (void) SetImageType(image,PaletteMatteType);
+                }
               else
                 {
                   (void) SetImageType(image,PaletteType);
@@ -7424,7 +7541,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (i=0; i < (ssize_t) image->colors; i++)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "      %d  (%d,%d,%d,%d)",
+                  "       %d     (%d,%d,%d,%d)",
                    (int) i,
                    (int) image->colormap[i].red,
                    (int) image->colormap[i].green,
@@ -7435,9 +7552,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Exit BUILD_PALETTE:");
-        }
     }
 #endif /* PNG_BUILD_PALETTE */
+
+  /*
+    Sometimes we get PseudoClass images whose RGB values don't match
+    the colors in the colormap.  This code syncs the RGB values.
+  */
+  if (image->depth <= 8 && image->taint && image->storage_class == PseudoClass)
+     (void) SyncImage(image);
 
   image_depth=image->depth;
 
@@ -8921,7 +9044,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
 
-          if (logging != MagickFalse)
+          if (logging != MagickFalse && y == 0)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "    Writing row of pixels (0)");
 
