@@ -520,10 +520,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      if (strcmp((char *) GetStringInfoDatum(profile),"8BIM") != 0)
-        status=SetImageProfile(image,"iptc",profile);
-      else
-        status=SetImageProfile(image,"8BIM",profile);
+      status=SetImageProfile(image,"8bim",profile);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
