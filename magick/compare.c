@@ -467,6 +467,133 @@ static size_t GetNumberChannels(const Image *image,
   return(channels);
 }
 
+static MagickBooleanType GetFuzzDistortion(const Image *image,
+  const Image *reconstruct_image,const ChannelType channel,
+  double *distortion,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *reconstruct_view;
+
+  ssize_t
+    y;
+
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  status=MagickTrue;
+  image_view=AcquireCacheView(image);
+  reconstruct_view=AcquireCacheView(reconstruct_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    double
+      channel_distortion[AllChannels+1];
+
+    register const IndexPacket
+      *restrict indexes,
+      *restrict reconstruct_indexes;
+
+    register const PixelPacket
+      *restrict p,
+      *restrict q;
+
+    register ssize_t
+      i,
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
+      reconstruct_image->columns,1,exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
+    reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
+    (void) ResetMagickMemory(channel_distortion,0,sizeof(channel_distortion));
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      MagickRealType
+        distance,
+        scale;
+
+      scale=1.0;
+      if ((channel & OpacityChannel) != 0)
+        {
+          if (image->matte != MagickFalse)
+            scale*=QuantumScale*GetAlphaPixelComponent(p);
+          if (reconstruct_image->matte != MagickFalse)
+            scale*=QuantumScale*GetAlphaPixelComponent(q);
+        }
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace) &&
+          (reconstruct_image->colorspace == CMYKColorspace))
+        {
+          scale*=(MagickRealType) (QuantumScale*(QuantumRange-indexes[x]));
+          scale*=(MagickRealType) (QuantumScale*(QuantumRange-
+            reconstruct_indexes[x]));
+        }
+      if ((channel & RedChannel) != 0)
+        {
+          distance=QuantumScale*(p->red-(MagickRealType) q->red);
+          channel_distortion[RedChannel]+=scale*distance*distance;
+          channel_distortion[AllChannels]+=scale*distance*distance;
+        }
+      if ((channel & GreenChannel) != 0)
+        {
+          distance=QuantumScale*(p->green-(MagickRealType) q->green);
+          channel_distortion[GreenChannel]+=scale*distance*distance;
+          channel_distortion[AllChannels]+=scale*distance*distance;
+        }
+      if ((channel & BlueChannel) != 0)
+        {
+          distance=QuantumScale*(p->blue-(MagickRealType) q->blue);
+          channel_distortion[BlueChannel]+=scale*distance*distance;
+          channel_distortion[AllChannels]+=scale*distance*distance;
+        }
+      if (((channel & OpacityChannel) != 0) && ((image->matte != MagickFalse) ||          (reconstruct_image->matte != MagickFalse)))
+        {
+          distance=QuantumScale*((image->matte != MagickFalse ? p->opacity :
+            OpaqueOpacity)-(reconstruct_image->matte != MagickFalse ?
+            q->opacity : OpaqueOpacity));
+          channel_distortion[OpacityChannel]+=QuantumScale*distance*distance;
+          channel_distortion[AllChannels]+=QuantumScale*distance*distance;
+        }
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace) &&
+          (reconstruct_image->colorspace == CMYKColorspace))
+        {
+          distance=QuantumScale*(indexes[x]-(MagickRealType)
+            reconstruct_indexes[x]);
+          channel_distortion[BlackChannel]+=scale*distance*distance;
+          channel_distortion[AllChannels]+=scale*distance*distance;
+        }
+      p++;
+      q++;
+    }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_GetMeanSquaredError)
+#endif
+    for (i=0; i <= (ssize_t) AllChannels; i++)
+      distortion[i]+=channel_distortion[i];
+  }
+  reconstruct_view=DestroyCacheView(reconstruct_view);
+  image_view=DestroyCacheView(image_view);
+  for (i=0; i <= (ssize_t) AllChannels; i++)
+    distortion[i]/=((double) image->columns*image->rows);
+  distortion[AllChannels]/=(double) GetNumberChannels(image,channel);
+  return(status);
+}
+
 static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   const Image *reconstruct_image,const ChannelType channel,
   double *distortion,ExceptionInfo *exception)
@@ -1172,6 +1299,12 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
         channel_distortion,exception);
       break;
     }
+    case FuzzErrorMetric:
+    {
+      status=GetFuzzDistortion(image,reconstruct_image,channel,
+        channel_distortion,exception);
+      break;
+    }
     case MeanAbsoluteErrorMetric:
     {
       status=GetMeanAbsoluteDistortion(image,reconstruct_image,channel,
@@ -1296,6 +1429,12 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     case AbsoluteErrorMetric:
     {
       status=GetAbsoluteDistortion(image,reconstruct_image,AllChannels,
+        channel_distortion,exception);
+      break;
+    }
+    case FuzzErrorMetric:
+    {
+      status=GetFuzzDistortion(image,reconstruct_image,AllChannels,
         channel_distortion,exception);
       break;
     }
