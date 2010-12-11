@@ -3196,6 +3196,7 @@ Compare(ref,...)
             {
               reconstruct_image=SetupList(aTHX_ SvRV(ST(i)),
                 (struct PackageInfo **) NULL,(SV ***) NULL,exception);
+              break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
             attribute);
@@ -3214,7 +3215,7 @@ Compare(ref,...)
                     SvPV(ST(i),na));
                   break;
                 }
-               metric=(MetricType) option;
+              metric=(MetricType) option;
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
