@@ -7308,12 +7308,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 #ifdef PNG_BUILD_PALETTE
   if (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
-#if 0
-      (mng_info->write_png_colortype == 0 && image->depth <= 8))
-#else
       (mng_info->write_png_colortype == 0))
-#endif
-
     {
       /*
        * Sometimes we get DirectClass images that have 256 colors or fewer.
@@ -7369,15 +7364,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 * problem by usng a trial clone.  After creating
                 * a colormap for it and copying the colormap to
                 * image, we destroy the clone.
-                *
-                * To do: We probably don't need the clone.
                 */
 
                ExceptionInfo
                  *exception;
 
-               Image
-                 *clone_image;
+               PixelPacket
+                 colormap[256];
 
                register const PixelPacket
                  *q;
@@ -7387,25 +7380,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                exception=(&image->exception);
         
-               clone_image=CloneImage(image, 0, 0, MagickTrue, exception);
-
-               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "       clone_image->depth=%.20g",
-                    (double) clone_image->depth);
-
-               if (clone_image->colormap == NULL)
-               {
-                 /*
-                   Initialize clone_image colormap.
-                 */
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "      initializing clone_image->colormap");
-                 if (AcquireImageColormap(clone_image,256) ==
-                     MagickFalse)
-                       ThrowWriterException(ResourceLimitError,
-                          "MemoryAllocationFailed");
-               }
-
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      copy colors out of clone_image");
 
@@ -7420,26 +7394,24 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  if (y == 0)
                    {
                     /* Initialize the colormap */
-                     clone_image->colormap[0]=*q;
+                     colormap[0]=*q;
                      image_colors=1;
      
                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "      Adding colormap[%d]=(%d,%d,%d,%d)",
                         (int) 0,
-                        (int) clone_image->colormap[0].red,
-                        (int) clone_image->colormap[0].green,
-                        (int) clone_image->colormap[0].blue,
-                        (int) clone_image->colormap[0].opacity);
-
+                        (int) colormap[0].red,
+                        (int) colormap[0].green,
+                        (int) colormap[0].blue,
+                        (int) colormap[0].opacity);
                     }
      
                   for (x=0; x < (ssize_t) image->columns; x++)
                      {
                         for (i=0; i<image_colors; i++)
                           {
-                            if ((clone_image->colormap[i].opacity ==
-                                q->opacity) &&
-                                (IsColorEqual(&clone_image->colormap[i],
+                            if ((colormap[i].opacity == q->opacity) &&
+                                (IsColorEqual(colormap+i,
                                 (PixelPacket *) q)))
                               break;
                           }
@@ -7453,15 +7425,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                         if (image_colors++ == 256)
                           break;
         
-                        clone_image->colormap[i]=*q;
+                        colormap[i]=*q;
         
                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                            "      Adding colormap[%d]=(%d,%d,%d,%d)",
                            (int) i,
-                           (int) clone_image->colormap[i].red,
-                           (int) clone_image->colormap[i].green,
-                           (int) clone_image->colormap[i].blue,
-                           (int) clone_image->colormap[i].opacity);
+                           (int) colormap[i].red,
+                           (int) colormap[i].green,
+                           (int) colormap[i].blue,
+                           (int) colormap[i].opacity);
         
                         q++;
                      }
@@ -7469,7 +7441,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      clone_image has %d colors",(int)image_colors);
+                        "      image has %d colors",(int)image_colors);
                  
 
                   /*
@@ -7487,12 +7459,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                            "MemoryAllocationFailed");
           
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      Copying colormap from clone");
+                        "      Copying colormap from new colormap");
 
                   for (i=0; i<image_colors; i++)
-                     image->colormap[i] = clone_image->colormap[i];
-
-                  (void) DestroyImage(clone_image);
+                     image->colormap[i] = colormap[i];
 
                   for (y=0; y < (ssize_t) image->rows; y++)
                   {
