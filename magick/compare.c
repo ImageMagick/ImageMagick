@@ -590,7 +590,6 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   for (i=0; i <= (ssize_t) AllChannels; i++)
     distortion[i]/=((double) image->columns*image->rows);
-  distortion[AllChannels]/=(double) GetNumberChannels(image,channel);
   return(status);
 }
 
