@@ -1760,7 +1760,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 %    fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
 %
 %  Which produces a multi-dimentional cone for that colorspace along the
-%  transpaency vector
+%  transparency vector.
 %
 %  For example for an RGB
 %    color_distance^2  = ( (u.r-v.r)^2 + (u.g-v.g)^2 + (u.b-v.b)^2 ) / 3
