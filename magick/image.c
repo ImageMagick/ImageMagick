@@ -1044,9 +1044,6 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
   status=MagickTrue;
   progress=0;
   combine_view=AcquireCacheView(combine_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
   for (y=0; y < (ssize_t) combine_image->rows; y++)
   {
     CacheView
@@ -1167,9 +1164,6 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_CombineImages)
-#endif
         proceed=SetImageProgress(image,CombineImageTag,progress++,
           combine_image->rows);
         if (proceed == MagickFalse)

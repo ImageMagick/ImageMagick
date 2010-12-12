@@ -394,7 +394,9 @@
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-/* #undef HAVE_LCMS_H */
+#ifndef MAGICKCORE_HAVE_LCMS_H
+#define MAGICKCORE_HAVE_LCMS_H 1
+#endif
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -1069,7 +1071,9 @@
 #endif
 
 /* Define if you have LCMS (v1.11 or later) library */
-/* #undef LCMS_DELEGATE */
+#ifndef MAGICKCORE_LCMS_DELEGATE
+#define MAGICKCORE_LCMS_DELEGATE 1
+#endif
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH

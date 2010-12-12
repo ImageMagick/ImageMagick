@@ -52,7 +52,7 @@ while test $# -gt 0; do
       echo '-L/usr/local/lib '
       ;;
     --libs)
-      echo "-L${libdir} -lMagickWand -lMagickCore -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lpthread -lltdl"
+      echo "-L${libdir} -lMagickWand -lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lgomp -lpthread -lltdl"
       ;;
     *)
       echo "${usage}" 1>&2
