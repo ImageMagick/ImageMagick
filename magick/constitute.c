@@ -639,7 +639,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     if (next->magick_rows == 0)
       next->magick_rows=next->rows;
     if ((LocaleCompare(magick,"HTTP") != 0) &&
-        (LocaleCompare(magick,"FTP") != 0))
+        (LocaleCompare(magick,"FTP") != 0) && (LocaleCompare(magick,"X") != 0))
       (void) CopyMagickString(next->magick,magick,MaxTextExtent);
     (void) CopyMagickString(next->magick_filename,magick_filename,
       MaxTextExtent);
