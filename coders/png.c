@@ -112,8 +112,7 @@
 #undef MNG_BASI_SUPPORTED
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
-#define PNG_BUILD_PALETTE   /* This works as of 5.4.3 for opaque images. */
-#define PNG_SORT_PALETTE    /* This works as of 5.4.0 */
+#define PNG_BUILD_PALETTE   /* This works as of 6.6.6 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -6761,409 +6760,6 @@ static MagickBooleanType png_write_chunk_from_profile(Image *image,
    return(MagickTrue);
 }
 
-#if defined(PNG_SORT_PALETTE)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   O p t i m i z e P N G C o l o r m a p                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  OptimizePNGColormap compresses an image colormap removing any
-%  duplicate and unused color entries and putting the transparent colors
-%  first.  Returns MagickTrue on success, MagickFalse on error.
-%
-%  The format of the OptimizePNGColormap method is:
-%
-%      unsigned int OptimizePNGColormap(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the address of a structure of type Image.
-%
-%    o ping_plte_map: a mapping of indexes in image->colormap to those in
-%           the revised colormap
-%
-*/
-static MagickBooleanType OptimizePNGColormap(Image *image, IndexPacket
-     *ping_plte_map)
-{
-  int
-    k;
-
-  ssize_t
-    j,
-    new_number_colors,
-    number_colors,
-    y;
-
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
-    *p;
-
-  IndexPacket
-    top_used;
-
-  MagickBooleanType
-    remap_needed;
-
-  register ssize_t
-    i,
-    x;
-
-  unsigned char
-    marker[256],
-    have_transparency;
-
-  /*
-    Determine if colormap can be compressed.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  remap_needed=MagickFalse;
-
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    OptimizePNGColormap %s (%.20g colors)",image->filename,
-      (double) image->colors);
-
-  if (image->storage_class != PseudoClass)
-    {
-      if (image->debug != MagickFalse)
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "    Could not compress colormap: image is not PseudoClass");
-        }
-      return(MagickTrue);
-    }
-
-  if (image->colors == 1)
-     return(MagickTrue);  /* Nothing to do */
-
-  if (image-> colors == 0 || image->colors > 256)
-    {
-      if (image->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "    Could not compress colormap with %d",(int) image->colors);
-
-      return(MagickFalse);
-    }
-
-  /*
-    Mark colors that are present.
-  */
-  number_colors=(ssize_t) image->colors;
-  for (i=0; i < number_colors; i++)
-  {
-    marker[i]=MagickFalse;
-  }
-
-  top_used=0;
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-
-    if (p == (const PixelPacket *) NULL)
-      break;
-
-    indexes=GetVirtualIndexQueue(image);
-
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      i=(int) indexes[x];
-      marker[i]=MagickTrue;
-
-      if (i > top_used)
-         top_used=i;
-    }
-
-  }
-
-  /*
-    Mark background color, first occurrence if more than one.
-  */
-  for (i=0; i < number_colors; i++)
-  {
-    if (IsColorEqual(image->colormap+i,&image->background_color))
-      {
-        marker[i]=MagickTrue;
-        break;
-      }
-  }
-
-  /*
-    Unmark duplicates.
-  */
-  for (i=0; i < number_colors-1; i++)
-    if (marker[i])
-      {
-        for (j=i+1; j < number_colors; j++)
-          if ((image->colormap[i].opacity == image->colormap[j].opacity) &&
-              (IsColorEqual(image->colormap+i,image->colormap+j)))
-            {
-              marker[j]=MagickFalse;
-            }
-       }
-
-  /*
-    Count colors that still remain.
-  */
-  have_transparency=MagickFalse;
-  new_number_colors=0;
-
-  for (i=0; i < number_colors; i++)
-    if (marker[i])
-      {
-        new_number_colors++;
-        if (image->colormap[i].opacity != OpaqueOpacity)
-          have_transparency=MagickTrue;
-      }
-
-  if (image->debug != MagickFalse)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    new_number_colors in OptimizePNGColormap=%d",
-          (int) new_number_colors);
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Entering OptimizePNGColormap:");
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    i     (red,green,blue,opacity)");
-
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    %d  (%d,%d,%d,%d)",
-             (int) i,
-             (int) image->colormap[i].red,
-             (int) image->colormap[i].green,
-             (int) image->colormap[i].blue,
-             (int) image->colormap[i].opacity);
-      }
-    }
-
-  if ((!have_transparency || (marker[0] &&
-      (image->colormap[0].opacity == (Quantum) TransparentOpacity)))
-      && (new_number_colors == number_colors))
-    {
-      /*
-        No duplicate or unused entries, and transparency-swap not needed.
-      */
-
-      return(MagickTrue);
-    }
-
-  remap_needed=MagickTrue;
-
-  /*
-    Relink duplicate colormap entries.
-  */
-  for (i=0; i < number_colors; i++)
-    ping_plte_map[i]=i;
-
-  k=0;
-  for (i=0; i < number_colors; i++)
-  {
-    if (marker[i])
-      {
-        ping_plte_map[i]=(IndexPacket) k;
-        for (j=i+1; j < number_colors; j++)
-        {
-          if ((image->colormap[i].opacity == image->colormap[j].opacity) &&
-              (IsColorEqual(image->colormap+i,image->colormap+j)))
-            {
-               ping_plte_map[j]=(IndexPacket) k;
-               marker[j]=MagickFalse;
-            }
-        }
-        k++;
-      }
-  }
-
-  if (have_transparency && (image->colormap[0].opacity !=
-     (Quantum) TransparentOpacity))
-    {
-      /*
-        Move the first transparent color to palette entry 0.
-      */
-      for (i=1; i < number_colors; i++)
-      {
-        if (marker[i] && image->colormap[i].opacity ==
-           (Quantum) TransparentOpacity)
-          {
-            IndexPacket
-              swap;
-
-            swap=ping_plte_map[0];
-            ping_plte_map[0]=ping_plte_map[i];
-            ping_plte_map[i]=swap;
-            remap_needed=MagickTrue;
-            break;
-          }
-      }
-
-      /* Swap any remaining duplicates */
-      for (; i < number_colors; i++)
-      {
-        if (ping_plte_map[i] == 0)
-          ping_plte_map[i]=ping_plte_map[0];
-
-        else if (ping_plte_map[i] == ping_plte_map[0])
-          ping_plte_map[i]=0;
-      }
-    }
-
-  return(MagickTrue);
-}
-#endif /* PNG_SORT_PALETTE */
-
-/*
- * Temporary wrapper for OptimizePNGColormap
- */
-static MagickBooleanType CompressColormapTransFirst(Image *image)
-{
-#if defined(PNG_SORT_PALETTE)
-  register ssize_t
-      i;
-
-  IndexPacket
-      ping_plte_map[256];
-
-  for (i=0; i<256; i++)
-  {
-    ping_plte_map[i]=i;
-  }
-
-  if (OptimizePNGColormap(image, ping_plte_map) == MagickFalse)
-    return MagickFalse;
-
-  else
-  {
-    ExceptionInfo
-      *exception;
-
-    register IndexPacket
-      *pixels;
-
-    PixelPacket
-      colormap[256];
-
-    register PixelPacket
-      *q;
-
-    MagickBooleanType
-      remap_needed;
-
-    size_t
-      ping_number_colors;
-
-    ssize_t
-      j,
-      y;
-
-    register ssize_t
-      x;
-
-    ping_number_colors=(size_t) 0;
-    remap_needed = MagickFalse;
-
-    for (i=0; i<(ssize_t) image->colors; i++)
-    {
-      colormap[(ssize_t) ping_plte_map[i]] = image->colormap[i];
-
-      if (ping_plte_map[i] != i)
-        remap_needed = MagickTrue;
-
-      if (ping_plte_map[i] >= ping_number_colors)
-         ping_number_colors=ping_plte_map[i]+1;
-    }
-
-    /* TO DO: add background color if necessary */
-
-    if (remap_needed == MagickFalse)
-       return MagickTrue;
-
-    /*
-        Remap pixels.
-    */
-    exception=(&image->exception);
-    for (y=0; y < (ssize_t) image->rows; y++)
-    {
-      q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-
-      if (q == (PixelPacket *) NULL)
-        break;
-
-      pixels=GetAuthenticIndexQueue(image);
-
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        j=(int) pixels[x];
-        pixels[x]=(IndexPacket) ping_plte_map[j];
-      }
-
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        break;
-    }
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    After OptimizePNGColormap:");
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    i  plte_map (red,green,blue,opacity)");
-
-    for (i=0; i < (ssize_t) image->colors; i++)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    %d    %d   (%d,%d,%d,%d)",
-           (int) i,
-           (int) ping_plte_map[i],
-           (int) image->colormap[i].red,
-           (int) image->colormap[i].green,
-           (int) image->colormap[i].blue,
-           (int) image->colormap[i].opacity);
-    }
-
-
-    for (i=0; i< (ssize_t) image->colors; i++)
-    {
-      image->colormap[i] = colormap[i];
-    }
-
-    image->colors = ping_number_colors;
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    After Remap:");
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "        i    (red,green,blue,opacity)");
-    for (i=0; i < (ssize_t) image->colors; i++)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "       %d    (%d,%d,%d,%d)",
-           (int) i,
-           (int) image->colormap[i].red,
-           (int) image->colormap[i].green,
-           (int) image->colormap[i].blue,
-           (int) image->colormap[i].opacity);
-    }
-
-    (void) SyncImage(image);
-    return MagickTrue;
-  }
-#else
-  image=image;
-  return MagickTrue;
-#endif /* PNG_SORT_PALETTE */
-}
-
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    const ImageInfo *image_info,Image *image)
 {
@@ -7292,6 +6888,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
 
+  /*
+    Sometimes we get PseudoClass images whose RGB values don't match
+    the colors in the colormap.  This code syncs the RGB values.
+  */
+  if (image->depth <= 8 && image->taint && image->storage_class == PseudoClass)
+     (void) SyncImage(image);
+
 #if (MAGICKCORE_QUANTUM_DEPTH > 16)
   /* PNG does not handle depths greater than 16 so reduce it even
    * if lossy
@@ -7314,8 +6917,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        * Sometimes we get DirectClass images that have 256 colors or fewer.
        * This code will convert them to PseudoClass and build a colormap.
        *
-       * Also, sommetimes we get PseudoClass images with an out-of-date
-       * colormap.  This code will replace it with a new one.
+       * Also, sometimes we get PseudoClass images with an out-of-date
+       * colormap.  This code will replace the colormap with a new one.
        */
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "    Enter BUILD_PALETTE:");
@@ -7355,10 +6958,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "      image->colors=%d",(int) image->colors);
 
-       if (image->colors <= 256)
+       if (image->colors <= 260)
          {
-           if (image->matte != MagickFalse)
-             {
                /* Sometimes SetImageType(image,PaletteMatteType)
                 * loses the transparency.  We work around this
                 * problem by usng a trial clone.  After creating
@@ -7370,7 +6971,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  *exception;
 
                PixelPacket
-                 colormap[256];
+                 colormap[300];
 
                register const PixelPacket
                  *q;
@@ -7381,7 +6982,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                exception=(&image->exception);
         
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      copy colors out of clone_image");
+                    "      Regenerate the colormap");
 
                for (y=0; y < (ssize_t) image->rows; y++)
                {
@@ -7395,24 +6996,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    {
                     /* Initialize the colormap */
                      colormap[0]=*q;
+
+                     if (image->matte == MagickFalse)
+                           colormap[0].opacity = OpaqueOpacity;
+
                      image_colors=1;
-     
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      Adding colormap[%d]=(%d,%d,%d,%d)",
-                        (int) 0,
-                        (int) colormap[0].red,
-                        (int) colormap[0].green,
-                        (int) colormap[0].blue,
-                        (int) colormap[0].opacity);
                     }
      
                   for (x=0; x < (ssize_t) image->columns; x++)
                      {
                         for (i=0; i<image_colors; i++)
                           {
-                            if ((colormap[i].opacity == q->opacity) &&
-                                (IsColorEqual(colormap+i,
-                                (PixelPacket *) q)))
+                            if (((image->matte == MagickFalse ||
+                                colormap[i].opacity == q->opacity)) &&
+                                (IsColorEqual(colormap+i, (PixelPacket *) q)))
                               break;
                           }
         
@@ -7422,86 +7019,175 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                             continue;
                           }
         
-                        if (image_colors++ == 256)
+                        if (image_colors++ == 300)
                           break;
         
                         colormap[i]=*q;
-        
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                           "      Adding colormap[%d]=(%d,%d,%d,%d)",
-                           (int) i,
-                           (int) colormap[i].red,
-                           (int) colormap[i].green,
-                           (int) colormap[i].blue,
-                           (int) colormap[i].opacity);
+
+                        if (image->matte == MagickFalse)
+                           colormap[i].opacity = OpaqueOpacity;
         
                         q++;
                      }
+
+                     if (x < (ssize_t) image->columns)
+                        break;
                   }
 
 
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      image has %d colors",(int)image_colors);
-                 
+                  if (image_colors >= 300)
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      image has more than 300 colors");
 
-                  /*
-                    Initialize image colormap.
-                  */
-                  if (image->colormap != NULL)
-                     image->colormap=(PixelPacket *)
-                        RelinquishMagickMemory(image->colormap);
- 
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  else
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      image has %d colors",(int)image_colors);
+                 
+                  if (image_colors <= 256)
+                  {
+                    PixelPacket
+                      opaque[256],
+                      semitransparent[256],
+                      transparent[256];
+
+                    int
+                      n,
+                      number_opaque,
+                      number_semitransparent,
+                      number_transparent;
+
+                    /*
+                      Initialize image colormap.
+                    */
+          
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      Sort the new colormap");
+
+                     number_opaque=0,
+                     number_semitransparent=0,
+                     number_transparent=0;
+
+                     /* Sort palette, transparent first */;
+                     for (i=0; i<image_colors; i++)
+                     {
+                        if (colormap[i].opacity == OpaqueOpacity)
+                           opaque[number_opaque++] = colormap[i];
+
+                        else if (colormap[i].opacity == TransparentOpacity)
+                           transparent[number_transparent++] = colormap[i];
+
+                        else
+                           semitransparent[number_semitransparent++] =
+                               colormap[i];
+                     }
+
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      number_transparent     = %d",
+                           number_transparent);
+
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      number_opaque          = %d",
+                           number_opaque);
+
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      number_semitransparent = %d",
+                           number_semitransparent);
+
+                     n = 0;
+
+                     for (i=0; i<number_transparent; i++)
+                        colormap[n++] = transparent[i];
+
+                     for (i=0; i<number_semitransparent; i++)
+                        colormap[n++] = semitransparent[i];
+
+                     for (i=0; i<number_opaque; i++)
+                        colormap[n++] = opaque[i];
+
+                     for (i=0; i<number_opaque; i++)
+                     {
+                        if (IsColorEqual(colormap+i,
+                           &image->background_color))
+                        break;
+                     }
+
+                     if (n < 256 && i == number_opaque)
+                     {
+                        colormap[n]=image->background_color;
+                        n++;
+                        image_colors++;
+                     }
+
+                     if (n != image_colors)
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "   image_colors (%d) and n (%d)  don't match",
+                        (int) image_colors, n);
+
+                     image->colors = image_colors;
+
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "      AcquireImageColormap");
-                  if (AcquireImageColormap(image,image_colors) ==
-                      MagickFalse)
+
+                     if (AcquireImageColormap(image,image_colors) ==
+                         MagickFalse)
                         ThrowWriterException(ResourceLimitError,
                            "MemoryAllocationFailed");
-          
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      Copying colormap from new colormap");
 
-                  for (i=0; i<image_colors; i++)
-                     image->colormap[i] = colormap[i];
+                     for (i=0; i<image_colors; i++)
+                        image->colormap[i] = colormap[i];
 
-                  for (y=0; y < (ssize_t) image->rows; y++)
-                  {
-                    q=GetAuthenticPixels(image,0,y,image->columns,1,
-                        exception);
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "      Update the pixel indexes");
+
+                     for (y=0; y < (ssize_t) image->rows; y++)
+                     {
+                       q=GetAuthenticPixels(image,0,y,image->columns,1,
+                           exception);
               
-                    if (q == (PixelPacket *) NULL)
-                      break;
+                       if (q == (PixelPacket *) NULL)
+                         break;
 
-                    indexes=GetAuthenticIndexQueue(image);
+                       indexes=GetAuthenticIndexQueue(image);
 
-                    for (x=0; x < (ssize_t) image->columns; x++)
-                    {
-                      for (i=0; i<image_colors; i++)
-                      {
-                        if ((image->colormap[i].opacity == q->opacity) &&
-                            (IsColorEqual(&image->colormap[i],
-                            (PixelPacket *) q)))
-                        {
-                          indexes[x]=(IndexPacket) i;
+                       for (x=0; x < (ssize_t) image->columns; x++)
+                       {
+                         for (i=0; i<image_colors; i++)
+                         {
+                           if ((image->matte == MagickFalse ||
+                               image->colormap[i].opacity == q->opacity) &&
+                               (IsColorEqual(&image->colormap[i],
+                               (PixelPacket *) q)))
+                           {
+                             indexes[x]=(IndexPacket) i;
+                             break;
+                           }
+                         }
+                         q++;
+                       }
+
+                       if (SyncAuthenticPixels(image,exception) == MagickFalse)
                           break;
-                        }
-                      }
-                      q++;
-                    }
+                     }
 
-                  if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                     break;
+                  if (image->matte != MagickFalse)
+                    {
+                       if (((mng_info->write_png_colortype-1) ==
+                           PNG_COLOR_TYPE_PALETTE) ||
+                           (mng_info->write_png_colortype == 0))
+                          (void) SetImageType(image,PaletteMatteType);
+                     }
+                   else
+                     {
+                       if (((mng_info->write_png_colortype-1) ==
+                           PNG_COLOR_TYPE_PALETTE) ||
+                           (mng_info->write_png_colortype == 0))
+                         {
+                            (void) SetImageType(image,PaletteType);
+                           (void) SyncImage(image);
+                         }
+                     }
                   }
-
-                  image->colors = image_colors;
-                  (void) SetImageType(image,PaletteMatteType);
-                }
-              else
-                {
-                  (void) SetImageType(image,PaletteType);
-                  (void) SyncImage(image);
-                }
-            }
+         }
 
           if (logging != MagickFalse && image->colormap != NULL)
           {
@@ -7524,13 +7210,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "    Exit BUILD_PALETTE:");
     }
 #endif /* PNG_BUILD_PALETTE */
-
-  /*
-    Sometimes we get PseudoClass images whose RGB values don't match
-    the colors in the colormap.  This code syncs the RGB values.
-  */
-  if (image->depth <= 8 && image->taint && image->storage_class == PseudoClass)
-     (void) SyncImage(image);
 
   image_depth=image->depth;
 
@@ -7753,12 +7432,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         Set image palette.
       */
       ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
-
-      if (CompressColormapTransFirst(image) == MagickFalse)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-
-      number_colors=image->colors;
-      image_colors=number_colors;
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8301,12 +7974,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             else
               {
-                if (CompressColormapTransFirst(image) == MagickFalse)
-                   ThrowWriterException(ResourceLimitError,
-                                        "MemoryAllocationFailed");
-                number_colors=image->colors;
-                image_colors=number_colors;
-
                 for (i=0; i < (ssize_t) number_colors; i++)
                 {
                   palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -9014,7 +8681,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
 
-          if (logging != MagickFalse && y == 0)
+          if (logging != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                  "    Writing row of pixels (0)");
 
@@ -9496,13 +9163,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %     -profile PNG-chunk-b01:file01 -profile PNG-chunk-b02:file02
 %
-%  As of version 6.6.5 the following optimizations are always done:
+%  As of version 6.6.6 the following optimizations are always done:
 %
 %   o  32-bit depth is reduced to 16.
 %   o  16-bit depth is reduced to 8 if all pixels contain samples whose
 %      high byte and low byte are identical.
 %   o  Palette is sorted to remove unused entries and to put a
-%      transparent color first, if PNG_SORT_PALETTE is defined.
+%      transparent color first, if PNG_BUILD_PALETTE is defined.
 %   o  Opaque matte channel is removed when writing an indexed PNG.
 %   o  Grayscale images are reduced to 1, 2, or 4 bit depth if
 %      this can be done without loss and a larger bit depth N was not
