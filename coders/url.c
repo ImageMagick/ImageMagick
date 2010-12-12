@@ -51,11 +51,12 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/module.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/resource_.h"
 #include "magick/string_.h"
-#include "magick/module.h"
+#include "magick/utility.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    if defined(__MINGW32__)
@@ -222,7 +223,9 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (unique_file != -1)
     (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
-  if (image == (Image *) NULL)
+  if (image != (Image *) NULL)
+    GetPathComponent(image_info->filename,TailPath,image->filename);
+  else
     (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
       "NoDataReturned","`%s'",filename);
   return(GetFirstImageInList(image));
