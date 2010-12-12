@@ -2,6 +2,8 @@
   * Make the PNG encoder always rebuild the palette, to avoid losing
     transparency when it is out of sync with the pixel data (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17655).
+    Eliminated CompressColormapTransFirst() since the palette is already
+    compressed and sorted by opacty now when it's recreated.
 
 2010-12-10  6.6.6-5 Cristy  <quetzlzacatenango@image...>
   * Account for virtual canvas for the -flip / -flop options (reference
