@@ -70,9 +70,6 @@
 #include "magick/quantum-private.h"
 #include "magick/profile.h"
 #include "magick/property.h"
-#if 0
-#include "magick/quantize.h"
-#endif
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/quantum-private.h"
@@ -7184,25 +7181,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;
             }
-
-#if 0 /* Doesn't work! */
-          if (image->matte != MagickFalse)
-            {
-               if (((mng_info->write_png_colortype-1) ==
-                   PNG_COLOR_TYPE_PALETTE) ||
-                   (mng_info->write_png_colortype == 0))
-                  (void) SetImageType(image,PaletteMatteType);
-             }
-           else
-             {
-               if (((mng_info->write_png_colortype-1) ==
-                   PNG_COLOR_TYPE_PALETTE) ||
-                   (mng_info->write_png_colortype == 0))
-                 {
-                    (void) SetImageType(image,PaletteType);
-                 }
-             }
-#endif
           }
 
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7413,45 +7391,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   matte=image_matte;
   old_bit_depth=0;
 
-#if 0 /* wrong; PNG8 is supposed to force binary transparency. */
-  if ((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE)
-    mng_info->write_png8=MagickTrue;
-#endif
-
   if (mng_info->write_png8)
     {
-#if 0
-      QuantizeInfo
-        quantize_info;
-#endif
 
       /* TO DO: make this a function cause it's used twice, except
          for reducing the sample depth from 8. */
 
-#if 0 /* already done above */
-      ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
-      ping_bit_depth=8;
-      image_depth=ping_bit_depth;
-#endif
-
       number_colors=image_colors;
-
-#if 0 /* The user should have done this before calling the encoder. */
-      if ((image->storage_class == DirectClass) || (number_colors > 256))
-        {
-          GetQuantizeInfo(&quantize_info);
-          quantize_info.dither=IsPaletteImage(image,&image->exception) ==
-            MagickFalse ? MagickTrue : MagickFalse;
-          quantize_info.number_colors= (matte != MagickFalse ? 255UL :
-            256UL);
-          (void) QuantizeImage(&quantize_info,image);
-          number_colors=image_colors;
-          (void) SyncImage(image);
-          if (logging != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Colors quantized to %.20g",(double) number_colors);
-        }
-#endif
 
       ping_have_tRNS=MagickFalse;
 
