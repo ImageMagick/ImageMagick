@@ -479,8 +479,6 @@
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert  xc:'rgb(25%,50%,75%)' rose: -colorspace rgb  \ <br/>
   -format 'Red channel of NW corner of image # %[fx:t] is %[fx: s]' info:</span><span class='crtout'>Red channel of NW corner of image # 0 is 0.250004 <br/>
   Red channel of NW corner of image # 1 is 0.188235</span></p>
-<p>Use <kbd>%[fxc: ]</kbd> if your expression is a constant (e.g. <kbd>%[fxc:page.x/2]</kbd>.  The result is cached and the cached result returned rather than evaluating the expression each time.</p>
-
 <p>The color-escape <kbd>%[pixel: ]</kbd> is evaluated once per image and per color channel in that image (<a href="../www/command-line-options.html#channel">-channel</a> is ignored), The values generated are then converted into a color string (a named color or hex color value).  The symbols <kbd>i</kbd> and <kbd>j</kbd> are set to zero, and <kbd>s</kbd> and <kbd>t</kbd> refer to each successively current image and index.</p>
 
 </div>
