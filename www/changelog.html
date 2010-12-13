@@ -167,11 +167,14 @@
 
 <div class="main">
 
-<ul><dt>2010-12-09  6.6.6-4 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <li> Replace IsMagickColorSimilar() which provides the Fuzz Factor threshold    function.  Note function does not calculate 'distance' in total but    short-circuits when threshold is reached for faster processing.</li><br />
-<dt>2010-12-07  6.6.6-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Account for virtual canvas for the -flip / -flop options (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17626).</li><br />
-<dt>2010-12-06  6.6.6-4 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<ul><dt>2010-12-10  6.6.6-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Make the PNG encoder always rebuild the palette, to avoid losing    transparency when it is out of sync with the pixel data (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17655).    Eliminated CompressColormapTransFirst() since the palette is already    compressed and sorted by opacty now when it's recreated.</li><br />
+<dt>2010-12-10  6.6.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Account for virtual canvas for the -flip / -flop options (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17626).</li>
+  <li> Also for -transpose and transverse options</li>
+  <li> Support -metric fuzz option.</li><br />
+<dt>2010-12-09  6.6.6-4 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Replace IsMagickColorSimilar() which provides the Fuzz Factor threshold    function.  Note function does not calculate 'distance' in total but    short-circuits when threshold is reached for faster processing.</li>
   <li> Ordered Dithered handling of Alpha channel was incorrect - fixing    Bug was introduced v6.6.5-6</li><br />
 <dt>2010-12-03  6.6.6-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Fixed two more cases where the PNG encoder lost transparency (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17516).</li><br />
