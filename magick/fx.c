@@ -1518,6 +1518,10 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             }
           return(QuantumScale*pixel.index);
         }
+        case DefaultChannels: 
+        {
+          return(QuantumScale*MagickPixelIntensityToQuantum(&pixel));
+        }
         default:
           break;
       }
