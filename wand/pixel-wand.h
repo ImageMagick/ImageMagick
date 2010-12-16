@@ -79,6 +79,7 @@ extern WandExport size_t
 extern WandExport void
   ClearPixelWand(PixelWand *),
   PixelGetHSL(const PixelWand *,double *,double *,double *),
+  PixelGetMagickColor(const PixelWand *,MagickPixelPacket *),
   PixelGetQuantumColor(const PixelWand *,PixelPacket *),
   PixelSetAlpha(PixelWand *,const double),
   PixelSetAlphaQuantum(PixelWand *,const Quantum),
