@@ -1170,7 +1170,7 @@ WandExport Quantum PixelGetMagentaQuantum(const PixelWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   P i x e l G e t M a g i c k C o l o r                                     %
+%   P i x e l G e t M a g i c k C o l o r                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

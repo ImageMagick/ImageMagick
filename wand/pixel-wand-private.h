@@ -22,9 +22,6 @@
 extern "C" {
 #endif
 
-extern WandExport void
-  PixelGetMagickColor(const PixelWand *,MagickPixelPacket *);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
