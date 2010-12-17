@@ -7428,16 +7428,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       }
 
-#if 0
-      if (matte)  /* What's this for? */
-        {
-          number_colors++;
-          palette[i].red=ScaleQuantumToChar((Quantum) QuantumRange);
-          palette[i].green=ScaleQuantumToChar((Quantum) QuantumRange);
-          palette[i].blue=ScaleQuantumToChar((Quantum) QuantumRange);
-        }
-#endif
-
       ping_have_PLTE=MagickTrue;
       image_depth=ping_bit_depth;
       ping_num_trans=0;
