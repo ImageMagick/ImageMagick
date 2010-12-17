@@ -1,17 +1,18 @@
+2010-12-17  6.6.6-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Eliminated a redundant quantization step in the PNG encoder.
+  * Untangled a confusing but apparently harmless improper loop nesting
+    in the PNG encoder.
+  * Eliminated redundant "IsGray()" tests from the PNG encoder.
+
 2010-12-14  6.6.6-6 Cristy  <quetzlzacatenango@image...>
   * -format "%[fx:u.p{5,5}]" no longer reports parse exception (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17678).
-
-2010-12-12  6.6.6-6 Glenn Randers-Pehrson <glennrp@image...>
-  * Eliminated a redundant quantization step in the PNG encoder.
-    Untangled a confusing but apparently harmless improper loop nesting
-    in the PNG encoder.
 
 2010-12-10  6.6.6-5 Glenn Randers-Pehrson <glennrp@image...>
   * Make the PNG encoder always rebuild the palette, to avoid losing
     transparency when it is out of sync with the pixel data (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17655).
-    Eliminated CompressColormapTransFirst() since the palette is already
+  * Eliminated CompressColormapTransFirst() since the palette is already
     compressed and sorted by opacty now when it's recreated.
 
 2010-12-10  6.6.6-5 Cristy  <quetzlzacatenango@image...>
