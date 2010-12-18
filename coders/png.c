@@ -7009,8 +7009,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
        for (y=0; y < (ssize_t) image->rows; y++)
        {
-         q=GetVirtualPixels(image,0,y,image->columns,1,
-             exception);
+         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
    
          if (q == (PixelPacket *) NULL)
            break;
