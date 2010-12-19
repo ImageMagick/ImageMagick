@@ -388,9 +388,9 @@ The first is with '<kbd>@</kbd>' which reads image filenames from the specified 
 </p>
 
 <pre class="text">
-frame001.jpg
-frame002.jpg
-frame003.jpg
+  frame001.jpg
+  frame002.jpg
+  frame003.jpg
 </pre>
 
 <p>We then expect this command:</p>
@@ -412,13 +412,13 @@ the filename <kbd>image-%d.jpg[1-5]</kbd>. The command</p>
 <p>causes ImageMagick to attempt to read images with these filenames:
 </p>
 
-<p class="text">
+<pre class="text">
   image-1.jpg <br/>
   image-2.jpg <br/>
   image-3.jpg <br/>
   image-4.jpg <br/>
   image-5.jpg
-</p>
+</pre>
 
 </div>
 </div>
@@ -691,9 +691,9 @@ above.</p>
 </p>
 
 <pre class="text">
-image-0.jpg
-image-1.jpg
-image-2.jpg
+  image-0.jpg
+  image-1.jpg
+  image-2.jpg
 </pre>
 
 <p>Or retrieve image properties to modify the image filename.  For example, the command
@@ -703,9 +703,15 @@ image-2.jpg
 <p>writes an image with this filename:
 </p>
 
-<p class="text">
-rose-70x46.png
-</p>
+<pre class="text">
+  rose-70x46.png
+</pre>
+
+<p>Finally to convert multiple JPEG images to individual PDF pages, use:</p>
+
+<pre class="text">
+  convert *.jpg +adjoin page-%d.pdf
+</pre>
 
 </div>
 

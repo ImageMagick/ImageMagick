@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011040100025 gabi.schulze-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -167,8 +167,17 @@
 
 <div class="main">
 
-<ul><dt>2010-12-10  6.6.6-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> Make the PNG encoder always rebuild the palette, to avoid losing    transparency when it is out of sync with the pixel data (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17655).    Eliminated CompressColormapTransFirst() since the palette is already    compressed and sorted by opacty now when it's recreated.</li><br />
+<ul><dt>2010-12-17  6.6.6-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
+  <li> Add LZMA compression support to ImageMagick.</li><br />
+<dt>2010-12-17  6.6.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Eliminated a redundant quantization step in the PNG encoder.</li>
+  <li> Untangled a confusing but apparently harmless improper loop nesting    in the PNG encoder.</li>
+  <li> Eliminated redundant "IsGray()" tests from the PNG encoder.</li><br />
+<dt>2010-12-14  6.6.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> -format "%[fx:u.p{5,5}]" no longer reports parse exception (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17678).</li><br />
+<dt>2010-12-10  6.6.6-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Make the PNG encoder always rebuild the palette, to avoid losing    transparency when it is out of sync with the pixel data (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17655).</li>
+  <li> Eliminated CompressColormapTransFirst() since the palette is already    compressed and sorted by opacty now when it's recreated.</li><br />
 <dt>2010-12-10  6.6.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Account for virtual canvas for the -flip / -flop options (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17626).</li>
   <li> Also for -transpose and transverse options</li>
