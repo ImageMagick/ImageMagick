@@ -1,3 +1,6 @@
+2010-12-17  6.6.6-6 Chris Madison  <madisonblu@gmail...>
+  * Add LZMA compression support to ImageMagick.
+
 2010-12-17  6.6.6-6 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminated a redundant quantization step in the PNG encoder.
   * Untangled a confusing but apparently harmless improper loop nesting
