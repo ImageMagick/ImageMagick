@@ -782,6 +782,7 @@ static const OptionInfo
     { "JPEG2000", (ssize_t) JPEG2000Compression, MagickFalse },
     { "Lossless", (ssize_t) LosslessJPEGCompression, MagickFalse },
     { "LosslessJPEG", (ssize_t) LosslessJPEGCompression, MagickFalse },
+    { "LZMA", (ssize_t) LZMACompression, MagickFalse },
     { "LZW", (ssize_t) LZWCompression, MagickFalse },
     { "None", (ssize_t) NoCompression, MagickFalse },
     { "Piz", (ssize_t) PizCompression, MagickFalse },

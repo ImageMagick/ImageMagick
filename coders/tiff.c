@@ -1031,6 +1031,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         break;
       }
       case COMPRESSION_OJPEG: image->compression=JPEGCompression; break;
+#if defined(COMPRESSION_LZMA)
+      case COMPRESSION_LZMA: image->compression=LZMACompression; break;
+#endif
       case COMPRESSION_LZW: image->compression=LZWCompression; break;
       case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
@@ -2547,6 +2550,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         compress_tag=COMPRESSION_JPEG;
         break;
       }
+#if defined(COMPRESSION_LZMA)
+      case LZMACompression:
+      {
+        compress_tag=COMPRESSION_LZMA;
+        break;
+      }
+#endif
       case LZWCompression:
       {
         compress_tag=COMPRESSION_LZW;
@@ -2589,6 +2599,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 #if defined(YCBCR_SUPPORT) && defined(JPEG_SUPPORT)
         case COMPRESSION_JPEG:
 #endif
+#if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
+        case COMPRESSION_LZMA:
+#endif
 #if defined(LZW_SUPPORT)
         case COMPRESSION_LZW:
 #endif
@@ -2625,6 +2638,22 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) SetImageDepth(image,8);
         break;
       }
+#if defined(COMPRESSION_LZMA)
+      case COMPRESSION_LZMA:
+      {
+        uint32
+          quality;
+
+        quality=image_info->quality/10;
+        if (quality < 1)
+          quality=1;
+        else
+          if (quality > 9)
+            quality=9;
+        (void) TIFFSetField(tiff,TIFFTAG_LZMAPRESET,quality);
+        break;
+      }
+#endif
       default:
         break;
     }
