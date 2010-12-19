@@ -222,6 +222,7 @@ namespace Magick
   using MagickCore::FaxCompression;
   using MagickCore::Group4Compression;
   using MagickCore::JPEGCompression;
+  using MagickCore::LZMACompression;
   using MagickCore::LZWCompression;
   using MagickCore::RLECompression;
   using MagickCore::ZipCompression;

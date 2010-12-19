@@ -401,6 +401,9 @@ Configure
     --without-lcms
       disable LCMS support.
   
+    --without-lzma
+      disable LZMA support.
+
     --without-png
       disable PNG support.
   

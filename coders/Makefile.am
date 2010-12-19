@@ -411,7 +411,7 @@ coders_dib_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_djvu_la_SOURCES     = coders/djvu.c
 coders_djvu_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_djvu_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS)
+coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
 
 # DNG coder module
 coders_dng_la_SOURCES      = coders/dng.c
@@ -579,7 +579,7 @@ coders_map_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_mat_la_SOURCES      = coders/mat.c
 coders_mat_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD       = $(MAGICKCORE_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_mat_la_LIBADD       = $(MAGICKCORE_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # MATTE coder module
 coders_matte_la_SOURCES    = coders/matte.c
@@ -597,7 +597,7 @@ coders_meta_la_LIBADD      = $(MAGICKCORE_LIBS)
 coders_miff_la_SOURCES     = coders/miff.c
 coders_miff_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_miff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_miff_la_LIBADD      = $(MAGICKCORE_LIBS) $(ZLIB_LIBS) $(BZLIB_LIBS)
+coders_miff_la_LIBADD      = $(MAGICKCORE_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(BZLIB_LIBS)
 
 # MONO coder module
 coders_mono_la_SOURCES     = coders/mono.c
@@ -627,7 +627,7 @@ coders_mpr_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_msl_la_SOURCES      = coders/msl.c
 coders_msl_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_msl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_msl_la_LIBADD       = $(MAGICKCORE_LIBS) $(XML_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_msl_la_LIBADD       = $(MAGICKCORE_LIBS) $(XML_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # MTV coder module
 coders_mtv_la_SOURCES      = coders/mtv.c
@@ -693,7 +693,7 @@ coders_pdb_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_pdf_la_SOURCES      = coders/pdf.c
 coders_pdf_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(GS_LIBS) $(MATH_LIBS)
+coders_pdf_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(GS_LIBS) $(MATH_LIBS)
 
 # PES coder module
 coders_pes_la_SOURCES      = coders/pes.c
@@ -717,7 +717,7 @@ coders_pix_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_png_la_SOURCES      = coders/png.c
 coders_png_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_png_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_png_la_LIBADD       = $(MAGICKCORE_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_png_la_LIBADD       = $(MAGICKCORE_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PLASMA coder module
 coders_plasma_la_SOURCES   = coders/plasma.c
@@ -747,13 +747,13 @@ coders_ps_la_LIBADD        = $(MAGICKCORE_LIBS) $(GS_LIBS) $(MATH_LIBS)
 coders_ps2_la_SOURCES      = coders/ps2.c
 coders_ps2_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_ps2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_ps2_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_ps2_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PS3 coder module
 coders_ps3_la_SOURCES      = coders/ps3.c
 coders_ps3_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_ps3_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_ps3_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_ps3_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # PSD coder module
 coders_psd_la_SOURCES      = coders/psd.c
@@ -831,7 +831,7 @@ coders_scr_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_svg_la_SOURCES      = coders/svg.c
 coders_svg_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS) $(RSVG_CFLAGS) $(CAIRO_SVG_CFLAGS)
 coders_svg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_svg_la_LIBADD       = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(AUTOTRACE_LIBS) $(RSVG_LIBS) $(XML_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_svg_la_LIBADD       = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(AUTOTRACE_LIBS) $(RSVG_LIBS) $(XML_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # TGA coder module
 coders_tga_la_SOURCES      = coders/tga.c
@@ -849,7 +849,7 @@ coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_tiff_la_SOURCES     = coders/tiff.c
 coders_tiff_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_tiff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS)
+coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
 
 # TILE coder module
 coders_tile_la_SOURCES     = coders/tile.c
@@ -885,7 +885,7 @@ coders_uil_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_url_la_SOURCES      = coders/url.c
 coders_url_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_url_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_url_la_LIBADD       = $(MAGICKCORE_LIBS) $(XML_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_url_la_LIBADD       = $(MAGICKCORE_LIBS) $(XML_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # UYVY coder module
 coders_uyvy_la_SOURCES     = coders/uyvy.c

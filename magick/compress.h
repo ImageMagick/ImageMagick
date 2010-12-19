@@ -42,7 +42,8 @@ typedef enum
   PizCompression,
   Pxr24Compression,
   B44Compression,
-  B44ACompression
+  B44ACompression,
+  LZMACompression
 } CompressionType;
 
 typedef struct _Ascii85Info

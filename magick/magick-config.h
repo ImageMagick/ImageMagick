@@ -1124,6 +1124,11 @@
 #define MAGICKCORE_LT_OBJDIR ".libs/"
 #endif
 
+/* Define if you have lzma compression library */
+#ifndef MAGICKCORE_LZMA_DELEGATE
+#define MAGICKCORE_LZMA_DELEGATE 1
+#endif
+
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
 
