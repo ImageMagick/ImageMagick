@@ -167,6 +167,7 @@ static MagickBooleanType InvokePostscriptDelegate(
       status=SystemCommand(MagickFalse,verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
     }
+  code=0;
   argv=StringToArgv(command,&argc);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
