@@ -159,6 +159,14 @@ static void *AcquireBZIPMemory(void *context,int items,int size)
 }
 #endif
 
+#if defined(MAGICKCORE_LZMA_DELEGATE)
+static void *AcquireLZMAMemory(void *context,size_t items,size_t size)
+{
+  (void) context;
+  return((void *) AcquireQuantumMemory((size_t) items,(size_t) size));
+}
+#endif
+
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 static voidpf AcquireZIPMemory(voidpf context,unsigned int items,
   unsigned int size)
@@ -351,16 +359,24 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
   *length=(size_t) (*p++)+1;
 }
 
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
-static void RelinquishZIPMemory(voidpf context,voidpf memory)
+#if defined(MAGICKCORE_BZLIB_DELEGATE)
+static void RelinquishBZIPMemory(void *context,void *memory)
 {
   (void) context;
   memory=RelinquishMagickMemory(memory);
 }
 #endif
 
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-static void RelinquishBZIPMemory(void *context,void *memory)
+#if defined(MAGICKCORE_LZMA_DELEGATE)
+static void RelinquishLZMAMemory(void *context,void *memory)
+{
+  (void) context;
+  memory=RelinquishMagickMemory(memory);
+}
+#endif
+
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+static void RelinquishZIPMemory(voidpf context,voidpf memory)
 {
   (void) context;
   memory=RelinquishMagickMemory(memory);
@@ -406,6 +422,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   lzma_stream
     lzma_info = LZMA_STREAM_INIT;
+
+  lzma_allocator
+    allocator;
 #endif
 
   LinkedListInfo
@@ -1308,6 +1327,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               code=lzma_auto_decoder(&lzma_info,-1,0);
               if (code != LZMA_OK)
                 status=MagickFalse;
+              allocator.alloc=AcquireLZMAMemory;
+              allocator.free=RelinquishLZMAMemory;
+              allocator.opaque=(void *) NULL;
+              lzma_info.allocator=&allocator;
               lzma_info.avail_in=0;
             }
           lzma_info.next_out=pixels;
@@ -1741,6 +1764,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     code;
 
 #if defined(MAGICKCORE_LZMA_DELEGATE)
+  lzma_allocator
+    allocator;
+
   lzma_stream
     lzma_info = LZMA_STREAM_INIT;
 #endif
@@ -2268,6 +2294,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 LZMA_CHECK_SHA256);
               if (code != LZMA_OK)
                 status=MagickTrue;
+              allocator.alloc=AcquireLZMAMemory;
+              allocator.free=RelinquishLZMAMemory;
+              allocator.opaque=(void *) NULL;
+              lzma_info.allocator=&allocator;
             }
           lzma_info.next_in=pixels;
           lzma_info.avail_in=(uInt) (packet_size*image->columns);
