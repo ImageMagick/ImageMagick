@@ -1269,14 +1269,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
+        (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
+        allocator.alloc=AcquireLZMAMemory;
+        allocator.free=RelinquishLZMAMemory;
         lzma_info=initialize_lzma;
+        lzma_info.allocator=(&allocator);
         code=lzma_auto_decoder(&lzma_info,-1,0);
         if (code != LZMA_OK)
           status=MagickFalse;
-        allocator.alloc=AcquireLZMAMemory;
-        allocator.free=RelinquishLZMAMemory;
-        allocator.opaque=(void *) NULL;
-        lzma_info.allocator=(&allocator);
         lzma_info.avail_in=0;
         break;
       }
@@ -2271,14 +2271,14 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
-        lzma_info=initialize_lzma;
-        code=lzma_easy_encoder(&lzma_info,image->quality/10,LZMA_CHECK_SHA256);
-        if (code != LZMA_OK)
-          status=MagickTrue;
         (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
         allocator.alloc=AcquireLZMAMemory;
         allocator.free=RelinquishLZMAMemory;
+        lzma_info=initialize_lzma;
         lzma_info.allocator=&allocator;
+        code=lzma_easy_encoder(&lzma_info,image->quality/10,LZMA_CHECK_SHA256);
+        if (code != LZMA_OK)
+          status=MagickTrue;
         break;
       }
 #endif
