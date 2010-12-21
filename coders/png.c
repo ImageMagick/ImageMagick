@@ -404,6 +404,9 @@ typedef struct _MngInfo
     mng_height,
     ticks_per_second;
 
+  MagickBooleanType
+    need_blob;
+
   unsigned int
     IsPalette,
     global_phys_unit_type,
@@ -6759,10 +6762,17 @@ static MagickBooleanType png_write_chunk_from_profile(Image *image,
    return(MagickTrue);
 }
 
-static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
-   const ImageInfo *image_info,Image *image)
-{
+
 /* Write one PNG image */
+static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
+   const ImageInfo *IMimage_info,Image *IMimage)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *image_info;
+
   char
     s[2];
 
@@ -6855,6 +6865,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  enter WriteOnePNGImage()");
+
+  image = CloneImage(IMimage,0,0,MagickFalse,&IMimage->exception);
+  image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
+
+  if (mng_info->need_blob != MagickFalse)
+  {
+    if (OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception) ==
+       MagickFalse)
+    {
+      image_info=DestroyImageInfo(image_info);
+      image=DestroyImage(image);
+      return(MagickFalse);
+    }
+  }
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(png_semaphore);
@@ -7258,6 +7282,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
+      if (mng_info->need_blob != MagickFalse)
+          (void) CloseBlob(image);
+      image_info=DestroyImageInfo(image_info);
+      image=DestroyImage(image);
       return(MagickFalse);
     }
   /*
@@ -8419,6 +8447,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
+      if (mng_info->need_blob != MagickFalse)
+          (void) CloseBlob(image);
+      image_info=DestroyImageInfo(image_info);
+      image=DestroyImage(image);
       return(MagickFalse);
     }
   quantum_info=AcquireQuantumInfo(image_info,image);
@@ -8809,15 +8841,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        CoderError,"Cannot convert GIF with disposal method 3 to MNG-LC",
        "`%s'",image->filename);
 
-  image_depth=save_image_depth;
-
-  /* Save depth actually written */
-
-  s[0]=(char) ping_bit_depth;
-  s[1]='\0';
-
-  (void) SetImageProperty(image,"png:bit-depth-written",s);
-
   /*
     Free PNG resources.
   */
@@ -8829,6 +8852,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
 #endif
+
+  if (mng_info->need_blob != MagickFalse)
+     (void) CloseBlob(image);
+
+  image_info=DestroyImageInfo(image_info);
+  image=DestroyImage(image);
+
+  /* Store bit depth actually written */
+  s[0]=(char) ping_bit_depth;
+  s[1]='\0';
+
+  (void) SetImageProperty(IMimage,"png:bit-depth-written",s);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8991,9 +9026,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WritePNGImage()");
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == MagickFalse)
-    return(MagickFalse);
   /*
     Allocate a MngInfo structure.
   */
@@ -9115,9 +9147,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           "  png:color-type=%d was defined.\n",mng_info->write_png_colortype-1);
     }
 
-  status=WriteOnePNGImage(mng_info,image_info,image);
+  mng_info->need_blob = MagickTrue;
 
-  (void) CloseBlob(image);
+  status=WriteOnePNGImage(mng_info,image_info,image);
 
   MngInfoFreeStruct(mng_info,&have_mng_structure);
 
@@ -10550,6 +10582,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
        if (logging != MagickFalse)
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "  Writing PNG object.");
+       mng_info->need_blob = MagickFalse;
        status=WriteOnePNGImage(mng_info,image_info,image);
      }
 
