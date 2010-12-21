@@ -1,3 +1,8 @@
+2010-12-21  6.6.6-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Removed the forced interpolation setting in AcquireResampleFilterThreadSet
+    It prevented user defined interpolation settings for -clut, and posibly
+    other usage.
+
 2010-12-17  6.6.6-6 Chris Madison  <madisonblu@gmail...>
   * Add LZMA compression support to ImageMagick.
 
