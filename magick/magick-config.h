@@ -1099,7 +1099,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/"
 #endif
 
 /* The archive extension */
@@ -1125,9 +1125,7 @@
 #endif
 
 /* Define if you have lzma compression library */
-#ifndef MAGICKCORE_LZMA_DELEGATE
-#define MAGICKCORE_LZMA_DELEGATE 1
-#endif
+/* #undef LZMA_DELEGATE */
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
