@@ -745,7 +745,7 @@
    */
 #undef LT_OBJDIR
 
-/* Define if you have lzma compression library */
+/* Define if you have LZMA library */
 #undef LZMA_DELEGATE
 
 /* Define to prepend to default font search path. */
