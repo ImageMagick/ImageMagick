@@ -1262,7 +1262,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           MagickFalse);
         if (code != BZ_OK)
           status=MagickFalse;
-        bzip_info.avail_in=0;
         break;
       }
 #endif
@@ -1277,7 +1276,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         code=lzma_auto_decoder(&lzma_info,-1,0);
         if (code != LZMA_OK)
           status=MagickFalse;
-        lzma_info.avail_in=0;
         break;
       }
 #endif
@@ -1292,7 +1290,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         code=inflateInit(&zip_info);
         if (code != Z_OK)
           status=MagickFalse;
-        zip_info.avail_in=0;
         break;
       }
 #endif
@@ -1459,6 +1456,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
+        status=lzma_code(&lzma_info,LZMA_FINISH);
+        if ((status != LZMA_STREAM_END) && (status != LZMA_OK))
+          status=MagickFalse;
         lzma_end(&lzma_info);
         break;
       }
