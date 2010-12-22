@@ -82,6 +82,13 @@
 #endif
 
 /*
+  Define declarations.
+*/
+#if !defined(LZMA_OK)
+#define LZMA_OK  0
+#endif
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
