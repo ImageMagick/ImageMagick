@@ -2934,7 +2934,7 @@ WandExport MagickBooleanType MagickSetSizeOffset(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o image_type: the image type:   UndefinedType, BilevelType, GrayscaleType,
+%    o image_type: the image type:   UndefinedColorType, BilevelType, GrayscaleType,
 %      GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType,
 %      TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType,
 %      or OptimizeType.

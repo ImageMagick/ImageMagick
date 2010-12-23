@@ -3375,11 +3375,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '+')
-              type=UndefinedType;
+              type=UndefinedColorType;
             else
               type=(ImageType) ParseMagickOption(MagickTypeOptions,MagickFalse,
                 argv[i+1]);
-            (*image)->type=UndefinedType;
+            (*image)->type=UndefinedColorType;
             (void) SetImageType(*image,type);
             InheritException(exception,&(*image)->exception);
             break;
@@ -7409,7 +7409,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
           {
             if (*option == '+')
               {
-                image_info->type=UndefinedType;
+                image_info->type=UndefinedColorType;
                 (void) SetImageOption(image_info,option+1,"undefined");
                 break;
               }

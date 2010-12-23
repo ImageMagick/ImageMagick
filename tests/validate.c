@@ -484,7 +484,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         (magick_info->decoder == (DecodeImageHandler *) NULL) ||
         (magick_info->encoder == (EncodeImageHandler *) NULL))
       continue;
-    for (j=0; reference_types[j].type != UndefinedType; j++)
+    for (j=0; reference_types[j].type != UndefinedColorType; j++)
     {
       /*
         Generate reference image.
@@ -695,7 +695,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         (magick_info->decoder == (DecodeImageHandler *) NULL) ||
         (magick_info->encoder == (EncodeImageHandler *) NULL))
       continue;
-    for (j=0; reference_types[j].type != UndefinedType; j++)
+    for (j=0; reference_types[j].type != UndefinedColorType; j++)
     {
       /*
         Generate reference image.

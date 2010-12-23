@@ -44,7 +44,8 @@ typedef enum
 
 typedef enum
 {
-  UndefinedType,
+  UndefinedType = 0,  /* deprecated */
+  UndefinedColorType = 0,
   BilevelType,
   GrayscaleType,
   GrayscaleMatteType,

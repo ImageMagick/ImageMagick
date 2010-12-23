@@ -621,18 +621,18 @@ MagickExport MagickBooleanType IsGrayImage(const Image *image,
     {
       if (IsGrayPixel(p) == MagickFalse)
         {
-          type=UndefinedType;
+          type=UndefinedColorType;
           break;
         }
       if ((type == BilevelType) && (IsMonochromePixel(p) == MagickFalse))
         type=GrayscaleType;
       p++;
     }
-    if (type == UndefinedType)
+    if (type == UndefinedColorType)
       break;
   }
   image_view=DestroyCacheView(image_view);
-  if (type == UndefinedType)
+  if (type == UndefinedColorType)
     return(MagickFalse);
   ((Image *) image)->type=type;
   if ((type == GrayscaleType) && (image->matte != MagickFalse))
@@ -704,16 +704,16 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
     {
       if (IsMonochromePixel(p) == MagickFalse)
         {
-          type=UndefinedType;
+          type=UndefinedColorType;
           break;
         }
       p++;
     }
-    if (type == UndefinedType)
+    if (type == UndefinedColorType)
       break;
   }
   image_view=DestroyCacheView(image_view);
-  if (type == UndefinedType)
+  if (type == UndefinedColorType)
     return(MagickFalse);
   ((Image *) image)->type=type;
   return(MagickTrue);
