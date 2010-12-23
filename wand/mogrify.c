@@ -3162,6 +3162,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) StripImage(*image);
+
+            /* In case we are writing a PNG */
+            (void) SetImageOption(image_info,"PNG:exclude-chunk","all");
+            (void) SetImageOption(image_info,"PNG:include-chunk","gama");
+
             InheritException(exception,&(*image)->exception);
             break;
           }

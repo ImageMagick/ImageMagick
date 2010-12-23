@@ -3,6 +3,9 @@
     can still be used later on without being affected by changes made by
     the PNG encoder.
   * Added PNG:exclude-chunk and PNG:include-chunk defines.
+  * Revised the -strip option so it behaves as though
+    "-define PNG:exclude-chunk=all -define PNG:include-chunk=gama"
+    had appeared on the commandline.
 
 2010-12-21  6.6.6-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Removed the forced interpolation setting in AcquireResampleFilterThreadSet
