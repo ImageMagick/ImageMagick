@@ -2509,7 +2509,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     /*
       Initialize TIFF fields.
     */
-    if ((image_info->type != UndefinedType) &&
+    if ((image_info->type != UndefinedColorType) &&
         (image_info->type != OptimizeType))
       (void) SetImageType(image,image_info->type);
     quantum_info=AcquireQuantumInfo(image_info,image);

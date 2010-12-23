@@ -336,7 +336,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           image->page.width,(double) image->page.height,(double) image->page.x,
           (double) image->page.y);
       (void) fprintf(file,"%.20g-bit ",(double) image->depth);
-      if (image->type != UndefinedType)
+      if (image->type != UndefinedColorType)
         (void) fprintf(file,"%s ",MagickOptionToMnemonic(MagickTypeOptions,
           (ssize_t) image->type));
       if (image->storage_class == DirectClass)
@@ -418,7 +418,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickResolutionOptions,(ssize_t) image->units));
   (void) fprintf(file,"  Type: %s\n",MagickOptionToMnemonic(MagickTypeOptions,
     (ssize_t) type));
-  if (image->type != UndefinedType)
+  if (image->type != UndefinedColorType)
     (void) fprintf(file,"  Base type: %s\n",MagickOptionToMnemonic(
       MagickTypeOptions,(ssize_t) image->type));
   (void) fprintf(file,"  Endianess: %s\n",MagickOptionToMnemonic(

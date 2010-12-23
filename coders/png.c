@@ -7623,7 +7623,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               image_matte=MagickTrue;
             }
 
-          if (image_info->type == UndefinedType ||
+          if (image_info->type == UndefinedColorType ||
              image_info->type == OptimizeType)
             {
 
