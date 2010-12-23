@@ -6,8 +6,8 @@
   * Revised the -strip option so it behaves as though
     "-define PNG:exclude-chunk=all -define PNG:include-chunk=gama"
     had appeared on the commandline.
-  * Avoid writing PNG ancillary chunks in the MNG/JNG while generating the
-    alpha channel for a JNG image.
+  * Avoid writing PNG ancillary chunks in the PNG/MNG/JNG encoder while
+    generating the alpha channel for a JNG image.
 
 2010-12-21  6.6.6-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Removed the forced interpolation setting in AcquireResampleFilterThreadSet
