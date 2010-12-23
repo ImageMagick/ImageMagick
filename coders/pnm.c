@@ -895,10 +895,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if ((type == BilevelType) &&
                     (IsMonochromePixel(q) == MagickFalse))
-                  type=IsGrayPixel(q) == MagickFalse ? UndefinedColorType :
+                  type=IsGrayPixel(q) == MagickFalse ? UndefinedType :
                     GrayscaleType;
                 if ((type == GrayscaleType) && (IsGrayPixel(q) == MagickFalse))
-                  type=UndefinedColorType;
+                  type=UndefinedType;
                 if ((type != BilevelType) && (type != GrayscaleType))
                   break;
                 q++;
@@ -911,7 +911,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-        if (type != UndefinedColorType)
+        if (type != UndefinedType)
           image->type=type;
         break;
       }

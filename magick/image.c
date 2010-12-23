@@ -3741,7 +3741,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       break;
     }
     case OptimizeType:
-    case UndefinedColorType:
+    case UndefinedType:
       break;
   }
   image->type=type;

@@ -1473,7 +1473,7 @@ static const OptionInfo
   },
   TypeOptions[] =
   {
-    { "Undefined", (ssize_t) UndefinedColorType, MagickTrue },
+    { "Undefined", (ssize_t) UndefinedType, MagickTrue },
     { "Bilevel", (ssize_t) BilevelType, MagickFalse },
     { "ColorSeparation", (ssize_t) ColorSeparationType, MagickFalse },
     { "ColorSeparationMatte", (ssize_t) ColorSeparationMatteType, MagickFalse },
@@ -1485,7 +1485,7 @@ static const OptionInfo
     { "PaletteMatte", (ssize_t) PaletteMatteType, MagickFalse },
     { "TrueColorMatte", (ssize_t) TrueColorMatteType, MagickFalse },
     { "TrueColor", (ssize_t) TrueColorType, MagickFalse },
-    { (char *) NULL, (ssize_t) UndefinedColorType, MagickFalse }
+    { (char *) NULL, (ssize_t) UndefinedType, MagickFalse }
   },
   ValidateOptions[] =
   {

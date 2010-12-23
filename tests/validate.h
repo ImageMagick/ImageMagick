@@ -448,7 +448,7 @@ static const struct ReferenceTypes
     { TrueColorType, 10 },
     { TrueColorType, 12 },
     { TrueColorType, 16 },
-    { UndefinedColorType, 0 }
+    { UndefinedType, 0 }
   };
 
 #endif

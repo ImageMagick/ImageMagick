@@ -1955,7 +1955,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       "depth=%.20g\n",(double) image->columns,(double) image->rows,(double)
       image->depth);
     (void) WriteBlobString(image,buffer);
-    if (image->type != UndefinedColorType)
+    if (image->type != UndefinedType)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"type=%s\n",
           MagickOptionToMnemonic(MagickTypeOptions,image->type));
