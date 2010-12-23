@@ -3817,8 +3817,10 @@ MagickExport MagickBooleanType StripImage(Image *image)
   (void) DeleteImageProperty(image,"comment");
   (void) DeleteImageProperty(image,"date:create");
   (void) DeleteImageProperty(image,"date:modify");
-  (void) SetImageArtifact(image,"png:exclude-chunk","all");
-  (void) SetImageArtifact(image,"png:include-chunk","gama");
+#if 0 /* temporarily removed to wand/mogrify.c, where we have access
+         to image_info */
+  (void) SetImageArtifact(image,"png:include-chunk","none,gama");
+#endif
   return(MagickTrue);
 }
 
