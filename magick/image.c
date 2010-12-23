@@ -3817,6 +3817,8 @@ MagickExport MagickBooleanType StripImage(Image *image)
   (void) DeleteImageProperty(image,"comment");
   (void) DeleteImageProperty(image,"date:create");
   (void) DeleteImageProperty(image,"date:modify");
+  (void) SetImageArtifact(image,"png:exclude-chunk","all");
+  (void) SetImageArtifact(image,"png:include-chunk","gama");
   return(MagickTrue);
 }
 
