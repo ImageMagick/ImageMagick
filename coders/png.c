@@ -9307,86 +9307,86 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   for (i=0; *(value+i) != '\0'; i+=5)
   {
 
-  if (LocaleNCompare(value+i,"all",3) == 0)
-  {
-    mng_info->ping_exclude_bKGD=MagickTrue;
-    mng_info->ping_exclude_cHRM=MagickTrue;
-    mng_info->ping_exclude_EXIF=MagickTrue;
-    mng_info->ping_exclude_gAMA=MagickTrue;
-    mng_info->ping_exclude_iCCP=MagickTrue;
-    /* mng_info->ping_exclude_iTXt=MagickTrue; */
-    mng_info->ping_exclude_oFFs=MagickTrue;
-    mng_info->ping_exclude_pHYs=MagickTrue;
-    mng_info->ping_exclude_sRGB=MagickTrue;
-    mng_info->ping_exclude_tEXt=MagickTrue;
-    mng_info->ping_exclude_vpAg=MagickTrue;
-    mng_info->ping_exclude_zCCP=MagickTrue;
-    mng_info->ping_exclude_zTXt=MagickTrue;
-    i--;
-  }
-
-  if (LocaleNCompare(value+i,"none",4) == 0)
-  {
-    mng_info->ping_exclude_bKGD=MagickFalse;
-    mng_info->ping_exclude_cHRM=MagickFalse;
-    mng_info->ping_exclude_EXIF=MagickFalse;
-    mng_info->ping_exclude_gAMA=MagickFalse;
-    mng_info->ping_exclude_iCCP=MagickFalse;
-    /* mng_info->ping_exclude_iTXt=MagickFalse; */
-    mng_info->ping_exclude_oFFs=MagickFalse;
-    mng_info->ping_exclude_pHYs=MagickFalse;
-    mng_info->ping_exclude_sRGB=MagickFalse;
-    mng_info->ping_exclude_tEXt=MagickFalse;
-    mng_info->ping_exclude_vpAg=MagickFalse;
-    mng_info->ping_exclude_zCCP=MagickFalse;
-    mng_info->ping_exclude_zTXt=MagickFalse;
-  }
-
-  if (LocaleNCompare(value+i,"bkgd",4) == 0)
-    mng_info->ping_exclude_bKGD=MagickTrue;
-
-  if (LocaleNCompare(value+i,"chrm",4) == 0)
-    mng_info->ping_exclude_cHRM=MagickTrue;
-
-  if (LocaleNCompare(value+i,"exif",4) == 0)
-    mng_info->ping_exclude_EXIF=MagickTrue;
-
-  if (LocaleNCompare(value+i,"gama",4) == 0)
-    mng_info->ping_exclude_gAMA=MagickTrue;
-
-  if (LocaleNCompare(value+i,"iccp",4) == 0)
-    mng_info->ping_exclude_iCCP=MagickTrue;
-
-/*
-  if (LocaleNCompare(value+i,"itxt",4) == 0)
-    mng_info->ping_exclude_iTXt=MagickTrue;
- */
-
-  if (LocaleNCompare(value+i,"gama",4) == 0)
-    mng_info->ping_exclude_gAMA=MagickTrue;
-
-  if (LocaleNCompare(value+i,"offs",4) == 0)
-    mng_info->ping_exclude_oFFs=MagickTrue;
-
-  if (LocaleNCompare(value+i,"phys",4) == 0)
-    mng_info->ping_exclude_pHYs=MagickTrue;
-
-  if (LocaleNCompare(value+i,"sRGB",4) == 0)
-    mng_info->ping_exclude_gAMA=MagickTrue;
-
-  if (LocaleNCompare(value+i,"text",4) == 0)
-    mng_info->ping_exclude_tEXt=MagickTrue;
-
-  if (LocaleNCompare(value+i,"vpag",4) == 0)
-    mng_info->ping_exclude_vpAg=MagickTrue;
-
-  if (LocaleNCompare(value+i,"zccp",4) == 0)
-    mng_info->ping_exclude_zCCP=MagickTrue;
-
-  if (LocaleNCompare(value+i,"ztxt",4) == 0)
-    mng_info->ping_exclude_zTXt=MagickTrue;
+    if (LocaleNCompare(value+i,"all",3) == 0)
+    {
+      mng_info->ping_exclude_bKGD=MagickTrue;
+      mng_info->ping_exclude_cHRM=MagickTrue;
+      mng_info->ping_exclude_EXIF=MagickTrue;
+      mng_info->ping_exclude_gAMA=MagickTrue;
+      mng_info->ping_exclude_iCCP=MagickTrue;
+      /* mng_info->ping_exclude_iTXt=MagickTrue; */
+      mng_info->ping_exclude_oFFs=MagickTrue;
+      mng_info->ping_exclude_pHYs=MagickTrue;
+      mng_info->ping_exclude_sRGB=MagickTrue;
+      mng_info->ping_exclude_tEXt=MagickTrue;
+      mng_info->ping_exclude_vpAg=MagickTrue;
+      mng_info->ping_exclude_zCCP=MagickTrue;
+      mng_info->ping_exclude_zTXt=MagickTrue;
+      i--;
+    }
   
-  }
+    if (LocaleNCompare(value+i,"none",4) == 0)
+    {
+      mng_info->ping_exclude_bKGD=MagickFalse;
+      mng_info->ping_exclude_cHRM=MagickFalse;
+      mng_info->ping_exclude_EXIF=MagickFalse;
+      mng_info->ping_exclude_gAMA=MagickFalse;
+      mng_info->ping_exclude_iCCP=MagickFalse;
+      /* mng_info->ping_exclude_iTXt=MagickFalse; */
+      mng_info->ping_exclude_oFFs=MagickFalse;
+      mng_info->ping_exclude_pHYs=MagickFalse;
+      mng_info->ping_exclude_sRGB=MagickFalse;
+      mng_info->ping_exclude_tEXt=MagickFalse;
+      mng_info->ping_exclude_vpAg=MagickFalse;
+      mng_info->ping_exclude_zCCP=MagickFalse;
+      mng_info->ping_exclude_zTXt=MagickFalse;
+    }
+  
+    if (LocaleNCompare(value+i,"bkgd",4) == 0)
+      mng_info->ping_exclude_bKGD=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"chrm",4) == 0)
+      mng_info->ping_exclude_cHRM=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"exif",4) == 0)
+      mng_info->ping_exclude_EXIF=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"gama",4) == 0)
+      mng_info->ping_exclude_gAMA=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"iccp",4) == 0)
+      mng_info->ping_exclude_iCCP=MagickTrue;
+  
+  /*
+    if (LocaleNCompare(value+i,"itxt",4) == 0)
+      mng_info->ping_exclude_iTXt=MagickTrue;
+   */
+  
+    if (LocaleNCompare(value+i,"gama",4) == 0)
+      mng_info->ping_exclude_gAMA=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"offs",4) == 0)
+      mng_info->ping_exclude_oFFs=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"phys",4) == 0)
+      mng_info->ping_exclude_pHYs=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"sRGB",4) == 0)
+      mng_info->ping_exclude_gAMA=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"text",4) == 0)
+      mng_info->ping_exclude_tEXt=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"vpag",4) == 0)
+      mng_info->ping_exclude_vpAg=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"zccp",4) == 0)
+      mng_info->ping_exclude_zCCP=MagickTrue;
+  
+    if (LocaleNCompare(value+i,"ztxt",4) == 0)
+      mng_info->ping_exclude_zTXt=MagickTrue;
+    
+    }
   }
 
   value=GetImageOption(image_info,"png:include-chunk");
@@ -9400,53 +9400,88 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         value);
 
   for (i=0; *(value+i) != '\0'; i+=5)
-  {
-
-  if (LocaleNCompare(value+i,"bkgd",4) == 0)
-    mng_info->ping_exclude_bKGD=MagickFalse;
-
-  if (LocaleNCompare(value+i,"chrm",4) == 0)
-    mng_info->ping_exclude_cHRM=MagickFalse;
-
-  if (LocaleNCompare(value+i,"exif",4) == 0)
-    mng_info->ping_exclude_EXIF=MagickFalse;
-
-  if (LocaleNCompare(value+i,"gama",4) == 0)
-    mng_info->ping_exclude_gAMA=MagickFalse;
-
-  if (LocaleNCompare(value+i,"iccp",4) == 0)
-    mng_info->ping_exclude_iCCP=MagickFalse;
-
-/*
-  if (LocaleNCompare(value+i,"itxt",4) == 0)
-    mng_info->ping_exclude_iTXt=MagickFalse;
- */
-
-  if (LocaleNCompare(value+i,"gama",4) == 0)
-    mng_info->ping_exclude_gAMA=MagickFalse;
-
-  if (LocaleNCompare(value+i,"offs",4) == 0)
-    mng_info->ping_exclude_oFFs=MagickFalse;
-
-  if (LocaleNCompare(value+i,"phys",4) == 0)
-    mng_info->ping_exclude_pHYs=MagickFalse;
-
-  if (LocaleNCompare(value+i,"sRGB",4) == 0)
-    mng_info->ping_exclude_gAMA=MagickFalse;
-
-  if (LocaleNCompare(value+i,"text",4) == 0)
-    mng_info->ping_exclude_tEXt=MagickFalse;
-
-  if (LocaleNCompare(value+i,"vpag",4) == 0)
-    mng_info->ping_exclude_vpAg=MagickFalse;
-
-  if (LocaleNCompare(value+i,"zccp",4) == 0)
-    mng_info->ping_exclude_zCCP=MagickFalse;
-
-  if (LocaleNCompare(value+i,"ztxt",4) == 0)
-    mng_info->ping_exclude_zTXt=MagickFalse;
-
-  }
+    {
+  
+    if (LocaleNCompare(value+i,"all",3) == 0)
+    {
+      mng_info->ping_exclude_bKGD=MagickFalse;
+      mng_info->ping_exclude_cHRM=MagickFalse;
+      mng_info->ping_exclude_EXIF=MagickFalse;
+      mng_info->ping_exclude_gAMA=MagickFalse;
+      mng_info->ping_exclude_iCCP=MagickFalse;
+      /* mng_info->ping_exclude_iTXt=MagickFalse; */
+      mng_info->ping_exclude_oFFs=MagickFalse;
+      mng_info->ping_exclude_pHYs=MagickFalse;
+      mng_info->ping_exclude_sRGB=MagickFalse;
+      mng_info->ping_exclude_tEXt=MagickFalse;
+      mng_info->ping_exclude_vpAg=MagickFalse;
+      mng_info->ping_exclude_zCCP=MagickFalse;
+      mng_info->ping_exclude_zTXt=MagickFalse;
+      i--;
+    }
+  
+    if (LocaleNCompare(value+i,"none",4) == 0)
+    {
+      mng_info->ping_exclude_bKGD=MagickTrue;
+      mng_info->ping_exclude_cHRM=MagickTrue;
+      mng_info->ping_exclude_EXIF=MagickTrue;
+      mng_info->ping_exclude_gAMA=MagickTrue;
+      mng_info->ping_exclude_iCCP=MagickTrue;
+      /* mng_info->ping_exclude_iTXt=MagickTrue; */
+      mng_info->ping_exclude_oFFs=MagickTrue;
+      mng_info->ping_exclude_pHYs=MagickTrue;
+      mng_info->ping_exclude_sRGB=MagickTrue;
+      mng_info->ping_exclude_tEXt=MagickTrue;
+      mng_info->ping_exclude_vpAg=MagickTrue;
+      mng_info->ping_exclude_zCCP=MagickTrue;
+      mng_info->ping_exclude_zTXt=MagickTrue;
+    }
+  
+    if (LocaleNCompare(value+i,"bkgd",4) == 0)
+      mng_info->ping_exclude_bKGD=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"chrm",4) == 0)
+      mng_info->ping_exclude_cHRM=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"exif",4) == 0)
+      mng_info->ping_exclude_EXIF=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"gama",4) == 0)
+      mng_info->ping_exclude_gAMA=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"iccp",4) == 0)
+      mng_info->ping_exclude_iCCP=MagickFalse;
+  
+  /*
+    if (LocaleNCompare(value+i,"itxt",4) == 0)
+      mng_info->ping_exclude_iTXt=MagickFalse;
+   */
+  
+    if (LocaleNCompare(value+i,"gama",4) == 0)
+      mng_info->ping_exclude_gAMA=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"offs",4) == 0)
+      mng_info->ping_exclude_oFFs=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"phys",4) == 0)
+      mng_info->ping_exclude_pHYs=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"sRGB",4) == 0)
+      mng_info->ping_exclude_gAMA=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"text",4) == 0)
+      mng_info->ping_exclude_tEXt=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"vpag",4) == 0)
+      mng_info->ping_exclude_vpAg=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"zccp",4) == 0)
+      mng_info->ping_exclude_zCCP=MagickFalse;
+  
+    if (LocaleNCompare(value+i,"ztxt",4) == 0)
+      mng_info->ping_exclude_zTXt=MagickFalse;
+  
+    }
   }
 
   if (logging != MagickFalse)
