@@ -10931,7 +10931,25 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
        if (logging != MagickFalse)
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "  Writing PNG object.");
+
        mng_info->need_blob = MagickFalse;
+
+       /* We don't want any ancillary chunks written */
+       mng_info->ping_exclude_bKGD=MagickTrue;
+       mng_info->ping_exclude_cHRM=MagickTrue;
+       mng_info->ping_exclude_EXIF=MagickTrue;
+       mng_info->ping_exclude_gAMA=MagickTrue;
+       mng_info->ping_exclude_cHRM=MagickTrue;
+       mng_info->ping_exclude_iCCP=MagickTrue;
+       /* mng_info->ping_exclude_iTXt=MagickTrue; */
+       mng_info->ping_exclude_oFFs=MagickTrue;
+       mng_info->ping_exclude_pHYs=MagickTrue;
+       mng_info->ping_exclude_sRGB=MagickTrue;
+       mng_info->ping_exclude_tEXt=MagickTrue;
+       mng_info->ping_exclude_vpAg=MagickTrue;
+       mng_info->ping_exclude_zCCP=MagickTrue;
+       mng_info->ping_exclude_zTXt=MagickTrue;
+
        status=WriteOnePNGImage(mng_info,image_info,image);
      }
 
