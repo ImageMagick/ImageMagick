@@ -26,7 +26,7 @@
     transparency when it is out of sync with the pixel data (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17655).
   * Eliminated CompressColormapTransFirst() since the palette is already
-    compressed and sorted by opacty now when it's recreated.
+    compressed and sorted by opacity now when it's recreated.
 
 2010-12-10  6.6.6-5 Cristy  <quetzlzacatenango@image...>
   * Account for virtual canvas for the -flip / -flop options (reference
@@ -66,7 +66,7 @@
   * Support NCC (normalized cross correlation) compare metric.
 
 2010-11-21  6.6.5-10 Cristy  <quetzlzacatenango@image...>
-  * Fix png coder compile error when HDRI is enabled.
+  * Fix PNG coder compile error when HDRI is enabled.
 
 2010-11-17  6.6.5-9 Glenn Randers-Pehrson <glennrp@image...>
   * Many of the problems with the PNG encoder have been fixed (reference
@@ -380,7 +380,7 @@
 
 2010-07-07  6.6.3-1 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG decoder failed to handle the tRNS chunk properly for grayscale
-    images where the png bit_depth was not the same as the quantum depth,
+    images where the PNG bit_depth was not the same as the quantum depth,
     and the transparent color was not black.
 
 2010-07-01  6.6.3-0 Chris Madison  <madisonblu@gmail...>
