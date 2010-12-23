@@ -2143,7 +2143,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
         Ensure the image matches the pixel cache morphology.
       */
       image->taint=MagickTrue;
-      image->type=UndefinedColorType;
+      image->type=UndefinedType;
       if (image->colorspace == GRAYColorspace)
         image->colorspace=RGBColorspace;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
