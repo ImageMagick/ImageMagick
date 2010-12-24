@@ -474,6 +474,7 @@ typedef struct _MngInfo
     ping_exclude_pHYs,
     ping_exclude_sRGB,
     ping_exclude_tEXt,
+    ping_exclude_tRNS,
     ping_exclude_vpAg,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt;
@@ -6847,6 +6848,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_pHYs,
     ping_exclude_sRGB,
     ping_exclude_tEXt,
+    ping_exclude_tRNS,
     ping_exclude_vpAg,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
@@ -7430,6 +7432,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_pHYs=mng_info->ping_exclude_pHYs;
   ping_exclude_sRGB=mng_info->ping_exclude_sRGB;
   ping_exclude_tEXt=mng_info->ping_exclude_tEXt;
+  ping_exclude_tRNS=mng_info->ping_exclude_tRNS;
   ping_exclude_vpAg=mng_info->ping_exclude_vpAg;
   ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
   ping_exclude_zTXt=mng_info->ping_exclude_zTXt;
@@ -9317,6 +9320,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->ping_exclude_pHYs=MagickFalse;
   mng_info->ping_exclude_sRGB=MagickFalse;
   mng_info->ping_exclude_tEXt=MagickFalse;
+  mng_info->ping_exclude_tRNS=MagickFalse;
   mng_info->ping_exclude_vpAg=MagickFalse;
   mng_info->ping_exclude_zCCP=MagickFalse; /* hex-encoded iCCP in zTXt */
   mng_info->ping_exclude_zTXt=MagickFalse;
@@ -9375,6 +9379,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->ping_exclude_pHYs=MagickTrue;
         mng_info->ping_exclude_sRGB=MagickTrue;
         mng_info->ping_exclude_tEXt=MagickTrue;
+        mng_info->ping_exclude_tRNS=MagickTrue;
         mng_info->ping_exclude_vpAg=MagickTrue;
         mng_info->ping_exclude_zCCP=MagickTrue;
         mng_info->ping_exclude_zTXt=MagickTrue;
@@ -9393,6 +9398,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->ping_exclude_pHYs=MagickFalse;
         mng_info->ping_exclude_sRGB=MagickFalse;
         mng_info->ping_exclude_tEXt=MagickFalse;
+        mng_info->ping_exclude_tRNS=MagickFalse;
         mng_info->ping_exclude_vpAg=MagickFalse;
         mng_info->ping_exclude_zCCP=MagickFalse;
         mng_info->ping_exclude_zTXt=MagickFalse;
@@ -9427,11 +9433,14 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       if (LocaleNCompare(value+i,"phys",4) == 0)
         mng_info->ping_exclude_pHYs=MagickTrue;
 
-      if (LocaleNCompare(value+i,"sRGB",4) == 0)
-        mng_info->ping_exclude_gAMA=MagickTrue;
+      if (LocaleNCompare(value+i,"srgb",4) == 0)
+        mng_info->ping_exclude_sRGB=MagickTrue;
 
       if (LocaleNCompare(value+i,"text",4) == 0)
         mng_info->ping_exclude_tEXt=MagickTrue;
+
+      if (LocaleNCompare(value+i,"trns",4) == 0)
+        mng_info->ping_exclude_tRNS=MagickTrue;
 
       if (LocaleNCompare(value+i,"vpag",4) == 0)
         mng_info->ping_exclude_vpAg=MagickTrue;
@@ -9496,6 +9505,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           mng_info->ping_exclude_pHYs=MagickFalse;
           mng_info->ping_exclude_sRGB=MagickFalse;
           mng_info->ping_exclude_tEXt=MagickFalse;
+          mng_info->ping_exclude_tRNS=MagickFalse;
           mng_info->ping_exclude_vpAg=MagickFalse;
           mng_info->ping_exclude_zCCP=MagickFalse;
           mng_info->ping_exclude_zTXt=MagickFalse;
@@ -9514,6 +9524,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           mng_info->ping_exclude_pHYs=MagickTrue;
           mng_info->ping_exclude_sRGB=MagickTrue;
           mng_info->ping_exclude_tEXt=MagickTrue;
+          mng_info->ping_exclude_tRNS=MagickTrue;
           mng_info->ping_exclude_vpAg=MagickTrue;
           mng_info->ping_exclude_zCCP=MagickTrue;
           mng_info->ping_exclude_zTXt=MagickTrue;
@@ -9548,11 +9559,14 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       if (LocaleNCompare(value+i,"phys",4) == 0)
         mng_info->ping_exclude_pHYs=MagickFalse;
 
-      if (LocaleNCompare(value+i,"sRGB",4) == 0)
-        mng_info->ping_exclude_gAMA=MagickFalse;
+      if (LocaleNCompare(value+i,"srgb",4) == 0)
+        mng_info->ping_exclude_sRGB=MagickFalse;
 
       if (LocaleNCompare(value+i,"text",4) == 0)
         mng_info->ping_exclude_tEXt=MagickFalse;
+
+      if (LocaleNCompare(value+i,"trns",4) == 0)
+        mng_info->ping_exclude_tRNS=MagickFalse;
 
       if (LocaleNCompare(value+i,"vpag",4) == 0)
         mng_info->ping_exclude_vpAg=MagickFalse;
@@ -9603,6 +9617,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (mng_info->ping_exclude_tEXt != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    tEXt");
+    if (mng_info->ping_exclude_tRNS != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    tRNS");
     if (mng_info->ping_exclude_vpAg != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    vpAg");
@@ -11064,6 +11081,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
        mng_info->ping_exclude_pHYs=MagickTrue;
        mng_info->ping_exclude_sRGB=MagickTrue;
        mng_info->ping_exclude_tEXt=MagickTrue;
+       mng_info->ping_exclude_tRNS=MagickTrue;
        mng_info->ping_exclude_vpAg=MagickTrue;
        mng_info->ping_exclude_zCCP=MagickTrue;
        mng_info->ping_exclude_zTXt=MagickTrue;
