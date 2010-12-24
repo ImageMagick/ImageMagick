@@ -9326,9 +9326,19 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   for (source=0; source<1; source++)
   {
     if (source==0)
+      {
        value=GetImageArtifact(image,"png:exclude-chunk");
+
+       if (value == NULL)
+         value=GetImageArtifact(image,"png:exclude-chunks");
+      }
     else
+      {
        value=GetImageOption(image_info,"png:exclude-chunk");
+
+       if (value == NULL)
+         value=GetImageOption(image_info,"png:exclude-chunks");
+      }
 
     if (value != NULL)
     {
@@ -9439,9 +9449,19 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   for (source=0; source<1; source++)
   {
     if (source==0)
+      {
        value=GetImageArtifact(image,"png:include-chunk");
+
+       if (value == NULL)
+         value=GetImageArtifact(image,"png:include-chunks");
+      }
     else
+      {
        value=GetImageOption(image_info,"png:include-chunk");
+
+       if (value == NULL)
+         value=GetImageOption(image_info,"png:include-chunks");
+      }
 
     if (value != NULL)
     {
