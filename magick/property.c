@@ -304,7 +304,7 @@ MagickExport void DestroyImageProperties(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  FormatImageProperty() permits formatted property/value pairs to be saved as
-%  an image proporty.
+%  an image property.
 %
 %  The format of the FormatImageProperty method is:
 %
@@ -562,7 +562,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
     length;
 
   /*
-    There's no newlines in path names, so it's safe as terminator.
+    There are no newlines in path names, so it's safe as terminator.
   */
   profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
