@@ -42,6 +42,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/artifact.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -9145,6 +9146,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   int
     i;
 
+  int
+    source;
+
   unsigned int
     logging;
 
@@ -9294,7 +9298,12 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->ping_exclude_zCCP=MagickFalse; /* hex-encoded iCCP in zTXt */
   mng_info->ping_exclude_zTXt=MagickFalse;
 
-  value=GetImageOption(image_info,"png:exclude-chunk");
+  for (source=0; source<1; source++)
+  {
+    if (source==0)
+       value=GetImageArtifact(image,"png:exclude-chunk");
+    else
+       value=GetImageOption(image_info,"png:exclude-chunk");
 
   if (value != NULL)
   {
@@ -9388,8 +9397,14 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     
     }
   }
+  }
 
-  value=GetImageOption(image_info,"png:include-chunk");
+  for (source=0; source<1; source++)
+  {
+    if (source==0)
+       value=GetImageArtifact(image,"png:include-chunk");
+    else
+       value=GetImageOption(image_info,"png:include-chunk");
 
   if (value != NULL)
   {
@@ -9482,6 +9497,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->ping_exclude_zTXt=MagickFalse;
   
     }
+  }
   }
 
   if (logging != MagickFalse)

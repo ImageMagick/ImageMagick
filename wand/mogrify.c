@@ -3161,14 +3161,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Strip image of profiles and comments.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-
-#if 1 /* This was emporarily moved from image.c, where we don't have access
-         to image_info
-       */
-
-  (void) SetImageProperty(*image,"png:include-chunk","none,gama");
-
-#endif
             (void) StripImage(*image);
             InheritException(exception,&(*image)->exception);
             break;
