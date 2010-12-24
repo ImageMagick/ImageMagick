@@ -253,7 +253,7 @@ static const struct ReferenceFormats
     { "DNG", UndefinedCompression, 0.0 },
     { "DOT", UndefinedCompression, 0.0 },
     { "DPS", UndefinedCompression, 0.0 },
-    { "DPX", UndefinedCompression, 0.0 },
+    { "DPX", UndefinedCompression, 0.003 },
     { "ERF", UndefinedCompression, 0.0 },
     { "EXR", UndefinedCompression, 0.0 },
     { "FITS", UndefinedCompression, 0.003 },
