@@ -6853,6 +6853,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
 
+    ping_need_colortype_warning,
+
     status;
 
   QuantumInfo
@@ -6947,6 +6949,24 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_have_bKGD=MagickFalse;
   ping_have_pHYs=MagickFalse;
   ping_have_tRNS=MagickFalse;
+
+  ping_exclude_bKGD=mng_info->ping_exclude_bKGD;
+  ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
+  ping_exclude_EXIF=mng_info->ping_exclude_EXIF; /* hex-encoded EXIF in zTXt */
+  ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
+  ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
+  ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
+  /* ping_exclude_iTXt=mng_info->ping_exclude_iTXt; */
+  ping_exclude_oFFs=mng_info->ping_exclude_oFFs;
+  ping_exclude_pHYs=mng_info->ping_exclude_pHYs;
+  ping_exclude_sRGB=mng_info->ping_exclude_sRGB;
+  ping_exclude_tEXt=mng_info->ping_exclude_tEXt;
+  ping_exclude_tRNS=mng_info->ping_exclude_tRNS;
+  ping_exclude_vpAg=mng_info->ping_exclude_vpAg;
+  ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
+  ping_exclude_zTXt=mng_info->ping_exclude_zTXt;
+
+  ping_need_colortype_warning = MagickFalse;
 
   number_opaque = 0;
   number_semitransparent = 0;
@@ -7191,9 +7211,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     number_semitransparent);
             }
 
-          if (((mng_info->write_png_colortype-1) ==
-              PNG_COLOR_TYPE_PALETTE) ||
-              (mng_info->write_png_colortype == 0))
+          if ((mng_info->ping_exclude_tRNS == MagickFalse ||
+              (number_transparent == 0 && number_semitransparent == 0)) &&
+              (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
+              (mng_info->write_png_colortype == 0)))
           {
              if (logging != MagickFalse)
                {
@@ -7283,6 +7304,22 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          }
     }
 #endif /* PNG_BUILD_PALETTE */
+
+  if (mng_info->ping_exclude_tRNS != MagickFalse &&
+     (number_transparent != 0 || number_semitransparent != 0))
+    {
+      int colortype=mng_info->write_png_colortype;
+
+      if (ping_have_color == MagickFalse)
+        mng_info->write_png_colortype = 5;
+
+      else
+        mng_info->write_png_colortype = 7;
+
+      if (colortype != 0 && mng_info->write_png_colortype != colortype)
+        ping_need_colortype_warning=MagickTrue;
+      
+    }
 
   image_depth=image->depth;
 
@@ -7393,49 +7430,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   save_image_depth=image_depth;
   ping_bit_depth=(png_byte) save_image_depth;
 
-/* Check for chunks to be excluded:
- *
- * The default is to not exclude any chunks except for any
- * listed in the "unused_chunks" array, above.
- *
- * Chunks can be listed for exclusion via a "PNG:exclude-chunk"
- * define or via a mng_info member.  For convenience, in addition
- * to or instead of a comma-separated list of chunks, the
- * "exclude-chunk" string can be simply "all" or "none".
- *
- * The exclude-chunk define takes priority over the mng_info.
- *
- * A "PNG:include-chunk" define takes  priority over both the
- * mng_info and the "PNG:exclude-chunk" define.  Like the
- * "exclude-chunk" string, it can define "all" or "none" as
- * well as a comma-separated list.
- *
- * Finally, all chunks listed in the "unused_chunks" array are
- * automatically excluded, regardless of the other instructions
- * or lack thereof.
- *
- * if you exclude sRGB but not gAMA (recommended), then the gAMA
- * chunk will only be written if it is not approximately (1.0/2.2).
- *
- * The -strip option causes StripImage() to set the png:include-chunk artifact
- * to "none,gama".
- */
-
-  ping_exclude_bKGD=mng_info->ping_exclude_bKGD;
-  ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
-  ping_exclude_EXIF=mng_info->ping_exclude_EXIF; /* hex-encoded EXIF in zTXt */
-  ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
-  ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
-  ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
-  /* ping_exclude_iTXt=mng_info->ping_exclude_iTXt; */
-  ping_exclude_oFFs=mng_info->ping_exclude_oFFs;
-  ping_exclude_pHYs=mng_info->ping_exclude_pHYs;
-  ping_exclude_sRGB=mng_info->ping_exclude_sRGB;
-  ping_exclude_tEXt=mng_info->ping_exclude_tEXt;
-  ping_exclude_tRNS=mng_info->ping_exclude_tRNS;
-  ping_exclude_vpAg=mng_info->ping_exclude_vpAg;
-  ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
-  ping_exclude_zTXt=mng_info->ping_exclude_zTXt;
 
 #if defined(PNG_pHYs_SUPPORTED)
   if (ping_exclude_pHYs == MagickFalse)
@@ -8347,15 +8341,22 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_color_type = PNG_COLOR_TYPE_RGB_ALPHA;
     }
 
-  if ((mng_info->write_png_depth &&
+  if (ping_need_colortype_warning != MagickFalse ||
+     ((mng_info->write_png_depth &&
      (int) mng_info->write_png_depth != ping_bit_depth) ||
      (mng_info->write_png_colortype &&
      ((int) mng_info->write_png_colortype-1 != ping_color_type &&
       mng_info->write_png_colortype != 7 &&
-      !(mng_info->write_png_colortype == 5 && ping_color_type == 0))))
+      !(mng_info->write_png_colortype == 5 && ping_color_type == 0)))))
     {
       if (logging != MagickFalse)
         {
+          if (ping_need_colortype_warning != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "  Image has transparency but tRNS chunk was excluded");
+            }
+
           if (mng_info->write_png_depth)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8363,6 +8364,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   mng_info->write_png_depth,
                   ping_bit_depth);
             }
+
           if (mng_info->write_png_colortype)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8371,6 +8373,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   ping_color_type);
             }
         }
+
       png_warning(ping,
         "Cannot write image with defined PNG:bit-depth or PNG:color-type.");
     }
@@ -9308,7 +9311,39 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
           "  png:color-type=%d was defined.\n",mng_info->write_png_colortype-1);
     }
 
-  /* See if the user wants to exclude any chunks */
+  /* Check for chunks to be excluded:
+   *
+   * The default is to not exclude any chunks except for any
+   * listed in the "unused_chunks" array, above.
+   *
+   * Chunks can be listed for exclusion via a "PNG:exclude-chunk"
+   * define (in the image properties or in the image artifacts)
+   * or via a mng_info member.  For convenience, in addition
+   * to or instead of a comma-separated list of chunks, the
+   * "exclude-chunk" string can be simply "all" or "none".
+   *
+   * The exclude-chunk define takes priority over the mng_info.
+   *
+   * A "PNG:include-chunk" define takes  priority over both the
+   * mng_info and the "PNG:exclude-chunk" define.  Like the
+   * "exclude-chunk" string, it can define "all" or "none" as
+   * well as a comma-separated list.
+   *
+   * Finally, all chunks listed in the "unused_chunks" array are
+   * automatically excluded, regardless of the other instructions
+   * or lack thereof.
+   *
+   * if you exclude sRGB but not gAMA (recommended), then sRGB chunk
+   * will not be written and the gAMA chunk will only be written if it
+   * is not between .45 and .46, or approximately (1.0/2.2).
+   *
+   * If you exclude tRNS and the image has transparency, the colortype
+   * is forced to be 4 or 6 (GRAY_ALPHA or RGB_ALPHA).
+   *
+   * The -strip option causes StripImage() to set the png:include-chunk
+   * artifact to "none,gama".
+   */
+
   mng_info->ping_exclude_bKGD=MagickFalse;
   mng_info->ping_exclude_cHRM=MagickFalse;
   mng_info->ping_exclude_EXIF=MagickFalse; /* hex-encoded EXIF in zTXt */
