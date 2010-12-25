@@ -4,12 +4,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
-  <title>ImageMagick: Changelog</title/>
+  <title>ImageMagick: Changelog</title>
   <meta http-equiv="Content-Language" content="en-US"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="changelog, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -116,10 +116,10 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Site Map"href="../www/sitemap.html">Site Map</a>
+  <a title="Site Map" href="../www/sitemap.html">Site Map</a>
 </div>
 <div  class="sub">
-    <a title="Site Map: Links"href="../www/links.html">Links</a>
+  <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011040100025 gabi.schulze-->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011040100025 atlas.multimedia-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -167,7 +167,14 @@
 
 <div class="main">
 
-<ul><dt>2010-12-17  6.6.6-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
+<ul><dt>2010-12-21  6.6.6-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Use a clone instead of the main image in coders/png.c, so the image    can still be used later on without being affected by changes made by    the PNG encoder.</li>
+  <li> Added PNG:exclude-chunk and PNG:include-chunk defines.</li>
+  <li> Revised the -strip option so it behaves as though    "-define PNG:include-chunk=none,gama" had appeared on the commandline.</li>
+  <li> Avoid writing PNG ancillary chunks in the PNG/MNG/JNG encoder while    generating the alpha channel for a JNG image.</li><br />
+<dt>2010-12-21  6.6.6-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <li> Removed the forced interpolation setting in AcquireResampleFilterThreadSet    It prevented user defined interpolation settings for -clut, and possibly    other usage.</li><br />
+<dt>2010-12-17  6.6.6-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <li> Add LZMA compression support to ImageMagick.</li><br />
 <dt>2010-12-17  6.6.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Eliminated a redundant quantization step in the PNG encoder.</li>
@@ -177,7 +184,7 @@
   <li> -format "%[fx:u.p{5,5}]" no longer reports parse exception (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17678).</li><br />
 <dt>2010-12-10  6.6.6-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Make the PNG encoder always rebuild the palette, to avoid losing    transparency when it is out of sync with the pixel data (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17655).</li>
-  <li> Eliminated CompressColormapTransFirst() since the palette is already    compressed and sorted by opacty now when it's recreated.</li><br />
+  <li> Eliminated CompressColormapTransFirst() since the palette is already    compressed and sorted by opacity now when it's recreated.</li><br />
 <dt>2010-12-10  6.6.6-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> Account for virtual canvas for the -flip / -flop options (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17626).</li>
   <li> Also for -transpose and transverse options</li>
@@ -199,7 +206,7 @@
   <li> The policy.xml sets not-to-exceed resource values (e.g. policy memory limit    1GB, -limit 2GB exceeds policy maximum so memory limit is 1GB).</li>
   <li> Support NCC (normalized cross correlation) compare metric.</li><br />
 <dt>2010-11-21  6.6.5-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <li> Fix png coder compile error when HDRI is enabled.</li><br />
+  <li> Fix PNG coder compile error when HDRI is enabled.</li><br />
 <dt>2010-11-17  6.6.5-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Many of the problems with the PNG encoder have been fixed (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16490).</li>
   <li> The "-type Optimize" option is now deprecated.  If present, it is treated    by the PNG encoder the same as if the type were undefined.  Optimization    is now always performed.  No other formats used the "type Optimize" option.</li>
@@ -365,7 +372,7 @@
   <li> Repair several issues when writing to stdout (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16620).</li>
   <li> A GIF image with the .bgr extension is still a GIF (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16662).</li><br />
 <dt>2010-07-07  6.6.3-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> The PNG decoder failed to handle the tRNS chunk properly for grayscale    images where the png bit_depth was not the same as the quantum depth,    and the transparent color was not black.</li><br />
+  <li> The PNG decoder failed to handle the tRNS chunk properly for grayscale    images where the PNG bit_depth was not the same as the quantum depth,    and the transparent color was not black.</li><br />
 <dt>2010-07-01  6.6.3-0 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <li> Pinging the DJVU image format no longer faults.</li>
   <li> Check for time-limit-exceeded in only one thread.</li>

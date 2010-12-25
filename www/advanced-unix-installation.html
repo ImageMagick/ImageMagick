@@ -4,12 +4,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
-  <title>ImageMagick: Advanced Unix Source Installation</title/>
+  <title>ImageMagick: Advanced Unix Source Installation</title>
   <meta http-equiv="Content-Language" content="en-US"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="advanced, unix, source, installation, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -116,10 +116,10 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Site Map"href="../www/sitemap.html">Site Map</a>
+  <a title="Site Map" href="../www/sitemap.html">Site Map</a>
 </div>
 <div  class="sub">
-    <a title="Site Map: Links"href="../www/links.html">Links</a>
+  <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -127,7 +127,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -168,6 +168,7 @@
 <div class="main">
 
 
+<h1>ImageMagick Advanced Unix Installation</h1>
 <p class="navigation-index">[<a href="#download">Download &amp; Unpack</a> &bull; <a href="#configure">Configure</a>  &bull; <a href="#build">Build</a> &bull; <a href="#install">Install</a> &bull; <a href="#linux">Linux-specific Build Instructions</a> &bull; <a href="#macosx">Mac OS X-specific Build Instructions</a> &bull; <a href="#mingw">MinGW-specific Build Instructions</a> &bull; <a href="#problems">Dealing with Unexpected Problems</a>]</p>
 
 <div class="doc-section">
@@ -191,7 +192,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.6.6-6</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.6.6-7</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure</span></p>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -545,7 +546,7 @@ Options used to compile and link:
 	<div class="doc-section">
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz ImageMagick-6.6.6-6.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.6.6-6</span></p>	  <p>Configure ImageMagick:</p>
+		<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz ImageMagick-6.6.6-7.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.6.6-7</span></p>	  <p>Configure ImageMagick:</p>
 	<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure --prefix=/opt --with-quantum-depth=16 \ <br/>
 		--disable-dependency-tracking --with-x=yes \ <br/>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br/>
@@ -565,7 +566,7 @@ Options used to compile and link:
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar jxvf ImageMagick-6.6.6-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.6.6-6</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo make install</span></p></div>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar jxvf ImageMagick-6.6.6-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.6.6-7</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo make install</span></p></div>
 
 <h2><a name="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
