@@ -2210,7 +2210,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
     *restrict q;
 
   size_t
-    length;
+    extent;
 
   /*
     Posterize image.
@@ -2222,17 +2222,16 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
   posterize_image=AcquireImage((ImageInfo *) NULL);
   if (posterize_image == (Image *) NULL)
     return(MagickFalse);
-  l=1;
-  length=(size_t) (levels*levels*levels);
-  while ((l*l*l) < (ssize_t) MagickMin((ssize_t) length,MaxColormapSize+1))
-    l++;
+  extent=MagickMin(levels*levels*levels,MaxColormapSize+1);
+  for (l=1; (l*l*l) < (ssize_t) extent; l++) ;
+  l--;
   status=SetImageExtent(posterize_image,(size_t) (l*l*l),1);
   if (status == MagickFalse)
     {
       posterize_image=DestroyImage(posterize_image);
       return(MagickFalse);
     }
-  status=AcquireImageColormap(posterize_image,levels*levels*levels);
+  status=AcquireImageColormap(posterize_image,l*l*l);
   if (status == MagickFalse)
     {
       posterize_image=DestroyImage(posterize_image);
