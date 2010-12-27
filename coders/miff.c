@@ -1463,8 +1463,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
-        status=lzma_code(&lzma_info,LZMA_FINISH);
-        if ((status != LZMA_STREAM_END) && (status != LZMA_OK))
+        code=lzma_code(&lzma_info,LZMA_FINISH);
+        if ((code != LZMA_STREAM_END) && (code != LZMA_OK))
           status=MagickFalse;
         lzma_end(&lzma_info);
         break;
