@@ -44,6 +44,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
+#include "magick/colormap.h"
 #include "magick/colorspace.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -93,25 +94,29 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register ssize_t
-    x;
+  register IndexPacket
+    *indexes;
 
   register PixelPacket
     *q;
+
+  register ssize_t
+    x;
 
   register unsigned char
     *p;
 
   size_t
-    height,
-    length,
-    width;
+    length;
 
   ssize_t
-    count,
+    offset,
     y;
 
   unsigned char
+    count,
+    bit,
+    byte,
     *pixels;
 
   /*
@@ -134,86 +139,108 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read MAC X image.
   */
-  width=ReadBlobMSBLong(image);
-  height=ReadBlobMSBLong(image);
-  if (EOFBlob(image) != MagickFalse)
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if ((width == 0UL) || (height == 0UL))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  do
-  {
-    /*
-      Convert MAC raster image to pixel packets.
-    */
-    image->columns=width;
-    image->rows=height;
-    image->depth=8;
-    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
-    pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-      4*sizeof(*pixels));
-    if (pixels == (unsigned char *) NULL) 
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    length=(size_t) 4*image->columns;
-    for (y=0; y < (ssize_t) image->rows; y++)
+  length=ReadBlobLSBShort(image);
+  if ((length & 0xff) != 0)
+    ThrowReaderException(CorruptImageError,"CorruptImage");
+  for (x=0; x < (ssize_t) 638; x++)
+    if (ReadBlobByte(image) == EOF)
+      ThrowReaderException(CorruptImageError,"CorruptImage");
+  image->columns=576;
+  image->rows=720;
+  image->depth=1;
+  if (AcquireImageColormap(image,2) == MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  if (image_info->ping != MagickFalse)
     {
-      count=ReadBlob(image,length,pixels);
-      if ((size_t) count != length)
-        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-      p=pixels;
-      q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p++));
-        q->red=ScaleCharToQuantum(*p++);
-        q->green=ScaleCharToQuantum(*p++);
-        q->blue=ScaleCharToQuantum(*p++);
-        if (q->opacity != OpaqueOpacity)
-          image->matte=MagickTrue;
-        q++;
-      }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        break;
-      if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
-        break;
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
     }
-    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  /*
+    Convert MAC raster image to pixel packets.
+  */
+  length=(image->columns+7)/8;
+  pixels=(unsigned char *) AcquireQuantumMemory(length+1,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL) 
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  p=pixels;
+  offset=0;
+  for (y=0; y < (ssize_t) image->rows; )
+  {
+    count=(unsigned char) ReadBlobByte(image);
     if (EOFBlob(image) != MagickFalse)
+      break;
+    if ((count <= 0) || (count >= 128))
       {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
+        byte=(unsigned char) (~ReadBlobByte(image));
+        count=(~count)+2;
+        while (count != 0)
+        {
+          *p++=byte;
+          offset++;
+          count--;
+          if (offset >= (ssize_t) length)
+            {
+              q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetAuthenticIndexQueue(image);
+              p=pixels;
+              bit=0;
+              byte=0;
+              for (x=0; x < (ssize_t) image->columns; x++)
+              {
+                if (bit == 0)
+                  byte=(*p++);
+                indexes[x]=(IndexPacket) ((byte & 0x80) != 0 ? 0x01 : 0x00);
+                bit++;
+                byte<<=1;
+                if (bit == 8)
+                  bit=0;
+              }
+              if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+              offset=0;
+              p=pixels;
+              y++;
+            }
+        }
+        continue;
       }
-    /*
-      Proceed to next image.
-    */
-    if (image_info->number_scenes != 0)
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
-    width=ReadBlobMSBLong(image);
-    height=ReadBlobMSBLong(image);
-    if ((width != 0UL) && (height != 0UL))
-      {
-        /*
-          Allocate next image structure.
-        */
-        AcquireNextImage(image_info,image);
-        if (GetNextImageInList(image) == (Image *) NULL)
+    count++;
+    while (count != 0)
+    {
+      byte=(unsigned char) (~ReadBlobByte(image));
+      *p++=byte;
+      offset++;
+      count--;
+      if (offset >= (ssize_t) length)
+        {
+          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetAuthenticIndexQueue(image);
+          p=pixels;
+          bit=0;
+          byte=0;
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
-            image=DestroyImageList(image);
-            return((Image *) NULL);
+            if (bit == 0)
+              byte=(*p++);
+            indexes[x]=(IndexPacket) ((byte & 0x80) != 0 ? 0x01 : 0x00);
+            bit++;
+            byte<<=1;
+            if (bit == 8)
+              bit=0;
           }
-        image=SyncNextImageInList(image);
-        status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
-          GetBlobSize(image));
-        if (status == MagickFalse)
-          break;
-      }
-  } while ((width != 0UL) && (height != 0UL));
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
+          offset=0;
+          p=pixels;
+          y++;
+        }
+    }
+  }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
