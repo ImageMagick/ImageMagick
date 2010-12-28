@@ -1,6 +1,7 @@
 2010-12-26  6.6.6-8 Cristy  <quetzlzacatenango@image...>
   * -posterize fails with more than 40 levels (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17741).
+  * Add support for the MacPaint image format.
 
 2010-12-21  6.6.6-7 Glenn Randers-Pehrson <glennrp@image...>
   * Use a clone instead of the main image in coders/png.c, so the image
