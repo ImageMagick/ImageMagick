@@ -105,7 +105,9 @@
 /* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-/* #undef GVC_DELEGATE */
+#ifndef MAGICKCORE_GVC_DELEGATE
+#define MAGICKCORE_GVC_DELEGATE 1
+#endif
 
 /* Define to 1 if you have the `argz_add' function. */
 #ifndef MAGICKCORE_HAVE_ARGZ_ADD

@@ -227,6 +227,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterJP2Image();
 #endif
   (void) RegisterLABELImage();
+  (void) RegisterMACImage();
   (void) RegisterMAGICKImage();
   (void) RegisterMAPImage();
   (void) RegisterMATImage();
@@ -395,6 +396,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterJP2Image();
 #endif
   UnregisterLABELImage();
+  UnregisterMACImage();
   UnregisterMAGICKImage();
   UnregisterMAPImage();
   UnregisterMATImage();

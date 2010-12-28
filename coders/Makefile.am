@@ -111,6 +111,7 @@ MAGICK_CODER_SRCS = \
 	coders/inline.c \
 	coders/ipl.c \
 	coders/label.c \
+	coders/mac.c \
 	coders/magick.c \
 	coders/map.c \
 	coders/mat.c \
@@ -224,6 +225,7 @@ coders_LTLIBRARIES = \
 	coders/inline.la \
 	coders/ipl.la \
 	coders/label.la \
+	coders/mac.la \
 	coders/magick.la \
 	coders/map.la \
 	coders/mat.la \
@@ -562,6 +564,12 @@ coders_label_la_SOURCES    = coders/label.c
 coders_label_la_CPPFLAGS   = $(MODULE_EXTRA_CPPFLAGS)
 coders_label_la_LDFLAGS    = $(MODULECOMMONFLAGS) $(MATH_LIBS)
 coders_label_la_LIBADD     = $(MAGICKCORE_LIBS)
+
+# MAC coder module
+coders_mac_la_SOURCES      = coders/mac.c
+coders_mac_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_mac_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_mac_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # MAGICK coder module
 coders_magick_la_SOURCES   = coders/magick.c
