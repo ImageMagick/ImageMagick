@@ -443,7 +443,7 @@ static inline MagickBooleanType IsFloatDefined(const float value)
     unsigned int
       unsigned_value;
 
-    float
+    double
       float_value;
   } quantum;
 

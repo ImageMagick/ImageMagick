@@ -4,6 +4,7 @@
   * Add support for the MacPaint image format.
   * Eliminate spurios 'invalid colormap index' exception for 16-bit SGI images
     (bug report by steven.sittser@fligh...).
+  * Fix user data length for the CIN image format.
 
 2010-12-21  6.6.6-7 Glenn Randers-Pehrson <glennrp@image...>
   * Use a clone instead of the main image in coders/png.c, so the image
