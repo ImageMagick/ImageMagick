@@ -361,16 +361,16 @@ static inline MagickBooleanType IsFloatDefined(const float value)
 {
   union
   {
-    size_t
+    unsigned int
       unsigned_value;
 
     double
       float_value;
   } quantum;
 
-  quantum.unsigned_value=0UL;
+  quantum.unsigned_value=0U;
   quantum.float_value=value;
-  if (quantum.unsigned_value == 0UL)
+  if (quantum.unsigned_value == 0U)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -465,16 +465,16 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   offset+=4;
   offset+=ReadBlob(image,sizeof(cin.file.version),(unsigned char *)
     cin.file.version);
-  (void) SetImageProperty(image,"cin:file.version",cin.file.version);
+  (void) SetImageProperty(image,"dpx:file.version",cin.file.version);
   offset+=ReadBlob(image,sizeof(cin.file.filename),(unsigned char *)
     cin.file.filename);
-  (void) SetImageProperty(image,"cin:file.filename",cin.file.filename);
+  (void) SetImageProperty(image,"dpx:file.filename",cin.file.filename);
   offset+=ReadBlob(image,sizeof(cin.file.create_date),(unsigned char *)
     cin.file.create_date);
-  (void) SetImageProperty(image,"cin:file.create_date",cin.file.create_date);
+  (void) SetImageProperty(image,"dpx:file.create_date",cin.file.create_date);
   offset+=ReadBlob(image,sizeof(cin.file.create_time),(unsigned char *)
     cin.file.create_time);
-  (void) SetImageProperty(image,"cin:file.create_time",cin.file.create_time);
+  (void) SetImageProperty(image,"dpx:file.create_time",cin.file.create_time);
   offset+=ReadBlob(image,sizeof(cin.file.reserve),(unsigned char *)
     cin.file.reserve);
   /*
@@ -483,7 +483,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   cin.image.orientation=(unsigned char) ReadBlobByte(image);
   offset++;
   if (cin.image.orientation != (unsigned char) (~0U))
-    (void) FormatImageProperty(image,"cin:image.orientation","%d",
+    (void) FormatImageProperty(image,"dpx:image.orientation","%d",
       cin.image.orientation);
   switch (cin.image.orientation)
   {
@@ -558,7 +558,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
     image->chromaticity.blue_primary.y=cin.image.blue_primary_chromaticity[1];
   offset+=ReadBlob(image,sizeof(cin.image.label),(unsigned char *)
     cin.image.label);
-  (void) SetImageProperty(image,"cin:image.label",cin.image.label);
+  (void) SetImageProperty(image,"dpx:image.label",cin.image.label);
   offset+=ReadBlob(image,sizeof(cin.image.reserve),(unsigned char *)
     cin.image.reserve);
   /*
@@ -584,35 +584,35 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   cin.origination.x_offset=(int) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.x_offset != ~0UL)
-    (void) FormatImageProperty(image,"cin:origination.x_offset","%.20g",
+    (void) FormatImageProperty(image,"dpx:origination.x_offset","%.20g",
       (double) cin.origination.x_offset);
   cin.origination.y_offset=(int) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.y_offset != ~0UL)
-    (void) FormatImageProperty(image,"cin:origination.y_offset","%.20g",
+    (void) FormatImageProperty(image,"dpx:origination.y_offset","%.20g",
       (double) cin.origination.y_offset);
   offset+=ReadBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
-  (void) SetImageProperty(image,"cin:origination.filename",
+  (void) SetImageProperty(image,"dpx:origination.filename",
     cin.origination.filename);
   offset+=ReadBlob(image,sizeof(cin.origination.create_date),(unsigned char *)
     cin.origination.create_date);
-  (void) SetImageProperty(image,"cin:origination.create_date",
+  (void) SetImageProperty(image,"dpx:origination.create_date",
     cin.origination.create_date);
   offset+=ReadBlob(image,sizeof(cin.origination.create_time),(unsigned char *)
     cin.origination.create_time);
-  (void) SetImageProperty(image,"cin:origination.create_time",
+  (void) SetImageProperty(image,"dpx:origination.create_time",
     cin.origination.create_time);
   offset+=ReadBlob(image,sizeof(cin.origination.device),(unsigned char *)
     cin.origination.device);
-  (void) SetImageProperty(image,"cin:origination.device",
+  (void) SetImageProperty(image,"dpx:origination.device",
     cin.origination.device);
   offset+=ReadBlob(image,sizeof(cin.origination.model),(unsigned char *)
     cin.origination.model);
-  (void) SetImageProperty(image,"cin:origination.model",cin.origination.model);
+  (void) SetImageProperty(image,"dpx:origination.model",cin.origination.model);
   offset+=ReadBlob(image,sizeof(cin.origination.serial),(unsigned char *)
     cin.origination.serial);
-  (void) SetImageProperty(image,"cin:origination.serial",
+  (void) SetImageProperty(image,"dpx:origination.serial",
     cin.origination.serial);
   cin.origination.x_pitch=ReadBlobFloat(image);
   offset+=4;
@@ -632,44 +632,44 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       cin.film.id=ReadBlobByte(image);
       offset++;
       if (((size_t) cin.film.id) != ~0UL)
-        (void) FormatImageProperty(image,"cin:film.id","%d",cin.film.id);
+        (void) FormatImageProperty(image,"dpx:film.id","%d",cin.film.id);
       cin.film.type=ReadBlobByte(image);
       offset++;
       if (((size_t) cin.film.type) != ~0UL)
-        (void) FormatImageProperty(image,"cin:film.type","%d",cin.film.type);
+        (void) FormatImageProperty(image,"dpx:film.type","%d",cin.film.type);
       cin.film.offset=ReadBlobByte(image);
       offset++;
       if (((size_t) cin.film.offset) != ~0UL)
-        (void) FormatImageProperty(image,"cin:film.offset","%d",
+        (void) FormatImageProperty(image,"dpx:film.offset","%d",
           cin.film.offset);
       cin.film.reserve1=ReadBlobByte(image);
       offset++;
       cin.film.prefix=ReadBlobLong(image);
       offset+=4;
       if (cin.film.prefix != ~0UL)
-        (void) FormatImageProperty(image,"cin:film.prefix","%.20g",(double)
+        (void) FormatImageProperty(image,"dpx:film.prefix","%.20g",(double)
           cin.film.prefix);
       cin.film.count=ReadBlobLong(image);
       offset+=4;
       offset+=ReadBlob(image,sizeof(cin.film.format),(unsigned char *)
         cin.film.format);
-      (void) SetImageProperty(image,"cin:film.format",cin.film.format);
+      (void) SetImageProperty(image,"dpx:film.format",cin.film.format);
       cin.film.frame_position=ReadBlobLong(image);
       offset+=4;
       if (cin.film.frame_position != ~0UL)
-        (void) FormatImageProperty(image,"cin:film.frame_position","%.20g",
+        (void) FormatImageProperty(image,"dpx:film.frame_position","%.20g",
           (double) cin.film.frame_position);
       cin.film.frame_rate=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(cin.film.frame_rate) != MagickFalse)
-        (void) FormatImageProperty(image,"cin:film.frame_rate","%g",
+        (void) FormatImageProperty(image,"dpx:film.frame_rate","%g",
           cin.film.frame_rate);
       offset+=ReadBlob(image,sizeof(cin.film.frame_id),(unsigned char *)
         cin.film.frame_id);
-      (void) SetImageProperty(image,"cin:film.frame_id",cin.film.frame_id);
+      (void) SetImageProperty(image,"dpx:film.frame_id",cin.film.frame_id);
       offset+=ReadBlob(image,sizeof(cin.film.slate_info),(unsigned char *)
         cin.film.slate_info);
-      (void) SetImageProperty(image,"cin:film.slate_info",cin.film.slate_info);
+      (void) SetImageProperty(image,"dpx:film.slate_info",cin.film.slate_info);
       offset+=ReadBlob(image,sizeof(cin.film.reserve),(unsigned char *)
         cin.film.reserve);
     }
@@ -684,7 +684,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       profile=AcquireStringInfo(cin.file.user_length);
       offset+=ReadBlob(image,GetStringInfoLength(profile),
         GetStringInfoDatum(profile));
-      (void) SetImageProfile(image,"cin:user.data",profile);
+      (void) SetImageProfile(image,"dpx:user.data",profile);
       profile=DestroyStringInfo(profile);
     }
   for ( ; offset < (ssize_t) cin.file.image_offset; offset++)
@@ -729,7 +729,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -911,18 +911,13 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.file.magic=0x802A5FD7UL;
   offset+=WriteBlobLong(image,(unsigned int) cin.file.magic);
   cin.file.image_offset=0x800;
-  profile=GetImageProfile(image,"cin:user.data");
-  if (profile != (StringInfo *) NULL)
-    {
-      cin.file.image_offset+=(size_t) GetStringInfoLength(profile);
-      cin.file.image_offset=(((cin.file.image_offset+0x2000-1)/0x2000)*0x2000);
-    }
   offset+=WriteBlobLong(image,(unsigned int) cin.file.image_offset);
   cin.file.generic_length=0x400;
   offset+=WriteBlobLong(image,(unsigned int) cin.file.generic_length);
   cin.file.industry_length=0x400;
   offset+=WriteBlobLong(image,(unsigned int) cin.file.industry_length);
   cin.file.user_length=0x00;
+  profile=GetImageProfile(image,"dpx:user.data");
   if (profile != (StringInfo *) NULL)
     {
       cin.file.user_length+=(size_t) GetStringInfoLength(profile);
@@ -934,7 +929,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   (void) CopyMagickString(cin.file.version,"V4.5",sizeof(cin.file.version));
   offset+=WriteBlob(image,sizeof(cin.file.version),(unsigned char *)
     cin.file.version);
-  value=GetCINProperty(image_info,image,"cin:file.filename");
+  value=GetCINProperty(image_info,image,"dpx:file.filename");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.file.filename,value,sizeof(cin.file.filename));
   else
@@ -997,7 +992,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   offset+=WriteBlobFloat(image,image->chromaticity.green_primary.y);
   offset+=WriteBlobFloat(image,image->chromaticity.blue_primary.x);
   offset+=WriteBlobFloat(image,image->chromaticity.blue_primary.y);
-  value=GetCINProperty(image_info,image,"cin:image.label");
+  value=GetCINProperty(image_info,image,"dpx:image.label");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.image.label,value,sizeof(cin.image.label));
   offset+=WriteBlob(image,sizeof(cin.image.label),(unsigned char *)
@@ -1025,16 +1020,16 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     Write origination information.
   */
   cin.origination.x_offset=0UL;
-  value=GetCINProperty(image_info,image,"cin:origination.x_offset");
+  value=GetCINProperty(image_info,image,"dpx:origination.x_offset");
   if (value != (const char *) NULL)
     cin.origination.x_offset=StringToLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.origination.x_offset);
   cin.origination.y_offset=0UL;
-  value=GetCINProperty(image_info,image,"cin:origination.y_offset");
+  value=GetCINProperty(image_info,image,"dpx:origination.y_offset");
   if (value != (const char *) NULL)
     cin.origination.y_offset=StringToLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.origination.y_offset);
-  value=GetCINProperty(image_info,image,"cin:origination.filename");
+  value=GetCINProperty(image_info,image,"dpx:origination.filename");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.filename,value,
       sizeof(cin.origination.filename));
@@ -1052,31 +1047,31 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     sizeof(cin.origination.create_time),"%H:%M:%S%Z",&local_time);
   offset+=WriteBlob(image,sizeof(cin.origination.create_time),(unsigned char *)
     cin.origination.create_time);
-  value=GetCINProperty(image_info,image,"cin:origination.device");
+  value=GetCINProperty(image_info,image,"dpx:origination.device");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.device,value,
       sizeof(cin.origination.device));
   offset+=WriteBlob(image,sizeof(cin.origination.device),(unsigned char *)
     cin.origination.device);
-  value=GetCINProperty(image_info,image,"cin:origination.model");
+  value=GetCINProperty(image_info,image,"dpx:origination.model");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.model,value,
       sizeof(cin.origination.model));
   offset+=WriteBlob(image,sizeof(cin.origination.model),(unsigned char *)
     cin.origination.model);
-  value=GetCINProperty(image_info,image,"cin:origination.serial");
+  value=GetCINProperty(image_info,image,"dpx:origination.serial");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.origination.serial,value,
       sizeof(cin.origination.serial));
   offset+=WriteBlob(image,sizeof(cin.origination.serial),(unsigned char *)
     cin.origination.serial);
   cin.origination.x_pitch=0.0f;
-  value=GetCINProperty(image_info,image,"cin:origination.x_pitch");
+  value=GetCINProperty(image_info,image,"dpx:origination.x_pitch");
   if (value != (const char *) NULL)
     cin.origination.x_pitch=StringToDouble(value);
   offset+=WriteBlobFloat(image,cin.origination.x_pitch);
   cin.origination.y_pitch=0.0f;
-  value=GetCINProperty(image_info,image,"cin:origination.y_pitch");
+  value=GetCINProperty(image_info,image,"dpx:origination.y_pitch");
   if (value != (const char *) NULL)
     cin.origination.y_pitch=StringToDouble(value);
   offset+=WriteBlobFloat(image,cin.origination.y_pitch);
@@ -1088,52 +1083,52 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     Image film information.
   */
   cin.film.id=0;
-  value=GetCINProperty(image_info,image,"cin:film.id");
+  value=GetCINProperty(image_info,image,"dpx:film.id");
   if (value != (const char *) NULL)
     cin.film.id=(char) StringToLong(value);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.id);
   cin.film.type=0;
-  value=GetCINProperty(image_info,image,"cin:film.type");
+  value=GetCINProperty(image_info,image,"dpx:film.type");
   if (value != (const char *) NULL)
     cin.film.type=(char) StringToLong(value);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.type);
   cin.film.offset=0;
-  value=GetCINProperty(image_info,image,"cin:film.offset");
+  value=GetCINProperty(image_info,image,"dpx:film.offset");
   if (value != (const char *) NULL)
     cin.film.offset=(char) StringToLong(value);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.offset);
   offset+=WriteBlobByte(image,(unsigned char) cin.film.reserve1);
   cin.film.prefix=0UL;
-  value=GetCINProperty(image_info,image,"cin:film.prefix");
+  value=GetCINProperty(image_info,image,"dpx:film.prefix");
   if (value != (const char *) NULL)
     cin.film.prefix=StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.film.prefix);
   cin.film.count=0UL;
-  value=GetCINProperty(image_info,image,"cin:film.count");
+  value=GetCINProperty(image_info,image,"dpx:film.count");
   if (value != (const char *) NULL)
     cin.film.count=StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.film.count);
-  value=GetCINProperty(image_info,image,"cin:film.format");
+  value=GetCINProperty(image_info,image,"dpx:film.format");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.film.format,value,sizeof(cin.film.format));
   offset+=WriteBlob(image,sizeof(cin.film.format),(unsigned char *)
     cin.film.format);
   cin.film.frame_position=0UL;
-  value=GetCINProperty(image_info,image,"cin:film.frame_position");
+  value=GetCINProperty(image_info,image,"dpx:film.frame_position");
   if (value != (const char *) NULL)
     cin.film.frame_position=StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.film.frame_position);
   cin.film.frame_rate=0.0f;
-  value=GetCINProperty(image_info,image,"cin:film.frame_rate");
+  value=GetCINProperty(image_info,image,"dpx:film.frame_rate");
   if (value != (const char *) NULL)
     cin.film.frame_rate=StringToDouble(value);
   offset+=WriteBlobFloat(image,cin.film.frame_rate);
-  value=GetCINProperty(image_info,image,"cin:film.frame_id");
+  value=GetCINProperty(image_info,image,"dpx:film.frame_id");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.film.frame_id,value,sizeof(cin.film.frame_id));
   offset+=WriteBlob(image,sizeof(cin.film.frame_id),(unsigned char *)
     cin.film.frame_id);
-  value=GetCINProperty(image_info,image,"cin:film.slate_info");
+  value=GetCINProperty(image_info,image,"dpx:film.slate_info");
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.film.slate_info,value,
       sizeof(cin.film.slate_info));
@@ -1173,7 +1168,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     if (count != (ssize_t) length)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
