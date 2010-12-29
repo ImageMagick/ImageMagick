@@ -263,10 +263,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y,
-    z;
-
   MagickBooleanType
     status;
 
@@ -276,30 +272,30 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
+  register PixelPacket
+    *q;
+
   register ssize_t
     i,
     x;
 
-  register PixelPacket
-    *q;
-
   register unsigned char
     *p;
-
-  ssize_t
-    count;
 
   SGIInfo
     iris_info;
 
   size_t
-    bytes_per_pixel;
+    bytes_per_pixel,
+    quantum;
+
+  ssize_t
+    count,
+    y,
+    z;
 
   unsigned char
     *iris_pixels;
-
-  size_t
-    quantum;
 
   /*
     Open image file.
@@ -367,7 +363,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (iris_info.depth < 3)
       {
         image->storage_class=PseudoClass;
-        image->colors=256;
+        image->colors=iris_info.bytes_per_pixel > 1 ? 65535 : 256;
       }
     if ((image_info->ping != MagickFalse)  && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
@@ -423,6 +419,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       {
+        size_t
+          *runlength;
+
         ssize_t
           offset,
           *offsets;
@@ -432,9 +431,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         unsigned int
           data_order;
-
-        size_t
-          *runlength;
 
         /*
           Read runlength-encoded image format.
@@ -572,8 +568,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -639,8 +635,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
