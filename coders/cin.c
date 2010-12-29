@@ -586,7 +586,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   if ((size_t) cin.origination.x_offset != ~0UL)
     (void) FormatImageProperty(image,"dpx:origination.x_offset","%.20g",
       (double) cin.origination.x_offset);
-  cin.origination.y_offset=(int) ReadBlobLong(image);
+  cin.origination.y_offset=(ssize_t) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.y_offset != ~0UL)
     (void) FormatImageProperty(image,"dpx:origination.y_offset","%.20g",
@@ -687,7 +687,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,
       (void) SetImageProfile(image,"dpx:user.data",profile);
       profile=DestroyStringInfo(profile);
     }
-  for ( ; offset < (ssize_t) cin.file.image_offset; offset++)
+  for ( ; offset < (MagickOffsetType) cin.file.image_offset; offset++)
     (void) ReadBlobByte(image);
   image->depth=cin.image.channel[0].bits_per_pixel;
   image->columns=cin.image.channel[0].pixels_per_line;
@@ -1022,12 +1022,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   cin.origination.x_offset=0UL;
   value=GetCINProperty(image_info,image,"dpx:origination.x_offset");
   if (value != (const char *) NULL)
-    cin.origination.x_offset=StringToLong(value);
+    cin.origination.x_offset=(ssize_t) StringToLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.origination.x_offset);
   cin.origination.y_offset=0UL;
   value=GetCINProperty(image_info,image,"dpx:origination.y_offset");
   if (value != (const char *) NULL)
-    cin.origination.y_offset=StringToLong(value);
+    cin.origination.y_offset=(ssize_t) StringToLong(value);
   offset+=WriteBlobLong(image,(unsigned int) cin.origination.y_offset);
   value=GetCINProperty(image_info,image,"dpx:origination.filename");
   if (value != (const char *) NULL)
