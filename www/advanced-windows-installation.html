@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -9,7 +9,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="advanced, windows, source, installation, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -21,12 +21,25 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -89,7 +102,7 @@
     <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../Magick++/">Magick++</a>
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -138,15 +151,6 @@
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
-<div  class="sponsor">
-  <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: LVM Versicherung" href="http://www.neu-reich.de">LVM Versicherung</a><!-- 201101010480 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
-</div>
 </div>
 </div>
 </div>
@@ -175,7 +179,7 @@
 <p>It's possible you don't want to concern yourself with advanced installation under Windows.  If so, you also have the option of installing a self-installing <a href="../www/binary-releases.html#windows">binary release</a> or if you still want to install from source without all the fuss see the simple <a href="../www/install-source.html#windows">Install From Source</a> instructions.  However, if you want to customize the configuration and installation of ImageMagick under Windows, lets begin.</p>
 </div>
 
-<h2><a name="download"></a>Download &amp; Unpack</h2>
+<h2><a id="download"></a>Download &amp; Unpack</h2>
 <div class="doc-section">
 
 <p>Building ImageMagick source for Windows requires a modern version of Microsoft Visual Studio IDE.  Users have reported success with the Borland C++ compiler as well.  If you don't have a compiler you can still install a self-installing <a href="../www/binary-releases.html#windows">binary release</a>.</p>
@@ -189,7 +193,7 @@
 
 </div>
 
-<h2><a name="configure"></a>Configure</h2>
+<h2><a id="configure"></a>Configure</h2>
 <div class="doc-section">
 
 <p>These instructions are specific to building ImageMagick with the <a href="http://msdn.microsoft.com/vstudio/">Visual Studio</a> under Windows XP, Win2K, or Windows 98.  ImageMagick does not include any workspace (DSW) or project files (DSP) except for those included with third party libraries. Instead, there is a <kbd>configure</kbd> program that must be built and run which creates the Visual Studio workspaces for ImageMagick.  The Visual Studio system provides four different types of <em>runtime</em> environments that must match across all application, library, and dynamic-library (DLL) code that is built. The <kbd>configure</kbd> program creates a set of build files that are consistent for a specific runtime selection listed here:</p>
@@ -234,7 +238,7 @@
 
 </div>
 
-<h2><a name="Build"></a>Build</h2>
+<h2><a id="Build"></a>Build</h2>
 <div class="doc-section">
 
 <p>After creating your build environment, proceed to open the DSW (or SLN) workspace in the <kbd>VisualMagick</kbd> folder.  In the DSW file choose the <em>All</em> project to make it the <em>active</em> project.  Set the build configuration to the desired one (Debug, or Release) and <em>clean</em> and <em>build:</em></p>
@@ -380,7 +384,7 @@
 
 </div>
 
-<h2><a name="Install"></a>Install</h2>
+<h2><a id="Install"></a>Install</h2>
 <div class="doc-section">
 
 <p>You can run ImageMagick command line utilities directly from the <kbd>VisualMagick\bin</kbd> folder, however, in most cases you may want the convenience of an installer script.  ImageMagick provides <a href="http://www.jrsoftware.org">Inno Setup</a> scripts for this purpose.  Note, you must define MAGICKCORE_INSTALLED_SUPPORT at <a href="#configure">configure</a> time to utilize the installer scripts.</p>
@@ -389,7 +393,7 @@
 
 </div>
 
-<h2><a name="binary"></a>Create a Self-Installing Binary Distribution</h2>
+<h2><a id="binary"></a>Create a Self-Installing Binary Distribution</h2>
 <div class="doc-section">
 
 <h3>Prerequisites</h3>
@@ -444,7 +448,7 @@
 
 	<ol>
 	<li>Double-click on
-	<kbd>VisualMagick/bin/ImageMagick-6.6.6-7-Q16-windows-dll.exe</kbd>
+	<kbd>VisualMagick/bin/ImageMagick-6.6.6-8-Q16-windows-dll.exe</kbd>
 	to launch the ImageMagick binary distribution.</li>
 	<li>Complete the installer screens to install ImageMagick on your system.</li>
 	</ol>
@@ -467,7 +471,7 @@
 
 </div>
 
-<h2><a name="problems"></a>Dealing with Unexpected Problems</h2>
+<h2><a id="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick.</p>
@@ -476,7 +480,7 @@
 
 </div>
 
-<h2><a name="project"></a>Building Your Custom Project</h2>
+<h2><a id="project"></a>Building Your Custom Project</h2>
 <div class="doc-section">
 
 <p>The Windows <a href="../www/binary-releases.html#windows">binary</a> distribution includes a number of demo projects that you can use as a template for your own custom project.  For example, start with the Button project, generally located in the <kbd>c:/Program Files/ImageMagick-6.5.5-0/Magick++_demos</kbd> folder.  If not, be sure to select <kbd>Configuration Properties->C/C++->Preprocessor</kbd> and set these definitions:</p>

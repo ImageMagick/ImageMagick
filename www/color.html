@@ -1,7 +1,7 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -10,7 +10,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="color, names, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -22,12 +22,25 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -90,7 +103,7 @@
     <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../Magick++/">Magick++</a>
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -128,7 +141,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011040100025 gabi.schulze-->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -138,15 +151,6 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: LVM Versicherung" href="http://www.neu-reich.de">LVM Versicherung</a><!-- 201101010480 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
 </div>
 </div>
 </div>
@@ -175,7 +179,7 @@
 <p>A number of ImageMagick options and methods take a color as an argument. The color can then be given as a color name (there is a limited but large set of these; see below) or it can be given as a set of numbers (in decimal or hexadecimal), each corresponding to a channel in an RGB or RGBA color model.  HSL, HSLA, HSB, HSBA, CMYK, or CMYKA color models may also be specified. These topics are briefly described in the sections below.</p>
 </div>
 
-<h2><a name="usage"></a>Interactive Color Converter</h2>
+<h2><a id="usage"></a>Interactive Color Converter</h2>
 <div class="doc-section">
 
 <p>Use the 
@@ -185,7 +189,7 @@ color swatch of that color and to convert to all the other color models.
 </p>
 </div>
 
-<h2><a name="usage"></a>Example Usage</h2>
+<h2><a id="usage"></a>Example Usage</h2>
 <div class="doc-section">
 
 <p>Each of the following commands produces the same <em>lime</em> border around the image. (Use "double quotes" for Windows.)</p>
@@ -195,7 +199,7 @@ color swatch of that color and to convert to all the other color models.
 
 </div>
 
-<h2><a name="models"></a>Color Model Specification</h2>
+<h2><a id="models"></a>Color Model Specification</h2>
 <div class="doc-section">
 
 <p>The RGB, CMYK, HSL and HSB color models are used in numerical color specifications. These examples all specify the same red RGB color:</p>
@@ -291,7 +295,7 @@ color swatch of that color and to convert to all the other color models.
 
 </div>
 
-<h2><a name="color_names"></a>List of Color Names</h2>
+<h2><a id="color_names"></a>List of Color Names</h2>
 <div class="doc-section">
 
 <p>The table below provides a list of named colors recognized by ImageMagick:</p>

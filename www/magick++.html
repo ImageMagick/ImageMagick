@@ -1,0 +1,285 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
+  <title>ImageMagick: Magick++, C++ API for ImageMagick</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Application-name" content="ImageMagick"/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Application-url" content="http://www.imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="magick++, c++, api, for, imagemagick, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <style type="text/css" media="all">
+    @import url("../www/magick.css");
+  </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<a href="../index.html">
+  <img src="../images/script.png" alt="[ImageMagick]"
+  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin: 45px auto; border: 0px; float: left;" /></a>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg" alt=""
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="westbar">
+
+<div class="menu">
+  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Command-line Tools" href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Processing" href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Options" href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a title="Program Interfaces" href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickWand" href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickCore" href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a title="Install from Source" href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Unix" href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Windows" href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a title="Resources" href="../www/resources.html">Resources</a>
+</div>
+<div class="menu">
+  <a title="Architecture" href="../www/architecture.html">Architecture</a>
+</div>
+<div class="menu">
+  <a title="Download" href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Search" href="http://www.imagemagick.org/script/search.php">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+  <a title="Site Map: Links" href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+  <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
+
+<div class="sponsbox">
+<div  class="sponsor">
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+</div>
+</div>
+</div>
+</div>
+
+<div class="eastbar">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "0574824969";
+    google_ad_width = 160;
+    google_ad_height = 600;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
+</div>
+
+<div class="main">
+
+<h1>Magick++ C++ API</h1>
+<p class="navigation-index">[<a href="#intro">Introduction to Magick++</a> &bull; <a href="#documentation">Documentation</a> &bull; <a href="#get">Obtaining Magick++</a> &bull; <a href="#install">Installation</a> &bull; <a href="#bugs">Reporting Bugs</a>]</p>
+<div class="doc-section">
+<a id="intro"></a>
+<p>Magick++ is the object-oriented C++ API to the <A HREF="http://www.imagemagick.org/">ImageMagick</A> image-processing library.</p>
+<p>Magick++ supports an object model which is inspired by <A HREF="http://www.imagemagick.org/www/perl-magick.html">PerlMagick</A>.
+Images support implicit reference counting so that copy constructors
+and assignment incur almost no cost. The cost of actually copying an
+image (if necessary) is done just before modification and this copy
+is managed automagically by Magick++. De-referenced copies are
+automagically deleted. The image objects support value (rather than
+pointer) semantics so it is trivial to support multiple generations
+of an image in memory at one time. 
+</p>
+<p>Magick++ provides integrated support for the <A HREF="http://www.sgi.com/tech/stl/">Standard
+Template Library</A> (STL) so that the powerful containers available
+(e.g. <A HREF="http://www.sgi.com/tech/stl/Deque.html">deque</A>,
+<A HREF="http://www.sgi.com/tech/stl/Vector.html">vector</A>, <A HREF="http://www.sgi.com/tech/stl/List.html">list</A>,
+and <A HREF="http://www.sgi.com/tech/stl/Map.html">map</A>)&nbsp; can
+be used to write programs similar to those possible with PERL &amp;
+PerlMagick. STL-compatible template versions of ImageMagick's
+list-style operations are provided so that operations may be
+performed on multiple images stored in STL containers. 
+</p>
+</div>
+<h2>Documentation</h2>
+<div class="doc-section">
+<a id="documentation"></a>
+<p>Detailed <A HREF="../Magick++/Documentation.html">documentation</A> is
+provided for all Magick++ classes, class methods, and template
+functions which comprise the API.  See a <a href="http://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.pdf" target="947701173">  Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="http://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.odt" >source</a> if you want to correct, enhance, or expand the tutorial.</p>
+</p>
+</div>
+<h2>Obtaining Magick++</h2>
+<a id="get"></a>
+<div class="doc-section">
+<p>Magick++ is included as part of <A HREF="../www/index.html">ImageMagick</A>
+source releases and may be retrieved via <A HREF="http://www.imagemagick.org/www/download.html">ftp</A>
+or <A HREF="http://www.imagemagick.org/www/subversion.html">Subversion</A>.
+</p>
+</div>
+<h2>Installation</h2>
+<div class="doc-section">
+<a id="install"></a>
+<p>Once you have the Magick++ sources available, follow these detailed
+<A HREF="../Magick++/Install.html">installation instructions</A> for UNIX and
+Windows. 
+</p>
+<p>A helper script named <I>Magick++-config</I> is installed
+under Unix which assists with recalling compilation options required
+to compile and link programs which use Magick++. For example, the
+following command will compile and link the source file <I>demo.cpp</I>
+to produce the executable <I>demo</I> (notice that quotes are
+backward quotes): 
+</p>
+<pre class="text">
+c++ `Magick++-config --cxxflags --cppflags` -O2 -o demo demo.cpp \
+  `Magick++-config --ldflags --libs`
+</pre>
+<p>Windows users may get started by manually editing a project file
+for one of the Magick++ demo programs. 
+</p>
+<p>Note, under Windows (and possibly the Mac) it may be necessary to initialize the ImageMagick library prior to using the Magick++ library. This initialization is performed by passing the path to the ImageMagick DLLs (assumed to be in the same directory as your program) to the InitializeMagick() function call. This is commonly performed by providing the path to your program (argv[0]) as shown in the following example: </p>
+<pre class="text">
+int main( int argc, char ** argv) {
+  InitializeMagick(*argv);
+  ...
+</pre>
+<p>This initialization step is not required under Unix, Linux,
+Cygwin, or any other operating environment that supports the notion
+of <em>installing</em> ImageMagick in a known location. 
+</p>
+</div>
+<h2>Reporting Bugs</h2>
+<div class="doc-section">
+<a id="bugs"></a>
+<p>Please report any bugs via the
+<A HREF="http://www.imagemagick.org/discourse-server/viewforum.html?f=3">Magick++ bug tracking forum</A>.
+Questions regarding usage should be directed to 
+<A HREF="http://www.imagemagick.org/discourse-server/viewforum.html?f=1">Magick++ discussion forum</A>.
+</p>
+</div>
+
+</div>
+
+<div id="linkbar">
+    <span id="linkbar-west">&nbsp;</span>
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17690367-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+</html>

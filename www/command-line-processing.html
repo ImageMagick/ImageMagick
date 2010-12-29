@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -9,7 +9,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="command-line, processing, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -21,12 +21,25 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -89,7 +102,7 @@
     <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../Magick++/">Magick++</a>
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -127,7 +140,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -137,15 +150,6 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: LVM Versicherung" href="http://www.neu-reich.de">LVM Versicherung</a><!-- 201101010480 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
 </div>
 </div>
 </div>
@@ -173,6 +177,8 @@
 <h1>ImageMagick Command-line Processing</h1>
 <p class="navigation-index">[<a href="#anatomy">The Anatomy of the Command Line</a> &bull; <a href="#input">Input Filename</a> &bull; <a href="#setting">Image Setting</a> &bull; <a href="#operator">Image Operator</a> &bull; <a href="#sequence">Image Sequence Operator</a> &bull; <a href="#geometry">Image Geometry</a> &bull;  <a href="#stack">Image Stack</a> &bull; <a href="#output">Output Filename</a>]</p>
 
+<div class="doc-section">
+
 <p>The ImageMagick command line can be as simple as this.</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.jpg image.png</span></p>
@@ -185,12 +191,10 @@
 <p>Without knowing much about the ImageMagick command line, you can probably figure out that the first command above converts an image in the JPEG format to one in the PNG format.  However, very few may realize the second, more complex command, gives a flat two-dimensional label a three-dimensional look with rich textures and simulated depth:</p>
 
 <div class="image">
-<p>
   <a href="../images/label.gif"><img src="../images/label.gif" width="78" height="53" alt="label" /></a>
 <img style="margin-top:16px; margin-bottom:17px;" src="../images/right.gif" width="20" height="20" alt="==>" />
   <a href="../images/button.gif">
   <img src="../images/button.gif" width="78" height="53" alt="button" /></a>
-</p>
 </div>
 
 <p class="warn">[ <em>A quick word about our formatting of commands:</em> The second example above is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<kbd>\</kbd>). The backslash is the Unix <em>line continuation</em> character. In the Windows shell, use a carat character (<kbd>^</kbd>) for line continuation. We use the Unix style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <em>parentheses</em> that are <em>escaped</em> above using the backslash are not escaped in Windows. There are some other differences between Windows and Unix (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. ]</p>
@@ -198,9 +202,7 @@
 <p>Here we show percent completion of a task as a shaded cylinder:</p>
 
 <div class="image">
-<p>
-  <img src="../images/cylinder_shaded.png" width="320" height="200" alt="Shaded Cylinder" /></a>
-</p>
+  <img src="../images/cylinder_shaded.png" width="320" height="200" alt="Shaded Cylinder" />
 </div>
 
 <p>Given the complexity of the rendering, you might be surprised it is accomplished by a single command-line:</p>
@@ -223,8 +225,10 @@ convert -size 320x90 xc:none -stroke snow4 -size 1x90 -tile gradient:white-snow4
 <p>In the next sections we dissect the anatomy of the ImageMagick command line.  Hopefully, after carefully reading and better understanding how the command line works, you should be able to accomplish complex image-processing tasks without resorting to the sometimes daunting <a href="../www/api.html">program interfaces</a>.</p>
 
 <p>See <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a> for additional help when using ImageMagick from the command-line.</p>
+</div>
 
-<h2><a name="anatomy"></a>The Anatomy of the Command Line</h2>
+<h2><a id="anatomy"></a>The Anatomy of the Command Line</h2>
+<div class="doc-section">
 <p>The ImageMagick command line consists of</p>
 
 <ol>
@@ -244,8 +248,9 @@ convert -size 320x90 xc:none -stroke snow4 -size 1x90 -tile gradient:white-snow4
 </ol>
 
 <p>You can find a detailed explanation of each of the constituent parts of the command line in the sections that follow.</p>
+</div>
 
-<h2><a name="input"></a>Input Filename</h2>
+<h2><a id="input"></a>Input Filename</h2>
 <div class="doc-section">
 
 <p>ImageMagick extends the concept of an input filename to include:</p>
@@ -279,7 +284,7 @@ of the image before it can be read and processed.  Most formats have a
 signature within the image that uniquely identifies the format.  Failing
 that, ImageMagick leverages the filename extension to determine the format. 
 For example, <kbd>image.jpg</kbd> or <kbd>image.JPG</kbd> tells ImageMagick
-it is reading an image in the JPEG format. </>
+it is reading an image in the JPEG format. </p>
 
                 <p>In some cases the image may not contain a signature
 and/or the filename does not identify the image format.  In these cases an
@@ -425,7 +430,7 @@ the filename <kbd>image-%d.jpg[1-5]</kbd>. The command</p>
 </div>
 
 
-<h2><a name="setting"></a>Image Setting</h2>
+<h2><a id="setting"></a>Image Setting</h2>
 <div class="doc-section">
 
 <p>An image setting persists as it appears on the command line and may affect
@@ -442,7 +447,7 @@ is reset or the command line terminates.  The image settings include:</p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -channel RGB wand.png wizard.png images.png</span></p>
 </div>
 
-<h2><a name="operator"></a>Image Operator</h2>
+<h2><a id="operator"></a>Image Operator</h2>
 <div class="doc-section">
 
 <p>An image operator differs from a setting in that it affects the image
@@ -461,7 +466,7 @@ include:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert wand.png -negate wizard.png images.png</span></p></div>
 
-<h2><a name="sequence"></a>Image Sequence Operator</h2>
+<h2><a id="sequence"></a>Image Sequence Operator</h2>
 <div class="doc-section">
 
 <p>An image sequence operator differs from a setting in that it affects an
@@ -472,7 +477,7 @@ these image sequence operators:</p>
 <a href="../www/command-line-options.html#append">&#x2011;append</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#affinity">&#x2011;affinity</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#average">&#x2011;average</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#clut">&#x2011;clut</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#coalesce">&#x2011;coalesce</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#combine">&#x2011;combine</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#composite">&#x2011;composite</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#crop">&#x2011;crop</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#debug">&#x2011;debug</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#deconstruct">&#x2011;deconstruct</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#delete">&#x2011;delete</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#evaluate-seqence">&#x2011;evaluate&#x2011;seqence</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#fft">&#x2011;fft</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#flatten">&#x2011;flatten</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#fx">&#x2011;fx</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#hald-clut">&#x2011;hald&#x2011;clut</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#ift">&#x2011;ift</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#identify">&#x2011;identify</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#insert">&#x2011;insert</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#layers">&#x2011;layers</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#limit">&#x2011;limit</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#map">&#x2011;map</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#maximum">&#x2011;maximum</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#minimum">&#x2011;minimum</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#morph">&#x2011;morph</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#mosaic">&#x2011;mosaic</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#optimize">&#x2011;optimize</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#print">&#x2011;print</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#process">&#x2011;process</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#quiet">&#x2011;quiet</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#separate">&#x2011;separate</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#swap">&#x2011;swap</a> <span class='bull'>&nbsp;&bull; </span> <a href="../www/command-line-options.html#write">&#x2011;write</a> </p>
 </div>
 
-<h2><a name="geometry"></a>Image Geometry</h2>
+<h2><a id="geometry"></a>Image Geometry</h2>
 <div class="doc-section">
 
 <p>Many command-line options take a <em class="arg">geometry</em> argument
@@ -629,7 +634,7 @@ Here are some examples to illustrate the use of <em>offsets</em> in <em class="a
 </div>
 
 
-<h2><a name="stack"></a>Image Stack</h2>
+<h2><a id="stack"></a>Image Stack</h2>
 <div class="doc-section">
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
@@ -655,7 +660,7 @@ above.</p>
 
 </div> <!-- end Image Stack section -->
 
-<h2><a name="output"></a>Output Filename</h2>
+<h2><a id="output"></a>Output Filename</h2>
 <div class="doc-section">
 
 <p>ImageMagick extends the concept of an output filename to include:</p>

@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -9,7 +9,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="resources, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -21,12 +21,25 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -89,7 +102,7 @@
     <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../Magick++/">Magick++</a>
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -127,7 +140,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011040100025 atlas.multimedia-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -137,15 +150,6 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: LVM Versicherung" href="http://www.neu-reich.de">LVM Versicherung</a><!-- 201101010480 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
 </div>
 </div>
 </div>
@@ -167,19 +171,19 @@
 
 <div class="main">
 
-<h1>ImageMagick Resources</h1>
+<h1>Customize ImageMagick With Resources</h1>
 <p class="navigation-index">[<a href="#configure">Configuration Files</a> &bull; <a href="#modules">Modules</a> &bull; <a href="#fonts">Fonts</a> &bull; <a href="#environment">Environment Variables</a>]</p>
 
 <div class="doc-section">
 <p>ImageMagick depends on a number of external resources including configuration files, loadable modules, fonts, and environment variables.</p>
 </div>
 
-<h2><a name="configure"></a>Configuration Files</h2>
+<h2><a id="configure"></a>Configuration Files</h2>
 <div class="doc-section">
 
 <p>ImageMagick depends on a number of external configuration files detailed here:</p>
 
-<dl class="doc">
+<dl>
 <dt class="doc"><a href="../www/source/coder.xml">coder.xml</a></dt>
   <dd>Associate an image format with the specified coder module.
 
@@ -192,7 +196,7 @@
   <p>A number of command line options require a <a href="../www/color.html">color parameter</a>.  It is often convenient to refer to a color by name (e.g. white) rather than by hex value (e.g. #fff).  This file maps a color name to its equivalent red, green, blue, and alpha intensities (e.g. for white, red = 255, green = 255, blue = 255, and alpha = 0).</p>
   </dd>
 
-<dt class="doc"><a name="configure.xml"/><a href="../www/source/configure.xml">configure.xml</a></dt>
+<dt class="doc"><a id="configure.xml"/><a href="../www/source/configure.xml">configure.xml</a></dt>
   <dd>Set ImageMagick build parameters and system-wide environment variables (e.g. MAGICK_TEMPORARY_PATH).
   <p>
   As ImageMagick is built, a number of build parameters are saved to this configuration file.  They include the version, release date, dependent delegate libraries, and quantum depth among others.</p>
@@ -205,10 +209,10 @@
   </dd>
 
 <dt class="doc"><a href="../www/source/english.xml">english.xml</a></dt>
-  <dd>Associate message tags with English translations.</dd><br />
+  <dd>Associate message tags with English translations.</dd>
 
 <dt class="doc"><a href="../www/source/francais.xml">francais.xml</a></dt>
-  <dd>Associate message tags with French translations.  </dd><br />
+  <dd>Associate message tags with French translations.  </dd>
 
 <dt class="doc"><a href="../www/source/locale.xml">locale.xml</a></dt>
   <dd>Associate message tags with a  translation for your locale.
@@ -256,9 +260,9 @@ file or data stream.</p>
   </dd>
 
 <dt class="doc"><a href="../www/source/thresholds.xml">thresholds.xml</a></dt>
-  <dd>Set threshold maps for ordered posterized dither.</dd><br />
+  <dd>Set threshold maps for ordered posterized dither.</dd>
 
-<dt class="doc"><a name="type.xml"></a><a href="../www/source/type.xml">type.xml</a></dt>
+<dt class="doc"><a id="type.xml"></a><a href="../www/source/type.xml">type.xml</a></dt>
   <dd>Configure fonts.
   <p>Define the font name, family, foundry, style, format, metrics, and glyphs for any font you want to use within ImageMagick.</p>
   </dd>
@@ -322,7 +326,7 @@ file or data stream.</p>
 
 </div>
 
-<h2><a name="modules"></a>Modules</h2>
+<h2><a id="modules"></a>Modules</h2>
 <div class="doc-section">
 
 <p>ImageMagick's image format support is usually provided in the form of loadable modules. It searches for loadable modules in the following order and it uses the first match found:</p>
@@ -339,7 +343,7 @@ file or data stream.</p>
 
 </div>
 
-<h2><a name="fonts"></a>Fonts</h2>
+<h2><a id="fonts"></a>Fonts</h2>
 <div class="doc-section">
 
 <p>ImageMagick is able to load raw TrueType and Postscript font files.  It searches for the font configuration file, <a href="#type.xml">type.xml</a>, in the following order, and loads them if found:</p>
@@ -355,63 +359,62 @@ file or data stream.</p>
 
 </div>
 
-<h2><a name="environment"></a>Environment Variables</h2>
+<h2><a id="environment"></a>Environment Variables</h2>
 <div class="doc-section">
 
 <p>Environment variables recognized by ImageMagick include:</p>
 
-<dl class="doc">
+<dl>
 <dt class="doc">HOME</dt>
-  <dd>Set path to search for configuration files in <em>$HOME/.magick</em> if the directory exists.</dd><br />
+  <dd>Set path to search for configuration files in <em>$HOME/.magick</em> if the directory exists.</dd>
 <dt class="doc">LD_LIBRARY_PATH</dt>
-  <dd>Set path to the ImageMagick shareable libraries and other dependent libraries.</dd><br />
+  <dd>Set path to the ImageMagick shareable libraries and other dependent libraries.</dd>
 <dt class="doc">MAGICK_AREA_LIMIT</dt>
-  <dd>Set the maximum <em>width * height</em> of an image that can reside in the pixel cache memory.</dd><br />
-  <dd>Images that exceed the area limit are cached to disk (see <a href="#disk-limit">MAGICK_DISK_LIMIT</a>).</dd><br />
+  <dd>Set the maximum <em>width * height</em> of an image that can reside in the pixel cache memory.</dd>
+  <dd>Images that exceed the area limit are cached to disk (see <a href="#disk-limit">MAGICK_DISK_LIMIT</a>).</dd>
 <dt class="doc">MAGICK_CODER_FILTER_PATH</dt>
-  <dd>Set search path to use when searching for filter process modules (invoked via  <a href="../www/command-line-options.html#process">-process</a>).<dd><br />
-  <dd>This path permits the user to extend ImageMagick's image processing functionality by adding loadable modules to a preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</dd><br />
+  <dd>Set search path to use when searching for filter process modules (invoked via  <a href="../www/command-line-options.html#process">-process</a>).</dd>
+  <dd>This path permits the user to extend ImageMagick's image processing functionality by adding loadable modules to a preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</dd>
 <dt class="doc">MAGICK_CODER_MODULE_PATH</dt>
-  <dd>Set path where ImageMagick can locate its coder modules.</dd><br />
-  <dd>This path permits the user to arbitrarily extend the image formats supported by ImageMagick by adding loadable coder modules from an preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</dd><br />
+  <dd>Set path where ImageMagick can locate its coder modules.</dd>
+  <dd>This path permits the user to arbitrarily extend the image formats supported by ImageMagick by adding loadable coder modules from an preferred location rather than copying them into the ImageMagick installation directory.  The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#modules">default search path</a>.</dd>
 <dt class="doc">MAGICK_CONFIGURE_PATH</dt>
-  <dd>Set path where ImageMagick can locate its configuration files</dd><br />
-  <dd>Use this search path to search for configuration (.xml) files. The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#configure">default search path</a>.</dd><br />
+  <dd>Set path where ImageMagick can locate its configuration files</dd>
+  <dd>Use this search path to search for configuration (.xml) files. The formatting of the search path is similar to operating system search paths (i.e. colon delimited for Unix, and semi-colon delimited for Microsoft Windows). This user specified search path is searched before trying the <a href="#configure">default search path</a>.</dd>
 <dt class="doc">MAGICK_DEBUG</dt>
-  <dd>Set debug options.</dd><br />
-  <dd>See <a href="../www/command-line-options.html#debug">-debug</a> for a description of debugging options.</dd><br />
-<dt class="doc"><a name="disk-limit"></a>MAGICK_DISK_LIMIT</dt>
-  <dd>Set maximum amount of disk space in bytes permitted for use by the pixel cache.</dd><br />
-  <dd>When this limit is exceeded, the pixel cache is not be created and an error message is returned.</dd><br />
+  <dd>Set debug options.</dd>
+  <dd>See <a href="../www/command-line-options.html#debug">-debug</a> for a description of debugging options.</dd>
+<dt class="doc"><a id="disk-limit"></a>MAGICK_DISK_LIMIT</dt>
+  <dd>Set maximum amount of disk space in bytes permitted for use by the pixel cache.</dd>
+  <dd>When this limit is exceeded, the pixel cache is not be created and an error message is returned.</dd>
 <dt class="doc">MAGICK_FILE_LIMIT</dt>
-  <dd>Set maximum number of open pixel cache files.</dd><br />
-  <dd>When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand.  This behavior permits a large number of images to be accessed simultaneously on disk, but with a speed penalty due to repeated open/close calls.</dd><br />
+  <dd>Set maximum number of open pixel cache files.</dd>
+  <dd>When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand.  This behavior permits a large number of images to be accessed simultaneously on disk, but with a speed penalty due to repeated open/close calls.</dd>
 <dt class="doc">MAGICK_FONT_PATH</dt>
-  <dd>Set path ImageMagick searches for TrueType and Postscript Type1 font files.</dd><br />
-  <dd>This path is only consulted if a particular font file is not found in the current directory.</dd><br />
+  <dd>Set path ImageMagick searches for TrueType and Postscript Type1 font files.</dd>
+  <dd>This path is only consulted if a particular font file is not found in the current directory.</dd>
 <dt class="doc">MAGICK_HOME</dt>
-  <dd>Set the path at the top of ImageMagick installation directory.</dd><br />
-  <dd>This path is consulted by <em>uninstalled</em> builds of ImageMagick which do not have their location hard-coded or set by an installer.</dd><br />
-<dt class="doc"><a name="map-limit"></a>MAGICK_MAP_LIMIT</dt>
-  <dd>Set maximum amount of memory map in bytes to allocate for the pixel cache.</dd><br />
+  <dd>Set the path at the top of ImageMagick installation directory.</dd>
+  <dd>This path is consulted by <em>uninstalled</em> builds of ImageMagick which do not have their location hard-coded or set by an installer.</dd>
+<dt class="doc"><a id="map-limit"></a>MAGICK_MAP_LIMIT</dt>
+  <dd>Set maximum amount of memory map in bytes to allocate for the pixel cache.</dd>
   <dd>When this limit is exceeded, the image pixels are cached to disk (see MAGICK_DISK_LIMIT).</dd>
-  </dd><br />
 <dt class="doc">MAGICK_MEMORY_LIMIT</dt>
-  <dd>Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.</dd><br />
-  <dd>When this limit is exceeded, the image pixels are cached to memory-mapped disk (see <a href="#map-limit">MAGICK_MAP_LIMIT</a>).</dd><br />
+  <dd>Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.</dd>
+  <dd>When this limit is exceeded, the image pixels are cached to memory-mapped disk (see <a href="#map-limit">MAGICK_MAP_LIMIT</a>).</dd>
 <dt class="doc">MAGICK_PRECISION</dt>
-  <dd>Set the maximum number of significant digits to be printed.</dd><br />
+  <dd>Set the maximum number of significant digits to be printed.</dd>
 <dt class="doc">MAGICK_SYNCHRONIZE</dt>
-  <dd>Set to true to synchronize image to storage device.</dd><br />
+  <dd>Set to true to synchronize image to storage device.</dd>
 <dt class="doc">MAGICK_TEMPORARY_PATH</dt>
-  <dd>Set path to store temporary files.</dd><br />
+  <dd>Set path to store temporary files.</dd>
 <dt class="doc">MAGICK_THREAD_LIMIT</dt>
-  <dd>Set maximum parallel threads.</dd><br />
-  <dd>Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this enviroment variable to set the maximum number of threads that are permitted to run in parallel.</dd><br />
+  <dd>Set maximum parallel threads.</dd>
+  <dd>Many ImageMagick algorithms run in parallel on multi-processor systems.  Use this enviroment variable to set the maximum number of threads that are permitted to run in parallel.</dd>
 <dt class="doc">MAGICK_THROTTLE</dt>
-  <dd>Periodically yield the CPU for at least the time specified in milliseconds.</dd><br />
+  <dd>Periodically yield the CPU for at least the time specified in milliseconds.</dd>
 <dt class="doc">MAGICK_TIME_LIMIT</dt>
-  <dd>Set maximum time in seconds.</dd><br />
+  <dd>Set maximum time in seconds.</dd>
   <dd>When this limit is exceeded, an exception is thrown and processing stops.</dd>
 </dl>
 </div>
