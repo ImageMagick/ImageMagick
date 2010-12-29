@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -9,7 +9,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick is a software suite to create, edit, or compose bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="magick, image, file, format, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -21,12 +21,25 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -89,7 +102,7 @@
     <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../Magick++/">Magick++</a>
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -127,7 +140,7 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011040100025 gabi.schulze-->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -137,15 +150,6 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: LVM Versicherung" href="http://www.neu-reich.de">LVM Versicherung</a><!-- 201101010480 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
 </div>
 </div>
 </div>
@@ -168,18 +172,17 @@
 <div class="main">
 
 <h1>ImageMagick Magick Image File Format</h1>
-<p class="navigation-index">[<a href="#header">MIFF Header</a> &bull; <a href="#binary">MIFF Binary Data</a>]</p>
+<p class="navigation-index">[<a href="#miff-header">MIFF Header</a> &bull; <a href="#binary">MIFF Binary Data</a>]</p>
 
 <div class="doc-section">
 <p>The Magick Image File Format (MIFF) is ImageMagick's own platform-independent format for storing bitmap images.  It has an advantage over other image formats in that it stores all metadata known to ImageMagick (e.g. image color profiles, comments, author, copyright, etc.), whereas, other formats may only support a small portion of available metadata or none at all.  A MIFF image file consist of two sections.  The first section is a header composed of keys describing the image in text form.  The next section is the binary image data.  We discuss these sections in detail below.</p>
 </div>
 
-<h2><a name="header"></a>MIFF Header</h2>
+<h2><a id="miff-header"></a>MIFF Header</h2>
 <div class="doc-section">
 
 
-<p>The MIFF header is composed entirely of ISO-8859-1 characters.  The fields
-in the header are key and value combination in the <em>key = value</em> format, with each key and value separated by an equal sign (<kbd>=</kbd>).  Each <em>key = value</em> combination is delimited by at least one control or whitespace character.  Comments may appear in the header section and are always delimited by braces.  The MIFF header always ends with a colon (<kbd>:</kbd>) character, followed by a <em>ctrl-Z</em> character.  It is also common to proceed the colon with a <em>formfeed</em> and a <em>newline</em> character.  The <em>formfeed</em> prevents the listing of binary data when using the <kbd>more</kbd> Unix program, whereas, the <em>ctrl-Z</em> has the same effect with the <kbd>type</kbd> command on the Windows command line.</p>
+<p>The MIFF header is composed entirely of ISO-8859-1 characters.  The fields in the header are key and value combination in the <em>key = value</em> format, with each key and value separated by an equal sign (<kbd>=</kbd>).  Each <em>key = value</em> combination is delimited by at least one control or whitespace character.  Comments may appear in the header section and are always delimited by braces.  The MIFF header always ends with a colon (<kbd>:</kbd>) character, followed by a <em>ctrl-Z</em> character.  It is also common to proceed the colon with a <em>formfeed</em> and a <em>newline</em> character.  The <em>formfeed</em> prevents the listing of binary data when using the <kbd>more</kbd> Unix program, whereas, the <em>ctrl-Z</em> has the same effect with the <kbd>type</kbd> command on the Windows command line.</p>
 
 <p>The following is a partial list of <em> key = value</em> combinations that are typically be found in a MIFF file:</p>
 
@@ -302,7 +305,7 @@ in the header are key and value combination in the <em>key = value</em> format, 
 
 </div>
 
-<h2><a name="binary"></a>MIFF Binary Data</h2>
+<h2><a id="binary"></a>MIFF Binary Data</h2>
 <div class="doc-section">
 
 <p>Next comes the binary image data itself.  How the image data is formatted depends upon the class of the image as specified (or not specified) by the value of the class key in the header.</p>

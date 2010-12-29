@@ -1,15 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
-  <title>ImageMagick: Color Reduction Utilizing Adaptive Spatial Subdivision</title/>
+  <title>ImageMagick: Color Reduction Utilizing Adaptive Spatial Subdivision</title>
   <meta http-equiv="Content-Language" content="en-US"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick® is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.  ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you can freely use, copy, modify, and distribute. Its license is compatible with the GPL. It runs on all major operating systems.  The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically."/>
+  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="color, reduction, utilizing, adaptive, spatial, subdivision, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -21,12 +21,25 @@
   <meta name="Resource-type" content="document"/>
   <meta name="Copyright" content="Copyright (c) 1999-2011 ImageMagick Studio LLC"/>
   <meta name="Distribution" content="Global"/>
-  <link rel="icon" href="../images/wand.png"  sizes="32x32"/>
+  <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+   <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+   <script type="text/javascript">
+     $(document).ready(function() {
+       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
+         'transitionIn'  : 'elastic',
+         'transitionOut' : 'elastic',
+         'overlayShow'   : false,
+         'opacity'       : true
+       });
+     });
+   </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -89,7 +102,7 @@
     <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../Magick++/">Magick++</a>
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -116,10 +129,10 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Site Map"href="../www/sitemap.html">Site Map</a>
+  <a title="Site Map" href="../www/sitemap.html">Site Map</a>
 </div>
 <div  class="sub">
-    <a title="Site Map: Links"href="../www/links.html">Links</a>
+  <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
@@ -137,15 +150,6 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Webdesign Agentur" href="http://www.ventzke-partner.de">Webdesign Agentur</a><!-- 201101010480 invendio.de-->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: LVM Versicherung" href="http://www.neu-reich.de">LVM Versicherung</a><!-- 201101010480 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Diamonds are a Girls Best Friend" href="http://www.schmuck.org">Diamonds are a Girls Best Friend</a><!-- 201101010600 Peterssen-->
 </div>
 </div>
 </div>
@@ -167,13 +171,14 @@
 
 <div class="main">
 
+<h1>ImageMagick Color Reduction</h1>
 <p class="navigation-index">[<a href="#describe">Algorithm Description</a> &bull; <a href="#measure">Measuring Color Reduction Error</a>]</p>
 
 <div class="doc-section">
 <p>This document describes how ImageMagick performs color reduction on an image. To fully understand what follows, you should have a knowledge of basic imaging techniques and the tree data structure and terminology.</p>
 </div>
 
-<h2><a name="describe"></a>Algorithm Description</h2>
+<h2><a id="describe"></a>Algorithm Description</h2>
 <div class="doc-section">
 
 <p>For purposes of color allocation, an image is a set of <em>n</em> pixels, where each pixel is a point in RGB space. RGB space is a 3-dimensional vector space, and each pixel, <em>p(i)</em>, is defined by an ordered triple of red, green, and blue coordinates, (<em>r(i)</em>, <em>g(i)</em>, <em>b(i)</em>).</p>
@@ -271,7 +276,7 @@
 
 </div>
 
-<h2><a name="measure"></a>Measuring Color Reduction Error</h2>
+<h2><a id="measure"></a>Measuring Color Reduction Error</h2>
 <div class="doc-section">
 
 <p>Depending on the image, the color reduction error may be obvious or invisible. Images with high spatial frequencies (such as hair or grass) will show error much less than pictures with large smoothly shaded areas (such as faces). This because the high-frequency contour edges introduced by the color reduction process are masked by the high frequencies in the image.</p>
