@@ -948,6 +948,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     XMPProfileMagick[4]= { (char) 0xef, (char) 0xbb, (char) 0xbf, (char) 0x00 };
 
   char
+    basename[MaxTextExtent],
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     **labels,
@@ -2497,8 +2498,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
+  GetPathComponent(image->filename,BasePath,basename);
   (void) FormatMagickString(buffer,MaxTextExtent,"/Title (%s)\n",
-    EscapeParenthesis(image->filename));
+    EscapeParenthesis(basename));
   (void) WriteBlobString(image,buffer);
   seconds=time((time_t *) NULL);
 #if defined(MAGICKCORE_HAVE_LOCALTIME_R)
