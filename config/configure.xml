@@ -8,8 +8,8 @@
 <configuremap>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="LIB_VERSION" value="0x666"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,6,6,9"/>
-  <configure name="RELEASE_DATE" value="2010-12-29"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,6,6,10"/>
+  <configure name="RELEASE_DATE" value="2010-12-31"/>
   <configure name="CONFIGURE" value="./configure  '--enable-maintainer-mode'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
