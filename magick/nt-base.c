@@ -1091,7 +1091,7 @@ MagickExport int NTGhostscriptEXE(char *path,int length)
       (NTGhostscriptGetString("GS_DLL",program,sizeof(program)) == FALSE))
     return(FALSE);
   p=strrchr(program,'\\');
-  if (p != (char *) NULL)
+  if (p == (char *) NULL)
     {
       p++;
       *p='\0';
