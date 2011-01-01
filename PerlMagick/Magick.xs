@@ -970,8 +970,8 @@ static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
   SV
     *sv;
 
-  (void) FormatMagickString(message,MaxTextExtent,"%s::package%s%lx",
-    PackageName,XS_VERSION,(long) reference);
+  (void) FormatMagickString(message,MaxTextExtent,"%s::package%s%p",
+    PackageName,XS_VERSION,reference);
   sv=perl_get_sv(message,(TRUE | 0x02));
   if (sv == (SV *) NULL)
     {
@@ -3433,8 +3433,8 @@ DESTROY(ref)
         /*
           Array (AV *) reference
         */
-        (void) FormatMagickString(message,MaxTextExtent,"package%s%lx",
-          XS_VERSION,(unsigned long) reference);
+        (void) FormatMagickString(message,MaxTextExtent,"package%s%p",
+          XS_VERSION,reference);
         hv=gv_stashpv(PackageName, FALSE);
         if (!hv)
           break;
