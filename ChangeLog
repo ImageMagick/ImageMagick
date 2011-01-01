@@ -1,4 +1,4 @@
-2010-12-31  6.6.6-9 Glenn Randers-Pehrson <glennrp@image...>
+2010-12-31  6.6.6-10 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG decoder now checks whether the image actually has any transparency
     when the input file contains an alpha channel.  (Reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17748)
