@@ -7,13 +7,13 @@
 ]>
 <configuremap>
   <configure name="NAME" value="ImageMagick"/>
-  <configure name="LIB_VERSION" value="0x666"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,6,6,10"/>
-  <configure name="RELEASE_DATE" value="2010-12-31"/>
-  <configure name="CONFIGURE" value="./configure  '--enable-maintainer-mode'"/>
+  <configure name="LIB_VERSION" value="0x667"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,6,7,0"/>
+  <configure name="RELEASE_DATE" value="2011-01-01"/>
+  <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
-  <configure name="VERSION" value="6.6.6"/>
+  <configure name="VERSION" value="6.6.7"/>
   <configure name="CC" value="gcc -std=gnu99 -std=gnu99"/>
   <configure name="CFLAGS" value="-fopenmp -g -O2 -Wall -pthread"/>
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick"/>
