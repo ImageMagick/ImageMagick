@@ -2421,179 +2421,106 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
+  {
+
+   MagickBooleanType
+     found_transparent_pixel;
+
+  found_transparent_pixel=MagickFalse;
+
   if (image->storage_class == DirectClass)
-    for (pass=0; pass < num_passes; pass++)
     {
-      /*
-        Convert image to DirectClass pixel packets.
-      */
-#if (MAGICKCORE_QUANTUM_DEPTH == 8)
-      int
-        depth;
-
-      depth=(ssize_t) ping_bit_depth;
-#endif
-      image->matte=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
-          ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
-          (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
-          MagickTrue : MagickFalse;
-
-      for (y=0; y < (ssize_t) image->rows; y++)
+      for (pass=0; pass < num_passes; pass++)
       {
-        if (num_passes > 1)
-          row_offset=ping_rowbytes*y;
+        /*
+          Convert image to DirectClass pixel packets.
+        */
+#if  (MAGICKCORE_QUANTUM_DEPTH == 8)
+        int
+          depth;
 
-        else
-          row_offset=0;
-
-        png_read_row(ping,png_pixels+row_offset,NULL);
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-
-        if (q == (PixelPacket *) NULL)
-          break;
-#if (0 && (MAGICKCORE_QUANTUM_DEPTH == 8) && !defined(MAGICKCORE_HDRI_SUPPORT))
-        if (depth == 16)
-          {
-            register Quantum
-              *p,
-              *r;
-
-            r=png_pixels+row_offset;
-            p=r;
-            if (ping_color_type == PNG_COLOR_TYPE_GRAY)
-              {
-                for (x=(ssize_t) image->columns-1; x >= 0; x--)
-                {
-                  *r++=*p++;
-                  p++;
-                  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS)) &&
-                     (((*(p-2) << 8)|*(p-1)) == transparent_color.opacity))
-                    {
-                       /* Cheap transparency */
-                       *r++=TransparentOpacity;
-                    }
-                  else
-                       *r++=OpaqueOpacity;
-                }
-              }
-            else if (ping_color_type == PNG_COLOR_TYPE_RGB)
-              {
-              if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
-                for (x=(ssize_t) image->columns-1; x >= 0; x--)
-                {
-                  *r++=*p++;
-                  p++;
-                  *r++=*p++;
-                  p++;
-                  *r++=*p++;
-                  p++;
-                  if ((((*(p-6) << 8)|*(p-5)) == transparent_color.red) &&
-                       (((*(p-4) << 8)|*(p-3)) == transparent_color.green) &&
-                       (((*(p-2) << 8)|*(p-1)) == transparent_color.blue))
-                    {
-                       /* Cheap transparency */
-                       *r++=TransparentOpacity;
-                    }
-                  else
-                       *r++=OpaqueOpacity;
-                }
-              else
-                for (x=(ssize_t) image->columns-1; x >= 0; x--)
-                {
-                  *r++=*p++;
-                  p++;
-                  *r++=*p++;
-                  p++;
-                  *r++=*p++;
-                  p++;
-                  *r++=OpaqueOpacity;
-                }
-              }
-
-            else if (ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-              for (x=(ssize_t) (4*image->columns); x != 0; x--)
-              {
-                *r++=*p++;
-                p++;
-              }
-
-            else if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-              for (x=(ssize_t) (2*image->columns); x != 0; x--)
-              {
-                *r++=*p++;
-                p++;
-              }
-          }
-        if (depth == 8 && ping_color_type == PNG_COLOR_TYPE_GRAY)
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GrayQuantum,png_pixels+row_offset);
-
-        if (ping_color_type == PNG_COLOR_TYPE_GRAY ||
-            ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-          {
-            quantum_info->depth=8;
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              GrayAlphaQuantum,png_pixels+row_offset);
-          }
-
-        else if (depth == 8 && ping_color_type == PNG_COLOR_TYPE_RGB)
-           (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-             RGBQuantum,png_pixels+row_offset);
-
-        else if (ping_color_type == PNG_COLOR_TYPE_RGB ||
-              ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-          {
-            quantum_info->depth=8;
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              RGBAQuantum,png_pixels+row_offset);
-          }
-
-        else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              IndexQuantum,png_pixels+row_offset);
-#else /* (MAGICKCORE_QUANTUM_DEPTH != 8) */
-
-        if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GrayQuantum,png_pixels+row_offset,exception);
-
-        else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GrayAlphaQuantum,png_pixels+row_offset,exception);
-
-        else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            RGBAQuantum,png_pixels+row_offset,exception);
-
-        else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            IndexQuantum,png_pixels+row_offset,exception);
-
-        else
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            RGBQuantum,png_pixels+row_offset,exception);
+        depth=(ssize_t) ping_bit_depth;
 #endif
-        if ((image->previous == (Image *) NULL) && (num_passes == 1))
-          {
-            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+        image->matte=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+            ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+            (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
+            MagickTrue : MagickFalse;
 
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          if (num_passes > 1)
+            row_offset=ping_rowbytes*y;
+
+          else
+            row_offset=0;
+
+          png_read_row(ping,png_pixels+row_offset,NULL);
+          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+
+          if (q == (PixelPacket *) NULL)
+            break;
+
+#if  (0 && (MAGICKCORE_QUANTUM_DEPTH == 8) && !defined(MAGICKCORE_HDRI_SUPPORT))
+/* code deleted from version 6.6.6-8 */
+#else  /* (MAGICKCORE_QUANTUM_DEPTH != 8) */
+
+          if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              GrayQuantum,png_pixels+row_offset,exception);
+
+          else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              GrayAlphaQuantum,png_pixels+row_offset,exception);
+
+          else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              RGBAQuantum,png_pixels+row_offset,exception);
+
+          else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              IndexQuantum,png_pixels+row_offset,exception);
+
+          else /* ping_color_type == PNG_COLOR_TYPE_RGB */
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              RGBQuantum,png_pixels+row_offset,exception);
+#endif
+          if (found_transparent_pixel == MagickFalse)
+            {
+              /* Is there a transparent pixel in the row? */
+              for (x=(ssize_t) image->columns-1; x >= 0; x--)
+              {
+                if (q->opacity != OpaqueOpacity)
+                  {
+                    found_transparent_pixel = MagickTrue;
+                    break;
+                  }
+                q++;
+              }
+            }
+
+          if ((image->previous == (Image *) NULL) && (num_passes == 1))
+            {
+              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                  image->rows);
+
+              if (status == MagickFalse)
+                break;
+            }
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
+        }
+
+        if ((image->previous == (Image *) NULL) && (num_passes != 1))
+          {
+            status=SetImageProgress(image,LoadImageTag,pass,num_passes);
             if (status == MagickFalse)
               break;
           }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
       }
-
-      if ((image->previous == (Image *) NULL) && (num_passes != 1))
-        {
-          status=SetImageProgress(image,LoadImageTag,pass,num_passes);
-          if (status == MagickFalse)
-            break;
-        }
     }
 
   else /* image->storage_class != DirectClass */
+
     for (pass=0; pass < num_passes; pass++)
     {
       Quantum
@@ -2618,8 +2545,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       {
         if (num_passes > 1)
           row_offset=ping_rowbytes*y;
+
         else
           row_offset=0;
+
         png_read_row(ping,png_pixels+row_offset,NULL);
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
@@ -2629,6 +2558,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         indexes=GetAuthenticIndexQueue(image);
         p=png_pixels+row_offset;
         r=quantum_scanline;
+
         switch (ping_bit_depth)
         {
           case 1:
@@ -2697,6 +2627,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  * and Transparent is 0.
                  */
                 q->opacity=ScaleCharToQuantum((unsigned char) (255-(*p++)));
+                if (q->opacity != OpaqueOpacity)
+                  found_transparent_pixel = MagickTrue; 
                 q++;
               }
 
@@ -2731,6 +2663,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   quantum=((*p++) << 8);
                   quantum|=(*p++);
                   q->opacity=(Quantum) (QuantumRange-quantum);
+                  if (q->opacity != OpaqueOpacity)
+                    found_transparent_pixel = MagickTrue; 
                   q++;
                 }
 #else
@@ -2754,6 +2688,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   q->opacity=(*p << 8) | *(p+1);
                   q->opacity*=65537L;
                   q->opacity=(Quantum) GetAlphaPixelComponent(q);
+                  if (p->opacity != OpaqueOpacity)
+                    found_transparent_pixel = MagickTrue; 
                   p+=2;
                   q++;
                 }
@@ -2765,6 +2701,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               if (ping_color_type == 4)
                 {
                   q->opacity=(Quantum) (QuantumRange-(*p++));
+                  if (q->opacity != OpaqueOpacity)
+                    found_transparent_pixel = MagickTrue; 
                   p++;
                   q++;
                 }
@@ -2798,6 +2736,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
       }
+
       if ((image->previous == (Image *) NULL) && (num_passes != 1))
         {
           status=SetImageProgress(image,LoadImageTag,pass,num_passes);
@@ -2805,8 +2744,23 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (status == MagickFalse)
             break;
         }
+
       quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
     }
+
+    image->matte=found_transparent_pixel;
+
+    if (logging != MagickFalse)
+      {
+        if (found_transparent_pixel != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Found transparent pixel");
+        else
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    No transparent pixel was found");
+      }
+    }
+
   if (quantum_info != (QuantumInfo *) NULL)
     quantum_info=DestroyQuantumInfo(quantum_info);
 
@@ -7305,6 +7259,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif /* PNG_BUILD_PALETTE */
 
+#if 0 /* causes some test cases to fail and doesn't allow user
+       * to force color_type 4 or 6 */
+  if (number_transparent == 0 && number_semitransparent == 0)
+    image->matte=MagickFalse;
+#endif
+
   if (mng_info->ping_exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
@@ -7820,7 +7780,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           {
             if (logging != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  ... Yes: (%d,%d,%d,%d)",
+                "  ... Yes: (%d,%d,%d), (gray: %d)",
                 (int) ping_trans_color.red,
                 (int) ping_trans_color.green,
                 (int) ping_trans_color.blue,
@@ -7998,6 +7958,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 else
                   {
+                    if (logging != MagickFalse)
+                      {
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  Scaling ping_trans_color (1)");
+                      }
                     ping_have_tRNS=MagickTrue;
 
                     for (i=0; i < ping_num_trans; i++)
@@ -8012,6 +7977,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
     else
       {
+        if (logging != MagickFalse)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Scaling ping_trans_color (2)");
+          }
+
         if (image_depth < 8)
           image_depth=8;
 
@@ -8207,41 +8178,45 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,base_filter);
   }
 
-  ResetImageProfileIterator(image);
-  for (name=GetNextImageProfile(image); name != (const char *) NULL; )
-  {
-    profile=GetImageProfile(image,name);
-
-    if (profile != (StringInfo *) NULL)
+  if (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse)
+    {
+      ResetImageProfileIterator(image);
+      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
       {
+        profile=GetImageProfile(image,name);
+
+        if (profile != (StringInfo *) NULL)
+          {
 #ifdef PNG_WRITE_iCCP_SUPPORTED
-        if ((LocaleCompare(name,"ICC") == 0) ||
-            (LocaleCompare(name,"ICM") == 0))
-         {
-
-           if (ping_exclude_iCCP == MagickFalse)
+            if ((LocaleCompare(name,"ICC") == 0) ||
+                (LocaleCompare(name,"ICM") == 0))
              {
-                   png_set_iCCP(ping,ping_info,(const png_charp) name,0,
-                     (png_charp) GetStringInfoDatum(profile),
-                     (png_uint_32) GetStringInfoLength(profile));
+
+               if (ping_exclude_iCCP == MagickFalse)
+                 {
+                       png_set_iCCP(ping,ping_info,(const png_charp) name,0,
+                         (png_charp) GetStringInfoDatum(profile),
+                         (png_uint_32) GetStringInfoLength(profile));
+                 }
              }
-         }
 
-        else
+            else
 #endif
-          if (ping_exclude_zCCP == MagickFalse)
-            {
-              png_write_raw_profile(image_info,ping,ping_info,(unsigned char *)
-                name,(unsigned char *) name,GetStringInfoDatum(profile),
-                (png_uint_32) GetStringInfoLength(profile));
-            }
+              if (ping_exclude_zCCP == MagickFalse)
+                {
+                  png_write_raw_profile(image_info,ping,ping_info,
+                    (unsigned char *) name,(unsigned char *) name,
+                    GetStringInfoDatum(profile),
+                    (png_uint_32) GetStringInfoLength(profile));
+                }
+          }
+    
+          if (logging != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Setting up text chunk with %s profile",name);
+
+        name=GetNextImageProfile(image);
       }
-
-    if (logging != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Setting up text chunk with %s profile",name);
-
-    name=GetNextImageProfile(image);
   }
 
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
@@ -8393,7 +8368,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       if (ping_color_type < 4)
         if (ping_color_type != 3 || ping_num_trans > 0)
+        {
            ping_have_tRNS=MagickTrue;
+           if (logging != MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  Setting ping_have_tRNS=MagickTrue.");
+        }
     }
 
   if (logging != MagickFalse)
@@ -8492,7 +8472,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (logging != MagickFalse)
              {
                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "     background   =(%d,%d,%d)",
+                 "     tRNS color   =(%d,%d,%d)",
                        (int) ping_trans_color.red,
                        (int) ping_trans_color.green,
                        (int) ping_trans_color.blue);
