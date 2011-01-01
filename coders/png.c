@@ -2494,6 +2494,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     found_transparent_pixel = MagickTrue;
                     break;
                   }
+                if ((ping_color_type == PNG_COLOR_TYPE_RGB ||
+                    ping_color_type == PNG_COLOR_TYPE_GRAY) &&
+                    (q->red == transparent_color.red &&
+                    q->green == transparent_color.green &&
+                    q->blue == transparent_color.blue))
+                  {
+                    found_transparent_pixel = MagickTrue;
+                    break;
+                  }
                 q++;
               }
             }
@@ -2845,13 +2854,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
-              if (ScaleQuantumToShort(q->red) == transparent_color.red &&
-                  ScaleQuantumToShort(q->green) == transparent_color.green &&
-                  ScaleQuantumToShort(q->blue) == transparent_color.blue)
+              if (ScaleQuantumToChar(q->red) == transparent_color.red &&
+                  ScaleQuantumToChar(q->green) == transparent_color.green &&
+                  ScaleQuantumToChar(q->blue) == transparent_color.blue)
+                {
                   q->opacity=(Quantum) TransparentOpacity;
+                }
 
               else
-                 q->opacity=(Quantum) OpaqueOpacity;
+                {
+                  q->opacity=(Quantum) OpaqueOpacity;
+                }
 
               q++;
             }
@@ -7133,22 +7146,33 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           for (i=0; i<number_opaque; i++)
              colormap[n++] = opaque[i];
 
-          /* Add the background color to the palette, if it
-           * isn't already there.
-           */
-          for (i=0; i<number_opaque; i++)
-          {
-             if (IsColorEqual(opaque+i,
-                &image->background_color))
-             break;
-          }
+          if (ping_exclude_bKGD == MagickFalse)
+            {
+              /* Add the background color to the palette, if it
+               * isn't already there.
+               */
+              for (i=0; i<number_opaque; i++)
+              {
+                 if (IsColorEqual(opaque+i,
+                    &image->background_color))
+                 break;
+              }
 
-          if (number_opaque < 257 && i == number_opaque)
-          {
-             opaque[i]=image->background_color;
-             opaque[i].opacity = OpaqueOpacity;
-             number_opaque++;
-          }
+              if (number_opaque < 257 && i == number_opaque)
+              {
+                 opaque[i]=image->background_color;
+                 opaque[i].opacity = OpaqueOpacity;
+                 number_opaque++;
+              }
+            }
+
+          if (number_transparent == 1)
+            {
+              ping_trans_color.red= (unsigned short)(transparent[0].red);
+              ping_trans_color.green= (unsigned short) (transparent[0].green);
+              ping_trans_color.blue= (unsigned short) (transparent[0].blue);
+              ping_trans_color.gray= (unsigned short) (transparent[0].blue);
+            }
 
           if (logging != MagickFalse)
             {
@@ -7258,12 +7282,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          }
     }
 #endif /* PNG_BUILD_PALETTE */
-
-#if 0 /* causes some test cases to fail and doesn't allow user
-       * to force color_type 4 or 6 */
-  if (number_transparent == 0 && number_semitransparent == 0)
-    image->matte=MagickFalse;
-#endif
 
   if (mng_info->ping_exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
@@ -7543,14 +7561,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              ping_have_tRNS=MagickTrue;
       }
 
-      /*
-       * Identify which colormap entry is the background color.
-       */
-      for (i=0; i < (ssize_t) MagickMax(1L*number_colors-1L,1L); i++)
-        if (IsPNGColorEqual(ping_background,image->colormap[i]))
-          break;
+    if (ping_exclude_bKGD == MagickFalse)
+      {
+        /*
+         * Identify which colormap entry is the background color.
+         */
+        for (i=0; i < (ssize_t) MagickMax(1L*number_colors-1L,1L); i++)
+          if (IsPNGColorEqual(ping_background,image->colormap[i]))
+            break;
 
-      ping_background.index=(png_byte) i;
+        ping_background.index=(png_byte) i;
+      }
     } /* end of write_png8 */
 
   else if (mng_info->write_png24)
@@ -7702,96 +7723,109 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "    ping_bit_depth: %.20g",(double) ping_bit_depth);
     }
 
-  if (matte && (mng_info->IsPalette))
+  if (matte)
     {
-
-      ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
-
-      if (ping_have_color != MagickFalse)
-         ping_color_type=PNG_COLOR_TYPE_RGBA;
-
-      /*
-       * Determine if there is any transparent color.
-      */
-      if (number_transparent + number_semitransparent == 0)
+      if (mng_info->IsPalette)
         {
-          /*
-            No transparent pixels are present.  Change 4 or 6 to 0 or 2.
-          */
-          image_matte=MagickFalse;
-          ping_color_type&=0x03;
-        }
 
+          ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
+
+          if (ping_have_color != MagickFalse)
+             ping_color_type=PNG_COLOR_TYPE_RGBA;
+
+          /*
+           * Determine if there is any transparent color.
+          */
+          if (number_transparent + number_semitransparent == 0)
+            {
+              /*
+                No transparent pixels are present.  Change 4 or 6 to 0 or 2.
+              */
+              image_matte=MagickFalse;
+              ping_color_type&=0x03;
+            }
+
+          else
+            {
+              unsigned int
+                mask;
+
+              mask=0xffff;
+
+              if (ping_bit_depth == 8)
+                 mask=0x00ff;
+
+              if (ping_bit_depth == 4)
+                 mask=0x000f;
+
+              if (ping_bit_depth == 2)
+                 mask=0x0003;
+
+              if (ping_bit_depth == 1)
+                 mask=0x0001;
+
+              ping_trans_color.red=(png_uint_16)
+                (ScaleQuantumToShort(image->colormap[0].red) & mask);
+
+              ping_trans_color.green=(png_uint_16)
+                (ScaleQuantumToShort(image->colormap[0].green) & mask);
+
+              ping_trans_color.blue=(png_uint_16)
+                (ScaleQuantumToShort(image->colormap[0].blue) & mask);
+
+              ping_trans_color.gray=(png_uint_16)
+                (ScaleQuantumToShort(PixelIntensityToQuantum(
+                   image->colormap)) & mask);
+
+              ping_trans_color.index=(png_byte) 0;
+
+              ping_have_tRNS=MagickTrue;
+            }
+
+          if (ping_have_tRNS != MagickFalse)
+            {
+              /*
+                Determine if there is one and only one transparent color
+                and if so if it is fully transparent.
+              */
+              if (logging != MagickFalse)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Is there a single fully transparent color?");
+
+              if (number_transparent > 1 || number_semitransparent > 0)
+              {
+                ping_have_tRNS = MagickFalse;
+                if (logging != MagickFalse)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  ... No.");
+              }
+              else
+              {
+                if (logging != MagickFalse)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  ... Yes: (%d,%d,%d), (gray: %d)",
+                    (int) ping_trans_color.red,
+                    (int) ping_trans_color.green,
+                    (int) ping_trans_color.blue,
+                    (int) ping_trans_color.gray);
+              }
+            }
+
+          if (ping_have_tRNS != MagickFalse)
+            {
+              ping_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
+
+              if (image_depth == 8)
+                {
+                  ping_trans_color.red&=0xff;
+                  ping_trans_color.green&=0xff;
+                  ping_trans_color.blue&=0xff;
+                  ping_trans_color.gray&=0xff;
+                }
+            }
+        }
       else
         {
-          unsigned int
-            mask;
-
-          mask=0xffff;
-
-          if (ping_bit_depth == 8)
-             mask=0x00ff;
-
-          if (ping_bit_depth == 4)
-             mask=0x000f;
-
-          if (ping_bit_depth == 2)
-             mask=0x0003;
-
-          if (ping_bit_depth == 1)
-             mask=0x0001;
-
-          ping_trans_color.red=(png_uint_16)
-            (ScaleQuantumToShort(image->colormap[0].red) & mask);
-
-          ping_trans_color.green=(png_uint_16)
-            (ScaleQuantumToShort(image->colormap[0].green) & mask);
-
-          ping_trans_color.blue=(png_uint_16)
-            (ScaleQuantumToShort(image->colormap[0].blue) & mask);
-
-          ping_trans_color.gray=(png_uint_16)
-            (ScaleQuantumToShort(PixelIntensityToQuantum(
-               image->colormap)) & mask);
-
-          ping_trans_color.index=(png_byte) 0;
-
-          ping_have_tRNS=MagickTrue;
-        }
-
-      if (ping_have_tRNS != MagickFalse)
-        {
-          /*
-            Determine if there is one and only one transparent color
-            and if so if it is fully transparent.
-          */
-          if (logging != MagickFalse)
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Is there a single fully transparent color?");
-
-          if (number_transparent > 1 || number_semitransparent > 0)
-          {
-            ping_have_tRNS = MagickFalse;
-            if (logging != MagickFalse)
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  ... No.");
-          }
-          else
-          {
-            if (logging != MagickFalse)
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  ... Yes: (%d,%d,%d), (gray: %d)",
-                (int) ping_trans_color.red,
-                (int) ping_trans_color.green,
-                (int) ping_trans_color.blue,
-                (int) ping_trans_color.gray);
-          }
-        }
-
-      if (ping_have_tRNS != MagickFalse)
-        {
-          ping_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
-
           if (image_depth == 8)
             {
               ping_trans_color.red&=0xff;
@@ -7819,8 +7853,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         else
           {
             ping_color_type=PNG_COLOR_TYPE_GRAY;
+
             if (save_image_depth == 16 && image_depth == 8)
-              ping_trans_color.gray*=0x0101;
+              {
+                if (logging != MagickFalse)
+                  {
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "  Scaling ping_trans_color (0)");
+                  }
+                    ping_trans_color.gray*=0x0101;
+              }
           }
 
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
@@ -7977,21 +8019,34 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
     else
       {
-        if (logging != MagickFalse)
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Scaling ping_trans_color (2)");
-          }
 
         if (image_depth < 8)
           image_depth=8;
 
         if ((save_image_depth == 16) && (image_depth == 8))
           {
+            if (logging != MagickFalse)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Scaling ping_trans_color from (%d,%d,%d)",
+                  (int) ping_trans_color.red,
+                  (int) ping_trans_color.green,
+                  (int) ping_trans_color.blue);
+              }
+
             ping_trans_color.red*=0x0101;
             ping_trans_color.green*=0x0101;
             ping_trans_color.blue*=0x0101;
             ping_trans_color.gray*=0x0101;
+
+            if (logging != MagickFalse)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    to (%d,%d,%d)",
+                  (int) ping_trans_color.red,
+                  (int) ping_trans_color.green,
+                  (int) ping_trans_color.blue);
+              }
           }
       }
 
@@ -8012,7 +8067,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
          maxval=(png_uint_16) ((one << ping_bit_depth)-1);
 
-         if (ping_exclude_bKGD == MagickTrue)
+         if (ping_exclude_bKGD == MagickFalse)
          {
 
          ping_background.gray=(png_uint_16)
@@ -8431,7 +8486,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
 #if defined(PNG_oFFs_SUPPORTED)
-  if (ping_exclude_pHYs == MagickFalse)
+  if (ping_exclude_oFFs == MagickFalse)
     {
       if (image->page.x || image->page.y)
         {
@@ -8489,7 +8544,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (ping_exclude_vpAg == MagickFalse)
     {
-      if (image->page.width || image->page.height)
+      if ((image->page.width != 0 && image->page.width != image->columns) ||
+          (image->page.height != 0 && image->page.height != image->rows))
         {
           unsigned char
             chunk[14];
@@ -8897,16 +8953,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           text[0].text_length=strlen(value);
 
           if (ping_exclude_tEXt != MagickFalse)
-             text[0].compression=0;
+             text[0].compression=PNG_TEXT_COMPRESSION_zTXt;
 
           else if (ping_exclude_zTXt != MagickFalse)
-             text[0].compression=-1;
+             text[0].compression=PNG_TEXT_COMPRESSION_NONE;
 
           else
           {
-                text[0].compression=image_info->compression == NoCompression ||
-                  (image_info->compression == UndefinedCompression &&
-                  text[0].text_length < 128) ? -1 : 0;
+             text[0].compression=image_info->compression == NoCompression ||
+               (image_info->compression == UndefinedCompression &&
+               text[0].text_length < 128) ? PNG_TEXT_COMPRESSION_NONE :
+               PNG_TEXT_COMPRESSION_zTXt ;
           }
 
           if (logging != MagickFalse)
