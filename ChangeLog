@@ -1,15 +1,17 @@
+2010-01-02  6.6.7-0 Glenn Randers-Pehrson <glennrp@image...>
+  * Recent changes sometimes caused the PNG encoder to select colortype=2
+    (Truecolor) instead of 0 (Grayscale) for grayscale images.
+
 2010-01-01  6.6.6-10 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG decoder now checks whether the image actually has any transparency
     when the input file contains an alpha channel.  (Reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17748)
-  * Recently changes sometimes caused the PNG encoder to select colortype=2
-    (Truecolor) instead of 0 (Grayscale) for grayscale images.
 
 2010-12-26  6.6.6-8 Cristy  <quetzlzacatenango@image...>
   * -posterize fails with more than 40 levels (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17741).
   * Add support for the MacPaint image format.
-  * Eliminate spurios 'invalid colormap index' exception for 16-bit SGI images
+  * Eliminate spurious 'invalid colormap index' exception for 16-bit SGI images
     (bug report by steven.sittser@fligh...).
   * Fix user data length for the CIN image format.
 
