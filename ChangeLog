@@ -2,6 +2,8 @@
   * The PNG decoder now checks whether the image actually has any transparency
     when the input file contains an alpha channel.  (Reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17748)
+  * Recently changes sometimes caused the PNG encoder to select colortype=2
+    (Truecolor) instead of 0 (Grayscale) for grayscale images.
 
 2010-12-26  6.6.6-8 Cristy  <quetzlzacatenango@image...>
   * -posterize fails with more than 40 levels (reference
