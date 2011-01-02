@@ -2489,7 +2489,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               /* Is there a transparent pixel in the row? */
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
-                if (q->opacity != OpaqueOpacity)
+                if ((ping_color_type == PNG_COLOR_TYPE_RGBA ||
+                    ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) &&
+                   (q->opacity != OpaqueOpacity))
                   {
                     found_transparent_pixel = MagickTrue;
                     break;
@@ -2765,8 +2767,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Found transparent pixel");
         else
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    No transparent pixel was found");
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    No transparent pixel was found");
+            ping_color_type&=0x03;
+          }
       }
     }
 
@@ -7623,28 +7628,43 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               image_matte=MagickTrue;
             }
 
+          if (image_info->type == PaletteType ||
+              image_info->type == PaletteMatteType)
+            ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
+
           if (image_info->type == UndefinedType ||
              image_info->type == OptimizeType)
             {
-
-              if ((image_info->type == GrayscaleType) &&
-                 image_matte == MagickFalse && ping_have_color != MagickFalse)
+              if (ping_have_color == MagickFalse)
                 {
-                  ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY;
-                  image_matte=MagickFalse;
-                }
+                  if (image_matte == MagickFalse)
+                    {
+                      ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY;
+                      image_matte=MagickFalse;
+                    }
 
-              else if ((image_info->type == GrayscaleMatteType) &&
-                  image_matte == MagickTrue && ping_have_color != MagickFalse)
+                  else 
+                    {
+                      ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY_ALPHA;
+                      image_matte=MagickTrue;
+                    }
+                }
+              else
                 {
-                  ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY_ALPHA;
-                  image_matte=MagickTrue;
-                }
+                  if (image_matte == MagickFalse)
+                    {
+                      ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB;
+                      image_matte=MagickFalse;
+                    }
 
-              else if (image_info->type == PaletteType ||
-                  image_info->type == PaletteMatteType)
-                ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
+                  else 
+                    {
+                      ping_color_type=(png_byte) PNG_COLOR_TYPE_RGBA;
+                      image_matte=MagickTrue;
+                    }
+                 }
             }
+
         }
 
       if (logging != MagickFalse)
