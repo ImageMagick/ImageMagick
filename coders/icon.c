@@ -255,8 +255,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     icon_info.size=ReadBlobLSBLong(image);
-    icon_info.width=(unsigned char) ReadBlobLSBLong(image);
-    icon_info.height=(unsigned char) ReadBlobLSBLong(image)/2;
+    icon_info.width=(unsigned char) ((int) ReadBlobLSBLong(image));
+    icon_info.height=(unsigned char) ((int) ReadBlobLSBLong(image)/2);
     if ((icon_file.directory[i].width == 0) && 
         (icon_file.directory[i].height == 0))
       {
