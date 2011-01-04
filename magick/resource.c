@@ -210,9 +210,9 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       status=(resource_info.disk_limit == MagickResourceInfinity) ||
         ((MagickSizeType) resource_info.disk < limit) ?
         MagickTrue : MagickFalse;
-      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickFalse,
+      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickTrue,
         resource_current);
-      (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,
+      (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,
         resource_limit);
       break;
     }
@@ -675,7 +675,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   (void) FormatMagickSize(resource_info.map_limit,MagickTrue,map_limit);
   (void) CopyMagickString(disk_limit,"unlimited",MaxTextExtent);
   if (resource_info.disk_limit != MagickResourceInfinity)
-    (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,disk_limit);
+    (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MaxTextExtent);
   if (resource_info.time_limit != MagickResourceInfinity)
     (void) FormatMagickString(time_limit,MaxTextExtent,"%.20g",(double)
@@ -761,9 +761,9 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case DiskResource:
     {
       resource_info.disk-=size;
-      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickFalse,
+      (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickTrue,
         resource_current);
-      (void) FormatMagickSize(resource_info.disk_limit,MagickFalse,
+      (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,
         resource_limit);
       break;
     }
