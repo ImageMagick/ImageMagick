@@ -3,7 +3,9 @@
 
 2011-01-02  6.6.7-0 Glenn Randers-Pehrson <glennrp@image...>
   * Recent changes sometimes caused the PNG encoder to select colortype=2
-    (Truecolor) instead of 0 (Grayscale) for grayscale images.
+    (Truecolor) instead of 0 (Grayscale) for grayscale images.  This made
+    the filesize larger than necessary and caused some of the PerlMagick
+    tests to fail.
 
 2011-01-01  6.6.6-10 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG decoder now checks whether the image actually has any transparency
