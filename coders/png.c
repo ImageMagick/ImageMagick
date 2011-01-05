@@ -2697,9 +2697,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               if (ping_color_type == 4)
                 {
                   q->opacity=(*p << 8) | *(p+1);
-                  q->opacity*=65537U;
+                  q->opacity*=65537L;
                   q->opacity=(Quantum) GetAlphaPixelComponent(q);
-                  if (p->opacity != OpaqueOpacity)
+                  if (q->opacity != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue; 
                   p+=2;
                   q++;
