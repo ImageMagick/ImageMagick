@@ -1587,7 +1587,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *image;
 
   int
-    logging,
     num_text,
     num_passes,
     pass,
@@ -1599,6 +1598,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_num_trans;
 
   MagickBooleanType
+    logging,
     status;
 
   UShortPixelPacket
@@ -2697,7 +2697,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               if (ping_color_type == 4)
                 {
                   q->opacity=(*p << 8) | *(p+1);
-                  q->opacity*=65537L;
+                  q->opacity*=65537U;
                   q->opacity=(Quantum) GetAlphaPixelComponent(q);
                   if (p->opacity != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue; 
@@ -3050,7 +3050,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     magic_number[MaxTextExtent];
 
   int
-    have_mng_structure,
+    have_mng_structure;
+
+  MagickBooleanType
     logging;
 
   ssize_t
@@ -3206,6 +3208,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     *alpha_image_info,
     *color_image_info;
 
+  MagickBooleanType
+    logging;
+
   ssize_t
     y;
 
@@ -3240,7 +3245,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     *p;
 
   unsigned int
-    logging,
     read_JSEP,
     reading_idat,
     skip_to_iend;
@@ -3911,7 +3915,9 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     magic_number[MaxTextExtent];
 
   int
-    have_mng_structure,
+    have_mng_structure;
+
+  MagickBooleanType
     logging;
 
   size_t
@@ -4005,9 +4011,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     have_mng_structure;
 
+  MagickBooleanType
+    logging;
+
   volatile int
     first_mng_object,
-    logging,
     object_id,
     term_chunk_found,
     skip_to_iend;
@@ -6703,7 +6711,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 }
 
 static MagickBooleanType png_write_chunk_from_profile(Image *image,
-   const char *string, int logging)
+  const char *string, MagickBooleanType logging)
 {
   char
     *name;
@@ -6780,6 +6788,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     num_passes,
     pass;
 
+  MagickBooleanType
+    logging;
+
   png_byte
      ping_trans_alpha[256];
 
@@ -6840,7 +6851,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     *png_pixels;
 
   unsigned int
-    logging,
     matte;
 
   volatile int
@@ -7082,7 +7092,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     image_colors=1;
                    }
 
-                for (i=0; i<image_colors; i++)
+                for (i=0; i< (ssize_t) image_colors; i++)
                   {
                     if (((image->matte == MagickFalse ||
                         colormap[i].opacity == q->opacity)) &&
@@ -7090,7 +7100,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       break;
                   }
 
-                if (i == image_colors && image_colors < 299)
+                if (i ==  (ssize_t) image_colors && image_colors < 299)
                   {
 
                     image_colors++;
@@ -7126,7 +7136,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    "      Sort the new colormap");
 
           /* Sort palette, transparent first */;
-          for (i=0; i<image_colors; i++)
+          for (i=0; i< (ssize_t) image_colors; i++)
           {
              if (colormap[i].opacity == OpaqueOpacity)
                 opaque[number_opaque++] = colormap[i];
@@ -7201,7 +7211,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           {
              if (logging != MagickFalse)
                {
-                 if (n != image_colors)
+                 if (n !=  (ssize_t) image_colors)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "   image_colors (%d) and n (%d)  don't match",
                     (int) image_colors, n);
@@ -7217,7 +7227,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              ThrowWriterException(ResourceLimitError,
                 "MemoryAllocationFailed");
 
-          for (i=0; i<image_colors; i++)
+          for (i=0; i< (ssize_t) image_colors; i++)
              image->colormap[i] = colormap[i];
 
           if (logging != MagickFalse)
@@ -7242,7 +7252,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              for (i=0; i<image_colors; i++)
+              for (i=0; i< (ssize_t) image_colors; i++)
               {
                 if ((image->matte == MagickFalse ||
                     image->colormap[i].opacity == q->opacity) &&
@@ -7299,7 +7309,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       else
         mng_info->write_png_colortype = 7;
 
-      if (colortype != 0 && mng_info->write_png_colortype != colortype)
+      if (colortype != 0 && mng_info->write_png_colortype != (ssize_t) colortype)
         ping_need_colortype_warning=MagickTrue;
       
     }
@@ -8070,8 +8080,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           }
       }
 
-    if (ping_bit_depth < mng_info->write_png_depth)
-         ping_bit_depth = mng_info->write_png_depth;
+    if (ping_bit_depth <  (ssize_t) mng_info->write_png_depth)
+         ping_bit_depth =  (ssize_t) mng_info->write_png_depth;
 
     /*
       Adjust background and transparency samples in sub-8-bit grayscale files.
@@ -8556,11 +8566,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   /* write any png-chunk-b profiles */
-  (void) png_write_chunk_from_profile(image,"PNG-chunk-b",(int) logging);
+  (void) png_write_chunk_from_profile(image,"PNG-chunk-b",logging);
   png_write_info(ping,ping_info);
 
   /* write any PNG-chunk-m profiles */
-  (void) png_write_chunk_from_profile(image,"PNG-chunk-m",(int) logging);
+  (void) png_write_chunk_from_profile(image,"PNG-chunk-m",logging);
 
   if (ping_exclude_vpAg == MagickFalse)
     {
@@ -9003,7 +9013,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   }
 
   /* write any PNG-chunk-e profiles */
-  (void) png_write_chunk_from_profile(image,"PNG-chunk-e",(int) logging);
+  (void) png_write_chunk_from_profile(image,"PNG-chunk-e",logging);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -9945,7 +9955,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     }
 
   /* Write any JNG-chunk-b profiles */
-  (void) png_write_chunk_from_profile(image,"JNG-chunk-b",(int) logging);
+  (void) png_write_chunk_from_profile(image,"JNG-chunk-b",logging);
 
   /*
      Write leading ancillary chunks
@@ -10249,7 +10259,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   blob=(unsigned char *) RelinquishMagickMemory(blob);
 
   /* Write any JNG-chunk-e profiles */
-  (void) png_write_chunk_from_profile(image,"JNG-chunk-e",(int) logging);
+  (void) png_write_chunk_from_profile(image,"JNG-chunk-e",logging);
 
   /* Write IEND chunk */
   (void) WriteBlobMSBULong(image,0L);
