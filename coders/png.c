@@ -2639,7 +2639,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  */
                 q->opacity=ScaleCharToQuantum((unsigned char) (255-(*p++)));
                 if (q->opacity != OpaqueOpacity)
-                  found_transparent_pixel = MagickTrue; 
+                  found_transparent_pixel = MagickTrue;
                 q++;
               }
 
@@ -2675,7 +2675,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   quantum|=(*p++);
                   q->opacity=(Quantum) (QuantumRange-quantum);
                   if (q->opacity != OpaqueOpacity)
-                    found_transparent_pixel = MagickTrue; 
+                    found_transparent_pixel = MagickTrue;
                   q++;
                 }
 #else
@@ -2700,7 +2700,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   q->opacity*=65537L;
                   q->opacity=(Quantum) GetAlphaPixelComponent(q);
                   if (q->opacity != OpaqueOpacity)
-                    found_transparent_pixel = MagickTrue; 
+                    found_transparent_pixel = MagickTrue;
                   p+=2;
                   q++;
                 }
@@ -2713,7 +2713,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   q->opacity=(Quantum) (QuantumRange-(*p++));
                   if (q->opacity != OpaqueOpacity)
-                    found_transparent_pixel = MagickTrue; 
+                    found_transparent_pixel = MagickTrue;
                   p++;
                   q++;
                 }
@@ -7311,7 +7311,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       if (colortype != 0 && mng_info->write_png_colortype != (ssize_t) colortype)
         ping_need_colortype_warning=MagickTrue;
-      
+
     }
 
   image_depth=image->depth;
@@ -7653,7 +7653,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       image_matte=MagickFalse;
                     }
 
-                  else 
+                  else
                     {
                       ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY_ALPHA;
                       image_matte=MagickTrue;
@@ -7667,7 +7667,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       image_matte=MagickFalse;
                     }
 
-                  else 
+                  else
                     {
                       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGBA;
                       image_matte=MagickTrue;
@@ -8295,7 +8295,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     (png_uint_32) GetStringInfoLength(profile));
                 }
           }
-    
+
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Setting up text chunk with %s profile",name);
