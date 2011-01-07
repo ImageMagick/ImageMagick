@@ -6784,7 +6784,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     *profile;
 
   int
-    image_matte,
     num_passes,
     pass;
 
@@ -6815,6 +6814,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     y;
 
   MagickBooleanType
+    image_matte,
+    matte,
+
     ping_have_color,
     ping_have_PLTE,
     ping_have_bKGD,
@@ -6849,9 +6851,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   unsigned char
     *png_pixels;
-
-  unsigned int
-    matte;
 
   volatile int
     ping_bit_depth,
@@ -7030,7 +7029,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "      image->rows=%.20g",(double) image->rows);
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "      image_matte=%.20g",(double) image->matte);
+               "      image->matte=%.20g",(double) image->matte);
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "      image->depth=%.20g",(double) image->depth);
 
@@ -7548,7 +7547,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image_depth=ping_bit_depth;
       ping_num_trans=0;
 
-      if (matte)
+      if (matte != MagickFalse)
       {
           /*
             Identify which colormap entry is transparent.
@@ -7753,7 +7752,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "    ping_bit_depth: %.20g",(double) ping_bit_depth);
     }
 
-  if (matte)
+  if (matte != MagickFalse)
     {
       if (mng_info->IsPalette)
         {
@@ -7873,7 +7872,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
     if ((mng_info->IsPalette) &&
         mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE &&
-        ImageIsGray(image) && (!image_matte || image_depth >= 8))
+        ImageIsGray(image) && (image_matte == MagickFalse || image_depth >= 8))
       {
         size_t one=1;
 
@@ -7974,7 +7973,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             */
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 
-            if (mng_info->have_write_global_plte && !matte)
+            if (mng_info->have_write_global_plte && matte == MagickFalse)
               {
                 png_set_PLTE(ping,ping_info,NULL,0);
 
@@ -8015,7 +8014,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             ping_num_trans=0;
 
-            if (matte)
+            if (matte != MagickFalse)
               {
                 /*
                  * Set up trans_colors array.
@@ -8438,7 +8437,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "Cannot write image with defined PNG:bit-depth or PNG:color-type.");
     }
 
-  if (image_matte && !image->matte)
+  if (image_matte != MagickFalse && image->matte == MagickFalse)
     {
       /* Add an opaque matte channel */
       image->matte = MagickTrue;
@@ -8674,7 +8673,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        !mng_info->write_png32) &&
        (mng_info->IsPalette ||
        (image_info->type == BilevelType)) &&
-       !image_matte && ImageIsMonochrome(image))
+       image_matte == MagickFalse && ImageIsMonochrome(image))
     {
       /* Palette, Bilevel, or Opaque Monochrome */
       register const PixelPacket
@@ -8743,7 +8742,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       if ((!mng_info->write_png8 && !mng_info->write_png24 &&
          !mng_info->write_png32) &&
-         (image_matte ||
+         (image_matte != MagickFalse ||
          (ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH)) &&
          (mng_info->IsPalette) && ImageIsGray(image))
         {
