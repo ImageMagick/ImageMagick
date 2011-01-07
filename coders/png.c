@@ -1245,9 +1245,10 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
     }
 }
 
-static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
+static void MngInfoFreeStruct(MngInfo *mng_info,
+    MagickBooleanType *have_mng_structure)
 {
-  if (*have_mng_structure && (mng_info != (MngInfo *) NULL))
+  if (*have_mng_structure != MagickFalse && (mng_info != (MngInfo *) NULL))
     {
       register ssize_t
         i;
@@ -3041,6 +3042,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *previous;
 
   MagickBooleanType
+    have_mng_structure,
+    logging,
     status;
 
   MngInfo
@@ -3048,12 +3051,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     magic_number[MaxTextExtent];
-
-  int
-    have_mng_structure;
-
-  MagickBooleanType
-    logging;
 
   ssize_t
     count;
@@ -3906,6 +3903,8 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *previous;
 
   MagickBooleanType
+    have_mng_structure,
+    logging,
     status;
 
   MngInfo
@@ -3913,12 +3912,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   char
     magic_number[MaxTextExtent];
-
-  int
-    have_mng_structure;
-
-  MagickBooleanType
-    logging;
 
   size_t
     count;
@@ -4008,11 +4001,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image,
     *previous;
 
-  int
-    have_mng_structure;
-
   MagickBooleanType
-    logging;
+    logging,
+    have_mng_structure;
 
   volatile int
     first_mng_object,
@@ -6787,9 +6778,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     num_passes,
     pass;
 
-  MagickBooleanType
-    logging;
-
   png_byte
      ping_trans_alpha[256];
 
@@ -6815,6 +6803,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   MagickBooleanType
     image_matte,
+    logging,
     matte,
 
     ping_have_color,
@@ -9226,6 +9215,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   Image *image)
 {
   MagickBooleanType
+    excluding,
+    logging,
+    have_mng_structure,
     status;
 
   MngInfo
@@ -9235,17 +9227,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     *value;
 
   int
-    have_mng_structure;
-
-  int
-    i;
-
-  int
+    i,
     source;
-
-  MagickBooleanType
-    excluding,
-    logging;
 
   /*
     Open image file.
@@ -10305,14 +10288,12 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
 {
   MagickBooleanType
+    have_mng_structure,
     logging,
     status;
 
   MngInfo
     *mng_info;
-
-  int
-    have_mng_structure;
 
   /*
     Open image file.
@@ -10365,6 +10346,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
     *next_image;
 
   MagickBooleanType
+    have_mng_structure,
     status;
 
   volatile MagickBooleanType
@@ -10374,7 +10356,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
     *mng_info;
 
   int
-    have_mng_structure,
     image_count,
     need_iterations,
     need_matte;
