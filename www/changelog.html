@@ -139,8 +139,8 @@
   <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
 <div class="sponsbox">
-<div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+<div class="sponsor">
+  <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.html">Web Hosting</a><!-- 201104010090 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -150,6 +150,9 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+</div>
+<div  class="sponsor">
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -171,12 +174,16 @@
 
 <div class="main">
 
-<ul><dt>2010-01-01  6.6.6-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <li> The PNG decoder now checks whether the image actually has any transparency    when the input file contains an alpha channel.  (Reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17748)</li><br />
+<ul><dt>2011-01-03  6.6.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <li> Handle negative heights for ICO images.</li><br />
+<dt>2011-01-02  6.6.7-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> Recent changes sometimes caused the PNG encoder to select colortype=2    (Truecolor) instead of 0 (Grayscale) for grayscale images.  This made    the filesize larger than necessary and caused some of the PerlMagick    tests to fail.</li><br />
+<dt>2011-01-01  6.6.6-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <li> The PNG decoder now checks whether the image actually has any transparency    when the input file contains an alpha channel or a tRNS chunk.  (Reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17748)</li><br />
 <dt>2010-12-26  6.6.6-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <li> -posterize fails with more than 40 levels (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17741).</li>
   <li> Add support for the MacPaint image format.</li>
-  <li> Eliminate spurios 'invalid colormap index' exception for 16-bit SGI images    (bug report by steven.sittser@fligh...).</li>
+  <li> Eliminate spurious 'invalid colormap index' exception for 16-bit SGI images    (bug report by steven.sittser@fligh...).</li>
   <li> Fix user data length for the CIN image format.</li><br />
 <dt>2010-12-21  6.6.6-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <li> Use a clone instead of the main image in coders/png.c, so the image    can still be used later on without being affected by changes made by    the PNG encoder.</li>

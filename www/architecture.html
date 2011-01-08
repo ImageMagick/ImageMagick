@@ -139,8 +139,8 @@
   <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
 <div class="sponsbox">
-<div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+<div class="sponsor">
+  <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.html">Web Hosting</a><!-- 201104010090 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -150,6 +150,9 @@
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+</div>
+<div  class="sponsor">
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -234,33 +237,36 @@
 
 <p>The pixel cache is associated with an image when it is created and it is initialized when you try to get or put pixels.  Here are three common methods to associate a pixel cache with an image:</p>
 
-<h4>Create an image canvas initialized to the background color:</h4>
-<p class="code">
+<dl>
+<dt>Create an image canvas initialized to the background color:</dt>
+<dd><p class="code">
   image=AllocateImage(image_info);
   if (SetImageExtent(image,640,480) == MagickFalse)
     { /* an exception was thrown */ }
   (void) QueryMagickColor("red",&amp;image-&gt;background_color,&amp;image-&gt;exception);
   SetImageBackgroundColor(image);
-</p>
+</p></dd>
 
-<h4>Create an image from a JPEG image on disk:</h4>
-<p class="code">  (void) strcpy(image_info-&gt;filename,"image.jpg"):
+<dt>Create an image from a JPEG image on disk:</dt>
+<dd><p class="code">
+  (void) strcpy(image_info-&gt;filename,"image.jpg"):
   image=ReadImage(image_info,exception);
   if (image == (Image *) NULL)
     { /* an exception was thrown */ }
-</p>
-<h4>Create an image from a memory based image:</h4>
-<p class="code">
+</p></dd>
+<dt>Create an image from a memory based image:</dt>
+<dd><p class="code">
   image=BlobToImage(blob_info,blob,extent,exception);
   if (image == (Image *) NULL)
     { /* an exception was thrown */ }
-</p>
+</p></dd>
+</dl>
 
 <p>In our discussion of the pixel cache, we use the <a href="../www/magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.6-10 2010-12-25 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.7-0 2010-01-01 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -268,12 +274,12 @@
 <div class="doc-section">
 
 <p>Once the pixel cache is associated with an image, you typically want to get, update, or put pixels into it.  We refer to pixels inside the image region as <em>authentic pixels</em> and outside the region as <em>virtual pixels</em>.  Use these methods to access the pixels in the cache:</p>
-<ul>
+<dl>
   <li><a href="../www/api/cache.html#GetVirtualPixels">GetVirtualPixels()</a> gets pixels that you do not intend to modify or pixels that lie outside the image region (e.g. pixel @ -1,-3)</li>
   <li><a href="../www/api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a> gets pixels that you intend to modify</li>
   <li><a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a> queue pixels that you intend to modify</li>
   <li><a href="../www/api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> update the pixel cache with any modified pixels</li>
-</ul>
+</dl>
 
 <p>Here is a typical <a href="../www/magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
