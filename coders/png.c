@@ -6842,6 +6842,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     *png_pixels;
 
   volatile int
+    image_colors,
     ping_bit_depth,
     ping_color_type,
     ping_interlace_method,
@@ -6850,17 +6851,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_num_trans;
 
   volatile size_t
-    image_colors,
     image_depth,
     old_bit_depth;
 
   size_t
-    number_colors,
     quality,
     rowbytes,
     save_image_depth;
 
   int
+    number_colors,
     number_opaque,
     number_semitransparent,
     number_transparent,
@@ -7009,7 +7009,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            "    Enter BUILD_PALETTE:");
 
      image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-     image_colors=image->colors;
+     image_colors=(int) image->colors;
 
      if (logging != MagickFalse)
        {
@@ -7112,7 +7112,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
               else
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "      image has %d colors",(int)image_colors);
+                       "      image has %d colors",image_colors);
             }
 
           /*
@@ -7202,7 +7202,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  if (n !=  (ssize_t) image_colors)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "   image_colors (%d) and n (%d)  don't match",
-                    (int) image_colors, n);
+                    image_colors, n);
 
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      AcquireImageColormap");
@@ -7222,7 +7222,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      image->colors=%d (%d)",
-                    (int) image->colors, (int) image_colors);
+                    (int) image->colors, image_colors);
 
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      Update the pixel indexes");
@@ -7306,7 +7306,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   quantum_info = (QuantumInfo *) NULL;
   number_colors=0;
-  image_colors=image->colors;
+  image_colors=(int) image->colors;
   image_matte=image->matte;
 
   mng_info->IsPalette=image->storage_class == PseudoClass &&
@@ -7514,7 +7514,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Setting up PLTE chunk with %d colors (%d)",
-            (int) number_colors, (int) image_colors);
+            number_colors, image_colors);
 
       for (i=0; i < (ssize_t) number_colors; i++)
       {
@@ -7887,7 +7887,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
 
         if (image_colors == 0 || image_colors-1 > MaxColormapSize)
-          image_colors=one << image_depth;
+          image_colors=(int) (one << image_depth);
 
         if (image_depth > 8)
           ping_bit_depth=16;
@@ -7983,7 +7983,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Setting up PLTE chunk with %d colors",
-                    (int) number_colors);
+                    number_colors);
 
                 ping_have_PLTE=MagickTrue;
               }
@@ -8460,7 +8460,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (ping_color_type == 3 && ping_have_PLTE != MagickFalse)
     {
-      png_set_PLTE(ping,ping_info,palette,(int) number_colors);
+      png_set_PLTE(ping,ping_info,palette,number_colors);
 
       if (logging != MagickFalse)
         {
