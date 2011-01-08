@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#GetColorInfoList">GetColorInfoList</a> &bull; <a href="#GetColorList">GetColorList</a> &bull; <a href="#ListColorInfo">ListColorInfo</a> &bull; <a href="#LoadColorList">LoadColorList</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorname">QueryColorname</a> &bull; <a href="#QueryMagickColorCompliance">QueryMagickColorCompliance</a> &bull; <a href="#QueryMagickColor">QueryMagickColor</a> &bull; <a href="#QueryMagickColorname">QueryMagickColorname</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="GetColorInfoList">GetColorInfoList</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
 <div class="doc-section">
 
-<p>GetColorInfoList() returns any colors that match the specified pattern.</p></ol>
+<p>GetColorInfoList() returns any colors that match the specified pattern.</p>
 
 <p>The format of the GetColorInfoList function is:</p>
 
@@ -191,23 +192,23 @@ _8c.html" target="source" name="GetColorInfoList">GetColorInfoList</a></h2>
     size_t *number_colors,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>pattern</h5>
-<ol><p>Specifies a pointer to a text string containing a pattern.</p></ol>
+<p>Specifies a pointer to a text string containing a pattern.</p>
 
 <h5>number_colors</h5>
-<ol><p>This integer returns the number of colors in the list.</p></ol>
+<p>This integer returns the number of colors in the list.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="GetColorList">GetColorList</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="GetColorList">GetColorList</a></h2>
 <div class="doc-section">
 
-<p>GetColorList() returns any colors that match the specified pattern.</p></ol>
+<p>GetColorList() returns any colors that match the specified pattern.</p>
 
 <p>The format of the GetColorList function is:</p>
 
@@ -216,23 +217,23 @@ _8c.html" target="source" name="GetColorList">GetColorList</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>pattern</h5>
-<ol><p>Specifies a pointer to a text string containing a pattern.</p></ol>
+<p>Specifies a pointer to a text string containing a pattern.</p>
 
 <h5>number_colors</h5>
-<ol><p>This integer returns the number of colors in the list.</p></ol>
+<p>This integer returns the number of colors in the list.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="ListColorInfo">ListColorInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="ListColorInfo">ListColorInfo</a></h2>
 <div class="doc-section">
 
-<p>ListColorInfo() lists color names to the specified file.  Color names are a convenience.  Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow.</p></ol>
+<p>ListColorInfo() lists color names to the specified file.  Color names are a convenience.  Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow.</p>
 
 <p>The format of the ListColorInfo method is:</p>
 
@@ -240,20 +241,20 @@ _8c.html" target="source" name="ListColorInfo">ListColorInfo</a></h2>
   MagickBooleanType ListColorInfo(FILE *file,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>file</h5>
-<ol><p>List color names to this file handle.</p></ol>
+<p>List color names to this file handle.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="LoadColorList">LoadColorList</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="LoadColorList">LoadColorList</a></h2>
 <div class="doc-section">
 
-<p>LoadColorList() loads one or more color configuration file which provides a mapping between color attributes and a color name.</p></ol>
+<p>LoadColorList() loads one or more color configuration file which provides a mapping between color attributes and a color name.</p>
 
 <p>The format of the LoadColorLists method is:</p>
 
@@ -262,20 +263,20 @@ _8c.html" target="source" name="LoadColorList">LoadColorList</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>filename</h5>
-<ol><p>the font file name.</p></ol>
+<p>the font file name.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="QueryColorDatabase">QueryColorDatabase</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="QueryColorDatabase">QueryColorDatabase</a></h2>
 <div class="doc-section">
 
-<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name.</p></ol>
+<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name.</p>
 
 <p>The format of the QueryColorDatabase method is:</p>
 
@@ -285,26 +286,26 @@ _8c.html" target="source" name="QueryColorDatabase">QueryColorDatabase</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>name</h5>
-<ol><p>the color name (e.g. white, blue, yellow).</p></ol>
+<p>the color name (e.g. white, blue, yellow).</p>
 
 <h5>compliance</h5>
-<ol><p>Adhere to this color standard: SVG, X11, or XPM.</p></ol>
+<p>Adhere to this color standard: SVG, X11, or XPM.</p>
 
 <h5>color</h5>
-<ol><p>the red, green, blue, and opacity intensities values of the named color in this structure.</p></ol>
+<p>the red, green, blue, and opacity intensities values of the named color in this structure.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="QueryColorDatabase">QueryColorDatabase</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="QueryColorDatabase">QueryColorDatabase</a></h2>
 <div class="doc-section">
 
-<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name.</p></ol>
+<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name.</p>
 
 <p>The format of the QueryColorDatabase method is:</p>
 
@@ -313,23 +314,23 @@ _8c.html" target="source" name="QueryColorDatabase">QueryColorDatabase</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>name</h5>
-<ol><p>the color name (e.g. white, blue, yellow).</p></ol>
+<p>the color name (e.g. white, blue, yellow).</p>
 
 <h5>color</h5>
-<ol><p>the red, green, blue, and opacity intensities values of the named color in this structure.</p></ol>
+<p>the red, green, blue, and opacity intensities values of the named color in this structure.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="QueryColorname">QueryColorname</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="QueryColorname">QueryColorname</a></h2>
 <div class="doc-section">
 
-<p>QueryColorname() returns a named color for the given color intensity.  If an exact match is not found, a rgb() color is returned instead.</p></ol>
+<p>QueryColorname() returns a named color for the given color intensity.  If an exact match is not found, a rgb() color is returned instead.</p>
 
 <p>The format of the QueryColorname method is:</p>
 
@@ -339,29 +340,29 @@ _8c.html" target="source" name="QueryColorname">QueryColorname</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>color</h5>
-<ol><p>the color intensities.</p></ol>
+<p>the color intensities.</p>
 
 <h5>compliance</h5>
-<ol><p>Adhere to this color standard: SVG, X11, or XPM.</p></ol>
+<p>Adhere to this color standard: SVG, X11, or XPM.</p>
 
 <h5>name</h5>
-<ol><p>Return the color name or hex value.</p></ol>
+<p>Return the color name or hex value.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="QueryMagickColorCompliance">QueryMagickColorCompliance</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="QueryMagickColorCompliance">QueryMagickColorCompliance</a></h2>
 <div class="doc-section">
 
-<p>QueryMagickColorCompliance() returns the red, green, blue, and opacity intensities for a given color name and standards compliance.</p></ol>
+<p>QueryMagickColorCompliance() returns the red, green, blue, and opacity intensities for a given color name and standards compliance.</p>
 
 <p>The format of the QueryMagickColor method is:</p>
 
@@ -371,26 +372,26 @@ _8c.html" target="source" name="QueryMagickColorCompliance">QueryMagickColorComp
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>name</h5>
-<ol><p>the color name (e.g. white, blue, yellow).</p></ol>
+<p>the color name (e.g. white, blue, yellow).</p>
 
 <h5>compliance</h5>
-<ol><p>Adhere to this color standard: SVG, X11, or XPM.</p></ol>
+<p>Adhere to this color standard: SVG, X11, or XPM.</p>
 
 <h5>color</h5>
-<ol><p>the red, green, blue, and opacity intensities values of the named color in this structure.</p></ol>
+<p>the red, green, blue, and opacity intensities values of the named color in this structure.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="QueryMagickColor">QueryMagickColor</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="QueryMagickColor">QueryMagickColor</a></h2>
 <div class="doc-section">
 
-<p>QueryMagickColor() returns the red, green, blue, and opacity intensities for a given color name.</p></ol>
+<p>QueryMagickColor() returns the red, green, blue, and opacity intensities for a given color name.</p>
 
 <p>The format of the QueryMagickColor method is:</p>
 
@@ -399,23 +400,23 @@ _8c.html" target="source" name="QueryMagickColor">QueryMagickColor</a></h2>
     MagickPixelPacket *color,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>name</h5>
-<ol><p>the color name (e.g. white, blue, yellow).</p></ol>
+<p>the color name (e.g. white, blue, yellow).</p>
 
 <h5>color</h5>
-<ol><p>the red, green, blue, and opacity intensities values of the named color in this structure.</p></ol>
+<p>the red, green, blue, and opacity intensities values of the named color in this structure.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color
-_8c.html" target="source" name="QueryMagickColorname">QueryMagickColorname</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/color
+_8c.html" id="QueryMagickColorname">QueryMagickColorname</a></h2>
 <div class="doc-section">
 
-<p>QueryMagickColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p></ol>
+<p>QueryMagickColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is returned instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</p>
 
 <p>The format of the QueryMagickColorname method is:</p>
 
@@ -425,22 +426,22 @@ _8c.html" target="source" name="QueryMagickColorname">QueryMagickColorname</a></
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>color</h5>
-<ol><p>the color intensities.</p></ol>
+<p>the color intensities.</p>
 
 <h5>Compliance</h5>
-<ol><p>Adhere to this color standard: SVG, X11, or XPM.</p></ol>
+<p>Adhere to this color standard: SVG, X11, or XPM.</p>
 
 <h5>name</h5>
-<ol><p>Return the color name or hex value.</p></ol>
+<p>Return the color name or hex value.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

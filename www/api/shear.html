@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#AffineTransformImage">AffineTransformImage</a> &bull; <a href="#DeskewImage">DeskewImage</a> &bull; <a href="#RotateImage">RotateImage</a> &bull; <a href="#ShearImage">ShearImage</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/shear
-_8c.html" target="source" name="AffineTransformImage">AffineTransformImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/shear
+_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
 <div class="doc-section">
 
-<p>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p></ol>
+<p>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
 <p>The format of the AffineTransformImage method is:</p>
 
@@ -191,23 +192,23 @@ _8c.html" target="source" name="AffineTransformImage">AffineTransformImage</a></
     AffineMatrix *affine_matrix,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>affine_matrix</h5>
-<ol><p>the affine matrix.</p></ol>
+<p>the affine matrix.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/shear
-_8c.html" target="source" name="DeskewImage">DeskewImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/shear
+_8c.html" id="DeskewImage">DeskewImage</a></h2>
 <div class="doc-section">
 
-<p>DeskewImage() removes skew from the image.  Skew is an artifact that occurs in scanned images because of the camera being misaligned, imperfections in the scanning or surface, or simply because the paper was not placed completely flat when scanned.</p></ol>
+<p>DeskewImage() removes skew from the image.  Skew is an artifact that occurs in scanned images because of the camera being misaligned, imperfections in the scanning or surface, or simply because the paper was not placed completely flat when scanned.</p>
 
 <p>The format of the DeskewImage method is:</p>
 
@@ -216,25 +217,25 @@ _8c.html" target="source" name="DeskewImage">DeskewImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>threshold</h5>
-<ol><p>separate background from foreground.</p></ol>
+<p>separate background from foreground.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/shear
-_8c.html" target="source" name="RotateImage">RotateImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/shear
+_8c.html" id="RotateImage">RotateImage</a></h2>
 <div class="doc-section">
 
-<p>RotateImage() creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p></ol>
+<p>RotateImage() creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
-<p>RotateImage() is based on the paper "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth.  RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, MIT Media Lab.</p></ol>
+<p>RotateImage() is based on the paper "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth.  RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, MIT Media Lab.</p>
 
 <p>The format of the RotateImage method is:</p>
 
@@ -243,25 +244,25 @@ _8c.html" target="source" name="RotateImage">RotateImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>degrees</h5>
-<ol><p>Specifies the number of degrees to rotate the image.</p></ol>
+<p>Specifies the number of degrees to rotate the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/shear
-_8c.html" target="source" name="ShearImage">ShearImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/shear
+_8c.html" id="ShearImage">ShearImage</a></h2>
 <div class="doc-section">
 
-<p>ShearImage() creates a new image that is a shear_image copy of an existing one.  Shearing slides one edge of an image along the X or Y axis, creating a parallelogram.  An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image..  ShearImage() allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p></ol>
+<p>ShearImage() creates a new image that is a shear_image copy of an existing one.  Shearing slides one edge of an image along the X or Y axis, creating a parallelogram.  An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image..  ShearImage() allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
 
-<p>ShearImage() is based on the paper "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth.</p></ol>
+<p>ShearImage() is based on the paper "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth.</p>
 
 <p>The format of the ShearImage method is:</p>
 
@@ -270,16 +271,16 @@ _8c.html" target="source" name="ShearImage">ShearImage</a></h2>
     const double y_shear,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x_shear, y_shear</h5>
-<ol><p>Specifies the number of degrees to shear the image.</p></ol>
+<p>Specifies the number of degrees to shear the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

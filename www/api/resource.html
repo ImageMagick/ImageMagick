@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -176,13 +177,13 @@
 
 <h1>Module resource
  Methods</h1>
-<p class="navigation-index">[<a href="#AcquireMagickResource">AcquireMagickResource</a> &bull; <a href="#AcquireUniqueFileResource">AcquireUniqueFileResource</a> &bull; <a href="#GetMagickResource">GetMagickResource</a> &bull; <a href="#GetMagickResource">GetMagickResource</a> &bull; <a href="#ListMagickResourceInfo">ListMagickResourceInfo</a> &bull; <a href="#RelinquishMagickResource">RelinquishMagickResource</a> &bull; <a href="#RelinquishUniqueFileResource">RelinquishUniqueFileResource</a> &bull; <a href="#SetMagickResourceLimit">SetMagickResourceLimit</a>]</p>
+<p class="navigation-index">[<a href="#AcquireMagickResource">AcquireMagickResource</a> &bull; <a href="#AcquireUniqueFileResource">AcquireUniqueFileResource</a> &bull; <a href="#GetMagickResource">GetMagickResource</a> &bull; <a href="#GetMagickResourceLimit">GetMagickResourceLimit</a> &bull; <a href="#ListMagickResourceInfo">ListMagickResourceInfo</a> &bull; <a href="#RelinquishMagickResource">RelinquishMagickResource</a> &bull; <a href="#RelinquishUniqueFileResource">RelinquishUniqueFileResource</a> &bull; <a href="#SetMagickResourceLimit">SetMagickResourceLimit</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="AcquireMagickResource">AcquireMagickResource</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="AcquireMagickResource">AcquireMagickResource</a></h2>
 <div class="doc-section">
 
-<p>AcquireMagickResource() acquires resources of the specified type. MagickFalse is returned if the specified resource is exhausted otherwise MagickTrue.</p></ol>
+<p>AcquireMagickResource() acquires resources of the specified type. MagickFalse is returned if the specified resource is exhausted otherwise MagickTrue.</p>
 
 <p>The format of the AcquireMagickResource() method is:</p>
 
@@ -191,20 +192,20 @@ _8c.html" target="source" name="AcquireMagickResource">AcquireMagickResource</a>
     const MagickSizeType size)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>type</h5>
-<ol><p>the type of resource.</p></ol>
+<p>the type of resource.</p>
 
 <h5>size</h5>
-<ol><p>the number of bytes needed from for this resource.</p></ol>
+<p>the number of bytes needed from for this resource.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="AcquireUniqueFileResource">AcquireUniqueFileResource</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="AcquireUniqueFileResource">AcquireUniqueFileResource</a></h2>
 <div class="doc-section">
 
-<p>AcquireUniqueFileResource() returns a unique file name, and returns a file descriptor for the file open for reading and writing.</p></ol>
+<p>AcquireUniqueFileResource() returns a unique file name, and returns a file descriptor for the file open for reading and writing.</p>
 
 <p>The format of the AcquireUniqueFileResource() method is:</p>
 
@@ -212,17 +213,17 @@ _8c.html" target="source" name="AcquireUniqueFileResource">AcquireUniqueFileReso
   int AcquireUniqueFileResource(char *path)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5> path</h5>
-<ol><p>Specifies a pointer to an array of characters.  The unique path name is returned in this array.</p></ol>
+<p>Specifies a pointer to an array of characters.  The unique path name is returned in this array.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="GetMagickResource">GetMagickResource</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="GetMagickResource">GetMagickResource</a></h2>
 <div class="doc-section">
 
-<p>GetMagickResource() returns the specified resource.</p></ol>
+<p>GetMagickResource() returns the specified resource.</p>
 
 <p>The format of the GetMagickResource() method is:</p>
 
@@ -230,17 +231,17 @@ _8c.html" target="source" name="GetMagickResource">GetMagickResource</a></h2>
   MagickSizeType GetMagickResource(const ResourceType type)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>type</h5>
-<ol><p>the type of resource.</p></ol>
+<p>the type of resource.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="GetMagickResource">GetMagickResource</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="GetMagickResourceLimit">GetMagickResourceLimit</a></h2>
 <div class="doc-section">
 
-<p>GetMagickResource() returns the specified resource limit.</p></ol>
+<p>GetMagickResourceLimit() returns the specified resource limit.</p>
 
 <p>The format of the GetMagickResourceLimit() method is:</p>
 
@@ -248,17 +249,17 @@ _8c.html" target="source" name="GetMagickResource">GetMagickResource</a></h2>
   MagickSizeType GetMagickResourceLimit(const ResourceType type)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>type</h5>
-<ol><p>the type of resource.</p></ol>
+<p>the type of resource.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="ListMagickResourceInfo">ListMagickResourceInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="ListMagickResourceInfo">ListMagickResourceInfo</a></h2>
 <div class="doc-section">
 
-<p>ListMagickResourceInfo() lists the resource info to a file.</p></ol>
+<p>ListMagickResourceInfo() lists the resource info to a file.</p>
 
 <p>The format of the ListMagickResourceInfo method is:</p>
 
@@ -267,20 +268,20 @@ _8c.html" target="source" name="ListMagickResourceInfo">ListMagickResourceInfo</
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>file</h5>
-<ol><p>An pointer to a FILE.</p></ol>
+<p>An pointer to a FILE.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="RelinquishMagickResource">RelinquishMagickResource</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="RelinquishMagickResource">RelinquishMagickResource</a></h2>
 <div class="doc-section">
 
-<p>RelinquishMagickResource() relinquishes resources of the specified type.</p></ol>
+<p>RelinquishMagickResource() relinquishes resources of the specified type.</p>
 
 <p>The format of the RelinquishMagickResource() method is:</p>
 
@@ -289,20 +290,20 @@ _8c.html" target="source" name="RelinquishMagickResource">RelinquishMagickResour
     const MagickSizeType size)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>type</h5>
-<ol><p>the type of resource.</p></ol>
+<p>the type of resource.</p>
 
 <h5>size</h5>
-<ol><p>the size of the resource.</p></ol>
+<p>the size of the resource.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="RelinquishUniqueFileResource">RelinquishUniqueFileResource</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="RelinquishUniqueFileResource">RelinquishUniqueFileResource</a></h2>
 <div class="doc-section">
 
-<p>RelinquishUniqueFileResource() relinquishes a unique file resource.</p></ol>
+<p>RelinquishUniqueFileResource() relinquishes a unique file resource.</p>
 
 <p>The format of the RelinquishUniqueFileResource() method is:</p>
 
@@ -310,17 +311,17 @@ _8c.html" target="source" name="RelinquishUniqueFileResource">RelinquishUniqueFi
   MagickBooleanType RelinquishUniqueFileResource(const char *path)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>name</h5>
-<ol><p>the name of the temporary resource.</p></ol>
+<p>the name of the temporary resource.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
-_8c.html" target="source" name="SetMagickResourceLimit">SetMagickResourceLimit</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/resource
+_8c.html" id="SetMagickResourceLimit">SetMagickResourceLimit</a></h2>
 <div class="doc-section">
 
-<p>SetMagickResourceLimit() sets the limit for a particular resource.</p></ol>
+<p>SetMagickResourceLimit() sets the limit for a particular resource.</p>
 
 <p>The format of the SetMagickResourceLimit() method is:</p>
 
@@ -329,13 +330,13 @@ _8c.html" target="source" name="SetMagickResourceLimit">SetMagickResourceLimit</
     const MagickSizeType limit)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>type</h5>
-<ol><p>the type of resource.</p></ol>
+<p>the type of resource.</p>
 
 <h5>limit</h5>
-<ol><p>the maximum limit for the resource.</p></ol>
+<p>the maximum limit for the resource.</p>
 
  </div>
 

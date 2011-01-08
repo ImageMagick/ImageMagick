@@ -566,7 +566,7 @@ MagickExport MagickSizeType GetMagickResource(const ResourceType type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickResource() returns the specified resource limit.
+%  GetMagickResourceLimit() returns the specified resource limit.
 %
 %  The format of the GetMagickResourceLimit() method is:
 %

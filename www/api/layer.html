@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#CoalesceImages">CoalesceImages</a> &bull; <a href="#DisposeImages">DisposeImages</a> &bull; <a href="#CompareImageLayers">CompareImageLayers</a> &bull; <a href="#DeconstructImages">DeconstructImages</a> &bull; <a href="#OptimizeImageLayers">OptimizeImageLayers</a> &bull; <a href="#OptimizeImagePlusLayers">OptimizeImagePlusLayers</a> &bull; <a href="#OptimizeImageTransparency">OptimizeImageTransparency</a> &bull; <a href="#RemoveDuplicateLayers">RemoveDuplicateLayers</a> &bull; <a href="#RemoveZeroDelayLayers">RemoveZeroDelayLayers</a> &bull; <a href="#CompositeLayers">CompositeLayers</a> &bull; <a href="#MergeImageLayers">MergeImageLayers</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="CoalesceImages">CoalesceImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="CoalesceImages">CoalesceImages</a></h2>
 <div class="doc-section">
 
-<p>CoalesceImages() composites a set of images while respecting any page offsets and disposal methods.  GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset.  A new image sequence is returned with all images the same size as the first images virtual canvas and composited with the next image in the sequence.</p></ol>
+<p>CoalesceImages() composites a set of images while respecting any page offsets and disposal methods.  GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset.  A new image sequence is returned with all images the same size as the first images virtual canvas and composited with the next image in the sequence.</p>
 
 <p>The format of the CoalesceImages method is:</p>
 
@@ -190,20 +191,20 @@ _8c.html" target="source" name="CoalesceImages">CoalesceImages</a></h2>
   Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image sequence.</p></ol>
+<p>the image sequence.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="DisposeImages">DisposeImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="DisposeImages">DisposeImages</a></h2>
 <div class="doc-section">
 
-<p>DisposeImages() returns the coalesced frames of a GIF animation as it would appear after the GIF dispose method of that frame has been applied.  That is it returned the appearance of each frame before the next is overlaid.</p></ol>
+<p>DisposeImages() returns the coalesced frames of a GIF animation as it would appear after the GIF dispose method of that frame has been applied.  That is it returned the appearance of each frame before the next is overlaid.</p>
 
 <p>The format of the DisposeImages method is:</p>
 
@@ -211,24 +212,24 @@ _8c.html" target="source" name="DisposeImages">DisposeImages</a></h2>
   Image *DisposeImages(Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image sequence.</p></ol>
+<p>the image sequence.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="CompareImageLayers">CompareImageLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="CompareImageLayers">CompareImageLayers</a></h2>
 <div class="doc-section">
 
-<p>CompareImageLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the ImageLayerMethod specified) it discovers.</p></ol>
+<p>CompareImageLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the ImageLayerMethod specified) it discovers.</p>
 
-<p>Images do NOT have to be the same size, though it is best that all the images are 'coalesced' (images are all the same size, on a flattened canvas, so as to represent exactly how an specific frame should look).</p></ol>
+<p>Images do NOT have to be the same size, though it is best that all the images are 'coalesced' (images are all the same size, on a flattened canvas, so as to represent exactly how an specific frame should look).</p>
 
-<p>No GIF dispose methods are applied, so GIF animations must be coalesced before applying this image operator to find differences to them.</p></ol>
+<p>No GIF dispose methods are applied, so GIF animations must be coalesced before applying this image operator to find differences to them.</p>
 
 <p>The format of the CompareImageLayers method is:</p>
 
@@ -237,25 +238,25 @@ _8c.html" target="source" name="CompareImageLayers">CompareImageLayers</a></h2>
     const ImageLayerMethod method,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>method</h5>
-<ol><p>the layers type to compare images with. Must be one of... CompareAnyLayer, CompareClearLayer, CompareOverlayLayer.</p></ol>
+<p>the layers type to compare images with. Must be one of... CompareAnyLayer, CompareClearLayer, CompareOverlayLayer.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="DeconstructImages">DeconstructImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="DeconstructImages">DeconstructImages</a></h2>
 <div class="doc-section">
 
-<p>DeconstructImages() compares each image with the next in a sequence and returns the minimum bounding region of all differences from the first image.</p></ol>
+<p>DeconstructImages() compares each image with the next in a sequence and returns the minimum bounding region of all differences from the first image.</p>
 
-<p>This function is deprecated in favor of the more universal CompareImageLayers() function.</p></ol>
+<p>This function is deprecated in favor of the more universal CompareImageLayers() function.</p>
 
 <p>The format of the DeconstructImages method is:</p>
 
@@ -263,20 +264,20 @@ _8c.html" target="source" name="DeconstructImages">DeconstructImages</a></h2>
   Image *DeconstructImages(const Image *images, ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="OptimizeImageLayers">OptimizeImageLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="OptimizeImageLayers">OptimizeImageLayers</a></h2>
 <div class="doc-section">
 
-<p>OptimizeImageLayers() compares each image the GIF disposed forms of the previous image in the sequence.  From this it attempts to select the smallest cropped image to replace each frame, while preserving the results of the GIF animation.</p></ol>
+<p>OptimizeImageLayers() compares each image the GIF disposed forms of the previous image in the sequence.  From this it attempts to select the smallest cropped image to replace each frame, while preserving the results of the GIF animation.</p>
 
 <p>The format of the OptimizeImageLayers method is:</p>
 
@@ -285,20 +286,20 @@ _8c.html" target="source" name="OptimizeImageLayers">OptimizeImageLayers</a></h2
            ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="OptimizeImagePlusLayers">OptimizeImagePlusLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="OptimizeImagePlusLayers">OptimizeImagePlusLayers</a></h2>
 <div class="doc-section">
 
-<p>OptimizeImagePlusLayers() is exactly as OptimizeImageLayers(), but may also add or even remove extra frames in the animation, if it improves the total number of pixels in the resulting GIF animation.</p></ol>
+<p>OptimizeImagePlusLayers() is exactly as OptimizeImageLayers(), but may also add or even remove extra frames in the animation, if it improves the total number of pixels in the resulting GIF animation.</p>
 
 <p>The format of the OptimizePlusImageLayers method is:</p>
 
@@ -307,22 +308,22 @@ _8c.html" target="source" name="OptimizeImagePlusLayers">OptimizeImagePlusLayers
            ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="OptimizeImageTransparency">OptimizeImageTransparency</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="OptimizeImageTransparency">OptimizeImageTransparency</a></h2>
 <div class="doc-section">
 
-<p>OptimizeImageTransparency() takes a frame optimized GIF animation, and compares the overlayed pixels against the disposal image resulting from all the previous frames in the animation.  Any pixel that does not change the disposal image (and thus does not effect the outcome of an overlay) is made transparent.</p></ol>
+<p>OptimizeImageTransparency() takes a frame optimized GIF animation, and compares the overlayed pixels against the disposal image resulting from all the previous frames in the animation.  Any pixel that does not change the disposal image (and thus does not effect the outcome of an overlay) is made transparent.</p>
 
-<p>WARNING: This modifies the current images directly, rather than generate a new image sequence.</p></ol>
+<p>WARNING: This modifies the current images directly, rather than generate a new image sequence.</p>
 
 <p>The format of the OptimizeImageTransperency method is:</p>
 
@@ -330,22 +331,22 @@ _8c.html" target="source" name="OptimizeImageTransparency">OptimizeImageTranspar
   void OptimizeImageTransperency(Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image sequence</p></ol>
+<p>the image sequence</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="RemoveDuplicateLayers">RemoveDuplicateLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="RemoveDuplicateLayers">RemoveDuplicateLayers</a></h2>
 <div class="doc-section">
 
-<p>RemoveDuplicateLayers() removes any image that is exactly the same as the next image in the given image list.  Image size and virtual canvas offset must also match, though not the virtual canvas size itself.</p></ol>
+<p>RemoveDuplicateLayers() removes any image that is exactly the same as the next image in the given image list.  Image size and virtual canvas offset must also match, though not the virtual canvas size itself.</p>
 
-<p>No check is made with regards to image disposal setting, though it is the dispose setting of later image that is kept.  Also any time delays are also added together. As such coalesced image animations should still produce the same result, though with duplicte frames merged into a single frame.</p></ol>
+<p>No check is made with regards to image disposal setting, though it is the dispose setting of later image that is kept.  Also any time delays are also added together. As such coalesced image animations should still produce the same result, though with duplicte frames merged into a single frame.</p>
 
 <p>The format of the RemoveDuplicateLayers method is:</p>
 
@@ -353,26 +354,26 @@ _8c.html" target="source" name="RemoveDuplicateLayers">RemoveDuplicateLayers</a>
   void RemoveDuplicateLayers(Image **image, ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>images</h5>
-<ol><p>the image list</p></ol>
+<p>the image list</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="RemoveZeroDelayLayers">RemoveZeroDelayLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="RemoveZeroDelayLayers">RemoveZeroDelayLayers</a></h2>
 <div class="doc-section">
 
-<p>RemoveZeroDelayLayers() removes any image that as a zero delay time. Such images generally represent intermediate or partial updates in GIF animations used for file optimization.  They are not ment to be displayed to users of the animation.  Viewable images in an animation should have a time delay of 3 or more centi-seconds (hundredths of a second).</p></ol>
+<p>RemoveZeroDelayLayers() removes any image that as a zero delay time. Such images generally represent intermediate or partial updates in GIF animations used for file optimization.  They are not ment to be displayed to users of the animation.  Viewable images in an animation should have a time delay of 3 or more centi-seconds (hundredths of a second).</p>
 
-<p>However if all the frames have a zero time delay, then either the animation is as yet incomplete, or it is not a GIF animation.  This a non-sensible situation, so no image will be removed and a 'Zero Time Animation' warning (exception) given.</p></ol>
+<p>However if all the frames have a zero time delay, then either the animation is as yet incomplete, or it is not a GIF animation.  This a non-sensible situation, so no image will be removed and a 'Zero Time Animation' warning (exception) given.</p>
 
-<p>No warning will be given if no image was removed because all images had an appropriate non-zero time delay set.</p></ol>
+<p>No warning will be given if no image was removed because all images had an appropriate non-zero time delay set.</p>
 
-<p>Due to the special requirements of GIF disposal handling, GIF animations should be coalesced first, before calling this function, though that is not a requirement.</p></ol>
+<p>Due to the special requirements of GIF disposal handling, GIF animations should be coalesced first, before calling this function, though that is not a requirement.</p>
 
 <p>The format of the RemoveZeroDelayLayers method is:</p>
 
@@ -380,28 +381,28 @@ _8c.html" target="source" name="RemoveZeroDelayLayers">RemoveZeroDelayLayers</a>
   void RemoveZeroDelayLayers(Image **image, ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>images</h5>
-<ol><p>the image list</p></ol>
+<p>the image list</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="CompositeLayers">CompositeLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="CompositeLayers">CompositeLayers</a></h2>
 <div class="doc-section">
 
-<p>CompositeLayers() compose first image sequence (source) over the second image sequence (destination), using the given compose method and offsets.</p></ol>
+<p>CompositeLayers() compose first image sequence (source) over the second image sequence (destination), using the given compose method and offsets.</p>
 
-<p>The pointers to the image list does not have to be the start of that image list, but may start somewhere in the middle.  Each layer from the two image lists are composted together until the end of one of the image lists is reached.  The offset of each composition is also adjusted to match the virtual canvas offsets of each layer. As such the given offset is relative to the virtual canvas, and not the actual image.</p></ol>
+<p>The pointers to the image list does not have to be the start of that image list, but may start somewhere in the middle.  Each layer from the two image lists are composted together until the end of one of the image lists is reached.  The offset of each composition is also adjusted to match the virtual canvas offsets of each layer. As such the given offset is relative to the virtual canvas, and not the actual image.</p>
 
-<p>No GIF disposal handling is performed, so GIF animations should be coalesced before use.  However this not a requirement, and individual layer images may have any size or offset, for special compositions.</p></ol>
+<p>No GIF disposal handling is performed, so GIF animations should be coalesced before use.  However this not a requirement, and individual layer images may have any size or offset, for special compositions.</p>
 
-<p>Special case:- If one of the image sequences is just a single image that image is repeatally composed with all the images in the other image list. Either the source or destination lists may be the single image, for this situation.</p></ol>
+<p>Special case:- If one of the image sequences is just a single image that image is repeatally composed with all the images in the other image list. Either the source or destination lists may be the single image, for this situation.</p>
 
-<p>The destination list will be expanded as needed to match number of source image overlaid (from current position to end of list).</p></ol>
+<p>The destination list will be expanded as needed to match number of source image overlaid (from current position to end of list).</p>
 
 <p>The format of the CompositeLayers method is:</p>
 
@@ -412,28 +413,28 @@ _8c.html" target="source" name="CompositeLayers">CompositeLayers</a></h2>
       ExceptionInfo *exception);
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>destination</h5>
-<ol><p>the destination images and results</p></ol>
+<p>the destination images and results</p>
 
 <h5>source</h5>
-<ol><p>source image(s) for the layer composition</p></ol>
+<p>source image(s) for the layer composition</p>
 
 <h5>compose, x_offset, y_offset</h5>
-<ol><p>arguments passed on to CompositeImages()</p></ol>
+<p>arguments passed on to CompositeImages()</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer
-_8c.html" target="source" name="MergeImageLayers">MergeImageLayers</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/layer
+_8c.html" id="MergeImageLayers">MergeImageLayers</a></h2>
 <div class="doc-section">
 
-<p>MergeImageLayers() composes all the image layers from the current given image onward to produce a single image of the merged layers.</p></ol>
+<p>MergeImageLayers() composes all the image layers from the current given image onward to produce a single image of the merged layers.</p>
 
-<p>The inital canvas's size depends on the given ImageLayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p></ol>
+<p>The inital canvas's size depends on the given ImageLayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p>
 
 <p>The format of the MergeImageLayers is:</p>
 
@@ -442,26 +443,26 @@ _8c.html" target="source" name="MergeImageLayers">MergeImageLayers</a></h2>
     const ImageLayerMethod method, ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image list to be composited together</p></ol>
+<p>the image list to be composited together</p>
 
 <h5>method</h5>
-<ol><p>the method of selecting the size of the initial canvas.</p></ol>
+<p>the method of selecting the size of the initial canvas.</p>
 
-<p>MergeLayer: Merge all layers onto a canvas just large enough to hold all the actual images. The virtual canvas of the first image is preserved but otherwise ignored.</p></ol>
+<p>MergeLayer: Merge all layers onto a canvas just large enough to hold all the actual images. The virtual canvas of the first image is preserved but otherwise ignored.</p>
 
-<p>FlattenLayer: Use the virtual canvas size of first image. Images which fall outside this canvas is clipped. This can be used to 'fill out' a given virtual canvas.</p></ol>
+<p>FlattenLayer: Use the virtual canvas size of first image. Images which fall outside this canvas is clipped. This can be used to 'fill out' a given virtual canvas.</p>
 
-<p>MosaicLayer: Start with the virtual canvas of the first image, enlarging left and right edges to contain all images. Images with negative offsets will be clipped.</p></ol>
+<p>MosaicLayer: Start with the virtual canvas of the first image, enlarging left and right edges to contain all images. Images with negative offsets will be clipped.</p>
 
-<p>TrimBoundsLayer: Determine the overall bounds of all the image layers just as in "MergeLayer", then adjust the the canvas and offsets to be relative to those bounds, without overlaying the images.</p></ol>
+<p>TrimBoundsLayer: Determine the overall bounds of all the image layers just as in "MergeLayer", then adjust the the canvas and offsets to be relative to those bounds, without overlaying the images.</p>
 
-<p>WARNING: a new image is not returned, the original image sequence page data is modified instead.</p></ol>
+<p>WARNING: a new image is not returned, the original image sequence page data is modified instead.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

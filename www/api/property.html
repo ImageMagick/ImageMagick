@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#CloneImageProperties">CloneImageProperties</a> &bull; <a href="#DefineImageProperty">DefineImageProperty</a> &bull; <a href="#DeleteImageProperty">DeleteImageProperty</a> &bull; <a href="#DestroyImageProperties">DestroyImageProperties</a> &bull; <a href="#FormatImageProperty">FormatImageProperty</a> &bull; <a href="#GetImageProperty">GetImageProperty</a> &bull; <a href="#GetNextImageProperty">GetNextImageProperty</a> &bull; <a href="#InterpretImageProperties">InterpretImageProperties</a> &bull; <a href="#RemoveImageProperty">RemoveImageProperty</a> &bull; <a href="#ResetImagePropertyIterator">ResetImagePropertyIterator</a> &bull; <a href="#SetImageProperty">SetImageProperty</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="CloneImageProperties">CloneImageProperties</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="CloneImageProperties">CloneImageProperties</a></h2>
 <div class="doc-section">
 
-<p>CloneImageProperties() clones one or more image properties.</p></ol>
+<p>CloneImageProperties() clones one or more image properties.</p>
 
 <p>The format of the CloneImageProperties method is:</p>
 
@@ -191,20 +192,20 @@ _8c.html" target="source" name="CloneImageProperties">CloneImageProperties</a></
     const Image *clone_image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>clone_image</h5>
-<ol><p>the clone image.</p></ol>
+<p>the clone image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="DefineImageProperty">DefineImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="DefineImageProperty">DefineImageProperty</a></h2>
 <div class="doc-section">
 
-<p>DefineImageProperty() associates a key/value pair with an image property.</p></ol>
+<p>DefineImageProperty() associates a key/value pair with an image property.</p>
 
 <p>The format of the DefineImageProperty method is:</p>
 
@@ -213,20 +214,20 @@ _8c.html" target="source" name="DefineImageProperty">DefineImageProperty</a></h2
     const char *property)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>property</h5>
-<ol><p>the image property.</p></ol>
+<p>the image property.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="DeleteImageProperty">DeleteImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="DeleteImageProperty">DeleteImageProperty</a></h2>
 <div class="doc-section">
 
-<p>DeleteImageProperty() deletes an image property.</p></ol>
+<p>DeleteImageProperty() deletes an image property.</p>
 
 <p>The format of the DeleteImageProperty method is:</p>
 
@@ -234,20 +235,20 @@ _8c.html" target="source" name="DeleteImageProperty">DeleteImageProperty</a></h2
   MagickBooleanType DeleteImageProperty(Image *image,const char *property)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>property</h5>
-<ol><p>the image property.</p></ol>
+<p>the image property.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="DestroyImageProperties">DestroyImageProperties</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="DestroyImageProperties">DestroyImageProperties</a></h2>
 <div class="doc-section">
 
-<p>DestroyImageProperties() releases memory associated with image property values.</p></ol>
+<p>DestroyImageProperties() releases memory associated with image property values.</p>
 
 <p>The format of the DestroyDefines method is:</p>
 
@@ -255,17 +256,17 @@ _8c.html" target="source" name="DestroyImageProperties">DestroyImageProperties</
   void DestroyImageProperties(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="FormatImageProperty">FormatImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="FormatImageProperty">FormatImageProperty</a></h2>
 <div class="doc-section">
 
-<p>FormatImageProperty() permits formatted property/value pairs to be saved as an image property.</p></ol>
+<p>FormatImageProperty() permits formatted property/value pairs to be saved as an image property.</p>
 
 <p>The format of the FormatImageProperty method is:</p>
 
@@ -274,23 +275,23 @@ _8c.html" target="source" name="FormatImageProperty">FormatImageProperty</a></h2
     const char *format,...)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5> image</h5>
-<ol><p>The image.</p></ol>
+<p>The image.</p>
 
 <h5> property</h5>
-<ol><p>The attribute property.</p></ol>
+<p>The attribute property.</p>
 
 <h5> format</h5>
-<ol><p>A string describing the format to use to write the remaining arguments.</p></ol>
+<p>A string describing the format to use to write the remaining arguments.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="GetImageProperty">GetImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="GetImageProperty">GetImageProperty</a></h2>
 <div class="doc-section">
 
-<p>GetImageProperty() gets a value associated with an image property.</p></ol>
+<p>GetImageProperty() gets a value associated with an image property.</p>
 
 <p>The format of the GetImageProperty method is:</p>
 
@@ -298,20 +299,20 @@ _8c.html" target="source" name="GetImageProperty">GetImageProperty</a></h2>
   const char *GetImageProperty(const Image *image,const char *key)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>key</h5>
-<ol><p>the key.</p></ol>
+<p>the key.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="GetNextImageProperty">GetNextImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="GetNextImageProperty">GetNextImageProperty</a></h2>
 <div class="doc-section">
 
-<p>GetNextImageProperty() gets the next image property value.</p></ol>
+<p>GetNextImageProperty() gets the next image property value.</p>
 
 <p>The format of the GetNextImageProperty method is:</p>
 
@@ -319,17 +320,17 @@ _8c.html" target="source" name="GetNextImageProperty">GetNextImageProperty</a></
   char *GetNextImageProperty(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="InterpretImageProperties">InterpretImageProperties</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="InterpretImageProperties">InterpretImageProperties</a></h2>
 <div class="doc-section">
 
-<p>InterpretImageProperties() replaces any embedded formatting characters with the appropriate image property and returns the interpretted text.</p></ol>
+<p>InterpretImageProperties() replaces any embedded formatting characters with the appropriate image property and returns the interpretted text.</p>
 
 <p>The format of the InterpretImageProperties method is:</p>
 
@@ -338,23 +339,23 @@ _8c.html" target="source" name="InterpretImageProperties">InterpretImageProperti
     const char *embed_text)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>embed_text</h5>
-<ol><p>the address of a character string containing the embedded formatting characters.</p></ol>
+<p>the address of a character string containing the embedded formatting characters.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="RemoveImageProperty">RemoveImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="RemoveImageProperty">RemoveImageProperty</a></h2>
 <div class="doc-section">
 
-<p>RemoveImageProperty() removes a property from the image and returns its value.</p></ol>
+<p>RemoveImageProperty() removes a property from the image and returns its value.</p>
 
 <p>The format of the RemoveImageProperty method is:</p>
 
@@ -362,20 +363,20 @@ _8c.html" target="source" name="RemoveImageProperty">RemoveImageProperty</a></h2
   char *RemoveImageProperty(Image *image,const char *property)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>property</h5>
-<ol><p>the image property.</p></ol>
+<p>the image property.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="ResetImagePropertyIterator">ResetImagePropertyIterator</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="ResetImagePropertyIterator">ResetImagePropertyIterator</a></h2>
 <div class="doc-section">
 
-<p>ResetImagePropertyIterator() resets the image properties iterator.  Use it in conjunction with GetNextImageProperty() to iterate over all the values associated with an image property.</p></ol>
+<p>ResetImagePropertyIterator() resets the image properties iterator.  Use it in conjunction with GetNextImageProperty() to iterate over all the values associated with an image property.</p>
 
 <p>The format of the ResetImagePropertyIterator method is:</p>
 
@@ -383,17 +384,17 @@ _8c.html" target="source" name="ResetImagePropertyIterator">ResetImagePropertyIt
   ResetImagePropertyIterator(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/property
-_8c.html" target="source" name="SetImageProperty">SetImageProperty</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/property
+_8c.html" id="SetImageProperty">SetImageProperty</a></h2>
 <div class="doc-section">
 
-<p>SetImageProperty() associates an value with an image property.</p></ol>
+<p>SetImageProperty() associates an value with an image property.</p>
 
 <p>The format of the SetImageProperty method is:</p>
 
@@ -402,16 +403,16 @@ _8c.html" target="source" name="SetImageProperty">SetImageProperty</a></h2>
     const char *value)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>property</h5>
-<ol><p>the image property.</p></ol>
+<p>the image property.</p>
 
 <h5>values</h5>
-<ol><p>the image property values.</p></ol>
+<p>the image property values.</p>
 
  </div>
 

@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#BlobToImage">BlobToImage</a> &bull; <a href="#FileToImage">FileToImage</a> &bull; <a href="#GetBlobProperties">GetBlobProperties</a> &bull; <a href="#ImageToBlob">ImageToBlob</a> &bull; <a href="#ImageToFile">ImageToFile</a> &bull; <a href="#ImagesToBlob">ImagesToBlob</a> &bull; <a href="#InjectImageBlob">InjectImageBlob</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="BlobToImage">BlobToImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="BlobToImage">BlobToImage</a></h2>
 <div class="doc-section">
 
-<p>BlobToImage() implements direct to memory image formats.  It returns the blob as an image.</p></ol>
+<p>BlobToImage() implements direct to memory image formats.  It returns the blob as an image.</p>
 
 <p>The format of the BlobToImage method is:</p>
 
@@ -191,26 +192,26 @@ _8c.html" target="source" name="BlobToImage">BlobToImage</a></h2>
     const size_t length,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>blob</h5>
-<ol><p>the address of a character stream in one of the image formats understood by ImageMagick.</p></ol>
+<p>the address of a character stream in one of the image formats understood by ImageMagick.</p>
 
 <h5>length</h5>
-<ol><p>This size_t integer reflects the length in bytes of the blob.</p></ol>
+<p>This size_t integer reflects the length in bytes of the blob.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="FileToImage">FileToImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="FileToImage">FileToImage</a></h2>
 <div class="doc-section">
 
-<p>FileToImage() write the contents of a file to an image.</p></ol>
+<p>FileToImage() write the contents of a file to an image.</p>
 
 <p>The format of the FileToImage method is:</p>
 
@@ -218,20 +219,20 @@ _8c.html" target="source" name="FileToImage">FileToImage</a></h2>
   MagickBooleanType FileToImage(Image *,const char *filename)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>filename</h5>
-<ol><p>the filename.</p></ol>
+<p>the filename.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="GetBlobProperties">GetBlobProperties</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="GetBlobProperties">GetBlobProperties</a></h2>
 <div class="doc-section">
 
-<p>GetBlobProperties() returns information about an image blob.</p></ol>
+<p>GetBlobProperties() returns information about an image blob.</p>
 
 <p>The format of the GetBlobProperties method is:</p>
 
@@ -239,17 +240,17 @@ _8c.html" target="source" name="GetBlobProperties">GetBlobProperties</a></h2>
   const struct stat *GetBlobProperties(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="ImageToBlob">ImageToBlob</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="ImageToBlob">ImageToBlob</a></h2>
 <div class="doc-section">
 
-<p>ImageToBlob() implements direct to memory image formats.  It returns the image as a blob and its length.  The magick member of the ImageInfo structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p></ol>
+<p>ImageToBlob() implements direct to memory image formats.  It returns the image as a blob and its length.  The magick member of the ImageInfo structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p>
 
 <p>The format of the ImageToBlob method is:</p>
 
@@ -258,26 +259,26 @@ _8c.html" target="source" name="ImageToBlob">ImageToBlob</a></h2>
     size_t *length,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>length</h5>
-<ol><p>This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.</p></ol>
+<p>This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="ImageToFile">ImageToFile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="ImageToFile">ImageToFile</a></h2>
 <div class="doc-section">
 
-<p>ImageToFile() writes an image to a file.  It returns MagickFalse if an error occurs otherwise MagickTrue.</p></ol>
+<p>ImageToFile() writes an image to a file.  It returns MagickFalse if an error occurs otherwise MagickTrue.</p>
 
 <p>The format of the ImageToFile method is:</p>
 
@@ -286,25 +287,25 @@ _8c.html" target="source" name="ImageToFile">ImageToFile</a></h2>
      ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>filename</h5>
-<ol><p>Write the image to this file.</p></ol>
+<p>Write the image to this file.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="ImagesToBlob">ImagesToBlob</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="ImagesToBlob">ImagesToBlob</a></h2>
 <div class="doc-section">
 
-<p>ImagesToBlob() implements direct to memory image formats.  It returns the image sequence as a blob and its length.  The magick member of the ImageInfo structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p></ol>
+<p>ImagesToBlob() implements direct to memory image formats.  It returns the image sequence as a blob and its length.  The magick member of the ImageInfo structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p>
 
-<p>Note, some image formats do not permit multiple images to the same image stream (e.g. JPEG).  in this instance, just the first image of the sequence is returned as a blob.</p></ol>
+<p>Note, some image formats do not permit multiple images to the same image stream (e.g. JPEG).  in this instance, just the first image of the sequence is returned as a blob.</p>
 
 <p>The format of the ImagesToBlob method is:</p>
 
@@ -313,26 +314,26 @@ _8c.html" target="source" name="ImagesToBlob">ImagesToBlob</a></h2>
     size_t *length,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>images</h5>
-<ol><p>the image list.</p></ol>
+<p>the image list.</p>
 
 <h5>length</h5>
-<ol><p>This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.</p></ol>
+<p>This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/blob
-_8c.html" target="source" name="InjectImageBlob">InjectImageBlob</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/blob
+_8c.html" id="InjectImageBlob">InjectImageBlob</a></h2>
 <div class="doc-section">
 
-<p>InjectImageBlob() injects the image with a copy of itself in the specified format (e.g. inject JPEG into a PDF image).</p></ol>
+<p>InjectImageBlob() injects the image with a copy of itself in the specified format (e.g. inject JPEG into a PDF image).</p>
 
 <p>The format of the InjectImageBlob method is:</p>
 
@@ -342,22 +343,22 @@ _8c.html" target="source" name="InjectImageBlob">InjectImageBlob</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info..</p></ol>
+<p>the image info..</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>inject_image</h5>
-<ol><p>inject into the image stream.</p></ol>
+<p>inject into the image stream.</p>
 
 <h5>format</h5>
-<ol><p>the image format.</p></ol>
+<p>the image format.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

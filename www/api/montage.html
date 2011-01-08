@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#CloneMontageInfo">CloneMontageInfo</a> &bull; <a href="#DestroyMontageInfo">DestroyMontageInfo</a> &bull; <a href="#GetMontageInfo">GetMontageInfo</a> &bull; <a href="#MontageImageList">MontageImageList</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage
-_8c.html" target="source" name="CloneMontageInfo">CloneMontageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/montage
+_8c.html" id="CloneMontageInfo">CloneMontageInfo</a></h2>
 <div class="doc-section">
 
-<p>CloneMontageInfo() makes a copy of the given montage info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p></ol>
+<p>CloneMontageInfo() makes a copy of the given montage info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
 
 <p>The format of the CloneMontageInfo method is:</p>
 
@@ -191,20 +192,20 @@ _8c.html" target="source" name="CloneMontageInfo">CloneMontageInfo</a></h2>
     const MontageInfo *montage_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>montage_info</h5>
-<ol><p>the montage info.</p></ol>
+<p>the montage info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage
-_8c.html" target="source" name="DestroyMontageInfo">DestroyMontageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/montage
+_8c.html" id="DestroyMontageInfo">DestroyMontageInfo</a></h2>
 <div class="doc-section">
 
-<p>DestroyMontageInfo() deallocates memory associated with montage_info.</p></ol>
+<p>DestroyMontageInfo() deallocates memory associated with montage_info.</p>
 
 <p>The format of the DestroyMontageInfo method is:</p>
 
@@ -212,18 +213,18 @@ _8c.html" target="source" name="DestroyMontageInfo">DestroyMontageInfo</a></h2>
   MontageInfo *DestroyMontageInfo(MontageInfo *montage_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>montage_info</h5>
-<ol><p>Specifies a pointer to an MontageInfo structure.</p></ol>
+<p>Specifies a pointer to an MontageInfo structure.</p>
 
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage
-_8c.html" target="source" name="GetMontageInfo">GetMontageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/montage
+_8c.html" id="GetMontageInfo">GetMontageInfo</a></h2>
 <div class="doc-section">
 
-<p>GetMontageInfo() initializes montage_info to default values.</p></ol>
+<p>GetMontageInfo() initializes montage_info to default values.</p>
 
 <p>The format of the GetMontageInfo method is:</p>
 
@@ -232,20 +233,20 @@ _8c.html" target="source" name="GetMontageInfo">GetMontageInfo</a></h2>
     MontageInfo *montage_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>a structure of type ImageInfo.</p></ol>
+<p>a structure of type ImageInfo.</p>
 
 <h5>montage_info</h5>
-<ol><p>Specifies a pointer to a MontageInfo structure.</p></ol>
+<p>Specifies a pointer to a MontageInfo structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/montage
-_8c.html" target="source" name="MontageImageList">MontageImageList</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/montage
+_8c.html" id="MontageImageList">MontageImageList</a></h2>
 <div class="doc-section">
 
-<p>MontageImageList() is a layout manager that lets you tile one or more thumbnails across an image canvas.</p></ol>
+<p>MontageImageList() is a layout manager that lets you tile one or more thumbnails across an image canvas.</p>
 
 <p>The format of the MontageImageList method is:</p>
 
@@ -255,19 +256,19 @@ _8c.html" target="source" name="MontageImageList">MontageImageList</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>montage_info</h5>
-<ol><p>Specifies a pointer to a MontageInfo structure.</p></ol>
+<p>Specifies a pointer to a MontageInfo structure.</p>
 
 <h5>images</h5>
-<ol><p>Specifies a pointer to an array of Image structures.</p></ol>
+<p>Specifies a pointer to an array of Image structures.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

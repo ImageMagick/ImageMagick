@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#AcquireExceptionInfo">AcquireExceptionInfo</a> &bull; <a href="#ClearMagickException">ClearMagickException</a> &bull; <a href="#CatchException">CatchException</a> &bull; <a href="#DestroyExceptionInfo">DestroyExceptionInfo</a> &bull; <a href="#GetExceptionInfo">GetExceptionInfo</a> &bull; <a href="#GetExceptionMessage">GetExceptionMessage</a> &bull; <a href="#GetLocaleExceptionMessage">GetLocaleExceptionMessage</a> &bull; <a href="#InheritException">InheritException</a> &bull; <a href="#MagickError">MagickError</a> &bull; <a href="#MagickFatalError">MagickFatalError</a> &bull; <a href="#MagickWarning">MagickWarning</a> &bull; <a href="#SetErrorHandler">SetErrorHandler</a> &bull; <a href="#SetFatalErrorHandler">SetFatalErrorHandler</a> &bull; <a href="#SetWarningHandler">SetWarningHandler</a> &bull; <a href="#ThrowException">ThrowException</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="AcquireExceptionInfo">AcquireExceptionInfo</a></h2>
 <div class="doc-section">
 
-<p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p></ol>
+<p>AcquireExceptionInfo() allocates the ExceptionInfo structure.</p>
 
 <p>The format of the AcquireExceptionInfo method is:</p>
 
@@ -191,11 +192,11 @@ _8c.html" target="source" name="AcquireExceptionInfo">AcquireExceptionInfo</a></
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="ClearMagickException">ClearMagickException</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="ClearMagickException">ClearMagickException</a></h2>
 <div class="doc-section">
 
-<p>ClearMagickException() clears any exception that may not have been caught yet.</p></ol>
+<p>ClearMagickException() clears any exception that may not have been caught yet.</p>
 
 <p>The format of the ClearMagickException method is:</p>
 
@@ -203,17 +204,17 @@ _8c.html" target="source" name="ClearMagickException">ClearMagickException</a></
   ClearMagickException(ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>the exception info.</p></ol>
+<p>the exception info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="CatchException">CatchException</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="CatchException">CatchException</a></h2>
 <div class="doc-section">
 
-<p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p></ol>
+<p>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity.</p>
 
 <p>The format of the CatchException method is:</p>
 
@@ -221,17 +222,17 @@ _8c.html" target="source" name="CatchException">CatchException</a></h2>
   CatchException(ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>the exception info.</p></ol>
+<p>the exception info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="DestroyExceptionInfo">DestroyExceptionInfo</a></h2>
 <div class="doc-section">
 
-<p>DestroyExceptionInfo() deallocates memory associated with an exception.</p></ol>
+<p>DestroyExceptionInfo() deallocates memory associated with an exception.</p>
 
 <p>The format of the DestroyExceptionInfo method is:</p>
 
@@ -239,17 +240,17 @@ _8c.html" target="source" name="DestroyExceptionInfo">DestroyExceptionInfo</a></
   ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>the exception info.</p></ol>
+<p>the exception info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="GetExceptionInfo">GetExceptionInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="GetExceptionInfo">GetExceptionInfo</a></h2>
 <div class="doc-section">
 
-<p>GetExceptionInfo() initializes an exception to default values.</p></ol>
+<p>GetExceptionInfo() initializes an exception to default values.</p>
 
 <p>The format of the GetExceptionInfo method is:</p>
 
@@ -257,17 +258,17 @@ _8c.html" target="source" name="GetExceptionInfo">GetExceptionInfo</a></h2>
   GetExceptionInfo(ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>the exception info.</p></ol>
+<p>the exception info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="GetExceptionMessage">GetExceptionMessage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="GetExceptionMessage">GetExceptionMessage</a></h2>
 <div class="doc-section">
 
-<p>GetExceptionMessage() returns the error message defined by the specified error code.</p></ol>
+<p>GetExceptionMessage() returns the error message defined by the specified error code.</p>
 
 <p>The format of the GetExceptionMessage method is:</p>
 
@@ -275,17 +276,17 @@ _8c.html" target="source" name="GetExceptionMessage">GetExceptionMessage</a></h2
   char *GetExceptionMessage(const int error)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>error</h5>
-<ol><p>the error code.</p></ol>
+<p>the error code.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="GetLocaleExceptionMessage">GetLocaleExceptionMessage</a></h2>
 <div class="doc-section">
 
-<p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p></ol>
+<p>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale.</p>
 
 <p>The format of the GetLocaleExceptionMessage method is:</p>
 
@@ -294,20 +295,20 @@ _8c.html" target="source" name="GetLocaleExceptionMessage">GetLocaleExceptionMes
     const char *tag)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>severity</h5>
-<ol><p>the severity of the exception.</p></ol>
+<p>the severity of the exception.</p>
 
 <h5>tag</h5>
-<ol><p>the message tag.</p></ol>
+<p>the message tag.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="InheritException">InheritException</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="InheritException">InheritException</a></h2>
 <div class="doc-section">
 
-<p>InheritException() inherits an exception from a related exception.</p></ol>
+<p>InheritException() inherits an exception from a related exception.</p>
 
 <p>The format of the InheritException method is:</p>
 
@@ -315,20 +316,20 @@ _8c.html" target="source" name="InheritException">InheritException</a></h2>
   InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>the exception info.</p></ol>
+<p>the exception info.</p>
 
 <h5>relative</h5>
-<ol><p>the related exception info.</p></ol>
+<p>the related exception info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="MagickError">MagickError</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="MagickError">MagickError</a></h2>
 <div class="doc-section">
 
-<p>MagickError() calls the exception handler methods with an error reason.</p></ol>
+<p>MagickError() calls the exception handler methods with an error reason.</p>
 
 <p>The format of the MagickError method is:</p>
 
@@ -337,23 +338,23 @@ _8c.html" target="source" name="MagickError">MagickError</a></h2>
     const char *description)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>Specifies the numeric error category.</p></ol>
+<p>Specifies the numeric error category.</p>
 
 <h5>reason</h5>
-<ol><p>Specifies the reason to display before terminating the program.</p></ol>
+<p>Specifies the reason to display before terminating the program.</p>
 
 <h5>description</h5>
-<ol><p>Specifies any description to the reason.</p></ol>
+<p>Specifies any description to the reason.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="MagickFatalError">MagickFatalError</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="MagickFatalError">MagickFatalError</a></h2>
 <div class="doc-section">
 
-<p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p></ol>
+<p>MagickFatalError() calls the fatal exception handler methods with an error reason.</p>
 
 <p>The format of the MagickError method is:</p>
 
@@ -362,23 +363,23 @@ _8c.html" target="source" name="MagickFatalError">MagickFatalError</a></h2>
     const char *description)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>Specifies the numeric error category.</p></ol>
+<p>Specifies the numeric error category.</p>
 
 <h5>reason</h5>
-<ol><p>Specifies the reason to display before terminating the program.</p></ol>
+<p>Specifies the reason to display before terminating the program.</p>
 
 <h5>description</h5>
-<ol><p>Specifies any description to the reason.</p></ol>
+<p>Specifies any description to the reason.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="MagickWarning">MagickWarning</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="MagickWarning">MagickWarning</a></h2>
 <div class="doc-section">
 
-<p>MagickWarning() calls the warning handler methods with a warning reason.</p></ol>
+<p>MagickWarning() calls the warning handler methods with a warning reason.</p>
 
 <p>The format of the MagickWarning method is:</p>
 
@@ -387,23 +388,23 @@ _8c.html" target="source" name="MagickWarning">MagickWarning</a></h2>
     const char *description)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>warning</h5>
-<ol><p>the warning severity.</p></ol>
+<p>the warning severity.</p>
 
 <h5>reason</h5>
-<ol><p>Define the reason for the warning.</p></ol>
+<p>Define the reason for the warning.</p>
 
 <h5>description</h5>
-<ol><p>Describe the warning.</p></ol>
+<p>Describe the warning.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="SetErrorHandler">SetErrorHandler</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="SetErrorHandler">SetErrorHandler</a></h2>
 <div class="doc-section">
 
-<p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p></ol>
+<p>SetErrorHandler() sets the exception handler to the specified method and returns the previous exception handler.</p>
 
 <p>The format of the SetErrorHandler method is:</p>
 
@@ -411,17 +412,17 @@ _8c.html" target="source" name="SetErrorHandler">SetErrorHandler</a></h2>
   ErrorHandler SetErrorHandler(ErrorHandler handler)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>handler</h5>
-<ol><p>the method to handle errors.</p></ol>
+<p>the method to handle errors.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="SetFatalErrorHandler">SetFatalErrorHandler</a></h2>
 <div class="doc-section">
 
-<p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p></ol>
+<p>SetFatalErrorHandler() sets the fatal exception handler to the specified method and returns the previous fatal exception handler.</p>
 
 <p>The format of the SetErrorHandler method is:</p>
 
@@ -429,17 +430,17 @@ _8c.html" target="source" name="SetFatalErrorHandler">SetFatalErrorHandler</a></
   ErrorHandler SetErrorHandler(ErrorHandler handler)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>handler</h5>
-<ol><p>the method to handle errors.</p></ol>
+<p>the method to handle errors.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="SetWarningHandler">SetWarningHandler</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="SetWarningHandler">SetWarningHandler</a></h2>
 <div class="doc-section">
 
-<p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p></ol>
+<p>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler.</p>
 
 <p>The format of the SetWarningHandler method is:</p>
 
@@ -447,17 +448,17 @@ _8c.html" target="source" name="SetWarningHandler">SetWarningHandler</a></h2>
   ErrorHandler SetWarningHandler(ErrorHandler handler)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>handler</h5>
-<ol><p>the method to handle warnings.</p></ol>
+<p>the method to handle warnings.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/exception
-_8c.html" target="source" name="ThrowException">ThrowException</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/exception
+_8c.html" id="ThrowException">ThrowException</a></h2>
 <div class="doc-section">
 
-<p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p></ol>
+<p>ThrowException() throws an exception with the specified severity code, reason, and optional description.</p>
 
 <p>The format of the ThrowException method is:</p>
 
@@ -467,19 +468,19 @@ _8c.html" target="source" name="ThrowException">ThrowException</a></h2>
     const char *description)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>exception</h5>
-<ol><p>the exception info.</p></ol>
+<p>the exception info.</p>
 
 <h5>severity</h5>
-<ol><p>the severity of the exception.</p></ol>
+<p>the severity of the exception.</p>
 
 <h5>reason</h5>
-<ol><p>the reason for the exception.</p></ol>
+<p>the reason for the exception.</p>
 
 <h5>description</h5>
-<ol><p>the exception description.</p></ol>
+<p>the exception description.</p>
 
  </div>
 

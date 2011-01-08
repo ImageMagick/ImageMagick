@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#DisplayImages">DisplayImages</a> &bull; <a href="#RemoteDisplayCommand">RemoteDisplayCommand</a> &bull; <a href="#XDisplayBackgroundImage">XDisplayBackgroundImage</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/display
-_8c.html" target="source" name="DisplayImages">DisplayImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/display
+_8c.html" id="DisplayImages">DisplayImages</a></h2>
 <div class="doc-section">
 
-<p>DisplayImages() displays an image sequence to any X window screen.  It returns a value other than 0 if successful.  Check the exception member of image to determine the reason for any failure.</p></ol>
+<p>DisplayImages() displays an image sequence to any X window screen.  It returns a value other than 0 if successful.  Check the exception member of image to determine the reason for any failure.</p>
 
 <p>The format of the DisplayImages method is:</p>
 
@@ -191,20 +192,20 @@ _8c.html" target="source" name="DisplayImages">DisplayImages</a></h2>
     Image *images)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/display
-_8c.html" target="source" name="RemoteDisplayCommand">RemoteDisplayCommand</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/display
+_8c.html" id="RemoteDisplayCommand">RemoteDisplayCommand</a></h2>
 <div class="doc-section">
 
-<p>RemoteDisplayCommand() encourages a remote display program to display the specified image filename.</p></ol>
+<p>RemoteDisplayCommand() encourages a remote display program to display the specified image filename.</p>
 
 <p>The format of the RemoteDisplayCommand method is:</p>
 
@@ -213,26 +214,26 @@ _8c.html" target="source" name="RemoteDisplayCommand">RemoteDisplayCommand</a></
     const char *window,const char *filename,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>window</h5>
-<ol><p>Specifies the name or id of an X window.</p></ol>
+<p>Specifies the name or id of an X window.</p>
 
 <h5>filename</h5>
-<ol><p>the name of the image filename to display.</p></ol>
+<p>the name of the image filename to display.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/display
-_8c.html" target="source" name="XDisplayBackgroundImage">XDisplayBackgroundImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/display
+_8c.html" id="XDisplayBackgroundImage">XDisplayBackgroundImage</a></h2>
 <div class="doc-section">
 
-<p>XDisplayBackgroundImage() displays an image in the background of a window.</p></ol>
+<p>XDisplayBackgroundImage() displays an image in the background of a window.</p>
 
 <p>The format of the XDisplayBackgroundImage method is:</p>
 
@@ -241,16 +242,16 @@ _8c.html" target="source" name="XDisplayBackgroundImage">XDisplayBackgroundImage
     XResourceInfo *resource_info,Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>display</h5>
-<ol><p>Specifies a connection to an X server;  returned from XOpenDisplay.</p></ol>
+<p>Specifies a connection to an X server;  returned from XOpenDisplay.</p>
 
 <h5>resource_info</h5>
-<ol><p>Specifies a pointer to a X11 XResourceInfo structure.</p></ol>
+<p>Specifies a pointer to a X11 XResourceInfo structure.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
 
