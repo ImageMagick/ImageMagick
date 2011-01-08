@@ -1101,7 +1101,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-1.9.2"
 #endif
 
 /* The archive extension */
