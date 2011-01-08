@@ -1,3 +1,8 @@
+2011-01-08  6.6.7-1 Glenn Randers-Pehrson <glennrp@image...>
+  * Quieted some inconsequential warnings in the PNG codec due to a
+    change in the type of the PNG iCCP profile from png_charp to png_bytep
+    in libpng-1.5.0.
+
 2011-01-03  6.6.7-0 Cristy  <quetzlzacatenango@image...>
   * Handle negative heights for ICO images.
 

@@ -1348,7 +1348,7 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
   (void) ThrowMagickException(&image->exception,GetMagickModule(),CoderError,
     message,"`%s'",image->filename);
 
-#if PNG_LIBPNG_VER < 10500
+#if (PNG_LIBPNG_VER < 10500)
   longjmp(ping->jmpbuf,1);
 #else
   png_longjmp(ping,1);
@@ -1853,8 +1853,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       int
         compression;
 
+#if (PNG_LIBPNG_VER < 10500)
       png_charp
-        info,
+        info;
+#else
+      png_bytep
+        info;
+#endif
+
+      png_charp
         name;
 
       png_uint_32
@@ -8268,7 +8275,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                if (ping_exclude_iCCP == MagickFalse)
                  {
                        png_set_iCCP(ping,ping_info,(const png_charp) name,0,
+#if (PNG_LIBPNG_VER < 10500)
                          (png_charp) GetStringInfoDatum(profile),
+#else
+                         (png_const_bytep) GetStringInfoDatum(profile),
+#endif
                          (png_uint_32) GetStringInfoLength(profile));
                  }
              }
