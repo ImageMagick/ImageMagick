@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#CompositeImageChannel">CompositeImageChannel</a> &bull; <a href="#TextureImage">TextureImage</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/composite
-_8c.html" target="source" name="CompositeImageChannel">CompositeImageChannel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/composite
+_8c.html" id="CompositeImageChannel">CompositeImageChannel</a></h2>
 <div class="doc-section">
 
-<p>CompositeImageChannel() returns the second image composited onto the first at the specified offset, using the specified composite method.</p></ol>
+<p>CompositeImageChannel() returns the second image composited onto the first at the specified offset, using the specified composite method.</p>
 
 <p>The format of the CompositeImageChannel method is:</p>
 
@@ -195,44 +196,44 @@ _8c.html" target="source" name="CompositeImageChannel">CompositeImageChannel</a>
     Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the destination image, modified by he composition</p></ol>
+<p>the destination image, modified by he composition</p>
 
 <h5>channel</h5>
-<ol><p>the channel.</p></ol>
+<p>the channel.</p>
 
 <h5>compose</h5>
-<ol><p>This operator affects how the composite is applied to the image.  The operators and how they are utilized are listed here http://www.w3.org/TR/SVG12/#compositing.</p></ol>
+<p>This operator affects how the composite is applied to the image.  The operators and how they are utilized are listed here http://www.w3.org/TR/SVG12/#compositing.</p>
 
 <h5>composite_image</h5>
-<ol><p>the composite (source) image.</p></ol>
+<p>the composite (source) image.</p>
 
 <h5>x_offset</h5>
-<ol><p>the column offset of the composited image.</p></ol>
+<p>the column offset of the composited image.</p>
 
 <h5>y_offset</h5>
-<ol><p>the row offset of the composited image.</p></ol>
+<p>the row offset of the composited image.</p>
 
-<p>Extra Controls from Image meta-data in 'composite_image' (artifacts)</p></ol>
+<p>Extra Controls from Image meta-data in 'composite_image' (artifacts)</p>
 
-<p>o "compose:args" A string containing extra numerical arguments for specific compose methods, generally expressed as a 'geometry' or a comma separated list of numbers.</p></ol>
+<p>o "compose:args" A string containing extra numerical arguments for specific compose methods, generally expressed as a 'geometry' or a comma separated list of numbers.</p>
 
-<p>Compose methods needing such arguments include "BlendCompositeOp" and "DisplaceCompositeOp".</p></ol>
+<p>Compose methods needing such arguments include "BlendCompositeOp" and "DisplaceCompositeOp".</p>
 
-<p>o "compose:outside-overlay" Modify how the composition is to effect areas not directly covered by the 'composite_image' at the offset given.  Normally this is dependant on the 'compose' method, especially Duff-Porter methods.</p></ol>
+<p>o "compose:outside-overlay" Modify how the composition is to effect areas not directly covered by the 'composite_image' at the offset given.  Normally this is dependant on the 'compose' method, especially Duff-Porter methods.</p>
 
-<p>If set to "false" then disable all normal handling of pixels not covered by the composite_image.  Typically used for repeated tiling of the composite_image by the calling API.</p></ol>
+<p>If set to "false" then disable all normal handling of pixels not covered by the composite_image.  Typically used for repeated tiling of the composite_image by the calling API.</p>
 
-<p>Previous to IM v6.5.3-3  this was called "modify-outside-overlay"</p></ol>
+<p>Previous to IM v6.5.3-3  this was called "modify-outside-overlay"</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/composite
-_8c.html" target="source" name="TextureImage">TextureImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/composite
+_8c.html" id="TextureImage">TextureImage</a></h2>
 <div class="doc-section">
 
-<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p></ol>
+<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p>
 
 <p>The format of the TextureImage method is:</p>
 
@@ -240,13 +241,13 @@ _8c.html" target="source" name="TextureImage">TextureImage</a></h2>
   MagickBooleanType TextureImage(Image *image,const Image *texture)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>texture</h5>
-<ol><p>This image is the texture to layer on the background.</p></ol>
+<p>This image is the texture to layer on the background.</p>
 
  </div>
 

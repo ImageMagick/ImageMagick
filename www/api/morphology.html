@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -178,43 +179,43 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#** This macro  IsNaN">** This macro  IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#MorphologyApply">MorphologyApply</a> &bull; <a href="#MorphologyImageChannel">MorphologyImageChannel</a> &bull; <a href="#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="#ZeroKernelNans">ZeroKernelNans</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="** This macro  IsNaN">** This macro  IsNaN</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="**_This macro  IsNaN">** This macro  IsNaN</a></h2>
 <div class="doc-section">
 
 <p>** This macro  IsNaN() is thus is only true if the value given is NaN. </p>
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="AcquireKernelInfo">AcquireKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>AcquireKernelInfo() takes the given string (generally supplied by the user) and converts it into a Morphology/Convolution Kernel.  This allows users to specify a kernel from a number of pre-defined kernels, or to fully specify their own kernel for a specific Convolution or Morphology Operation.</p></ol>
+<p>AcquireKernelInfo() takes the given string (generally supplied by the user) and converts it into a Morphology/Convolution Kernel.  This allows users to specify a kernel from a number of pre-defined kernels, or to fully specify their own kernel for a specific Convolution or Morphology Operation.</p>
 
-<p>The kernel so generated can be any rectangular array of floating point values (doubles) with the 'control point' or 'pixel being affected' anywhere within that array of values.</p></ol>
+<p>The kernel so generated can be any rectangular array of floating point values (doubles) with the 'control point' or 'pixel being affected' anywhere within that array of values.</p>
 
-<p>Previously IM was restricted to a square of odd size using the exact center as origin, this is no longer the case, and any rectangular kernel with any value being declared the origin. This in turn allows the use of highly asymmetrical kernels.</p></ol>
+<p>Previously IM was restricted to a square of odd size using the exact center as origin, this is no longer the case, and any rectangular kernel with any value being declared the origin. This in turn allows the use of highly asymmetrical kernels.</p>
 
-<p>The floating point values in the kernel can also include a special value known as 'nan' or 'not a number' to indicate that this value is not part of the kernel array. This allows you to shaped the kernel within its rectangular area. That is 'nan' values provide a 'mask' for the kernel shape.  However at least one non-nan value must be provided for correct working of a kernel.</p></ol>
+<p>The floating point values in the kernel can also include a special value known as 'nan' or 'not a number' to indicate that this value is not part of the kernel array. This allows you to shaped the kernel within its rectangular area. That is 'nan' values provide a 'mask' for the kernel shape.  However at least one non-nan value must be provided for correct working of a kernel.</p>
 
-<p>The returned kernel should be freed using the DestroyKernelInfo() when you are finished with it.  Do not free this memory yourself.</p></ol>
+<p>The returned kernel should be freed using the DestroyKernelInfo() when you are finished with it.  Do not free this memory yourself.</p>
 
-<p>Input kernel defintion strings can consist of any of three types.</p></ol>
+<p>Input kernel defintion strings can consist of any of three types.</p>
 
-<p>"name:args[[@><]" Select from one of the built in kernels, using the name and geometry arguments supplied.  See AcquireKernelBuiltIn()</p></ol>
+<p>"name:args[[@><]" Select from one of the built in kernels, using the name and geometry arguments supplied.  See AcquireKernelBuiltIn()</p>
 
-<p>"WxH[+X+Y][@><]:num, num, num ..." a kernel of size W by H, with W*H floating point numbers following. the 'center' can be optionally be defined at +X+Y (such that +0+0 is top left corner). If not defined the pixel in the center, for odd sizes, or to the immediate top or left of center for even sizes is automatically selected.</p></ol>
+<p>"WxH[+X+Y][@><]:num, num, num ..." a kernel of size W by H, with W*H floating point numbers following. the 'center' can be optionally be defined at +X+Y (such that +0+0 is top left corner). If not defined the pixel in the center, for odd sizes, or to the immediate top or left of center for even sizes is automatically selected.</p>
 
-<p>"num, num, num, num, ..." list of floating point numbers defining an 'old style' odd sized square kernel.  At least 9 values should be provided for a 3x3 square kernel, 25 for a 5x5 square kernel, 49 for 7x7, etc. Values can be space or comma separated.  This is not recommended.</p></ol>
+<p>"num, num, num, num, ..." list of floating point numbers defining an 'old style' odd sized square kernel.  At least 9 values should be provided for a 3x3 square kernel, 25 for a 5x5 square kernel, 49 for 7x7, etc. Values can be space or comma separated.  This is not recommended.</p>
 
-<p>You can define a 'list of kernels' which can be used by some morphology operators A list is defined as a semi-colon seperated list kernels.</p></ol>
+<p>You can define a 'list of kernels' which can be used by some morphology operators A list is defined as a semi-colon seperated list kernels.</p>
 
-<p>" kernel ; kernel ; kernel ; "</p></ol>
+<p>" kernel ; kernel ; kernel ; "</p>
 
-<p>Any extra ';' characters, at start, end or between kernel defintions are simply ignored.</p></ol>
+<p>Any extra ';' characters, at start, end or between kernel defintions are simply ignored.</p>
 
-<p>The special flags will expand a single kernel, into a list of rotated kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree cyclic rotations, while a '>' will generate a list of 90-degree rotations. The '<' also exands using 90-degree rotates, but giving a 180-degree reflected kernel before the +/- 90-degree rotations, which can be important for Thinning operations.</p></ol>
+<p>The special flags will expand a single kernel, into a list of rotated kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree cyclic rotations, while a '>' will generate a list of 90-degree rotations. The '<' also exands using 90-degree rotates, but giving a 180-degree reflected kernel before the +/- 90-degree rotations, which can be important for Thinning operations.</p>
 
-<p>Note that 'name' kernels will start with an alphabetic character while the new kernel specification has a ':' character in its specification string. If neither is the case, it is assumed an old style of a simple list of numbers generating a odd-sized square kernel has been given.</p></ol>
+<p>Note that 'name' kernels will start with an alphabetic character while the new kernel specification has a ':' character in its specification string. If neither is the case, it is assumed an old style of a simple list of numbers generating a odd-sized square kernel has been given.</p>
 
 <p>The format of the AcquireKernal method is:</p>
 
@@ -222,19 +223,19 @@ _8c.html" target="source" name="AcquireKernelInfo">AcquireKernelInfo</a></h2>
   KernelInfo *AcquireKernelInfo(const char *kernel_string)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel_string</h5>
-<ol><p>the Morphology/Convolution kernel wanted.</p></ol>
+<p>the Morphology/Convolution kernel wanted.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
 <div class="doc-section">
 
-<p>AcquireKernelBuiltIn() returned one of the 'named' built-in types of kernels used for special purposes such as gaussian blurring, skeleton pruning, and edge distance determination.</p></ol>
+<p>AcquireKernelBuiltIn() returned one of the 'named' built-in types of kernels used for special purposes such as gaussian blurring, skeleton pruning, and edge distance determination.</p>
 
-<p>They take a KernelType, and a set of geometry style arguments, which were typically decoded from a user supplied string, or from a more complex Morphology Method that was requested.</p></ol>
+<p>They take a KernelType, and a set of geometry style arguments, which were typically decoded from a user supplied string, or from a more complex Morphology Method that was requested.</p>
 
 <p>The format of the AcquireKernalBuiltIn method is:</p>
 
@@ -243,164 +244,164 @@ _8c.html" target="source" name="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></
        const GeometryInfo args)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>type</h5>
-<ol><p>the pre-defined type of kernel wanted</p></ol>
+<p>the pre-defined type of kernel wanted</p>
 
 <h5>args</h5>
-<ol><p>arguments defining or modifying the kernel</p></ol>
+<p>arguments defining or modifying the kernel</p>
 
-<p>Convolution Kernels</p></ol>
+<p>Convolution Kernels</p>
 
-<p>Unity the No-Op kernel, also requivelent to  Gaussian of sigma zero. Basically a 3x3 kernel of a 1 surrounded by zeros.</p></ol>
+<p>Unity the No-Op kernel, also requivelent to  Gaussian of sigma zero. Basically a 3x3 kernel of a 1 surrounded by zeros.</p>
 
-<p>Gaussian:{radius},{sigma} Generate a two-dimentional gaussian kernel, as used by -gaussian. The sigma for the curve is required.  The resulting kernel is normalized,</p></ol>
+<p>Gaussian:{radius},{sigma} Generate a two-dimentional gaussian kernel, as used by -gaussian. The sigma for the curve is required.  The resulting kernel is normalized,</p>
 
-<p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p></ol>
+<p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p>
 
-<p>NOTE: that the 'radius' is optional, but if provided can limit (clip) the final size of the resulting kernel to a square 2*radius+1 in size. The radius should be at least 2 times that of the sigma value, or sever clipping and aliasing may result.  If not given or set to 0 the radius will be determined so as to produce the best minimal error result, which is usally much larger than is normally needed.</p></ol>
+<p>NOTE: that the 'radius' is optional, but if provided can limit (clip) the final size of the resulting kernel to a square 2*radius+1 in size. The radius should be at least 2 times that of the sigma value, or sever clipping and aliasing may result.  If not given or set to 0 the radius will be determined so as to produce the best minimal error result, which is usally much larger than is normally needed.</p>
 
-<p>LoG:{radius},{sigma} "Laplacian of a Gaussian" or "Mexician Hat" Kernel. The supposed ideal edge detection, zero-summing kernel.</p></ol>
+<p>LoG:{radius},{sigma} "Laplacian of a Gaussian" or "Mexician Hat" Kernel. The supposed ideal edge detection, zero-summing kernel.</p>
 
-<p>An alturnative to this kernel is to use a "DoG" with a sigma ratio of approx 1.6 (according to wikipedia).</p></ol>
+<p>An alturnative to this kernel is to use a "DoG" with a sigma ratio of approx 1.6 (according to wikipedia).</p>
 
-<p>DoG:{radius},{sigma1},{sigma2} "Difference of Gaussians" Kernel. As "Gaussian" but with a gaussian produced by 'sigma2' subtracted from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1. The result is a zero-summing kernel.</p></ol>
+<p>DoG:{radius},{sigma1},{sigma2} "Difference of Gaussians" Kernel. As "Gaussian" but with a gaussian produced by 'sigma2' subtracted from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1. The result is a zero-summing kernel.</p>
 
-<p>Blur:{radius},{sigma}[,{angle}] Generates a 1 dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p></ol>
+<p>Blur:{radius},{sigma}[,{angle}] Generates a 1 dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p>
 
-<p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p></ol>
+<p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p>
 
-<p>Note that two convolutions with two "Blur" kernels perpendicular to each other, is equivelent to a far larger "Gaussian" kernel with the same sigma value, However it is much faster to apply. This is how the "-blur" operator actually works.</p></ol>
+<p>Note that two convolutions with two "Blur" kernels perpendicular to each other, is equivelent to a far larger "Gaussian" kernel with the same sigma value, However it is much faster to apply. This is how the "-blur" operator actually works.</p>
 
-<p>Comet:{width},{sigma},{angle} Blur in one direction only, much like how a bright object leaves a comet like trail.  The Kernel is actually half a gaussian curve, Adding two such blurs in opposite directions produces a Blur Kernel. Angle can be rotated in multiples of 90 degrees.</p></ol>
+<p>Comet:{width},{sigma},{angle} Blur in one direction only, much like how a bright object leaves a comet like trail.  The Kernel is actually half a gaussian curve, Adding two such blurs in opposite directions produces a Blur Kernel. Angle can be rotated in multiples of 90 degrees.</p>
 
-<p>Note that the first argument is the width of the kernel and not the radius of the kernel.</p></ol>
+<p>Note that the first argument is the width of the kernel and not the radius of the kernel.</p>
 
-<p># Still to be implemented... # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this posible with an image? #</p></ol>
+<p># Still to be implemented... # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this posible with an image? #</p>
 
-<p>Named Constant Convolution Kernels</p></ol>
+<p>Named Constant Convolution Kernels</p>
 
-<p>All these are unscaled, zero-summing kernels by default. As such for non-HDRI version of ImageMagick some form of normalization, user scaling, and biasing the results is recommended, to prevent the resulting image being 'clipped'.</p></ol>
+<p>All these are unscaled, zero-summing kernels by default. As such for non-HDRI version of ImageMagick some form of normalization, user scaling, and biasing the results is recommended, to prevent the resulting image being 'clipped'.</p>
 
-<p>The 3x3 kernels (most of these) can be circularly rotated in multiples of 45 degrees to generate the 8 angled varients of each of the kernels.</p></ol>
+<p>The 3x3 kernels (most of these) can be circularly rotated in multiples of 45 degrees to generate the 8 angled varients of each of the kernels.</p>
 
-<p>Laplacian:{type} Discrete Lapacian Kernels, (without normalization) Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood) Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood) Type 2 :  3x3 with center:4 edge:1 corner:-2 Type 3 :  3x3 with center:4 edge:-2 corner:1 Type 5 :  5x5 laplacian Type 7 :  7x7 laplacian Type 15 : 5x5 LoG (sigma approx 1.4) Type 19 : 9x9 LoG (sigma approx 1.4)</p></ol>
+<p>Laplacian:{type} Discrete Lapacian Kernels, (without normalization) Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood) Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood) Type 2 :  3x3 with center:4 edge:1 corner:-2 Type 3 :  3x3 with center:4 edge:-2 corner:1 Type 5 :  5x5 laplacian Type 7 :  7x7 laplacian Type 15 : 5x5 LoG (sigma approx 1.4) Type 19 : 9x9 LoG (sigma approx 1.4)</p>
 
-<p>Sobel:{angle} Sobel 'Edge' convolution kernel (3x3) | -1, 0, 1 | | -2, 0,-2 | | -1, 0, 1 |</p></ol>
+<p>Sobel:{angle} Sobel 'Edge' convolution kernel (3x3) | -1, 0, 1 | | -2, 0,-2 | | -1, 0, 1 |</p>
 
-<p>Sobel:{type},{angle} Type 0:  default un-nomalized version shown above.</p></ol>
+<p>Sobel:{type},{angle} Type 0:  default un-nomalized version shown above.</p>
 
-<p>Type 1:  As default but pre-normalized | 1, 0, -1 | | 2, 0, -2 |  / 4 | 1, 0, -1 |</p></ol>
+<p>Type 1:  As default but pre-normalized | 1, 0, -1 | | 2, 0, -2 |  / 4 | 1, 0, -1 |</p>
 
-<p>Type 2:  Diagonal version with same normalization as 1 | 1, 0, -1 | | 2, 0, -2 |  / 4 | 1, 0, -1 |</p></ol>
+<p>Type 2:  Diagonal version with same normalization as 1 | 1, 0, -1 | | 2, 0, -2 |  / 4 | 1, 0, -1 |</p>
 
-<p>Roberts:{angle} Roberts convolution kernel (3x3) |  0, 0, 0 | | -1, 1, 0 | |  0, 0, 0 |</p></ol>
+<p>Roberts:{angle} Roberts convolution kernel (3x3) |  0, 0, 0 | | -1, 1, 0 | |  0, 0, 0 |</p>
 
-<p>Prewitt:{angle} Prewitt Edge convolution kernel (3x3) | -1, 0, 1 | | -1, 0, 1 | | -1, 0, 1 |</p></ol>
+<p>Prewitt:{angle} Prewitt Edge convolution kernel (3x3) | -1, 0, 1 | | -1, 0, 1 | | -1, 0, 1 |</p>
 
-<p>Compass:{angle} Prewitt's "Compass" convolution kernel (3x3) | -1, 1, 1 | | -1,-2, 1 | | -1, 1, 1 |</p></ol>
+<p>Compass:{angle} Prewitt's "Compass" convolution kernel (3x3) | -1, 1, 1 | | -1,-2, 1 | | -1, 1, 1 |</p>
 
-<p>Kirsch:{angle} Kirsch's "Compass" convolution kernel (3x3) | -3,-3, 5 | | -3, 0, 5 | | -3,-3, 5 |</p></ol>
+<p>Kirsch:{angle} Kirsch's "Compass" convolution kernel (3x3) | -3,-3, 5 | | -3, 0, 5 | | -3,-3, 5 |</p>
 
-<p>FreiChen:{angle} Frei-Chen Edge Detector is based on a kernel that is similar to the Sobel Kernel, but is designed to be isotropic. That is it takes into account the distance of the diagonal in the kernel.</p></ol>
+<p>FreiChen:{angle} Frei-Chen Edge Detector is based on a kernel that is similar to the Sobel Kernel, but is designed to be isotropic. That is it takes into account the distance of the diagonal in the kernel.</p>
 
-<p>|   1,     0,   -1     | | sqrt(2), 0, -sqrt(2) | |   1,     0,   -1     |</p></ol>
+<p>|   1,     0,   -1     | | sqrt(2), 0, -sqrt(2) | |   1,     0,   -1     |</p>
 
-<p>FreiChen:{type},{angle}</p></ol>
+<p>FreiChen:{type},{angle}</p>
 
-<p>Frei-Chen Pre-weighted kernels...</p></ol>
+<p>Frei-Chen Pre-weighted kernels...</p>
 
-<p>Type 0:  default un-nomalized version shown above.</p></ol>
+<p>Type 0:  default un-nomalized version shown above.</p>
 
-<p>Type 1: Orthogonal Kernel (same as type 11 below) |   1,     0,   -1     | | sqrt(2), 0, -sqrt(2) | / 2*sqrt(2) |   1,     0,   -1     |</p></ol>
+<p>Type 1: Orthogonal Kernel (same as type 11 below) |   1,     0,   -1     | | sqrt(2), 0, -sqrt(2) | / 2*sqrt(2) |   1,     0,   -1     |</p>
 
-<p>Type 2: Diagonal form of Kernel... |   1,     sqrt(2),    0     | | sqrt(2),   0,     -sqrt(2) | / 2*sqrt(2) |   0,    -sqrt(2)    -1     |</p></ol>
+<p>Type 2: Diagonal form of Kernel... |   1,     sqrt(2),    0     | | sqrt(2),   0,     -sqrt(2) | / 2*sqrt(2) |   0,    -sqrt(2)    -1     |</p>
 
-<p>However this kernel is als at the heart of the FreiChen Edge Detection Process which uses a set of 9 specially weighted kernel.  These 9 kernels not be normalized, but directly applied to the image. The results is then added together, to produce the intensity of an edge in a specific direction.  The square root of the pixel value can then be taken as the cosine of the edge, and at least 2 such runs at 90 degrees from each other, both the direction and the strength of the edge can be determined.</p></ol>
+<p>However this kernel is als at the heart of the FreiChen Edge Detection Process which uses a set of 9 specially weighted kernel.  These 9 kernels not be normalized, but directly applied to the image. The results is then added together, to produce the intensity of an edge in a specific direction.  The square root of the pixel value can then be taken as the cosine of the edge, and at least 2 such runs at 90 degrees from each other, both the direction and the strength of the edge can be determined.</p>
 
-<p>Type 10: All 9 of the following pre-weighted kernels...</p></ol>
+<p>Type 10: All 9 of the following pre-weighted kernels...</p>
 
-<p>Type 11: |   1,     0,   -1     | | sqrt(2), 0, -sqrt(2) | / 2*sqrt(2) |   1,     0,   -1     |</p></ol>
+<p>Type 11: |   1,     0,   -1     | | sqrt(2), 0, -sqrt(2) | / 2*sqrt(2) |   1,     0,   -1     |</p>
 
-<p>Type 12: | 1, sqrt(2), 1 | | 0,   0,     0 | / 2*sqrt(2) | 1, sqrt(2), 1 |</p></ol>
+<p>Type 12: | 1, sqrt(2), 1 | | 0,   0,     0 | / 2*sqrt(2) | 1, sqrt(2), 1 |</p>
 
-<p>Type 13: | sqrt(2), -1,    0     | |  -1,      0,    1     | / 2*sqrt(2) |   0,      1, -sqrt(2) |</p></ol>
+<p>Type 13: | sqrt(2), -1,    0     | |  -1,      0,    1     | / 2*sqrt(2) |   0,      1, -sqrt(2) |</p>
 
-<p>Type 14: |    0,     1, -sqrt(2) | |   -1,     0,     1    | / 2*sqrt(2) | sqrt(2), -1,     0    |</p></ol>
+<p>Type 14: |    0,     1, -sqrt(2) | |   -1,     0,     1    | / 2*sqrt(2) | sqrt(2), -1,     0    |</p>
 
-<p>Type 15: | 0, -1, 0 | | 1,  0, 1 | / 2 | 0, -1, 0 |</p></ol>
+<p>Type 15: | 0, -1, 0 | | 1,  0, 1 | / 2 | 0, -1, 0 |</p>
 
-<p>Type 16: |  1, 0, -1 | |  0, 0,  0 | / 2 | -1, 0,  1 |</p></ol>
+<p>Type 16: |  1, 0, -1 | |  0, 0,  0 | / 2 | -1, 0,  1 |</p>
 
-<p>Type 17: |  1, -2,  1 | | -2,  4, -2 | / 6 | -1, -2,  1 |</p></ol>
+<p>Type 17: |  1, -2,  1 | | -2,  4, -2 | / 6 | -1, -2,  1 |</p>
 
-<p>Type 18: | -2, 1, -2 | |  1, 4,  1 | / 6 | -2, 1, -2 |</p></ol>
+<p>Type 18: | -2, 1, -2 | |  1, 4,  1 | / 6 | -2, 1, -2 |</p>
 
-<p>Type 19: | 1, 1, 1 | | 1, 1, 1 | / 3 | 1, 1, 1 |</p></ol>
+<p>Type 19: | 1, 1, 1 | | 1, 1, 1 | / 3 | 1, 1, 1 |</p>
 
-<p>The first 4 are for edge detection, the next 4 are for line detection and the last is to add a average component to the results.</p></ol>
+<p>The first 4 are for edge detection, the next 4 are for line detection and the last is to add a average component to the results.</p>
 
-<p>Using a special type of '-1' will return all 9 pre-weighted kernels as a multi-kernel list, so that you can use them directly (without normalization) with the special "-set option:morphology:compose Plus" setting to apply the full FreiChen Edge Detection Technique.</p></ol>
+<p>Using a special type of '-1' will return all 9 pre-weighted kernels as a multi-kernel list, so that you can use them directly (without normalization) with the special "-set option:morphology:compose Plus" setting to apply the full FreiChen Edge Detection Technique.</p>
 
-<p>If 'type' is large it will be taken to be an actual rotation angle for the default FreiChen (type 0) kernel.  As such  FreiChen:45  will look like a  Sobel:45  but with 'sqrt(2)' instead of '2' values.</p></ol>
+<p>If 'type' is large it will be taken to be an actual rotation angle for the default FreiChen (type 0) kernel.  As such  FreiChen:45  will look like a  Sobel:45  but with 'sqrt(2)' instead of '2' values.</p>
 
-<p>WARNING: The above was layed out as per http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf But rotated 90 degrees so direction is from left rather than the top. I have yet to find any secondary confirmation of the above. The only other source found was actual source code at http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf Neigher paper defineds the kernels in a way that looks locical or correct when taken as a whole.</p></ol>
+<p>WARNING: The above was layed out as per http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf But rotated 90 degrees so direction is from left rather than the top. I have yet to find any secondary confirmation of the above. The only other source found was actual source code at http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf Neigher paper defineds the kernels in a way that looks locical or correct when taken as a whole.</p>
 
-<p>Boolean Kernels</p></ol>
+<p>Boolean Kernels</p>
 
-<p>Diamond:[{radius}[,{scale}]] Generate a diamond shaped kernel with given radius to the points. Kernel size will again be radius*2+1 square and defaults to radius 1, generating a 3x3 kernel that is slightly larger than a square.</p></ol>
+<p>Diamond:[{radius}[,{scale}]] Generate a diamond shaped kernel with given radius to the points. Kernel size will again be radius*2+1 square and defaults to radius 1, generating a 3x3 kernel that is slightly larger than a square.</p>
 
-<p>Square:[{radius}[,{scale}]] Generate a square shaped kernel of size radius*2+1, and defaulting to a 3x3 (radius 1).</p></ol>
+<p>Square:[{radius}[,{scale}]] Generate a square shaped kernel of size radius*2+1, and defaulting to a 3x3 (radius 1).</p>
 
-<p>Note that using a larger radius for the "Square" or the "Diamond" is also equivelent to iterating the basic morphological method that many times. However iterating with the smaller radius is actually faster than using a larger kernel radius.</p></ol>
+<p>Note that using a larger radius for the "Square" or the "Diamond" is also equivelent to iterating the basic morphological method that many times. However iterating with the smaller radius is actually faster than using a larger kernel radius.</p>
 
-<p>Rectangle:{geometry} Simply generate a rectangle of 1's with the size given. You can also specify the location of the 'control point', otherwise the closest pixel to the center of the rectangle is selected.</p></ol>
+<p>Rectangle:{geometry} Simply generate a rectangle of 1's with the size given. You can also specify the location of the 'control point', otherwise the closest pixel to the center of the rectangle is selected.</p>
 
-<p>Properly centered and odd sized rectangles work the best.</p></ol>
+<p>Properly centered and odd sized rectangles work the best.</p>
 
-<p>Disk:[{radius}[,{scale}]] Generate a binary disk of the radius given, radius may be a float. Kernel size will be ceil(radius)*2+1 square. NOTE: Here are some disk shapes of specific interest "Disk:1"    => "diamond" or "cross:1" "Disk:1.5"  => "square" "Disk:2"    => "diamond:2" "Disk:2.5"  => a general disk shape of radius 2 "Disk:2.9"  => "square:2" "Disk:3.5"  => default - octagonal/disk shape of radius 3 "Disk:4.2"  => roughly octagonal shape of radius 4 "Disk:4.3"  => a general disk shape of radius 4 After this all the kernel shape becomes more and more circular.</p></ol>
+<p>Disk:[{radius}[,{scale}]] Generate a binary disk of the radius given, radius may be a float. Kernel size will be ceil(radius)*2+1 square. NOTE: Here are some disk shapes of specific interest "Disk:1"    => "diamond" or "cross:1" "Disk:1.5"  => "square" "Disk:2"    => "diamond:2" "Disk:2.5"  => a general disk shape of radius 2 "Disk:2.9"  => "square:2" "Disk:3.5"  => default - octagonal/disk shape of radius 3 "Disk:4.2"  => roughly octagonal shape of radius 4 "Disk:4.3"  => a general disk shape of radius 4 After this all the kernel shape becomes more and more circular.</p>
 
-<p>Because a "disk" is more circular when using a larger radius, using a larger radius is preferred over iterating the morphological operation.</p></ol>
+<p>Because a "disk" is more circular when using a larger radius, using a larger radius is preferred over iterating the morphological operation.</p>
 
-<p>Symbol Dilation Kernels</p></ol>
+<p>Symbol Dilation Kernels</p>
 
-<p>These kernel is not a good general morphological kernel, but is used more for highlighting and marking any single pixels in an image using, a "Dilate" method as appropriate.</p></ol>
+<p>These kernel is not a good general morphological kernel, but is used more for highlighting and marking any single pixels in an image using, a "Dilate" method as appropriate.</p>
 
-<p>For the same reasons iterating these kernels does not produce the same result as using a larger radius for the symbol.</p></ol>
+<p>For the same reasons iterating these kernels does not produce the same result as using a larger radius for the symbol.</p>
 
-<p>Plus:[{radius}[,{scale}]] Cross:[{radius}[,{scale}]] Generate a kernel in the shape of a 'plus' or a 'cross' with a each arm the length of the given radius (default 2).</p></ol>
+<p>Plus:[{radius}[,{scale}]] Cross:[{radius}[,{scale}]] Generate a kernel in the shape of a 'plus' or a 'cross' with a each arm the length of the given radius (default 2).</p>
 
-<p>NOTE: "plus:1" is equivelent to a "Diamond" kernel.</p></ol>
+<p>NOTE: "plus:1" is equivelent to a "Diamond" kernel.</p>
 
-<p>Ring:{radius1},{radius2}[,{scale}] A ring of the values given that falls between the two radii. Defaults to a ring of approximataly 3 radius in a 7x7 kernel. This is the 'edge' pixels of the default "Disk" kernel, More specifically, "Ring" -> "Ring:2.5,3.5,1.0"</p></ol>
+<p>Ring:{radius1},{radius2}[,{scale}] A ring of the values given that falls between the two radii. Defaults to a ring of approximataly 3 radius in a 7x7 kernel. This is the 'edge' pixels of the default "Disk" kernel, More specifically, "Ring" -> "Ring:2.5,3.5,1.0"</p>
 
-<p>Hit and Miss Kernels</p></ol>
+<p>Hit and Miss Kernels</p>
 
-<p>Peak:radius1,radius2 Find any peak larger than the pixels the fall between the two radii. The default ring of pixels is as per "Ring". Edges Find flat orthogonal edges of a binary shape Corners Find 90 degree corners of a binary shape LineEnds:type Find end points of lines (for pruning a skeletion) Two types of lines ends (default to both) can be searched for Type 0: All line ends Type 1: single kernel for 4-conneected line ends Type 2: single kernel for simple line ends LineJunctions Find three line junctions (within a skeletion) Type 0: all line junctions Type 1: Y Junction kernel Type 2: Diagonal T Junction kernel Type 3: Orthogonal T Junction kernel Type 4: Diagonal X Junction kernel Type 5: Orthogonal + Junction kernel Ridges:type Find single pixel ridges or thin lines Type 1: Fine single pixel thick lines and ridges Type 2: Find two pixel thick lines and ridges ConvexHull Octagonal thicken kernel, to generate convex hulls of 45 degrees Skeleton:type Traditional skeleton generating kernels. Type 1: Tradional Skeleton kernel (4 connected skeleton) Type 2: HIPR2 Skeleton kernel (8 connected skeleton) Type 3: Experimental Variation to try to present left-right symmetry Type 4: Experimental Variation to preserve left-right symmetry</p></ol>
+<p>Peak:radius1,radius2 Find any peak larger than the pixels the fall between the two radii. The default ring of pixels is as per "Ring". Edges Find flat orthogonal edges of a binary shape Corners Find 90 degree corners of a binary shape LineEnds:type Find end points of lines (for pruning a skeletion) Two types of lines ends (default to both) can be searched for Type 0: All line ends Type 1: single kernel for 4-conneected line ends Type 2: single kernel for simple line ends LineJunctions Find three line junctions (within a skeletion) Type 0: all line junctions Type 1: Y Junction kernel Type 2: Diagonal T Junction kernel Type 3: Orthogonal T Junction kernel Type 4: Diagonal X Junction kernel Type 5: Orthogonal + Junction kernel Ridges:type Find single pixel ridges or thin lines Type 1: Fine single pixel thick lines and ridges Type 2: Find two pixel thick lines and ridges ConvexHull Octagonal thicken kernel, to generate convex hulls of 45 degrees Skeleton:type Traditional skeleton generating kernels. Type 1: Tradional Skeleton kernel (4 connected skeleton) Type 2: HIPR2 Skeleton kernel (8 connected skeleton) Type 3: Experimental Variation to try to present left-right symmetry Type 4: Experimental Variation to preserve left-right symmetry</p>
 
-<p>Distance Measuring Kernels</p></ol>
+<p>Distance Measuring Kernels</p>
 
-<p>Different types of distance measuring methods, which are used with the a 'Distance' morphology method for generating a gradient based on distance from an edge of a binary shape, though there is a technique for handling a anti-aliased shape.</p></ol>
+<p>Different types of distance measuring methods, which are used with the a 'Distance' morphology method for generating a gradient based on distance from an edge of a binary shape, though there is a technique for handling a anti-aliased shape.</p>
 
-<p>See the 'Distance' Morphological Method, for information of how it is applied.</p></ol>
+<p>See the 'Distance' Morphological Method, for information of how it is applied.</p>
 
-<p>Chebyshev:[{radius}][x{scale}[!]] Chebyshev Distance (also known as Tchebychev Distance) is a value of one to any neighbour, orthogonal or diagonal. One why of thinking of it is the number of squares a 'King' or 'Queen' in chess needs to traverse reach any other position on a chess board.  It results in a 'square' like distance function, but one where diagonals are closer than expected.</p></ol>
+<p>Chebyshev:[{radius}][x{scale}[!]] Chebyshev Distance (also known as Tchebychev Distance) is a value of one to any neighbour, orthogonal or diagonal. One why of thinking of it is the number of squares a 'King' or 'Queen' in chess needs to traverse reach any other position on a chess board.  It results in a 'square' like distance function, but one where diagonals are closer than expected.</p>
 
-<p>Manhattan:[{radius}][x{scale}[!]] Manhattan Distance (also known as Rectilinear Distance, or the Taxi Cab metric), is the distance needed when you can only travel in orthogonal (horizontal or vertical) only.  It is the distance a 'Rook' in chess would travel. It results in a diamond like distances, where diagonals are further than expected.</p></ol>
+<p>Manhattan:[{radius}][x{scale}[!]] Manhattan Distance (also known as Rectilinear Distance, or the Taxi Cab metric), is the distance needed when you can only travel in orthogonal (horizontal or vertical) only.  It is the distance a 'Rook' in chess would travel. It results in a diamond like distances, where diagonals are further than expected.</p>
 
-<p>Euclidean:[{radius}][x{scale}[!]] Euclidean Distance is the 'direct' or 'as the crow flys distance. However by default the kernel size only has a radius of 1, which limits the distance to 'Knight' like moves, with only orthogonal and diagonal measurements being correct.  As such for the default kernel you will get octagonal like distance function, which is reasonally accurate.</p></ol>
+<p>Euclidean:[{radius}][x{scale}[!]] Euclidean Distance is the 'direct' or 'as the crow flys distance. However by default the kernel size only has a radius of 1, which limits the distance to 'Knight' like moves, with only orthogonal and diagonal measurements being correct.  As such for the default kernel you will get octagonal like distance function, which is reasonally accurate.</p>
 
-<p>However if you use a larger radius such as "Euclidean:4" you will get a much smoother distance gradient from the edge of the shape. Of course a larger kernel is slower to use, and generally not needed.</p></ol>
+<p>However if you use a larger radius such as "Euclidean:4" you will get a much smoother distance gradient from the edge of the shape. Of course a larger kernel is slower to use, and generally not needed.</p>
 
-<p>To allow the use of fractional distances that you get with diagonals the actual distance is scaled by a fixed value which the user can provide.  This is not actually nessary for either ""Chebyshev" or "Manhattan" distance kernels, but is done for all three distance kernels.  If no scale is provided it is set to a value of 100, allowing for a maximum distance measurement of 655 pixels using a Q16 version of IM, from any edge.  However for small images this can result in quite a dark gradient.</p></ol>
+<p>To allow the use of fractional distances that you get with diagonals the actual distance is scaled by a fixed value which the user can provide.  This is not actually nessary for either ""Chebyshev" or "Manhattan" distance kernels, but is done for all three distance kernels.  If no scale is provided it is set to a value of 100, allowing for a maximum distance measurement of 655 pixels using a Q16 version of IM, from any edge.  However for small images this can result in quite a dark gradient.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="CloneKernelInfo">CloneKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="CloneKernelInfo">CloneKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>CloneKernelInfo() creates a new clone of the given Kernel List so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no longer needed.</p></ol>
+<p>CloneKernelInfo() creates a new clone of the given Kernel List so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no longer needed.</p>
 
 <p>The format of the CloneKernelInfo method is:</p>
 
@@ -408,17 +409,17 @@ _8c.html" target="source" name="CloneKernelInfo">CloneKernelInfo</a></h2>
   KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel to be cloned</p></ol>
+<p>the Morphology/Convolution kernel to be cloned</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="DestroyKernelInfo">DestroyKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="DestroyKernelInfo">DestroyKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>DestroyKernelInfo() frees the memory used by a Convolution/Morphology kernel.</p></ol>
+<p>DestroyKernelInfo() frees the memory used by a Convolution/Morphology kernel.</p>
 
 <p>The format of the DestroyKernelInfo method is:</p>
 
@@ -426,23 +427,23 @@ _8c.html" target="source" name="DestroyKernelInfo">DestroyKernelInfo</a></h2>
   KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel to be destroyed</p></ol>
+<p>the Morphology/Convolution kernel to be destroyed</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="MorphologyApply">MorphologyApply</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="MorphologyApply">MorphologyApply</a></h2>
 <div class="doc-section">
 
-<p>MorphologyApply() applies a morphological method, multiple times using a list of multiple kernels.</p></ol>
+<p>MorphologyApply() applies a morphological method, multiple times using a list of multiple kernels.</p>
 
-<p>It is basically equivelent to as MorphologyImageChannel() (see below) but without any user controls.  This allows internel programs to use this function, to actually perform a specific task without posible interference by any API user supplied settings.</p></ol>
+<p>It is basically equivelent to as MorphologyImageChannel() (see below) but without any user controls.  This allows internel programs to use this function, to actually perform a specific task without posible interference by any API user supplied settings.</p>
 
-<p>It is MorphologyImageChannel() task to extract any such user controls, and pass them to this function for processing.</p></ol>
+<p>It is MorphologyImageChannel() task to extract any such user controls, and pass them to this function for processing.</p>
 
-<p>More specifically kernels are not normalized/scaled/blended by the 'convolve:scale' Image Artifact (setting), nor is the convolve bias (-bias setting or image->bias) loooked at, but must be supplied from the function arguments.</p></ol>
+<p>More specifically kernels are not normalized/scaled/blended by the 'convolve:scale' Image Artifact (setting), nor is the convolve bias (-bias setting or image->bias) loooked at, but must be supplied from the function arguments.</p>
 
 <p>The format of the MorphologyApply method is:</p>
 
@@ -453,42 +454,42 @@ _8c.html" target="source" name="MorphologyApply">MorphologyApply</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the source image</p></ol>
+<p>the source image</p>
 
 <h5>method</h5>
-<ol><p>the morphology method to be applied.</p></ol>
+<p>the morphology method to be applied.</p>
 
 <h5>iterations</h5>
-<ol><p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p></ol>
+<p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p>
 
 <h5>channel</h5>
-<ol><p>the channel type.</p></ol>
+<p>the channel type.</p>
 
 <h5>kernel</h5>
-<ol><p>An array of double representing the morphology kernel.</p></ol>
+<p>An array of double representing the morphology kernel.</p>
 
 <h5>compose</h5>
-<ol><p>How to handle or merge multi-kernel results. If 'UndefinedCompositeOp' use default for the Morphology method. If 'NoCompositeOp' force image to be re-iterated by each kernel. Otherwise merge the results using the compose method given.</p></ol>
+<p>How to handle or merge multi-kernel results. If 'UndefinedCompositeOp' use default for the Morphology method. If 'NoCompositeOp' force image to be re-iterated by each kernel. Otherwise merge the results using the compose method given.</p>
 
 <h5>bias</h5>
-<ol><p>Convolution Output Bias.</p></ol>
+<p>Convolution Output Bias.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="MorphologyImageChannel">MorphologyImageChannel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="MorphologyImageChannel">MorphologyImageChannel</a></h2>
 <div class="doc-section">
 
-<p>MorphologyImageChannel() applies a user supplied kernel to the image according to the given mophology method.</p></ol>
+<p>MorphologyImageChannel() applies a user supplied kernel to the image according to the given mophology method.</p>
 
-<p>This function applies any and all user defined settings before calling the above internal function MorphologyApply().</p></ol>
+<p>This function applies any and all user defined settings before calling the above internal function MorphologyApply().</p>
 
-<p>User defined settings include... * Output Bias for Convolution and correlation   ("-bias") * Kernel Scale/normalize settings     ("-set 'option:convolve:scale'") This can also includes the addition of a scaled unity kernel. * Show Kernel being applied           ("-set option:showkernel 1")</p></ol>
+<p>User defined settings include... * Output Bias for Convolution and correlation   ("-bias") * Kernel Scale/normalize settings     ("-set 'option:convolve:scale'") This can also includes the addition of a scaled unity kernel. * Show Kernel being applied           ("-set option:showkernel 1")</p>
 
 <p>The format of the MorphologyImage method is:</p>
 
@@ -497,36 +498,36 @@ _8c.html" target="source" name="MorphologyImageChannel">MorphologyImageChannel</
     const ssize_t iterations,KernelInfo *kernel,ExceptionInfo *exception)
 </pre>
 
-<p>Image *MorphologyImageChannel(const Image *image, const ChannelType channel,MorphologyMethod method,const ssize_t iterations, KernelInfo *kernel,ExceptionInfo *exception)</p></ol>
+<p>Image *MorphologyImageChannel(const Image *image, const ChannelType channel,MorphologyMethod method,const ssize_t iterations, KernelInfo *kernel,ExceptionInfo *exception)</p>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>method</h5>
-<ol><p>the morphology method to be applied.</p></ol>
+<p>the morphology method to be applied.</p>
 
 <h5>iterations</h5>
-<ol><p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p></ol>
+<p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p>
 
 <h5>channel</h5>
-<ol><p>the channel type.</p></ol>
+<p>the channel type.</p>
 
 <h5>kernel</h5>
-<ol><p>An array of double representing the morphology kernel. Warning: kernel may be normalized for the Convolve method.</p></ol>
+<p>An array of double representing the morphology kernel. Warning: kernel may be normalized for the Convolve method.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>ScaleGeometryKernelInfo() takes a geometry argument string, typically provided as a  "-set option:convolve:scale {geometry}" user setting, and modifies the kernel according to the parsed arguments of that setting.</p></ol>
+<p>ScaleGeometryKernelInfo() takes a geometry argument string, typically provided as a  "-set option:convolve:scale {geometry}" user setting, and modifies the kernel according to the parsed arguments of that setting.</p>
 
-<p>The first argument (and any normalization flags) are passed to ScaleKernelInfo() to scale/normalize the kernel.  The second argument is then passed to UnityAddKernelInfo() to add a scled unity kernel into the scaled/normalized kernel.</p></ol>
+<p>The first argument (and any normalization flags) are passed to ScaleKernelInfo() to scale/normalize the kernel.  The second argument is then passed to UnityAddKernelInfo() to add a scled unity kernel into the scaled/normalized kernel.</p>
 
 <p>The format of the ScaleKernelInfo method is:</p>
 
@@ -535,10 +536,10 @@ _8c.html" target="source" name="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo
            const MagickStatusType normalize_flags )
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel to modify</p></ol>
+<p>the Morphology/Convolution kernel to modify</p>
 
 <p>o geometry:</p>
 
@@ -547,29 +548,29 @@ _8c.html" target="source" name="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="ScaleKernelInfo">ScaleKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="ScaleKernelInfo">ScaleKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>ScaleKernelInfo() scales the given kernel list by the given amount, with or without normalization of the sum of the kernel values (as per given flags).</p></ol>
+<p>ScaleKernelInfo() scales the given kernel list by the given amount, with or without normalization of the sum of the kernel values (as per given flags).</p>
 
-<p>By default (no flags given) the values within the kernel is scaled directly using given scaling factor without change.</p></ol>
+<p>By default (no flags given) the values within the kernel is scaled directly using given scaling factor without change.</p>
 
-<p>If either of the two 'normalize_flags' are given the kernel will first be normalized and then further scaled by the scaling factor value given.</p></ol>
+<p>If either of the two 'normalize_flags' are given the kernel will first be normalized and then further scaled by the scaling factor value given.</p>
 
-<p>Kernel normalization ('normalize_flags' given) is designed to ensure that any use of the kernel scaling factor with 'Convolve' or 'Correlate' morphology methods will fall into -1.0 to +1.0 range.  Note that for non-HDRI versions of IM this may cause images to have any negative results clipped, unless some 'bias' is used.</p></ol>
+<p>Kernel normalization ('normalize_flags' given) is designed to ensure that any use of the kernel scaling factor with 'Convolve' or 'Correlate' morphology methods will fall into -1.0 to +1.0 range.  Note that for non-HDRI versions of IM this may cause images to have any negative results clipped, unless some 'bias' is used.</p>
 
-<p>More specifically.  Kernels which only contain positive values (such as a 'Gaussian' kernel) will be scaled so that those values sum to +1.0, ensuring a 0.0 to +1.0 output range for non-HDRI images.</p></ol>
+<p>More specifically.  Kernels which only contain positive values (such as a 'Gaussian' kernel) will be scaled so that those values sum to +1.0, ensuring a 0.0 to +1.0 output range for non-HDRI images.</p>
 
-<p>For Kernels that contain some negative values, (such as 'Sharpen' kernels) the kernel will be scaled by the absolute of the sum of kernel values, so that it will generally fall within the +/- 1.0 range.</p></ol>
+<p>For Kernels that contain some negative values, (such as 'Sharpen' kernels) the kernel will be scaled by the absolute of the sum of kernel values, so that it will generally fall within the +/- 1.0 range.</p>
 
-<p>For kernels whose values sum to zero, (such as 'Laplician' kernels) kernel will be scaled by just the sum of the postive values, so that its output range will again fall into the  +/- 1.0 range.</p></ol>
+<p>For kernels whose values sum to zero, (such as 'Laplician' kernels) kernel will be scaled by just the sum of the postive values, so that its output range will again fall into the  +/- 1.0 range.</p>
 
-<p>For special kernels designed for locating shapes using 'Correlate', (often only containing +1 and -1 values, representing foreground/brackground matching) a special normalization method is provided to scale the positive values seperatally to those of the negative values, so the kernel will be forced to become a zero-sum kernel better suited to such searches.</p></ol>
+<p>For special kernels designed for locating shapes using 'Correlate', (often only containing +1 and -1 values, representing foreground/brackground matching) a special normalization method is provided to scale the positive values seperatally to those of the negative values, so the kernel will be forced to become a zero-sum kernel better suited to such searches.</p>
 
-<p>WARNING: Correct normalization of the kernel assumes that the '*_range' attributes within the kernel structure have been correctly set during the kernels creation.</p></ol>
+<p>WARNING: Correct normalization of the kernel assumes that the '*_range' attributes within the kernel structure have been correctly set during the kernels creation.</p>
 
-<p>NOTE: The values used for 'normalize_flags' have been selected specifically to match the use of geometry options, so that '!' means NormalizeValue, '^' means CorrelateNormalizeValue.  All other GeometryFlags values are ignored.</p></ol>
+<p>NOTE: The values used for 'normalize_flags' have been selected specifically to match the use of geometry options, so that '!' means NormalizeValue, '^' means CorrelateNormalizeValue.  All other GeometryFlags values are ignored.</p>
 
 <p>The format of the ScaleKernelInfo method is:</p>
 
@@ -578,10 +579,10 @@ _8c.html" target="source" name="ScaleKernelInfo">ScaleKernelInfo</a></h2>
            const MagickStatusType normalize_flags )
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel</p></ol>
+<p>the Morphology/Convolution kernel</p>
 
 <p>o scaling_factor:</p>
 
@@ -597,11 +598,11 @@ _8c.html" target="source" name="ScaleKernelInfo">ScaleKernelInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="ShowKernelInfo">ShowKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="ShowKernelInfo">ShowKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>ShowKernelInfo() outputs the details of the given kernel defination to standard error, generally due to a users 'showkernel' option request.</p></ol>
+<p>ShowKernelInfo() outputs the details of the given kernel defination to standard error, generally due to a users 'showkernel' option request.</p>
 
 <p>The format of the ShowKernel method is:</p>
 
@@ -609,19 +610,19 @@ _8c.html" target="source" name="ShowKernelInfo">ShowKernelInfo</a></h2>
   void ShowKernelInfo(KernelInfo *kernel)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel</p></ol>
+<p>the Morphology/Convolution kernel</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
 <div class="doc-section">
 
-<p>UnityAddKernelInfo() Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.  This in effect adds that amount of the original image into the resulting convolution kernel.  This value is usually provided by the user as a percentage value in the 'convolve:scale' setting.</p></ol>
+<p>UnityAddKernelInfo() Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.  This in effect adds that amount of the original image into the resulting convolution kernel.  This value is usually provided by the user as a percentage value in the 'convolve:scale' setting.</p>
 
-<p>The resulting effect is to convert the defined kernels into blended soft-blurs, unsharp kernels or into sharpening kernels.</p></ol>
+<p>The resulting effect is to convert the defined kernels into blended soft-blurs, unsharp kernels or into sharpening kernels.</p>
 
 <p>The format of the UnityAdditionKernelInfo method is:</p>
 
@@ -629,10 +630,10 @@ _8c.html" target="source" name="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
   void UnityAdditionKernelInfo(KernelInfo *kernel, const double scale )
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel</p></ol>
+<p>the Morphology/Convolution kernel</p>
 
 <p>o scale:</p>
 
@@ -641,11 +642,11 @@ _8c.html" target="source" name="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" target="source" name="ZeroKernelNans">ZeroKernelNans</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/morphology
+_8c.html" id="ZeroKernelNans">ZeroKernelNans</a></h2>
 <div class="doc-section">
 
-<p>ZeroKernelNans() replaces any special 'nan' value that may be present in the kernel with a zero value.  This is typically done when the kernel will be used in special hardware (GPU) convolution processors, to simply matters.</p></ol>
+<p>ZeroKernelNans() replaces any special 'nan' value that may be present in the kernel with a zero value.  This is typically done when the kernel will be used in special hardware (GPU) convolution processors, to simply matters.</p>
 
 <p>The format of the ZeroKernelNans method is:</p>
 
@@ -653,10 +654,10 @@ _8c.html" target="source" name="ZeroKernelNans">ZeroKernelNans</a></h2>
   void ZeroKernelNans (KernelInfo *kernel)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>kernel</h5>
-<ol><p>the Morphology/Convolution kernel</p></ol>
+<p>the Morphology/Convolution kernel</p>
 
  </div>
 

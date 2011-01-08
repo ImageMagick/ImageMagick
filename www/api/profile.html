@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#CloneImageProfiles">CloneImageProfiles</a> &bull; <a href="#DeleteImageProfile">DeleteImageProfile</a> &bull; <a href="#DestroyImageProfiles">DestroyImageProfiles</a> &bull; <a href="#GetImageProfile">GetImageProfile</a> &bull; <a href="#GetNextImageProfile">GetNextImageProfile</a> &bull; <a href="#ProfileImage">ProfileImage</a> &bull; <a href="#RemoveImageProfile">RemoveImageProfile</a> &bull; <a href="#ResetImageProfileIterator">ResetImageProfileIterator</a> &bull; <a href="#SetImageProfile">SetImageProfile</a> &bull; <a href="#SyncImageProfiles">SyncImageProfiles</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="CloneImageProfiles">CloneImageProfiles</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="CloneImageProfiles">CloneImageProfiles</a></h2>
 <div class="doc-section">
 
-<p>CloneImageProfiles() clones one or more image profiles.</p></ol>
+<p>CloneImageProfiles() clones one or more image profiles.</p>
 
 <p>The format of the CloneImageProfiles method is:</p>
 
@@ -191,20 +192,20 @@ _8c.html" target="source" name="CloneImageProfiles">CloneImageProfiles</a></h2>
     const Image *clone_image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>clone_image</h5>
-<ol><p>the clone image.</p></ol>
+<p>the clone image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="DeleteImageProfile">DeleteImageProfile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="DeleteImageProfile">DeleteImageProfile</a></h2>
 <div class="doc-section">
 
-<p>DeleteImageProfile() deletes a profile from the image by its name.</p></ol>
+<p>DeleteImageProfile() deletes a profile from the image by its name.</p>
 
 <p>The format of the DeleteImageProfile method is:</p>
 
@@ -212,20 +213,20 @@ _8c.html" target="source" name="DeleteImageProfile">DeleteImageProfile</a></h2>
   MagickBooleanTyupe DeleteImageProfile(Image *image,const char *name)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>name</h5>
-<ol><p>the profile name.</p></ol>
+<p>the profile name.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="DestroyImageProfiles">DestroyImageProfiles</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="DestroyImageProfiles">DestroyImageProfiles</a></h2>
 <div class="doc-section">
 
-<p>DestroyImageProfiles() releases memory associated with an image profile map.</p></ol>
+<p>DestroyImageProfiles() releases memory associated with an image profile map.</p>
 
 <p>The format of the DestroyProfiles method is:</p>
 
@@ -233,17 +234,17 @@ _8c.html" target="source" name="DestroyImageProfiles">DestroyImageProfiles</a></
   void DestroyImageProfiles(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="GetImageProfile">GetImageProfile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="GetImageProfile">GetImageProfile</a></h2>
 <div class="doc-section">
 
-<p>GetImageProfile() gets a profile associated with an image by name.</p></ol>
+<p>GetImageProfile() gets a profile associated with an image by name.</p>
 
 <p>The format of the GetImageProfile method is:</p>
 
@@ -251,20 +252,20 @@ _8c.html" target="source" name="GetImageProfile">GetImageProfile</a></h2>
   const StringInfo *GetImageProfile(const Image *image,const char *name)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>name</h5>
-<ol><p>the profile name.</p></ol>
+<p>the profile name.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="GetNextImageProfile">GetNextImageProfile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="GetNextImageProfile">GetNextImageProfile</a></h2>
 <div class="doc-section">
 
-<p>GetNextImageProfile() gets the next profile name for an image.</p></ol>
+<p>GetNextImageProfile() gets the next profile name for an image.</p>
 
 <p>The format of the GetNextImageProfile method is:</p>
 
@@ -272,19 +273,19 @@ _8c.html" target="source" name="GetNextImageProfile">GetNextImageProfile</a></h2
   char *GetNextImageProfile(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>hash_info</h5>
-<ol><p>the hash info.</p></ol>
+<p>the hash info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="ProfileImage">ProfileImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="ProfileImage">ProfileImage</a></h2>
 <div class="doc-section">
 
-<p>ProfileImage() associates, applies, or removes an ICM, IPTC, or generic profile with / to / from an image.  If the profile is NULL, it is removed from the image otherwise added or applied.  Use a name of '*' and a profile of NULL to remove all profiles from the image.</p></ol>
+<p>ProfileImage() associates, applies, or removes an ICM, IPTC, or generic profile with / to / from an image.  If the profile is NULL, it is removed from the image otherwise added or applied.  Use a name of '*' and a profile of NULL to remove all profiles from the image.</p>
 
-<p>ICC and ICM profiles are handled as follows: If the image does not have an associated color profile, the one you provide is associated with the image and the image pixels are not transformed.  Otherwise, the colorspace transform defined by the existing and new profile are applied to the image pixels and the new profile is associated with the image.</p></ol>
+<p>ICC and ICM profiles are handled as follows: If the image does not have an associated color profile, the one you provide is associated with the image and the image pixels are not transformed.  Otherwise, the colorspace transform defined by the existing and new profile are applied to the image pixels and the new profile is associated with the image.</p>
 
 <p>The format of the ProfileImage method is:</p>
 
@@ -293,29 +294,29 @@ _8c.html" target="source" name="ProfileImage">ProfileImage</a></h2>
     const void *datum,const size_t length,const MagickBooleanType clone)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>name</h5>
-<ol><p>Name of profile to add or remove: ICC, IPTC, or generic profile.</p></ol>
+<p>Name of profile to add or remove: ICC, IPTC, or generic profile.</p>
 
 <h5>datum</h5>
-<ol><p>the profile data.</p></ol>
+<p>the profile data.</p>
 
 <h5>length</h5>
-<ol><p>the length of the profile.</p></ol>
+<p>the length of the profile.</p>
 
 <h5>clone</h5>
-<ol><p>should be MagickFalse.</p></ol>
+<p>should be MagickFalse.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="RemoveImageProfile">RemoveImageProfile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="RemoveImageProfile">RemoveImageProfile</a></h2>
 <div class="doc-section">
 
-<p>RemoveImageProfile() removes a named profile from the image and returns its value.</p></ol>
+<p>RemoveImageProfile() removes a named profile from the image and returns its value.</p>
 
 <p>The format of the RemoveImageProfile method is:</p>
 
@@ -323,20 +324,20 @@ _8c.html" target="source" name="RemoveImageProfile">RemoveImageProfile</a></h2>
   void *RemoveImageProfile(Image *image,const char *name)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>name</h5>
-<ol><p>the profile name.</p></ol>
+<p>the profile name.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="ResetImageProfileIterator">ResetImageProfileIterator</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="ResetImageProfileIterator">ResetImageProfileIterator</a></h2>
 <div class="doc-section">
 
-<p>ResetImageProfileIterator() resets the image profile iterator.  Use it in conjunction with GetNextImageProfile() to iterate over all the profiles associated with an image.</p></ol>
+<p>ResetImageProfileIterator() resets the image profile iterator.  Use it in conjunction with GetNextImageProfile() to iterate over all the profiles associated with an image.</p>
 
 <p>The format of the ResetImageProfileIterator method is:</p>
 
@@ -344,17 +345,17 @@ _8c.html" target="source" name="ResetImageProfileIterator">ResetImageProfileIter
   ResetImageProfileIterator(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="SetImageProfile">SetImageProfile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="SetImageProfile">SetImageProfile</a></h2>
 <div class="doc-section">
 
-<p>SetImageProfile() adds a named profile to the image.  If a profile with the same name already exists, it is replaced.  This method differs from the ProfileImage() method in that it does not apply CMS color profiles.</p></ol>
+<p>SetImageProfile() adds a named profile to the image.  If a profile with the same name already exists, it is replaced.  This method differs from the ProfileImage() method in that it does not apply CMS color profiles.</p>
 
 <p>The format of the SetImageProfile method is:</p>
 
@@ -363,23 +364,23 @@ _8c.html" target="source" name="SetImageProfile">SetImageProfile</a></h2>
     const StringInfo *profile)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>name</h5>
-<ol><p>the profile name, for example icc, exif, and 8bim (8bim is the Photoshop wrapper for iptc profiles).</p></ol>
+<p>the profile name, for example icc, exif, and 8bim (8bim is the Photoshop wrapper for iptc profiles).</p>
 
 <h5>profile</h5>
-<ol><p>A StringInfo structure that contains the named profile.</p></ol>
+<p>A StringInfo structure that contains the named profile.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/profile
-_8c.html" target="source" name="SyncImageProfiles">SyncImageProfiles</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/profile
+_8c.html" id="SyncImageProfiles">SyncImageProfiles</a></h2>
 <div class="doc-section">
 
-<p>SyncImageProfiles() synchronizes image properties with the image profiles. Currently we only support updating the EXIF resolution and orientation.</p></ol>
+<p>SyncImageProfiles() synchronizes image properties with the image profiles. Currently we only support updating the EXIF resolution and orientation.</p>
 
 <p>The format of the SyncImageProfiles method is:</p>
 
@@ -387,10 +388,10 @@ _8c.html" target="source" name="SyncImageProfiles">SyncImageProfiles</a></h2>
   MagickBooleanType SyncImageProfiles(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
 

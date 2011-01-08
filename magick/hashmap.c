@@ -250,8 +250,8 @@ MagickExport void ClearLinkedList(LinkedListInfo *list_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Specify the CompareHashmapString() method in NewHashmap() to find an entry
-%  in a hash-map based on the contents of a string.
+%  CompareHashmapString() finds an entry in a hash-map based on the contents
+%  of a string.
 %
 %  The format of the CompareHashmapString method is:
 %
@@ -288,8 +288,8 @@ MagickExport MagickBooleanType CompareHashmapString(const void *target,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Specify the CompareHashmapStringInfo() method in NewHashmap() to find an
-%  entry in a hash-map based on the contents of a string.
+%  CompareHashmapStringInfo() finds an entry in a hash-map based on the
+%  contents of a string.
 %
 %  The format of the CompareHashmapStringInfo method is:
 %
@@ -863,8 +863,8 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Specify the HashPointerType() method in NewHashmap() to find an entry
-%  in a hash-map based on the address of a pointer.
+%  HashPointerType() finds an entry in a hash-map based on the address of a
+%  pointer.
 %
 %  The format of the HashPointerType method is:
 %
@@ -899,8 +899,8 @@ MagickExport size_t HashPointerType(const void *pointer)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Specify the HashStringType() method in NewHashmap() to find an entry
-%  in a hash-map based on the contents of a string.
+%  HashStringType() finds an entry in a hash-map based on the contents of a
+%  string.
 %
 %  The format of the HashStringType method is:
 %

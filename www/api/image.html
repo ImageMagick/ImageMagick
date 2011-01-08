@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#AcquireImage">AcquireImage</a> &bull; <a href="#AcquireImageInfo">AcquireImageInfo</a> &bull; <a href="#AcquireNextImage">AcquireNextImage</a> &bull; <a href="#AppendImages">AppendImages</a> &bull; <a href="#CatchImageException">CatchImageException</a> &bull; <a href="#ClipImagePath">ClipImagePath</a> &bull; <a href="#CloneImage">CloneImage</a> &bull; <a href="#CloneImageInfo">CloneImageInfo</a> &bull; <a href="#CombineImages">CombineImages</a> &bull; <a href="#DestroyImage">DestroyImage</a> &bull; <a href="#DestroyImageInfo">DestroyImageInfo</a> &bull; <a href="#GetImageAlphaChannel">GetImageAlphaChannel</a> &bull; <a href="#GetImageClipMask">GetImageClipMask</a> &bull; <a href="#GetImageException">GetImageException</a> &bull; <a href="#GetImageInfo">GetImageInfo</a> &bull; <a href="#GetImageInfoFile">GetImageInfoFile</a> &bull; <a href="#GetImageMask">GetImageMask</a> &bull; <a href="#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &bull; <a href="#InterpretImageFilename">InterpretImageFilename</a> &bull; <a href="#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &bull; <a href="#IsImageObject">IsImageObject</a> &bull; <a href="#IsTaintImage">IsTaintImage</a> &bull; <a href="#ModifyImage">ModifyImage</a> &bull; <a href="#NewMagickImage">NewMagickImage</a> &bull; <a href="#ReferenceImage">ReferenceImage</a> &bull; <a href="#ResetImagePage">ResetImagePage</a> &bull; <a href="#SeparateImageChannel">SeparateImageChannel</a> &bull; <a href="#SeparateImages">SeparateImages</a> &bull; <a href="#SetImageAlphaChannel">SetImageAlphaChannel</a> &bull; <a href="#SetImageBackgroundColor">SetImageBackgroundColor</a> &bull; <a href="#SetImageColor">SetImageColor</a> &bull; <a href="#SetImageStorageClass">SetImageStorageClass</a> &bull; <a href="#SetImageClipMask">SetImageClipMask</a> &bull; <a href="#SetImageExtent">SetImageExtent</a> &bull; <a href="#SetImageInfoBlob">SetImageInfoBlob</a> &bull; <a href="#SetImageInfoFile">SetImageInfoFile</a> &bull; <a href="#SetImageMask">SetImageMask</a> &bull; <a href="#SetImageOpacity">SetImageOpacity</a> &bull; <a href="#SetImageType">SetImageType</a> &bull; <a href="#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &bull; <a href="#StripImage">StripImage</a> &bull; <a href="#SyncImageSettings">SyncImageSettings</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="AcquireImage">AcquireImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="AcquireImage">AcquireImage</a></h2>
 <div class="doc-section">
 
-<p>AcquireImage() returns a pointer to an image structure initialized to default values.</p></ol>
+<p>AcquireImage() returns a pointer to an image structure initialized to default values.</p>
 
 <p>The format of the AcquireImage method is:</p>
 
@@ -190,17 +191,17 @@ _8c.html" target="source" name="AcquireImage">AcquireImage</a></h2>
   Image *AcquireImage(const ImageInfo *image_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p></ol>
+<p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="AcquireImageInfo">AcquireImageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="AcquireImageInfo">AcquireImageInfo</a></h2>
 <div class="doc-section">
 
-<p>AcquireImageInfo() allocates the ImageInfo structure.</p></ol>
+<p>AcquireImageInfo() allocates the ImageInfo structure.</p>
 
 <p>The format of the AcquireImageInfo method is:</p>
 
@@ -209,11 +210,11 @@ _8c.html" target="source" name="AcquireImageInfo">AcquireImageInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="AcquireNextImage">AcquireNextImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="AcquireNextImage">AcquireNextImage</a></h2>
 <div class="doc-section">
 
-<p>AcquireNextImage() initializes the next image in a sequence to default values.  The next member of image points to the newly allocated image.  If there is a memory shortage, next is assigned NULL.</p></ol>
+<p>AcquireNextImage() initializes the next image in a sequence to default values.  The next member of image points to the newly allocated image.  If there is a memory shortage, next is assigned NULL.</p>
 
 <p>The format of the AcquireNextImage method is:</p>
 
@@ -221,22 +222,22 @@ _8c.html" target="source" name="AcquireNextImage">AcquireNextImage</a></h2>
   void AcquireNextImage(const ImageInfo *image_info,Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p></ol>
+<p>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="AppendImages">AppendImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="AppendImages">AppendImages</a></h2>
 <div class="doc-section">
 
-<p>AppendImages() takes all images from the current image pointer to the end of the image list and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p></ol>
+<p>AppendImages() takes all images from the current image pointer to the end of the image list and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
 
-<p>The current gravity setting now effects how the image is justified in the final image.</p></ol>
+<p>The current gravity setting now effects how the image is justified in the final image.</p>
 
 <p>The format of the AppendImages method is:</p>
 
@@ -245,23 +246,23 @@ _8c.html" target="source" name="AppendImages">AppendImages</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image sequence.</p></ol>
+<p>the image sequence.</p>
 
 <h5>stack</h5>
-<ol><p>A value other than 0 stacks the images top-to-bottom.</p></ol>
+<p>A value other than 0 stacks the images top-to-bottom.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="CatchImageException">CatchImageException</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="CatchImageException">CatchImageException</a></h2>
 <div class="doc-section">
 
-<p>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</p></ol>
+<p>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</p>
 
 <p>The format of the CatchImageException method is:</p>
 
@@ -269,17 +270,17 @@ _8c.html" target="source" name="CatchImageException">CatchImageException</a></h2
   ExceptionType CatchImageException(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>An image sequence.</p></ol>
+<p>An image sequence.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="ClipImagePath">ClipImagePath</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="ClipImagePath">ClipImagePath</a></h2>
 <div class="doc-section">
 
-<p>ClipImagePath() sets the image clip mask based any clipping path information if it exists.</p></ol>
+<p>ClipImagePath() sets the image clip mask based any clipping path information if it exists.</p>
 
 <p>The format of the ClipImagePath method is:</p>
 
@@ -288,23 +289,23 @@ _8c.html" target="source" name="ClipImagePath">ClipImagePath</a></h2>
     const MagickBooleanType inside)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>pathname</h5>
-<ol><p>name of clipping path resource. If name is preceded by #, use clipping path numbered by name.</p></ol>
+<p>name of clipping path resource. If name is preceded by #, use clipping path numbered by name.</p>
 
 <h5>inside</h5>
-<ol><p>if non-zero, later operations take effect inside clipping path. Otherwise later operations take effect outside clipping path.</p></ol>
+<p>if non-zero, later operations take effect inside clipping path. Otherwise later operations take effect outside clipping path.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="CloneImage">CloneImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="CloneImage">CloneImage</a></h2>
 <div class="doc-section">
 
-<p>CloneImage() copies an image and returns the copy as a new image object. If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with the QueueAuthenticPixels() and SyncAuthenticPixels() methods.  On failure, a NULL image is returned and exception describes the reason for the failure.</p></ol>
+<p>CloneImage() copies an image and returns the copy as a new image object. If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with the QueueAuthenticPixels() and SyncAuthenticPixels() methods.  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
 
 <p>The format of the CloneImage method is:</p>
 
@@ -314,29 +315,29 @@ _8c.html" target="source" name="CloneImage">CloneImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>columns</h5>
-<ol><p>the number of columns in the cloned image.</p></ol>
+<p>the number of columns in the cloned image.</p>
 
 <h5>rows</h5>
-<ol><p>the number of rows in the cloned image.</p></ol>
+<p>the number of rows in the cloned image.</p>
 
 <h5>detach</h5>
-<ol><p>With a value other than 0, the cloned image is detached from its parent I/O stream.</p></ol>
+<p>With a value other than 0, the cloned image is detached from its parent I/O stream.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="CloneImageInfo">CloneImageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="CloneImageInfo">CloneImageInfo</a></h2>
 <div class="doc-section">
 
-<p>CloneImageInfo() makes a copy of the given image info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p></ol>
+<p>CloneImageInfo() makes a copy of the given image info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
 
 <p>The format of the CloneImageInfo method is:</p>
 
@@ -344,17 +345,17 @@ _8c.html" target="source" name="CloneImageInfo">CloneImageInfo</a></h2>
   ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="CombineImages">CombineImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="CombineImages">CombineImages</a></h2>
 <div class="doc-section">
 
-<p>CombineImages() combines one or more images into a single image.  The grayscale value of the pixels of each image in the sequence is assigned in order to the specified channels of the combined image.   The typical ordering would be image 1 => Red, 2 => Green, 3 => Blue, etc.</p></ol>
+<p>CombineImages() combines one or more images into a single image.  The grayscale value of the pixels of each image in the sequence is assigned in order to the specified channels of the combined image.   The typical ordering would be image 1 => Red, 2 => Green, 3 => Blue, etc.</p>
 
 <p>The format of the CombineImages method is:</p>
 
@@ -363,20 +364,20 @@ _8c.html" target="source" name="CombineImages">CombineImages</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="DestroyImage">DestroyImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="DestroyImage">DestroyImage</a></h2>
 <div class="doc-section">
 
-<p>DestroyImage() dereferences an image, deallocating memory associated with the image if the reference count becomes zero.</p></ol>
+<p>DestroyImage() dereferences an image, deallocating memory associated with the image if the reference count becomes zero.</p>
 
 <p>The format of the DestroyImage method is:</p>
 
@@ -384,17 +385,17 @@ _8c.html" target="source" name="DestroyImage">DestroyImage</a></h2>
   Image *DestroyImage(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="DestroyImageInfo">DestroyImageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="DestroyImageInfo">DestroyImageInfo</a></h2>
 <div class="doc-section">
 
-<p>DestroyImageInfo() deallocates memory associated with an ImageInfo structure.</p></ol>
+<p>DestroyImageInfo() deallocates memory associated with an ImageInfo structure.</p>
 
 <p>The format of the DestroyImageInfo method is:</p>
 
@@ -402,17 +403,17 @@ _8c.html" target="source" name="DestroyImageInfo">DestroyImageInfo</a></h2>
   ImageInfo *DestroyImageInfo(ImageInfo *image_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageAlphaChannel">GetImageAlphaChannel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageAlphaChannel">GetImageAlphaChannel</a></h2>
 <div class="doc-section">
 
-<p>GetImageAlphaChannel() returns MagickFalse if the image alpha channel is not activated.  That is, the image is RGB rather than RGBA or CMYK rather than CMYKA.</p></ol>
+<p>GetImageAlphaChannel() returns MagickFalse if the image alpha channel is not activated.  That is, the image is RGB rather than RGBA or CMYK rather than CMYKA.</p>
 
 <p>The format of the GetImageAlphaChannel method is:</p>
 
@@ -420,17 +421,17 @@ _8c.html" target="source" name="GetImageAlphaChannel">GetImageAlphaChannel</a></
   MagickBooleanType GetImageAlphaChannel(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageClipMask">GetImageClipMask</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageClipMask">GetImageClipMask</a></h2>
 <div class="doc-section">
 
-<p>GetImageClipMask() returns the clip path associated with the image.</p></ol>
+<p>GetImageClipMask() returns the clip path associated with the image.</p>
 
 <p>The format of the GetImageClipMask method is:</p>
 
@@ -438,17 +439,17 @@ _8c.html" target="source" name="GetImageClipMask">GetImageClipMask</a></h2>
   Image *GetImageClipMask(const Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageException">GetImageException</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageException">GetImageException</a></h2>
 <div class="doc-section">
 
-<p>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter.</p></ol>
+<p>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter.</p>
 
 <p>The format of the GetImageException method is:</p>
 
@@ -456,20 +457,20 @@ _8c.html" target="source" name="GetImageException">GetImageException</a></h2>
   void GetImageException(Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>Specifies a pointer to a list of one or more images.</p></ol>
+<p>Specifies a pointer to a list of one or more images.</p>
 
 <h5>exception</h5>
-<ol><p>return the highest severity exception.</p></ol>
+<p>return the highest severity exception.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageInfo">GetImageInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageInfo">GetImageInfo</a></h2>
 <div class="doc-section">
 
-<p>GetImageInfo() initializes image_info to default values.</p></ol>
+<p>GetImageInfo() initializes image_info to default values.</p>
 
 <p>The format of the GetImageInfo method is:</p>
 
@@ -477,17 +478,17 @@ _8c.html" target="source" name="GetImageInfo">GetImageInfo</a></h2>
   void GetImageInfo(ImageInfo *image_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageInfoFile">GetImageInfoFile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageInfoFile">GetImageInfoFile</a></h2>
 <div class="doc-section">
 
-<p>GetImageInfoFile() returns the image info file member.</p></ol>
+<p>GetImageInfoFile() returns the image info file member.</p>
 
 <p>The format of the GetImageInfoFile method is:</p>
 
@@ -495,17 +496,17 @@ _8c.html" target="source" name="GetImageInfoFile">GetImageInfoFile</a></h2>
   FILE *GetImageInfoFile(const ImageInfo *image_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageMask">GetImageMask</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageMask">GetImageMask</a></h2>
 <div class="doc-section">
 
-<p>GetImageMask() returns the mask associated with the image.</p></ol>
+<p>GetImageMask() returns the mask associated with the image.</p>
 
 <p>The format of the GetImageMask method is:</p>
 
@@ -513,17 +514,17 @@ _8c.html" target="source" name="GetImageMask">GetImageMask</a></h2>
   Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a></h2>
 <div class="doc-section">
 
-<p>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p></ol>
+<p>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
 
 <p>The format of the GetImageVirtualPixelMethod() method is:</p>
 
@@ -531,17 +532,17 @@ _8c.html" target="source" name="GetImageVirtualPixelMethod">GetImageVirtualPixel
   VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="InterpretImageFilename">InterpretImageFilename</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="InterpretImageFilename">InterpretImageFilename</a></h2>
 <div class="doc-section">
 
-<p>InterpretImageFilename() interprets embedded characters in an image filename. The filename length is returned.</p></ol>
+<p>InterpretImageFilename() interprets embedded characters in an image filename. The filename length is returned.</p>
 
 <p>The format of the InterpretImageFilename method is:</p>
 
@@ -550,29 +551,29 @@ _8c.html" target="source" name="InterpretImageFilename">InterpretImageFilename</
     Image *image,const char *format,int value,char *filename)
 </pre>
 
-<p>A description of each parameter follows.</p></ol>
+<p>A description of each parameter follows.</p>
 
 <h5>image_info</h5>
-<ol><p>the image info..</p></ol>
+<p>the image info..</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>format</h5>
-<ol><p>A filename describing the format to use to write the numeric argument. Only the first numeric format identifier is replaced.</p></ol>
+<p>A filename describing the format to use to write the numeric argument. Only the first numeric format identifier is replaced.</p>
 
 <h5>value</h5>
-<ol><p>Numeric value to substitute into format filename.</p></ol>
+<p>Numeric value to substitute into format filename.</p>
 
 <h5>filename</h5>
-<ol><p>return the formatted filename in this character buffer.</p></ol>
+<p>return the formatted filename in this character buffer.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="IsHighDynamicRangeImage">IsHighDynamicRangeImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="IsHighDynamicRangeImage">IsHighDynamicRangeImage</a></h2>
 <div class="doc-section">
 
-<p>IsHighDynamicRangeImage() returns MagickTrue if any pixel component is non-integer or exceeds the bounds of the quantum depth (e.g. for Q16 0..65535.</p></ol>
+<p>IsHighDynamicRangeImage() returns MagickTrue if any pixel component is non-integer or exceeds the bounds of the quantum depth (e.g. for Q16 0..65535.</p>
 
 <p>The format of the IsHighDynamicRangeImage method is:</p>
 
@@ -581,20 +582,20 @@ _8c.html" target="source" name="IsHighDynamicRangeImage">IsHighDynamicRangeImage
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="IsImageObject">IsImageObject</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="IsImageObject">IsImageObject</a></h2>
 <div class="doc-section">
 
-<p>IsImageObject() returns MagickTrue if the image sequence contains a valid set of image objects.</p></ol>
+<p>IsImageObject() returns MagickTrue if the image sequence contains a valid set of image objects.</p>
 
 <p>The format of the IsImageObject method is:</p>
 
@@ -602,17 +603,17 @@ _8c.html" target="source" name="IsImageObject">IsImageObject</a></h2>
   MagickBooleanType IsImageObject(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="IsTaintImage">IsTaintImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="IsTaintImage">IsTaintImage</a></h2>
 <div class="doc-section">
 
-<p>IsTaintImage() returns MagickTrue any pixel in the image has been altered since it was first constituted.</p></ol>
+<p>IsTaintImage() returns MagickTrue any pixel in the image has been altered since it was first constituted.</p>
 
 <p>The format of the IsTaintImage method is:</p>
 
@@ -620,17 +621,17 @@ _8c.html" target="source" name="IsTaintImage">IsTaintImage</a></h2>
   MagickBooleanType IsTaintImage(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="ModifyImage">ModifyImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="ModifyImage">ModifyImage</a></h2>
 <div class="doc-section">
 
-<p>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary.</p></ol>
+<p>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary.</p>
 
 <p>The format of the ModifyImage method is:</p>
 
@@ -638,20 +639,20 @@ _8c.html" target="source" name="ModifyImage">ModifyImage</a></h2>
   MagickBooleanType ModifyImage(Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="NewMagickImage">NewMagickImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="NewMagickImage">NewMagickImage</a></h2>
 <div class="doc-section">
 
-<p>NewMagickImage() creates a blank image canvas of the specified size and background color.</p></ol>
+<p>NewMagickImage() creates a blank image canvas of the specified size and background color.</p>
 
 <p>The format of the NewMagickImage method is:</p>
 
@@ -661,26 +662,26 @@ _8c.html" target="source" name="NewMagickImage">NewMagickImage</a></h2>
     const MagickPixelPacket *background)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>width</h5>
-<ol><p>the image width.</p></ol>
+<p>the image width.</p>
 
 <h5>height</h5>
-<ol><p>the image height.</p></ol>
+<p>the image height.</p>
 
 <h5>background</h5>
-<ol><p>the image color.</p></ol>
+<p>the image color.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="ReferenceImage">ReferenceImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="ReferenceImage">ReferenceImage</a></h2>
 <div class="doc-section">
 
-<p>ReferenceImage() increments the reference count associated with an image returning a pointer to the image.</p></ol>
+<p>ReferenceImage() increments the reference count associated with an image returning a pointer to the image.</p>
 
 <p>The format of the ReferenceImage method is:</p>
 
@@ -688,17 +689,17 @@ _8c.html" target="source" name="ReferenceImage">ReferenceImage</a></h2>
   Image *ReferenceImage(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="ResetImagePage">ResetImagePage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="ResetImagePage">ResetImagePage</a></h2>
 <div class="doc-section">
 
-<p>ResetImagePage() resets the image page canvas and position.</p></ol>
+<p>ResetImagePage() resets the image page canvas and position.</p>
 
 <p>The format of the ResetImagePage method is:</p>
 
@@ -706,20 +707,20 @@ _8c.html" target="source" name="ResetImagePage">ResetImagePage</a></h2>
   MagickBooleanType ResetImagePage(Image *image,const char *page)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>page</h5>
-<ol><p>the relative page specification.</p></ol>
+<p>the relative page specification.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SeparateImageChannel">SeparateImageChannel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SeparateImageChannel">SeparateImageChannel</a></h2>
 <div class="doc-section">
 
-<p>SeparateImageChannel() separates a channel from the image and returns it as a grayscale image.  A channel is a particular color component of each pixel in the image.</p></ol>
+<p>SeparateImageChannel() separates a channel from the image and returns it as a grayscale image.  A channel is a particular color component of each pixel in the image.</p>
 
 <p>The format of the SeparateImageChannel method is:</p>
 
@@ -728,20 +729,20 @@ _8c.html" target="source" name="SeparateImageChannel">SeparateImageChannel</a></
     const ChannelType channel)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>channel</h5>
-<ol><p>Identify which channel to extract: RedChannel, GreenChannel, BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel, or BlackChannel.</p></ol>
+<p>Identify which channel to extract: RedChannel, GreenChannel, BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel, or BlackChannel.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SeparateImages">SeparateImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SeparateImages">SeparateImages</a></h2>
 <div class="doc-section">
 
-<p>SeparateImages() returns a separate grayscale image for each channel specified.</p></ol>
+<p>SeparateImages() returns a separate grayscale image for each channel specified.</p>
 
 <p>The format of the SeparateImages method is:</p>
 
@@ -750,23 +751,23 @@ _8c.html" target="source" name="SeparateImages">SeparateImages</a></h2>
     const ChannelType channel,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>channel</h5>
-<ol><p>Identify which channels to extract: RedChannel, GreenChannel, BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel, or BlackChannel.</p></ol>
+<p>Identify which channels to extract: RedChannel, GreenChannel, BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel, or BlackChannel.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageAlphaChannel">SetImageAlphaChannel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageAlphaChannel">SetImageAlphaChannel</a></h2>
 <div class="doc-section">
 
-<p>SetImageAlphaChannel() activates, deactivates, resets, or sets the alpha channel.</p></ol>
+<p>SetImageAlphaChannel() activates, deactivates, resets, or sets the alpha channel.</p>
 
 <p>The format of the SetImageAlphaChannel method is:</p>
 
@@ -775,20 +776,20 @@ _8c.html" target="source" name="SetImageAlphaChannel">SetImageAlphaChannel</a></
     const AlphaChannelType alpha_type)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>alpha_type</h5>
-<ol><p>The alpha channel type: ActivateAlphaChannel, CopyAlphaChannel, DeactivateAlphaChannel, ExtractAlphaChannel, OpaqueAlphaChannel, ResetAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and TransparentAlphaChannel.</p></ol>
+<p>The alpha channel type: ActivateAlphaChannel, CopyAlphaChannel, DeactivateAlphaChannel, ExtractAlphaChannel, OpaqueAlphaChannel, ResetAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and TransparentAlphaChannel.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageBackgroundColor">SetImageBackgroundColor</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageBackgroundColor">SetImageBackgroundColor</a></h2>
 <div class="doc-section">
 
-<p>SetImageBackgroundColor() initializes the image pixels to the image background color.  The background color is defined by the background_color member of the image structure.</p></ol>
+<p>SetImageBackgroundColor() initializes the image pixels to the image background color.  The background color is defined by the background_color member of the image structure.</p>
 
 <p>The format of the SetImage method is:</p>
 
@@ -796,17 +797,17 @@ _8c.html" target="source" name="SetImageBackgroundColor">SetImageBackgroundColor
   MagickBooleanType SetImageBackgroundColor(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageColor">SetImageColor</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageColor">SetImageColor</a></h2>
 <div class="doc-section">
 
-<p>SetImageColor() set the entire image canvas to the specified color.</p></ol>
+<p>SetImageColor() set the entire image canvas to the specified color.</p>
 
 <p>The format of the SetImageColor method is:</p>
 
@@ -815,20 +816,20 @@ _8c.html" target="source" name="SetImageColor">SetImageColor</a></h2>
     const MagickPixelPacket *color)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>background</h5>
-<ol><p>the image color.</p></ol>
+<p>the image color.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageStorageClass">SetImageStorageClass</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageStorageClass">SetImageStorageClass</a></h2>
 <div class="doc-section">
 
-<p>SetImageStorageClass() sets the image class: DirectClass for true color images or PseudoClass for colormapped images.</p></ol>
+<p>SetImageStorageClass() sets the image class: DirectClass for true color images or PseudoClass for colormapped images.</p>
 
 <p>The format of the SetImageStorageClass method is:</p>
 
@@ -837,20 +838,20 @@ _8c.html" target="source" name="SetImageStorageClass">SetImageStorageClass</a></
     const ClassType storage_class)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>storage_class</h5>
-<ol><p>The image class.</p></ol>
+<p>The image class.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageClipMask">SetImageClipMask</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageClipMask">SetImageClipMask</a></h2>
 <div class="doc-section">
 
-<p>SetImageClipMask() associates a clip path with the image.  The clip path must be the same dimensions as the image.  Set any pixel component of the clip path to TransparentOpacity to prevent that corresponding image pixel component from being updated when SyncAuthenticPixels() is applied.</p></ol>
+<p>SetImageClipMask() associates a clip path with the image.  The clip path must be the same dimensions as the image.  Set any pixel component of the clip path to TransparentOpacity to prevent that corresponding image pixel component from being updated when SyncAuthenticPixels() is applied.</p>
 
 <p>The format of the SetImageClipMask method is:</p>
 
@@ -858,20 +859,20 @@ _8c.html" target="source" name="SetImageClipMask">SetImageClipMask</a></h2>
   MagickBooleanType SetImageClipMask(Image *image,const Image *clip_mask)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>clip_mask</h5>
-<ol><p>the image clip path.</p></ol>
+<p>the image clip path.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageExtent">SetImageExtent</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageExtent">SetImageExtent</a></h2>
 <div class="doc-section">
 
-<p>SetImageExtent() sets the image size (i.e. columns & rows).</p></ol>
+<p>SetImageExtent() sets the image size (i.e. columns & rows).</p>
 
 <p>The format of the SetImageExtent method is:</p>
 
@@ -880,23 +881,23 @@ _8c.html" target="source" name="SetImageExtent">SetImageExtent</a></h2>
     const size_t columns,const size_t rows)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>columns</h5>
-<ol><p>The image width in pixels.</p></ol>
+<p>The image width in pixels.</p>
 
 <h5>rows</h5>
-<ol><p>The image height in pixels.</p></ol>
+<p>The image height in pixels.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageInfoBlob">SetImageInfoBlob</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageInfoBlob">SetImageInfoBlob</a></h2>
 <div class="doc-section">
 
-<p>SetImageInfoBlob() sets the image info blob member.</p></ol>
+<p>SetImageInfoBlob() sets the image info blob member.</p>
 
 <p>The format of the SetImageInfoBlob method is:</p>
 
@@ -905,23 +906,23 @@ _8c.html" target="source" name="SetImageInfoBlob">SetImageInfoBlob</a></h2>
     const size_t length)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>blob</h5>
-<ol><p>the blob.</p></ol>
+<p>the blob.</p>
 
 <h5>length</h5>
-<ol><p>the blob length.</p></ol>
+<p>the blob length.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageInfoFile">SetImageInfoFile</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageInfoFile">SetImageInfoFile</a></h2>
 <div class="doc-section">
 
-<p>SetImageInfoFile() sets the image info file member.</p></ol>
+<p>SetImageInfoFile() sets the image info file member.</p>
 
 <p>The format of the SetImageInfoFile method is:</p>
 
@@ -929,20 +930,20 @@ _8c.html" target="source" name="SetImageInfoFile">SetImageInfoFile</a></h2>
   void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>file</h5>
-<ol><p>the file.</p></ol>
+<p>the file.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageMask">SetImageMask</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageMask">SetImageMask</a></h2>
 <div class="doc-section">
 
-<p>SetImageMask() associates a mask with the image.  The mask must be the same dimensions as the image.</p></ol>
+<p>SetImageMask() associates a mask with the image.  The mask must be the same dimensions as the image.</p>
 
 <p>The format of the SetImageMask method is:</p>
 
@@ -950,20 +951,20 @@ _8c.html" target="source" name="SetImageMask">SetImageMask</a></h2>
   MagickBooleanType SetImageMask(Image *image,const Image *mask)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>mask</h5>
-<ol><p>the image mask.</p></ol>
+<p>the image mask.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageOpacity">SetImageOpacity</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageOpacity">SetImageOpacity</a></h2>
 <div class="doc-section">
 
-<p>SetImageOpacity() sets the opacity levels of the image.</p></ol>
+<p>SetImageOpacity() sets the opacity levels of the image.</p>
 
 <p>The format of the SetImageOpacity method is:</p>
 
@@ -971,22 +972,22 @@ _8c.html" target="source" name="SetImageOpacity">SetImageOpacity</a></h2>
   MagickBooleanType SetImageOpacity(Image *image,const Quantum opacity)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>opacity</h5>
-<ol><p>the level of transparency: 0 is fully opaque and QuantumRange is fully transparent.</p></ol>
+<p>the level of transparency: 0 is fully opaque and QuantumRange is fully transparent.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageType">SetImageType</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageType">SetImageType</a></h2>
 <div class="doc-section">
 
-<p>SetImageType() sets the type of image.  Choose from these types:</p></ol>
+<p>SetImageType() sets the type of image.  Choose from these types:</p>
 
-<p>Bilevel        Grayscale       GrayscaleMatte Palette        PaletteMatte    TrueColor TrueColorMatte ColorSeparation ColorSeparationMatte OptimizeType</p></ol>
+<p>Bilevel        Grayscale       GrayscaleMatte Palette        PaletteMatte    TrueColor TrueColorMatte ColorSeparation ColorSeparationMatte OptimizeType</p>
 
 <p>The format of the SetImageType method is:</p>
 
@@ -994,20 +995,20 @@ _8c.html" target="source" name="SetImageType">SetImageType</a></h2>
   MagickBooleanType SetImageType(Image *image,const ImageType type)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>type</h5>
-<ol><p>Image type.</p></ol>
+<p>Image type.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a></h2>
 <div class="doc-section">
 
-<p>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p></ol>
+<p>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
 
 <p>The format of the SetImageVirtualPixelMethod() method is:</p>
 
@@ -1016,20 +1017,20 @@ _8c.html" target="source" name="SetImageVirtualPixelMethod">SetImageVirtualPixel
     const VirtualPixelMethod virtual_pixel_method)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>virtual_pixel_method</h5>
-<ol><p>choose the type of virtual pixel.</p></ol>
+<p>choose the type of virtual pixel.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="StripImage">StripImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="StripImage">StripImage</a></h2>
 <div class="doc-section">
 
-<p>StripImage() strips an image of all profiles and comments.</p></ol>
+<p>StripImage() strips an image of all profiles and comments.</p>
 
 <p>The format of the StripImage method is:</p>
 
@@ -1037,17 +1038,17 @@ _8c.html" target="source" name="StripImage">StripImage</a></h2>
   MagickBooleanType StripImage(Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image
-_8c.html" target="source" name="SyncImageSettings">SyncImageSettings</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/image
+_8c.html" id="SyncImageSettings">SyncImageSettings</a></h2>
 <div class="doc-section">
 
-<p>SyncImageSettings() sync the image info options to the image.</p></ol>
+<p>SyncImageSettings() sync the image info options to the image.</p>
 
 <p>The format of the SyncImageSettings method is:</p>
 
@@ -1058,13 +1059,13 @@ _8c.html" target="source" name="SyncImageSettings">SyncImageSettings</a></h2>
     Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
 

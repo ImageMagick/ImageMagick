@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &bull; <a href="#GetAuthenticIndexQueue">GetAuthenticIndexQueue</a> &bull; <a href="#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &bull; <a href="#GetAuthenticPixels">GetAuthenticPixels</a> &bull; <a href="#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &bull; <a href="#GetOneVirtualMagickPixel">GetOneVirtualMagickPixel</a> &bull; <a href="#GetOneVirtualMethodPixel">GetOneVirtualMethodPixel</a> &bull; <a href="#GetOneVirtualPixel">GetOneVirtualPixel</a> &bull; <a href="#GetVirtualIndexQueue">GetVirtualIndexQueue</a> &bull; <a href="#VirtualPixelModulo">VirtualPixelModulo</a> &bull; <a href="#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &bull; <a href="#GetVirtualPixels">GetVirtualPixels</a> &bull; <a href="#QueueAuthenticPixels">QueueAuthenticPixels</a> &bull; <a href="#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &bull; <a href="#SyncAuthenticPixels">SyncAuthenticPixels</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
 <div class="doc-section">
 
-<p>AcquirePixelCacheNexus() allocates the NexusInfo structure.</p></ol>
+<p>AcquirePixelCacheNexus() allocates the NexusInfo structure.</p>
 
 <p>The format of the AcquirePixelCacheNexus method is:</p>
 
@@ -190,17 +191,17 @@ _8c.html" target="source" name="AcquirePixelCacheNexus">AcquirePixelCacheNexus</
   NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>number_threads</h5>
-<ol><p>the number of nexus threads.</p></ol>
+<p>the number of nexus threads.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetAuthenticIndexQueue">GetAuthenticIndexQueue</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetAuthenticIndexQueue">GetAuthenticIndexQueue</a></h2>
 <div class="doc-section">
 
-<p>GetAuthenticIndexQueue() returns the authentic black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p></ol>
+<p>GetAuthenticIndexQueue() returns the authentic black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p>
 
 <p>The format of the GetAuthenticIndexQueue() method is:</p>
 
@@ -208,17 +209,17 @@ _8c.html" target="source" name="GetAuthenticIndexQueue">GetAuthenticIndexQueue</
   IndexPacket *GetAuthenticIndexQueue(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></h2>
 <div class="doc-section">
 
-<p>GetAuthenticPixelQueue() returns the authentic pixels associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p></ol>
+<p>GetAuthenticPixelQueue() returns the authentic pixels associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
 
 <p>The format of the GetAuthenticPixelQueue() method is:</p>
 
@@ -226,21 +227,21 @@ _8c.html" target="source" name="GetAuthenticPixelQueue">GetAuthenticPixelQueue</
   PixelPacket *GetAuthenticPixelQueue(const Image image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetAuthenticPixels">GetAuthenticPixels</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetAuthenticPixels">GetAuthenticPixels</a></h2>
 <div class="doc-section">
 
-<p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.</p></ol>
+<p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.</p>
 
-<p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p></ol>
+<p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
 
-<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or if the storage class is PseduoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p></ol>
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or if the storage class is PseduoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
 
 <p>The format of the GetAuthenticPixels() method is:</p>
 
@@ -250,23 +251,23 @@ _8c.html" target="source" name="GetAuthenticPixels">GetAuthenticPixels</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x,y,columns,rows</h5>
-<ol><p>These values define the perimeter of a region of pixels.</p></ol>
+<p>These values define the perimeter of a region of pixels.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetOneAuthenticPixel">GetOneAuthenticPixel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetOneAuthenticPixel">GetOneAuthenticPixel</a></h2>
 <div class="doc-section">
 
-<p>GetOneAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p></ol>
+<p>GetOneAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p>
 
 <p>The format of the GetOneAuthenticPixel() method is:</p>
 
@@ -275,26 +276,26 @@ _8c.html" target="source" name="GetOneAuthenticPixel">GetOneAuthenticPixel</a></
     const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x,y</h5>
-<ol><p>These values define the location of the pixel to return.</p></ol>
+<p>These values define the location of the pixel to return.</p>
 
 <h5>pixel</h5>
-<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+<p>return a pixel at the specified (x,y) location.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetOneVirtualMagickPixel">GetOneVirtualMagickPixel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetOneVirtualMagickPixel">GetOneVirtualMagickPixel</a></h2>
 <div class="doc-section">
 
-<p>GetOneVirtualMagickPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p></ol>
+<p>GetOneVirtualMagickPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
 
 <p>The format of the GetOneVirtualMagickPixel() method is:</p>
 
@@ -304,26 +305,26 @@ _8c.html" target="source" name="GetOneVirtualMagickPixel">GetOneVirtualMagickPix
     ExceptionInfo exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x,y</h5>
-<ol><p>these values define the location of the pixel to return.</p></ol>
+<p>these values define the location of the pixel to return.</p>
 
 <h5>pixel</h5>
-<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+<p>return a pixel at the specified (x,y) location.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetOneVirtualMethodPixel">GetOneVirtualMethodPixel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetOneVirtualMethodPixel">GetOneVirtualMethodPixel</a></h2>
 <div class="doc-section">
 
-<p>GetOneVirtualMethodPixel() returns a single pixel at the specified (x,y) location as defined by specified pixel method.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p></ol>
+<p>GetOneVirtualMethodPixel() returns a single pixel at the specified (x,y) location as defined by specified pixel method.  The image background color is returned if an error occurs.  If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
 
 <p>The format of the GetOneVirtualMethodPixel() method is:</p>
 
@@ -333,29 +334,29 @@ _8c.html" target="source" name="GetOneVirtualMethodPixel">GetOneVirtualMethodPix
     const ssize_t y,Pixelpacket *pixel,ExceptionInfo exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>virtual_pixel_method</h5>
-<ol><p>the virtual pixel method.</p></ol>
+<p>the virtual pixel method.</p>
 
 <h5>x,y</h5>
-<ol><p>These values define the location of the pixel to return.</p></ol>
+<p>These values define the location of the pixel to return.</p>
 
 <h5>pixel</h5>
-<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+<p>return a pixel at the specified (x,y) location.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
 <div class="doc-section">
 
-<p>GetOneVirtualPixel() returns a single virtual pixel at the specified (x,y) location.  The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p></ol>
+<p>GetOneVirtualPixel() returns a single virtual pixel at the specified (x,y) location.  The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOneAuthenticPixel() instead.</p>
 
 <p>The format of the GetOneVirtualPixel() method is:</p>
 
@@ -364,26 +365,26 @@ _8c.html" target="source" name="GetOneVirtualPixel">GetOneVirtualPixel</a></h2>
     const ssize_t y,PixelPacket *pixel,ExceptionInfo exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x,y</h5>
-<ol><p>These values define the location of the pixel to return.</p></ol>
+<p>These values define the location of the pixel to return.</p>
 
 <h5>pixel</h5>
-<ol><p>return a pixel at the specified (x,y) location.</p></ol>
+<p>return a pixel at the specified (x,y) location.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetVirtualIndexQueue">GetVirtualIndexQueue</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetVirtualIndexQueue">GetVirtualIndexQueue</a></h2>
 <div class="doc-section">
 
-<p>GetVirtualIndexQueue() returns the virtual black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p></ol>
+<p>GetVirtualIndexQueue() returns the virtual black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p>
 
 <p>The format of the GetVirtualIndexQueue() method is:</p>
 
@@ -391,23 +392,23 @@ _8c.html" target="source" name="GetVirtualIndexQueue">GetVirtualIndexQueue</a></
   const IndexPacket *GetVirtualIndexQueue(const Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="VirtualPixelModulo">VirtualPixelModulo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="VirtualPixelModulo">VirtualPixelModulo</a></h2>
 <div class="doc-section">
 
 <p>VirtualPixelModulo() computes the remainder of dividing offset by extent.  It returns not only the quotient (tile the offset falls in) but also the positive remainer within that tile such that 0 <= remainder < extent.  This method is essentially a ldiv() using a floored modulo division rather than the normal default truncated modulo division. </p>
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetVirtualPixelQueue">GetVirtualPixelQueue</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetVirtualPixelQueue">GetVirtualPixelQueue</a></h2>
 <div class="doc-section">
 
-<p>GetVirtualPixelQueue() returns the virtual pixels associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p></ol>
+<p>GetVirtualPixelQueue() returns the virtual pixels associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
 
 <p>The format of the GetVirtualPixelQueue() method is:</p>
 
@@ -415,23 +416,23 @@ _8c.html" target="source" name="GetVirtualPixelQueue">GetVirtualPixelQueue</a></
   const PixelPacket *GetVirtualPixelQueue(const Image image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="GetVirtualPixels">GetVirtualPixels</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="GetVirtualPixels">GetVirtualPixels</a></h2>
 <div class="doc-section">
 
-<p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file.  The returned pointer must *never* be deallocated by the user.</p></ol>
+<p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file.  The returned pointer must *never* be deallocated by the user.</p>
 
-<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access the black color component or to obtain the colormap indexes (of type IndexPacket) corresponding to the region.</p></ol>
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access the black color component or to obtain the colormap indexes (of type IndexPacket) corresponding to the region.</p>
 
-<p>If you plan to modify the pixels, use GetAuthenticPixels() instead.</p></ol>
+<p>If you plan to modify the pixels, use GetAuthenticPixels() instead.</p>
 
-<p>Note, the GetVirtualPixels() and GetAuthenticPixels() methods are not thread- safe.  In a threaded environment, use GetCacheViewVirtualPixels() or GetCacheViewAuthenticPixels() instead.</p></ol>
+<p>Note, the GetVirtualPixels() and GetAuthenticPixels() methods are not thread- safe.  In a threaded environment, use GetCacheViewVirtualPixels() or GetCacheViewAuthenticPixels() instead.</p>
 
 <p>The format of the GetVirtualPixels() method is:</p>
 
@@ -441,29 +442,29 @@ _8c.html" target="source" name="GetVirtualPixels">GetVirtualPixels</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x,y,columns,rows</h5>
-<ol><p>These values define the perimeter of a region of pixels.</p></ol>
+<p>These values define the perimeter of a region of pixels.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="QueueAuthenticPixels">QueueAuthenticPixels</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="QueueAuthenticPixels">QueueAuthenticPixels</a></h2>
 <div class="doc-section">
 
-<p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully intialized a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p></ol>
+<p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully intialized a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
 
-<p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p></ol>
+<p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p>
 
-<p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p></ol>
+<p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
 
-<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or the colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p></ol>
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or the colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
 
 <p>The format of the QueueAuthenticPixels() method is:</p>
 
@@ -473,23 +474,23 @@ _8c.html" target="source" name="QueueAuthenticPixels">QueueAuthenticPixels</a></
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>x,y,columns,rows</h5>
-<ol><p>These values define the perimeter of a region of pixels.</p></ol>
+<p>These values define the perimeter of a region of pixels.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a></h2>
 <div class="doc-section">
 
-<p>SetPixelCacheVirtualMethod() sets the "virtual pixels" method for the pixel cache and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p></ol>
+<p>SetPixelCacheVirtualMethod() sets the "virtual pixels" method for the pixel cache and returns the previous setting.  A virtual pixel is any pixel access that is outside the boundaries of the image cache.</p>
 
 <p>The format of the SetPixelCacheVirtualMethod() method is:</p>
 
@@ -498,20 +499,20 @@ _8c.html" target="source" name="SetPixelCacheVirtualMethod">SetPixelCacheVirtual
     const VirtualPixelMethod virtual_pixel_method)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>virtual_pixel_method</h5>
-<ol><p>choose the type of virtual pixel.</p></ol>
+<p>choose the type of virtual pixel.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache
-_8c.html" target="source" name="SyncAuthenticPixels">SyncAuthenticPixels</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cache
+_8c.html" id="SyncAuthenticPixels">SyncAuthenticPixels</a></h2>
 <div class="doc-section">
 
-<p>SyncAuthenticPixels() saves the image pixels to the in-memory or disk cache. The method returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p></ol>
+<p>SyncAuthenticPixels() saves the image pixels to the in-memory or disk cache. The method returns MagickTrue if the pixel region is flushed, otherwise MagickFalse.</p>
 
 <p>The format of the SyncAuthenticPixels() method is:</p>
 
@@ -520,13 +521,13 @@ _8c.html" target="source" name="SyncAuthenticPixels">SyncAuthenticPixels</a></h2
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

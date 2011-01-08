@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#GetImageChannelDepth">GetImageChannelDepth</a> &bull; <a href="#GetImageQuantumDepth">GetImageQuantumDepth</a> &bull; <a href="#GetImageType">GetImageType</a> &bull; <a href="#IsGrayImage">IsGrayImage</a> &bull; <a href="#IsMonochromeImage">IsMonochromeImage</a> &bull; <a href="#IsOpaqueImage">IsOpaqueImage</a> &bull; <a href="#SetImageChannelDepth">SetImageChannelDepth</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="GetImageChannelDepth">GetImageChannelDepth</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="GetImageChannelDepth">GetImageChannelDepth</a></h2>
 <div class="doc-section">
 
-<p>GetImageChannelDepth() returns the depth of a particular image channel.</p></ol>
+<p>GetImageChannelDepth() returns the depth of a particular image channel.</p>
 
 <p>The format of the GetImageChannelDepth method is:</p>
 
@@ -192,23 +193,23 @@ _8c.html" target="source" name="GetImageChannelDepth">GetImageChannelDepth</a></
     const ChannelType channel,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>channel</h5>
-<ol><p>the channel.</p></ol>
+<p>the channel.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="GetImageQuantumDepth">GetImageQuantumDepth</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="GetImageQuantumDepth">GetImageQuantumDepth</a></h2>
 <div class="doc-section">
 
-<p>GetImageQuantumDepth() returns the depth of the image rounded to a legal quantum depth: 8, 16, or 32.</p></ol>
+<p>GetImageQuantumDepth() returns the depth of the image rounded to a legal quantum depth: 8, 16, or 32.</p>
 
 <p>The format of the GetImageQuantumDepth method is:</p>
 
@@ -217,22 +218,22 @@ _8c.html" target="source" name="GetImageQuantumDepth">GetImageQuantumDepth</a></
     const MagickBooleanType constrain)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>constrain</h5>
-<ol><p>A value other than MagickFalse, constrains the depth to a maximum of MAGICKCORE_QUANTUM_DEPTH.</p></ol>
+<p>A value other than MagickFalse, constrains the depth to a maximum of MAGICKCORE_QUANTUM_DEPTH.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="GetImageType">GetImageType</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="GetImageType">GetImageType</a></h2>
 <div class="doc-section">
 
-<p>GetImageType() returns the potential type of image:</p></ol>
+<p>GetImageType() returns the potential type of image:</p>
 
-<p>Bilevel         Grayscale        GrayscaleMatte Palette         PaletteMatte     TrueColor TrueColorMatte  ColorSeparation  ColorSeparationMatte</p></ol>
+<p>Bilevel         Grayscale        GrayscaleMatte Palette         PaletteMatte     TrueColor TrueColorMatte  ColorSeparation  ColorSeparationMatte</p>
 
 <p>To ensure the image type matches its potential, use SetImageType():</p>
 
@@ -246,20 +247,20 @@ _8c.html" target="source" name="GetImageType">GetImageType</a></h2>
   ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="IsGrayImage">IsGrayImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="IsGrayImage">IsGrayImage</a></h2>
 <div class="doc-section">
 
-<p>IsGrayImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities.</p></ol>
+<p>IsGrayImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities.</p>
 
 <p>The format of the IsGrayImage method is:</p>
 
@@ -268,20 +269,20 @@ _8c.html" target="source" name="IsGrayImage">IsGrayImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="IsMonochromeImage">IsMonochromeImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="IsMonochromeImage">IsMonochromeImage</a></h2>
 <div class="doc-section">
 
-<p>IsMonochromeImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange.</p></ol>
+<p>IsMonochromeImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange.</p>
 
 <p>The format of the IsMonochromeImage method is:</p>
 
@@ -290,20 +291,20 @@ _8c.html" target="source" name="IsMonochromeImage">IsMonochromeImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="IsOpaqueImage">IsOpaqueImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="IsOpaqueImage">IsOpaqueImage</a></h2>
 <div class="doc-section">
 
-<p>IsOpaqueImage() returns MagickTrue if none of the pixels in the image have an opacity value other than opaque (0).</p></ol>
+<p>IsOpaqueImage() returns MagickTrue if none of the pixels in the image have an opacity value other than opaque (0).</p>
 
 <p>The format of the IsOpaqueImage method is:</p>
 
@@ -312,20 +313,20 @@ _8c.html" target="source" name="IsOpaqueImage">IsOpaqueImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" target="source" name="SetImageChannelDepth">SetImageChannelDepth</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/attribute
+_8c.html" id="SetImageChannelDepth">SetImageChannelDepth</a></h2>
 <div class="doc-section">
 
-<p>SetImageChannelDepth() sets the depth of the image.</p></ol>
+<p>SetImageChannelDepth() sets the depth of the image.</p>
 
 <p>The format of the SetImageChannelDepth method is:</p>
 
@@ -335,16 +336,16 @@ _8c.html" target="source" name="SetImageChannelDepth">SetImageChannelDepth</a></
     const ChannelType channel,const size_t depth)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>channel</h5>
-<ol><p>the channel.</p></ol>
+<p>the channel.</p>
 
 <h5>depth</h5>
-<ol><p>the image depth.</p></ol>
+<p>the image depth.</p>
 
  </div>
 

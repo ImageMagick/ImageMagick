@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -178,8 +179,8 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#ConstituteImage">ConstituteImage</a> &bull; <a href="#PingImage">PingImage</a> &bull; <a href="#PingImages">PingImages</a> &bull; <a href="#ReadImage">ReadImage</a> &bull; <a href="#ReadImages">ReadImages</a> &bull; <a href="#WriteImage">WriteImage</a> &bull; <a href="#WriteImages">WriteImages</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="ConstituteImage">ConstituteImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="ConstituteImage">ConstituteImage</a></h2>
 <div class="doc-section">
 
 <p>ConstituteImage() returns an image from the pixel data you supply. The pixel data must be in scanline order top-to-bottom.  The data can be char, short int, int, float, or double.  Float and double require the pixels to be normalized [0..1], otherwise [0..QuantumRange].  For example, to create a 640x480 image from unsigned red-green-blue character data, use:</p>
@@ -196,32 +197,32 @@ _8c.html" target="source" name="ConstituteImage">ConstituteImage</a></h2>
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>columns</h5>
-<ol><p>width in pixels of the image.</p></ol>
+<p>width in pixels of the image.</p>
 
 <h5>rows</h5>
-<ol><p>height in pixels of the image.</p></ol>
+<p>height in pixels of the image.</p>
 
 <h5>map</h5>
-<ol><p>This string reflects the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale), P = pad.</p></ol>
+<p>This string reflects the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale), P = pad.</p>
 
 <h5>storage</h5>
-<ol><p>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from these types: CharPixel, DoublePixel, FloatPixel, IntegerPixel, LongPixel, QuantumPixel, or ShortPixel.</p></ol>
+<p>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from these types: CharPixel, DoublePixel, FloatPixel, IntegerPixel, LongPixel, QuantumPixel, or ShortPixel.</p>
 
 <h5>pixels</h5>
-<ol><p>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</p></ol>
+<p>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="PingImage">PingImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="PingImage">PingImage</a></h2>
 <div class="doc-section">
 
-<p>PingImage() returns all the properties of an image or image sequence except for the pixels.  It is much faster and consumes far less memory than ReadImage().  On failure, a NULL image is returned and exception describes the reason for the failure.</p></ol>
+<p>PingImage() returns all the properties of an image or image sequence except for the pixels.  It is much faster and consumes far less memory than ReadImage().  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
 
 <p>The format of the PingImage method is:</p>
 
@@ -229,20 +230,20 @@ _8c.html" target="source" name="PingImage">PingImage</a></h2>
   Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>Ping the image defined by the file or filename members of this structure.</p></ol>
+<p>Ping the image defined by the file or filename members of this structure.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="PingImages">PingImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="PingImages">PingImages</a></h2>
 <div class="doc-section">
 
-<p>PingImages() pings one or more images and returns them as an image list.</p></ol>
+<p>PingImages() pings one or more images and returns them as an image list.</p>
 
 <p>The format of the PingImage method is:</p>
 
@@ -250,20 +251,20 @@ _8c.html" target="source" name="PingImages">PingImages</a></h2>
   Image *PingImages(const ImageInfo *image_info,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="ReadImage">ReadImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="ReadImage">ReadImage</a></h2>
 <div class="doc-section">
 
-<p>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read.  On failure, a NULL image is returned and exception describes the reason for the failure.</p></ol>
+<p>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read.  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
 
 <p>The format of the ReadImage method is:</p>
 
@@ -271,20 +272,20 @@ _8c.html" target="source" name="ReadImage">ReadImage</a></h2>
   Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>Read the image defined by the file or filename members of this structure.</p></ol>
+<p>Read the image defined by the file or filename members of this structure.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="ReadImages">ReadImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="ReadImages">ReadImages</a></h2>
 <div class="doc-section">
 
-<p>ReadImages() reads one or more images and returns them as an image list.</p></ol>
+<p>ReadImages() reads one or more images and returns them as an image list.</p>
 
 <p>The format of the ReadImage method is:</p>
 
@@ -292,20 +293,20 @@ _8c.html" target="source" name="ReadImages">ReadImages</a></h2>
   Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="WriteImage">WriteImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="WriteImage">WriteImage</a></h2>
 <div class="doc-section">
 
-<p>WriteImage() writes an image or an image sequence to a file or filehandle. If writing to a file on disk, the name is defined by the filename member of the image structure.  Write() returns MagickFalse is these is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</p></ol>
+<p>WriteImage() writes an image or an image sequence to a file or filehandle. If writing to a file on disk, the name is defined by the filename member of the image structure.  Write() returns MagickFalse is these is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</p>
 
 <p>The format of the WriteImage method is:</p>
 
@@ -313,20 +314,20 @@ _8c.html" target="source" name="WriteImage">WriteImage</a></h2>
   MagickBooleanType WriteImage(const ImageInfo *image_info,Image *image)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" target="source" name="WriteImages">WriteImages</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/constitute
+_8c.html" id="WriteImages">WriteImages</a></h2>
 <div class="doc-section">
 
-<p>WriteImages() writes an image sequence.</p></ol>
+<p>WriteImages() writes an image sequence.</p>
 
 <p>The format of the WriteImages method is:</p>
 
@@ -335,19 +336,19 @@ _8c.html" target="source" name="WriteImages">WriteImages</a></h2>
     const char *filename,ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image_info</h5>
-<ol><p>the image info.</p></ol>
+<p>the image info.</p>
 
 <h5>images</h5>
-<ol><p>the image list.</p></ol>
+<p>the image list.</p>
 
 <h5>filename</h5>
-<ol><p>the image filename.</p></ol>
+<p>the image filename.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 

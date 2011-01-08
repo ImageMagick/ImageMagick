@@ -24,6 +24,7 @@
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
@@ -152,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -178,11 +179,11 @@
  Methods</h1>
 <p class="navigation-index">[<a href="#AcquireAESInfo">AcquireAESInfo</a> &bull; <a href="#DestroyAESInfo">DestroyAESInfo</a> &bull; <a href="#EncipherAESBlock">EncipherAESBlock</a> &bull; <a href="#PasskeyDecipherImage">PasskeyDecipherImage</a> &bull; <a href="#PasskeyEncipherImage">PasskeyEncipherImage</a> &bull; <a href="#SetAESKey">SetAESKey</a> &bull; <a href="#PasskeyDecipherImage">PasskeyDecipherImage</a> &bull; <a href="#PasskeyEncipherImage">PasskeyEncipherImage</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="AcquireAESInfo">AcquireAESInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="AcquireAESInfo">AcquireAESInfo</a></h2>
 <div class="doc-section">
 
-<p>AcquireAESInfo() allocate the AESInfo structure.</p></ol>
+<p>AcquireAESInfo() allocate the AESInfo structure.</p>
 
 <p>The format of the AcquireAESInfo method is:</p>
 
@@ -191,11 +192,11 @@ _8c.html" target="source" name="AcquireAESInfo">AcquireAESInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="DestroyAESInfo">DestroyAESInfo</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="DestroyAESInfo">DestroyAESInfo</a></h2>
 <div class="doc-section">
 
-<p>DestroyAESInfo() zeros memory associated with the AESInfo structure.</p></ol>
+<p>DestroyAESInfo() zeros memory associated with the AESInfo structure.</p>
 
 <p>The format of the DestroyAESInfo method is:</p>
 
@@ -203,17 +204,17 @@ _8c.html" target="source" name="DestroyAESInfo">DestroyAESInfo</a></h2>
   AESInfo *DestroyAESInfo(AESInfo *aes_info)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>aes_info</h5>
-<ol><p>the cipher context.</p></ol>
+<p>the cipher context.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="EncipherAESBlock">EncipherAESBlock</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="EncipherAESBlock">EncipherAESBlock</a></h2>
 <div class="doc-section">
 
-<p>EncipherAESBlock() enciphers a single block of plaintext to produce a block of ciphertext.</p></ol>
+<p>EncipherAESBlock() enciphers a single block of plaintext to produce a block of ciphertext.</p>
 
 <p>The format of the EncipherAESBlock method is:</p>
 
@@ -222,23 +223,23 @@ _8c.html" target="source" name="EncipherAESBlock">EncipherAESBlock</a></h2>
     unsigned char *ciphertext)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>aes_info</h5>
-<ol><p>the cipher context.</p></ol>
+<p>the cipher context.</p>
 
 <h5>plaintext</h5>
-<ol><p>the plain text.</p></ol>
+<p>the plain text.</p>
 
 <h5>ciphertext</h5>
-<ol><p>the cipher text.</p></ol>
+<p>the cipher text.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
 <div class="doc-section">
 
-<p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p></ol>
+<p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p>
 
 <p>The format of the PasskeyDecipherImage method is:</p>
 
@@ -249,26 +250,26 @@ _8c.html" target="source" name="PasskeyDecipherImage">PasskeyDecipherImage</a></
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>passphrase</h5>
-<ol><p>decipher cipher pixels with this passphrase.</p></ol>
+<p>decipher cipher pixels with this passphrase.</p>
 
 <h5>passkey</h5>
-<ol><p>decrypt cipher pixels with this passkey.</p></ol>
+<p>decrypt cipher pixels with this passkey.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
 <div class="doc-section">
 
-<p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p></ol>
+<p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p>
 
 <p>The format of the PasskeyEncipherImage method is:</p>
 
@@ -279,26 +280,26 @@ _8c.html" target="source" name="PasskeyEncipherImage">PasskeyEncipherImage</a></
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>passphrase</h5>
-<ol><p>encipher pixels with this passphrase.</p></ol>
+<p>encipher pixels with this passphrase.</p>
 
 <h5>passkey</h5>
-<ol><p>decrypt cipher pixels with this passkey.</p></ol>
+<p>decrypt cipher pixels with this passkey.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="SetAESKey">SetAESKey</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="SetAESKey">SetAESKey</a></h2>
 <div class="doc-section">
 
-<p>SetAESKey() sets the key for the AES cipher.  The key length is specified in bits.  Valid values are 128, 192, or 256 requiring a key buffer length in bytes of 16, 24, and 32 respectively.</p></ol>
+<p>SetAESKey() sets the key for the AES cipher.  The key length is specified in bits.  Valid values are 128, 192, or 256 requiring a key buffer length in bytes of 16, 24, and 32 respectively.</p>
 
 <p>The format of the SetAESKey method is:</p>
 
@@ -306,20 +307,20 @@ _8c.html" target="source" name="SetAESKey">SetAESKey</a></h2>
   SetAESKey(AESInfo *aes_info,const StringInfo *key)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>aes_info</h5>
-<ol><p>the cipher context.</p></ol>
+<p>the cipher context.</p>
 
 <h5>key</h5>
-<ol><p>the key.</p></ol>
+<p>the key.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="PasskeyDecipherImage">PasskeyDecipherImage</a></h2>
 <div class="doc-section">
 
-<p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p></ol>
+<p>PasskeyDecipherImage() converts cipher pixels to plain pixels.</p>
 
 <p>The format of the PasskeyDecipherImage method is:</p>
 
@@ -330,26 +331,26 @@ _8c.html" target="source" name="PasskeyDecipherImage">PasskeyDecipherImage</a></
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
-<ol><p>the image.</p></ol>
+<p>the image.</p>
 
 <h5>passphrase</h5>
-<ol><p>decipher cipher pixels with this passphrase.</p></ol>
+<p>decipher cipher pixels with this passphrase.</p>
 
 <h5>passkey</h5>
-<ol><p>decrypt cipher pixels with this passkey.</p></ol>
+<p>decrypt cipher pixels with this passkey.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cipher
-_8c.html" target="source" name="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
+<h2><a href="http://www.wizards-toolkit.org/api/MagickCore/cipher
+_8c.html" id="PasskeyEncipherImage">PasskeyEncipherImage</a></h2>
 <div class="doc-section">
 
-<p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p></ol>
+<p>PasskeyEncipherImage() converts pixels to cipher-pixels.</p>
 
 <p>The format of the PasskeyEncipherImage method is:</p>
 
@@ -360,16 +361,16 @@ _8c.html" target="source" name="PasskeyEncipherImage">PasskeyEncipherImage</a></
     ExceptionInfo *exception)
 </pre>
 
-<p>A description of each parameter follows:</p></ol>
+<p>A description of each parameter follows:</p>
 
 <h5>passphrase</h5>
-<ol><p>decipher cipher pixels with this passphrase.</p></ol>
+<p>decipher cipher pixels with this passphrase.</p>
 
 <h5>passkey</h5>
-<ol><p>decrypt cipher pixels with this passkey.</p></ol>
+<p>decrypt cipher pixels with this passkey.</p>
 
 <h5>exception</h5>
-<ol><p>return any errors or warnings in this structure.</p></ol>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 
