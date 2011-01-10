@@ -371,8 +371,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     Read TIFF image.
   */
   read_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"%.1024s",
-    filename);
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"%s",filename);
   image=ReadTIFFImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)

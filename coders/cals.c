@@ -262,7 +262,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"group4:%.1024s",
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"group4:%s",
     filename);
   (void) FormatMagickString(message,MaxTextExtent,"%lux%lu",width,height);
   read_info->size=ConstantString(message);

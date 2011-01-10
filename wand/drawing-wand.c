@@ -280,44 +280,44 @@ static void
 static int MvgPrintf(DrawingWand *wand,const char *format,...)
 {
   size_t
-    alloc_size;
+    extent;
 
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",format);
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
-  alloc_size=20UL*MaxTextExtent;
+  extent=20UL*MaxTextExtent;
   if (wand->mvg == (char *) NULL)
     {
-      wand->mvg=(char *) AcquireQuantumMemory(alloc_size,sizeof(*wand->mvg));
+      wand->mvg=(char *) AcquireQuantumMemory(extent,sizeof(*wand->mvg));
       if (wand->mvg == (char *) NULL)
         {
           ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
             wand->name);
           return(-1);
         }
-      wand->mvg_alloc=alloc_size;
+      wand->mvg_alloc=extent;
       wand->mvg_length=0;
     }
   if (wand->mvg_alloc < (wand->mvg_length+10*MaxTextExtent))
     {
-      size_t
-        realloc_size;
-
-      realloc_size=wand->mvg_alloc+alloc_size;
-      wand->mvg=(char *) ResizeQuantumMemory(wand->mvg,realloc_size,
+      extent+=wand->mvg_alloc;
+      wand->mvg=(char *) ResizeQuantumMemory(wand->mvg,extent,
         sizeof(*wand->mvg));
       if (wand->mvg == (char *) NULL)
         {
           ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
             wand->name);
-          return -1;
+          return(-1);
         }
-      wand->mvg_alloc=realloc_size;
+      wand->mvg_alloc=extent;
     }
   {
     int
-      formatted_length;
+      count;
+
+    ssize_t
+      offset;
 
     va_list
       argp;
@@ -329,28 +329,32 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
       wand->mvg_width++;
     }
     wand->mvg[wand->mvg_length]='\0';
-    va_start(argp, format);
+    count=(-1);
+    offset=(ssize_t) wand->mvg_alloc-wand->mvg_length-1;
+    if (offset > 0)
+      {
+        va_start(argp,format);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-    formatted_length=vsnprintf(wand->mvg+wand->mvg_length,
-      wand->mvg_alloc-wand->mvg_length-1,format,argp);
+        count=vsnprintf(wand->mvg+wand->mvg_length,
+          wand->mvg_alloc-wand->mvg_length-1,format,argp);
 #else
-    formatted_length=vsprintf(wand->mvg+wand->mvg_length,
-      format,argp);
+        count=vsprintf(wand->mvg+wand->mvg_length,format,argp);
 #endif
-    va_end(argp);
-    if (formatted_length < 0)
+        va_end(argp);
+      }
+    if ((count < 0) || (count > (int) offset))
       ThrowDrawException(DrawError,"UnableToPrint",format)
     else
       {
-        wand->mvg_length+=formatted_length;
-        wand->mvg_width+=formatted_length;
+        wand->mvg_length+=count;
+        wand->mvg_width+=count;
       }
     wand->mvg[wand->mvg_length]='\0';
     if ((wand->mvg_length > 1) &&
         (wand->mvg[wand->mvg_length-1] == '\n'))
       wand->mvg_width=0;
     assert((wand->mvg_length+1) < wand->mvg_alloc);
-    return formatted_length;
+    return(count);
   }
 }
 
@@ -360,29 +364,29 @@ static int MvgAutoWrapPrintf(DrawingWand *wand,const char *format,...)
     buffer[MaxTextExtent];
 
   int
-    formatted_length;
+    count;
 
   va_list
     argp;
 
   va_start(argp,format);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  formatted_length=vsnprintf(buffer,sizeof(buffer)-1,format,argp);
+  count=vsnprintf(buffer,sizeof(buffer)-1,format,argp);
 #else
-  formatted_length=vsprintf(buffer,format,argp);
+  count=vsprintf(buffer,format,argp);
 #endif
   va_end(argp);
   *(buffer+sizeof(buffer)-1)='\0';
-  if (formatted_length < 0)
+  if (count < 0)
     ThrowDrawException(DrawError,"UnableToPrint",format)
   else
     {
-      if (((wand->mvg_width + formatted_length) > 78) &&
-          (buffer[formatted_length-1] != '\n'))
+      if (((wand->mvg_width + count) > 78) &&
+          (buffer[count-1] != '\n'))
         (void) MvgPrintf(wand, "\n");
       (void) MvgPrintf(wand,"%s",buffer);
     }
-  return(formatted_length);
+  return(count);
 }
 
 static void MvgAppendColor(DrawingWand *wand,const PixelPacket *color)
@@ -770,8 +774,11 @@ WandExport void DrawAnnotation(DrawingWand *wand,const double x,const double y,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(text != (const unsigned char *) NULL);
   escaped_text=EscapeString((const char *) text,'\'');
-  (void) MvgPrintf(wand,"text %g,%g '%s'\n",x,y,escaped_text);
-  escaped_text=DestroyString(escaped_text);
+  if (escaped_text != (char *) NULL)
+    {
+      (void) MvgPrintf(wand,"text %g,%g '%s'\n",x,y,escaped_text);
+      escaped_text=DestroyString(escaped_text);
+    }
 }
 
 /*

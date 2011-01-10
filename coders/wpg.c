@@ -760,8 +760,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   (void) CopyMagickMemory(clone_info->magick,magic_info->name,MaxTextExtent);
   
     /* Read nested image */
-  /*FormatString(clone_info->filename,"%s:%.1024s",magic_info->name,postscript_file);*/
-  FormatMagickString(clone_info->filename,MaxTextExtent,"%.1024s",postscript_file);
+  /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
+  FormatMagickString(clone_info->filename,MaxTextExtent,"%s",postscript_file);
   image2=ReadImage(clone_info,exception);
 
   if (!image2)
