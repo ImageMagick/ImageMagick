@@ -653,7 +653,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"svg:%.1024s",
+  (void) FormatMagickString(read_info->filename,MaxTextExtent,"svg:%s",
     filename);
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)

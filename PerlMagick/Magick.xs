@@ -1645,7 +1645,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
           if (info)
             (void) FormatMagickString(info->image_info->filename,MaxTextExtent,
-              "%.1024s:",SvPV(sval,na));
+              "%s:",SvPV(sval,na));
           for ( ; image; image=image->next)
             (void) CopyMagickString(image->magick,SvPV(sval,na),MaxTextExtent);
           break;
