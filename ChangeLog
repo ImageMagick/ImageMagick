@@ -1,3 +1,7 @@
+2011-01-10  6.6.7-1 Cristy  <quetzlzacatenango@image...>
+  * Accept escaped % in output filename (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17810).
+
 2011-01-08  6.6.7-1 Glenn Randers-Pehrson <glennrp@image...>
   * Quieted some inconsequential warnings in the PNG codec due to a
     change in the type of the PNG iCCP profile from png_charp to png_bytep
