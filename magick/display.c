@@ -6377,8 +6377,8 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
 %
 %    o command: Specifies a command to perform.
 %
-%    o image: the image;  XImageCache
-%      may transform the image and return a new image pointer.
+%    o image: the image;  XImageCache may transform the image and return a new
+%      image pointer.
 %
 */
 static void XImageCache(Display *display,XResourceInfo *resource_info,
@@ -6413,6 +6413,9 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
     }
     case UndoCommand:
     {
+      char
+        image_geometry[MaxTextExtent];
+
       /*
         Undo the last image transformation.
       */
@@ -6425,6 +6428,9 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       undo_image=GetPreviousImageInList(undo_image);
       windows->image.window_changes.width=(int) cache_image->columns;
       windows->image.window_changes.height=(int) cache_image->rows;
+      (void) FormatMagickString(image_geometry,MaxTextExtent,"%dx%d!",
+        windows->image.ximage->width,windows->image.ximage->height);
+      (void) TransformImage(image,windows->image.crop_geometry,image_geometry);
       if (windows->image.crop_geometry != (char *) NULL)
         windows->image.crop_geometry=(char *)
           RelinquishMagickMemory(windows->image.crop_geometry);
@@ -6511,7 +6517,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       if (undo_image != (Image *) NULL)
         {
           /*
-            Ensure the undo stash.has enough memory available.
+            Ensure the undo cache has enough memory available.
           */
           previous_image=undo_image;
           while (previous_image != (Image *) NULL)
