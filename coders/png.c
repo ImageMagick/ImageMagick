@@ -7000,7 +7000,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        n;
 
      PixelPacket
-       colormap[800],
+       colormap[260],
        opaque[260],
        semitransparent[260],
        transparent[260];
@@ -7038,13 +7038,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            for (i=0; i < (ssize_t) image->colors; i++)
            {
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                 "        %d    (%d,%d,%d,%d)",
-                  (int) i,
-                  (int) image->colormap[i].red,
-                  (int) image->colormap[i].green,
-                  (int) image->colormap[i].blue,
-                  (int) image->colormap[i].opacity);
+             if (i < 300 || i >= image->colors - 10)
+               {
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "        %d    (%d,%d,%d,%d)",
+                      (int) i,
+                      (int) image->colormap[i].red,
+                      (int) image->colormap[i].green,
+                      (int) image->colormap[i].blue,
+                      (int) image->colormap[i].opacity);
+               }
            }
          }
 
@@ -7095,7 +7098,26 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       break;
                   }
 
-                if (i ==  (ssize_t) image_colors && image_colors < 299)
+                if (q->opacity == TransparentOpacity)
+                  {
+                    if (number_transparent == 0)
+                      {
+                        ping_trans_color.red=(unsigned short)(q->red);
+                        ping_trans_color.green=(unsigned short) (q->green);
+                        ping_trans_color.blue=(unsigned short) (q->blue);
+                        ping_trans_color.gray=(unsigned short) (q->blue);
+                        number_transparent = 1;
+                      }
+                    if (ping_trans_color.red != (unsigned short)(q->red) ||
+                        ping_trans_color.green != (unsigned short)(q->green) ||
+                        ping_trans_color.blue != (unsigned short)(q->blue))
+                      number_transparent++;
+                  }
+
+                else
+                  number_opaque++;
+
+                if (i ==  (ssize_t) image_colors && image_colors < 259)
                   {
 
                     image_colors++;
@@ -7110,160 +7132,145 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              }
           }
 
-
           if (logging != MagickFalse)
             {
-              if (image_colors >= 800)
+              if (image_colors >= 256)
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "      image has more than 800 colors");
+                       "      image has more than 256 colors");
 
               else
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "      image has %d colors",image_colors);
             }
 
-          /*
-            Initialize image colormap.
-          */
-
-          if (logging != MagickFalse)
-             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                   "      Sort the new colormap");
-
-          /* Sort palette, transparent first */;
-          for (i=0; i< (ssize_t) image_colors; i++)
-          {
-             if (colormap[i].opacity == OpaqueOpacity)
-                opaque[number_opaque++] = colormap[i];
-
-             else if (colormap[i].opacity == TransparentOpacity)
-                transparent[number_transparent++] = colormap[i];
-
-             else
-                semitransparent[number_semitransparent++] =
-                    colormap[i];
-          }
-
-
-          n = 0;
-
-          for (i=0; i<number_transparent; i++)
-             colormap[n++] = transparent[i];
-
-          for (i=0; i<number_semitransparent; i++)
-             colormap[n++] = semitransparent[i];
-
-          for (i=0; i<number_opaque; i++)
-             colormap[n++] = opaque[i];
-
-          if (ping_exclude_bKGD == MagickFalse)
+          if (image_colors < 257)
             {
-              /* Add the background color to the palette, if it
-               * isn't already there.
-               */
-              for (i=0; i<number_opaque; i++)
+            /*
+              Initialize image colormap.
+            */
+
+            if (logging != MagickFalse)
+               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "      Sort the new colormap");
+
+            /* Sort palette, transparent first */;
+
+            number_opaque = 0;
+            number_semitransparent = 0;
+            number_transparent = 0;
+
+            for (i=0; i< (ssize_t) image_colors; i++)
+            {
+               if (colormap[i].opacity == OpaqueOpacity)
+                  opaque[number_opaque++] = colormap[i];
+
+               else if (colormap[i].opacity == TransparentOpacity)
+                  transparent[number_transparent++] = colormap[i];
+
+               else
+                  semitransparent[number_semitransparent++] =
+                      colormap[i];
+            }
+
+
+            n = 0;
+
+            for (i=0; i<number_transparent; i++)
+               colormap[n++] = transparent[i];
+
+            for (i=0; i<number_semitransparent; i++)
+               colormap[n++] = semitransparent[i];
+
+            for (i=0; i<number_opaque; i++)
+               colormap[n++] = opaque[i];
+
+            if (ping_exclude_bKGD == MagickFalse)
               {
-                 if (IsColorEqual(opaque+i,
-                    &image->background_color))
-                 break;
-              }
-
-              if (number_opaque < 257 && i == number_opaque)
-              {
-                 opaque[i]=image->background_color;
-                 opaque[i].opacity = OpaqueOpacity;
-                 number_opaque++;
-              }
-            }
-
-          if (number_transparent == 1)
-            {
-              ping_trans_color.red= (unsigned short)(transparent[0].red);
-              ping_trans_color.green= (unsigned short) (transparent[0].green);
-              ping_trans_color.blue= (unsigned short) (transparent[0].blue);
-              ping_trans_color.gray= (unsigned short) (transparent[0].blue);
-            }
-
-          if (logging != MagickFalse)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      number_transparent     = %d",
-                    number_transparent);
-
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      number_opaque          = %d",
-                    number_opaque);
-
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      number_semitransparent = %d",
-                    number_semitransparent);
-            }
-
-          if ((mng_info->ping_exclude_tRNS == MagickFalse ||
-              (number_transparent == 0 && number_semitransparent == 0)) &&
-              (((mng_info->write_png_colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
-              (mng_info->write_png_colortype == 0)))
-          {
-             if (logging != MagickFalse)
-               {
-                 if (n !=  (ssize_t) image_colors)
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "   image_colors (%d) and n (%d)  don't match",
-                    image_colors, n);
-
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      AcquireImageColormap");
-                }
-
-          image->colors = image_colors;
-
-          if (AcquireImageColormap(image,image_colors) ==
-              MagickFalse)
-             ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed");
-
-          for (i=0; i< (ssize_t) image_colors; i++)
-             image->colormap[i] = colormap[i];
-
-          if (logging != MagickFalse)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      image->colors=%d (%d)",
-                    (int) image->colors, image_colors);
-
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "      Update the pixel indexes");
-            }
-
-          for (y=0; y < (ssize_t) image->rows; y++)
-          {
-            q=GetAuthenticPixels(image,0,y,image->columns,1,
-                exception);
-
-            if (q == (PixelPacket *) NULL)
-              break;
-
-            indexes=GetAuthenticIndexQueue(image);
-
-            for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              for (i=0; i< (ssize_t) image_colors; i++)
-              {
-                if ((image->matte == MagickFalse ||
-                    image->colormap[i].opacity == q->opacity) &&
-                    (IsColorEqual(&image->colormap[i],(PixelPacket *) q)))
+                /* Add the background color to the palette, if it
+                 * isn't already there.
+                 */
+                for (i=0; i<number_opaque; i++)
                 {
-                  indexes[x]=(IndexPacket) i;
-                  break;
+                   if (IsColorEqual(opaque+i,
+                      &image->background_color))
+                   break;
+                }
+
+                if (number_opaque < 257 && i == number_opaque)
+                {
+                   opaque[i]=image->background_color;
+                   opaque[i].opacity = OpaqueOpacity;
+                   number_opaque++;
                 }
               }
-              q++;
-            }
 
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-               break;
+            if ((mng_info->ping_exclude_tRNS == MagickFalse ||
+                (number_transparent == 0 && number_semitransparent == 0)) &&
+                (((mng_info->write_png_colortype-1) ==
+                PNG_COLOR_TYPE_PALETTE) ||
+                (mng_info->write_png_colortype == 0)))
+              {
+                 if (logging != MagickFalse)
+                   {
+                     if (n !=  (ssize_t) image_colors)
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "   image_colors (%d) and n (%d)  don't match",
+                        image_colors, n);
+
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      AcquireImageColormap");
+                    }
+
+              image->colors = image_colors;
+
+              if (AcquireImageColormap(image,image_colors) ==
+                  MagickFalse)
+                 ThrowWriterException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+
+              for (i=0; i< (ssize_t) image_colors; i++)
+                 image->colormap[i] = colormap[i];
+
+              if (logging != MagickFalse)
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      image->colors=%d (%d)",
+                        (int) image->colors, image_colors);
+
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      Update the pixel indexes");
+                }
+
+              for (y=0; y < (ssize_t) image->rows; y++)
+              {
+                q=GetAuthenticPixels(image,0,y,image->columns,1,
+                    exception);
+
+                if (q == (PixelPacket *) NULL)
+                  break;
+
+                indexes=GetAuthenticIndexQueue(image);
+
+                for (x=0; x < (ssize_t) image->columns; x++)
+                {
+                  for (i=0; i< (ssize_t) image_colors; i++)
+                  {
+                    if ((image->matte == MagickFalse ||
+                        image->colormap[i].opacity == q->opacity) &&
+                        (IsColorEqual(&image->colormap[i],(PixelPacket *) q)))
+                    {
+                      indexes[x]=(IndexPacket) i;
+                      break;
+                    }
+                  }
+                  q++;
+                }
+
+                if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                   break;
+             }
+           }
          }
-       }
 
        if (logging != MagickFalse)
          {
@@ -7277,15 +7284,33 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                for (i=0; i < (ssize_t) image->colors; i++)
                {
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "       %d     (%d,%d,%d,%d)",
-                      (int) i,
-                      (int) image->colormap[i].red,
-                      (int) image->colormap[i].green,
-                      (int) image->colormap[i].blue,
-                      (int) image->colormap[i].opacity);
+                 if (i < 300 || i >= image->colors - 10)
+                   {
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "       %d     (%d,%d,%d,%d)",
+                          (int) i,
+                          (int) image->colormap[i].red,
+                          (int) image->colormap[i].green,
+                          (int) image->colormap[i].blue,
+                          (int) image->colormap[i].opacity);
+                   }
                }
              }
+
+            if (logging != MagickFalse)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "      number_transparent     = %d",
+                      number_transparent);
+
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "      number_opaque          = %d",
+                      number_opaque);
+
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "      number_semitransparent = %d",
+                      number_semitransparent);
+              }
 
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    Exit BUILD_PALETTE:");
