@@ -748,8 +748,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 %
 */
 MagickExport Image *CloneImage(const Image *image,const size_t columns,
-  const size_t rows,const MagickBooleanType detach,
-  ExceptionInfo *exception)
+  const size_t rows,const MagickBooleanType detach,ExceptionInfo *exception)
 {
   Image
     *clone_image;
@@ -812,15 +811,19 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->progress_monitor=image->progress_monitor;
   clone_image->client_data=image->client_data;
   clone_image->reference_count=1;
-  clone_image->next=NewImageList();
-  clone_image->previous=NewImageList();
+  clone_image->next=image->next;
+  clone_image->previous=image->previous;
   clone_image->list=NewImageList();
   clone_image->clip_mask=NewImageList();
   clone_image->mask=NewImageList();
   if (detach == MagickFalse)
     clone_image->blob=ReferenceBlob(image->blob);
   else
-    clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+    {
+      clone_image->next=NewImageList();
+      clone_image->previous=NewImageList();
+      clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+    }
   clone_image->ping=image->ping;
   clone_image->debug=IsEventLogging();
   clone_image->semaphore=AllocateSemaphoreInfo();
@@ -4068,8 +4071,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     image->endian=(EndianType) ParseMagickOption(MagickEndianOptions,
       MagickFalse,option);
-  if (image_info->extract != (char *) NULL)
-    (void) ParseAbsoluteGeometry(image_info->extract,&image->extract_info);
   option=GetImageOption(image_info,"filter");
   if (option != (const char *) NULL)
     image->filter=(FilterTypes) ParseMagickOption(MagickFilterOptions,

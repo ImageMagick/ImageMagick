@@ -81,7 +81,7 @@ static MagickBooleanType
 %
 %  ReadGRAYImage() reads an image of raw grayscale samples and returns
 %  it.  It allocates the memory necessary for the new Image structure and
-%   returns a pointer to the new image.
+%  returns a pointer to the new image.
 %
 %  The format of the ReadGRAYImage method is:
 %
@@ -117,11 +117,11 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count;
 
   unsigned char
     *pixels;
@@ -237,7 +237,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
