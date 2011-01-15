@@ -1,7 +1,7 @@
 2011-01-14  6.6.7-1 Glenn Randers-Pehrson <glennrp@image...>
   * Don't let the PNG encoder try to sort the colormap when there are more
     than 256 colors in the image. (reference
-http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17834).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17834).
 
 2011-01-10  6.6.7-1 Cristy  <quetzlzacatenango@image...>
   * Accept escaped % in output filename (reference
