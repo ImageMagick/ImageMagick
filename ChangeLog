@@ -1,3 +1,9 @@
+2011-01-15  6.6.7-1 Cristy  <quetzlzacatenango@image...>
+  * Do not reset image next / previous when detach argument is false for
+    CloneImage().
+  * Inline cropping no longer fails for inline raw images (e.g.
+    -size 640x480 -depth 8 'gray:logo[100x100+200+200]').
+
 2011-01-14  6.6.7-1 Glenn Randers-Pehrson <glennrp@image...>
   * Don't let the PNG encoder try to sort the colormap when there are more
     than 256 colors in the image. (reference
