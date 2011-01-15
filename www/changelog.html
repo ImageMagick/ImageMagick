@@ -50,7 +50,7 @@
   style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
 <a href="http://www.networkredux.com">
   <img src="../images/networkredux.png" alt="[sponsor]"
-  style="margin: 45px auto; border: 0px; float: left;" /></a>
+  style="margin-top: 42px; border: 0px; float: left;" /></a>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg" alt=""
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
@@ -126,7 +126,7 @@
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Search" href="http://www.imagemagick.org/script/search.php">Search</a>
+  <a title="Search" href="../www/search.html">Search</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
@@ -141,7 +141,7 @@
 
 <div class="sponsbox">
 <div class="sponsor">
-  <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.html">Web Hosting</a><!-- 201104010090 -->
+  <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -153,7 +153,7 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -175,7 +175,17 @@
 
 <div class="main">
 
-<dl><dt>2011-01-03  6.6.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<h1>ImageMagick Changelog</h1>
+<dl><dt>2011-01-15  6.6.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Do not reset image next / previous when detach argument is false for    CloneImage().</dd>
+  <dd> Inline cropping no longer fails for inline raw images (e.g.    -size 640x480 -depth 8 'gray:logo[100x100+200+200]').</dd>
+<dt>2011-01-14  6.6.7-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't let the PNG encoder try to sort the colormap when there are more    than 256 colors in the image. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17834).</dd>
+<dt>2011-01-10  6.6.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Accept escaped % in output filename (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17810).</dd>
+<dt>2011-01-08  6.6.7-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Quieted some inconsequential warnings in the PNG codec due to a    change in the type of the PNG iCCP profile from png_charp to png_bytep    in libpng-1.5.0.</dd>
+<dt>2011-01-03  6.6.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Handle negative heights for ICO images.</dd>
 <dt>2011-01-02  6.6.7-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Recent changes sometimes caused the PNG encoder to select colortype=2    (Truecolor) instead of 0 (Grayscale) for grayscale images.  This made    the filesize larger than necessary and caused some of the PerlMagick    tests to fail.</dd>
