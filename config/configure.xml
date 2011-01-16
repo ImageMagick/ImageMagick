@@ -8,8 +8,8 @@
 <configuremap>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="LIB_VERSION" value="0x667"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,6,7,1"/>
-  <configure name="RELEASE_DATE" value="2011-01-07"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,6,7,2"/>
+  <configure name="RELEASE_DATE" value="2011-01-15"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
@@ -20,13 +20,13 @@
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib "/>
-  <configure name="LIBS" value="-lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
+  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
   <configure name="FEATURES" value="OpenMP "/>
-  <configure name="DELEGATES" value="bzlib fontconfig freetype gvc jpeg jng jp2 lcms lzma png tiff x11 xml zlib"/>
+  <configure name="DELEGATES" value="bzlib fontconfig freetype gvc jpeg jng jp2 lcms2 lzma png tiff x11 xml zlib"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2011 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
   <configure name="QuantumDepth" value="16"/>
