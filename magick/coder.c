@@ -203,6 +203,7 @@ static const CoderMapInfo
     { "UBRL", "BRAILLE" },
     { "VDA", "TGA" },
     { "VST", "TGA" },
+    { "WIZARD", "MAGICK" },
     { "WMV", "MPEG" },
     { "WMFWIN32", "EMF" },
     { "WMZ", "WMF" },
