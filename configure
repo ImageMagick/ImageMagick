@@ -23122,7 +23122,7 @@ fi
 LIBS="$MATH_LIBS $LIBS"
 
 
-for ac_func in atoll atexit cimag clock ctime_r directio _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r j0 j1 lltostr localtime_r lstat memmove memset mkstemp munmap nanosleep _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread pwrite qsort_r raise rand_r readlink readdir_r realpath select seekdir setlocale sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times ulltostr usleep utime vsprintf vsnprintf waitpid _wfopen _wstat
+for ac_func in atoll atexit cabs carg cimag creal clock ctime_r directio _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r j0 j1 lltostr localtime_r lstat memmove memset mkstemp munmap nanosleep _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread pwrite qsort_r raise rand_r readlink readdir_r realpath select seekdir setlocale sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times ulltostr usleep utime vsprintf vsnprintf waitpid _wfopen _wstat
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
