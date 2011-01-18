@@ -168,6 +168,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 MagickExport void RegisterStaticModules(void)
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
+  (void) RegisterAAIImage();
   (void) RegisterARTImage();
   (void) RegisterAVSImage();
   (void) RegisterBMPImage();
@@ -336,6 +337,7 @@ MagickExport void RegisterStaticModules(void)
 MagickExport void UnregisterStaticModules(void)
 {
 #if !defined(MAGICKCORE_BUILD_MODULES)
+  UnregisterAAIImage();
   UnregisterARTImage();
   UnregisterAVSImage();
   UnregisterBMPImage();
