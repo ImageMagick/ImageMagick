@@ -167,6 +167,16 @@
 #define MAGICKCORE_HAVE_BOOL /**/
 #endif
 
+/* Define to 1 if you have the `cabs' function. */
+#ifndef MAGICKCORE_HAVE_CABS
+#define MAGICKCORE_HAVE_CABS 1
+#endif
+
+/* Define to 1 if you have the `carg' function. */
+#ifndef MAGICKCORE_HAVE_CARG
+#define MAGICKCORE_HAVE_CARG 1
+#endif
+
 /* Define to 1 if you have the `cimag' function. */
 #ifndef MAGICKCORE_HAVE_CIMAG
 #define MAGICKCORE_HAVE_CIMAG 1
@@ -198,6 +208,11 @@
 /* Define to 1 if you have the <complex.h> header file. */
 #ifndef MAGICKCORE_HAVE_COMPLEX_H
 #define MAGICKCORE_HAVE_COMPLEX_H 1
+#endif
+
+/* Define to 1 if you have the `creal' function. */
+#ifndef MAGICKCORE_HAVE_CREAL
+#define MAGICKCORE_HAVE_CREAL 1
 #endif
 
 /* Define to 1 if you have the `ctime_r' function. */

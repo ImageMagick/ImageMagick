@@ -57,13 +57,20 @@
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
 #include <complex.h>
-#else
-#define cabs(z)  (sqrt(z[0]*z[0]+z[1]*z[1]))
-#define carg(z)  (atan2(z[1],z[0]))
-#define creal(z)  (z[0])
-#define cimag(z)  (z[1])
 #endif
 #include <fftw3.h>
+#if !defined(MAGICKCORE_HAVE_CABS)
+#define cabs(z)  (sqrt(z[0]*z[0]+z[1]*z[1]))
+#endif
+#if !defined(MAGICKCORE_HAVE_CARG)
+#define carg(z)  (atan2(cimag(z[1]),creal(z[0])))
+#endif
+#if !defined(MAGICKCORE_HAVE_CIMAG)
+#define cimag(z)  (z[1])
+#endif
+#if !defined(MAGICKCORE_HAVE_CREAL)
+#define creal(z)  (z[0])
+#endif
 #endif
 
 /*

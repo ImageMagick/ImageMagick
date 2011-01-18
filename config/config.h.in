@@ -112,6 +112,12 @@
 /* define if bool is a built-in type */
 #undef HAVE_BOOL
 
+/* Define to 1 if you have the `cabs' function. */
+#undef HAVE_CABS
+
+/* Define to 1 if you have the `carg' function. */
+#undef HAVE_CARG
+
 /* Define to 1 if you have the `cimag' function. */
 #undef HAVE_CIMAG
 
@@ -132,6 +138,9 @@
 
 /* Define to 1 if you have the <complex.h> header file. */
 #undef HAVE_COMPLEX_H
+
+/* Define to 1 if you have the `creal' function. */
+#undef HAVE_CREAL
 
 /* Define to 1 if you have the `ctime_r' function. */
 #undef HAVE_CTIME_R
