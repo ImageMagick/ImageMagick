@@ -21,6 +21,7 @@ $endif
 $
 $
 $write sys$output "Making Coders..."
+$call Make aai.c
 $call Make art.c
 $call Make avs.c
 $call Make bgr.c
@@ -136,10 +137,10 @@ $call Make magick.c
 $call Make scr.c
 $deass magick
 $deass wand
-$library/create libCoders.olb art,avs,bgr,bmp,braille,clip,clipboard,cip,cmyk, -
-  cut,dcm,dds,debug,dib,dng,dps,dpx,emf,ept,exr,fax,fits,fpx,gif,gradient, -
-  gray,hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2,label,cals, -
-  caption,palm,mac,magick,map,mat,matte, -
+$library/create libCoders.olb aai,art,avs,bgr,bmp,braille,clip,clipboard,cip, -
+  cmyk,cut,dcm,dds,debug,dib,dng,dps,dpx,emf,ept,exr,fax,fits,fpx,gif, -
+  gradient,gray,hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2, -
+  label,cals,caption,palm,mac,magick,map,mat,matte, -
   meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg,null,otb,pattern,pcd,pcl,pcx,pdb, -
   pdf,pes,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,raw,rgb,rla,rle, -
   sct,sfw,sgi,stegano,sun,svg,tga,thumbnail,tiff,tile,tim,ttf,txt,uil,url, -

@@ -27,6 +27,7 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *);
 
 extern ModuleExport size_t
+  RegisterAAIImage(void),
   RegisterARTImage(void),
   RegisterAVIImage(void),
   RegisterAVSImage(void),
@@ -176,6 +177,7 @@ extern ModuleExport size_t
   RegisterYUVImage(void);
 
 extern ModuleExport void
+  UnregisterAAIImage(void),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),
   UnregisterAVSImage(void),

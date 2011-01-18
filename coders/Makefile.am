@@ -78,6 +78,7 @@ MAGICK_X11_SRCS = coders/x.c coders/xwd.c
 endif
 
 MAGICK_CODER_SRCS = \
+	coders/aai.c \
 	coders/art.c \
 	coders/avs.c \
 	coders/bgr.c \
@@ -192,6 +193,7 @@ MAGICK_CODER_SRCS = \
 
 if WITH_MODULES
 coders_LTLIBRARIES = \
+	coders/aai.la \
 	coders/art.la \
 	coders/avs.la \
 	coders/bgr.la \
@@ -306,6 +308,12 @@ coders_LTLIBRARIES = \
 else
 coders_LTLIBRARIES =
 endif # WITH_MODULES
+
+# AAI coder module
+coders_aai_la_SOURCES      = coders/aai.c
+coders_aai_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_aai_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_aai_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # ART coder module
 coders_art_la_SOURCES      = coders/art.c
