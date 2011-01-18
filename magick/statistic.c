@@ -1549,7 +1549,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
 %  standard deviation, kurtosis and skewness.  You can access the red channel
 %  mean, for example, like this:
 %
-%      channel_statistics=GetImageChannelStatistics(image,excepton);
+%      channel_statistics=GetImageChannelStatistics(image,exception);
 %      red_mean=channel_statistics[RedChannel].mean;
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
