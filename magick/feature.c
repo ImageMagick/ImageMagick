@@ -108,7 +108,7 @@
 %  measures of correlation 2, and maximum correlation coefficient.  You can
 %  access the red channel contrast, for example, like this:
 %
-%      channel_features=GetImageChannelFeatures(image,1,excepton);
+%      channel_features=GetImageChannelFeatures(image,1,exception);
 %      contrast=channel_features[RedChannel].contrast[0];
 %
 %  Use MagickRelinquishMemory() to free the features buffer.
