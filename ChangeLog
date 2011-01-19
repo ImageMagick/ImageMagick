@@ -1,3 +1,10 @@
+2011-01-14  6.6.7-2 Glenn Randers-Pehrson <glennrp@image...>
+  * Changed the PNG encoder's "transparent_color" from a UShortPixelPacket
+    to LongPixelPacket and made the default (65537,65537,65537), which
+    can never occur in the PNG image data.  Previously the default was
+   (0,0,0) and black pixels would be rendered as as transparent when
+   no tRNS chunk was present in the input.
+
 2011-01-15  6.6.7-1 Cristy  <quetzlzacatenango@image...>
   * Do not reset image next / previous when detach argument is false for
     CloneImage().
