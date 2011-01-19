@@ -175,8 +175,8 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->blue=ScaleCharToQuantum(*p++);
         q->green=ScaleCharToQuantum(*p++);
         q->red=ScaleCharToQuantum(*p++);
-        if (*p == 0)
-          *p=1;
+        if (*p == 254)
+          *p=255;
         q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p));
         if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;
