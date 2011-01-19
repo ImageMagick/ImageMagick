@@ -734,20 +734,9 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
     if (IsMonochromeImage(image,&image->exception) != MagickFalse)
       {
         /*
-          Monochrome image.
+          Monochrome image: use default printer monochrome setup.
         */
         bits_per_pixel=1;
-        (void) WriteBlobString(image,"\033*v6W"); /* set color mode... */
-        (void) WriteBlobByte(image,0); /* RGB */
-        (void) WriteBlobByte(image,1); /* indexed by pixel */
-        (void) WriteBlobByte(image,bits_per_pixel); /* bits per index */
-        (void) WriteBlobByte(image,8); /* bits per red component */
-        (void) WriteBlobByte(image,8); /* bits per green component */
-        (void) WriteBlobByte(image,8); /* bits per blue component */
-        (void) FormatMagickString(buffer,MaxTextExtent,"\033*v0a0b0c0I");
-        (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"\033*v1a1b1c1I");
-        (void) WriteBlobString(image,buffer);
       }
     else
       if (image->storage_class == DirectClass)
@@ -881,7 +870,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            if (PixelIntensity(p) >= ((MagickRealType) QuantumRange/2.0))
+            if (PixelIntensity(p) < ((MagickRealType) QuantumRange/2.0))
               byte|=0x01;
             bit++;
             if (bit == 8)
