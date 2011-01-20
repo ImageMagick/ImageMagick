@@ -3,12 +3,13 @@
     to LongPixelPacket and made the default (65537,65537,65537), which
     can never occur in the PNG image data.  Previously the default was
     (0,0,0) and black pixels would be rendered as as transparent when
-    no tRNS chunk was present in the input.
+    no tRNS chunk was present in the input, which has caused problems
+    with some test cases since version 6.6.6-10.
   * Improved the PNG_BUILD_PALETTE section to count opaque, transparent,
-    and semitransparent pixels separately.  Previously it wasn't possible
-    to determine if there is a single fully-transparent color, to decide
-    whether to write an RGBA or Gray-Alpha image or an RGB or Gray image
-    with a tRNS chunk.
+    and semitransparent pixels separately.  Previously it wasn't alwaysi
+    possible to determine if there is a single fully-transparent color,
+    to decide whether to write an RGBA or Gray-Alpha image or an RGB or
+    Gray image with a tRNS chunk.
 
 2011-01-15  6.6.7-1 Cristy  <quetzlzacatenango@image...>
   * Do not reset image next / previous when detach argument is false for
