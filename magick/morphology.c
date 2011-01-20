@@ -3886,10 +3886,10 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %  is then passed to UnityAddKernelInfo() to add a scled unity kernel
 %  into the scaled/normalized kernel.
 %
-%  The format of the ScaleKernelInfo method is:
+%  The format of the ScaleGeometryKernelInfo method is:
 %
-%      void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,
-%               const MagickStatusType normalize_flags )
+%      void ScaleGeometryKernelInfo(KernelInfo *kernel,
+%        const double scaling_factor,const MagickStatusType normalize_flags)
 %
 %  A description of each parameter follows:
 %
