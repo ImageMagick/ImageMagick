@@ -28,15 +28,15 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
   Set the MAGICK_HOME environment variable to the path where you extracted the
   ImageMagick files. For example
 
-     export MAGICK_HOME="$HOME/ImageMagick-6.6.6"
+     export MAGICK_HOME="$HOME/ImageMagick-6.6.7"
 
   On Linux and Solaris machines set the LD_LIBRARY_PATH environment variable:
 
-     export LD_LIBRARY_PATH="$HOME/ImageMagick-6.6.6/lib"
+     export LD_LIBRARY_PATH="$HOME/ImageMagick-6.6.7/lib"
 
   On Mac OS X (Darwin) machines set the DYLD_LIBRARY_PATH environment variable:
 
-     export DYLD_LIBRARY_PATH="$HOME/ImageMagick-6.6.6/lib"
+     export DYLD_LIBRARY_PATH="$HOME/ImageMagick-6.6.7/lib"
 
   Now, test ImageMagick to see if it is working
 
@@ -45,7 +45,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
 
   To install PerlMagick type
 
-      cd ImageMagick-6.6.6/PerlMagick
+      cd ImageMagick-6.6.7/PerlMagick
       perl Makefile.PL
       make
       make install
@@ -68,10 +68,10 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       loads them if found:
 
           $MAGICK_CONFIGURE_PATH
-          $MAGICK_HOME/lib/ImageMagick-6.6.6/config
-          $MAGICK_HOME/share/ImageMagick-6.6.6/config
+          $MAGICK_HOME/lib/ImageMagick-6.6.7/config
+          $MAGICK_HOME/share/ImageMagick-6.6.7/config
           $HOME/.magick/
-          <client path>/lib/ImageMagick-6.6.6/
+          <client path>/lib/ImageMagick-6.6.7/
           <current directory>/
 
     Font Files
@@ -81,10 +81,10 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       order, and loads them if found:
 
           $MAGICK_CONFIGURE_PATH
-          $MAGICK_HOME/lib/ImageMagick-6.6.6/config
-          $MAGICK_HOME/share/ImageMagick-6.6.6/config
+          $MAGICK_HOME/lib/ImageMagick-6.6.7/config
+          $MAGICK_HOME/share/ImageMagick-6.6.7/config
           $HOME/.magick/
-          <client path>/lib/ImageMagick-6.6.6/
+          <client path>/lib/ImageMagick-6.6.7/
           <current directory>/
           $MAGICK_FONT_PATH
 
@@ -95,23 +95,23 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       and it uses the first match found:
 
           <current directory>/
-          $MAGICK_HOME/lib/ImageMagick-6.6.6/modules-Q16/coders/
+          $MAGICK_HOME/lib/ImageMagick-6.6.7/modules-Q16/coders/
           $HOME/.magick/
-          <client path>/../lib/ImageMagick-6.6.6/modules-Q16/coders/
-          $MAGICK_HOME/lib/ImageMagick-6.6.6/modules-Q16/coders
-          $MAGICK_HOME/share/ImageMagick-6.6.6/modules-Q16/coders
+          <client path>/../lib/ImageMagick-6.6.7/modules-Q16/coders/
+          $MAGICK_HOME/lib/ImageMagick-6.6.7/modules-Q16/coders
+          $MAGICK_HOME/share/ImageMagick-6.6.7/modules-Q16/coders
           $HOME/.magick/
-          <client path>/lib/ImageMagick-6.6.6/modules-Q16/coders
+          <client path>/lib/ImageMagick-6.6.7/modules-Q16/coders
           <current directory>/
 
 Windows Vista, XP, and NT Install:
 
   Download one of
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.6-0-Q16-windows-dll.exe
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.6-0-Q16-windows-static.exe
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.6-0-Q8-windows-dll.exe
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.6-0-Q8-windows-static.exe
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.7-0-Q16-windows-dll.exe
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.7-0-Q16-windows-static.exe
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.7-0-Q8-windows-dll.exe
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-6.6.7-0-Q8-windows-static.exe
 
   and execute it (or "open" it from your browser) to start the installation
   program.
