@@ -1,3 +1,6 @@
+2011-01-22  6.6.7-2 Cristy  <quetzlzacatenango@image...>
+  * Accept quoted file paths in indirect file references (e.g. @myFiles.txt).
+
 2011-01-19  6.6.7-2 Glenn Randers-Pehrson <glennrp@image...>
   * Changed the PNG encoder's "transparent_color" from a UShortPixelPacket
     to LongPixelPacket and made the default (65537,65537,65537), which
