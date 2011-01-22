@@ -799,7 +799,6 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         exception=DestroyExceptionInfo(exception);
         if (files == (char *) NULL)
           continue;
-        StripString(files);
         filelist=StringToArgv(files,&length);
         if (filelist == (char **) NULL)
           continue;
