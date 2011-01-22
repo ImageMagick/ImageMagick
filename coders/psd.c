@@ -728,11 +728,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LayerInfo
     *layer_info;
 
-  ssize_t
-    j,
-    number_layers,
-    y;
-
   MagickBooleanType
     status;
 
@@ -755,18 +750,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
+  size_t
+    mask_size,
+    skip_first_alpha = 0;
+
   ssize_t
-    count;
+    count,
+    j,
+    number_layers,
+    y;
 
   unsigned char
     *data;
 
   unsigned short
     compression;
-
-  size_t
-    mask_size,
-    skip_first_alpha = 0;
 
   /*
     Open image file.
