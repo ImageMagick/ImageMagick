@@ -53,7 +53,7 @@
   style="margin-top: 42px; border: 0px; float: left;" /></a>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg" alt=""
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
   <img src="../images/sprite.jpg" alt=""
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
@@ -140,11 +140,11 @@
   <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
 <div class="sponsbox">
+<div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+</div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -153,7 +153,10 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -267,7 +270,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.7-1 2010-11-11 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.6.7-2 2010-21-21 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -1222,8 +1225,8 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 %
 %  The format of the analyzeImage method is:
 %
-%      unsigned long analyzeImage(Image *images,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%      size_t analyzeImage(Image *images,const int argc,char **argv,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1238,8 +1241,8 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-ModuleExport unsigned long analyzeImage(Image **images,const int argc,
-  const char **argv,ExceptionInfo *exception)
+ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv,
+  ExceptionInfo *exception)
 {
   char
     text[MaxTextExtent];
@@ -1404,14 +1407,14 @@ ModuleExport unsigned long analyzeImage(Image **images,const int argc,
     Class: PseudoClass  <br/>
     Geometry: 640x480  <br/>
     ...  <br/>
-    filter:brightness:kurtosis: 8.98864 <br/>
-    filter:brightness:mean: 238.096 <br/>
-    filter:brightness:skewness: -3.04519 <br/>
-    filter:brightness:standard-deviation: 46.3286 <br/>
-    filter:saturation:kurtosis: 5.9137 <br/>
-    filter:saturation:mean: 23.4635 <br/>
-    filter:saturation:skewness: 2.71874 <br/>
-    filter:saturation:standard-deviation: 64.7734</span></p>
+    filter:brightness:kurtosis: 8.17947 <br/>
+    filter:brightness:mean: 60632.1 <br/>
+    filter:brightness:skewness: -2.97118 <br/>
+    filter:brightness:standard-deviation: 13742.1 <br/>
+    filter:saturation:kurtosis: 4.33554 <br/>
+    filter:saturation:mean: 5951.55 <br/>
+    filter:saturation:skewness: 2.42848 <br/>
+    filter:saturation:standard-deviation: 15575.9</span></p>
 
 <p>We provide the <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/kits/MagickFilterKit-1.0.0.tar.gz">Magick Filter Kit</a> to help you get started writing your own custom image filter.</p>
 

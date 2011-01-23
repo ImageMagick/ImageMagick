@@ -53,7 +53,7 @@
   style="margin-top: 42px; border: 0px; float: left;" /></a>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg" alt=""
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
   <img src="../images/sprite.jpg" alt=""
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
@@ -140,11 +140,11 @@
   <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
 <div class="sponsbox">
+<div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+</div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -153,7 +153,10 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -176,7 +179,12 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-01-15  6.6.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-01-22  6.6.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Accept quoted file paths in indirect file references (e.g. @myFiles.txt).</dd>
+<dt>2011-01-19  6.6.7-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Changed the PNG encoder's "transparent_color" from a UShortPixelPacket    to LongPixelPacket and made the default (65537,65537,65537), which    can never occur in the PNG image data.  Previously the default was    (0,0,0) and black pixels would be rendered as as transparent when    no tRNS chunk was present in the input, which has caused problems    with some test cases since version 6.6.6-10.</dd>
+  <dd> Improved the PNG_BUILD_PALETTE section to count opaque, transparent,    and semitransparent pixels separately.  Previously it wasn't alwaysi    possible to determine if there is a single fully-transparent color,    to decide whether to write an RGBA or Gray-Alpha image or an RGB or    Gray image with a tRNS chunk.</dd>
+<dt>2011-01-15  6.6.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Do not reset image next / previous when detach argument is false for    CloneImage().</dd>
   <dd> Inline cropping no longer fails for inline raw images (e.g.    -size 640x480 -depth 8 'gray:logo[100x100+200+200]').</dd>
 <dt>2011-01-14  6.6.7-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -205,6 +213,7 @@
   <dd> Removed the forced interpolation setting in AcquireResampleFilterThreadSet    It prevented user defined interpolation settings for -clut, and possibly    other usage.</dd>
 <dt>2010-12-17  6.6.6-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Add LZMA compression support to ImageMagick.</dd>
+  <dd> Eliminate seg-fault in MvgPrintf().</dd>
 <dt>2010-12-17  6.6.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Eliminated a redundant quantization step in the PNG encoder.</dd>
   <dd> Untangled a confusing but apparently harmless improper loop nesting    in the PNG encoder.</dd>
