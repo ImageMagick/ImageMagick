@@ -53,7 +53,7 @@
   style="margin-top: 42px; border: 0px; float: left;" /></a>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg" alt=""
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
   <img src="../images/sprite.jpg" alt=""
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
@@ -140,11 +140,11 @@
   <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
 <div class="sponsbox">
+<div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+</div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
@@ -153,7 +153,10 @@
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -394,7 +397,7 @@ is read:
 <h3>Filename References</h3>
 <div class="doc-section">
 <p>There are two methods to use a filename to reference other image filenames.
-The first is with '<kbd>@</kbd>' which reads image filenames from the specified file.  Assume the file <kbd>myimages.txt</kbd> consists of a list of filenames, like so:
+The first is with '<kbd>@</kbd>' which reads image filenames separated by white space from the specified file.  Assume the file <kbd>myimages.txt</kbd> consists of a list of filenames, like so:
 </p>
 
 <pre class="text">
@@ -405,6 +408,10 @@ The first is with '<kbd>@</kbd>' which reads image filenames from the specified 
 
 <p>We then expect this command:</p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert @myimages.txt mymovie.gif</span></p><p>to read the images <kbd>frame001.jpg</kbd>, <kbd>frame002.jpg</kbd>, and <kbd>frame003.jpg</kbd> and convert them to a GIF image sequence.  </p>
+<p>If the image path includes one or more spaces, enclose the path in quotes:</p>
+<pre class="text">
+  'my title.jpg'
+</pre>
 
 
     <p>Some ImageMagick command-line options may exceed the capabilities of

@@ -871,8 +871,10 @@ MagickExport int EOFBlob(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FileToBlob() returns the contents of a file as a blob.  It returns the
-%  file as a blob and its length.  If an error occurs, NULL is returned.
+%  FileToBlob() returns the contents of a file as a buffer terminated with
+%  the '\0' character.  The length of the buffer (not including the extra
+%  terminating '\0' character) is returned via the 'length' parameter.  Free
+%  the buffer with RelinquishMagickMemory().
 %
 %  The format of the FileToBlob method is:
 %

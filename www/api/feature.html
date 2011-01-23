@@ -53,7 +53,7 @@
   style="margin-top: 42px; border: 0px; float: left;" /></a>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../../images/logo.jpg" alt=""
-  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../../index.html">
   <img src="../../images/sprite.jpg" alt=""
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
@@ -140,17 +140,20 @@
   <a title="Sponsors" href="../../www/sponsors.html">Sponsors:</a>
 
 <div class="sponsbox">
+<div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+</div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
    <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
@@ -186,7 +189,7 @@ _8c.html" id="GetImageChannelFeatures">GetImageChannelFeatures</a></h2>
 <p>GetImageChannelFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
 
 <pre class="text">
-  channel_features=GetImageChannelFeatures(image,1,excepton);
+  channel_features=GetImageChannelFeatures(image,1,exception);
   contrast=channel_features[RedChannel].contrast[0];
 </pre>
 

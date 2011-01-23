@@ -84,8 +84,8 @@
 %
 %      MagickBooleanType FloodfillPaintImage(Image *image,
 %        const ChannelType channel,const DrawInfo *draw_info,
-%        const MagickPixelPacket target,const ssize_t x_offset,const ssize_t y_offset,
-%        const MagickBooleanType invert)
+%        const MagickPixelPacket target,const ssize_t x_offset,
+%        const ssize_t y_offset,const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
