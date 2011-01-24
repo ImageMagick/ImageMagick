@@ -125,26 +125,25 @@ typedef struct _FourierInfo
 
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 
-static MagickBooleanType RollFourier(const size_t width,
-  const size_t height,const ssize_t x_offset,const ssize_t y_offset,
-  double *fourier)
+static MagickBooleanType RollFourier(const size_t width,const size_t height,
+  const ssize_t x_offset,const ssize_t y_offset,double *fourier)
 {
   double
     *roll;
+
+  register ssize_t
+    i,
+    x;
 
   ssize_t
     u,
     v,
     y;
 
-  register ssize_t
-    i,
-    x;
-
   /*
     Move zero frequency (DC, average color) from (0,0) to (width/2,height/2).
   */
-  roll=(double *) AcquireQuantumMemory((size_t) width,height*sizeof(*roll));
+  roll=(double *) AcquireQuantumMemory((size_t) height,width*sizeof(*roll));
   if (roll == (double *) NULL)
     return(MagickFalse);
   i=0L;
@@ -163,9 +162,9 @@ static MagickBooleanType RollFourier(const size_t width,
         u=((x+x_offset) > ((ssize_t) width-1L)) ? x+x_offset-(ssize_t) width :
           x+x_offset;
       roll[v*width+u]=fourier[i++];
-   }
+    }
   }
-  (void) CopyMagickMemory(fourier,roll,width*height*sizeof(*roll));
+  (void) CopyMagickMemory(fourier,roll,height*width*sizeof(*roll));
   roll=(double *) RelinquishMagickMemory(roll);
   return(MagickTrue);
 }
@@ -173,15 +172,15 @@ static MagickBooleanType RollFourier(const size_t width,
 static MagickBooleanType ForwardQuadrantSwap(const size_t width,
   const size_t height,double *source,double *destination)
 {
-  ssize_t
-    center,
-    y;
-
   MagickBooleanType
     status;
 
   register ssize_t
     x;
+
+  ssize_t
+    center,
+    y;
 
   /*
     Swap quadrants.
@@ -201,8 +200,8 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
   return(MagickTrue);
 }
 
-static void CorrectPhaseLHS(const size_t width,
-  const size_t height,double *fourier)
+static void CorrectPhaseLHS(const size_t width,const size_t height,
+  double *fourier)
 {
   ssize_t
     y;
@@ -230,10 +229,6 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     *magnitude_image,
     *phase_image;
 
-  ssize_t
-    i,
-    y;
-
   MagickBooleanType
     status;
 
@@ -245,6 +240,10 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
 
   register PixelPacket
     *q;
+
+  ssize_t
+    i,
+    y;
 
   magnitude_image=GetFirstImageInList(image);
   phase_image=GetNextImageInList(image);
@@ -261,11 +260,11 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     fourier_info->height,fourier_info->width*sizeof(*magnitude_source));
   if (magnitude_source == (double *) NULL)
     return(MagickFalse);
-  (void) ResetMagickMemory(magnitude_source,0,fourier_info->width*
-    fourier_info->height*sizeof(*magnitude_source));
+  (void) ResetMagickMemory(magnitude_source,0,fourier_info->height*
+    fourier_info->width*sizeof(*magnitude_source));
   phase_source=(double *) AcquireQuantumMemory((size_t) fourier_info->height,
     fourier_info->width*sizeof(*phase_source));
-  if (magnitude_source == (double *) NULL)
+  if (phase_source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -331,9 +330,8 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
-          q->green=q->red;
-          q->blue=q->red;
+          SetGrayPixelComponent(q,ClampToQuantum(QuantumRange*
+            magnitude_source[i]));
           break;
         }
       }
@@ -384,9 +382,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
-          q->green=q->red;
-          q->blue=q->red;
+          SetGrayPixelComponent(q,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
       }
@@ -420,9 +416,6 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   fftw_plan
     fftw_r2c_plan;
 
-  ssize_t
-    y;
-
   register const IndexPacket
     *indexes;
 
@@ -432,6 +425,9 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   register ssize_t
     i,
     x;
+
+  ssize_t
+    y;
 
   /*
     Generate the forward Fourier transform.
@@ -444,7 +440,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  ResetMagickMemory(source,0,fourier_info->width*fourier_info->height*
+  ResetMagickMemory(source,0,fourier_info->height*fourier_info->width*
     sizeof(*source));
   i=0L;
   image_view=AcquireCacheView(image);
@@ -487,7 +483,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          source[i]=QuantumScale*GetRedPixelComponent(p);
+          source[i]=QuantumScale*GetGraGrayyPixelComponent(p);
           break;
         }
       }
@@ -564,11 +560,11 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   fftw_complex
     *fourier;
 
-  MagickBooleanType
-    status;
-
   FourierInfo
     fourier_info;
+
+  MagickBooleanType
+    status;
 
   size_t
     extent;
@@ -798,12 +794,12 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 static MagickBooleanType InverseQuadrantSwap(const size_t width,
   const size_t height,const double *source,double *destination)
 {
+  register ssize_t
+    x;
+
   ssize_t
     center,
     y;
-
-  register ssize_t
-    x;
 
   /*
     Swap quadrants.
@@ -833,9 +829,6 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     *magnitude_source,
     *phase_source;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -848,6 +841,9 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   register ssize_t
     i,
     x;
+
+  ssize_t
+    y;
 
   /*
     Inverse fourier - read image and break down into a double array.
@@ -862,7 +858,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
       return(MagickFalse);
     }
   phase_source=(double *) AcquireQuantumMemory((size_t) fourier_info->height,
-    fourier_info->height*sizeof(*phase_source));
+    fourier_info->width*sizeof(*phase_source));
   if (phase_source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -912,7 +908,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          magnitude_source[i]=QuantumScale*GetRedPixelComponent(p);
+          magnitude_source[i]=QuantumScale*GetGrayPixelComponent(p);
           break;
         }
       }
@@ -961,7 +957,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          phase_source[i]=QuantumScale*GetRedPixelComponent(p);
+          phase_source[i]=QuantumScale*GetGrayPixelComponent(p);
           break;
         }
       }
@@ -996,8 +992,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   status=InverseQuadrantSwap(fourier_info->width,fourier_info->height,
     magnitude_source,magnitude);
   magnitude_source=(double *) RelinquishMagickMemory(magnitude_source);
-  phase=(double *) AcquireQuantumMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*phase));
+  phase=(double *) AcquireQuantumMemory((size_t) fourier_info->height,
+    fourier_info->width*sizeof(*phase));
   if (phase == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1056,21 +1052,21 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   fftw_plan
     fftw_c2r_plan;
 
-  ssize_t
-    y;
-
   register IndexPacket
     *indexes;
+
+  register PixelPacket
+    *q;
 
   register ssize_t
     i,
     x;
 
-  register PixelPacket
-    *q;
+  ssize_t
+    y;
 
-  source=(double *) AcquireQuantumMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(double));
+  source=(double *) AcquireQuantumMemory((size_t) fourier_info->height,
+    fourier_info->width*sizeof(*source));
   if (source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1129,9 +1125,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          q->red=ClampToQuantum(QuantumRange*source[i]);
-          q->green=q->red;
-          q->blue=q->red;
+          SetGrayPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
       }
@@ -1181,7 +1175,7 @@ static MagickBooleanType InverseFourierTransformChannel(
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(double));
+    fourier_info.center*sizeof(*magnitude));
   if (magnitude == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1190,7 +1184,7 @@ static MagickBooleanType InverseFourierTransformChannel(
       return(MagickFalse);
     }
   phase=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
-    fourier_info.center*sizeof(double));
+    fourier_info.center*sizeof(*phase));
   if (phase == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
