@@ -64,6 +64,7 @@
 #include "magick/quantum-private.h"
 #include "magick/property.h"
 #include "magick/resource_.h"
+#include "magick/semaphore.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/token-private.h"
@@ -101,6 +102,12 @@
 #endif
 
 /*
+  Annotate semaphores.
+*/
+static SemaphoreInfo
+  *annotate_semaphore = (SemaphoreInfo *) NULL;
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -109,6 +116,55 @@ static MagickBooleanType
   RenderFreetype(Image *,const DrawInfo *,const char *,const PointInfo *,
     TypeMetric *),
   RenderX11(Image *,const DrawInfo *,const PointInfo *,TypeMetric *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A n n o t a t e C o m p o n e n t G e n e s i s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AnnotateComponentGenesis() instantiates the annotate component.
+%
+%  The format of the AnnotateComponentGenesis method is:
+%
+%      MagickBooleanType AnnotateComponentGenesis(void)
+%
+*/
+MagickExport MagickBooleanType AnnotateComponentGenesis(void)
+{
+  AcquireSemaphoreInfo(&annotate_semaphore);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A n n o t a t e C o m p o n e n t T e r m i n u s                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AnnotateComponentTerminus() destroys the annotate component.
+%
+%  The format of the AnnotateComponentTerminus method is:
+%
+%      AnnotateComponentTerminus(void)
+%
+*/
+MagickExport void AnnotateComponentTerminus(void)
+{
+  if (annotate_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&annotate_semaphore);
+  DestroySemaphoreInfo(&annotate_semaphore);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1820,6 +1876,9 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
     height,
     width;
 
+  if (annotate_semaphore == (SemaphoreInfo *) NULL)
+    AcquireSemaphoreInfo(&annotate_semaphore);
+  LockSemaphoreInfo(annotate_semaphore);
   if (display == (Display *) NULL)
     {
       const char
@@ -1900,6 +1959,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
         }
       cache_info=(*draw_info);
     }
+  UnlockSemaphoreInfo(annotate_semaphore);
   /*
     Initialize annotate info.
   */

@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/annotate.h"
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/coder.h"
@@ -1311,6 +1312,7 @@ MagickExport void MagickCoreGenesis(const char *path,
   (void) TypeComponentGenesis();
   (void) MimeComponentGenesis();
   (void) ConstituteComponentGenesis();
+  (void) AnnotateComponentGenesis();
 #if defined(MAGICKCORE_X11_DELEGATE)
   (void) XComponentGenesis();
 #endif
@@ -1347,6 +1349,7 @@ MagickExport void MagickCoreTerminus(void)
 #if defined(MAGICKCORE_X11_DELEGATE)
   XComponentTerminus();
 #endif
+  AnnotateComponentTerminus();
   ConstituteComponentTerminus();
   MimeComponentTerminus();
   TypeComponentTerminus();

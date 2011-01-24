@@ -25,6 +25,7 @@ extern "C" {
 #include "magick/draw.h"
 
 extern MagickExport MagickBooleanType
+  AnnotateComponentGenesis(void),
   AnnotateImage(Image *,const DrawInfo *),
   GetMultilineTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *);
@@ -32,6 +33,9 @@ extern MagickExport MagickBooleanType
 extern MagickExport ssize_t
   FormatMagickCaption(Image *,DrawInfo *,const MagickBooleanType,TypeMetric *,
     char **);
+
+extern MagickExport void
+  AnnotateComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
