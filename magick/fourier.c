@@ -483,7 +483,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         }
         case GrayChannels:
         {
-          source[i]=QuantumScale*GetGraGrayyPixelComponent(p);
+          source[i]=QuantumScale*GetGrayPixelComponent(p);
           break;
         }
       }
