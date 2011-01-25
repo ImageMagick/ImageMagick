@@ -1692,6 +1692,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "  image->matte=%d",(int) image->matte);
 
+  /* Set to an out-of-range color unless tRNS chunk is present */
+  transparent_color.red=65537;
+  transparent_color.green=65537;
+  transparent_color.blue=65537;
+  transparent_color.opacity=65537;
+
   /*
     Allocate the PNG structures
   */
@@ -2164,12 +2170,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
     }
 #endif
-
-  /* Set to an out-of-range color unless tRNS chunk is present */
-  transparent_color.red=65537;
-  transparent_color.green=65537;
-  transparent_color.blue=65537;
-  transparent_color.opacity=65537;
 
   if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
     {
@@ -8541,10 +8541,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "  Added an opaque matte channel");
     }
 
-  if (image->matte == MagickTrue)
+  if (number_transparent != 0 || number_semitransparent != 0)
     {
       if (ping_color_type < 4)
-        if (ping_color_type != 3 || ping_num_trans > 0)
         {
            ping_have_tRNS=MagickTrue;
            if (logging != MagickFalse)
