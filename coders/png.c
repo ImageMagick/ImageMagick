@@ -7042,9 +7042,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "    Enter BUILD_PALETTE:");
 
-     image->colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-     image_colors=(int) image->colors;
-
      if (logging != MagickFalse)
        {
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7063,9 +7060,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "        i    (red,green,blue,opacity)");
 
-           for (i=0; i < (ssize_t) image->colors; i++)
+           for (i=0; i < 256; i++)
            {
-             if (i < 300 || i >= image->colors - 10)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "        %d    (%d,%d,%d,%d)",
+                      (int) i,
+                      (int) image->colormap[i].red,
+                      (int) image->colormap[i].green,
+                      (int) image->colormap[i].blue,
+                      (int) image->colormap[i].opacity);
+           }
+
+           for (i=image->colors - 10; i < (ssize_t) image->colors; i++)
+           {
+             if (i > 255)
                {
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                      "        %d    (%d,%d,%d,%d)",
@@ -7108,72 +7116,82 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 if (q->opacity == OpaqueOpacity)
                   {
-                    if (number_opaque == 0)
+                    if (number_opaque < 259)
                       {
-                        opaque[0]=*q;
-                        opaque[0].opacity=OpaqueOpacity;
-                        number_opaque=1;
-                      }
+                        if (number_opaque == 0)
+                          {
+                            opaque[0]=*q;
+                            opaque[0].opacity=OpaqueOpacity;
+                            number_opaque=1;
+                          }
 
-                    for (i=0; i< (ssize_t) number_opaque; i++)
-                      {
-                        if (IsColorEqual(opaque+i, (PixelPacket *) q))
-                          break;
-                      }
+                        for (i=0; i< (ssize_t) number_opaque; i++)
+                          {
+                            if (IsColorEqual(opaque+i, (PixelPacket *) q))
+                              break;
+                          }
 
-                    if (i ==  (ssize_t) number_opaque && number_opaque < 259)
-                      {
-                        number_opaque++;
-                        opaque[i] = *q;
-                        opaque[i].opacity = OpaqueOpacity;
+                        if (i ==  (ssize_t) number_opaque &&
+                            number_opaque < 259)
+                          {
+                            number_opaque++;
+                            opaque[i] = *q;
+                            opaque[i].opacity = OpaqueOpacity;
+                          }
                       }
                   }
                 else if (q->opacity == TransparentOpacity)
                   {
-                    if (number_transparent == 0)
+                    if (number_transparent < 259)
                       {
-                        transparent[0]=*q;
-                        ping_trans_color.red=(unsigned short)(q->red);
-                        ping_trans_color.green=(unsigned short) (q->green);
-                        ping_trans_color.blue=(unsigned short) (q->blue);
-                        ping_trans_color.gray=(unsigned short) (q->blue);
-                        number_transparent = 1;
-                      }
+                        if (number_transparent == 0)
+                          {
+                            transparent[0]=*q;
+                            ping_trans_color.red=(unsigned short)(q->red);
+                            ping_trans_color.green=(unsigned short) (q->green);
+                            ping_trans_color.blue=(unsigned short) (q->blue);
+                            ping_trans_color.gray=(unsigned short) (q->blue);
+                            number_transparent = 1;
+                          }
 
-                    for (i=0; i< (ssize_t) number_transparent; i++)
-                      {
-                        if (IsColorEqual(transparent+i, (PixelPacket *) q))
-                          break;
-                      }
+                        for (i=0; i< (ssize_t) number_transparent; i++)
+                          {
+                            if (IsColorEqual(transparent+i, (PixelPacket *) q))
+                              break;
+                          }
 
-                    if (i ==  (ssize_t) number_transparent &&
-                        number_transparent < 259)
-                      {
-                        number_transparent++;
-                        transparent[i] = *q;
+                        if (i ==  (ssize_t) number_transparent &&
+                            number_transparent < 259)
+                          {
+                            number_transparent++;
+                            transparent[i] = *q;
+                          }
                       }
                   }
                 else
                   {
-                    if (number_semitransparent == 0)
+                    if (number_semitransparent < 259)
                       {
-                        semitransparent[0]=*q;
-                        number_semitransparent = 1;
-                      }
+                        if (number_semitransparent == 0)
+                          {
+                            semitransparent[0]=*q;
+                            number_semitransparent = 1;
+                          }
 
-                    for (i=0; i< (ssize_t) number_semitransparent; i++)
-                      {
-                        if (IsColorEqual(semitransparent+i,
-                           (PixelPacket *) q) &&
-                           q->opacity == semitransparent[i].opacity)
-                          break;
-                      }
+                        for (i=0; i< (ssize_t) number_semitransparent; i++)
+                          {
+                            if (IsColorEqual(semitransparent+i,
+                               (PixelPacket *) q) &&
+                               q->opacity == semitransparent[i].opacity)
+                              break;
+                          }
 
-                    if (i ==  (ssize_t) number_semitransparent &&
-                        number_semitransparent < 259)
-                      {
-                        number_semitransparent++;
-                        semitransparent[i] = *q;
+                        if (i ==  (ssize_t) number_semitransparent &&
+                            number_semitransparent < 259)
+                          {
+                            number_semitransparent++;
+                            semitransparent[i] = *q;
+                          }
                       }
                   }
                 q++;
