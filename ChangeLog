@@ -11,6 +11,7 @@
 2011-01-24  6.6.7-3 Cristy  <quetzlzacatenango@image...>
   * Remove memory leak from ThrowFileException() macro (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17908).
+  * Multiple blue error count by 'count' in ClassifyImageColors()
 
 2011-01-22  6.6.7-2 Cristy  <quetzlzacatenango@image...>
   * Accept quoted file paths in indirect file references (e.g. @myFiles.txt).
