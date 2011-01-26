@@ -156,7 +156,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -179,7 +179,13 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-01-22  6.6.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-01-25  6.6.7-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Removed a call to GetNumberColors() from the PNG encoder that was    only there for debugging purposes and was consuming a huge amount    of CPU time. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=17799).</dd>
+  <dd> Sometimes black was still written as transparent, when the PNG    encoder receives an image with image-&gt;matte on but no transparent    pixels are present. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17913);</dd>
+<dt>2011-01-24  6.6.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Remove memory leak from ThrowFileException() macro (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17908).</dd>
+  <dd> Multiple blue error count by 'count' in ClassifyImageColors()</dd>
+<dt>2011-01-22  6.6.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Accept quoted file paths in indirect file references (e.g. @myFiles.txt).</dd>
 <dt>2011-01-19  6.6.7-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Changed the PNG encoder's "transparent_color" from a UShortPixelPacket    to LongPixelPacket and made the default (65537,65537,65537), which    can never occur in the PNG image data.  Previously the default was    (0,0,0) and black pixels would be rendered as as transparent when    no tRNS chunk was present in the input, which has caused problems    with some test cases since version 6.6.6-10.</dd>
