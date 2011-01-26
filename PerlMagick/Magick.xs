@@ -13251,7 +13251,8 @@ SetPixel(ref,...)
     }
     (void) SetImageStorageClass(image,DirectClass);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
-    if ((q == (PixelPacket *) NULL) || (av == (AV *) NULL))
+    if ((q == (PixelPacket *) NULL) || (av == (AV *) NULL) ||
+        (SvTYPE(av) != SVt_PVAV))
       PUSHs(&sv_undef);
     else
       {
