@@ -4,8 +4,8 @@
     of CPU time. (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=17799).
   * Sometimes black was still written as transparent, when the PNG
-    encoder receives an image with image->matte on but no transparent
-    pixels are present. (reference
+    encoder received an image with image->matte==true no transparent
+    pixels were present. (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17913);
 
 2011-01-24  6.6.7-3 Cristy  <quetzlzacatenango@image...>
@@ -24,8 +24,8 @@
     no tRNS chunk was present in the input, which has caused problems
     with some test cases since version 6.6.6-10.
   * Improved the PNG_BUILD_PALETTE section to count opaque, transparent,
-    and semitransparent pixels separately.  Previously it wasn't alwaysi
-    possible to determine if there is a single fully-transparent color,
+    and semitransparent pixels separately.  Previously it wasn't always
+    possible to determine if there was a single fully-transparent color,
     to decide whether to write an RGBA or Gray-Alpha image or an RGB or
     Gray image with a tRNS chunk.
 
