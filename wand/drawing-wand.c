@@ -335,8 +335,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
       {
         va_start(argp,format);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-        count=vsnprintf(wand->mvg+wand->mvg_length,
-          wand->mvg_alloc-wand->mvg_length-1,format,argp);
+        count=vsnprintf(wand->mvg+wand->mvg_length,offset,format,argp);
 #else
         count=vsprintf(wand->mvg+wand->mvg_length,format,argp);
 #endif
@@ -350,8 +349,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
         wand->mvg_width+=count;
       }
     wand->mvg[wand->mvg_length]='\0';
-    if ((wand->mvg_length > 1) &&
-        (wand->mvg[wand->mvg_length-1] == '\n'))
+    if ((wand->mvg_length > 1) && (wand->mvg[wand->mvg_length-1] == '\n'))
       wand->mvg_width=0;
     assert((wand->mvg_length+1) < wand->mvg_alloc);
     return(count);
@@ -376,13 +374,12 @@ static int MvgAutoWrapPrintf(DrawingWand *wand,const char *format,...)
   count=vsprintf(buffer,format,argp);
 #endif
   va_end(argp);
-  *(buffer+sizeof(buffer)-1)='\0';
+  buffer[sizeof(buffer)-1]='\0';
   if (count < 0)
     ThrowDrawException(DrawError,"UnableToPrint",format)
   else
     {
-      if (((wand->mvg_width + count) > 78) &&
-          (buffer[count-1] != '\n'))
+      if (((wand->mvg_width + count) > 78) && (buffer[count-1] != '\n'))
         (void) MvgPrintf(wand, "\n");
       (void) MvgPrintf(wand,"%s",buffer);
     }
