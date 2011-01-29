@@ -9465,7 +9465,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   /* Check for chunks to be excluded:
    *
-   * The default is to not exclude any chunks except for any
+   * The default is to not exclude any known chunks except for any
    * listed in the "unused_chunks" array, above.
    *
    * Chunks can be listed for exclusion via a "PNG:exclude-chunk"
@@ -9479,7 +9479,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    * A "PNG:include-chunk" define takes  priority over both the
    * mng_info and the "PNG:exclude-chunk" define.  Like the
    * "exclude-chunk" string, it can define "all" or "none" as
-   * well as a comma-separated list.
+   * well as a comma-separated list.  Chunks that are unknown to
+   * ImageMagick are always excluded, regardless of their "copy-safe"
+   * status according to the PNG specification, and even if they
+   * appear in the "include-chunk" list.
    *
    * Finally, all chunks listed in the "unused_chunks" array are
    * automatically excluded, regardless of the other instructions
