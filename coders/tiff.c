@@ -166,6 +166,7 @@ static const ExifInfo
     { 0, 0, (char *) NULL }
 };
 #endif
+#endif  /* MAGICKCORE_TIFF_DELEGATE */
 
 /*
   Global declarations.
@@ -178,7 +179,6 @@ static SemaphoreInfo
 
 static volatile MagickBooleanType
   instantiate_key = MagickFalse;
-#endif
 
 /*
   Forward declarations.
