@@ -1,3 +1,7 @@
+2011-01-29  6.6.7-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Renamed variables, macros, and functions defined/declared in coders/png.c
+    that were in the libpng namespace (beginning with "png_" or "PNG_").
+
 2011-01-25  6.6.7-3 Glenn Randers-Pehrson <glennrp@image...>
   * Removed a call to GetNumberColors() from the PNG encoder that was
     only there for debugging purposes and was consuming a huge amount
