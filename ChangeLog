@@ -1,3 +1,7 @@
+2011-01-29  6.6.7-4 Paul Heckbert  <ph@cs.cm...>
+  * Move coders/tiff.c conditional compile to define TIFF exception /
+    semaphore / key when TIFF delegate is disabled.
+
 2011-01-29  6.6.7-4 Glenn Randers-Pehrson <glennrp@image...>
   * Renamed variables, macros, and functions defined/declared in coders/png.c
     that were in the libpng namespace (beginning with "png_" or "PNG_").
