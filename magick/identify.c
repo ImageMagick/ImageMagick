@@ -625,19 +625,12 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             }
         }
       artifact=GetImageArtifact(image,"identify:unique-colors");
-      if ((artifact == (const char *) NULL) ||
-          (IsMagickTrue(artifact) == MagickFalse))
+      if ((artifact != (const char *) NULL) &&
+          (IsMagickTrue(artifact) != MagickFalse))
+        (void) fprintf(file,"  Colors: %.20g\n",(double)
+          GetNumberColors(image,(FILE *) NULL,&image->exception));
+      if (IsHistogramImage(image,&image->exception) != MagickFalse)
         {
-          if (IsHistogramImage(image,&image->exception) != MagickFalse)
-            {
-              (void) fprintf(file,"  Histogram:\n");
-              (void) GetNumberColors(image,file,&image->exception);
-            }
-        }
-      else
-        {
-          (void) fprintf(file,"  Colors: %.20g\n",(double)
-            GetNumberColors(image,(FILE *) NULL,&image->exception));
           (void) fprintf(file,"  Histogram:\n");
           (void) GetNumberColors(image,file,&image->exception);
         }
