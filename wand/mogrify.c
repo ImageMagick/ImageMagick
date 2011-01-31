@@ -3403,6 +3403,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               }
             (void) SetImageArtifact(*image,"identify:unique-colors","true");
             (void) SetImageArtifact(*image,"verbose","true");
+            image_info->verbose=MagickTrue;
             break;
           }
         if (LocaleCompare("unique-colors",option+1) == 0)
