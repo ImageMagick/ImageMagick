@@ -625,12 +625,19 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             }
         }
       artifact=GetImageArtifact(image,"identify:unique-colors");
-      if ((artifact != (const char *) NULL) &&
-          (IsMagickTrue(artifact) != MagickFalse))
-        (void) fprintf(file,"  Colors: %.20g\n",(double)
-          GetNumberColors(image,(FILE *) NULL,&image->exception));
-      if (IsHistogramImage(image,&image->exception) != MagickFalse)
+      if ((artifact == (const char *) NULL) ||
+          (IsMagickTrue(artifact) == MagickFalse))
         {
+          if (IsHistogramImage(image,&image->exception) != MagickFalse)
+            {
+              (void) fprintf(file,"  Histogram:\n");
+              (void) GetNumberColors(image,file,&image->exception);
+            }
+        }
+      else
+        {
+          (void) fprintf(file,"  Colors: %.20g\n",(double)
+            GetNumberColors(image,(FILE *) NULL,&image->exception));
           (void) fprintf(file,"  Histogram:\n");
           (void) GetNumberColors(image,file,&image->exception);
         }
@@ -1071,7 +1078,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     elapsed_time+0.5),MagickFalse,format);
   (void) fprintf(file,"  Pixels per second: %s\n",format);
   (void) fprintf(file,"  User time: %0.3fu\n",user_time);
-  (void) fprintf(file,"  Elapsed time: %lu:%02lu.%03lu\n",(unsigned long) 
+  (void) fprintf(file,"  Elapsed time: %lu:%02lu.%03lu\n",(unsigned long)
     (elapsed_time/60.0),(unsigned long) ceil(fmod(elapsed_time,60.0)),
     (unsigned long) (1000.0*(elapsed_time-floor(elapsed_time))));
   (void) fprintf(file,"  Version: %s\n",GetMagickVersion((size_t *)
