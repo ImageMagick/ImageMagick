@@ -965,11 +965,11 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteImage() writes an image or an image sequence to a file or filehandle.
-%  If writing to a file on disk, the name is defined by the filename member of
-%  the image structure.  Write() returns MagickFalse is these is a memory
-%  shortage or if the image cannot be written.  Check the exception member of
-%  image to determine the cause for any failure.
+%  WriteImage() writes an image or an image sequence to a file or file handle.
+%  If writing to a file is on disk, the name is defined by the filename member
+%  of the image structure.  WriteImage() returns MagickFalse is there is a
+%  memory shortage or if the image cannot be written.  Check the exception
+%  member of image to determine the cause for any failure.
 %
 %  The format of the WriteImage method is:
 %
@@ -1228,7 +1228,14 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteImages() writes an image sequence.
+%  WriteImages() writes an image sequence into one or more files.  While
+%  WriteImage() can write an image sequence, it is limited to writing
+%  the sequence into a single file using a format which supports multiple
+%  frames.   WriteImages(), however, does not have this limitation, instead it
+%  generates multiple output files if necessary (or when requested).  When
+%  ImageInfo's adjoin flag is set to MagickFalse, the file name is expected
+%  to include a printf-style formatting string for the frame number (e.g.
+%  "image%02d.png").
 %
 %  The format of the WriteImages method is:
 %

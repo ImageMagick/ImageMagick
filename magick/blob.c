@@ -1428,8 +1428,10 @@ MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImageToBlob() implements direct to memory image formats.  It returns the
-%  image as a blob and its length.  The magick member of the ImageInfo structure
-%  determines the format of the returned blob (GIF, JPEG,  PNG, etc.)
+%  image as a blob and its length.  The magick member of the Image structure
+%  determines the format of the returned blob (GIF, JPEG, PNG, etc.).  This
+%  method is the equivalent of WriteImage(), but writes %  the formatted
+%  "file" to a memory buffer rather than to an actual file.
 %
 %  The format of the ImageToBlob method is:
 %
