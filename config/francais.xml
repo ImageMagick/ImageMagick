@@ -331,6 +331,9 @@
           <message name="InsufficientImageDataInFile">
             Pas assez de données d'image dans le fichier
           </message>
+          <message name="LengthAndFilesizeDoNotMatch">
+            Longueur et taille du fichier ne correspondent pas
+          </message>
           <message name="SkipToSyncByte">
             Image PCD corrompue, saut à l'octet de synchronisation
           </message>

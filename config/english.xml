@@ -334,6 +334,9 @@
           <message name="InsufficientImageDataInFile">
             insufficient image data in file
           </message>
+          <message name="LengthAndFilesizeDoNotMatch">
+            length and filesize do not match
+          </message>
           <message name="SkipToSyncByte">
             corrupt PCD image, skipping to sync byte
           </message>

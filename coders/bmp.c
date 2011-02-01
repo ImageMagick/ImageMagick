@@ -785,10 +785,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }
-    if ((bmp_info.compression != BI_RGB) &&
-        ((MagickSizeType) bmp_info.file_size != GetBlobSize(image)))
+    if ((MagickSizeType) bmp_info.file_size > GetBlobSize(image))
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "LengthAndFilesizeDoNotMatch","`%s'",image->filename);
+    else
+      if ((MagickSizeType) bmp_info.file_size < GetBlobSize(image))
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageWarning,"LengthAndFilesizeDoNotMatch","`%s'",
+          image->filename);
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
     if (bmp_info.height == 0)
