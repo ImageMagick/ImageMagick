@@ -335,7 +335,7 @@ static int MvgPrintf(DrawingWand *wand,const char *format,...)
       {
         va_start(argp,format);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
-        count=vsnprintf(wand->mvg+wand->mvg_length,offset,format,argp);
+        count=vsnprintf(wand->mvg+wand->mvg_length,(size_t) offset,format,argp);
 #else
         count=vsprintf(wand->mvg+wand->mvg_length,format,argp);
 #endif
