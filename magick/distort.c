@@ -149,7 +149,7 @@ static inline double MagickRound(double x)
  *    quintic    5   (21)     u = '' + c15*x^5 + ... + c20*y^5
  * number in parenthesis minimum number of points needed.
  * Anything beyond quintic, has not been implemented until
- * a more automated way of determined terms is found.
+ * a more automated way of determining terms is found.
 
  * Note the slight re-ordering of the terms for a quadratic polynomial
  * which is to allow the use of a bi-linear (order=1.5) polynomial.
@@ -444,7 +444,7 @@ static double *GenerateCoefficients(const Image *image,
     return((double *) NULL);
   }
 
-  /* zero out coeffiecents array */
+  /* zero out coefficients array */
   for (i=0; i < number_coeff; i++)
     coeff[i] = 0.0;
 
