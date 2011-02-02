@@ -581,7 +581,7 @@ static double *GenerateCoefficients(const Image *image,
               MagickOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
-      /* FUTURE: trap test for sx*sy-rx*ry == 0 (determinate = 0, no inverse) */
+      /* FUTURE: trap test for sx*sy-rx*ry == 0 (determinant = 0, no inverse) */
       for(i=0; i<6UL; i++ )
         inverse[i] = arguments[i];
       AffineArgsToCoefficients(inverse); /* map into coefficents */
