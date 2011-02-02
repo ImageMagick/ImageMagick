@@ -198,10 +198,10 @@ static const char *poly_basis_str(ssize_t n)
   switch(n) {
     case  0:  return(""); /* constant */
     case  1:  return("*ii");
-    case  2:  return("*jj"); /* affine                  order = 1   terms = 3 */
-    case  3:  return("*ii*jj"); /* bilinear             order = 1.5 terms = 4 */
+    case  2:  return("*jj"); /* affine                 order = 1   terms = 3 */
+    case  3:  return("*ii*jj"); /* bilinear            order = 1.5 terms = 4 */
     case  4:  return("*ii*ii");
-    case  5:  return("*jj*jj"); /* quadratic            order = 2   terms = 6 */
+    case  5:  return("*jj*jj"); /* quadratic           order = 2   terms = 6 */
     case  6:  return("*ii*ii*ii");
     case  7:  return("*ii*ii*jj");
     case  8:  return("*ii*jj*jj");
