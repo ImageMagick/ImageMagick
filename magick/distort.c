@@ -140,13 +140,13 @@ static inline double MagickRound(double x)
  * Polynomial Term Defining Functions
  *
  * Order must either be an integer, or 1.5 to produce
- * the 2 number_valuesal polyminal function...
- *    affine     1 (3)      u = c0 + c1*x + c2*y
- *    bilinear  1.5 (4)     u = '' + c3*x*y
- *    quadratic  2 (6)      u = '' + c4*x*x + c5*y*y
- *    cubic      3 (10)     u = '' + c6*x^3 + c7*x*x*y + c8*x*y*y + c9*y^3
- *    quartic    4 (15)     u = '' + c10*x^4 + ... + c14*y^4
- *    quintic    5 (21)     u = '' + c15*x^5 + ... + c20*y^5
+ * the 2 number_valuesal polynomial function...
+ *    affine     1   (3)      u = c0 + c1*x + c2*y
+ *    bilinear   1.5 (4)      u = '' + c3*x*y
+ *    quadratic  2   (6)      u = '' + c4*x*x + c5*y*y
+ *    cubic      3   (10)     u = '' + c6*x^3 + c7*x*x*y + c8*x*y*y + c9*y^3
+ *    quartic    4   (15)     u = '' + c10*x^4 + ... + c14*y^4
+ *    quintic    5   (21)     u = '' + c15*x^5 + ... + c20*y^5
  * number in parenthesis minimum number of points needed.
  * Anything beyond quintic, has not been implemented until
  * a more automated way of determined terms is found.
@@ -170,14 +170,14 @@ static double poly_basis_fn(ssize_t n, double x, double y)
   switch(n) {
     case  0:  return( 1.0 ); /* constant */
     case  1:  return(  x  );
-    case  2:  return(  y  ); /* affine      order = 1   terms = 3 */
-    case  3:  return( x*y ); /* bilinear    order = 1.5 terms = 4 */
+    case  2:  return(  y  ); /* affine          order = 1   terms = 3 */
+    case  3:  return( x*y ); /* bilinear        order = 1.5 terms = 4 */
     case  4:  return( x*x );
-    case  5:  return( y*y ); /* quadratic   order = 2   terms = 6 */
+    case  5:  return( y*y ); /* quadratic       order = 2   terms = 6 */
     case  6:  return( x*x*x );
     case  7:  return( x*x*y );
     case  8:  return( x*y*y );
-    case  9:  return( y*y*y ); /* cubic       order = 3   terms = 10 */
+    case  9:  return( y*y*y ); /* cubic         order = 3   terms = 10 */
     case 10:  return( x*x*x*x );
     case 11:  return( x*x*x*y );
     case 12:  return( x*x*y*y );
@@ -188,7 +188,7 @@ static double poly_basis_fn(ssize_t n, double x, double y)
     case 17:  return( x*x*x*y*y );
     case 18:  return( x*x*y*y*y );
     case 19:  return( x*y*y*y*y );
-    case 20:  return( y*y*y*y*y ); /* quintic     order = 5   terms = 21 */
+    case 20:  return( y*y*y*y*y ); /* quintic   order = 5   terms = 21 */
   }
   return( 0 ); /* should never happen */
 }
@@ -198,25 +198,25 @@ static const char *poly_basis_str(ssize_t n)
   switch(n) {
     case  0:  return(""); /* constant */
     case  1:  return("*ii");
-    case  2:  return("*jj"); /* affine               order = 1   terms = 3 */
-    case  3:  return("*ii*jj"); /* bilinear          order = 1.5 terms = 4 */
+    case  2:  return("*jj"); /* affine                order = 1   terms = 3 */
+    case  3:  return("*ii*jj"); /* bilinear           order = 1.5 terms = 4 */
     case  4:  return("*ii*ii");
-    case  5:  return("*jj*jj"); /* quadratic         order = 2   terms = 6 */
+    case  5:  return("*jj*jj"); /* quadratic          order = 2   terms = 6 */
     case  6:  return("*ii*ii*ii");
     case  7:  return("*ii*ii*jj");
     case  8:  return("*ii*jj*jj");
-    case  9:  return("*jj*jj*jj"); /* cubic          order = 3   terms = 10 */
+    case  9:  return("*jj*jj*jj"); /* cubic           order = 3   terms = 10 */
     case 10:  return("*ii*ii*ii*ii");
     case 11:  return("*ii*ii*ii*jj");
     case 12:  return("*ii*ii*jj*jj");
     case 13:  return("*ii*jj*jj*jj");
-    case 14:  return("*jj*jj*jj*jj"); /* quartic     order = 4   terms = 15 */
+    case 14:  return("*jj*jj*jj*jj"); /* quartic      order = 4   terms = 15 */
     case 15:  return("*ii*ii*ii*ii*ii");
     case 16:  return("*ii*ii*ii*ii*jj");
     case 17:  return("*ii*ii*ii*jj*jj");
     case 18:  return("*ii*ii*jj*jj*jj");
     case 19:  return("*ii*jj*jj*jj*jj");
-    case 20:  return("*jj*jj*jj*jj*jj"); /* quintic  order = 5   terms = 21 */
+    case 20:  return("*jj*jj*jj*jj*jj"); /* quintic   order = 5   terms = 21 */
   }
   return( "UNKNOWN" ); /* should never happen */
 }
@@ -260,7 +260,7 @@ static double poly_basis_dy(ssize_t n, double x, double y)
     case  5:  return(  y  ); /* quadratic   order = 2   terms = 6 */
     default:  return( poly_basis_dx(n-1,x,y) ); /* weird but true */
   }
-  /* NOTE: the only reason that last is not true for 'quadtratic'
+  /* NOTE: the only reason that last is not true for 'quadratic'
      is due to the re-arrangement of terms to allow for 'bilinear'
   */
 }
@@ -303,7 +303,7 @@ static double poly_basis_dy(ssize_t n, double x, double y)
 %            the color to be plotted, for DistortImage()
 %         N: Interpolation of control points with N values (usally r,g,b)
 %            Format: x,y,r,g,b    mapping x,y to color values r,g,b
-%            IN future, varible number of values may be given (1 to N)
+%            IN future, variable number of values may be given (1 to N)
 %
 %    o exception: return any errors or warnings in this structure
 %
@@ -351,7 +351,7 @@ static double *GenerateCoefficients(const Image *image,
   cp_size = number_values+2; /* each CP defintion involves this many numbers */
 
   /* If not enough control point pairs are found for specific distortions
-    fall back to Affine distortion (allowing 0 to 3 point pairs)
+     fall back to Affine distortion (allowing 0 to 3 point pairs)
   */
   if ( number_arguments < 4*cp_size &&
        (  *method == BilinearForwardDistortion
@@ -486,7 +486,7 @@ static double *GenerateCoefficients(const Image *image,
       }
       else {
         /* 2 or more points (usally 3) given.
-           Solve a least squares simultanious equation for coefficients.
+           Solve a least squares simultaneous equation for coefficients.
         */
         double
           **matrix,
@@ -593,7 +593,7 @@ static double *GenerateCoefficients(const Image *image,
     case ScaleRotateTranslateDistortion:
     {
       /* Scale, Rotate and Translate Distortion
-         An alturnative Affine Distortion
+         An alternative Affine Distortion
          Argument options, by number of arguments given:
            7: x,y, sx,sy, a, nx,ny
            6: x,y,   s,   a, nx,ny
@@ -612,7 +612,7 @@ static double *GenerateCoefficients(const Image *image,
          ScaleRotateTranslate Distortion Notes...
            + Does not use a set of CPs in any normal way
            + Will only work with a 2 number_valuesal Image Distortion
-           + Can not be used for generating a sparse gradient (interpolation)
+           + Cannot be used for generating a sparse gradient (interpolation)
       */
       double
         cosine, sine,
