@@ -1,3 +1,7 @@
+2011-02-02  6.6.7-5 Cristy  <quetzlzacatenango@image...>
+  * Check if the font is null in RenderFreetype() to prevent fault (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17890).
+
 2011-01-29  6.6.7-4 Paul Heckbert  <ph@cs.cm...>
   * Move coders/tiff.c conditional compile to define TIFF exception /
     semaphore / key when TIFF delegate is disabled.
