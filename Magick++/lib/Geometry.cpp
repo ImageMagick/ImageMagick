@@ -282,7 +282,7 @@ Magick::Geometry::operator std::string() const
     }
 
   string geometry;
-  char buffer[32];
+  char buffer[MaxTextExtent];
 
   if ( _width )
     {
@@ -304,7 +304,7 @@ Magick::Geometry::operator std::string() const
       else
         geometry += '+';
 
-      FormatMagickString( buffer, MaxTextExtent, "%+.20g", (double) _xOff);
+      FormatMagickString( buffer, MaxTextExtent, "%.20g", (double) _xOff);
       geometry += buffer;
 
       if ( _yNegative )
@@ -312,7 +312,7 @@ Magick::Geometry::operator std::string() const
       else
         geometry += '+';
 
-      FormatMagickString( buffer, MaxTextExtent, "%+.20g", (double) _yOff);
+      FormatMagickString( buffer, MaxTextExtent, "%.20g", (double) _yOff);
       geometry += buffer;
     }
 
