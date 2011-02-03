@@ -597,17 +597,15 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->y_resolution=image->x_resolution;
     }
-  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
-    image->x_resolution,image->y_resolution);
+  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",image->x_resolution,
+    image->y_resolution);
   if (image_info->page != (char *) NULL)
     {
       (void) ParseAbsoluteGeometry(image_info->page,&page);
-      page.width=(size_t) floor(page.width*image->x_resolution/delta.x+
-        0.5);
-      page.height=(size_t) floor(page.height*image->y_resolution/delta.y+
-        0.5);
-      (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",
-        (double) page.width,(double) page.height);
+      page.width=(size_t) floor(page.width*image->x_resolution/delta.x+0.5);
+      page.height=(size_t) floor(page.height*image->y_resolution/delta.y+0.5);
+      (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+        page.width,(double) page.height);
     }
   if (cmyk != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCIEColor ",MaxTextExtent);
