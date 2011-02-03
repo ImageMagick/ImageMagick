@@ -289,7 +289,7 @@ static MagickBooleanType IsPDFRendered(const char *path)
 
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define AdobeIllustrator  "‚„œ”"
+#define Count  "Count"
 #define CropBox  "CropBox"
 #define DeviceCMYK  "DeviceCMYK"
 #define MediaBox  "MediaBox"
@@ -332,7 +332,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file;
 
   MagickBooleanType
-    adobe_illustrator,
     cmyk,
     cropbox,
     trimbox,
@@ -362,6 +361,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   size_t
+    pages,
     scene,
     spotcolor;
 
@@ -425,7 +425,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   hires_bounds.x2=0.0;
   hires_bounds.y2=0.0;
   angle=0.0;
-  adobe_illustrator=MagickFalse;
+  pages=0;
   p=command;
   for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
   {
@@ -435,7 +435,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == '\n')
       c=' ';
     *p++=(char) c;
-    if ((c != (int) '/') && (c != (int) '%') && 
+    if ((c != (int) '/') && (c != (int) '%') &&
         ((size_t) (p-command) < (MaxTextExtent-1)))
       continue;
     *(--p)='\0';
@@ -447,8 +447,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (LocaleNCompare(DeviceCMYK,command,strlen(DeviceCMYK)) == 0)
       cmyk=MagickTrue;
-    if (LocaleNCompare(AdobeIllustrator,command,strlen(AdobeIllustrator)) == 0)
-      adobe_illustrator=MagickTrue;
+    if (LocaleNCompare(Count,command,strlen(Count)) == 0)
+      {
+        count=strtol(command+6,(char **) NULL,10);
+        if (count > (ssize_t) pages)
+          pages=(size_t) count;
+      }
     if (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0)
       {
         char
@@ -574,7 +578,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
      if (cmyk != MagickFalse)
        delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
      else
-       if (adobe_illustrator != MagickFalse)
+       if (pages <= 1)
          delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
        else
          delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
