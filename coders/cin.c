@@ -775,6 +775,7 @@ ModuleExport size_t RegisterCINImage(void)
   entry->decoder=(DecodeImageHandler *) ReadCINImage;
   entry->encoder=(EncodeImageHandler *) WriteCINImage;
   entry->magick=(IsImageFormatHandler *) IsCIN;
+  entry->adjoin=MagickFalse;
   entry->description=ConstantString("Cineon Image File");
   entry->module=ConstantString("CIN");
   (void) RegisterMagickInfo(entry);
