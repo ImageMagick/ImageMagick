@@ -1,6 +1,8 @@
 2011-02-02  6.6.7-5 Cristy  <quetzlzacatenango@image...>
   * Check if the font is null in RenderFreetype() to prevent fault (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17890).
+  * Eliminate fault when reading WMF image files (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=17971).
 
 2011-01-29  6.6.7-4 Paul Heckbert  <ph@cs.cm...>
   * Move coders/tiff.c conditional compile to define TIFF exception /
