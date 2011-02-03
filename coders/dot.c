@@ -130,6 +130,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     return((Image *) NULL);
   read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
   (void) CopyMagickString(read_info->magick,"SVG",MaxTextExtent);
   (void) AcquireUniqueFilename(read_info->filename);
   (void) FormatMagickString(command,MaxTextExtent,"-Tsvg -o%s %s",

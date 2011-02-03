@@ -127,6 +127,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=AcquireImage(image_info);
   read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
   (void) InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
   image=DestroyImage(image);
   (void) FormatMagickString(read_info->filename,MaxTextExtent,"%s.png",

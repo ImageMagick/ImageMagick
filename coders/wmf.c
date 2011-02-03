@@ -211,6 +211,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read EPS image.
   */
   read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
   (void) FormatMagickString(read_info->filename,MaxTextExtent,"eps:%s",
     filename);
   image=ReadImage(read_info,exception);

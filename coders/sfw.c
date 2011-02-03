@@ -297,8 +297,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Write JFIF file.
   */
   read_info=CloneImageInfo(image_info);
-  read_info->blob=(void *) NULL;
-  read_info->length=0;
+  SetImageInfoBlob(read_info,(void *) NULL,0);
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(read_info->filename);
   if (unique_file != -1)
