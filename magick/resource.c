@@ -446,6 +446,15 @@ MagickExport int AcquireUniqueFileResource(char *path)
       Get temporary pathname.
     */
     (void) GetPathTemplate(path);
+    key=GetRandomKey(random_info,2);
+    p=path+strlen(path)-8;
+    datum=GetStringInfoDatum(key);
+    for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
+    {
+      c=(int) (datum[i] & 0x3f);
+      *p++=portable_filename[c];
+    }
+    key=DestroyStringInfo(key);
 #if defined(MAGICKCORE_HAVE_MKSTEMP)
     file=mkstemp(path);
 #if defined(__OS2__)
@@ -454,17 +463,17 @@ MagickExport int AcquireUniqueFileResource(char *path)
     if (file != -1)
       break;
 #endif
-    key=GetRandomKey(random_info,8);
-    p=path+strlen(path)-8;
+    key=GetRandomKey(random_info,6);
+    p=path+strlen(path)-6;
     datum=GetStringInfoDatum(key);
-    for (i=0; i < 8; i++)
+    for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
     {
       c=(int) (datum[i] & 0x3f);
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
     file=open(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,S_MODE);
-    if ((file > 0) || (errno != EEXIST))
+    if ((file >= 0) || (errno != EEXIST))
       break;
   }
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
