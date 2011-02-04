@@ -4,6 +4,8 @@
   * Eliminate fault when reading WMF image files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=17971).
   * Support multi-page transparent Postscript and PDF image files.
+  * The compare fuzz metric now returns the same correct value for
+    'xc:white xc:blue -alpha on' and 'xc:white xc:blue -alpha on'.
 
 2011-01-29  6.6.7-4 Paul Heckbert  <ph@cs.cm...>
   * Move coders/tiff.c conditional compile to define TIFF exception /
