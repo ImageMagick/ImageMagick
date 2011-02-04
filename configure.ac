@@ -3188,11 +3188,7 @@ AC_SUBST(XPSVersion)
 #
 # Ghostscript related configuration.
 #
-if test "$have_png" = 'yes'; then
-    GSAlphaDevice=pngalpha
-else
-    GSAlphaDevice=pnmraw
-fi
+GSAlphaDevice=pngalpha
 GSColorDevice=pnmraw
 GSCMYKDevice=pam
 GSMonoDevice=pbmraw

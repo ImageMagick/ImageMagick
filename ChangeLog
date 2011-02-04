@@ -3,6 +3,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17890).
   * Eliminate fault when reading WMF image files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=17971).
+  * Support multi-page transparent Postscript and PDF image files.
 
 2011-01-29  6.6.7-4 Paul Heckbert  <ph@cs.cm...>
   * Move coders/tiff.c conditional compile to define TIFF exception /
@@ -792,7 +793,7 @@
   * The animate program no longer loops twice when -loop 1 is specified.
   * The caption format would sometimes hang when the text was not UTF-8.
   * Don't gamma correct log to linear color conversion unless the -gamma is
-    specified (reference 
+    specified (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=15799).
 
 2010-03-17  6.6.0-7 Cristy  <quetzlzacatenango@image...>
@@ -1181,7 +1182,7 @@
 2009-07-25  6.5.4-6 Cristy  <quetzlzacatenango@image...>
   * Support the new JPEG version 7 delegate library.
 
-2009-07-24  6.5.4-6 Alexander E. Patrakov <patrakov@gmail...> 
+2009-07-24  6.5.4-6 Alexander E. Patrakov <patrakov@gmail...>
   * Incorrect use of setjmp in coders/png.c.
 
 2009-07-23  6.5.4-5 Cristy  <quetzlzacatenango@image...>
@@ -1280,7 +1281,7 @@
   * Default scaling to width/2 and height/2 of overlay (100% scale)
     with a distortion 'center' to the middle of the overlay image
   * If a '%' flag given scale displacement relative to image size
-  * If a '!' flag given make scale and center relative to 'background' image 
+  * If a '!' flag given make scale and center relative to 'background' image
     instead of the overlay map.
   * If no 'height' scale given, use the X scale.
 
@@ -1388,7 +1389,7 @@
   * Create 8-bit TIFF images if -depth is set to 8 and HDRI-enable ImageMagick.
 
 2009-05-04  6.5.2-1 Chris Madison  <madisonblu@gmail...>
-  * Accept file lists on the command line (e.g. echo "rose: rose.png" | 
+  * Accept file lists on the command line (e.g. echo "rose: rose.png" |
     convert @- ...).
   * Duplicate line in tiff.c breaking read of zip compressed tif (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13688).
@@ -1492,7 +1493,7 @@
 
 2009-03-28  6.5.1-0 Cristy  <quetzlzacatenango@image...>
   * Graceful exit in djvu coder when EOF is thrown.
-  * Support -unsharp option for the montage program. 
+  * Support -unsharp option for the montage program.
 
 2009-03-28  6.5.0-10 Cristy  <quetzlzacatenango@image...>
   * Reduce deskew blurring: use AffineTransformImage() rather than
@@ -1566,7 +1567,7 @@
                     Glenn Randers-Pehrson <glennrp@image...>
   * DICOM reader not handling signed pixels properly.
 
-2009-03-09  6.4.9-10 Alexander E. Patrakov <patrakov@gmail...> 
+2009-03-09  6.4.9-10 Alexander E. Patrakov <patrakov@gmail...>
   * Don't call GetValueFromSplayTree() if image properties is NULL.
 
 2009-03-09  6.4.9-10 Anthony Thyssen <A.Thyssen@griffith...>
@@ -1667,7 +1668,7 @@
 2009-01-14  6.4.8-6 Mark Freeman <mark.freeman@porci...>
   * Apply patch so ImageMagick compiles with Visual Studio 6.
 
-2009-01-12  6.4.8-5 Alexander E. Patrakov <patrakov@gmail...> 
+2009-01-12  6.4.8-5 Alexander E. Patrakov <patrakov@gmail...>
   * Fix small memory leak on truncated PNG images.
   * Do not allocate pixels when pinging a PNG image.
 
@@ -1690,7 +1691,7 @@
 2009-01-05  6.4.8-4 Rick Mabry  <rick.mabry@anony...>
   * Check for negative offsets (bevel widths) for the -frame option.
 
-2009-01-04  6.4.8-4 Alexander E. Patrakov <patrakov@gmail...> 
+2009-01-04  6.4.8-4 Alexander E. Patrakov <patrakov@gmail...>
   * Patch for a memory leak and a logical bug in coders/gif.c.
   * CopyMagickString() now returns the minimum of the source string length
     or the length parameter.
@@ -1855,7 +1856,7 @@
   * Deprecate pixel methods: AcquireImagePixels(), GetImagePixels(), etc.
   * New pixel methods: GetVirtualPixels(), GetAuthenticPixels(), etc.
 
-2008-11-15  6.4.5-7 Alexander E. Patrakov <patrakov@gmail...> 
+2008-11-15  6.4.5-7 Alexander E. Patrakov <patrakov@gmail...>
   * GPS and multivalued EXIF properties support
 
 2008-11-14  6.4.5-6 Manish Aggarwal <manish@circu...>
