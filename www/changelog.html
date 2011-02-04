@@ -9,7 +9,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="ImageMagick is a software suite to create, edit, compose, or convert bitmap images in a variety of formats. Use ImageMagick to scale, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
   <meta name="Keywords" content="changelog, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
@@ -52,10 +52,12 @@
   <img src="../images/networkredux.png" alt="[sponsor]"
   style="margin-top: 42px; border: 0px; float: left;" /></a>
 <a href="http://www.imagemagick.org/discourse-server/">
-  <img src="../images/logo.jpg" alt=""
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
   style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
 <a href="../index.html">
-  <img src="../images/sprite.jpg" alt=""
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
   style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
 </div>
 
@@ -141,6 +143,12 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+  <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
 </div>
 <div class="sponsor">
@@ -156,7 +164,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -179,7 +187,12 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-01-29  6.6.7-4 Paul Heckbert  &lt;ph@cs.cm...&gt;</dt>
+<dl><dt>2011-02-02  6.6.7-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Check if the font is null in RenderFreetype() to prevent fault (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17890).</dd>
+  <dd> Eliminate fault when reading WMF image files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=17971).</dd>
+  <dd> Support multi-page transparent Postscript and PDF image files.</dd>
+  <dd> The compare fuzz metric now returns the same correct value for    'xc:white xc:blue -alpha on' and 'xc:white xc:blue -alpha on'.</dd>
+<dt>2011-01-29  6.6.7-4 Paul Heckbert  &lt;ph@cs.cm...&gt;</dt>
   <dd> Move coders/tiff.c conditional compile to define TIFF exception /    semaphore / key when TIFF delegate is disabled.</dd>
 <dt>2011-01-29  6.6.7-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Renamed variables, macros, and functions defined/declared in coders/png.c    that were in the libpng namespace (beginning with "png_" or "PNG_").</dd>
@@ -189,6 +202,7 @@
 <dt>2011-01-24  6.6.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Remove memory leak from ThrowFileException() macro (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17908).</dd>
   <dd> Multiple blue error count by 'count' in ClassifyImageColors()</dd>
+  <dd> Add support for the AAI image format.</dd>
 <dt>2011-01-22  6.6.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Accept quoted file paths in indirect file references (e.g. @myFiles.txt).</dd>
 <dt>2011-01-19  6.6.7-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -617,7 +631,7 @@
 <dt>2010-03-18  6.6.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The animate program no longer loops twice when -loop 1 is specified.</dd>
   <dd> The caption format would sometimes hang when the text was not UTF-8.</dd>
-  <dd> Don't gamma correct log to linear color conversion unless the -gamma is    specified (reference     http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=15799).</dd>
+  <dd> Don't gamma correct log to linear color conversion unless the -gamma is    specified (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=15799).</dd>
 <dt>2010-03-17  6.6.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Detect CMYKProcessColor AI tag.</dd>
   <dd> Delete image from command line cache for -write option.</dd>
@@ -850,7 +864,7 @@
   <dd> Fails to load MS Windows icons with compressed PNG elements (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=14324).</dd>
 <dt>2009-07-25  6.5.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support the new JPEG version 7 delegate library.</dd>
-<dt>2009-07-24  6.5.4-6 Alexander E. Patrakov &lt;patrakov@gmail...&gt; </dt>
+<dt>2009-07-24  6.5.4-6 Alexander E. Patrakov &lt;patrakov@gmail...&gt;</dt>
   <dd> Incorrect use of setjmp in coders/png.c.</dd>
 <dt>2009-07-23  6.5.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> We broke -scene when we fixed the -dispose option.  Try again.</dd>
@@ -904,7 +918,7 @@
   <dd> Implement a compose 'distort' mapping method,    This is basically exactly like 'displace' but relative to a fixed point    which may be user supplied as +X+Y</dd>
   <dd> Default scaling to width/2 and height/2 of overlay (100% scale)    with a distortion 'center' to the middle of the overlay image</dd>
   <dd> If a '%' flag given scale displacement relative to image size</dd>
-  <dd> If a '!' flag given make scale and center relative to 'background' image     instead of the overlay map.</dd>
+  <dd> If a '!' flag given make scale and center relative to 'background' image    instead of the overlay map.</dd>
   <dd> If no 'height' scale given, use the X scale.</dd>
 <dt>2009-06-13  6.5.3-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Fixed bug for compose methods, Hue, Saturate, Luminize</dd>
@@ -966,7 +980,7 @@
 <dt>2009-05-06  6.5.2-2 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Create 8-bit TIFF images if -depth is set to 8 and HDRI-enable ImageMagick.</dd>
 <dt>2009-05-04  6.5.2-1 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
-  <dd> Accept file lists on the command line (e.g. echo "rose: rose.png" |     convert @- ...).</dd>
+  <dd> Accept file lists on the command line (e.g. echo "rose: rose.png" |    convert @- ...).</dd>
   <dd> Duplicate line in tiff.c breaking read of zip compressed tif (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13688).</dd>
   <dd> Support policies to permit or deny any coder, delegate, filter, or file    path (see policy.xml).</dd>
 <dt>2009-05-02  6.5.2-0 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
@@ -1019,7 +1033,7 @@
   <dd> Add SimilarityImage() to return how similar one image is to another.</dd>
 <dt>2009-03-28  6.5.1-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Graceful exit in djvu coder when EOF is thrown.</dd>
-  <dd> Support -unsharp option for the montage program. </dd>
+  <dd> Support -unsharp option for the montage program.</dd>
 <dt>2009-03-28  6.5.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Reduce deskew blurring: use AffineTransformImage() rather than    RotateImage().</dd>
   <dd> Unexpected end-of-file @ xwd.c/ReadXWDImage/252 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13430).</dd>
@@ -1060,7 +1074,7 @@
 <dt>2009-03-10  6.5.0-0 John Cupitt  &lt;jcupitt@gmail...&gt;,</dt>
   <dd>                    Glenn Randers-Pehrson <glennrp@image...></dd>
   <dd> DICOM reader not handling signed pixels properly.</dd>
-<dt>2009-03-09  6.4.9-10 Alexander E. Patrakov &lt;patrakov@gmail...&gt; </dt>
+<dt>2009-03-09  6.4.9-10 Alexander E. Patrakov &lt;patrakov@gmail...&gt;</dt>
   <dd> Don't call GetValueFromSplayTree() if image properties is NULL.</dd>
 <dt>2009-03-09  6.4.9-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Fix minor size issue with bestfit +distort operation.</dd>
@@ -1114,7 +1128,7 @@
   <dd> Don't accept discontinuous shear angles for the -annotate option.    -- REMOVED</dd>
 <dt>2009-01-14  6.4.8-6 Mark Freeman &lt;mark.freeman@porci...&gt;</dt>
   <dd> Apply patch so ImageMagick compiles with Visual Studio 6.</dd>
-<dt>2009-01-12  6.4.8-5 Alexander E. Patrakov &lt;patrakov@gmail...&gt; </dt>
+<dt>2009-01-12  6.4.8-5 Alexander E. Patrakov &lt;patrakov@gmail...&gt;</dt>
   <dd> Fix small memory leak on truncated PNG images.</dd>
   <dd> Do not allocate pixels when pinging a PNG image.</dd>
 <dt>2009-01-11  6.4.8-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
@@ -1129,7 +1143,7 @@
   <dd> Add (and Fix) -evaluate methods   Sine, Cosine, AddModulus</dd>
 <dt>2009-01-05  6.4.8-4 Rick Mabry  &lt;rick.mabry@anony...&gt;</dt>
   <dd> Check for negative offsets (bevel widths) for the -frame option.</dd>
-<dt>2009-01-04  6.4.8-4 Alexander E. Patrakov &lt;patrakov@gmail...&gt; </dt>
+<dt>2009-01-04  6.4.8-4 Alexander E. Patrakov &lt;patrakov@gmail...&gt;</dt>
   <dd> Patch for a memory leak and a logical bug in coders/gif.c.</dd>
   <dd> CopyMagickString() now returns the minimum of the source string length    or the length parameter.</dd>
   <dd> Properly set alpha channel in PNGs with palette and tRNS.</dd>
@@ -1233,7 +1247,7 @@
 <dt>2008-11-18  6.4.5-9 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Deprecate pixel methods: AcquireImagePixels(), GetImagePixels(), etc.</dd>
   <dd> New pixel methods: GetVirtualPixels(), GetAuthenticPixels(), etc.</dd>
-<dt>2008-11-15  6.4.5-7 Alexander E. Patrakov &lt;patrakov@gmail...&gt; </dt>
+<dt>2008-11-15  6.4.5-7 Alexander E. Patrakov &lt;patrakov@gmail...&gt;</dt>
   <dd> GPS and multivalued EXIF properties support</dd>
 <dt>2008-11-14  6.4.5-6 Manish Aggarwal &lt;manish@circu...&gt;</dt>
   <dd> Add TransparentPaintImageChroma() to MagickCore and transparentChroma()    to Magick++.</dd>
