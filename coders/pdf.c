@@ -289,7 +289,6 @@ static MagickBooleanType IsPDFRendered(const char *path)
 
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define Count  "Count"
 #define CropBox  "CropBox"
 #define DeviceCMYK  "DeviceCMYK"
 #define MediaBox  "MediaBox"
@@ -329,6 +328,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *read_info;
 
   int
+    c,
     file;
 
   MagickBooleanType
@@ -350,8 +350,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
-  register int
-    c;
+  register ssize_t
+    i;
 
   SegmentInfo
     bounds,
@@ -361,7 +361,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   size_t
-    pages,
     scene,
     spotcolor;
 
@@ -425,7 +424,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   hires_bounds.x2=0.0;
   hires_bounds.y2=0.0;
   angle=0.0;
-  pages=0;
   p=command;
   for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
   {
@@ -447,12 +445,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (LocaleNCompare(DeviceCMYK,command,strlen(DeviceCMYK)) == 0)
       cmyk=MagickTrue;
-    if (LocaleNCompare(Count,command,strlen(Count)) == 0)
-      {
-        count=strtol(command+6,(char **) NULL,10);
-        if (count > (ssize_t) pages)
-          pages=(size_t) count;
-      }
     if (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0)
       {
         char
@@ -578,10 +570,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
      if (cmyk != MagickFalse)
        delegate_info=GetDelegateInfo("ps:cmyk",(char *) NULL,exception);
      else
-       if (pages <= 1)
-         delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
-       else
-         delegate_info=GetDelegateInfo("ps:color",(char *) NULL,exception);
+       delegate_info=GetDelegateInfo("ps:alpha",(char *) NULL,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) RelinquishUniqueFileResource(postscript_filename);
@@ -602,8 +591,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     {
       (void) ParseAbsoluteGeometry(image_info->page,&page);
-      page.width=(size_t) floor(page.width*image->x_resolution/delta.x+0.5);
-      page.height=(size_t) floor(page.height*image->y_resolution/delta.y+0.5);
+      page.width=(size_t) floor((double) (page.width*image->x_resolution/
+        delta.x)+0.5);
+      page.height=(size_t) floor((double) (page.height*image->y_resolution/
+        delta.y)+0.5);
       (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
         page.width,(double) page.height);
     }
@@ -632,20 +623,45 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) FormatMagickString(options+strlen(options),MaxTextExtent,
       " -sPDFPassword=%s",read_info->authenticate);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
-  (void) AcquireUniqueFilename(read_info->filename);
+  (void) AcquireUniqueFilename(filename);
+  (void) ConcatenateMagickString(filename,"-%08d",MaxTextExtent);
   (void) FormatMagickString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
-    read_info->antialias != MagickFalse ? 4 : 1,density,options,
-    read_info->filename,postscript_filename,input_filename);
+    read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
+    postscript_filename,input_filename);
   status=InvokePDFDelegate(read_info->verbose,command,exception);
-  pdf_image=(Image *) NULL;
-  if ((status != MagickFalse) &&
-      (IsPDFRendered(read_info->filename) != MagickFalse))
-    pdf_image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
-  (void) RelinquishUniqueFileResource(read_info->filename);
   (void) RelinquishUniqueFileResource(input_filename);
+  pdf_image=(Image *) NULL;
+  if (status == MagickFalse)
+    for (i=1; ; i++)
+    {
+      Image
+        *next;
+
+      (void) InterpretImageFilename(image_info,image,filename,(int) i,
+        read_info->filename);
+      if (IsPDFRendered(read_info->filename) == MagickFalse)
+        break;
+      (void) RelinquishUniqueFileResource(read_info->filename);
+    }
+  else
+    for (i=1; ; i++)
+    {
+      Image
+        *next;
+
+      (void) InterpretImageFilename(image_info,image,filename,(int) i,
+        read_info->filename);
+      if (IsPDFRendered(read_info->filename) == MagickFalse)
+        break;
+      next=ReadImage(read_info,exception);
+      (void) RelinquishUniqueFileResource(read_info->filename);
+      if (next == (Image *) NULL)
+        break;
+      AppendImageToList(&pdf_image,next);
+    }
   read_info=DestroyImageInfo(read_info);
   if (pdf_image == (Image *) NULL)
     {
@@ -1266,8 +1282,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        resolution.x=(size_t) (100.0*2.54*resolution.x+0.5)/100.0;
-        resolution.y=(size_t) (100.0*2.54*resolution.y+0.5)/100.0;
+        resolution.x=(double) ((size_t) (100.0*2.54*resolution.x+0.5)/100.0);
+        resolution.y=(double) ((size_t) (100.0*2.54*resolution.y+0.5)/100.0);
       }
     SetGeometry(image,&geometry);
     (void) FormatMagickString(page_geometry,MaxTextExtent,"%.20gx%.20g",
