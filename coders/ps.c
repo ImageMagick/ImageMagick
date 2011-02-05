@@ -778,9 +778,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     for (i=1; ; i++)
     {
-      Image
-        *next;
-
       (void) InterpretImageFilename(image_info,image,filename,(int) i,
         read_info->filename);
       if (IsPostscriptRendered(read_info->filename) == MagickFalse)
@@ -790,9 +787,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     for (i=1; ; i++)
     {
-      Image
-        *next;
-
       (void) InterpretImageFilename(image_info,image,filename,(int) i,
         read_info->filename);
       if (IsPostscriptRendered(read_info->filename) == MagickFalse)
