@@ -946,7 +946,6 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
   }
   if (status == FALSE)
     {
-      i=0;
       *major_version=0;
       *minor_version=0;
     }
@@ -1091,7 +1090,7 @@ MagickExport int NTGhostscriptEXE(char *path,int length)
       (NTGhostscriptGetString("GS_DLL",program,sizeof(program)) == FALSE))
     return(FALSE);
   p=strrchr(program,'\\');
-  if (p == (char *) NULL)
+  if (p != (char *) NULL)
     {
       p++;
       *p='\0';
