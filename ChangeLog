@@ -1,3 +1,7 @@
+2011-02-06  6.6.6-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Default sigma for Gauusian resize filter is now 1/2 for both
+    orthogonal resize and cylindrical EWA distortions.
+
 2011-02-02  6.6.7-5 Cristy  <quetzlzacatenango@image...>
   * Check if the font is null in RenderFreetype() to prevent fault (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17890).
