@@ -494,8 +494,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireResizeFilter() allocates the ResizeFilter structure.  Choose
-%  from these filters:
+%  AcquireResizeFilter() allocates the ResizeFilter structure.  Choose from
+%  these filters:
 %
 %  FIR (Finite impulse Response) Filters
 %      Box         Triangle   Quadratic
@@ -516,127 +516,114 @@ static MagickRealType Welsh(const MagickRealType x,
 %  settings for that filter from a internal table.  However any provided
 %  'expert' settings (see below) may override this selection.
 %
-%  FIR filters are used as is, and are limited to that filters support
-%  window (unless over-ridden).  'Gaussian' while classed as an IIR
-%  filter, is also simply clipped by its support size (currently 1.5
-%  or approximatally 3*sigma as recommended by many references)
+%  FIR filters are used as is, and are limited to that filters support window
+%  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
+%  simply clipped by its support size (currently 1.5 or approximatally 3*sigma
+%  as recommended by many references)
 %
-%  The special a 'cylindrical' filter flag will promote the default
-%  4-lobed Windowed Sinc filter to a 3-lobed Windowed Jinc equivelent,
-%  which is better suited to this style of image resampling. This
-%  typically happens when using such a filter for images distortions.
+%  The special a 'cylindrical' filter flag will promote the default 4-lobed
+%  Windowed Sinc filter to a 3-lobed Windowed Jinc equivelent, which is better
+%  suited to this style of image resampling. This typically happens when using
+%  such a filter for images distortions.
 %
-%  Directly requesting 'Sinc', 'Jinc' function as a filter will force
-%  the use of function without any windowing, or promotion for
-%  cylindrical usage.  This is not recommended, except by image
-%  processing experts, especially as part of expert option filter
-%  function selection.
+%  Directly requesting 'Sinc', 'Jinc' function as a filter will force the use
+%  of function without any windowing, or promotion for cylindrical usage.  This
+%  is not recommended, except by image processing experts, especially as part
+%  of expert option filter function selection.
 %
-%  Two forms of the 'Sinc' function are available: Sinc and SincFast.
-%  Sinc is computed using the traditional sin(pi*x)/(pi*x); it is
-%  selected if the user specifically specifies the use of a Sinc
-%  filter. SincFast uses highly accurate (and fast) polynomial (low Q)
-%  and rational (high Q) approximations, and will be used by default in
-%  most cases.
+%  Two forms of the 'Sinc' function are available: Sinc and SincFast.  Sinc is
+%  computed using the traditional sin(pi*x)/(pi*x); it is selected if the user
+%  specifically specifies the use of a Sinc filter. SincFast uses highly
+%  accurate (and fast) polynomial (low Q) and rational (high Q) approximations,
+%  and will be used by default in most cases.
 %
-%  The Lanczos filter is a special 3-lobed Sinc-windowed Sinc filter
-%  (promoted to Jinc-windowed Jinc for cylindrical (Elliptical
-%  Weighted Average) use).  The Sinc version is the most popular
-%  windowed filter.
+%  The Lanczos filter is a special 3-lobed Sinc-windowed Sinc filter (promoted
+%  to Jinc-windowed Jinc for cylindrical (Elliptical Weighted Average) use).
+%  The Sinc version is the most popular windowed filter.
 %
-%  LanczosSharp is a slightly sharpened (blur=0.9812505644269356 < 1)
-%  form of the Lanczos filter, specifically designed for EWA
-%  distortion (as a Jinc-Jinc); it can also be used as a slightly
-%  sharper orthogonal Lanczos (Sinc-Sinc) filter. The chosen blur
-%  value comes as close as possible to satisfying the following
-%  condition without changing the character of the corresponding EWA
-%  filter:
+%  LanczosSharp is a slightly sharpened (blur=0.9812505644269356 < 1) form of
+%  the Lanczos filter, specifically designed for EWA distortion (as a
+%  Jinc-Jinc); it can also be used as a slightly sharper orthogonal Lanczos
+%  (Sinc-Sinc) filter. The chosen blur value comes as close as possible to
+%  satisfying the following condition without changing the character of the
+%  corresponding EWA filter:
 %
-%    'No-Op' Vertical and Horizontal Line Preservation Condition:
-%    Images with only vertical or horizontal features are preserved
-%    when performing 'no-op" with EWA distortion.
+%    'No-Op' Vertical and Horizontal Line Preservation Condition: Images with
+%    only vertical or horizontal features are preserved when performing 'no-op"
+%    with EWA distortion.
 %
-%  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the
-%  Lanczos filters.  The 'sharp' version uses a blur factor of
-%  0.9549963639785485, again chosen because the resulting EWA filter
-%  comes as close as possible to satisfying the above
-%  condition.
+%  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the Lanczos
+%  filters.  The 'sharp' version uses a blur factor of 0.9549963639785485,
+%  again chosen because the resulting EWA filter comes as close as possible to
+%  satisfying the above condition.
 %
-%  Robidoux is another filter tuned for EWA. It is the Keys cubic
-%  filter defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the
-%  "'No-Op' Vertical and Horizontal Line Preservation Condition"
-%  exactly, and it moderately blurs high frequency 'pixel-hash'
-%  patterns under no-op.  It turns out to be close to both Mitchell
-%  and Lanczos2Sharp.  For example, its first crossing is at (36
-%  sqrt(2) + 123)/(72 sqrt(2) + 47), almost the same as the first
-%  crossing of Mitchell and Lanczos2Sharp.
-%
+%  Robidoux is another filter tuned for EWA. It is the Keys cubic filter
+%  defined by B=(228 - 108 sqrt(2))/199. Robidoux satisfies the "'No-Op'
+%  Vertical and Horizontal Line Preservation Condition" exactly, and it
+%  moderately blurs high frequency 'pixel-hash' patterns under no-op.  It turns
+%  out to be close to both Mitchell and Lanczos2Sharp.  For example, its first
+%  crossing is at (36 sqrt(2) + 123)/(72 sqrt(2) + 47), almost the same as the
+%  first crossing of Mitchell and Lanczos2Sharp.
 %
 %  'EXPERT' OPTIONS:
 %
-%  These artifact "defines" are not recommended for production use
-%  without expert knowledge of resampling, filtering, and the effects
-%  they have on the resulting resampled (resize ro distorted) image.
+%  These artifact "defines" are not recommended for production use without
+%  expert knowledge of resampling, filtering, and the effects they have on the
+%  resulting resampled (resize ro distorted) image.
 %
 %  They can be used to override any and all filter default, and it is
-%  recommended you make good use of "filter:verbose" to make sure that
-%  the overall effect of your selection (before and after) is as
-%  expected.
+%  recommended you make good use of "filter:verbose" to make sure that the
+%  overall effect of your selection (before and after) is as expected.
 %
-%    "filter:verbose" controls whether to output the exact results of
-%        the filter selections made, as well as plotting data for
-%        graphing the resulting filter over the filters support range.
+%    "filter:verbose"  controls whether to output the exact results of the
+%       filter selections made, as well as plotting data for graphing the
+%       resulting filter over the filters support range.
 %
-%    "filter:filter"    Select the main function associated with
-%        this filter name, as the weighting function of the filter.
-%        This can be used to set a windowing function as a weighting
-%        function, for special purposes, such as graphing.
+%    "filter:filter"  select the main function associated with this filter
+%       name, as the weighting function of the filter.  This can be used to
+%       set a windowing function as a weighting function, for special
+%       purposes, such as graphing.
 %
-%        If a "filter:window" operation has not been provided, then a
-%        'Box' windowing function will be set to denote that no
-%        windowing function is being used.
+%       If a "filter:window" operation has not been provided, a 'Box'
+%       windowing function will be set to denote that no windowing function is
+%       being used.
 %
-%    "filter:window" Select this windowing function for the filter.
-%        While any filter could be used as a windowing function, using
-%        the 'first lobe' of that filter over the whole support
-%        window, using a non-windowing function is not advisible. If
-%        no weighting filter function is specifed a 'SincFast' filter
-%        will be used.
+%    "filter:window"  Select this windowing function for the filter. While any
+%       filter could be used as a windowing function, using the 'first lobe' of
+%       that filter over the whole support window, using a non-windowing
+%       function is not advisible. If no weighting filter function is specifed
+%       a 'SincFast' filter is used.
 %
-%    "filter:lobes" Number of lobes to use for the Sinc/Jinc filter.
-%        This a simpler method of setting filter support size that
-%        will correctly handle the Sinc/Jinc switch for an operators
-%        filtering requirements.  Only integers should be given.
+%    "filter:lobes"  Number of lobes to use for the Sinc/Jinc filter.  This a
+%       simpler method of setting filter support size that will correctly
+%       handle the Sinc/Jinc switch for an operators filtering requirements.
+%       Only integers should be given.
 %
-%    "filter:support" Set the support size for filtering to the size
-%        given This not recommended for Sinc/Jinc windowed filters
-%        (lobes should be used instead).  This will override any
-%        'filter:lobes' option.
+%    "filter:support" Set the support size for filtering to the size given.
+%       This not recommended for Sinc/Jinc windowed filters (lobes should be
+%       used instead).  This will override any 'filter:lobes' option.
 %
-%    "filter:win-support" Scale windowing function to this size
-%        instead.  This causes the windowing (or self-windowing
-%        Lagrange filter) to act is if the support window it much much
-%        larger than what is actually supplied to the calling
-%        operator.  The filter however is still clipped to the real
-%        support size given, by the support range suppiled to the
-%        caller.  If unset this will equal the normal filter support
-%        size.
+%    "filter:win-support" Scale windowing function to this size instead.  This
+%       causes the windowing (or self-windowing Lagrange filter) to act is if
+%       the support window it much much larger than what is actually supplied
+%       to the calling operator.  The filter however is still clipped to the
+%       real support size given, by the support range suppiled to the caller.
+%       If unset this will equal the normal filter support size.
 %
-%    "filter:blur" Scale the filter and support window by this amount.
-%        A value >1 will generally result in a more burred image with
-%        more ringing effects, while a value <1 will sharpen the
-%        resulting image with more aliasing effects.
+%    "filter:blur" Scale the filter and support window by this amount.  A value
+%       > 1 will generally result in a more burred image with more ringing
+%       effects, while a value <1 will sharpen the resulting image with more
+%       aliasing effects.
 %
-%    "filter:sigma" The sigma value to use for the Gaussian filter
-%        only.  Defaults to '1/2'. Using a different sigme effectially
-%        provides a method of using the filter as a 'blur' convolution.
-%        Particularly when using it for Distort.
+%    "filter:sigma" The sigma value to use for the Gaussian filter only.
+%       Defaults to '1/2'.  Using a different sigma effectively provides a
+%       method of using the filter as a 'blur' convolution.  Particularly when
+%       using it for Distort.
 %
 %    "filter:b"
-%    "filter:c" Override the preset B,C values for a Cubic type of
-%         filter If only one of these are given it is assumes to be a
-%         'Keys' type of filter such that B+2C=1, where Keys 'alpha'
-%         value = C
+%    "filter:c" Override the preset B,C values for a Cubic type of filter.
+%       If only one of these are given it is assumes to be a 'Keys' type of
+%       filter such that B+2C=1, where Keys 'alpha' value = C.
 %
 %  Examples:
 %
@@ -648,7 +635,6 @@ static MagickRealType Welsh(const MagickRealType x,
 %     -filter Lanczos
 %     -define filter:lobes=8
 %
-%
 %  The format of the AcquireResizeFilter method is:
 %
 %      ResizeFilter *AcquireResizeFilter(const Image *image,
@@ -659,16 +645,15 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %    o image: the image.
 %
-%    o filter: the filter type, defining a preset filter, window and
-%      support.  The artifact settings listed above will override
-%      those selections.
+%    o filter: the filter type, defining a preset filter, window and support.
+%      The artifact settings listed above will override those selections.
 %
 %    o blur: blur the filter by this amount, use 1.0 if unknown.  Image
-%      artifact "filter:blur" will override this API call usage, including
-%      any internal change (such as for cylindrical usage).
+%      artifact "filter:blur" will override this API call usage, including any
+%      internal change (such as for cylindrical usage).
 %
-%    o radial: use a 1D orthogonal filter (Sinc) or 2D cylindrical
-%      (radial) filter (Jinc)
+%    o radial: use a 1D orthogonal filter (Sinc) or 2D cylindrical (radial)
+%      filter (Jinc).
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -692,17 +677,16 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   register ResizeFilter
     *resize_filter;
 
-
   /*
-    Table Mapping given Filter, into Weighting and Windowing functions.
-    A 'Box' windowing function means its a simble non-windowed filter.
-    An 'SincFast' filter function could be upgraded to a 'Jinc' filter
-    if a "cylindrical", unless a 'Sinc' or 'SincFast' filter was
-    specifically requested.
+    Table Mapping given Filter, into Weighting and Windowing functions.  A
+    'Box' windowing function means its a simble non-windowed filter.  An
+    'SincFast' filter function could be upgraded to a 'Jinc' filter if a
+    "cylindrical", unless a 'Sinc' or 'SincFast' filter was specifically
+    requested.
 
-    WARNING: The order of this tabel must match the order of the
-    FilterTypes enumeration specified in "resample.h", or the filter
-    names will not match the filter being setup.
+    WARNING: The order of this tabel must match the order of the FilterTypes
+    enumeration specified in "resample.h", or the filter names will not match
+    the filter being setup.
 
     You can check filter setups with the "filter:verbose" setting.
   */
@@ -742,17 +726,15 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { RobidouxFilter,     BoxFilter      }, /* Cubic Keys tuned for EWA     */
   };
   /*
-    Table mapping the filter/window from the above table to an actual
-    function.  The default support size for that filter as a weighting
-    function, the range to scale with to use that function as a sinc
-    windowing function, (typ 1.0).
+    Table mapping the filter/window from the above table to an actual function.
+    The default support size for that filter as a weighting function, the range
+    to scale with to use that function as a sinc windowing function, (typ 1.0).
 
     Note that the filter_type -> function is 1 to 1 except for Sinc(),
-    SincFast(), and CubicBC() functions, which may have multiple
-    filter to function associations.
+    SincFast(), and CubicBC() functions, which may have multiple filter to
+    function associations.
 
-    See "filter:verbose" handling below for the function -> filter
-    mapping.
+    See "filter:verbose" handling below for the function -> filter mapping.
   */
   static struct
   {
@@ -797,13 +779,13 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
     function being used as a filter. It is used by the "filter:lobes" expert
-    setting and for 'lobes' for Jinc functions in the previous table. This
-    way users do not have to deal with the highly irrational lobe sizes of the
-    Jinc filter.
+    setting and for 'lobes' for Jinc functions in the previous table. This way
+    users do not have to deal with the highly irrational lobe sizes of the Jinc
+    filter.
 
     Values taken from
-      http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp
-    using Jv-function with v=1, then dividing by PI.
+    http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp using
+    Jv-function with v=1, then dividing by PI.
   */
   static MagickRealType
     jinc_zeros[16] =
@@ -1654,8 +1636,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,
-    1.0,exception);
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
+    exception);
   return(minify_image);
 }
 

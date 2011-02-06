@@ -1757,7 +1757,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
       /*
-        Blur Image by resampling;
+        Blur Image by resampling.
       */
       pixel=zero;
       exception=(&image->exception);
