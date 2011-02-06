@@ -239,15 +239,21 @@ static MagickRealType Gaussian(const MagickRealType x,
   /*
     Gaussian with a fixed sigma = 1/2
 
-    Gaussian Formula...
-        exp( -(x^2)/((2.0*sigma^2) ) / sqrt(2*PI*sigma^2)))
+    Gaussian Formula (1D) ...
+        exp( -(x^2)/((2.0*sigma^2) ) / sqrt(2*PI)sigma^2))
     The constants are pre-calculated...
         exp( -coeff[0]*(x^2)) ) * coeff[1]
     However the multiplier coefficent (1) is not needed and not used.
 
-    This separates the gaussian 'sigma' value from the 'blur/support' settings
-    allowing for its use in special 'small sigma' gaussians, without the filter
-    'missing' pixels when blurring because the support is too small.
+    Gaussian Formula (2D) ...
+        exp( -(x^2)/((2.0*sigma^2) ) / (PI*sigma^2) )
+    Note that it is only a change in the normalization multiplier
+    which is not needed or used when gausian is used as a filter.
+
+    This separates the gaussian 'sigma' value from the 'blur/support'
+    settings allowing for its use in special 'small sigma' gaussians,
+    without the filter 'missing' pixels because the support becomes too
+    small.
   */
   return(exp((double)(-resize_filter->coefficient[0]*x*x)));
 }
@@ -622,10 +628,9 @@ static MagickRealType Welsh(const MagickRealType x,
 %        resulting image with more aliasing effects.
 %
 %    "filter:sigma" The sigma value to use for the Gaussian filter
-%        only.  Defaults to '1/2' for orthogonal and 'sqrt(2)/2' for
-%        cylindrical usage. It effectially provides a alturnative to
-%        'blur' for Gaussians without it also effecting the final
-%        'practical support' size.
+%        only.  Defaults to '1/2'. Using a different sigme effectially
+%        provides a method of using the filter as a 'blur' convolution.
+%        Particularly when using it for Distort.
 %
 %    "filter:b"
 %    "filter:c" Override the preset B,C values for a Cubic type of
@@ -839,8 +844,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
-  resize_filter->blur = blur;
-  sigma = 0.5;
+  resize_filter->blur = blur;   /* function argument blur factor */
+  sigma = 0.5;    /* guassian sigma of half a pixel by default */
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   if (cylindrical != MagickFalse && filter_type == SincFastFilter
        && filter != SincFastFilter )
@@ -910,10 +915,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->scale=filters[JincFilter].scale;
         /* number of lobes (support window size) remain unchanged */
         break;
-      case GaussianFilter:
-        /* Cylindrical Gaussian sigma is sqrt(2)/2. */
-        sigma = (MagickRealType) (MagickSQ2/2.0);
-        break;
       default:
         break;
     }
@@ -938,11 +939,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
     sigma=StringToDouble(artifact);
-  /* Define coefficents for Gaussian (assumes no cubic window) */
+  /* Define coefficents for Gaussian */
   if ( GaussianFilter ) {
     resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
     resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*sigma*
-      sigma)); /* unused */
+      sigma)); /* Normalization Multiplier - unneeded for filters */
   }
 
   /* Blur Override */

@@ -1762,7 +1762,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       pixel=zero;
       exception=(&image->exception);
       resample_filter=AcquireResampleFilter(image,&image->exception);
-      SetResampleFilter(resample_filter,GaussianFilter,sqrt(2.0));
+      SetResampleFilter(resample_filter,GaussianFilter,2.0);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
