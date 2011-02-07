@@ -187,11 +187,15 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-02-02  6.6.7-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-02-07  6.6.7-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix bug in carg() define when HAVE_COMPLEX is not defined (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18030).</dd>
+<dt>2011-02-06  6.6.7-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Default sigma for Gauusian resize filter is now 1/2 for both    orthogonal resize and cylindrical EWA distortions.</dd>
+<dt>2011-02-02  6.6.7-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Check if the font is null in RenderFreetype() to prevent fault (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17890).</dd>
   <dd> Eliminate fault when reading WMF image files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=17971).</dd>
   <dd> Support multi-page transparent Postscript and PDF image files.</dd>
-  <dd> The compare fuzz metric now returns the same correct value for    'xc:white xc:blue -alpha on' and 'xc:white xc:blue -alpha on'.</dd>
+  <dd> The compare fuzz metric now returns the same correct value for    'xc:white xc:blue -alpha off' and 'xc:white xc:blue -alpha on'.</dd>
 <dt>2011-01-29  6.6.7-4 Paul Heckbert  &lt;ph@cs.cm...&gt;</dt>
   <dd> Move coders/tiff.c conditional compile to define TIFF exception /    semaphore / key when TIFF delegate is disabled.</dd>
 <dt>2011-01-29  6.6.7-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
