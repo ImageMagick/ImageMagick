@@ -25,7 +25,7 @@ extern "C" {
 #include "magick/image.h"
 #include "magick/stream.h"
 
-#define MagickMaxBufferExtent  0x3c005L
+#define MagickMaxBufferExtent  (32*8192)
 
 typedef enum
 {
