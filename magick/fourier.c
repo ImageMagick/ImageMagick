@@ -63,7 +63,7 @@
 #define cabs(z)  (sqrt(z[0]*z[0]+z[1]*z[1]))
 #endif
 #if !defined(MAGICKCORE_HAVE_CARG)
-#define carg(z)  (atan2(cimag(z[1]),creal(z[0])))
+#define carg(z)  (atan2(cimag(z),creal(z)))
 #endif
 #if !defined(MAGICKCORE_HAVE_CIMAG)
 #define cimag(z)  (z[1])
