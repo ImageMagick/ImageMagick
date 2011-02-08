@@ -91,7 +91,6 @@ static MagickBooleanType
 %
 %    o exception: return any errors or warnings in this structure.
 %
-%
 */
 static Image *ReadUYVYImage(const ImageInfo *image_info,
   ExceptionInfo *exception)

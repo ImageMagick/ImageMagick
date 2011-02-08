@@ -320,11 +320,28 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 {
                   switch (quantum_type)
                   {
-                    case RedQuantum: SetRedPixelComponent(q,GetRedPixelComponent(p)); break;
-                    case GreenQuantum: SetGreenPixelComponent(q,GetGreenPixelComponent(p)); break;
-                    case BlueQuantum: SetBluePixelComponent(q,GetBluePixelComponent(p)); break;
-                    case OpacityQuantum: SetOpacityPixelComponent(q,GetOpacityPixelComponent(p)); break;
-                    default: break;
+                    case RedQuantum:
+                    {
+                      SetRedPixelComponent(q,GetRedPixelComponent(p));
+                      break;
+                    }
+                    case GreenQuantum:
+                    {
+                      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                      break;
+                    }
+                    case BlueQuantum:
+                    {
+                      SetBluePixelComponent(q,GetBluePixelComponent(p));
+                      break;
+                    }
+                    case OpacityQuantum:
+                    {
+                      SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                      break;
+                    }
+                    default:
+                      break;
                   }
                   p++;
                   q++;
