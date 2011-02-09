@@ -1060,7 +1060,7 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
       q=(&cube_info->target);
       alpha=1.0;
       beta=1.0;
-      if (cube_info->associate_alpha == MagickFalse)
+      if (cube_info->associate_alpha != MagickFalse)
         {
           alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
           beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
@@ -1381,11 +1381,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    u,
-    v,
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -1401,6 +1396,11 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
 
   size_t
     index;
+
+  ssize_t
+    u,
+    v,
+    y;
 
   /*
     Distribute quantization error using Floyd-Steinberg.
@@ -2172,8 +2172,8 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %    o levels: Number of color levels allowed in each channel.  Very low values
 %      (2, 3, or 4) have the most visible effect.
 %
-%    o dither: Set this integer value to something other than zero to
-%      dither the mapped image.
+%    o dither: Set this integer value to something other than zero to dither
+%      the mapped image.
 %
 */
 MagickExport MagickBooleanType PosterizeImage(Image *image,
@@ -2191,26 +2191,26 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
   IndexPacket
     *indexes;
 
-  ssize_t
-    j,
-    k,
-    l,
-    n;
-
   MagickBooleanType
     status;
 
   QuantizeInfo
     *quantize_info;
 
-  register ssize_t
-    i;
-
   register PixelPacket
     *restrict q;
 
+  register ssize_t
+    i;
+
   size_t
     extent;
+
+  ssize_t
+    j,
+    k,
+    l,
+    n;
 
   /*
     Posterize image.
@@ -2223,7 +2223,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
   if (posterize_image == (Image *) NULL)
     return(MagickFalse);
   extent=(size_t) MagickMin((ssize_t) levels*levels*levels,MaxColormapSize+1);
-  for (l=1; (l*l*l) < (ssize_t) extent; l++) ;
+  for (l=1; (l*l*l) <= (ssize_t) extent; l++) ;
   l--;
   status=SetImageExtent(posterize_image,(size_t) (l*l*l),1);
   if (status == MagickFalse)
@@ -2255,8 +2255,8 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,
       {
         posterize_image->colormap[n].red=(Quantum) (QuantumRange*i/
           MagickMax(l-1L,1L));
-        posterize_image->colormap[n].green=(Quantum)
-          (QuantumRange*j/MagickMax(l-1L,1L));
+        posterize_image->colormap[n].green=(Quantum) (QuantumRange*j/
+          MagickMax(l-1L,1L));
         posterize_image->colormap[n].blue=(Quantum) (QuantumRange*k/
           MagickMax(l-1L,1L));
         posterize_image->colormap[n].opacity=OpaqueOpacity;
