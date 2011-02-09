@@ -5967,8 +5967,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("smush",option+1) == 0)
           {
-            if (*option == '+')
-              break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
