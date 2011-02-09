@@ -3797,6 +3797,207 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     S m u s h I m a g e s                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SmushImages() takes all images from the current image pointer to the end
+%  of the image list and smushes them to each other top-to-bottom if the
+%  stack parameter is true, otherwise left-to-right.
+%
+%  The current gravity setting now effects how the image is justified in the
+%  final image.
+%
+%  The format of the SmushImages method is:
+%
+%      Image *SmushImages(const Image *image,const MagickBooleanType stack,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image sequence.
+%
+%    o stack: A value other than 0 stacks the images top-to-bottom.
+%
+%    o offset: minimum distance in pixels between images.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *SmushImages(const Image *image,
+  const MagickBooleanType stack,const ssize_t offset,ExceptionInfo *exception)
+{
+#define SmushImageTag  "Smush/Image"
+
+  CacheView
+    *smush_view,
+    *image_view;
+
+  Image
+    *smush_image;
+
+  MagickBooleanType
+    matte,
+    proceed,
+    status;
+
+  MagickOffsetType
+    n;
+
+  RectangleInfo
+    geometry;
+
+  register const Image
+    *next;
+
+  size_t
+    height,
+    number_images,
+    width;
+
+  ssize_t
+    x_offset,
+    y,
+    y_offset;
+
+  /*
+    Ensure the image have the same column width.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  matte=image->matte;
+  number_images=1;
+  width=image->columns;
+  height=image->rows;
+  next=GetNextImageInList(image);
+  for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
+  {
+    if (next->matte != MagickFalse)
+      matte=MagickTrue;
+    number_images++;
+    if (stack != MagickFalse)
+      {
+        if (next->columns > width)
+          width=next->columns;
+        height+=next->rows;
+        continue;
+      }
+    width+=next->columns;
+    if (next->rows > height)
+      height=next->rows;
+  }
+  /*
+    Initialize smush next attributes.
+  */
+  smush_image=CloneImage(image,width,height,MagickTrue,exception);
+  if (smush_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(smush_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&smush_image->exception);
+      smush_image=DestroyImage(smush_image);
+      return((Image *) NULL);
+    }
+  smush_image->matte=matte;
+  (void) SetImageBackgroundColor(smush_image);
+  status=MagickTrue;
+  x_offset=0;
+  y_offset=0;
+  smush_view=AcquireCacheView(smush_image);
+  for (n=0; n < (MagickOffsetType) number_images; n++)
+  {
+    SetGeometry(smush_image,&geometry);
+    GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
+    if (stack != MagickFalse)
+      x_offset-=geometry.x;
+    else
+      y_offset-=geometry.y;
+    image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
+#endif
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      MagickBooleanType
+        sync;
+
+      register const IndexPacket
+        *restrict indexes;
+
+      register const PixelPacket
+        *restrict p;
+
+      register IndexPacket
+        *restrict smush_indexes;
+
+      register PixelPacket
+        *restrict q;
+
+      register ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      q=QueueCacheViewAuthenticPixels(smush_view,x_offset,y+y_offset,
+        image->columns,1,exception);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        {
+          status=MagickFalse;
+          continue;
+        }
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      smush_indexes=GetCacheViewAuthenticIndexQueue(smush_view);
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        SetRedPixelComponent(q,GetRedPixelComponent(p));
+        SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+        SetBluePixelComponent(q,GetBluePixelComponent(p));
+        SetOpacityPixelComponent(q,OpaqueOpacity);
+        if (image->matte != MagickFalse)
+          SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+        if (image->colorspace == CMYKColorspace)
+          smush_indexes[x]=indexes[x];
+        p++;
+        q++;
+      }
+      sync=SyncCacheViewAuthenticPixels(smush_view,exception);
+      if (sync == MagickFalse)
+        status=MagickFalse;
+    }
+    image_view=DestroyCacheView(image_view);
+    proceed=SetImageProgress(image,SmushImageTag,n,number_images);
+    if (proceed == MagickFalse)
+      break;
+    if (stack == MagickFalse)
+      {
+        x_offset+=(ssize_t) image->columns;
+        y_offset=0;
+      }
+    else
+      {
+        x_offset=0;
+        y_offset+=(ssize_t) image->rows;
+      }
+    image=GetNextImageInList(image);
+  }
+  smush_view=DestroyCacheView(smush_view);
+  if (status == MagickFalse)
+    smush_image=DestroyImage(smush_image);
+  return(smush_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S t r i p I m a g e                                                       %
 %                                                                             %
 %                                                                             %

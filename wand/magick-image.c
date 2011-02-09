@@ -11502,6 +11502,54 @@ WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S m u s h I m a g e s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSmushImages() takes all images from the current image pointer to the
+%  end of the image list and smushs them to each other top-to-bottom if the
+%  stack parameter is true, otherwise left-to-right.
+%
+%  The format of the MagickSmushImages method is:
+%
+%      MagickWand *MagickSmushImages(MagickWand *wand,
+%        const MagickBooleanType stack,const ssize_t offset)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o stack: By default, images are stacked left-to-right. Set stack to
+%      MagickTrue to stack them top-to-bottom.
+%
+%    o offset: minimum distance in pixels between images.
+%
+*/
+WandExport MagickWand *MagickSmushImages(MagickWand *wand,
+  const MagickBooleanType stack,const ssize_t offset)
+{
+  Image
+    *smush_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  smush_image=SmushImages(wand->images,stack,offset,wand->exception);
+  if (smush_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,smush_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     M a g i c k S o l a r i z e I m a g e                                   %
 %                                                                             %
 %                                                                             %

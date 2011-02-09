@@ -3,6 +3,8 @@
   * Fix off-by-one error in PosterizeImage().
   * Posterize now distributes color uniformally (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17623).
+  * Add -smush option (doesn't work yet) (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17953).
 
 2011-02-07  6.6.7-6 Cristy  <quetzlzacatenango@image...>
   * Fix bug in carg() define when HAVE_COMPLEX is not defined (reference

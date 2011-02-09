@@ -585,6 +585,8 @@ static const OptionInfo
     { "-size", 1L, MagickFalse },
     { "+sketch", 0L, MagickFalse },
     { "-sketch", 1L, MagickFalse },
+    { "+smush", 0L, MagickFalse },
+    { "-smush", 1L, MagickFalse },
     { "+snaps", 0L, MagickFalse },
     { "-snaps", 1L, MagickFalse },
     { "+solarize", 0L, MagickFalse },
@@ -1031,6 +1033,7 @@ static const OptionInfo
     { "process", MagickTrue, MagickFalse },
     { "quiet", MagickTrue, MagickFalse },
     { "separate", MagickTrue, MagickFalse },
+    { "smush", MagickTrue, MagickFalse },
     { "swap", MagickTrue, MagickFalse },
     { "write", MagickTrue, MagickFalse },
     { (char *) NULL, MagickFalse, MagickFalse }
