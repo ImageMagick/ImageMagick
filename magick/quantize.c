@@ -1067,15 +1067,15 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
         }
       pixel=alpha*p->red-beta*q->red;
       distance=pixel*pixel;
-      if (distance < cube_info->distance)
+      if (distance <= cube_info->distance)
         {
           pixel=alpha*p->green-beta*q->green;
           distance+=pixel*pixel;
-          if (distance < cube_info->distance)
+          if (distance <= cube_info->distance)
             {
               pixel=alpha*p->blue-beta*q->blue;
               distance+=pixel*pixel;
-              if (distance < cube_info->distance)
+              if (distance <= cube_info->distance)
                 {
                   pixel=alpha-beta;
                   distance+=pixel*pixel;
