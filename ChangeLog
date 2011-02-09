@@ -1,6 +1,8 @@
 2011-02-08  6.6.7-7 Cristy  <quetzlzacatenango@image...>
   * Support 16-bit per pixel YUV image files.
   * Fix off-by-one error in PosterizeImage().
+  * Posterize now distributes color uniformally (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17623).
 
 2011-02-07  6.6.7-6 Cristy  <quetzlzacatenango@image...>
   * Fix bug in carg() define when HAVE_COMPLEX is not defined (reference

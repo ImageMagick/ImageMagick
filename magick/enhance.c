@@ -2546,18 +2546,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %             use 1.0 for purely linear stretching of image color values
 %
 */
-
-MagickExport MagickBooleanType LevelizeImage(Image *image,
-  const double black_point,const double white_point,const double gamma)
-{
-  MagickBooleanType
-    status;
-
-  status=LevelizeImageChannel(image,DefaultChannels,black_point,white_point,
-    gamma);
-  return(status);
-}
-
 MagickExport MagickBooleanType LevelImageChannel(Image *image,
   const ChannelType channel,const double black_point,const double white_point,
   const double gamma)
@@ -2721,6 +2709,18 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
 %    o gamma: adjust gamma by this factor before mapping values.
 %
 */
+
+MagickExport MagickBooleanType LevelizeImage(Image *image,
+  const double black_point,const double white_point,const double gamma)
+{
+  MagickBooleanType
+    status;
+
+  status=LevelizeImageChannel(image,DefaultChannels,black_point,white_point,
+    gamma);
+  return(status);
+}
+
 MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   const ChannelType channel,const double black_point,const double white_point,
   const double gamma)
