@@ -585,7 +585,7 @@ static const OptionInfo
     { "-size", 1L, MagickFalse },
     { "+sketch", 0L, MagickFalse },
     { "-sketch", 1L, MagickFalse },
-    { "+smush", 0L, MagickFalse },
+    { "+smush", 1L, MagickFalse },
     { "-smush", 1L, MagickFalse },
     { "+snaps", 0L, MagickFalse },
     { "-snaps", 1L, MagickFalse },
