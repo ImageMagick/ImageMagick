@@ -2534,8 +2534,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("smush",option+1) == 0)
           {
-            if (*option == '+')
-              break;
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
