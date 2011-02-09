@@ -499,7 +499,9 @@ extern MagickExport Image
   *NewMagickImage(const ImageInfo *,const size_t,const size_t,
     const MagickPixelPacket *),
   *ReferenceImage(Image *),
-  *SeparateImages(const Image *,const ChannelType,ExceptionInfo *);
+  *SeparateImages(const Image *,const ChannelType,ExceptionInfo *),
+  *SmushImages(const Image *,const MagickBooleanType,const ssize_t,
+    ExceptionInfo *);
 
 extern MagickExport ImageInfo
   *AcquireImageInfo(void),

@@ -3774,7 +3774,7 @@ static MagickBooleanType MogrifyUsage(void)
     },
     *sequence_operators[]=
     {
-      "-append              append an image sequence top to bottom",
+      "-append              append an image sequence",
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
@@ -3792,6 +3792,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-process arguments   process the image with a custom image filter",
       "-reverse             reverse image sequence",
       "-separate            separate an image channel into a grayscale image",
+      "-smush geometry      smush an image sequence together",
       "-write filename      write images to this file",
       (char *) NULL
     },
@@ -5962,6 +5963,20 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("smush",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            i++;
             break;
           }
         if (LocaleCompare("solarize",option+1) == 0)
@@ -8358,6 +8373,27 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 's':
       {
+        if (LocaleCompare("smush",option+1) == 0)
+          {
+            Image
+              *smush_image;
+
+            ssize_t
+              offset;
+
+            (void) SyncImagesSettings(mogrify_info,*images);
+            offset=(ssize_t) StringToLong(argv[i+1]);
+            smush_image=SmushImages(*images,*option == '-' ? MagickTrue :
+              MagickFalse,offset,exception);
+            if (smush_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=smush_image;
+            break;
+          }
         if (LocaleCompare("swap",option+1) == 0)
           {
             Image

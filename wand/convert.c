@@ -290,7 +290,7 @@ static MagickBooleanType ConvertUsage(void)
     },
     *sequence_operators[]=
     {
-      "-append              append an image sequence top to bottom",
+      "-append              append an image sequence",
       "-clut                apply a color lookup table to the image",
       "-coalesce            merge a sequence of images",
       "-combine             combine a sequence of images",
@@ -308,6 +308,7 @@ static MagickBooleanType ConvertUsage(void)
       "-process arguments   process the image with a custom image filter",
       "-reverse             reverse image sequence",
       "-separate            separate an image channel into a grayscale image",
+      "-smush geometry      smush an image sequence together",
       "-write filename      write images to this file",
       (char *) NULL
     },
@@ -2529,6 +2530,20 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("smush",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("solarize",option+1) == 0)
