@@ -2151,7 +2151,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P o s t e r i z e I m a g e                                               %
+%     P o s t e r i z e I m a g e C h a n n e l                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2163,6 +2163,9 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %  The format of the PosterizeImage method is:
 %
 %      MagickBooleanType PosterizeImage(Image *image,const size_t levels,
+%        const MagickBooleanType dither)
+%      MagickBooleanType PosterizeImageChannel(Image *image,
+%        const ChannelType channel,const size_t levels,
 %        const MagickBooleanType dither)
 %
 %  A description of each parameter follows:
@@ -2176,106 +2179,138 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %      the mapped image.
 %
 */
-MagickExport MagickBooleanType PosterizeImage(Image *image,
-  const size_t levels,const MagickBooleanType dither)
+
+MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
+  const MagickBooleanType dither)
 {
+  MagickBooleanType
+    status;
+
+  status=PosterizeImageChannel(image,DefaultChannels,levels,dither);
+  return(status);
+}
+
+MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
+  const ChannelType channel,const size_t levels,const MagickBooleanType dither)
+{
+#define PosterizeImageTag  "Posterize/Image"
+#define PosterizePixel(pixel) (Quantum) (QuantumRange*(PosterizeRound( \
+  QuantumScale*pixel*(levels-1))/(levels-1)))
+#define PosterizeRound(pixel) ((pixel) < 0.0 ? -floor((double) \
+  (-(pixel)+0.5)) : floor((double) (pixel)+0.5))
+
   CacheView
-    *posterize_view;
+    *image_view;
 
   ExceptionInfo
     *exception;
 
-  Image
-    *posterize_image;
-
-  IndexPacket
-    *indexes;
-
   MagickBooleanType
     status;
+
+  MagickOffsetType
+    progress;
 
   QuantizeInfo
     *quantize_info;
 
-  register PixelPacket
-    *restrict q;
-
   register ssize_t
     i;
 
-  size_t
-    extent;
-
   ssize_t
-    j,
-    k,
-    l,
-    n;
+    y;
 
-  /*
-    Posterize image.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  posterize_image=AcquireImage((ImageInfo *) NULL);
-  if (posterize_image == (Image *) NULL)
-    return(MagickFalse);
-  extent=(size_t) MagickMin((ssize_t) levels*levels*levels,MaxColormapSize+1);
-  for (l=1; (l*l*l) <= (ssize_t) extent; l++) ;
-  l--;
-  status=SetImageExtent(posterize_image,(size_t) (l*l*l),1);
-  if (status == MagickFalse)
+  if (image->storage_class == PseudoClass)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+    for (i=0; i < (ssize_t) image->colors; i++)
     {
-      posterize_image=DestroyImage(posterize_image);
-      return(MagickFalse);
+      /*
+        Posterize colormap.
+      */
+      if ((channel & RedChannel) != 0)
+        image->colormap[i].red=PosterizePixel(image->colormap[i].red);
+      if ((channel & GreenChannel) != 0)
+        image->colormap[i].green=PosterizePixel(image->colormap[i].green);
+      if ((channel & BlueChannel) != 0)
+        image->colormap[i].blue=PosterizePixel(image->colormap[i].blue);
+      if ((channel & OpacityChannel) != 0)
+        image->colormap[i].opacity=PosterizePixel(image->colormap[i].opacity);
     }
-  status=AcquireImageColormap(posterize_image,(size_t) (l*l*l));
-  if (status == MagickFalse)
-    {
-      posterize_image=DestroyImage(posterize_image);
-      return(MagickFalse);
-    }
-  posterize_view=AcquireCacheView(posterize_image);
+  /*
+    Posterize image.
+  */
+  status=MagickTrue;
+  progress=0;
   exception=(&image->exception);
-  q=QueueCacheViewAuthenticPixels(posterize_view,0,0,posterize_image->columns,1,
-    exception);
-  if (q == (PixelPacket *) NULL)
-    {
-      posterize_view=DestroyCacheView(posterize_view);
-      posterize_image=DestroyImage(posterize_image);
-      return(MagickFalse);
-    }
-  indexes=GetCacheViewAuthenticIndexQueue(posterize_view);
-  n=0;
-  for (i=0; i < l; i++)
-    for (j=0; j < l; j++)
-      for (k=0; k < l; k++)
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register IndexPacket
+      *restrict indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
       {
-        posterize_image->colormap[n].red=(Quantum) (QuantumRange*i/
-          MagickMax(l-1L,1L));
-        posterize_image->colormap[n].green=(Quantum) (QuantumRange*j/
-          MagickMax(l-1L,1L));
-        posterize_image->colormap[n].blue=(Quantum) (QuantumRange*k/
-          MagickMax(l-1L,1L));
-        posterize_image->colormap[n].opacity=OpaqueOpacity;
-        *q++=posterize_image->colormap[n];
-        indexes[n]=(IndexPacket) n;
-        n++;
+        status=MagickFalse;
+        continue;
       }
-  if (SyncCacheViewAuthenticPixels(posterize_view,exception) == MagickFalse)
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      posterize_view=DestroyCacheView(posterize_view);
-      posterize_image=DestroyImage(posterize_image);
-      return(MagickFalse);
+      if ((channel & RedChannel) != 0)
+        q->red=PosterizePixel(q->red);
+      if ((channel & GreenChannel) != 0)
+        q->green=PosterizePixel(q->green);
+      if ((channel & BlueChannel) != 0)
+        q->blue=PosterizePixel(q->blue);
+      if (((channel & OpacityChannel) != 0) &&
+          (image->matte == MagickTrue))
+        q->opacity=PosterizePixel(q->opacity);
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        indexes[x]=PosterizePixel(indexes[x]);
+      q++;
     }
-  posterize_view=DestroyCacheView(posterize_view);
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_PosterizeImageChannel)
+#endif
+        proceed=SetImageProgress(image,PosterizeImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
   quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
+  quantize_info->number_colors=(size_t) MagickMin((ssize_t) levels*levels*
+    levels,MaxColormapSize+1);
   quantize_info->dither=dither;
-  status=RemapImage(quantize_info,image,posterize_image);
+  status=QuantizeImage(quantize_info,image);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  posterize_image=DestroyImage(posterize_image);
   return(status);
 }
 
