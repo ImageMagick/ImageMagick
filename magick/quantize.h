@@ -60,6 +60,8 @@ extern MagickExport MagickBooleanType
   CompressImageColormap(Image *),
   GetImageQuantizeError(Image *),
   PosterizeImage(Image *,const size_t,const MagickBooleanType),
+  PosterizeImageChannel(Image *,const ChannelType,const size_t,
+    const MagickBooleanType),
   QuantizeImage(const QuantizeInfo *,Image *),
   QuantizeImages(const QuantizeInfo *,Image *),
   RemapImage(const QuantizeInfo *,Image *,const Image *),
