@@ -3831,14 +3831,138 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %
 */
 
-static ssize_t SmushXOffset(const Image *images,ExceptionInfo *exception)
+static size_t SmushXOffset(const Image *smush_image,const Image *images,
+  ExceptionInfo *exception)
 {
-  return(0);
+  CacheView
+    *left_view,
+    *right_view;
+
+  const Image
+    *left_image,
+    *right_image;
+
+  MagickBooleanType
+    status;
+
+  PixelPacket
+    pixel;
+
+  RectangleInfo
+    left_geometry,
+    right_geometry;
+
+  register ssize_t
+    y;
+
+  size_t
+    minimum_offset;
+
+  ssize_t
+    offset,
+    x;
+
+  if (images->previous == (Image *) NULL)
+    return(0);
+  right_image=images;
+  SetGeometry(smush_image,&right_geometry);
+  GravityAdjustGeometry(right_image->columns,right_image->rows,
+    right_image->gravity,&right_geometry);
+  left_image=images->previous;
+  SetGeometry(smush_image,&left_geometry);
+  GravityAdjustGeometry(left_image->columns,left_image->rows,
+    left_image->gravity,&left_geometry);
+  minimum_offset=right_image->rows;
+  left_view=AcquireCacheView(left_image);
+  right_view=AcquireCacheView(right_image);
+  for (y=0; y < (ssize_t) smush_image->rows; y++)
+  {
+    for (x=(ssize_t) left_image->columns-1; x > 0; x--)
+    {
+      status=GetOneCacheViewVirtualPixel(left_view,x,y,&pixel,exception);
+      if (pixel.opacity != TransparentOpacity)
+        break;
+    }
+    offset=(ssize_t) left_image->columns-x-1;
+    for (x=0; x < (ssize_t) right_image->columns; x++)
+    {
+      status=GetOneCacheViewVirtualPixel(right_view,x,y,&pixel,exception);
+      if (pixel.opacity != TransparentOpacity)
+        break;
+    }
+    if ((size_t) (x+offset) < minimum_offset)
+      minimum_offset=(size_t) (x+offset);
+  }
+  right_view=DestroyCacheView(right_view);
+  left_view=DestroyCacheView(left_view);
+  return(minimum_offset);
 }
 
-static ssize_t SmushYOffset(const Image *images,ExceptionInfo *exception)
+static size_t SmushYOffset(const Image *smush_image,const Image *images,
+  ExceptionInfo *exception)
 {
-  return(0);
+  CacheView
+    *bottom_view,
+    *top_view;
+
+  const Image
+    *bottom_image,
+    *top_image;
+
+  MagickBooleanType
+    status;
+
+  PixelPacket
+    pixel;
+
+  RectangleInfo
+    bottom_geometry,
+    top_geometry;
+
+  register ssize_t
+    x;
+
+  size_t
+    minimum_offset;
+
+  ssize_t
+    offset,
+    y;
+
+  if (images->previous == (Image *) NULL)
+    return(0);
+  bottom_image=images;
+  SetGeometry(smush_image,&bottom_geometry);
+  GravityAdjustGeometry(bottom_image->columns,bottom_image->rows,
+    bottom_image->gravity,&bottom_geometry);
+  top_image=images->previous;
+  SetGeometry(smush_image,&top_geometry);
+  GravityAdjustGeometry(top_image->columns,top_image->rows,top_image->gravity,
+    &top_geometry);
+  minimum_offset=bottom_image->rows;
+  top_view=AcquireCacheView(top_image);
+  bottom_view=AcquireCacheView(bottom_image);
+  for (x=0; x < (ssize_t) smush_image->columns; x++)
+  {
+    for (y=(ssize_t) top_image->rows-1; y > 0; y--)
+    {
+      status=GetOneCacheViewVirtualPixel(top_view,x,y,&pixel,exception);
+      if (pixel.opacity != TransparentOpacity)
+        break;
+    }
+    offset=(ssize_t) top_image->rows-y-1;
+    for (y=0; y < (ssize_t) bottom_image->rows; y++)
+    {
+      status=GetOneCacheViewVirtualPixel(bottom_view,x,y,&pixel,exception);
+      if (pixel.opacity != TransparentOpacity)
+        break;
+    }
+    if ((size_t) (y+offset) < minimum_offset)
+      minimum_offset=(size_t) (y+offset);
+  }
+  bottom_view=DestroyCacheView(bottom_view);
+  top_view=DestroyCacheView(top_view);
+  return(minimum_offset);
 }
 
 MagickExport Image *SmushImages(const Image *images,
@@ -3892,6 +4016,10 @@ MagickExport Image *SmushImages(const Image *images,
   number_images=1;
   width=image->columns;
   height=image->rows;
+  if (stack != MagickFalse)
+    width+=GetImageListLength(image)*offset;
+  else
+    height+=GetImageListLength(image)*offset;
   next=GetNextImageInList(image);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
@@ -3934,12 +4062,12 @@ MagickExport Image *SmushImages(const Image *images,
     if (stack != MagickFalse)
       {
         x_offset-=geometry.x;
-        x_offset-=SmushXOffset(image,exception)+offset;
+        y_offset-=SmushYOffset(smush_image,image,exception)-offset;
       }
     else
       {
+        x_offset-=SmushXOffset(smush_image,image,exception)-offset;
         y_offset-=geometry.y;
-        y_offset-=SmushYOffset(image,exception)+offset;
       }
     status=CompositeImage(smush_image,OverCompositeOp,image,x_offset,y_offset);
     proceed=SetImageProgress(image,SmushImageTag,n,number_images);
@@ -3958,6 +4086,10 @@ MagickExport Image *SmushImages(const Image *images,
     image=GetNextImageInList(image);
   }
   smush_view=DestroyCacheView(smush_view);
+  if (stack != MagickFalse)
+    status=SetImageExtent(smush_image,smush_image->columns,(size_t) y_offset);
+  else
+    status=SetImageExtent(smush_image,(size_t) x_offset,smush_image->rows);
   if (status == MagickFalse)
     smush_image=DestroyImage(smush_image);
   return(smush_image);

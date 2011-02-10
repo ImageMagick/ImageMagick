@@ -2180,6 +2180,16 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 */
 
+static inline ssize_t MagickRound(MagickRealType x)
+{
+  /*
+   Round the fraction to nearest integer.
+  */
+  if (x >= 0.0)
+    return((ssize_t) (x+0.5));
+  return((ssize_t) (x-0.5));
+}
+
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   const MagickBooleanType dither)
 {
@@ -2194,10 +2204,8 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
   const ChannelType channel,const size_t levels,const MagickBooleanType dither)
 {
 #define PosterizeImageTag  "Posterize/Image"
-#define PosterizePixel(pixel) (Quantum) (QuantumRange*(PosterizeRound( \
+#define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
   QuantumScale*pixel*(levels-1))/(levels-1)))
-#define PosterizeRound(pixel) ((pixel) < 0.0 ? -floor((double) \
-  (-(pixel)+0.5)) : floor((double) (pixel)+0.5))
 
   CacheView
     *image_view;
