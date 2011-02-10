@@ -3832,8 +3832,7 @@ MagickExport Image *SmushImages(const Image *image,
 #define SmushImageTag  "Smush/Image"
 
   CacheView
-    *smush_view,
-    *image_view;
+    *smush_view;
 
   Image
     *smush_image;
@@ -3859,7 +3858,6 @@ MagickExport Image *SmushImages(const Image *image,
 
   ssize_t
     x_offset,
-    y,
     y_offset;
 
   /*
@@ -3918,60 +3916,7 @@ MagickExport Image *SmushImages(const Image *image,
       x_offset-=geometry.x;
     else
       y_offset-=geometry.y;
-    image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
-#endif
-    for (y=0; y < (ssize_t) image->rows; y++)
-    {
-      MagickBooleanType
-        sync;
-
-      register const IndexPacket
-        *restrict indexes;
-
-      register const PixelPacket
-        *restrict p;
-
-      register IndexPacket
-        *restrict smush_indexes;
-
-      register PixelPacket
-        *restrict q;
-
-      register ssize_t
-        x;
-
-      if (status == MagickFalse)
-        continue;
-      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-      q=QueueCacheViewAuthenticPixels(smush_view,x_offset,y+y_offset,
-        image->columns,1,exception);
-      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-        {
-          status=MagickFalse;
-          continue;
-        }
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      smush_indexes=GetCacheViewAuthenticIndexQueue(smush_view);
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        SetRedPixelComponent(q,GetRedPixelComponent(p));
-        SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-        SetBluePixelComponent(q,GetBluePixelComponent(p));
-        SetOpacityPixelComponent(q,OpaqueOpacity);
-        if (image->matte != MagickFalse)
-          SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
-        if (image->colorspace == CMYKColorspace)
-          smush_indexes[x]=indexes[x];
-        p++;
-        q++;
-      }
-      sync=SyncCacheViewAuthenticPixels(smush_view,exception);
-      if (sync == MagickFalse)
-        status=MagickFalse;
-    }
-    image_view=DestroyCacheView(image_view);
+    status=CompositeImage(smush_image,OverCompositeOp,image,x_offset,y_offset);
     proceed=SetImageProgress(image,SmushImageTag,n,number_images);
     if (proceed == MagickFalse)
       break;
