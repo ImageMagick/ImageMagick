@@ -3831,19 +3831,13 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %
 */
 
-static ssize_t SmushOffset(const Image *images,const MagickBooleanType stack,
-  ExceptionInfo *exception)
+static ssize_t SmushXOffset(const Image *images,ExceptionInfo *exception)
 {
-  if (stack != MagickFalse)
-    {
-      /*
-        Stack left to right.
-      */
-      return(0);
-    }
-  /*
-    Stack top to bottom.
-  */
+  return(0);
+}
+
+static ssize_t SmushYOffset(const Image *images,ExceptionInfo *exception)
+{
   return(0);
 }
 
@@ -3940,12 +3934,12 @@ MagickExport Image *SmushImages(const Image *images,
     if (stack != MagickFalse)
       {
         x_offset-=geometry.x;
-        x_offset-=SmushOffset(image,stack,exception)+offset;
+        x_offset-=SmushXOffset(image,exception)+offset;
       }
     else
       {
         y_offset-=geometry.y;
-        y_offset-=SmushOffset(image,stack,exception)+offset;
+        y_offset-=SmushYOffset(image,exception)+offset;
       }
     status=CompositeImage(smush_image,OverCompositeOp,image,x_offset,y_offset);
     proceed=SetImageProgress(image,SmushImageTag,n,number_images);
