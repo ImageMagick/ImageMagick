@@ -395,19 +395,19 @@ MagickExport void AcquireNextImage(const ImageInfo *image_info,Image *image)
 %
 %  The format of the AppendImages method is:
 %
-%      Image *AppendImages(const Image *image,const MagickBooleanType stack,
+%      Image *AppendImages(const Image *images,const MagickBooleanType stack,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image sequence.
+%    o images: the image sequence.
 %
 %    o stack: A value other than 0 stacks the images top-to-bottom.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *AppendImages(const Image *image,
+MagickExport Image *AppendImages(const Image *images,
   const MagickBooleanType stack,ExceptionInfo *exception)
 {
 #define AppendImageTag  "Append/Image"
@@ -415,6 +415,9 @@ MagickExport Image *AppendImages(const Image *image,
   CacheView
     *append_view,
     *image_view;
+
+  const Image
+    *image;
 
   Image
     *append_image;
@@ -446,12 +449,13 @@ MagickExport Image *AppendImages(const Image *image,
   /*
     Ensure the image have the same column width.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  image=images;
   matte=image->matte;
   number_images=1;
   width=image->columns;
@@ -3812,12 +3816,12 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %
 %  The format of the SmushImages method is:
 %
-%      Image *SmushImages(const Image *image,const MagickBooleanType stack,
+%      Image *SmushImages(const Image *images,const MagickBooleanType stack,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image sequence.
+%    o images: the image sequence.
 %
 %    o stack: A value other than 0 stacks the images top-to-bottom.
 %
@@ -3826,13 +3830,33 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SmushImages(const Image *image,
+
+static ssize_t SmushOffset(const Image *images,const MagickBooleanType stack,
+  ExceptionInfo *exception)
+{
+  if (stack != MagickFalse)
+    {
+      /*
+        Stack left to right.
+      */
+      return(0);
+    }
+  /*
+    Stack top to bottom.
+  */
+  return(0);
+}
+
+MagickExport Image *SmushImages(const Image *images,
   const MagickBooleanType stack,const ssize_t offset,ExceptionInfo *exception)
 {
 #define SmushImageTag  "Smush/Image"
 
   CacheView
     *smush_view;
+
+  const Image
+    *image;
 
   Image
     *smush_image;
@@ -3863,12 +3887,13 @@ MagickExport Image *SmushImages(const Image *image,
   /*
     Ensure the image have the same column width.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  image=images;
   matte=image->matte;
   number_images=1;
   width=image->columns;
@@ -3913,9 +3938,15 @@ MagickExport Image *SmushImages(const Image *image,
     SetGeometry(smush_image,&geometry);
     GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
     if (stack != MagickFalse)
-      x_offset-=geometry.x;
+      {
+        x_offset-=geometry.x;
+        x_offset-=SmushOffset(image,stack,exception)+offset;
+      }
     else
-      y_offset-=geometry.y;
+      {
+        y_offset-=geometry.y;
+        y_offset-=SmushOffset(image,stack,exception)+offset;
+      }
     status=CompositeImage(smush_image,OverCompositeOp,image,x_offset,y_offset);
     proceed=SetImageProgress(image,SmushImageTag,n,number_images);
     if (proceed == MagickFalse)
