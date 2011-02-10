@@ -3872,21 +3872,23 @@ static size_t SmushXOffset(const Image *smush_image,const Image *images,
   SetGeometry(smush_image,&left_geometry);
   GravityAdjustGeometry(left_image->columns,left_image->rows,
     left_image->gravity,&left_geometry);
-  minimum_offset=right_image->rows;
+  minimum_offset=right_image->columns;
   left_view=AcquireCacheView(left_image);
   right_view=AcquireCacheView(right_image);
   for (y=0; y < (ssize_t) smush_image->rows; y++)
   {
     for (x=(ssize_t) left_image->columns-1; x > 0; x--)
     {
-      status=GetOneCacheViewVirtualPixel(left_view,x,y,&pixel,exception);
+      status=GetOneCacheViewVirtualPixel(left_view,x,left_geometry.y+y,
+        &pixel,exception);
       if (pixel.opacity != TransparentOpacity)
         break;
     }
     offset=(ssize_t) left_image->columns-x-1;
     for (x=0; x < (ssize_t) right_image->columns; x++)
     {
-      status=GetOneCacheViewVirtualPixel(right_view,x,y,&pixel,exception);
+      status=GetOneCacheViewVirtualPixel(right_view,x,right_geometry.y+y,&pixel,
+        exception);
       if (pixel.opacity != TransparentOpacity)
         break;
     }
@@ -3946,14 +3948,16 @@ static size_t SmushYOffset(const Image *smush_image,const Image *images,
   {
     for (y=(ssize_t) top_image->rows-1; y > 0; y--)
     {
-      status=GetOneCacheViewVirtualPixel(top_view,x,y,&pixel,exception);
+      status=GetOneCacheViewVirtualPixel(top_view,top_geometry.x+x,y,&pixel,
+        exception);
       if (pixel.opacity != TransparentOpacity)
         break;
     }
     offset=(ssize_t) top_image->rows-y-1;
     for (y=0; y < (ssize_t) bottom_image->rows; y++)
     {
-      status=GetOneCacheViewVirtualPixel(bottom_view,x,y,&pixel,exception);
+      status=GetOneCacheViewVirtualPixel(bottom_view,bottom_geometry.x+x,y,
+        &pixel,exception);
       if (pixel.opacity != TransparentOpacity)
         break;
     }
