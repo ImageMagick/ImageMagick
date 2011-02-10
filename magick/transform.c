@@ -1709,6 +1709,7 @@ MagickExport Image *SpliceImage(const Image *image,
 %      final size of the image.
 %
 */
+
 static inline ssize_t MagickRound(MagickRealType x)
 {
   /*

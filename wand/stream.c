@@ -81,7 +81,6 @@
 %
 %    o exception: return any errors or warnings in this structure.
 %
-%
 */
 
 static MagickBooleanType StreamUsage(void)
