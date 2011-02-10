@@ -13382,7 +13382,7 @@ Smush(ref,...)
     /*
       Get options.
     */
-    offset=2;
+    offset=0;
     stack=MagickTrue;
     for (i=2; i < items; i+=2)
     {
