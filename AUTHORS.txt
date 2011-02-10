@@ -125,6 +125,11 @@ Milan Votava
      Contributed support for Wireless BitMap, used in WAP - Wireless Access
      Protocol.
 
+Fred Weinhaus
+     Contributed support and documentation for the discrete Fourier transform.
+     Also provides scripts that perform some out-of-the ordinary image
+     processing operations @ http://www.fmwconcepts.com/imagemagick/.
+
 Alexander Zimmermann
      Responsible for the ImageMagick Linux binary distributions for many years.
      His efforts are very much appreciated.
