@@ -447,7 +447,7 @@ MagickExport Image *AppendImages(const Image *images,
     y_offset;
 
   /*
-    Ensure the image have the same column width.
+    Compute maximum area of appended area.
   */
   assert(images != (Image *) NULL);
   assert(images->signature == MagickSignature);
@@ -478,7 +478,7 @@ MagickExport Image *AppendImages(const Image *images,
       height=next->rows;
   }
   /*
-    Initialize append next attributes.
+    Append images.
   */
   append_image=CloneImage(image,width,height,MagickTrue,exception);
   if (append_image == (Image *) NULL)
@@ -3831,7 +3831,7 @@ MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
 %
 */
 
-static ssize_t SmushXOffset(const Image *smush_image,const Image *images,
+static ssize_t SmushXGap(const Image *smush_image,const Image *images,
   const ssize_t offset,ExceptionInfo *exception)
 {
   CacheView
@@ -3856,8 +3856,10 @@ static ssize_t SmushXOffset(const Image *smush_image,const Image *images,
     i,
     y;
 
+  size_t
+    gap;
+
   ssize_t
-    minimum_offset,
     x;
 
   if (images->previous == (Image *) NULL)
@@ -3870,7 +3872,7 @@ static ssize_t SmushXOffset(const Image *smush_image,const Image *images,
   SetGeometry(smush_image,&left_geometry);
   GravityAdjustGeometry(left_image->columns,left_image->rows,
     left_image->gravity,&left_geometry);
-  minimum_offset=(ssize_t) right_image->columns;
+  gap=right_image->columns;
   left_view=AcquireCacheView(left_image);
   right_view=AcquireCacheView(right_image);
   for (y=0; y < (ssize_t) smush_image->rows; y++)
@@ -3879,7 +3881,8 @@ static ssize_t SmushXOffset(const Image *smush_image,const Image *images,
     {
       status=GetOneCacheViewVirtualPixel(left_view,x,left_geometry.y+y,
         &pixel,exception);
-      if (pixel.opacity != TransparentOpacity)
+      if ((pixel.opacity != TransparentOpacity) ||
+          ((left_image->columns-x-1) >= gap))
         break;
     }
     i=(ssize_t) left_image->columns-x-1;
@@ -3887,18 +3890,18 @@ static ssize_t SmushXOffset(const Image *smush_image,const Image *images,
     {
       status=GetOneCacheViewVirtualPixel(right_view,x,right_geometry.y+y,&pixel,
         exception);
-      if (pixel.opacity != TransparentOpacity)
+      if ((pixel.opacity != TransparentOpacity) || ((x+i) >= (ssize_t) gap))
         break;
     }
-    if ((x+i) < minimum_offset)
-      minimum_offset=x+i;
+    if ((x+i) < (ssize_t) gap)
+      gap=(size_t) (x+i);
   }
   right_view=DestroyCacheView(right_view);
   left_view=DestroyCacheView(left_view);
-  return(minimum_offset-offset);
+  return((ssize_t) gap-offset);
 }
 
-static ssize_t SmushYOffset(const Image *smush_image,const Image *images,
+static ssize_t SmushYGap(const Image *smush_image,const Image *images,
   const ssize_t offset,ExceptionInfo *exception)
 {
   CacheView
@@ -3923,8 +3926,10 @@ static ssize_t SmushYOffset(const Image *smush_image,const Image *images,
     i,
     x;
 
+  size_t
+    gap;
+
   ssize_t
-    minimum_offset,
     y;
 
   if (images->previous == (Image *) NULL)
@@ -3937,7 +3942,7 @@ static ssize_t SmushYOffset(const Image *smush_image,const Image *images,
   SetGeometry(smush_image,&top_geometry);
   GravityAdjustGeometry(top_image->columns,top_image->rows,top_image->gravity,
     &top_geometry);
-  minimum_offset=(ssize_t) bottom_image->rows;
+  gap=bottom_image->rows;
   top_view=AcquireCacheView(top_image);
   bottom_view=AcquireCacheView(bottom_image);
   for (x=0; x < (ssize_t) smush_image->columns; x++)
@@ -3946,7 +3951,8 @@ static ssize_t SmushYOffset(const Image *smush_image,const Image *images,
     {
       status=GetOneCacheViewVirtualPixel(top_view,top_geometry.x+x,y,&pixel,
         exception);
-      if (pixel.opacity != TransparentOpacity)
+      if ((pixel.opacity != TransparentOpacity) ||
+          ((top_image->rows-y-1) >= gap))
         break;
     }
     i=(ssize_t) top_image->rows-y-1;
@@ -3954,15 +3960,15 @@ static ssize_t SmushYOffset(const Image *smush_image,const Image *images,
     {
       status=GetOneCacheViewVirtualPixel(bottom_view,bottom_geometry.x+x,y,
         &pixel,exception);
-      if (pixel.opacity != TransparentOpacity)
+      if ((pixel.opacity != TransparentOpacity) || ((y+i) >= (ssize_t) gap))
         break;
     }
-    if ((y+i) < minimum_offset)
-      minimum_offset=y+i;
+    if ((y+i) < (ssize_t) gap)
+      gap=(size_t) (y+i);
   }
   bottom_view=DestroyCacheView(bottom_view);
   top_view=DestroyCacheView(top_view);
-  return(minimum_offset-offset);
+  return((ssize_t) gap-offset);
 }
 
 MagickExport Image *SmushImages(const Image *images,
@@ -4003,7 +4009,7 @@ MagickExport Image *SmushImages(const Image *images,
     y_offset;
 
   /*
-    Ensure the image have the same column width.
+    Compute maximum area of smushed area.
   */
   assert(images != (Image *) NULL);
   assert(images->signature == MagickSignature);
@@ -4038,7 +4044,7 @@ MagickExport Image *SmushImages(const Image *images,
       height=next->rows;
   }
   /*
-    Initialize smush next attributes.
+    Smush images.
   */
   smush_image=CloneImage(image,width,height,MagickTrue,exception);
   if (smush_image == (Image *) NULL)
@@ -4062,11 +4068,11 @@ MagickExport Image *SmushImages(const Image *images,
     if (stack != MagickFalse)
       {
         x_offset-=geometry.x;
-        y_offset-=SmushYOffset(smush_image,image,offset,exception);
+        y_offset-=SmushYGap(smush_image,image,offset,exception);
       }
     else
       {
-        x_offset-=SmushXOffset(smush_image,image,offset,exception);
+        x_offset-=SmushXGap(smush_image,image,offset,exception);
         y_offset-=geometry.y;
       }
     status=CompositeImage(smush_image,OverCompositeOp,image,x_offset,y_offset);
