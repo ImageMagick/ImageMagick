@@ -3879,8 +3879,8 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
   {
     for (x=(ssize_t) left_image->columns-1; x > 0; x--)
     {
-      status=GetOneCacheViewVirtualPixel(left_view,x,left_geometry.y+y,
-        &pixel,exception);
+      status=GetOneCacheViewVirtualPixel(left_view,x,left_geometry.y+y,&pixel,
+        exception);
       if ((pixel.opacity != TransparentOpacity) ||
           ((left_image->columns-x-1) >= gap))
         break;
