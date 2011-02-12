@@ -2205,7 +2205,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
 {
 #define PosterizeImageTag  "Posterize/Image"
 #define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
-  QuantumScale*pixel*(levels-1))/(levels-1)))
+  QuantumScale*pixel*(levels-1))/MagickMax(levels-1,1)))
 
   CacheView
     *image_view;
