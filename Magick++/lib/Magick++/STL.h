@@ -1741,6 +1741,17 @@ namespace Magick
     Geometry _geometry;
   };
 
+  // stripImage strips an image of all profiles and comments.
+  class MagickDLLDecl stripImage : public std::unary_function<Image&,void>
+  {
+  public:
+    stripImage( void );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+  };
+
   // Subimage of an image sequence
   class MagickDLLDecl subImageImage : public std::unary_function<Image&,void>
   {

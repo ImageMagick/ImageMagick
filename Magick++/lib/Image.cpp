@@ -3622,6 +3622,14 @@ void Magick::Image::statistics ( ImageStatistics *statistics ) const
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+// Strip strips an image of all profiles and comments.
+void Magick::Image::strip ( void )
+{
+  modifyImage();
+  StripImage( image() );
+  throwImageException();
+}
+
 // enabled/disable stroke anti-aliasing
 void Magick::Image::strokeAntiAlias ( const bool flag_ )
 {
