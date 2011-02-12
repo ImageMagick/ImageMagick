@@ -1544,6 +1544,15 @@ void Magick::spliceImage::operator()( Magick::Image &image_ ) const
   image_.splice( _geometry );
 }
 
+// stripImage strips an image of all profiles and comments.
+Magick::stripImage::stripImage( void )
+{
+}
+void Magick::stripImage::operator()( Magick::Image &image_ ) const
+{
+  image_.strip( );
+}
+
 // Subimage of an image sequence
 Magick::subImageImage::subImageImage( const size_t subImage_ )
   : _subImage( subImage_ )

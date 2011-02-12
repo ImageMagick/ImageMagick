@@ -1,3 +1,6 @@
+2011-02-12  6.6.7-7 Cristy  <quetzlzacatenango@image...>
+  * Add support for the strip() and stripImage() STL methods.
+
 2011-02-01  6.6.7-2 Cristy  <quetzlzacatenango@image...>
   * Remove extra '+' in the geometry operator.
 

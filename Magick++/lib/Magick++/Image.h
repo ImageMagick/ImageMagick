@@ -668,6 +668,9 @@ namespace Magick
     // red-blue glasses (Red image on left, blue on right)
     void            stereo ( const Image &rightImage_ );
     
+    // Strip strips an image of all profiles and comments.
+    void            strip ( void );
+
     // Swirl image (image pixels are rotated by degrees)
     void            swirl ( const double degrees_ );
     
