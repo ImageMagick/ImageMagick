@@ -164,7 +164,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -384,6 +384,9 @@ _8c.html" id="PosterizeImage">PosterizeImage</a></h2>
 
 <pre class="code">
   MagickBooleanType PosterizeImage(Image *image,const size_t levels,
+    const MagickBooleanType dither)
+  MagickBooleanType PosterizeImageChannel(Image *image,
+    const ChannelType channel,const size_t levels,
     const MagickBooleanType dither)
 </pre>
 
