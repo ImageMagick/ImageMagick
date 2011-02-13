@@ -307,6 +307,12 @@ $example->Label('Polaroid');
 $example->Polaroid(caption=>'Magick',rotate=>-5.0,gravity=>'center');
 push(@$images,$example);
 
+print "Posterize...\n";
+$example=$model->Clone();
+$example->Label('Posterize');
+$example->Posterize(5);
+push(@$images,$example);
+
 print "Quantize...\n";
 $example=$model->Clone();
 $example->Label('Quantize');
