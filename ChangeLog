@@ -1,3 +1,7 @@
+2011-02-13  6.6.7-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fixed Variable blur to handle small (< 1.0 sigma) blurs generated
+    by the blur map being used, rather than just 'cutoff' suddenly.
+
 2011-02-08  6.6.7-7 Cristy  <quetzlzacatenango@image...>
   * Support 16-bit per pixel YUV image files.
   * Fix off-by-one error in PosterizeImage().
