@@ -164,7 +164,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -2461,6 +2461,14 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 <pre class="code">
   $image-&gt;RemoteCommand('image.jpg');
 </pre>
+
+<p>The Smush() method smushes a set of images together. For example,</p>
+
+<pre class="code">
+  $p = $image-&gt;Smush(stack=&gt;{true,false},offset=&gt;<em>integer</em>);
+</pre>
+
+<p>smushes together all the images associated with object <kbd>$image</kbd>. By default, images are smushed left-to-right. Set <kbd>stack</kbd> to True to smushed them top-to-bottom.</p>
 
 <p>Statistics() returns the image statistics for each channel in the image. The returned values are an array of depth, minima, maxima, mean, standard deviation, kurtosis, and skewness values in RGB, CMYK, RGBA, or CMYKA order (depending on the image type).</p>
 

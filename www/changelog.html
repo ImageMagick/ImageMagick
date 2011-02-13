@@ -164,7 +164,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -187,7 +187,15 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-02-07  6.6.7-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-02-13  6.6.7-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Fixed Variable blur to handle small (< 1.0 sigma) blurs generated    by the blur map being used, rather than just 'cutoff' suddenly.</dd>
+<dt>2011-02-08  6.6.7-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support 16-bit per pixel YUV image files.</dd>
+  <dd> Fix off-by-one error in PosterizeImage().</dd>
+  <dd> Posterize now distributes color uniformally (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17623).</dd>
+  <dd> Add -smush option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17953).</dd>
+  <dd> Repair memory leak in the display program.</dd>
+<dt>2011-02-07  6.6.7-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix bug in carg() define when HAVE_COMPLEX is not defined (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18030).</dd>
 <dt>2011-02-06  6.6.7-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Default sigma for Gauusian resize filter is now 1/2 for both    orthogonal resize and cylindrical EWA distortions.</dd>
