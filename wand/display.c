@@ -618,7 +618,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         /*
           Free image resources.
         */
-        SetImageStack(image);
+        if (image != (Image *) NULL)
+          SetImageStack(image);
         RemoveAllImageStack();
         if ((state & FormerImageState) == 0)
           {
