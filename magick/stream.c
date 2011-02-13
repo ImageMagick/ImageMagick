@@ -1073,7 +1073,7 @@ MagickExport void SetStreamInfoStorageType(StreamInfo *stream_info,
 %  StreamImage() streams pixels from an image and writes them in a user
 %  defined format and storage type (e.g. RGBA as 8-bit unsigned char).
 %
-%  The format of he wStreamImage() method is:
+%  The format of the StreamImage() method is:
 %
 %      Image *StreamImage(const ImageInfo *image_info,
 %        StreamInfo *stream_info,ExceptionInfo *exception)
@@ -1149,8 +1149,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
       write_info=DestroyImageInfo(write_info);
     }
   extract_info=stream_info->extract_info;
-  if ((extract_info.width == 0) ||
-      (extract_info.height == 0))
+  if ((extract_info.width == 0) || (extract_info.height == 0))
     {
       /*
         Write all pixels to stream.
@@ -1248,15 +1247,15 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
   QuantumType
     *quantum_map;
 
-  register ssize_t
-    i,
-    x;
-
   register const PixelPacket
     *p;
 
   register IndexPacket
     *indexes;
+
+  register ssize_t
+    i,
+    x;
 
   size_t
     length;
