@@ -1751,8 +1751,6 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           blur.x2=sin(angle);
           blur.y1=-sin(angle);
           blur.y2=cos(angle);
-//fprintf(stderr, "y=? angle=%lf, x1=%lf, x2=%lf, y1=%lf, y2=%lf\n",
-//   RadiansToDegrees(angle),blur.x1,blur.x2,blur.y1,blur.y2);
         }
       if ((flags & YValue) != 0 )
         {
@@ -1825,9 +1823,6 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               blur.x2=sin(angle);
               blur.y1=-sin(angle);
               blur.y2=cos(angle);
-//if (y == 0);
-//fprintf(stderr, "y=%d angle=%lf, x1=%lf, x2=%lf, y1=%lf, y2=%lf\n",
-//   y, RadiansToDegrees(angle),blur.x1,blur.x2,blur.y1,blur.y2);
             }
           SetResampleFilter(resample_filter,GaussianFilter,2.0*b);
           ScaleResampleFilter(resample_filter,blur.x1*w,blur.y1*h,
