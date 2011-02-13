@@ -1794,6 +1794,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
         for (x=0; x < (ssize_t) composite_image->columns; x++)
         {
+          MagickRealType
+            b,
+            h,
+            w;
+
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
               p++;
@@ -1802,10 +1807,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           /* if w or h blurs are getting too small,
            * adjust the filter sigma, rather than the ellipse
            */
-          MagickRealType
-            w=width*GetRedPixelComponent(p),
-            h=height*GetGreenPixelComponent(p),
-            b=MagickMax(w,h) + MagickEpsilon;
+          w=width*GetRedPixelComponent(p);
+          h=height*GetGreenPixelComponent(p);
+          b=MagickMax(w,h) + MagickEpsilon;
           if ( b < 1.0 )
             w /= b, h /= b; /* make sure ellipse does not get too small */
           else
@@ -2767,7 +2771,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
       /*
         Tile texture onto the image background.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture->rows)
@@ -2795,7 +2799,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_TextureImage)
 #endif
             proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType)
