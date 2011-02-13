@@ -486,28 +486,26 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
 {
 #define AssignImageTag  "Assign/Image"
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
   RealPixelPacket
     pixel;
 
+  register const NodeInfo
+    *node_info;
+
   register ssize_t
     i,
     x;
 
-  register const NodeInfo
-    *node_info;
-
-  ssize_t
-    count;
-
   size_t
     id,
     index;
+
+  ssize_t
+    count,
+    y;
 
   /*
     Allocate image colormap.
@@ -574,6 +572,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
               break;
             node_info=node_info->child[id];
           }
+          node_info=node_info->parent;
           /*
             Find closest color among siblings and their children.
           */
@@ -721,9 +720,6 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -740,12 +736,13 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
     pixel;
 
   size_t
-    count;
-
-  size_t
+    count,
     id,
     index,
     level;
+
+  ssize_t
+    y;
 
   /*
     Classify the first cube_info->maximum_colors colors to a tree depth of 8.
@@ -1417,12 +1414,12 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
     register IndexPacket
       *restrict indexes;
 
+    register PixelPacket
+      *restrict q;
+
     register ssize_t
       i,
       x;
-
-    register PixelPacket
-      *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -1492,6 +1489,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
               break;
             node_info=node_info->child[id];
           }
+          node_info=node_info->parent;
           /*
             Find closest color among siblings and their children.
           */
@@ -1657,11 +1655,11 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
       register IndexPacket
         *restrict indexes;
 
-      register ssize_t
-        i;
-
       register PixelPacket
         *restrict q;
+
+      register ssize_t
+        i;
 
       /*
         Distribute error.
@@ -1705,6 +1703,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
               break;
             node_info=node_info->child[id];
           }
+          node_info=node_info->parent;
           /*
             Find closest color among siblings and their children.
           */
@@ -1852,11 +1851,11 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
     sum,
     weight;
 
-  size_t
-    length;
-
   register ssize_t
     i;
+
+  size_t
+    length;
 
   /*
     Initialize tree to describe color cube_info.
@@ -2033,9 +2032,6 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
   IndexPacket
     *indexes;
 
-  ssize_t
-    y;
-
   MagickRealType
     alpha,
     area,
@@ -2047,6 +2043,9 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
 
   size_t
     index;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2183,7 +2182,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 static inline ssize_t MagickRound(MagickRealType x)
 {
   /*
-   Round the fraction to nearest integer.
+    Round the fraction to nearest integer.
   */
   if (x >= 0.0)
     return((ssize_t) (x+0.5));
@@ -2205,7 +2204,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
 {
 #define PosterizeImageTag  "Posterize/Image"
 #define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
-  QuantumScale*pixel*(levels-1))/MagickMax(levels-1,1)))
+  QuantumScale*pixel*(levels-1))/(levels-1)))
 
   CacheView
     *image_view;
@@ -3085,12 +3084,12 @@ extern "C" {
 
 static int IntensityCompare(const void *x,const void *y)
 {
-  ssize_t
-    intensity;
-
   PixelPacket
     *color_1,
     *color_2;
+
+  ssize_t
+    intensity;
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
@@ -3111,21 +3110,19 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    j,
-    y;
+  MagickBooleanType
+    status;
 
   PixelPacket
     *colormap;
 
-  ssize_t
-    *colormap_index;
-
   register ssize_t
     i;
 
-  MagickBooleanType
-    status;
+  ssize_t
+    *colormap_index,
+    j,
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3158,11 +3155,11 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
         register IndexPacket
           *restrict indexes;
 
-        register ssize_t
-          x;
-
         register const PixelPacket
           *restrict q;
+
+        register ssize_t
+          x;
 
         if (status == MagickFalse)
           continue;
@@ -3234,11 +3231,11 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register const PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
