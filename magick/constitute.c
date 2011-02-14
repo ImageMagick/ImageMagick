@@ -1072,7 +1072,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   (void) SyncImageProfiles(image);
   option=GetImageOption(image_info,"delegate:bimodal");
-  if ((option != (const char *) NULL) && 
+  if ((option != (const char *) NULL) &&
       (IsMagickTrue(option) != MagickFalse) &&
       (write_info->page == (char *) NULL) &&
       (GetPreviousImageInList(image) == (Image *) NULL) &&
@@ -1172,7 +1172,14 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
             {
-              magick_info=GetMagickInfo(image->magick,&image->exception);
+              char
+                extension[MaxTextExtent];
+
+              GetPathComponent(image->filename,ExtensionPath,extension);
+              if (*extension != '\0')
+                magick_info=GetMagickInfo(extension,&image->exception);
+              else
+                magick_info=GetMagickInfo(image->magick,&image->exception);
               (void) CopyMagickString(image->filename,filename,MaxTextExtent);
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
