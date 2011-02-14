@@ -530,7 +530,8 @@ static MagickBooleanType
                   == ((size_t) image->colormap[indx].green & 0xff)) &&
                   ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
                   == ((size_t) image->colormap[indx].blue & 0xff)) &&
-                  ((((size_t) image->colormap[indx].opacity >> 8) & 0xff)
+                  (image->matte == MagickFalse ||
+                  (((size_t) image->colormap[indx].opacity >> 8) & 0xff)
                   == ((size_t) image->colormap[indx].opacity & 0xff))) ?
                   MagickTrue : MagickFalse;
                 if (ok_to_reduce == MagickFalse)
@@ -566,7 +567,7 @@ static MagickBooleanType
                   ((size_t) p->green & 0xff)) &&
                   ((((size_t) p->blue >> 8) & 0xff) ==
                   ((size_t) p->blue & 0xff)) &&
-                  (((!image->matte ||
+                  (((image->matte == MagickFalse ||
                   (((size_t) p->opacity >> 8) & 0xff) ==
                   ((size_t) p->opacity & 0xff))))) ? MagickTrue : MagickFalse;
 
@@ -7011,6 +7012,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        * This code will delete the colormap and change the image to
        * DirectClass.
        *
+       * If image->matte is MagickFalse, we ignore the opacity channel
+       * even though it sometimes contains left-over non-opaque values.
+       *
        * Also we gather some information (number of opaque, transparent,
        * and semitransparent pixels, and whether the image has any non-gray
        * pixels) that we might need later. If the user wants to force
@@ -7111,7 +7115,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 if (q->red != q->green || q->red != q->blue)
                   ping_have_color=MagickTrue;
 
-                if (q->opacity == OpaqueOpacity)
+                if (image->matte == MagickFalse || q->opacity == OpaqueOpacity)
                   {
                     if (number_opaque < 259)
                       {
@@ -7199,7 +7203,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           if (logging != MagickFalse)
             {
-              if (image_colors >= 256)
+              if (image_colors > 256)
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "      image has more than 256 colors");
 

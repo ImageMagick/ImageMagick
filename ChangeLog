@@ -1,3 +1,8 @@
+2011-01-25  6.6.7-8 Glenn Randers-Pehrson <glennrp@image...>
+  * The PNG encoder should ignore bogus q->opacity values when image->matte
+    is MagickFalse (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18067).
+
 2011-02-14  6.6.7-8 Cristy  <quetzlzacatenango@image...>
   * Use implicit image format when explicit format is bogus (e.g.
     02.13.11-18:43:58.png now writes as PNG).
