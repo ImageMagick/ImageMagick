@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policymap [
+<!ELEMENT policymap (policy)+>
+<!ELEMENT policy (#PCDATA)>
+<!ATTLIST policy domain (delegate|coder|filter|path|resource) #IMPLIED>
+<!ATTLIST policy name CDATA #IMPLIED>
+<!ATTLIST policy rights CDATA #IMPLIED>
+<!ATTLIST policy pattern CDATA #IMPLIED>
+<!ATTLIST policy value CDATA #IMPLIED>
+]>
+<!--
+  Configure ImageMagick policies.
+
+  Domains include system, delegate, coder, filter, path, or resource.
+
+  Rights include none, read, write, and execute.  Use | to combine them,
+  for example: "read | write" to permit read from, or write to, a path.
+
+  Use a glob expression as a pattern.
+
+  Suppose we do not want users to process MPEG video images:
+
+    <policy domain="delegate" rights="none" pattern="mpeg:decode" />
+
+  Here we do not want users reading images from HTTP:
+
+    <policy domain="coder" rights="none" pattern="HTTP" />
+
+  Lets prevent users from executing any image filters:
+
+    <policy domain="filter" rights="none" pattern="*" />
+
+  The /repository file system is restricted to read only. We use a glob
+  expression to match all paths that start with /repository:
+  
+    <policy domain="path" rights="read" pattern="/repository/*" />
+
+  Any large image is cached to disk rather than memory:
+
+    <policy domain="resource" name="area" value="1gb"/>
+
+  Note, resource policies are maximums for each instance of ImageMagick (e.g.
+  policy memory limit 1GB, -limit 2GB exceeds policy maximum so memory limit
+  is 1GB).
+-->
+<policymap>
+  <!-- <policy domain="system" name="precision" value="6"/> -->
+  <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
+  <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
+  <!-- <policy domain="resource" name="map" value="4GiB"/> -->
+  <!-- <policy domain="resource" name="area" value="1gb"/> -->
+  <!-- <policy domain="resource" name="disk" value="16eb"/> -->
+  <!-- <policy domain="resource" name="file" value="768"/> -->
+  <!-- <policy domain="resource" name="thread" value="4"/> -->
+  <!-- <policy domain="resource" name="throttle" value="0"/> -->
+  <!-- <policy domain="resource" name="time" value="3600"/> -->
+</policymap>
