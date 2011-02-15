@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -190,9 +190,227 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module draw
+ Methods</h1>
+<p class="navigation-index">[<a href="#AcquireDrawInfo">AcquireDrawInfo</a> &bull; <a href="#CloneDrawInfo">CloneDrawInfo</a> &bull; <a href="#DestroyDrawInfo">DestroyDrawInfo</a> &bull; <a href="#DrawAffineImage">DrawAffineImage</a> &bull; <a href="#DrawClipPath">DrawClipPath</a> &bull; <a href="#DrawImage">DrawImage</a> &bull; <a href="#DrawGradientImage">DrawGradientImage</a> &bull; <a href="#DrawPatternPath">DrawPatternPath</a> &bull; <a href="#DrawPrimitive">DrawPrimitive</a> &bull; <a href="#GetAffineMatrix">GetAffineMatrix</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="AcquireDrawInfo">AcquireDrawInfo</a></h2>
+<div class="doc-section">
+
+<p>AcquireDrawInfo() returns a DrawInfo structure properly initialized.</p>
+
+<p>The format of the AcquireDrawInfo method is:</p>
+
+<pre class="code">
+  DrawInfo *AcquireDrawInfo(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="CloneDrawInfo">CloneDrawInfo</a></h2>
+<div class="doc-section">
+
+<p>CloneDrawInfo() makes a copy of the given draw info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
+
+<p>The format of the CloneDrawInfo method is:</p>
+
+<pre class="code">
+  DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
+    const DrawInfo *draw_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DestroyDrawInfo">DestroyDrawInfo</a></h2>
+<div class="doc-section">
+
+<p>DestroyDrawInfo() deallocates memory associated with an DrawInfo structure.</p>
+
+<p>The format of the DestroyDrawInfo method is:</p>
+
+<pre class="code">
+  DrawInfo *DestroyDrawInfo(DrawInfo *draw_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DrawAffineImage">DrawAffineImage</a></h2>
+<div class="doc-section">
+
+<p>DrawAffineImage() composites the source over the destination image as dictated by the affine transform.</p>
+
+<p>The format of the DrawAffineImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawAffineImage(Image *image,const Image *source,
+    const AffineMatrix *affine)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>source</h5>
+<p>the source image.</p>
+
+<h5>affine</h5>
+<p>the affine transform.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DrawClipPath">DrawClipPath</a></h2>
+<div class="doc-section">
+
+<p>DrawClipPath() draws the clip path on the image mask.</p>
+
+<p>The format of the DrawClipPath method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
+    const char *name)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+<h5>name</h5>
+<p>the name of the clip path.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DrawImage">DrawImage</a></h2>
+<div class="doc-section">
+
+<p>DrawImage() draws a graphic primitive on your image.  The primitive may be represented as a string or filename.  Precede the filename with an "at" sign (@) and the contents of the file are drawn on the image.  You can affect how text is drawn by setting one or more members of the draw info structure.</p>
+
+<p>The format of the DrawImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DrawGradientImage">DrawGradientImage</a></h2>
+<div class="doc-section">
+
+<p>DrawGradientImage() draws a linear gradient on the image.</p>
+
+<p>The format of the DrawGradientImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawGradientImage(Image *image,
+    const DrawInfo *draw_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>_info</h5>
+<p>the draw info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DrawPatternPath">DrawPatternPath</a></h2>
+<div class="doc-section">
+
+<p>DrawPatternPath() draws a pattern.</p>
+
+<p>The format of the DrawPatternPath method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
+    const char *name,Image **pattern)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+<h5>name</h5>
+<p>the pattern name.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="DrawPrimitive">DrawPrimitive</a></h2>
+<div class="doc-section">
+
+<p>DrawPrimitive() draws a primitive (line, rectangle, ellipse) on the image.</p>
+
+<p>The format of the DrawPrimitive method is:</p>
+
+<pre class="code">
+  MagickBooleanType DrawPrimitive(Image *image,const DrawInfo *draw_info,
+    PrimitiveInfo *primitive_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>draw_info</h5>
+<p>the draw info.</p>
+
+<h5>primitive_info</h5>
+<p>Specifies a pointer to a PrimitiveInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/draw
+_8c.html" id="GetAffineMatrix">GetAffineMatrix</a></h2>
+<div class="doc-section">
+
+<p>GetAffineMatrix() returns an AffineMatrix initialized to the identity matrix.</p>
+
+<p>The format of the GetAffineMatrix method is:</p>
+
+<pre class="code">
+  void GetAffineMatrix(AffineMatrix *affine_matrix)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>affine_matrix</h5>
+<p>the affine matrix.</p>
+
+ </div>
 
 </div>
 

@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -190,9 +190,89 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module magick
+ Methods</h1>
+<p class="navigation-index">[<a href="#GetMagickPrecision">GetMagickPrecision</a> &bull; <a href="#IsMagickInstantiated">IsMagickInstantiated</a> &bull; <a href="#MagickCoreGenesis">MagickCoreGenesis</a> &bull; <a href="#MagickCoreTerminus">MagickCoreTerminus</a> &bull; <a href="#SetMagickPrecision">SetMagickPrecision</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" id="GetMagickPrecision">GetMagickPrecision</a></h2>
+<div class="doc-section">
+
+<p>GetMagickPrecision() returns the maximum number of significant digits to be printed.</p>
+
+<p>The format of the GetMagickPrecision method is:</p>
+
+<pre class="code">
+  int GetMagickPrecision(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" id="IsMagickInstantiated">IsMagickInstantiated</a></h2>
+<div class="doc-section">
+
+<p>IsMagickInstantiated() returns MagickTrue if the ImageMagick environment is currently instantiated:  MagickCoreGenesis() has been called but MagickDestroy() has not.</p>
+
+<p>The format of the IsMagickInstantiated method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsMagickInstantiated(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" id="MagickCoreGenesis">MagickCoreGenesis</a></h2>
+<div class="doc-section">
+
+<p>MagickCoreGenesis() initializes the MagickCore environment.</p>
+
+<p>The format of the MagickCoreGenesis function is:</p>
+
+<pre class="text">
+  MagickCoreGenesis(const char *path,
+    const MagickBooleanType establish_signal_handlers)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>path</h5>
+<p>the execution path of the current ImageMagick client.</p>
+
+<h5>establish_signal_handlers</h5>
+<p>set to MagickTrue to use MagickCore's own signal handlers for common signals.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" id="MagickCoreTerminus">MagickCoreTerminus</a></h2>
+<div class="doc-section">
+
+<p>MagickCoreTerminus() destroys the MagickCore environment.</p>
+
+<p>The format of the MagickCoreTerminus function is:</p>
+
+<pre class="text">
+  MagickCoreTerminus(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/magick
+_8c.html" id="SetMagickPrecision">SetMagickPrecision</a></h2>
+<div class="doc-section">
+
+<p>SetMagickPrecision() sets the maximum number of significant digits to be printed and returns it.</p>
+
+<p>The format of the SetMagickPrecision method is:</p>
+
+<pre class="code">
+  int SetMagickPrecision(const int precision)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>precision</h5>
+<p>set the maximum number of significant digits to be printed.</p>
+
+ </div>
 
 </div>
 

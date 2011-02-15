@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -190,9 +190,435 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module wand-view
+ Methods</h1>
+<p class="navigation-index">[<a href="#CloneWandView">CloneWandView</a> &bull; <a href="#DestroyWandView">DestroyWandView</a> &bull; <a href="#DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a> &bull; <a href="#GetWandViewException">GetWandViewException</a> &bull; <a href="#GetWandViewExtent">GetWandViewExtent</a> &bull; <a href="#GetWandViewIterator">GetWandViewIterator</a> &bull; <a href="#GetWandViewPixels">GetWandViewPixels</a> &bull; <a href="#GetWandViewWand">GetWandViewWand</a> &bull; <a href="#IsWandView">IsWandView</a> &bull; <a href="#NewWandView">NewWandView</a> &bull; <a href="#NewWandViewExtent">NewWandViewExtent</a> &bull; <a href="#SetWandViewDescription">SetWandViewDescription</a> &bull; <a href="#SetWandViewIterator">SetWandViewIterator</a> &bull; <a href="#SetWandViewThreads">SetWandViewThreads</a> &bull; <a href="#TransferWandViewIterator">TransferWandViewIterator</a> &bull; <a href="#UpdateWandViewIterator">UpdateWandViewIterator</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="CloneWandView">CloneWandView</a></h2>
+<div class="doc-section">
+
+<p>CloneWandView() makes a copy of the specified wand view.</p>
+
+<p>The format of the CloneWandView method is:</p>
+
+<pre class="code">
+  WandView *CloneWandView(const WandView *wand_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="DestroyWandView">DestroyWandView</a></h2>
+<div class="doc-section">
+
+<p>DestroyWandView() deallocates memory associated with a wand view.</p>
+
+<p>The format of the DestroyWandView method is:</p>
+
+<pre class="code">
+  WandView *DestroyWandView(WandView *wand_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="DuplexTransferWandViewIterator">DuplexTransferWandViewIterator</a></h2>
+<div class="doc-section">
+
+<p>DuplexTransferWandViewIterator() iterates over three wand views in parallel and calls your transfer method for each scanline of the view.  The source and duplex pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  However, the destination wand view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
+
+<p>The callback signature is:</p>
+
+<pre class="text">
+  MagickBooleanType DuplexTransferImageViewMethod(const WandView *source,
+    const WandView *duplex,WandView *destination,const ssize_t y,
+    const int thread_id,void *context)
+</pre>
+
+<p>Use this pragma if the view is not single threaded:</p>
+
+<pre class="text">
+      #pragma omp critical
+</pre>
+
+<p>to define a section of code in your callback transfer method that must be executed by a single thread at a time.</p>
+
+<p>The format of the DuplexTransferWandViewIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
+    WandView *duplex,WandView *destination,
+    DuplexTransferWandViewMethod transfer,void *context)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>source</h5>
+<p>the source wand view.</p>
+
+<h5>duplex</h5>
+<p>the duplex wand view.</p>
+
+<h5>destination</h5>
+<p>the destination wand view.</p>
+
+<h5>transfer</h5>
+<p>the transfer callback method.</p>
+
+<h5>context</h5>
+<p>the user defined context.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="GetWandViewException">GetWandViewException</a></h2>
+<div class="doc-section">
+
+<p>GetWandViewException() returns the severity, reason, and description of any error that occurs when utilizing a wand view.</p>
+
+<p>The format of the GetWandViewException method is:</p>
+
+<pre class="code">
+  char *GetWandViewException(const PixelWand *wand_view,
+    ExceptionType *severity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the pixel wand_view.</p>
+
+<h5>severity</h5>
+<p>the severity of the error is returned here.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="GetWandViewExtent">GetWandViewExtent</a></h2>
+<div class="doc-section">
+
+<p>GetWandViewExtent() returns the wand view extent.</p>
+
+<p>The format of the GetWandViewExtent method is:</p>
+
+<pre class="code">
+  RectangleInfo GetWandViewExtent(const WandView *wand_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="GetWandViewIterator">GetWandViewIterator</a></h2>
+<div class="doc-section">
+
+<p>GetWandViewIterator() iterates over the wand view in parallel and calls your get method for each scanline of the view.  The pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension.  Any updates to the pixels in your callback are ignored.</p>
+
+<p>The callback signature is:</p>
+
+<pre class="text">
+  MagickBooleanType GetImageViewMethod(const WandView *source,
+    const ssize_t y,const int thread_id,void *context)
+</pre>
+
+<p>Use this pragma if the view is not single threaded:</p>
+
+<pre class="text">
+      #pragma omp critical
+</pre>
+
+<p>to define a section of code in your callback get method that must be executed by a single thread at a time.</p>
+
+<p>The format of the GetWandViewIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetWandViewIterator(WandView *source,
+    GetWandViewMethod get,void *context)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>source</h5>
+<p>the source wand view.</p>
+
+<h5>get</h5>
+<p>the get callback method.</p>
+
+<h5>context</h5>
+<p>the user defined context.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="GetWandViewPixels">GetWandViewPixels</a></h2>
+<div class="doc-section">
+
+<p>GetWandViewPixels() returns the wand view pixel_wands.</p>
+
+<p>The format of the GetWandViewPixels method is:</p>
+
+<pre class="code">
+  PixelWand *GetWandViewPixels(const WandView *wand_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="GetWandViewWand">GetWandViewWand</a></h2>
+<div class="doc-section">
+
+<p>GetWandViewWand() returns the magick wand associated with the wand view.</p>
+
+<p>The format of the GetWandViewWand method is:</p>
+
+<pre class="code">
+  MagickWand *GetWandViewWand(const WandView *wand_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="IsWandView">IsWandView</a></h2>
+<div class="doc-section">
+
+<p>IsWandView() returns MagickTrue if the the parameter is verified as a wand view object.</p>
+
+<p>The format of the IsWandView method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsWandView(const WandView *wand_view)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="NewWandView">NewWandView</a></h2>
+<div class="doc-section">
+
+<p>NewWandView() returns a wand view required for all other methods in the Wand View API.</p>
+
+<p>The format of the NewWandView method is:</p>
+
+<pre class="code">
+  WandView *NewWandView(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="NewWandViewExtent">NewWandViewExtent</a></h2>
+<div class="doc-section">
+
+<p>NewWandViewExtent() returns a wand view required for all other methods in the Wand View API.</p>
+
+<p>The format of the NewWandViewExtent method is:</p>
+
+<pre class="code">
+  WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
+    const ssize_t y,const size_t width,const size_t height)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a extent of pixel_wands view.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="SetWandViewDescription">SetWandViewDescription</a></h2>
+<div class="doc-section">
+
+<p>SetWandViewDescription() associates a description with an image view.</p>
+
+<p>The format of the SetWandViewDescription method is:</p>
+
+<pre class="code">
+  void SetWandViewDescription(WandView *image_view,const char *description)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand_view</h5>
+<p>the wand view.</p>
+
+<h5>description</h5>
+<p>the wand view description.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="SetWandViewIterator">SetWandViewIterator</a></h2>
+<div class="doc-section">
+
+<p>SetWandViewIterator() iterates over the wand view in parallel and calls your set method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension.  The pixels are initiallly undefined and any settings you make in the callback method are automagically synced back to your image.</p>
+
+<p>The callback signature is:</p>
+
+<pre class="text">
+  MagickBooleanType SetImageViewMethod(ImageView *destination,
+    const ssize_t y,const int thread_id,void *context)
+</pre>
+
+<p>Use this pragma if the view is not single threaded:</p>
+
+<pre class="text">
+      #pragma omp critical
+</pre>
+
+<p>to define a section of code in your callback set method that must be executed by a single thread at a time.</p>
+
+<p>The format of the SetWandViewIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetWandViewIterator(WandView *destination,
+    SetWandViewMethod set,void *context)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>destination</h5>
+<p>the wand view.</p>
+
+<h5>set</h5>
+<p>the set callback method.</p>
+
+<h5>context</h5>
+<p>the user defined context.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="SetWandViewThreads">SetWandViewThreads</a></h2>
+<div class="doc-section">
+
+<p>SetWandViewThreads() sets the number of threads in a thread team.</p>
+
+<p>The format of the SetWandViewDescription method is:</p>
+
+<pre class="code">
+  void SetWandViewThreads(WandView *image_view,
+    const size_t number_threads)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_view</h5>
+<p>the image view.</p>
+
+<h5>number_threads</h5>
+<p>the number of threads in a thread team.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="TransferWandViewIterator">TransferWandViewIterator</a></h2>
+<div class="doc-section">
+
+<p>TransferWandViewIterator() iterates over two wand views in parallel and calls your transfer method for each scanline of the view.  The source pixel extent is not confined to the image canvas-- that is you can include negative offsets or widths or heights that exceed the image dimension. However, the destination wand view is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.</p>
+
+<p>The callback signature is:</p>
+
+<pre class="text">
+  MagickBooleanType TransferImageViewMethod(const WandView *source,
+    WandView *destination,const ssize_t y,const int thread_id,
+    void *context)
+</pre>
+
+<p>Use this pragma if the view is not single threaded:</p>
+
+<pre class="text">
+      #pragma omp critical
+</pre>
+
+<p>to define a section of code in your callback transfer method that must be executed by a single thread at a time.</p>
+
+<p>The format of the TransferWandViewIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType TransferWandViewIterator(WandView *source,
+    WandView *destination,TransferWandViewMethod transfer,void *context)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>source</h5>
+<p>the source wand view.</p>
+
+<h5>destination</h5>
+<p>the destination wand view.</p>
+
+<h5>transfer</h5>
+<p>the transfer callback method.</p>
+
+<h5>context</h5>
+<p>the user defined context.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/wand-view
+_8c.html" id="UpdateWandViewIterator">UpdateWandViewIterator</a></h2>
+<div class="doc-section">
+
+<p>UpdateWandViewIterator() iterates over the wand view in parallel and calls your update method for each scanline of the view.  The pixel extent is confined to the image canvas-- that is no negative offsets or widths or heights that exceed the image dimension are permitted.  Updates to pixels in your callback are automagically synced back to the image.</p>
+
+<p>The callback signature is:</p>
+
+<pre class="text">
+  MagickBooleanType UpdateImageViewMethod(WandView *source,const ssize_t y,
+    const int thread_id,void *context)
+</pre>
+
+<p>Use this pragma if the view is not single threaded:</p>
+
+<pre class="text">
+      #pragma omp critical
+</pre>
+
+<p>to define a section of code in your callback update method that must be executed by a single thread at a time.</p>
+
+<p>The format of the UpdateWandViewIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType UpdateWandViewIterator(WandView *source,
+    UpdateWandViewMethod update,void *context)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>source</h5>
+<p>the source wand view.</p>
+
+<h5>update</h5>
+<p>the update callback method.</p>
+
+<h5>context</h5>
+<p>the user defined context.</p>
+
+ </div>
 
 </div>
 
