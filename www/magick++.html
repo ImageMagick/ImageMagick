@@ -1,7 +1,11 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -150,7 +154,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -165,7 +169,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -191,8 +195,8 @@
 <p class="navigation-index">[<a href="#intro">Introduction to Magick++</a> &bull; <a href="#documentation">Documentation</a> &bull; <a href="#get">Obtaining Magick++</a> &bull; <a href="#install">Installation</a> &bull; <a href="#bugs">Reporting Bugs</a>]</p>
 <div class="doc-section">
 <a id="intro"></a>
-<p>Magick++ is the object-oriented C++ API to the <A HREF="http://www.imagemagick.org/">ImageMagick</A> image-processing library.</p>
-<p>Magick++ supports an object model which is inspired by <A HREF="http://www.imagemagick.org/www/perl-magick.html">PerlMagick</A>.
+<p>Magick++ is the object-oriented C++ API to the <a href="http://www.imagemagick.org/">ImageMagick</a> image-processing library.</p>
+<p>Magick++ supports an object model which is inspired by <a href="http://www.imagemagick.org/www/perl-magick.html">PerlMagick</a>.
 Images support implicit reference counting so that copy constructors
 and assignment incur almost no cost. The cost of actually copying an
 image (if necessary) is done just before modification and this copy
@@ -201,11 +205,11 @@ automagically deleted. The image objects support value (rather than
 pointer) semantics so it is trivial to support multiple generations
 of an image in memory at one time. 
 </p>
-<p>Magick++ provides integrated support for the <A HREF="http://www.sgi.com/tech/stl/">Standard
-Template Library</A> (STL) so that the powerful containers available
-(e.g. <A HREF="http://www.sgi.com/tech/stl/Deque.html">deque</A>,
-<A HREF="http://www.sgi.com/tech/stl/Vector.html">vector</A>, <A HREF="http://www.sgi.com/tech/stl/List.html">list</A>,
-and <A HREF="http://www.sgi.com/tech/stl/Map.html">map</A>)&nbsp; can
+<p>Magick++ provides integrated support for the <a href="http://www.sgi.com/tech/stl/">Standard
+Template Library</a> (STL) so that the powerful containers available
+(e.g. <a href="http://www.sgi.com/tech/stl/Deque.html">deque</a>,
+<a href="http://www.sgi.com/tech/stl/Vector.html">vector</a>, <a href="http://www.sgi.com/tech/stl/List.html">list</a>,
+and <a href="http://www.sgi.com/tech/stl/Map.html">map</a>)&nbsp; can
 be used to write programs similar to those possible with PERL &amp;
 PerlMagick. STL-compatible template versions of ImageMagick's
 list-style operations are provided so that operations may be
@@ -215,31 +219,30 @@ performed on multiple images stored in STL containers.
 <h2>Documentation</h2>
 <div class="doc-section">
 <a id="documentation"></a>
-<p>Detailed <A HREF="../Magick++/Documentation.html">documentation</A> is
+<p>Detailed <a href="../Magick++/Documentation.html">documentation</a> is
 provided for all Magick++ classes, class methods, and template
 functions which comprise the API.  See a <a href="http://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.pdf">  Gentle Introduction to Magick++</a> for an introductory tutorial to Magick++.  We include the <a href="http://www.imagemagick.org/Magick++/tutorial/Magick++_tutorial.odt" >source</a> if you want to correct, enhance, or expand the tutorial.</p>
-</p>
 </div>
 <h2>Obtaining Magick++</h2>
 <a id="get"></a>
 <div class="doc-section">
-<p>Magick++ is included as part of <A HREF="../www/index.html">ImageMagick</A>
-source releases and may be retrieved via <A HREF="http://www.imagemagick.org/www/download.html">ftp</A>
-or <A HREF="http://www.imagemagick.org/www/subversion.html">Subversion</A>.
+<p>Magick++ is included as part of <a href="../www/index.html">ImageMagick</a>
+source releases and may be retrieved via <a href="http://www.imagemagick.org/www/download.html">ftp</a>
+or <a href="http://www.imagemagick.org/www/subversion.html">Subversion</a>.
 </p>
 </div>
 <h2>Installation</h2>
 <div class="doc-section">
 <a id="install"></a>
 <p>Once you have the Magick++ sources available, follow these detailed
-<A HREF="../Magick++/Install.html">installation instructions</A> for UNIX and
+<a href="../Magick++/Install.html">installation instructions</a> for UNIX and
 Windows. 
 </p>
-<p>A helper script named <I>Magick++-config</I> is installed
+<p>A helper script named <kbd>Magick++-config</kbd> is installed
 under Unix which assists with recalling compilation options required
 to compile and link programs which use Magick++. For example, the
-following command will compile and link the source file <I>demo.cpp</I>
-to produce the executable <I>demo</I> (notice that quotes are
+following command will compile and link the source file <kbd>demo.cpp</kbd>
+to produce the executable <kbd>demo</kbd> (notice that quotes are
 backward quotes): 
 </p>
 <pre class="text">
@@ -264,7 +267,7 @@ of <em>installing</em> ImageMagick in a known location.
 <div class="doc-section">
 <a id="bugs"></a>
 <p>Questions regarding usage should be directed to or to report any bugs go to
-<a HREF="http://www.imagemagick.org/discourse-server/viewforum.html?f=23">Magick++ bug tracking forum</a>.
+<a href="http://www.imagemagick.org/discourse-server/viewforum.html?f=23">Magick++ bug tracking forum</a>.
 </p>
 </div>
 

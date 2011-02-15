@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -164,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -186,159 +190,9 @@
 
 <div class="main">
 
-<h1>Module histogram
- Methods</h1>
-<p class="navigation-index">[<a href="#GetImageHistogram">GetImageHistogram</a> &bull; <a href="#IsHistogramImage">IsHistogramImage</a> &bull; <a href="#IsPaletteImage">IsPaletteImage</a> &bull; <a href="#MinMaxStretchImage">MinMaxStretchImage</a> &bull; <a href="#GetNumberColors">GetNumberColors</a> &bull; <a href="#UniqueImageColors">UniqueImageColors</a>]</p>
+<h1>Module  Methods</h1>
+<p class="navigation-index">[<a href="#"></a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
-_8c.html" id="GetImageHistogram">GetImageHistogram</a></h2>
-<div class="doc-section">
-
-<p>GetImageHistogram() returns the unique colors in an image.</p>
-
-<p>The format of the GetImageHistogram method is:</p>
-
-<pre class="code">
-  size_t GetImageHistogram(const Image *image,
-    size_t *number_colors,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>file</h5>
-<p>Write a histogram of the color distribution to this file handle.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
-_8c.html" id="IsHistogramImage">IsHistogramImage</a></h2>
-<div class="doc-section">
-
-<p>IsHistogramImage() returns MagickTrue if the image has 1024 unique colors or less.</p>
-
-<p>The format of the IsHistogramImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsHistogramImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
-_8c.html" id="IsPaletteImage">IsPaletteImage</a></h2>
-<div class="doc-section">
-
-<p>IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256 unique colors or less.</p>
-
-<p>The format of the IsPaletteImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsPaletteImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
-_8c.html" id="MinMaxStretchImage">MinMaxStretchImage</a></h2>
-<div class="doc-section">
-
-<p>MinMaxStretchImage() uses the exact minimum and maximum values found in each of the channels given, as the BlackPoint and WhitePoint to linearly stretch the colors (and histogram) of the image.  The stretch points are also moved further inward by the adjustment values given.</p>
-
-<p>If the adjustment values are both zero this function is equivelent to a perfect normalization (or autolevel) of the image.</p>
-
-<p>Each channel is stretched independantally of each other (producing color distortion) unless the special 'SyncChannels' flag is also provided in the channels setting. If this flag is present the minimum and maximum point will be extracted from all the given channels, and those channels will be stretched by exactly the same amount (preventing color distortion).</p>
-
-<p>In the special case that only ONE value is found in a channel of the image that value is not stretched, that value is left as is.</p>
-
-<p>The 'SyncChannels' is turned on in the 'DefaultChannels' setting by default.</p>
-
-<p>The format of the MinMaxStretchImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType MinMaxStretchImage(Image *image,
-    const ChannelType channel, const double black_adjust,
-    const double white_adjust)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>The image to auto-level</p>
-
-<h5>channel</h5>
-<p>The channels to auto-level.  If the special 'SyncChannels' flag is set, all the given channels are stretched by the same amount.</p>
-
-<h5>black_adjust, white_adjust</h5>
-<p>Move the Black/White Point inward from the minimum and maximum points by this color value.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
-_8c.html" id="GetNumberColors">GetNumberColors</a></h2>
-<div class="doc-section">
-
-<p>GetNumberColors() returns the number of unique colors in an image.</p>
-
-<p>The format of the GetNumberColors method is:</p>
-
-<pre class="code">
-  size_t GetNumberColors(const Image *image,FILE *file,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>file</h5>
-<p>Write a histogram of the color distribution to this file handle.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/histogram
-_8c.html" id="UniqueImageColors">UniqueImageColors</a></h2>
-<div class="doc-section">
-
-<p>UniqueImageColors() returns the unique colors of an image.</p>
-
-<p>The format of the UniqueImageColors method is:</p>
-
-<pre class="code">
-  Image *UniqueImageColors(const Image *image,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
 
 </div>
 

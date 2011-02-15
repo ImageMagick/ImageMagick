@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -164,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -186,42 +190,9 @@
 
 <div class="main">
 
-<h1>Module feature
- Methods</h1>
-<p class="navigation-index">[<a href="#GetImageChannelFeatures">GetImageChannelFeatures</a>]</p>
+<h1>Module  Methods</h1>
+<p class="navigation-index">[<a href="#"></a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/feature
-_8c.html" id="GetImageChannelFeatures">GetImageChannelFeatures</a></h2>
-<div class="doc-section">
-
-<p>GetImageChannelFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
-
-<pre class="text">
-  channel_features=GetImageChannelFeatures(image,1,exception);
-  contrast=channel_features[RedChannel].contrast[0];
-</pre>
-
-<p>Use MagickRelinquishMemory() to free the features buffer.</p>
-
-<p>The format of the GetImageChannelFeatures method is:</p>
-
-<pre class="code">
-  ChannelFeatures *GetImageChannelFeatures(const Image *image,
-    const size_t distance,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>distance</h5>
-<p>the distance.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
 
 </div>
 

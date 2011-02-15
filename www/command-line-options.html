@@ -4,7 +4,11 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -153,7 +157,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -168,7 +172,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -4782,19 +4786,19 @@ CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&m
 <p>The <a href="#profile">-profile</a> option can also be used to inject
 previously-formatted ancillary chunks into the output PNG file, using
 the commandline option as shown below or by setting the profile via a
-programming interface:
+programming interface:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>-profile PNG-chunk-x:<filename></span></p>
-where <em>x</em> is a location flag and
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>-profile PNG-chunk-x:&lt;filename&gt;</span></p>
+<p>where <em>x</em> is a location flag and
 <em class="arg">filename</em> is a file containing the chunk
 name in the first 4 bytes, then a colon (":"), followed by the chunk data.
 This encoder will compute the chunk length and CRC, so those must not
-be included in the file.
+be included in the file.</p>
 
-"x" can be "b" (before PLTE), "m" (middle, i.e., between PLTE and IDAT),
+<p>"x" can be "b" (before PLTE), "m" (middle, i.e., between PLTE and IDAT),
 or "e" (end, i.e., after IDAT).  If you want to write multiple chunks
 of the same type, then add a short unique string after the "x" to prevent
-subsequent profiles from overwriting the preceding ones, e.g.,
+subsequent profiles from overwriting the preceding ones, e.g.,</p>
 
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>-profile PNG-chunk-b01:file01 -profile PNG-chunk-b02:file02</span></p>

@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -164,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -186,76 +190,9 @@
 
 <div class="main">
 
-<h1>Module monitor
- Methods</h1>
-<p class="navigation-index">[<a href="#SetImageProgressMonitor">SetImageProgressMonitor</a> &bull; <a href="#SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a>]</p>
+<h1>Module  Methods</h1>
+<p class="navigation-index">[<a href="#"></a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/monitor
-_8c.html" id="SetImageProgressMonitor">SetImageProgressMonitor</a></h2>
-<div class="doc-section">
-
-<p>SetImageProgressMonitor() sets the image progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
-
-<pre class="text">
-      MagickBooleanType MagickProgressMonitor(const char *text,
-  const MagickOffsetType offset,const MagickSizeType extent,
-  void *client_data)
-</pre>
-
-<p>If the progress monitor returns MagickFalse, the current operation is interrupted.</p>
-
-<p>The format of the SetImageProgressMonitor method is:</p>
-
-<pre class="code">
-  MagickProgressMonitor SetImageProgressMonitor(Image *image,
-    const MagickProgressMonitor progress_monitor,void *client_data)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>progress_monitor</h5>
-<p>Specifies a pointer to a method to monitor progress of an image operation.</p>
-
-<h5>client_data</h5>
-<p>Specifies a pointer to any client data.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/monitor
-_8c.html" id="SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a></h2>
-<div class="doc-section">
-
-<p>SetImageInfoProgressMonitor() sets the image_info progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
-
-<pre class="text">
-      MagickBooleanType MagickProgressMonitor(const char *text,
-  const MagickOffsetType offset,const MagickSizeType extent,
-  void *client_data)
-</pre>
-
-<p>If the progress monitor returns MagickFalse, the current operation is interrupted.</p>
-
-<p>The format of the SetImageInfoProgressMonitor method is:</p>
-
-<pre class="code">
-  MagickProgressMonitor SetImageInfoProgressMonitor(ImageInfo *image_info,
-    const MagickProgressMonitor progress_monitor,void *client_data)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image_info</h5>
-<p>the image info.</p>
-
-<h5>progress_monitor</h5>
-<p>Specifies a pointer to a method to monitor progress of an image operation.</p>
-
-<h5>client_data</h5>
-<p>Specifies a pointer to any client data.</p>
-
- </div>
 
 </div>
 
