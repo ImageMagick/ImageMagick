@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -164,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -286,12 +290,12 @@
 <div class="doc-section">
 
 <p>Once the pixel cache is associated with an image, you typically want to get, update, or put pixels into it.  We refer to pixels inside the image region as <em>authentic pixels</em> and outside the region as <em>virtual pixels</em>.  Use these methods to access the pixels in the cache:</p>
-<dl>
+<ul>
   <li><a href="../www/api/cache.html#GetVirtualPixels">GetVirtualPixels()</a> gets pixels that you do not intend to modify or pixels that lie outside the image region (e.g. pixel @ -1,-3)</li>
   <li><a href="../www/api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a> gets pixels that you intend to modify</li>
   <li><a href="../www/api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a> queue pixels that you intend to modify</li>
   <li><a href="../www/api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> update the pixel cache with any modified pixels</li>
-</dl>
+</ul>
 
 <p>Here is a typical <a href="../www/magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
 
@@ -500,19 +504,31 @@ File         Area       Memory          Map         Disk    Thread         Time
 <p>Use <a href="../www/api/stream.html#ReadStream">ReadStream()</a> or <a href="../www/api/stream.html#WriteStream">WriteStream()</a> with an appropriate callback method in your MagickCore program to consume the pixels as they are streaming.  Here's an abbreviated example of using ReadStream:</p>
 
 <pre class="code">
-static size_t StreamHandler(const Image *image,const void *pixels,
+static size_t StreamPixels(const Image *image,const void *pixels,
   const size_t columns)
 {
-  /* process pixels here */
+  register const PixelPacket
+    *p;
+
+  MyData
+    *my_data;
+
+  my_data=(MyData *) image->client_data;
+  p=(PixelPacket *) pixels;
+  if (p != (const PixelPacket *) NULL)
+    {
+      /* process pixels here */
+    }
   return(columns);
 }
 
 ...
 /* invoke the pixel stream here */
-image=ReadStream(image_info,&amp;StreamHandler,exception);
+image_info->client_data=(void *) MyData;
+image=ReadStream(image_info,&amp;StreamPixels,exception);
 </pre>
 
-<p>We also provide a lightweight tool, <a href="../www/stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="../www/stream.html">stream</a> desirable when working with large images or when you require raw pixel components.</p>
+<p>We also provide a lightweight tool, <a href="../www/stream.html">stream</a>, to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <a href="../www/stream.html">stream</a> desirable when working with large images or when you require raw pixel components.  A majority of the image formats stream pixels (red, green, and blue) from left to right and top to bottom.  However, a few formats do not support this common ordering (e.g. the PSD format).</p>
 
 </div>
 
@@ -661,13 +677,13 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
     Copy all pixel data, row by row.
   */
   #pragma omp parallel for
-  for (int y=0; y < int(image->rows()); y++)
+  for (int y=0; y &lt; int(image->rows()); y++)
   {
     int row=(bmp_info->biHeight > 0) ? (image->rows()-y-1) : y;
     register const unsigned char *restrict p=pixels+row*bytes_per_row;
     register MagickCore::PixelPacket *restrict q=
       image->setPixels(0,y,image->columns(),1);
-    for (int x=0; x < int(image->columns()); x++)
+    for (int x=0; x &lt; int(image->columns()); x++)
     {
       q->blue=p[0];
       q->green=p[1];

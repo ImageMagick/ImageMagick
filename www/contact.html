@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -164,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -199,22 +203,22 @@
   <form method="post" name="post" id="post" action="http://www.imagemagick.org/script/contact.php" enctype="application/x-www-form-urlencoded">
   <table cellpadding="2" cellspacing="0" border="0" style="width: 93%">
     <tr>
-      <td valign="top"><label for="name" title="Your authentication code">Authenticate</label></td>
+      <td valign="top"><label id="authenticate" title="Your authentication code">Authenticate</label></td>
         <td valign="top"><input type="text" name="authenticate" size="32" maxlength="255" value="" /></td>
     </tr>
 
     <tr>
-      <td valign="top"><label for="name" title="Without a valid e-mail address, we cannot respond to your message">E-mail</label></td>
+      <td valign="top"><label id="e-mail" title="Without a valid e-mail address, we cannot respond to your message">E-mail</label></td>
         <td valign="top"><input type="text" name="address" size="32" maxlength="255" value="" /></td>
     </tr>
 
     <tr>
-      <td valign="top"><label for="name" title="Your name or nickname">Name</label></td>
+      <td valign="top"><label id="name" title="Your name or nickname">Name</label></td>
         <td valign="top"><input type="text" name="name" size="32" maxlength="255" value="" /></td>
     </tr>
 
     <tr>
-      <td valign="top"><label for="name" title="We only accept these issues">Issue</label></td>
+      <td valign="top"><label id="issues" title="We only accept these issues">Issue</label></td>
     <td valign="top"><select name="issue" >
 <option value="">Choose an appropriate issue</option>
 <option value="Bug Report">Bug Report</option>
@@ -226,8 +230,8 @@
     </tr>
 
     <tr>
-      <td valign="top"><label for="message" title="Your message must directly relate to the issue, otherwise do not expect a response">Message</label></td>
-      <td valign="top"><textarea rows="12" cols="50" name="message" id="message"></textarea></td>
+      <td valign="top"><label id="message" title="Your message must directly relate to the issue, otherwise do not expect a response">Message</label></td>
+      <td valign="top"><textarea rows="12" cols="50" name="message"></textarea></td>
     </tr>
 
     <tr>

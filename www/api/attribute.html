@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -186,179 +190,9 @@
 
 <div class="main">
 
-<h1>Module attribute
- Methods</h1>
-<p class="navigation-index">[<a href="#GetImageChannelDepth">GetImageChannelDepth</a> &bull; <a href="#GetImageQuantumDepth">GetImageQuantumDepth</a> &bull; <a href="#GetImageType">GetImageType</a> &bull; <a href="#IsGrayImage">IsGrayImage</a> &bull; <a href="#IsMonochromeImage">IsMonochromeImage</a> &bull; <a href="#IsOpaqueImage">IsOpaqueImage</a> &bull; <a href="#SetImageChannelDepth">SetImageChannelDepth</a>]</p>
+<h1>Module  Methods</h1>
+<p class="navigation-index">[<a href="#"></a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="GetImageChannelDepth">GetImageChannelDepth</a></h2>
-<div class="doc-section">
-
-<p>GetImageChannelDepth() returns the depth of a particular image channel.</p>
-
-<p>The format of the GetImageChannelDepth method is:</p>
-
-<pre class="code">
-  size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
-  size_t GetImageChannelDepth(const Image *image,
-    const ChannelType channel,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="GetImageQuantumDepth">GetImageQuantumDepth</a></h2>
-<div class="doc-section">
-
-<p>GetImageQuantumDepth() returns the depth of the image rounded to a legal quantum depth: 8, 16, or 32.</p>
-
-<p>The format of the GetImageQuantumDepth method is:</p>
-
-<pre class="code">
-  size_t GetImageQuantumDepth(const Image *image,
-    const MagickBooleanType constrain)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>constrain</h5>
-<p>A value other than MagickFalse, constrains the depth to a maximum of MAGICKCORE_QUANTUM_DEPTH.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="GetImageType">GetImageType</a></h2>
-<div class="doc-section">
-
-<p>GetImageType() returns the potential type of image:</p>
-
-<p>Bilevel         Grayscale        GrayscaleMatte Palette         PaletteMatte     TrueColor TrueColorMatte  ColorSeparation  ColorSeparationMatte</p>
-
-<p>To ensure the image type matches its potential, use SetImageType():</p>
-
-<pre class="text">
-      (void) SetImageType(image,GetImageType(image));
-</pre>
-
-<p>The format of the GetImageType method is:</p>
-
-<pre class="code">
-  ImageType GetImageType(const Image *image,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="IsGrayImage">IsGrayImage</a></h2>
-<div class="doc-section">
-
-<p>IsGrayImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities.</p>
-
-<p>The format of the IsGrayImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsGrayImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="IsMonochromeImage">IsMonochromeImage</a></h2>
-<div class="doc-section">
-
-<p>IsMonochromeImage() returns MagickTrue if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or QuantumRange.</p>
-
-<p>The format of the IsMonochromeImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsMonochromeImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="IsOpaqueImage">IsOpaqueImage</a></h2>
-<div class="doc-section">
-
-<p>IsOpaqueImage() returns MagickTrue if none of the pixels in the image have an opacity value other than opaque (0).</p>
-
-<p>The format of the IsOpaqueImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType IsOpaqueImage(const Image *image,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/attribute
-_8c.html" id="SetImageChannelDepth">SetImageChannelDepth</a></h2>
-<div class="doc-section">
-
-<p>SetImageChannelDepth() sets the depth of the image.</p>
-
-<p>The format of the SetImageChannelDepth method is:</p>
-
-<pre class="code">
-  MagickBooleanType SetImageDepth(Image *image,const size_t depth)
-  MagickBooleanType SetImageChannelDepth(Image *image,
-    const ChannelType channel,const size_t depth)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
-
-<h5>depth</h5>
-<p>the image depth.</p>
-
- </div>
 
 </div>
 

@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="verify-v1" content="g222frIIxcQTrvDR3NBRUSKP3AnMNoqxOkIniCEkV7U="/>
@@ -149,7 +153,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201106010240 -->
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div class="sponsor">
   <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
@@ -164,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -186,174 +190,9 @@
 
 <div class="main">
 
-<h1>Module annotate
- Methods</h1>
-<p class="navigation-index">[<a href="#AnnotateImage">AnnotateImage</a> &bull; <a href="#FormatMagickCaption">FormatMagickCaption</a> &bull; <a href="#GetMultilineTypeMetrics">GetMultilineTypeMetrics</a> &bull; <a href="#GetTypeMetrics">GetTypeMetrics</a>]</p>
+<h1>Module  Methods</h1>
+<p class="navigation-index">[<a href="#"></a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate
-_8c.html" id="AnnotateImage">AnnotateImage</a></h2>
-<div class="doc-section">
-
-<p>AnnotateImage() annotates an image with text.  Optionally you can include any of the following bits of information about the image by embedding the appropriate special characters:</p>
-
-<pre class="text">
-      b   file size in bytes.
-      c   comment.
-      d   directory in which the image resides.
-      e   extension of the image file.
-      f   original filename of the image.
-      h   height of image.
-      i   filename of the image.
-      k   number of unique colors.
-      l   image label.
-      m   image file format.
-      n   number of images in a image sequence.
-      o   output image filename.
-      p   page number of the image.
-      q   image depth (8 or 16).
-      q   image depth (8 or 16).
-      s   image scene number.
-      t   image filename without any extension.
-      u   a unique temporary filename.
-      w   image width.
-      x   x resolution of the image.
-      y   y resolution of the image.
-</pre>
-
-<p>The format of the AnnotateImage method is:</p>
-
-<pre class="code">
-  MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>draw_info</h5>
-<p>the draw info.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate
-_8c.html" id="FormatMagickCaption">FormatMagickCaption</a></h2>
-<div class="doc-section">
-
-<p>FormatMagickCaption() formats a caption so that it fits within the image width.  It returns the number of lines in the formatted caption.</p>
-
-<p>The format of the FormatMagickCaption method is:</p>
-
-<pre class="code">
-  ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-    const MagickBooleanType split,TypeMetric *metrics,char **caption)
-</pre>
-
-<p>A description of each parameter follows.</p>
-
-<h5>image</h5>
-<p>The image.</p>
-
-<h5>draw_info</h5>
-<p>the draw info.</p>
-
-<h5>split</h5>
-<p>when no convenient line breaks-- insert newline.</p>
-
-<h5>metrics</h5>
-<p>Return the font metrics in this structure.</p>
-
-<h5>caption</h5>
-<p>the caption.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate
-_8c.html" id="GetMultilineTypeMetrics">GetMultilineTypeMetrics</a></h2>
-<div class="doc-section">
-
-<p>GetMultilineTypeMetrics() returns the following information for the specified font and text:</p>
-
-<pre class="text">
-      character width
-      character height
-      ascender
-      descender
-      text width
-      text height
-      maximum horizontal advance
-      bounds: x1
-      bounds: y1
-      bounds: x2
-      bounds: y2
-      origin: x
-      origin: y
-      underline position
-      underline thickness
-</pre>
-
-<p>This method is like GetTypeMetrics() but it returns the maximum text width and height for multiple lines of text.</p>
-
-<p>The format of the GetMultilineTypeMetrics method is:</p>
-
-<pre class="code">
-  MagickBooleanType GetMultilineTypeMetrics(Image *image,
-    const DrawInfo *draw_info,TypeMetric *metrics)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>draw_info</h5>
-<p>the draw info.</p>
-
-<h5>metrics</h5>
-<p>Return the font metrics in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/annotate
-_8c.html" id="GetTypeMetrics">GetTypeMetrics</a></h2>
-<div class="doc-section">
-
-<p>GetTypeMetrics() returns the following information for the specified font and text:</p>
-
-<pre class="text">
-      character width
-      character height
-      ascender
-      descender
-      text width
-      text height
-      maximum horizontal advance
-      bounds: x1
-      bounds: y1
-      bounds: x2
-      bounds: y2
-      origin: x
-      origin: y
-      underline position
-      underline thickness
-</pre>
-
-<p>The format of the GetTypeMetrics method is:</p>
-
-<pre class="code">
-  MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
-    TypeMetric *metrics)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>draw_info</h5>
-<p>the draw info.</p>
-
-<h5>metrics</h5>
-<p>Return the font metrics in this structure.</p>
-
- </div>
 
 </div>
 
