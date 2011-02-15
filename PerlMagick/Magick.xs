@@ -2417,6 +2417,8 @@ Animate(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
@@ -2509,6 +2511,8 @@ Append(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -2638,6 +2642,8 @@ Average(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -2749,6 +2755,8 @@ BlobToImage(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -2890,6 +2898,8 @@ Clone(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -2954,6 +2964,7 @@ CLONE(ref,...)
   SV *ref;
   CODE:
   {
+    PERL_UNUSED_VAR(ref);
     if (magick_registry != (SplayTreeInfo *) NULL)
       {
         register Image
@@ -3012,6 +3023,8 @@ Coalesce(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -3120,6 +3133,8 @@ Compare(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -3309,6 +3324,8 @@ CompareLayers(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -3408,6 +3425,7 @@ DESTROY(ref)
     SV
       *reference;
 
+    PERL_UNUSED_VAR(ref);
     if (sv_isobject(ST(0)) == 0)
       croak("ReferenceIsNotMyType");
     reference=SvRV(ST(0));
@@ -3447,7 +3465,7 @@ DESTROY(ref)
             info=(struct PackageInfo *) SvIV(sv);
             DestroyPackageInfo(info);
           }
-        hv_delete(hv,message,(long) strlen(message),G_DISCARD);
+        (void) hv_delete(hv,message,(long) strlen(message),G_DISCARD);
         break;
       }
       case SVt_PVMG:
@@ -3506,6 +3524,8 @@ Display(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
@@ -3597,6 +3617,8 @@ EvaluateImages(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -3804,6 +3826,8 @@ Features(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     av=NULL;
@@ -3933,6 +3957,8 @@ Flatten(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -4069,6 +4095,8 @@ Fx(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -4223,6 +4251,8 @@ Get(ref,...)
       *reference,
       *s;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (sv_isobject(ST(0)) == 0)
@@ -5516,6 +5546,8 @@ GetAuthenticPixels(ref,...)
     void
       *blob = NULL;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (sv_isobject(ST(0)) == 0)
@@ -5669,6 +5701,8 @@ GetVirtualPixels(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (sv_isobject(ST(0)) == 0)
@@ -5813,6 +5847,8 @@ GetAuthenticIndexQueue(ref,...)
     void
       *blob = NULL;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (sv_isobject(ST(0)) == 0)
@@ -5881,6 +5917,8 @@ GetVirtualIndexQueue(ref,...)
     void
       *blob = NULL;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (sv_isobject(ST(0)) == 0)
@@ -5970,6 +6008,8 @@ Histogram(ref,...)
     size_t
       number_colors;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     av=NULL;
@@ -6093,6 +6133,8 @@ GetPixel(ref,...)
       *perl_exception,
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference=SvRV(ST(0));
@@ -6291,6 +6333,8 @@ GetPixels(ref,...)
       *perl_exception,
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference=SvRV(ST(0));
@@ -6534,6 +6578,8 @@ ImageToBlob(ref,...)
     void
       *blob;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
@@ -6651,6 +6697,8 @@ Layers(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -6934,6 +6982,8 @@ MagickToMime(ref,name)
     char
       *mime;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     mime=MagickToMime(name);
     RETVAL=newSVpv(mime,0);
     mime=(char *) RelinquishMagickMemory(mime);
@@ -7296,6 +7346,8 @@ Mogrify(ref,...)
     struct ArgumentList
       argument_list[MaxArguments];
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference_vector=NULL;
@@ -10655,6 +10707,8 @@ Montage(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -11056,6 +11110,8 @@ Morph(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -11175,6 +11231,8 @@ Mosaic(ref)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -11288,6 +11346,8 @@ Ping(ref,...)
     size_t
       count;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
@@ -11479,6 +11539,8 @@ Preview(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -11564,6 +11626,8 @@ QueryColor(ref,...)
     SV
       *perl_exception;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (items == 1)
@@ -11652,6 +11716,8 @@ QueryColorname(ref,...)
       *perl_exception,
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference=SvRV(ST(0));
@@ -11715,6 +11781,8 @@ QueryFont(ref,...)
     volatile const TypeInfo
       *type_info;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (items == 1)
@@ -11866,6 +11934,8 @@ QueryFontMetrics(ref,...)
     TypeMetric
       metrics;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     package_info=(struct PackageInfo *) NULL;
     perl_exception=newSVpv("",0);
@@ -12275,6 +12345,8 @@ QueryMultilineFontMetrics(ref,...)
     TypeMetric
       metrics;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     package_info=(struct PackageInfo *) NULL;
     perl_exception=newSVpv("",0);
@@ -12612,6 +12684,8 @@ QueryFormat(ref,...)
     volatile const MagickInfo
       *magick_info;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (items == 1)
@@ -12703,6 +12777,8 @@ QueryOption(ref,...)
     SV
       *perl_exception;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     EXTEND(sp,8*items);
@@ -12721,7 +12797,6 @@ QueryOption(ref,...)
         }
     }
 
-  PerlException:
     InheritPerlException(exception,perl_exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
@@ -12793,6 +12868,8 @@ Read(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -12983,6 +13060,8 @@ Remote(ref,...)
     struct PackageInfo
       *info;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference=SvRV(ST(0));
@@ -13036,6 +13115,8 @@ Set(ref,...)
       *perl_exception,
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     if (sv_isobject(ST(0)) == 0)
@@ -13121,6 +13202,8 @@ SetPixel(ref,...)
       *perl_exception,
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     reference=SvRV(ST(0));
@@ -13355,6 +13438,8 @@ Smush(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -13531,6 +13616,8 @@ Statistics(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     av=NULL;
@@ -13616,9 +13703,10 @@ SyncAuthenticPixels(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
-
     if (sv_isobject(ST(0)) == 0)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -13698,6 +13786,8 @@ Transform(ref,...)
       *rv,
       *sv;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     sv=NULL;
@@ -13858,6 +13948,8 @@ Write(ref,...)
       *perl_exception,
       *reference;
 
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
     exception=AcquireExceptionInfo();
     perl_exception=newSVpv("",0);
     number_images=0;
