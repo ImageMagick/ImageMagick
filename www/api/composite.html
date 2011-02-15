@@ -190,9 +190,81 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module composite
+ Methods</h1>
+<p class="navigation-index">[<a href="#CompositeImageChannel">CompositeImageChannel</a> &bull; <a href="#TextureImage">TextureImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/composite
+_8c.html" id="CompositeImageChannel">CompositeImageChannel</a></h2>
+<div class="doc-section">
+
+<p>CompositeImageChannel() returns the second image composited onto the first at the specified offset, using the specified composite method.</p>
+
+<p>The format of the CompositeImageChannel method is:</p>
+
+<pre class="code">
+  MagickBooleanType CompositeImage(Image *image,
+    const CompositeOperator compose,Image *composite_image,
+    const ssize_t x_offset,const ssize_t y_offset)
+  MagickBooleanType CompositeImageChannel(Image *image,
+    const ChannelType channel,const CompositeOperator compose,
+    Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the destination image, modified by he composition</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>compose</h5>
+<p>This operator affects how the composite is applied to the image.  The operators and how they are utilized are listed here http://www.w3.org/TR/SVG12/#compositing.</p>
+
+<h5>composite_image</h5>
+<p>the composite (source) image.</p>
+
+<h5>x_offset</h5>
+<p>the column offset of the composited image.</p>
+
+<h5>y_offset</h5>
+<p>the row offset of the composited image.</p>
+
+<p>Extra Controls from Image meta-data in 'composite_image' (artifacts)</p>
+
+<p>o "compose:args" A string containing extra numerical arguments for specific compose methods, generally expressed as a 'geometry' or a comma separated list of numbers.</p>
+
+<p>Compose methods needing such arguments include "BlendCompositeOp" and "DisplaceCompositeOp".</p>
+
+<p>o "compose:outside-overlay" Modify how the composition is to effect areas not directly covered by the 'composite_image' at the offset given.  Normally this is dependant on the 'compose' method, especially Duff-Porter methods.</p>
+
+<p>If set to "false" then disable all normal handling of pixels not covered by the composite_image.  Typically used for repeated tiling of the composite_image by the calling API.</p>
+
+<p>Previous to IM v6.5.3-3  this was called "modify-outside-overlay"</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/composite
+_8c.html" id="TextureImage">TextureImage</a></h2>
+<div class="doc-section">
+
+<p>TextureImage() repeatedly tiles the texture image across and down the image canvas.</p>
+
+<p>The format of the TextureImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TextureImage(Image *image,const Image *texture)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>texture</h5>
+<p>This image is the texture to layer on the background.</p>
+
+ </div>
 
 </div>
 

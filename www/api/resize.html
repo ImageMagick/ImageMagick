@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -190,9 +190,270 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module resize
+ Methods</h1>
+<p class="navigation-index">[<a href="#AdaptiveResizeImage">AdaptiveResizeImage</a> &bull; <a href="#MagnifyImage">MagnifyImage</a> &bull; <a href="#MinifyImage">MinifyImage</a> &bull; <a href="#ResampleImage">ResampleImage</a> &bull; <a href="#LiquidRescaleImage">LiquidRescaleImage</a> &bull; <a href="#ResizeImage">ResizeImage</a> &bull; <a href="#SampleImage">SampleImage</a> &bull; <a href="#ScaleImage">ScaleImage</a> &bull; <a href="#ThumbnailImage">ThumbnailImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="AdaptiveResizeImage">AdaptiveResizeImage</a></h2>
+<div class="doc-section">
+
+<p>AdaptiveResizeImage() adaptively resize image with pixel resampling.</p>
+
+<p>The format of the AdaptiveResizeImage method is:</p>
+
+<pre class="code">
+  Image *AdaptiveResizeImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the resized image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the resized image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="MagnifyImage">MagnifyImage</a></h2>
+<div class="doc-section">
+
+<p>MagnifyImage() is a convenience method that scales an image proportionally to twice its size.</p>
+
+<p>The format of the MagnifyImage method is:</p>
+
+<pre class="code">
+  Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="MinifyImage">MinifyImage</a></h2>
+<div class="doc-section">
+
+<p>MinifyImage() is a convenience method that scales an image proportionally to half its size.</p>
+
+<p>The format of the MinifyImage method is:</p>
+
+<pre class="code">
+  Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="ResampleImage">ResampleImage</a></h2>
+<div class="doc-section">
+
+<p>ResampleImage() resize image in terms of its pixel size, so that when displayed at the given resolution it will be the same size in terms of real world units as the original image at the original resolution.</p>
+
+<p>The format of the ResampleImage method is:</p>
+
+<pre class="code">
+  Image *ResampleImage(Image *image,const double x_resolution,
+    const double y_resolution,const FilterTypes filter,const double blur,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image to be resized to fit the given resolution.</p>
+
+<h5>x_resolution</h5>
+<p>the new image x resolution.</p>
+
+<h5>y_resolution</h5>
+<p>the new image y resolution.</p>
+
+<h5>filter</h5>
+<p>Image filter to use.</p>
+
+<h5>blur</h5>
+<p>the blur factor where > 1 is blurry, < 1 is sharp.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="LiquidRescaleImage">LiquidRescaleImage</a></h2>
+<div class="doc-section">
+
+<p>LiquidRescaleImage() rescales image with seam carving.</p>
+
+<p>The format of the LiquidRescaleImage method is:</p>
+
+<pre class="code">
+  Image *LiquidRescaleImage(const Image *image,
+    const size_t columns,const size_t rows,
+    const double delta_x,const double rigidity,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the rescaled image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the rescaled image.</p>
+
+<h5>delta_x</h5>
+<p>maximum seam transversal step (0 means straight seams).</p>
+
+<h5>rigidity</h5>
+<p>introduce a bias for non-straight seams (typically 0).</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="ResizeImage">ResizeImage</a></h2>
+<div class="doc-section">
+
+<p>ResizeImage() scales an image to the desired dimensions, using the given filter (see AcquireFilterInfo()).</p>
+
+<p>If an undefined filter is given the filter defaults to Mitchell for a colormapped image, a image with a matte channel, or if the image is enlarged.  Otherwise the filter defaults to a Lanczos.</p>
+
+<p>ResizeImage() was inspired by Paul Heckbert's "zoom" program.</p>
+
+<p>The format of the ResizeImage method is:</p>
+
+<pre class="code">
+  Image *ResizeImage(Image *image,const size_t columns,
+    const size_t rows,const FilterTypes filter,const double blur,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the scaled image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the scaled image.</p>
+
+<h5>filter</h5>
+<p>Image filter to use.</p>
+
+<h5>blur</h5>
+<p>the blur factor where > 1 is blurry, < 1 is sharp.  Typically set this to 1.0.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="SampleImage">SampleImage</a></h2>
+<div class="doc-section">
+
+<p>SampleImage() scales an image to the desired dimensions with pixel sampling.  Unlike other scaling methods, this method does not introduce any additional color into the scaled image.</p>
+
+<p>The format of the SampleImage method is:</p>
+
+<pre class="code">
+  Image *SampleImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the sampled image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the sampled image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="ScaleImage">ScaleImage</a></h2>
+<div class="doc-section">
+
+<p>ScaleImage() changes the size of an image to the given dimensions.</p>
+
+<p>The format of the ScaleImage method is:</p>
+
+<pre class="code">
+  Image *ScaleImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the scaled image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the scaled image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resize
+_8c.html" id="ThumbnailImage">ThumbnailImage</a></h2>
+<div class="doc-section">
+
+<p>ThumbnailImage() changes the size of an image to the given dimensions and removes any associated profiles.  The goal is to produce small low cost thumbnail images suited for display on the Web.</p>
+
+<p>The format of the ThumbnailImage method is:</p>
+
+<pre class="code">
+  Image *ThumbnailImage(const Image *image,const size_t columns,
+    const size_t rows,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>columns</h5>
+<p>the number of columns in the scaled image.</p>
+
+<h5>rows</h5>
+<p>the number of rows in the scaled image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 

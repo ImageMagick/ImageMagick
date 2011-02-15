@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -190,9 +190,355 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module pixel-iterator
+ Methods</h1>
+<p class="navigation-index">[<a href="#ClearPixelIterator">ClearPixelIterator</a> &bull; <a href="#ClonePixelIterator">ClonePixelIterator</a> &bull; <a href="#DestroyPixelIterator">DestroyPixelIterator</a> &bull; <a href="#IsPixelIterator">IsPixelIterator</a> &bull; <a href="#NewPixelIterator">NewPixelIterator</a> &bull; <a href="#PixelClearIteratorException">PixelClearIteratorException</a> &bull; <a href="#NewPixelRegionIterator">NewPixelRegionIterator</a> &bull; <a href="#PixelGetCurrentIteratorRow">PixelGetCurrentIteratorRow</a> &bull; <a href="#PixelGetIteratorException">PixelGetIteratorException</a> &bull; <a href="#PixelGetIteratorExceptionType">PixelGetIteratorExceptionType</a> &bull; <a href="#PixelGetIteratorRow">PixelGetIteratorRow</a> &bull; <a href="#PixelGetNextIteratorRow">PixelGetNextIteratorRow</a> &bull; <a href="#PixelGetPreviousIteratorRow">PixelGetPreviousIteratorRow</a> &bull; <a href="#PixelResetIterator">PixelResetIterator</a> &bull; <a href="#PixelSetFirstIteratorRow">PixelSetFirstIteratorRow</a> &bull; <a href="#PixelSetIteratorRow">PixelSetIteratorRow</a> &bull; <a href="#PixelSetLastIteratorRow">PixelSetLastIteratorRow</a> &bull; <a href="#PixelSyncIterator">PixelSyncIterator</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="ClearPixelIterator">ClearPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>ClearPixelIterator() clear resources associated with a PixelIterator.</p>
+
+<p>The format of the ClearPixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *ClearPixelIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="ClonePixelIterator">ClonePixelIterator</a></h2>
+<div class="doc-section">
+
+<p>ClonePixelIterator() makes an exact copy of the specified iterator.</p>
+
+<p>The format of the ClonePixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="DestroyPixelIterator">DestroyPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>DestroyPixelIterator() deallocates resources associated with a PixelIterator.</p>
+
+<p>The format of the DestroyPixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *DestroyPixelIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="IsPixelIterator">IsPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>IsPixelIterator() returns MagickTrue if the iterator is verified as a pixel iterator.</p>
+
+<p>The format of the IsPixelIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsPixelIterator(const PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="NewPixelIterator">NewPixelIterator</a></h2>
+<div class="doc-section">
+
+<p>NewPixelIterator() returns a new pixel iterator.</p>
+
+<p>The format of the NewPixelIterator method is:</p>
+
+<pre class="code">
+  PixelIterator *NewPixelIterator(MagickWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelClearIteratorException">PixelClearIteratorException</a></h2>
+<div class="doc-section">
+
+<p>PixelClearIteratorException() clear any exceptions associated with the iterator.</p>
+
+<p>The format of the PixelClearIteratorException method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelClearIteratorException(PixelIterator *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the pixel wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="NewPixelRegionIterator">NewPixelRegionIterator</a></h2>
+<div class="doc-section">
+
+<p>NewPixelRegionIterator() returns a new pixel iterator.</p>
+
+<p>The format of the NewPixelRegionIterator method is:</p>
+
+<pre class="code">
+  PixelIterator NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+    const ssize_t y,const size_t width,const size_t height)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+<h5>x,y,columns,rows</h5>
+<p>These values define the perimeter of a region of pixels.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelGetCurrentIteratorRow">PixelGetCurrentIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetCurrentIteratorRow() returns the current row as an array of pixel wands from the pixel iterator.</p>
+
+<p>The format of the PixelGetCurrentIteratorRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
+    size_t *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>number_wands</h5>
+<p>the number of pixel wands.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelGetIteratorException">PixelGetIteratorException</a></h2>
+<div class="doc-section">
+
+<p>PixelGetIteratorException() returns the severity, reason, and description of any error that occurs when using other methods in this API.</p>
+
+<p>The format of the PixelGetIteratorException method is:</p>
+
+<pre class="code">
+  char *PixelGetIteratorException(const Pixeliterator *iterator,
+    ExceptionType *severity)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>severity</h5>
+<p>the severity of the error is returned here.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelGetIteratorExceptionType">PixelGetIteratorExceptionType</a></h2>
+<div class="doc-section">
+
+<p>PixelGetIteratorExceptionType() the exception type associated with the wand. If no exception has occurred, UndefinedExceptionType is returned.</p>
+
+<p>The format of the PixelGetIteratorExceptionType method is:</p>
+
+<pre class="code">
+  ExceptionType PixelGetIteratorExceptionType(const PixelWand *wand)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>wand</h5>
+<p>the magick wand.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelGetIteratorRow">PixelGetIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetIteratorRow() returns the current pixel iterator row.</p>
+
+<p>The format of the PixelGetIteratorRow method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelGetIteratorRow(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelGetNextIteratorRow">PixelGetNextIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetNextIteratorRow() returns the next row as an array of pixel wands from the pixel iterator.</p>
+
+<p>The format of the PixelGetNextIteratorRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
+    size_t *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>number_wands</h5>
+<p>the number of pixel wands.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelGetPreviousIteratorRow">PixelGetPreviousIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelGetPreviousIteratorRow() returns the previous row as an array of pixel wands from the pixel iterator.</p>
+
+<p>The format of the PixelGetPreviousIteratorRow method is:</p>
+
+<pre class="code">
+  PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
+    size_t *number_wands)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+<h5>number_wands</h5>
+<p>the number of pixel wands.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelResetIterator">PixelResetIterator</a></h2>
+<div class="doc-section">
+
+<p>PixelResetIterator() resets the pixel iterator.  Use it in conjunction with PixelGetNextIteratorRow() to iterate over all the pixels in a pixel container.</p>
+
+<p>The format of the PixelResetIterator method is:</p>
+
+<pre class="code">
+  void PixelResetIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelSetFirstIteratorRow">PixelSetFirstIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelSetFirstIteratorRow() sets the pixel iterator to the first pixel row.</p>
+
+<p>The format of the PixelSetFirstIteratorRow method is:</p>
+
+<pre class="code">
+  void PixelSetFirstIteratorRow(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelSetIteratorRow">PixelSetIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelSetIteratorRow() set the pixel iterator row.</p>
+
+<p>The format of the PixelSetIteratorRow method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelSetIteratorRow(PixelIterator *iterator,
+    const ssize_t row)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelSetLastIteratorRow">PixelSetLastIteratorRow</a></h2>
+<div class="doc-section">
+
+<p>PixelSetLastIteratorRow() sets the pixel iterator to the last pixel row.</p>
+
+<p>The format of the PixelSetLastIteratorRow method is:</p>
+
+<pre class="code">
+  void PixelSetLastIteratorRow(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the magick iterator.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickWand/pixel-iterator
+_8c.html" id="PixelSyncIterator">PixelSyncIterator</a></h2>
+<div class="doc-section">
+
+<p>PixelSyncIterator() syncs the pixel iterator.</p>
+
+<p>The format of the PixelSyncIterator method is:</p>
+
+<pre class="code">
+  MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>iterator</h5>
+<p>the pixel iterator.</p>
+
+ </div>
 
 </div>
 

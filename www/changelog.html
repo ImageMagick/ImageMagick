@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -191,7 +191,13 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-02-13  6.6.7-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dl><dt>2011-02-15  6.6.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.6.7-8.</dd>
+<dt>2011-02-14  6.6.7-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> The PNG encoder should ignore bogus q->opacity values when image->matte    is MagickFalse (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18067).</dd>
+<dt>2011-02-14  6.6.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Use implicit image format when explicit format is bogus (e.g.    02.13.11-18:43:58.png now writes as PNG).</dd>
+<dt>2011-02-13  6.6.7-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Fixed Variable blur to handle small (< 1.0 sigma) blurs generated    by the blur map being used, rather than just 'cutoff' suddenly.</dd>
 <dt>2011-02-08  6.6.7-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support 16-bit per pixel YUV image files.</dd>
@@ -417,7 +423,7 @@
   <dd> Fixed bug in the raw BGRA coders (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16880).</dd>
   <dd> Fix off-by-one error in the PSD coders.</dd>
   <dd> Nicolas Robidoux with the assistance of Chantal Racette contribute an    approximation of the sinc function over the interval [-3,3].</dd>
-  <dd> Eliminate a small memory leak in LevelizeImageChannel() (reference<dt>	  http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16951).</dt>
+  <dd> Eliminate a small memory leak in LevelizeImageChannel() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16951).</dd>
   <dd> Recognize -fx logtwo (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16958).</dd>
 <dt>2010-08-15  6.6.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Throw exception if image size differs for the compare program but the    -subimage-search option is not specified.</dd>
@@ -1434,7 +1440,7 @@
   <dd> The -sketch option is working again (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11454).</dd>
 <dt>2008-06-08  6.4.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> More algorithms refactored to support a threaded cache view.</dd>
-  <dd> EPS2 output only 1/3 of image when using LZW or rle compress (reference    http://www.imagemagick.org/discourse-server/viewforum.html?f=3).</dd>
+  <dd> EPS2 output only 1/3 of image when using LZW or rle compress (reference    http://www.imagemagick.org/discourse-server/viewforum.php?f=3).</dd>
   <dd> ISO C++ 1998 does not support 'long long' (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11405).</dd>
   <dd> Patch GetMagickMemoryHandlers() to return the properly return the memory    handler addresses.</dd>
   <dd> Generate histogram comment if # unique colors exceed 1024 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11434).</dd>

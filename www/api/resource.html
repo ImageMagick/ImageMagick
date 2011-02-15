@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -190,9 +190,170 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module resource
+ Methods</h1>
+<p class="navigation-index">[<a href="#AcquireMagickResource">AcquireMagickResource</a> &bull; <a href="#AcquireUniqueFileResource">AcquireUniqueFileResource</a> &bull; <a href="#GetMagickResource">GetMagickResource</a> &bull; <a href="#GetMagickResourceLimit">GetMagickResourceLimit</a> &bull; <a href="#ListMagickResourceInfo">ListMagickResourceInfo</a> &bull; <a href="#RelinquishMagickResource">RelinquishMagickResource</a> &bull; <a href="#RelinquishUniqueFileResource">RelinquishUniqueFileResource</a> &bull; <a href="#SetMagickResourceLimit">SetMagickResourceLimit</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="AcquireMagickResource">AcquireMagickResource</a></h2>
+<div class="doc-section">
+
+<p>AcquireMagickResource() acquires resources of the specified type. MagickFalse is returned if the specified resource is exhausted otherwise MagickTrue.</p>
+
+<p>The format of the AcquireMagickResource() method is:</p>
+
+<pre class="code">
+  MagickBooleanType AcquireMagickResource(const ResourceType type,
+    const MagickSizeType size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type of resource.</p>
+
+<h5>size</h5>
+<p>the number of bytes needed from for this resource.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="AcquireUniqueFileResource">AcquireUniqueFileResource</a></h2>
+<div class="doc-section">
+
+<p>AcquireUniqueFileResource() returns a unique file name, and returns a file descriptor for the file open for reading and writing.</p>
+
+<p>The format of the AcquireUniqueFileResource() method is:</p>
+
+<pre class="code">
+  int AcquireUniqueFileResource(char *path)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5> path</h5>
+<p>Specifies a pointer to an array of characters.  The unique path name is returned in this array.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="GetMagickResource">GetMagickResource</a></h2>
+<div class="doc-section">
+
+<p>GetMagickResource() returns the specified resource.</p>
+
+<p>The format of the GetMagickResource() method is:</p>
+
+<pre class="code">
+  MagickSizeType GetMagickResource(const ResourceType type)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type of resource.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="GetMagickResourceLimit">GetMagickResourceLimit</a></h2>
+<div class="doc-section">
+
+<p>GetMagickResourceLimit() returns the specified resource limit.</p>
+
+<p>The format of the GetMagickResourceLimit() method is:</p>
+
+<pre class="code">
+  MagickSizeType GetMagickResourceLimit(const ResourceType type)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type of resource.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="ListMagickResourceInfo">ListMagickResourceInfo</a></h2>
+<div class="doc-section">
+
+<p>ListMagickResourceInfo() lists the resource info to a file.</p>
+
+<p>The format of the ListMagickResourceInfo method is:</p>
+
+<pre class="code">
+  MagickBooleanType ListMagickResourceInfo(FILE *file,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>file</h5>
+<p>An pointer to a FILE.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="RelinquishMagickResource">RelinquishMagickResource</a></h2>
+<div class="doc-section">
+
+<p>RelinquishMagickResource() relinquishes resources of the specified type.</p>
+
+<p>The format of the RelinquishMagickResource() method is:</p>
+
+<pre class="code">
+  void RelinquishMagickResource(const ResourceType type,
+    const MagickSizeType size)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type of resource.</p>
+
+<h5>size</h5>
+<p>the size of the resource.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="RelinquishUniqueFileResource">RelinquishUniqueFileResource</a></h2>
+<div class="doc-section">
+
+<p>RelinquishUniqueFileResource() relinquishes a unique file resource.</p>
+
+<p>The format of the RelinquishUniqueFileResource() method is:</p>
+
+<pre class="code">
+  MagickBooleanType RelinquishUniqueFileResource(const char *path)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>name</h5>
+<p>the name of the temporary resource.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/resource
+_8c.html" id="SetMagickResourceLimit">SetMagickResourceLimit</a></h2>
+<div class="doc-section">
+
+<p>SetMagickResourceLimit() sets the limit for a particular resource.</p>
+
+<p>The format of the SetMagickResourceLimit() method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetMagickResourceLimit(const ResourceType type,
+    const MagickSizeType limit)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type of resource.</p>
+
+<h5>limit</h5>
+<p>the maximum limit for the resource.</p>
+
+ </div>
 
 </div>
 

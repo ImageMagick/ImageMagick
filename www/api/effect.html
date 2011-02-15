@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -190,9 +190,600 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module effect
+ Methods</h1>
+<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#ConvolveImage">ConvolveImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#FilterImage">FilterImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
+<div class="doc-section">
+
+<p>AdaptiveBlurImage() adaptively blurs the image by blurring less intensely near image edges and more intensely far from edges.  We blur the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and AdaptiveBlurImage() selects a suitable radius for you.</p>
+
+<p>The format of the AdaptiveBlurImage method is:</p>
+
+<pre class="code">
+  Image *AdaptiveBlurImage(const Image *image,const double radius,
+    const double sigma,ExceptionInfo *exception)
+  Image *AdaptiveBlurImageChannel(const Image *image,
+    const ChannelType channel,double radius,const double sigma,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Laplacian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="AdaptiveSharpenImage">AdaptiveSharpenImage</a></h2>
+<div class="doc-section">
+
+<p>AdaptiveSharpenImage() adaptively sharpens the image by sharpening more intensely near image edges and less intensely far from edges. We sharpen the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and AdaptiveSharpenImage() selects a suitable radius for you.</p>
+
+<p>The format of the AdaptiveSharpenImage method is:</p>
+
+<pre class="code">
+  Image *AdaptiveSharpenImage(const Image *image,const double radius,
+    const double sigma,ExceptionInfo *exception)
+  Image *AdaptiveSharpenImageChannel(const Image *image,
+    const ChannelType channel,double radius,const double sigma,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Laplacian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="BlurImage">BlurImage</a></h2>
+<div class="doc-section">
+
+<p>BlurImage() blurs an image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and BlurImage() selects a suitable radius for you.</p>
+
+<p>BlurImage() differs from GaussianBlurImage() in that it uses a separable kernel which is faster but mathematically equivalent to the non-separable kernel.</p>
+
+<p>The format of the BlurImage method is:</p>
+
+<pre class="code">
+  Image *BlurImage(const Image *image,const double radius,
+    const double sigma,ExceptionInfo *exception)
+  Image *BlurImageChannel(const Image *image,const ChannelType channel,
+    const double radius,const double sigma,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="ConvolveImage">ConvolveImage</a></h2>
+<div class="doc-section">
+
+<p>ConvolveImage() applies a custom convolution kernel to the image.</p>
+
+<p>The format of the ConvolveImage method is:</p>
+
+<pre class="code">
+  Image *ConvolveImage(const Image *image,const size_t order,
+    const double *kernel,ExceptionInfo *exception)
+  Image *ConvolveImageChannel(const Image *image,const ChannelType channel,
+    const size_t order,const double *kernel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>order</h5>
+<p>the number of columns and rows in the filter kernel.</p>
+
+<h5>kernel</h5>
+<p>An array of double representing the convolution kernel.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="DespeckleImage">DespeckleImage</a></h2>
+<div class="doc-section">
+
+<p>DespeckleImage() reduces the speckle noise in an image while perserving the edges of the original image.</p>
+
+<p>The format of the DespeckleImage method is:</p>
+
+<pre class="code">
+  Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="EdgeImage">EdgeImage</a></h2>
+<div class="doc-section">
+
+<p>EdgeImage() finds edges in an image.  Radius defines the radius of the convolution filter.  Use a radius of 0 and EdgeImage() selects a suitable radius for you.</p>
+
+<p>The format of the EdgeImage method is:</p>
+
+<pre class="code">
+  Image *EdgeImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="EmbossImage">EmbossImage</a></h2>
+<div class="doc-section">
+
+<p>EmbossImage() returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and Emboss() selects a suitable radius for you.</p>
+
+<p>The format of the EmbossImage method is:</p>
+
+<pre class="code">
+  Image *EmbossImage(const Image *image,const double radius,
+    const double sigma,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="FilterImage">FilterImage</a></h2>
+<div class="doc-section">
+
+<p>FilterImage() applies a custom convolution kernel to the image.</p>
+
+<p>The format of the FilterImage method is:</p>
+
+<pre class="code">
+  Image *FilterImage(const Image *image,const KernelInfo *kernel,
+    ExceptionInfo *exception)
+  Image *FilterImageChannel(const Image *image,const ChannelType channel,
+    const KernelInfo *kernel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>kernel</h5>
+<p>the filtering kernel.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="GaussianBlurImage">GaussianBlurImage</a></h2>
+<div class="doc-section">
+
+<p>GaussianBlurImage() blurs an image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, the radius should be larger than sigma.  Use a radius of 0 and GaussianBlurImage() selects a suitable radius for you</p>
+
+<p>The format of the GaussianBlurImage method is:</p>
+
+<pre class="code">
+  Image *GaussianBlurImage(const Image *image,onst double radius,
+    const double sigma,ExceptionInfo *exception)
+  Image *GaussianBlurImageChannel(const Image *image,
+    const ChannelType channel,const double radius,const double sigma,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="MedianFilterImage">MedianFilterImage</a></h2>
+<div class="doc-section">
+
+<p>MedianFilterImage() applies a digital filter that improves the quality of a noisy image.  Each pixel is replaced by the median in a set of neighboring pixels as defined by radius.</p>
+
+<p>The algorithm was contributed by Mike Edmonds and implements an insertion sort for selecting median color-channel values.  For more on this algorithm see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William Pugh in the June 1990 of Communications of the ACM.</p>
+
+<p>The format of the MedianFilterImage method is:</p>
+
+<pre class="code">
+  Image *MedianFilterImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="MotionBlurImage">MotionBlurImage</a></h2>
+<div class="doc-section">
+
+<p>MotionBlurImage() simulates motion blur.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma). For reasonable results, radius should be larger than sigma.  Use a radius of 0 and MotionBlurImage() selects a suitable radius for you. Angle gives the angle of the blurring motion.</p>
+
+<p>Andrew Protano contributed this effect.</p>
+
+<p>The format of the MotionBlurImage method is:</p>
+
+<pre class="code">
+      Image *MotionBlurImage(const Image *image,const double radius,
+  const double sigma,const double angle,ExceptionInfo *exception)
+      Image *MotionBlurImageChannel(const Image *image,const ChannelType channel,
+  const double radius,const double sigma,const double angle,
+  ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center</p>
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>angle</h5>
+<p>Apply the effect along this angle.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="PreviewImage">PreviewImage</a></h2>
+<div class="doc-section">
+
+<p>PreviewImage() tiles 9 thumbnails of the specified image with an image processing operation applied with varying parameters.  This may be helpful pin-pointing an appropriate parameter for a particular image processing operation.</p>
+
+<p>The format of the PreviewImages method is:</p>
+
+<pre class="code">
+  Image *PreviewImages(const Image *image,const PreviewType preview,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>preview</h5>
+<p>the image processing operation.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="RadialBlurImage">RadialBlurImage</a></h2>
+<div class="doc-section">
+
+<p>RadialBlurImage() applies a radial blur to the image.</p>
+
+<p>Andrew Protano contributed this effect.</p>
+
+<p>The format of the RadialBlurImage method is:</p>
+
+<pre class="code">
+      Image *RadialBlurImage(const Image *image,const double angle,
+  ExceptionInfo *exception)
+      Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
+  const double angle,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>angle</h5>
+<p>the angle of the radial blur.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="ReduceNoiseImage">ReduceNoiseImage</a></h2>
+<div class="doc-section">
+
+<p>ReduceNoiseImage() smooths the contours of an image while still preserving edge information.  The algorithm works by replacing each pixel with its neighbor closest in value.  A neighbor is defined by radius.  Use a radius of 0 and ReduceNoise() selects a suitable radius for you.</p>
+
+<p>The format of the ReduceNoiseImage method is:</p>
+
+<pre class="code">
+  Image *ReduceNoiseImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="SelectiveBlurImage">SelectiveBlurImage</a></h2>
+<div class="doc-section">
+
+<p>SelectiveBlurImage() selectively blur pixels within a contrast threshold. It is similar to the unsharpen mask that sharpens everything with contrast above a certain threshold.</p>
+
+<p>The format of the SelectiveBlurImage method is:</p>
+
+<pre class="code">
+  Image *SelectiveBlurImage(const Image *image,const double radius,
+    const double sigma,const double threshold,ExceptionInfo *exception)
+  Image *SelectiveBlurImageChannel(const Image *image,
+    const ChannelType channel,const double radius,const double sigma,
+    const double threshold,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>threshold</h5>
+<p>only pixels within this contrast threshold are included in the blur operation.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="ShadeImage">ShadeImage</a></h2>
+<div class="doc-section">
+
+<p>ShadeImage() shines a distant light on an image to create a three-dimensional effect. You control the positioning of the light with azimuth and elevation; azimuth is measured in degrees off the x axis and elevation is measured in pixels above the Z axis.</p>
+
+<p>The format of the ShadeImage method is:</p>
+
+<pre class="code">
+  Image *ShadeImage(const Image *image,const MagickBooleanType gray,
+    const double azimuth,const double elevation,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>gray</h5>
+<p>A value other than zero shades the intensity of each pixel.</p>
+
+<h5>azimuth, elevation</h5>
+<p>Define the light source direction.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="SharpenImage">SharpenImage</a></h2>
+<div class="doc-section">
+
+<p>SharpenImage() sharpens the image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and SharpenImage() selects a suitable radius for you.</p>
+
+<p>Using a separable kernel would be faster, but the negative weights cancel out on the corners of the kernel producing often undesirable ringing in the filtered result; this can be avoided by using a 2D gaussian shaped image sharpening kernel instead.</p>
+
+<p>The format of the SharpenImage method is:</p>
+
+<pre class="code">
+      Image *SharpenImage(const Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
+      Image *SharpenImageChannel(const Image *image,const ChannelType channel,
+  const double radius,const double sigma,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Laplacian, in pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="SpreadImage">SpreadImage</a></h2>
+<div class="doc-section">
+
+<p>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the radius parameter.</p>
+
+<p>The format of the SpreadImage method is:</p>
+
+<pre class="code">
+  Image *SpreadImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>Choose a random pixel in a neighborhood of this extent.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect
+_8c.html" id="UnsharpMaskImage">UnsharpMaskImage</a></h2>
+<div class="doc-section">
+
+<p>UnsharpMaskImage() sharpens one or more image channels.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).  For reasonable results, radius should be larger than sigma.  Use a radius of 0 and UnsharpMaskImage() selects a suitable radius for you.</p>
+
+<p>The format of the UnsharpMaskImage method is:</p>
+
+<pre class="code">
+      Image *UnsharpMaskImage(const Image *image,const double radius,
+  const double sigma,const double amount,const double threshold,
+  ExceptionInfo *exception)
+      Image *UnsharpMaskImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  const double amount,const double threshold,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
+
+<h5>radius</h5>
+<p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
+
+<h5>sigma</h5>
+<p>the standard deviation of the Gaussian, in pixels.</p>
+
+<h5>amount</h5>
+<p>the percentage of the difference between the original and the blur image that is added back into the original.</p>
+
+<h5>threshold</h5>
+<p>the threshold in pixels needed to apply the diffence amount.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
