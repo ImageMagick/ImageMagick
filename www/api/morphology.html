@@ -168,7 +168,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -190,18 +190,15 @@
 
 <div class="main">
 
-<h1>Module morphology
- Methods</h1>
+<h1>Module morphology Methods</h1>
 <p class="navigation-index">[<a href="#** This macro  IsNaN">** This macro  IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#MorphologyApply">MorphologyApply</a> &bull; <a href="#MorphologyImageChannel">MorphologyImageChannel</a> &bull; <a href="#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="#ZeroKernelNans">ZeroKernelNans</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="**_This macro  IsNaN">** This macro  IsNaN</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="**_This macro  IsNaN">** This macro  IsNaN</a></h2>
 <div class="doc-section">
 
 <p>** This macro  IsNaN() is thus is only true if the value given is NaN. </p>
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>AcquireKernelInfo() takes the given string (generally supplied by the user) and converts it into a Morphology/Convolution Kernel.  This allows users to specify a kernel from a number of pre-defined kernels, or to fully specify their own kernel for a specific Convolution or Morphology Operation.</p>
@@ -244,8 +241,7 @@ _8c.html" id="AcquireKernelInfo">AcquireKernelInfo</a></h2>
 <p>the Morphology/Convolution kernel wanted.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
 <div class="doc-section">
 
 <p>AcquireKernelBuiltIn() returned one of the 'named' built-in types of kernels used for special purposes such as gaussian blurring, skeleton pruning, and edge distance determination.</p>
@@ -412,8 +408,7 @@ _8c.html" id="AcquireKernelBuiltIn">AcquireKernelBuiltIn</a></h2>
 <p>To allow the use of fractional distances that you get with diagonals the actual distance is scaled by a fixed value which the user can provide.  This is not actually nessary for either ""Chebyshev" or "Manhattan" distance kernels, but is done for all three distance kernels.  If no scale is provided it is set to a value of 100, allowing for a maximum distance measurement of 655 pixels using a Q16 version of IM, from any edge.  However for small images this can result in quite a dark gradient.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="CloneKernelInfo">CloneKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="CloneKernelInfo">CloneKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>CloneKernelInfo() creates a new clone of the given Kernel List so that its can be modified without effecting the original.  The cloned kernel should be destroyed using DestoryKernelInfo() when no longer needed.</p>
@@ -430,8 +425,7 @@ _8c.html" id="CloneKernelInfo">CloneKernelInfo</a></h2>
 <p>the Morphology/Convolution kernel to be cloned</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="DestroyKernelInfo">DestroyKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="DestroyKernelInfo">DestroyKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>DestroyKernelInfo() frees the memory used by a Convolution/Morphology kernel.</p>
@@ -448,8 +442,7 @@ _8c.html" id="DestroyKernelInfo">DestroyKernelInfo</a></h2>
 <p>the Morphology/Convolution kernel to be destroyed</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="MorphologyApply">MorphologyApply</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyApply">MorphologyApply</a></h2>
 <div class="doc-section">
 
 <p>MorphologyApply() applies a morphological method, multiple times using a list of multiple kernels.</p>
@@ -496,8 +489,7 @@ _8c.html" id="MorphologyApply">MorphologyApply</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="MorphologyImageChannel">MorphologyImageChannel</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyImageChannel">MorphologyImageChannel</a></h2>
 <div class="doc-section">
 
 <p>MorphologyImageChannel() applies a user supplied kernel to the image according to the given mophology method.</p>
@@ -536,8 +528,7 @@ _8c.html" id="MorphologyImageChannel">MorphologyImageChannel</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>ScaleGeometryKernelInfo() takes a geometry argument string, typically provided as a  "-set option:convolve:scale {geometry}" user setting, and modifies the kernel according to the parsed arguments of that setting.</p>
@@ -563,8 +554,7 @@ _8c.html" id="ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="ScaleKernelInfo">ScaleKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ScaleKernelInfo">ScaleKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>ScaleKernelInfo() scales the given kernel list by the given amount, with or without normalization of the sum of the kernel values (as per given flags).</p>
@@ -613,8 +603,7 @@ _8c.html" id="ScaleKernelInfo">ScaleKernelInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="ShowKernelInfo">ShowKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ShowKernelInfo">ShowKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>ShowKernelInfo() outputs the details of the given kernel defination to standard error, generally due to a users 'showkernel' option request.</p>
@@ -631,8 +620,7 @@ _8c.html" id="ShowKernelInfo">ShowKernelInfo</a></h2>
 <p>the Morphology/Convolution kernel</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
 <div class="doc-section">
 
 <p>UnityAddKernelInfo() Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.  This in effect adds that amount of the original image into the resulting convolution kernel.  This value is usually provided by the user as a percentage value in the 'convolve:scale' setting.</p>
@@ -657,8 +645,7 @@ _8c.html" id="UnityAddKernelInfo">UnityAddKernelInfo</a></h2>
 </pre>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology
-_8c.html" id="ZeroKernelNans">ZeroKernelNans</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="ZeroKernelNans">ZeroKernelNans</a></h2>
 <div class="doc-section">
 
 <p>ZeroKernelNans() replaces any special 'nan' value that may be present in the kernel with a zero value.  This is typically done when the kernel will be used in special hardware (GPU) convolution processors, to simply matters.</p>
