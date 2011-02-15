@@ -136,14 +136,9 @@ shows the available options.
 
 Installing Linux RPMs
 
-Dr. Alexander Zimmermann maintains Linux RPMs of ImageMagick and Magick++.
-These may be downloaded from
-ftp://ftp.forwiss.uni-passau.de/pub/linux/local/ImageMagick/. This site is
-mirrored periodically to the ImageMagick linux directory and from there to
-the many ImageMagick and Linux mirror sites. Please note that the default
-version of the C++ compiler delivered with the system may not be sufficient
-to support Magick++. Use of GCC 2.95 or later is strongly recommended under
-Linux.
+Please note that the default version of the C++ compiler delivered with the
+system may not be sufficient to support Magick++. Use of GCC 2.95 or later is
+strongly recommended under Linux.
   ------------------------------------------------------------------------
 
                        Windows '9X, NT, 2000, ME, & XP
