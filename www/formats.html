@@ -169,7 +169,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -578,7 +578,7 @@ the supported image formats.</p>
     <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>
     <td valign="top">RW</td>
     <td valign="top">Joint Photographic Experts Group JFIF format</td>
-    <td valign="top">Requires <a href="ftp://ftp.uu.net/graphics/jpeg/">jpegsrc.v6b.tar.gz</a>.  You can optionally define the DCT method, for example to specify the float method, use <a href="../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="../www/command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <kbd>jpeg:size</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:size=128x128</a>. Finally, to restrict the maximum file size, use <kbd>jpeg:extent</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:extent=400kb</a>.</td>
+    <td valign="top">Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can optionally define the DCT method, for example to specify the float method, use <a href="../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="../www/command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <kbd>jpeg:size</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:size=128x128</a>. Finally, to restrict the maximum file size, use <kbd>jpeg:extent</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:extent=400kb</a>.</td>
   </tr>
 
   <tr>
@@ -989,7 +989,7 @@ convert \( -size 15x15 xc:black xc:white -append \) \
     <td valign="top">SID, MrSID</td>
     <td valign="top">R</td>
     <td valign="top">Multiresolution seamless image</td>
-    <td valign="top">Requires the <a href="http://www.lizardtech.com/download/dl_download.html?detail=geo_mrsiddecode&amp;platform=lin">mrsidgeodecode</a> command line utility that decompresses MG2 or MG3 SID image files.</td>
+    <td valign="top">Requires the <a href="http://www.lizardtech.com/downloads/downloads.html?dl=/download/files/lin/geoexpress_commandlineutils_linux.tgz">mrsidgeodecode</a> command line utility that decompresses MG2 or MG3 SID image files.</td>
   </tr>
 
   <tr>
@@ -1014,10 +1014,10 @@ convert \( -size 15x15 xc:black xc:white -append \) \
   </tr>
 
   <tr>
-    <td valign="top"><a href="http://www.remotesensing.org/libtiff/">TIFF</a></td>
+    <td valign="top"><a href="http://www.libtiff.org/">TIFF</a></td>
     <td valign="top">RW</td>
     <td valign="top">Tagged Image File Format</td>
-    <td valign="top">Also known as <kbd>TIF</kbd>. Requires <a href="ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <kbd>-define tiff:rows-per-strip=8</kbd>).  To define the tile geometry, use for example, <kbd>-define tiff:tile-geometry=128x128</kbd>. To specify a <em>signed</em> format, use  <kbd>-define quantum:format=signed</kbd>. To specify a single-precision floating-point format, use <kbd>-define quantum:format=floating-point</kbd>.  Set the depth to 64 for a double-precision floating-point format.  Use <kbd>-define quantum:polarity=min-is-black</kbd> or <kbd>-define quantum:polarity=min-is-white</kbd> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <kbd>-define tiff:alpha=unassociated</kbd>.  Set the fill order with <kbd>-define tiff:fill-order=msb|lsb</kbd>. Set the TIFF endianess with <kbd>-define tiff:endian=msb|lsb</kbd>. You can choose to read the EXIF profile with this option: <kbd>-define tiff:exif=true</kbd>. You can set a number of TIFF software attributes including host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="../www/command-line-options.html#set">-set tiff:software "My Company"</a>.</td>
+    <td valign="top">Also known as <kbd>TIF</kbd>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <kbd>-define tiff:rows-per-strip=8</kbd>).  To define the tile geometry, use for example, <kbd>-define tiff:tile-geometry=128x128</kbd>. To specify a <em>signed</em> format, use  <kbd>-define quantum:format=signed</kbd>. To specify a single-precision floating-point format, use <kbd>-define quantum:format=floating-point</kbd>.  Set the depth to 64 for a double-precision floating-point format.  Use <kbd>-define quantum:polarity=min-is-black</kbd> or <kbd>-define quantum:polarity=min-is-white</kbd> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <kbd>-define tiff:alpha=unassociated</kbd>.  Set the fill order with <kbd>-define tiff:fill-order=msb|lsb</kbd>. Set the TIFF endianess with <kbd>-define tiff:endian=msb|lsb</kbd>. You can choose to read the EXIF profile with this option: <kbd>-define tiff:exif=true</kbd>. You can set a number of TIFF software attributes including host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="../www/command-line-options.html#set">-set tiff:software "My Company"</a>.</td>
   </tr>
 
   <tr>

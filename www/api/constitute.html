@@ -190,12 +190,10 @@
 
 <div class="main">
 
-<h1>Module constitute
- Methods</h1>
+<h1>Module constitute Methods</h1>
 <p class="navigation-index">[<a href="#ConstituteImage">ConstituteImage</a> &bull; <a href="#PingImage">PingImage</a> &bull; <a href="#PingImages">PingImages</a> &bull; <a href="#ReadImage">ReadImage</a> &bull; <a href="#ReadImages">ReadImages</a> &bull; <a href="#WriteImage">WriteImage</a> &bull; <a href="#WriteImages">WriteImages</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="ConstituteImage">ConstituteImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ConstituteImage">ConstituteImage</a></h2>
 <div class="doc-section">
 
 <p>ConstituteImage() returns an image from the pixel data you supply. The pixel data must be in scanline order top-to-bottom.  The data can be char, short int, int, float, or double.  Float and double require the pixels to be normalized [0..1], otherwise [0..QuantumRange].  For example, to create a 640x480 image from unsigned red-green-blue character data, use:</p>
@@ -233,8 +231,7 @@ _8c.html" id="ConstituteImage">ConstituteImage</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="PingImage">PingImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImage">PingImage</a></h2>
 <div class="doc-section">
 
 <p>PingImage() returns all the properties of an image or image sequence except for the pixels.  It is much faster and consumes far less memory than ReadImage().  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
@@ -254,8 +251,7 @@ _8c.html" id="PingImage">PingImage</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="PingImages">PingImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="PingImages">PingImages</a></h2>
 <div class="doc-section">
 
 <p>PingImages() pings one or more images and returns them as an image list.</p>
@@ -275,8 +271,7 @@ _8c.html" id="PingImages">PingImages</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="ReadImage">ReadImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImage">ReadImage</a></h2>
 <div class="doc-section">
 
 <p>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read.  On failure, a NULL image is returned and exception describes the reason for the failure.</p>
@@ -296,8 +291,7 @@ _8c.html" id="ReadImage">ReadImage</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="ReadImages">ReadImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="ReadImages">ReadImages</a></h2>
 <div class="doc-section">
 
 <p>ReadImages() reads one or more images and returns them as an image list.</p>
@@ -317,8 +311,7 @@ _8c.html" id="ReadImages">ReadImages</a></h2>
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="WriteImage">WriteImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImage">WriteImage</a></h2>
 <div class="doc-section">
 
 <p>WriteImage() writes an image or an image sequence to a file or file handle. If writing to a file is on disk, the name is defined by the filename member of the image structure.  WriteImage() returns MagickFalse is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</p>
@@ -338,8 +331,7 @@ _8c.html" id="WriteImage">WriteImage</a></h2>
 <p>the image.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute
-_8c.html" id="WriteImages">WriteImages</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/constitute_8c.html" id="WriteImages">WriteImages</a></h2>
 <div class="doc-section">
 
 <p>WriteImages() writes an image sequence into one or more files.  While WriteImage() can write an image sequence, it is limited to writing the sequence into a single file using a format which supports multiple frames.   WriteImages(), however, does not have this limitation, instead it generates multiple output files if necessary (or when requested).  When ImageInfo's adjoin flag is set to MagickFalse, the file name is expected to include a printf-style formatting string for the frame number (e.g. "image02d.png").</p>
