@@ -3988,9 +3988,13 @@ WandExport MagickBooleanType MagickGetImageBackgroundColor(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageBlob() implements direct to memory image formats.  It
-%  returns the image as a blob and its length.   Use MagickSetFormat() to
-%  set the format of the returned blob (GIF, JPEG,  PNG, etc.).
+%  MagickGetImageBlob() implements direct to memory image formats.  It returns
+%  the image as a blob (a formatted "file" in memory) and its length, starting
+%  from the current position in the image sequence.  Use MagickSetImageFormat() 
+%  to set the format to write to the blob (GIF, JPEG,  PNG, etc.).
+%
+%  Utilize MagickResetIterator() to ensure the write is from the beginning of
+%  the image sequence.
 %
 %  Use MagickRelinquishMemory() to free the blob when you are done with it.
 %
