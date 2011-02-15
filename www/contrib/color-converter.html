@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Color Converter</title>
+<meta name="author" content="Fred Weinhaus and Anthony Barnett: 10/24/2009">
+<meta name="description" content="PHP/ImageMagick script to convert colors from one color system to another">
+<meta name="keywords" content="PHP, ImageMagick, color, converter, rgb, hex, hsl, hsb, cmyk, gray">
+<style type="text/css" title="text/css">
+<!--
+body {font:12pt Arial, Helvetica, sans-serif; background-color: white;}
+p {font:12pt Arial, Helvetica, sans-serif;}
+td {font:12pt Arial, Helvetica, sans-serif;}
+h3 {font:14pt Arial, Helvetica, sans-serif; font-weight: bold;}
+.red {color: red;}
+-->
+</style>
+</head>
+<body>
+
+<?php
+# get color
+$color = $_POST['color'];
+$color = strtolower($color);
+
+# get bgcolor
+$bgcolor = $_POST['bgcolor'];
+?>
+
+<h3 align="center">COLOR CONVERTER</H3>
+
+<p align="center">Please Specify Any Valid Single IM 6.5.6-6+ Color</p>
+<p align="center">e.g., name, hex, rgb(...), hsl(...), hsb(...), cmyk(...), gray(...)
+<br />or rgba(...), hsla(...), hsba(...), cmyka(...), graya(...)</p>
+<p align="center">see <a href="http://www.imagemagick.org/www/color.html">
+http://www.imagemagick.org/www/color.html</a></p>
+
+<form align="center" method="post" action="<?php echo $PHP_SELF; ?>" >
+Color: <input name="color" value="" />
+<input type="Submit" name="Submit" value="Submit" /><br />
+Background For Transparent Colors: <br />
+<input type="radio" name="bgcolor" value="white" <?php if ($bgcolor == "white") echo "checked"; ?> /> White 
+<input type="radio" name="bgcolor" value="gray" <?php if ($bgcolor == "gray") echo "checked"; ?> /> Gray 
+<input type="radio" name="bgcolor" value="black" <?php if ($bgcolor == "black") echo "checked"; ?> /> Black 
+<input type="radio" name="bgcolor" value="checker" <?php if ($bgcolor == "checker" || $bgcolor == "") echo "checked"; ?> /> Checker 
+</form>
+
+</body>
+</html>
+<?php
+
+if ( isset($color) && $color != "" )
+	{
+
+	# set path to convert
+	$path2convert = "/usr/local/bin/convert";
+
+	# set printout precision
+	$prec = 2;
+	
+	# set error message for invalid colors
+	$errMsg = "$color Is Not A Valid IM Color Specification";
+	
+	# set debug
+	$debug = false;
+	
+	# set debug numbers for errMsg
+	$numArray = Array();
+	if ( $debug )
+		{
+		for ($i=1; $i<=19; $i++)
+			{
+			$numArray[$i] = "($i)";
+			}
+		}
+	else
+		{
+		for ($i=1; $i<=19; $i++)
+			{
+			$numArray[$i] = "";
+			}
+		}
+		
+	# function to extract color values from txt: data
+	function getColorVals($text)
+		{
+		global $color1, $color2, $color3, $color4, $color5;
+		# remove white space
+		$text = preg_replace('/\s*/', '', $text);
+		
+		# convert parens to commas
+		$text = preg_replace('/\(|\)/', ',', $text);
+		
+		# split into array at commas
+		$textArray = explode(',', $text);
+		
+		$color1 = $textArray[2];
+		$color2 = $textArray[3];
+		$color3 = $textArray[4];
+		$color4 = $textArray[5];
+		$color5 = $textArray[6];
+		}
+
+	# function to convert color values to range 0-255 (or 0-360) or percent
+	function convertColorVals($color1,$color2,$color3,$color4,$color5,$qr,$prec,$colormode)
+		{
+		# convert colorvalues to range 0-255 (360 for hue) or percent
+		global $C1V,$C1P,$C2V,$C2P,$C3V,$C3P,$C4V,$C4P,$C5V,$C5P;
+		$val=255;
+		if ( $colormode == "hsl" || $colormode == "hsb" ) { $val=360; }
+		$C1V = round($val*$color1/$qr, $prec);
+		$C2V = round(255*$color2/$qr, $prec);
+		$C3V = round(255*$color3/$qr, $prec);
+		$C1P = round(100*$color1/$qr, $prec);
+		$C2P = round(100*$color2/$qr, $prec);
+		$C3P = round(100*$color3/$qr, $prec);
+		if ( $colormode == "cmyk" )
+			{
+			$C4V = round(255*$color4/$qr, $prec);
+			$C4P = round(100*$color4/$qr, $prec);
+			if ( is_numeric($color5) ) {$C5V = round($color5/$qr, $prec);}
+			}
+		else
+			{
+			if ( is_numeric($color4) ) {$C4V = round($color4/$qr, $prec);}
+			}
+		# display textual output
+		echo "<br />";
+		echo strtoupper($colormode) . ": <br />";
+		if ( $colormode != "cmyk" )
+			{
+			if ( is_numeric($color4) )
+				{
+				echo $colormode . "a($C1V,$C2V,$C3V,$C4V) <br />";
+				echo $colormode . "a($C1P%,$C2P%,$C3P%,$C4V) <br />";
+				}
+			else
+				{
+				echo $colormode . "($C1V,$C2V,$C3V) <br />";
+				echo $colormode . "($C1P%,$C2P%,$C3P%) <br />";
+				}
+			}
+		else
+			{
+			if ( is_numeric($color5) )
+				{
+				echo "cmyka($C1V,$C2V,$C3V,$C4V,$C5V) <br />";
+				echo "cmyka($C1P%,$C2P%,$C3P%,$C4P%,$C5V) <br />";
+				}
+			else
+				{
+				echo "cmyk($C1V,$C2V,$C3V,$C4V) <br />";
+				echo "cmyk($C1P%,$C2P%,$C3P%,$C4P%) <br />";
+				}
+			}
+		}
+	
+	
+	# begin sequence of tests for valid colors
+	
+	# remove any spaces in color
+	$color = preg_replace('/\s*/', '', $color);
+	
+	# test for comma count < 5 
+	# and 1 set of parens 
+	# and then allow only specific first 4, 5 or 6 characters 
+	# also test if exactly rgb, rgba, hsl, hsla, hsb, hsba, cmyk, cymka
+	# also test if begins with rgb, rgba, hsl, hsla, hsb, hsba, cmyk, cymka
+	# and does not contain 1 set of parens
+	$commacount = substr_count($color, ',');
+	$lparenct = substr_count($color, '(');
+	$rparenct = substr_count($color, ')');
+	$periodct = substr_count($color, '.');
+	$chars3 = substr($color, 0, 3);
+	$chars4 = substr($color, 0, 4);
+	$chars5 = substr($color, 0, 5);
+	$chars6 = substr($color, 0, 6);
+	if ( $commacount > 4 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[1]</p>";
+		exit;
+		}
+	elseif ( $commacount >= 1 && $commacount <= 4 && $lparenct != 1 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[2]</p>";
+		exit;
+		}
+	elseif ( $commacount >= 1 && $commacount <= 4 && $rparenct != 1 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[3]</p>";
+		exit;
+		}
+	elseif ( $commacount == 0 && $lparenct == 1 && $rparenct == 1 && $chars5 != "gray(" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[4]</p>";
+		exit;
+		}
+	elseif ( $commacount == 1 && $chars6 != "graya(" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[5]</p>";
+		exit;
+		}
+	elseif ( $commacount == 2 && $chars4 != "rgb(" &&  $chars4 != "hsl(" && $chars4 != "hsb(" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[6]</p>";
+		exit;
+		}
+	elseif ( $commacount == 3 && $chars5 != "rgba(" &&  $chars5 != "hsla(" && $chars5 != "hsba(" && $chars5 != "cmyk(" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[7]</p>";
+		exit;
+		}
+	elseif ( $commacount == 4 && $chars6 != "cmyka(" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[8]</p>";
+		exit;
+		}
+	elseif ( $color == "rgb" || $color == "hsl" || $color == "hsb" || $color == "rgba" || $color == "hsla" || $color == "hsba" || $color == "cmyk" || $color == "cmyka" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[9]</p>";
+		exit;
+		}
+	elseif ( $lparenct != 1 && $rparenct !=1 && ( $chars3 == "rgb" || $chars3 == "hsl" || $chars3 == "hsb" || $chars4 == "rgba" || $chars4 == "hsla" || $chars4 == "hsba" || $chars4 == "cmyk" || $chars5 == "cmyka" ) )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[10]</p>";
+		exit;
+		}
+	
+	# test if color contains ,, or (, or ,)
+	if ( substr_count($color, ',,') > 0 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[11]</p>";
+		exit;
+		}
+	elseif ( substr_count($color, '(,') > 0 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[12]</p>";
+		exit;
+		}
+	elseif ( substr_count($color, ',)') > 0 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[13]</p>";
+		exit;
+		}
+	
+	# test for only 1 hex char only at beginning
+	# and 3, 4, 6, 8, 12 or 16 following numberic chars
+	# and non-hex with 1 set of parens and with numeric chars not at end
+	$hashcount = substr_count($color, '#');
+	$hashloc = strpos($color, '#');
+	$hexcount = strlen($color);
+	$alphnumArray = preg_split('/[0-9]/', $color);
+	if ( $hashcount > 1 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[14]</p>";
+		exit;
+		}
+	elseif ( $hashcount == 1 && $hashloc != 0 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[15]</p>";
+		exit;
+		}
+	elseif ( $hashcount == 1 && $hashloc == 0 && $hexcount != 4 && $hexcount != 5 && $hexcount != 7 && $hexcount != 9 && $hexcount != 13 && $hexcount != 17 )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[16]</p>";
+		exit;
+		}
+	elseif ( $hashcount == 0 && $lparenct != 1 && $rparencount != 1 )
+		{
+		for( $i = 1; $i < sizeof($alphnumArray); $i++ )
+			{
+			if ( $alphnumArray[$i] != "" )
+				{
+				echo "<p align=\"center\" class=\"red\">$errMsg $numArray[17]</p>";
+				exit;
+				}
+			}
+		}
+
+	# test for invalid characters in color input
+	if ( preg_match_all('/[^#%(),.0-9a-zA-Z]/', $color, $matches) != "" )
+		{
+		echo "<p align=\"center\" class=\"red\">$errMsg $numArray[18]</p>";
+		exit;
+		}
+		
+	# test for numerical values > 100 if contains %
+	# test for numerical values > 255 if starts with rgb, cmyk or gray
+	# test for 1st, numerical values > 360 if starts with hsl or hsb
+	# and rest of values > 255
+	# also test if rgba, hsla, hsba, cmyka and graya and last component > 1
+	$pctcount = substr_count($color, '%');
+	$tmpcolor = preg_replace('/\(|\)/', ',', $color);
+	$colorArray = explode(',', $tmpcolor);
+	for( $i = 0; $i < sizeof($colorArray); $i++ )			{
+		if ( is_numeric(str_replace('%', '', $colorArray[$i])) && $colorArray[$i] > 100 && $pctcount > 0 )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Color Component That Is Greater Than 100%</p>";
+			exit;
+			}
+		elseif ( is_numeric($colorArray[$i]) && $colorArray[$i] > 255 && ( $chars3 == "rgb" || $chars4 == "cmyk" || $chars4 == "gray" ) )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Color Component That Is Greater Than 255</p>";
+			exit;
+			}
+		elseif ( is_numeric($colorArray[1]) && $colorArray[1] > 360 && ( $chars3 == "hsl" || $chars3 == "hsb" ) )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Hue Component That Is Greater Than 360</p>";
+			exit;
+			}
+		elseif ( is_numeric($colorArray[$i]) && $i != 1 && $colorArray[$i] > 255 && ( $chars3 == "hsl" || $chars3 == "hsb" ) )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Non-Hue Component That Is Greater Than 255</p>";
+			exit;
+			}
+		elseif ( is_numeric($colorArray[4]) && $colorArray[4] > 1 && ( $chars4 == "rgba" || $chars4 == "hsla" || $chars4 == "hsba" ) )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Alpha Component That Is Greater Than 1</p>";
+			exit;
+			}
+		elseif ( is_numeric($colorArray[5]) && $colorArray[5] > 1 && $chars5 == "cmyka" )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Alpha Component That Is Greater Than 1</p>";
+			exit;
+			}
+		elseif ( is_numeric($colorArray[2]) && $colorArray[2] > 1 && $chars5 == "graya" )
+			{
+			echo "<p align=\"center\" class=\"red\">$color Contains A Numerical Alpha Component That Is Greater Than 1</p>";
+			exit;
+			}
+		}
+
+	# test if begins with gray and 1 numeric entry
+	# test if begins with rgb, hsl, hsb and 3 numeric entries
+	# test if begins with rgba, hsla, hsba, cmyk and 4 numeric entries
+	# test if begins with cmyka and 5 numeric entries
+	$colorArray1 = str_replace('%', '', $colorArray[1]);
+	$colorArray2 = str_replace('%', '', $colorArray[2]);
+	$colorArray3 = str_replace('%', '', $colorArray[3]);
+	$colorArray4 = str_replace('%', '', $colorArray[4]);
+	$colorArray5 = str_replace('%', '', $colorArray[5]);
+	if ( $chars5 == "gray(" && !is_numeric($colorArray1) )
+		{
+		echo "<p align=\"center\" class=\"red\">$color Contains A Non-Numerical Color Component</p>";
+		exit;
+		}
+	elseif ( ( $chars4 == "rgb(" || $chars4 == "hsl(" || $chars4 == "hsb(" ) && ( !is_numeric($colorArray1) || !is_numeric($colorArray2) || !is_numeric($colorArray3) ) )
+		{
+		echo "<p align=\"center\" class=\"red\">$color Contains A Non-Numerical Color Component</p>";
+		exit;
+		}
+	elseif ( ( $chars5 == "rgba(" || $chars5 == "hsla(" || $chars5 == "hsba(" || $chars5 =="cmyk" ) && ( !is_numeric($colorArray1) || !is_numeric($colorArray2) || !is_numeric($colorArray3) || !is_numeric($colorArray4) ) )
+		{
+		echo "<p align=\"center\" class=\"red\">$color Contains A Non-Numerical Color Component</p>";
+		exit;
+		}
+	elseif ( $chars6 =="cmyka(" && ( !is_numeric($colorArray1) || !is_numeric($colorArray2) || !is_numeric($colorArray3) || !is_numeric($colorArray4) || !is_numeric($colorArray5) ) )
+		{
+		echo "<p align=\"center\" class=\"red\">$color Contains A Non-Numerical Color Component</p>";
+		exit;
+		}	
+
+	# test if color in IM list of colors
+	if ( $chars3 != "rgb" && $chars3 != "hsl" && $chars3 != "hsb" && $chars4 != "cmyk" && ( $hashcount != 1 || $hashloc != 0 ) )
+		{
+		# get list of colors from IM
+		$array = array();
+		exec("$path2convert -list color", $array, $returnval);
+		
+		# drop off the first 5 rows of the array 
+		# as they are texual info and not colors
+		array_shift($array);
+		array_shift($array);
+		array_shift($array);
+		array_shift($array);
+		array_shift($array);
+			
+		# filter the rows using a callback function 
+		# to get first field in each row as color name
+		function colorName($var)
+			{	
+			$tmpArray = split(' ', $var);
+			return(strtolower($tmpArray[0]));
+			}
+		$array = array_map('colorName',$array);
+	
+		# test if color is not in list
+		if ( !in_array($color, $array) )
+			{
+			echo "<p align=\"center\" class=\"red\">$errMsg $numArray[19]</p>";
+			exit;
+			}
+		}
+
+
+	# create display of colorswatch and textual color values
+
+	# make one cell table and fill with PNG image from colorswatch.html
+	echo "<table cellspacing=\"20\" align=\"center\"><tr><td valign=\"top\">";
+	echo "<p align=\"center\">$color<br />";
+	echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"10\" bordercolor=\"gray\">";
+	if ( $bgcolor == "checker" )
+		{
+		echo "<tr><td>";
+		}
+	else
+		{
+		echo "<tr><td bgcolor=\"$bgcolor\">";
+		}
+	echo "<img src=\"color-swatch.html?color=" . urlencode($color) . "&bgcolor=" . urlencode($bgcolor) . " \">";
+	echo "</td></tr></table>";
+	echo "</p>";
+
+	echo "</td><td valign=\"top\">";
+	
+	# get quantumrange
+	$array = array();
+	exec("$path2convert xc: -format \"%[fx:quantumrange]\" info:-", $array, $returnval);
+	$qr=$array[0];
+	if ( $qr == "" )
+		{		
+		$array = array();
+		exec("$path2convert xc: -format \"%q\" info:-", $array, $returnval);
+		$q = $array[0];
+		if ( $q == 8 )
+			{
+			$qr = 255;
+			}
+		elseif ( $q == 16 )
+			{
+			$qr = 65535;
+			}
+		else
+			{
+			$qr = pow(2, 32) - 1;
+			}
+		}
+
+	
+	# get txt: info for RGB
+	$array = array();
+	exec("$path2convert -size 1x1 xc:\"$color\" -colorspace RGB txt:-", $array, $returnval);
+	getColorVals($array[1]);
+	# convert RGB colors to range 0-255 and percent and show RGB info
+	convertColorVals($color1,$color2,$color3,$color4,$color5,$qr,$prec,'rgb');
+	
+	
+	# get txt: info for 8-bit HEX
+	$array = array();
+	exec("$path2convert -size 1x1 xc:\"$color\" -colorspace RGB -depth 8 txt:-", $array, $returnval);
+	getColorVals($array[1]);
+
+	# convert RGB color values to HEX and show HEX info
+	$red = dechex($color1);
+	if ( strlen($red) == 1) {$red = "0" . $red;}
+	$green = dechex($color2);
+	if ( strlen($green) == 1) {$green = "0" . $green;}
+	$blue = dechex($color3);
+	if ( strlen($blue) == 1) {$blue = "0" . $blue;}
+	if ( is_numeric($color4) )
+		{
+		$alpha = dechex($color4);
+		if ( strlen($alpha) == 1) {$alpha = "0" . $alpha;}
+		$hexcolor = $red . $green . $blue . $alpha;
+		}
+	else
+		{
+		$hexcolor = $red . $green . $blue;
+		}
+	echo "<br />";
+	echo "HEX: <br />";
+	echo "#$hexcolor <br />";
+	
+	
+	# get txt: info for HSL
+	$array = array();
+	exec("$path2convert -size 1x1 xc:\"$color\" -colorspace HSL txt:-", $array, $returnval);
+	getColorVals($array[1]);
+	# convert HSL colors to range 0-255 (360 for hue) and percent and show HSL info
+	convertColorVals($color1,$color2,$color3,$color4,$color5,$qr,$prec,'hsl');
+	
+	
+	# get txt: info for HSB
+	$array = array();
+	exec("$path2convert -size 1x1 xc:\"$color\" -colorspace HSB txt:-", $array, $returnval);
+	getColorVals($array[1]);
+	# convert HSB colors to range 0-255 (360 for hue) and percent and show HSB info
+	convertColorVals($color1,$color2,$color3,$color4,$color5,$qr,$prec,'hsb');
+	
+	
+	# get txt: info for CMYK
+	$array = array();
+	exec("$path2convert -size 1x1 xc:\"$color\" -colorspace CMYK txt:-", $array, $returnval);
+	getColorVals($array[1]);
+	# convert CMYK colors to range 0-255 and percent and show CMYK info
+	convertColorVals($color1,$color2,$color3,$color4,$color5,$qr,$prec,'cmyk');	
+
+	echo "</td></tr></table>";
+	
+	}
+?>
+
+
