@@ -2194,8 +2194,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         if (x_offset < 0)
           p-=x_offset;
       }
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-      exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
@@ -2226,11 +2225,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (image->matte != MagickFalse)
         destination.opacity=(MagickRealType) q->opacity;
       if (image->colorspace == CMYKColorspace)
+        destination.index=(MagickRealType) indexes[x];
+      if (image->colorspace == CMYKColorspace)
         {
           destination.red=(MagickRealType) QuantumRange-destination.red;
           destination.green=(MagickRealType) QuantumRange-destination.green;
           destination.blue=(MagickRealType) QuantumRange-destination.blue;
-          destination.index=(MagickRealType) (QuantumRange-indexes[x]);
+          destination.index=(MagickRealType) QuantumRange-destination.index;
         }
       /*
         Handle destination modifications outside overlaid region.
@@ -2299,12 +2300,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (composite_image->matte != MagickFalse)
         source.opacity=(MagickRealType) GetOpacityPixelComponent(p);
       if (composite_image->colorspace == CMYKColorspace)
+        source.index=(MagickRealType) composite_indexes[x-x_offset];
+      if (composite_image->colorspace == CMYKColorspace)
         {
           source.red=(MagickRealType) QuantumRange-source.red;
           source.green=(MagickRealType) QuantumRange-source.green;
           source.blue=(MagickRealType) QuantumRange-source.blue;
-          source.index=(MagickRealType) QuantumRange-(MagickRealType)
-            composite_indexes[x-x_offset];
+          source.index=(MagickRealType) QuantumRange-source.index;
         }
       switch (compose)
       {
@@ -2327,14 +2329,14 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         case OverCompositeOp:
         case SrcOverCompositeOp:
         {
-          MagickPixelCompositeOver(&source,source.opacity,
-               &destination,destination.opacity,&composite);
+          MagickPixelCompositeOver(&source,source.opacity,&destination,
+            destination.opacity,&composite);
           break;
         }
         case DstOverCompositeOp:
         {
-          MagickPixelCompositeOver(&destination,destination.opacity,
-               &source,source.opacity,&composite);
+          MagickPixelCompositeOver(&destination,destination.opacity,&source,
+            source.opacity,&composite);
           break;
         }
         case SrcInCompositeOp:
@@ -2383,8 +2385,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
         case MinusCompositeOp:
         {
-          CompositeMinus(&source,&destination,
-            channel,&composite);
+          CompositeMinus(&source,&destination,channel,&composite);
           break;
         }
         case ModulusAddCompositeOp:
@@ -2435,7 +2436,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         case MathematicsCompositeOp:
         {
           CompositeMathematics(&source,&destination,channel,&geometry_info,
-               &composite);
+            &composite);
           break;
         }
         /* Lighting Compositions */
@@ -2514,9 +2515,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
         case DissolveCompositeOp:
         {
-          MagickPixelCompositeOver(&source,(MagickRealType) (QuantumRange-source_dissolve*
-            (QuantumRange-source.opacity)),&destination,(MagickRealType)
-            (QuantumRange-destination_dissolve*(QuantumRange-
+          MagickPixelCompositeOver(&source,(MagickRealType) (QuantumRange-
+            source_dissolve*(QuantumRange-source.opacity)),&destination,
+            (MagickRealType) (QuantumRange-destination_dissolve*(QuantumRange-
             destination.opacity)),&composite);
           break;
         }
