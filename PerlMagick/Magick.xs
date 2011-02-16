@@ -94,12 +94,12 @@ extern "C" {
 #define sv_undef  PL_sv_undef
 #endif
 
-#define AddImageToRegistry(image) \
+#define AddImageToRegistry(sv,image) \
 { \
   if (magick_registry != (SplayTreeInfo *) NULL) \
     { \
       (void) AddValueToSplayTree(magick_registry,image,image); \
-      sv=newSViv((IV) image); \
+      (sv)=newSViv((IV) image); \
     } \
 }
 
@@ -2578,7 +2578,7 @@ Append(ref,...)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -2671,7 +2671,7 @@ Average(ref)
     av=newAV();
     ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    AddImageToRegistry(image);
+    AddImageToRegistry(sv,image);
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
@@ -2819,7 +2819,7 @@ BlobToImage(ref,...)
         break;
       for ( ; image; image=image->next)
       {
-        AddImageToRegistry(image);
+        AddImageToRegistry(sv,image);
         rv=newRV(sv);
         av_push(av,sv_bless(rv,hv));
         SvREFCNT_dec(sv);
@@ -2929,7 +2929,7 @@ Clone(ref)
       clone=CloneImage(image,0,0,MagickTrue,exception);
       if ((clone == (Image *) NULL) || (exception->severity >= ErrorException))
         break;
-      AddImageToRegistry(clone);
+      AddImageToRegistry(sv,clone);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -3051,7 +3051,7 @@ Coalesce(ref)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -3250,7 +3250,7 @@ Compare(ref,...)
     if (difference_image != (Image *) NULL)
       {
         difference_image->error.mean_error_per_pixel=distortion;
-        AddImageToRegistry(difference_image);
+        AddImageToRegistry(sv,difference_image);
         rv=newRV(sv);
         av_push(av,sv_bless(rv,hv));
         SvREFCNT_dec(sv);
@@ -3386,7 +3386,7 @@ CompareLayers(ref)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -3436,14 +3436,17 @@ DESTROY(ref)
         char
           message[MaxTextExtent];
 
-        struct PackageInfo
-          *info;
+        const SV
+          *key;
 
         HV
           *hv;
 
         GV
           **gvp;
+
+        struct PackageInfo
+          *info;
 
         SV
           *sv;
@@ -3465,7 +3468,7 @@ DESTROY(ref)
             info=(struct PackageInfo *) SvIV(sv);
             DestroyPackageInfo(info);
           }
-        (void) hv_delete(hv,message,(long) strlen(message),G_DISCARD);
+        key=hv_delete(hv,message,(long) strlen(message),G_DISCARD);
         break;
       }
       case SVt_PVMG:
@@ -3699,7 +3702,7 @@ EvaluateImages(ref)
     av=newAV();
     ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    AddImageToRegistry(image);
+    AddImageToRegistry(sv,image);
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
@@ -4018,7 +4021,7 @@ Flatten(ref)
     av=newAV();
     ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    AddImageToRegistry(image);
+    AddImageToRegistry(sv,image);
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
@@ -4182,7 +4185,7 @@ Fx(ref,...)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -4445,7 +4448,7 @@ Get(ref,...)
                     ClipImage(image);
                   if (image->mask != (Image *) NULL)
                     {
-                      AddImageToRegistry(image->mask);
+                      AddImageToRegistry(sv,image->mask);
                       s=sv_bless(newRV(sv),SvSTASH(reference));
                     }
                 }
@@ -4464,7 +4467,7 @@ Get(ref,...)
                     ClipImage(image);
                   if (image->clip_mask != (Image *) NULL)
                     {
-                      AddImageToRegistry(image->clip_mask);
+                      AddImageToRegistry(sv,image->clip_mask);
                       s=sv_bless(newRV(sv),SvSTASH(reference));
                     }
                 }
@@ -6940,7 +6943,7 @@ Layers(ref,...)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -11039,7 +11042,7 @@ Montage(ref,...)
           TransparentOpacity,MagickFalse);
     for (  ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -11170,7 +11173,7 @@ Morph(ref,...)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -11258,7 +11261,7 @@ Mosaic(ref)
     av=newAV();
     ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    AddImageToRegistry(image);
+    AddImageToRegistry(sv,image);
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
@@ -11573,7 +11576,7 @@ Preview(ref,...)
       preview_image=PreviewImage(image,preview_type,exception);
       if (preview_image == (Image *) NULL)
         goto PerlException;
-      AddImageToRegistry(preview_image);
+      AddImageToRegistry(sv,preview_image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -12987,7 +12990,7 @@ Read(ref,...)
         break;
       for ( ; image; image=image->next)
       {
-        AddImageToRegistry(image);
+        AddImageToRegistry(sv,image);
         rv=newRV(sv);
         av_push(av,sv_bless(rv,hv));
         SvREFCNT_dec(sv);
@@ -13519,7 +13522,7 @@ Smush(ref,...)
       goto PerlException;
     for ( ; image; image=image->next)
     {
-      AddImageToRegistry(image);
+      AddImageToRegistry(sv,image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
@@ -13882,7 +13885,7 @@ Transform(ref,...)
       TransformImage(&clone,crop_geometry,geometry);
       for ( ; clone; clone=clone->next)
       {
-        AddImageToRegistry(clone);
+        AddImageToRegistry(sv,clone);
         rv=newRV(sv);
         av_push(av,sv_bless(rv,hv));
         SvREFCNT_dec(sv);
