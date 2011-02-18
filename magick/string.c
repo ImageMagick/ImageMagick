@@ -542,7 +542,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   file=open(filename,O_RDONLY | O_BINARY);
   if (file == -1)
     return((StringInfo *) NULL);
-  offset=(MagickOffsetType) MagickSeek(file,0,SEEK_END);
+  offset=(MagickOffsetType) lseek(file,0,SEEK_END);
   if ((offset < 0) || (offset != (MagickOffsetType) ((ssize_t) offset)))
     {
       file=close(file)-1;
@@ -571,7 +571,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
       ssize_t
         count;
 
-      (void) MagickSeek(file,0,SEEK_SET);
+      (void) lseek(file,0,SEEK_SET);
       for (i=0; i < length; i+=count)
       {
         count=read(file,string+i,(size_t) MagickMin(length-i,(size_t)
