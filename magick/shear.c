@@ -439,7 +439,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 static inline ssize_t ReadRadonCell(const RadonInfo *radon_info,
-  const off_t offset,const size_t length,unsigned char *buffer)
+  const MagickOffsetType offset,const size_t length,unsigned char *buffer)
 {
   register ssize_t
     i;
@@ -464,7 +464,7 @@ static inline ssize_t ReadRadonCell(const RadonInfo *radon_info,
             SSIZE_MAX));
 #else
           count=pread(radon_info->file,buffer+i,MagickMin(length-i,(size_t)
-            SSIZE_MAX),(off_t) (offset+i));
+            SSIZE_MAX),offset+i);
 #endif
           if (count > 0)
             continue;
@@ -483,7 +483,7 @@ static inline ssize_t ReadRadonCell(const RadonInfo *radon_info,
 }
 
 static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
-  const off_t offset,const size_t length,const unsigned char *buffer)
+  const MagickOffsetType offset,const size_t length,const unsigned char *buffer)
 {
   register ssize_t
     i;
@@ -507,7 +507,7 @@ static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
             SSIZE_MAX));
 #else
           count=pwrite(radon_info->file,buffer+i,MagickMin(length-i,(size_t)
-            SSIZE_MAX),(off_t) (offset+i));
+            SSIZE_MAX),offset+i);
 #endif
           if (count > 0)
             continue;
@@ -528,13 +528,13 @@ static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
 static inline unsigned short GetRadonCell(const RadonInfo *radon_info,
   const ssize_t x,const ssize_t y)
 {
-  off_t
+  MagickOffsetType
     i;
 
   unsigned short
     value;
 
-  i=(off_t) radon_info->height*x+y;
+  i=(MagickOffsetType) radon_info->height*x+y;
   if ((i < 0) ||
       ((MagickSizeType) (i*sizeof(*radon_info->cells)) >= radon_info->length))
     return(0);
@@ -549,13 +549,13 @@ static inline unsigned short GetRadonCell(const RadonInfo *radon_info,
 static inline MagickBooleanType SetRadonCell(const RadonInfo *radon_info,
   const ssize_t x,const ssize_t y,const unsigned short value)
 {
-  off_t
+  MagickOffsetType
     i;
 
   ssize_t
     count;
 
-  i=(off_t) radon_info->height*x+y;
+  i=(MagickOffsetType) radon_info->height*x+y;
   if ((i < 0) ||
       ((MagickSizeType) (i*sizeof(*radon_info->cells)) >= radon_info->length))
     return(MagickFalse);
