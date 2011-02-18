@@ -9,6 +9,7 @@
 2011-02-14  6.6.7-8 Cristy  <quetzlzacatenango@image...>
   * Use implicit image format when explicit format is bogus (e.g.
     02.13.11-18:43:58.png now writes as PNG).
+  * Fix problem with 4GB file seeks on a 32-bit OS.
 
 2011-02-13  6.6.7-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Fixed Variable blur to handle small (< 1.0 sigma) blurs generated
