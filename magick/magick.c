@@ -43,6 +43,7 @@
 #include "magick/studio.h"
 #include "magick/annotate.h"
 #include "magick/blob.h"
+#include "magick/blob-private.h"
 #include "magick/cache.h"
 #include "magick/coder.h"
 #include "magick/client.h"

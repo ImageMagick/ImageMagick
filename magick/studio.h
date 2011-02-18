@@ -428,17 +428,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 /*
-  I/O defines.
-*/
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && !defined(__BORLANDC__)
-#define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
-#define MagickTell(file)  _telli64(file)
-#else
-#define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
-#define MagickTell(file) tell(file)
-#endif
-
-/*
   Magick defines.
 */
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
