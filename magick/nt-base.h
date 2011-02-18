@@ -127,6 +127,10 @@ extern "C" {
 #if !defined(isatty)
 #  define isatty _isatty
 #endif
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
+  !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)
+#  define lseek  _lseeki64
+#endif
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 #if !defined(lt_dlclose)
 #  define lt_dlclose(handle)  NTCloseLibrary(handle)
@@ -206,6 +210,10 @@ extern "C" {
 #endif
 #if !defined(sysconf)
 #  define sysconf(name)  NTSystemConfiguration(name)
+#endif
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
+  !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)
+#  define tell  _telli64
 #endif
 #if !defined(telldir)
 #  define telldir(directory)  NTTellDirectory(directory)

@@ -26,6 +26,8 @@ extern "C" {
 #include "magick/stream.h"
 
 #define MagickMinBlobExtent  32767L
+#define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
+#define MagickTell(file)  tell(file)
 
 typedef enum
 {
