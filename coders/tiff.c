@@ -2428,7 +2428,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     i;
 
   size_t
-    length;
+    length,
+    lsb_first;
 
   TIFF
     *tiff;
@@ -2451,9 +2452,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *pixels;
-
-  size_t
-    lsb_first;
 
   /*
     Open TIFF file.
