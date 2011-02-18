@@ -3517,7 +3517,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
       break;
     case FileStream:
     {
-      if (fseek(image->blob->file,(long) offset,whence) < 0)
+      if (fseek(image->blob->file,offset,whence) < 0)
         return(-1);
       image->blob->offset=TellBlob(image);
       break;
