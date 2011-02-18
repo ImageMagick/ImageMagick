@@ -92,7 +92,7 @@ extern "C" {
 #if !defined(fileno)
 #  define fileno  _fileno
 #endif
-#if !defined(fseek)
+#if !defined(fseeko)
 #  define fseeko  _fseeki64
 #endif
 #if !defined(fstat) && !defined(__BORLANDC__)
@@ -106,7 +106,7 @@ extern "C" {
 #if !defined(fsync)
 #  define fsync  _commit
 #endif
-#if !defined(ftell)
+#if !defined(ftello)
 #  define ftello  _ftelli64
 #endif
 #if !defined(ftruncate)
