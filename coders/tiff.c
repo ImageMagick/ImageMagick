@@ -829,7 +829,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   (void) MagickSetThreadValue(tiff_exception,exception);
   error_handler=TIFFSetErrorHandler(TIFFErrors);
   warning_handler=TIFFSetWarningHandler(TIFFWarnings);
-  tiff=TIFFClientOpen(image->filename,"r",(thandle_t) image,TIFFReadBlob,
+  tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
     TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
