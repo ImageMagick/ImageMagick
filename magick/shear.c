@@ -346,7 +346,7 @@ static MagickBooleanType ResetRadonCells(RadonInfo *radon_info)
       return(MagickTrue);
     }
   value=0;
-  (void) MagickSeek(radon_info->file,0,SEEK_SET);
+  (void) lseek(radon_info->file,0,SEEK_SET);
   for (y=0; y < (ssize_t) radon_info->height; y++)
   {
     for (x=0; x < (ssize_t) radon_info->width; x++)
@@ -453,7 +453,7 @@ static inline ssize_t ReadRadonCell(const RadonInfo *radon_info,
 #endif
   {
     i=(-1);
-    if (MagickSeek(radon_info->file,offset,SEEK_SET) >= 0)
+    if (lseek(radon_info->file,offset,SEEK_SET) >= 0)
       {
 #endif
         count=0;
@@ -496,7 +496,7 @@ static inline ssize_t WriteRadonCell(const RadonInfo *radon_info,
   #pragma omp critical (MagickCore_WriteRadonCell)
 #endif
   {
-    if (MagickSeek(radon_info->file,offset,SEEK_SET) >= 0)
+    if (lseek(radon_info->file,offset,SEEK_SET) >= 0)
       {
 #endif
         count=0;

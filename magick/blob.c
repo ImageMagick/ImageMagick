@@ -75,10 +75,6 @@
   Define declarations.
 */
 #define MagickMaxBlobExtent  65541
-#if defined(MAGICKCORE_HAVE_FSEEKO)
-# define fseek  fseeko
-# define ftell  ftello
-#endif
 #if !defined(MAP_ANONYMOUS) && defined(MAP_ANON)
 # define MAP_ANONYMOUS  MAP_ANON
 #endif
@@ -928,7 +924,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       ThrowFileException(exception,BlobError,"UnableToOpenFile",filename);
       return((unsigned char *) NULL);
     }
-  offset=(MagickOffsetType) MagickSeek(file,0,SEEK_END);
+  offset=(MagickOffsetType) lseek(file,0,SEEK_END);
   count=0;
   if ((offset < 0) || (offset != (MagickOffsetType) ((ssize_t) offset)))
     {
@@ -1002,7 +998,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
     }
   else
     {
-      (void) MagickSeek(file,0,SEEK_SET);
+      (void) lseek(file,0,SEEK_SET);
       for (i=0; i < *length; i+=count)
       {
         count=(ssize_t) read(file,blob+i,MagickMin(*length-i,(size_t)

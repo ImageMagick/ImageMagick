@@ -691,7 +691,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
   cache_info->timestamp=time(0);
 #if !defined(MAGICKCORE_HAVE_PREAD)
   LockSemaphoreInfo(cache_info->disk_semaphore);
-  if (MagickSeek(cache_info->file,offset,SEEK_SET) < 0)
+  if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     {
       UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return((MagickOffsetType) -1);
@@ -735,7 +735,7 @@ static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
   cache_info->timestamp=time(0);
 #if !defined(MAGICKCORE_HAVE_PWRITE)
   LockSemaphoreInfo(cache_info->disk_semaphore);
-  if (MagickSeek(cache_info->file,offset,SEEK_SET) < 0)
+  if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     {
       UnlockSemaphoreInfo(cache_info->disk_semaphore);
       return((MagickOffsetType) -1);
@@ -3958,7 +3958,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
     }
   if (length != (MagickSizeType) ((MagickOffsetType) length))
     return(MagickFalse);
-  extent=(MagickOffsetType) MagickSeek(cache_info->file,0,SEEK_END);
+  extent=(MagickOffsetType) lseek(cache_info->file,0,SEEK_END);
   if (extent < 0)
     return(MagickFalse);
   if ((MagickSizeType) extent >= length)
