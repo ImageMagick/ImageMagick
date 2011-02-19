@@ -1865,7 +1865,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,1) shared(status)
 #endif
-  for (i=0; i <= (ssize_t) number_channels; i++)
+  for (i=0; i < (ssize_t) number_channels; i++)
   {
     const int
       id = GetOpenMPThreadId();
