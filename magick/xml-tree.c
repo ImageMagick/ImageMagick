@@ -2213,9 +2213,6 @@ MagickExport XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
   register ssize_t
     i;
 
-  size_t
-    length;
-
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickSignature));
@@ -2246,7 +2243,7 @@ MagickExport XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
           "UnableToAcquireString");
       xml_info->attributes[i]=ConstantString(tag);
       xml_info->attributes[i+2]=(char *) NULL;
-      length=strlen(xml_info->attributes[i+1]);
+      (void) strlen(xml_info->attributes[i+1]);
     }
   /*
     Add new value to an existing attribute.

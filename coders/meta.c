@@ -2125,6 +2125,7 @@ static int format8BIM(Image *ifile, Image *ofile)
 
   resCount=0;
   foundOSType=0; /* found the OSType */
+  (void) foundOSType;
   c=ReadBlobByte(ifile);
   while (c != EOF)
   {

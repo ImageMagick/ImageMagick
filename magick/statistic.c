@@ -507,9 +507,6 @@ MagickExport Image *EvaluateImages(const Image *images,
       const int
         id = GetOpenMPThreadId();
 
-      MagickPixelPacket
-        pixel;
-
       register IndexPacket
         *restrict evaluate_indexes;
 
@@ -532,7 +529,6 @@ MagickExport Image *EvaluateImages(const Image *images,
           continue;
         }
       evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
-      pixel=zero;
       evaluate_pixel=evaluate_pixels[id];
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
@@ -616,9 +612,6 @@ MagickExport Image *EvaluateImages(const Image *images,
       const int
         id = GetOpenMPThreadId();
 
-      MagickPixelPacket
-        pixel;
-
       register IndexPacket
         *restrict evaluate_indexes;
 
@@ -642,7 +635,6 @@ MagickExport Image *EvaluateImages(const Image *images,
           continue;
         }
       evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
-      pixel=zero;
       evaluate_pixel=evaluate_pixels[id];
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
         evaluate_pixel[x]=zero;

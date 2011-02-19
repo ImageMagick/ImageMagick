@@ -506,6 +506,7 @@ int status;
       zip_info.next_out = (Bytef *) DecompressBlock;
       status = inflate(&zip_info,Z_NO_FLUSH);      
       extent=fwrite(DecompressBlock, 4096-zip_info.avail_out, 1, mat_file);
+      (void) extent;
 
       if(status == Z_STREAM_END) goto DblBreak;
     }
@@ -706,6 +707,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       case  8: z=1; break;      /* 2D matrix*/
       case 12: z = ReadBlobXXXLong(image2);  /* 3D matrix RGB*/
            Unknown6 = ReadBlobXXXLong(image2);
+           (void) Unknown6;
          if(z!=3) ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
          break;
       default: ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
@@ -810,6 +812,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       default:
         ThrowReaderException(CoderError, "UnsupportedCellTypeInTheMatrix");
     }
+    (void) sample_size;
     image->columns = MATLAB_HDR.SizeX;
     image->rows = MATLAB_HDR.SizeY;    
     quantum_info=AcquireQuantumInfo(clone_info,image);
@@ -1163,6 +1166,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
+  (void) logging;
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(MagickFalse);

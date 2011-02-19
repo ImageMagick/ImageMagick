@@ -1355,6 +1355,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
       case 0x1B:          /*bitmap rectangle*/
               WPG2Flags = LoadWPG2Flags(image,StartWPG.PosSizePrecision,NULL,&CTM);
+              (void) WPG2Flags;
               break;
             }
         }

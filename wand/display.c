@@ -1307,6 +1307,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
+            (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowDisplayInvalidArgumentException(option,argv[i]);
             break;
@@ -1861,6 +1862,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 (void) fprintf(stderr,"Overwrite %s? ",
                   resource_info.write_filename);
                 p=fgets(answer,(int) sizeof(answer),stdin);
+                (void) p;
                 if (((*answer != 'y') && (*answer != 'Y')))
                   return(MagickFalse);
               }

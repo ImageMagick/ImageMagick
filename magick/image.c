@@ -1717,6 +1717,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
           value;
 
         value=(ssize_t) strtol(q,&q,10);
+        (void) value;
       }
     switch (*q)
     {

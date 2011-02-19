@@ -477,6 +477,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
     Create standard CALS header.
   */
   count=WriteCALSRecord(image,"srcdocid: NONE");
+  (void) count;
   count=WriteCALSRecord(image,"dstdocid: NONE");
   count=WriteCALSRecord(image,"txtfilid: NONE");
   count=WriteCALSRecord(image,"figid: NONE");

@@ -722,9 +722,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
-    *indexes;
-
   LayerInfo
     *layer_info;
 
@@ -967,6 +964,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 Weird hack in PSD format to ignore first alpha channel.
               */
               skip_first_alpha=1;
+              (void) skip_first_alpha;
               number_layers=MagickAbsoluteValue(number_layers);
               if (image->debug != MagickFalse)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1283,7 +1281,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     layer_info[i].image->columns,1,exception);
                   if (q == (PixelPacket *) NULL)
                     break;
-                  indexes=GetAuthenticIndexQueue(layer_info[i].image);
                   for (x=0; x < (ssize_t) layer_info[i].image->columns; x++)
                   {
                     q->opacity=(Quantum) (QuantumRange-(Quantum) (QuantumScale*
@@ -1347,6 +1344,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
            }
         }
         mask_size = ReadBlobMSBLong(image);  /* global mask size: currently ignored */
+        (void) mask_size;
         if (number_layers > 0)
           {
             if (image->debug != MagickFalse)
@@ -1655,6 +1653,7 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
   if (next_image->depth > 8)
     next_image->depth=16;
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
+  (void) packet_size;
   quantum_info=AcquireQuantumInfo(image_info,image);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
@@ -1705,6 +1704,7 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
   monochrome=IsMonochromeImage(image,&image->exception) && (image->depth == 1)
     ? MagickTrue : MagickFalse;
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
+  (void) packet_size;
   quantum_info=AcquireQuantumInfo(image_info,image);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)

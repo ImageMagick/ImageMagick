@@ -1316,6 +1316,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     value=GetImageProperty(image,"Label");
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
+    (void) text_size;
     /*
       Write Page object.
     */

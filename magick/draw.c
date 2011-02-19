@@ -2315,9 +2315,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                   name[MaxTextExtent],
                   type[MaxTextExtent];
 
-                ElementInfo
-                  element;
-
                 SegmentInfo
                   segment;
 
@@ -2327,28 +2324,23 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 (void) CopyMagickString(type,token,MaxTextExtent);
                 GetMagickToken(q,&q,token);
                 segment.x1=StringToDouble(token);
-                element.cx=StringToDouble(token);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
                 segment.y1=StringToDouble(token);
-                element.cy=StringToDouble(token);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
                 segment.x2=StringToDouble(token);
-                element.major=StringToDouble(token);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
                 segment.y2=StringToDouble(token);
-                element.minor=StringToDouble(token);
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     GetMagickToken(q,&q,token);
                     if (*token == ',')
                       GetMagickToken(q,&q,token);
-                    element.angle=StringToDouble(token);
                   }
                 for (p=q; *q != '\0'; )
                 {
@@ -2875,10 +2867,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         t=token;
         for (s=token; *s != '\0'; s=t)
         {
-          double
-            value;
-
-          value=strtod(s,&t);
+          (void) strtod(s,&t);
           if (s == t)
             {
               t++;

@@ -636,6 +636,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowIdentifyException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
+            (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowIdentifyInvalidArgumentException(option,argv[i]);
             break;

@@ -319,9 +319,6 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char *BImgBuff=NULL,*ptrB;
   PixelPacket *q;
 
-  ssize_t
-    count;
-
   /*
     Open image file.
   */
@@ -437,7 +434,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if(palette!=NULL)
     {
-      count=ReadBlob(palette,2,(unsigned char *) PalHeader.FileId);
+      (void) ReadBlob(palette,2,(unsigned char *) PalHeader.FileId);
       if(strncmp(PalHeader.FileId,"AH",2) != 0) goto ErasePalette;
       PalHeader.Version=ReadBlobLSBShort(palette);
       PalHeader.Size=ReadBlobLSBShort(palette);
@@ -449,7 +446,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       PalHeader.MaxRed=ReadBlobLSBShort(palette);
       PalHeader.MaxGreen=ReadBlobLSBShort(palette);
       PalHeader.MaxBlue=ReadBlobLSBShort(palette);
-      count=ReadBlob(palette,20,(unsigned char *) PalHeader.PaletteId);
+      (void) ReadBlob(palette,20,(unsigned char *) PalHeader.PaletteId);
 
       if(PalHeader.MaxIndex<1) goto ErasePalette;
       image->colors=PalHeader.MaxIndex+1;
@@ -549,7 +546,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) ResetMagickMemory(ptrB,(int) RunValue,(size_t) RunCountMasked);
             }
           else {
-            count=ReadBlob(image,(size_t) RunCountMasked,ptrB);
+            (void) ReadBlob(image,(size_t) RunCountMasked,ptrB);
           }
 
           ptrB+=(int) RunCountMasked;

@@ -181,6 +181,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read control block.
   */
   count=ReadBlob(image,80,buffer);
+  (void) count;
   count=ReadBlob(image,2,(unsigned char *) magick);
   if ((LocaleNCompare((char *) magick,"CT",2) != 0) &&
       (LocaleNCompare((char *) magick,"LW",2) != 0) &&

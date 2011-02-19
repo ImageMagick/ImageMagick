@@ -1416,7 +1416,6 @@ MagickExport Image *SpliceImage(const Image *image,
     *splice_image;
 
   MagickBooleanType
-    proceed,
     status;
 
   MagickOffsetType
@@ -1424,9 +1423,6 @@ MagickExport Image *SpliceImage(const Image *image,
 
   RectangleInfo
     splice_geometry;
-
-  register ssize_t
-    i;
 
   ssize_t
     y;
@@ -1512,7 +1508,6 @@ MagickExport Image *SpliceImage(const Image *image,
     Splice image.
   */
   status=MagickTrue;
-  i=0;
   progress=0;
   image_view=AcquireCacheView(image);
   splice_view=AcquireCacheView(splice_image);
@@ -1576,8 +1571,6 @@ MagickExport Image *SpliceImage(const Image *image,
     }
     if (SyncCacheViewAuthenticPixels(splice_view,exception) == MagickFalse)
       status=MagickFalse;
-    proceed=SetImageProgress(image,SpliceImageTag,(MagickOffsetType) y,
-      splice_image->rows);
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType

@@ -1161,6 +1161,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
     HistogramCompare);
   GetMagickPixelPacket(image,&pixel);
   p=histogram;
+  status=MagickTrue;
   for (i=0; i < (ssize_t) number_colors; i++)
   {
     SetMagickPixelPacket(image,&p->pixel,&p->index,&pixel);
@@ -1199,6 +1200,8 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   }
   (void) fflush(file);
   histogram=(ColorPacket *) RelinquishMagickMemory(histogram);
+  if (status == MagickFalse)
+    return(0);
   return(number_colors);
 }
 
@@ -1260,6 +1263,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
       register PixelPacket
         *restrict q;
 
+      status=MagickTrue;
       p=node_info->list;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
@@ -1287,6 +1291,8 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
             status=MagickFalse;
         }
       cube_info->progress++;
+      if (status == MagickFalse)
+        return;
     }
 }
 

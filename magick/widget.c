@@ -4227,7 +4227,6 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
 #define UpButtonText  "Up"
 
   char
-    *cwd,
     **filelist,
     home_directory[MaxTextExtent],
     primary_selection[MaxTextExtent],
@@ -4301,7 +4300,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",action);
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  cwd=getcwd(home_directory,MaxTextExtent);
+  (void) getcwd(home_directory,MaxTextExtent);
   (void) CopyMagickString(working_path,home_directory,MaxTextExtent);
   filelist=ListFiles(working_path,glob_pattern,&files);
   if (filelist == (char **) NULL)

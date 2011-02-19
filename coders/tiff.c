@@ -840,6 +840,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   debug=IsEventLogging();
+  (void) debug;
   if (image_info->number_scenes != 0)
     {
       /*
@@ -1245,6 +1246,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
+          (void) length;
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
@@ -1446,7 +1448,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         (void) SetImageStorageClass(image,DirectClass);
         number_pixels=columns*rows;
-        tile_pixels=(uint32 *) AcquireQuantumMemory((size_t) columns*rows,
+        tile_pixels=(uint32 *) AcquireQuantumMemory(number_pixels,
           sizeof(*tile_pixels));
         if (tile_pixels == (uint32 *) NULL)
           {
@@ -2503,6 +2505,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     }
   scene=0;
   debug=IsEventLogging();
+  (void) debug;
   do
   {
     /*
@@ -3032,6 +3035,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 break;
               length=ExportQuantumPixels(image,(const CacheView *) NULL,
                 quantum_info,quantum_type,pixels,&image->exception);
+              (void) length;
               if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
               if (image->previous == (Image *) NULL)

@@ -410,8 +410,13 @@ AC_CHECK_FUNCS([strlcat strlcpy], [], [AC_LIBOBJ([lt__strl])])
 m4_pattern_allow([LT_LIBEXT])dnl
 AC_DEFINE_UNQUOTED([LT_LIBEXT],["$libext"],[The archive extension])
 
+name=
+eval "lt_libprefix=\"$libname_spec\""
+m4_pattern_allow([LT_LIBPREFIX])dnl
+AC_DEFINE_UNQUOTED([LT_LIBPREFIX],["$lt_libprefix"],[The archive prefix])
+
 name=ltdl
-LTDLOPEN=`eval "\\$ECHO \"$libname_spec\""`
+eval "LTDLOPEN=\"$libname_spec\""
 AC_SUBST([LTDLOPEN])
 ])# _LTDL_SETUP
 

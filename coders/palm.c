@@ -337,10 +337,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     if (bits_per_pixel > 16)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     version=(size_t) ReadBlobByte(image);
+    (void) version;
     nextDepthOffset=(size_t) ReadBlobMSBShort(image);
     transparentIndex=(size_t) ReadBlobByte(image);
     compressionType=(size_t) ReadBlobByte(image);
     pad=ReadBlobMSBShort(image);
+    (void) pad;
     /*
       Initialize image colormap.
     */
@@ -352,8 +354,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     if (bits_per_pixel == 16)  /* Direct Color */
       {
         redbits=(size_t) ReadBlobByte(image);  /* # of bits of red */
+        (void) redbits;
         greenbits=(size_t) ReadBlobByte(image);  /* # of bits of green */
+        (void) greenbits;
         bluebits=(size_t) ReadBlobByte(image);  /* # of bits of blue */
+        (void) bluebits;
         ReadBlobByte(image);  /* reserved by Palm */
         ReadBlobByte(image);  /* reserved by Palm */
         transpix.red=(MagickRealType) (QuantumRange*ReadBlobByte(image)/31);
@@ -396,6 +401,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       }
     if (flags & PALM_IS_COMPRESSED_FLAG)
       size=ReadBlobMSBShort(image);
+    (void) size;
     image->storage_class=DirectClass;
     if (bits_per_pixel < 16)
       {

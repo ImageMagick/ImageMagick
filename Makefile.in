@@ -288,7 +288,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
 	$(top_srcdir)/m4/ax_prog_perl_version.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
-	$(top_srcdir)/m4/cxx_have_lstring.m4 \
 	$(top_srcdir)/m4/cxx_have_std_libs.m4 \
 	$(top_srcdir)/m4/framework.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltdl.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -2411,6 +2410,7 @@ MAGICK_TARGET_VENDOR = @MAGICK_TARGET_VENDOR@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANDelegate = @MANDelegate@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MAN_DIR = @MAN_DIR@
 MATH_LIBS = @MATH_LIBS@
 MKDIR_P = @MKDIR_P@
@@ -2525,6 +2525,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@

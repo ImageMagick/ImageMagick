@@ -117,6 +117,7 @@ static void GetFTPData(void *userdata,const char *data,int size)
   if (size <= 0)
     return;
   length=fwrite(data,size,1,file);
+  (void) length;
 }
 #endif
 
@@ -211,6 +212,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           while ((bytes=xmlNanoHTTPRead(context,buffer,MaxBufferExtent)) > 0)
             count=(ssize_t) fwrite(buffer,bytes,1,file);
+          (void) count;
           xmlNanoHTTPClose(context);
           xmlFree(type);
           xmlNanoHTTPCleanup();

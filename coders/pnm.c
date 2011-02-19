@@ -364,6 +364,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           if (LocaleCompare(keyword,"depth") == 0)
             packet_size=StringToUnsignedLong(value);
+          (void) packet_size;
           if (LocaleCompare(keyword,"height") == 0)
             image->rows=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"maxval") == 0)
@@ -1457,9 +1458,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
   QuantumType
     quantum_type;
 
-  register ssize_t
-    i;
-
   register unsigned char
     *pixels,
     *q;
@@ -1650,9 +1648,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const IndexPacket
-            *restrict indexes;
-
           register const PixelPacket
             *restrict p;
 
@@ -1662,7 +1657,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          indexes=GetVirtualIndexQueue(image);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=PixelIntensityToQuantum(p);
@@ -1674,7 +1668,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                 *q++='\n';
                 (void) WriteBlob(image,q-pixels,pixels);
                 q=pixels;
-                i=0;
               }
             p++;
           }

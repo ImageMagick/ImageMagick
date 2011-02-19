@@ -1691,6 +1691,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
   assert(y_offset != (ssize_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   x=0;
+  status=MagickTrue;
   GetMagickPixelPacket(image,&pixel);
   GetMagickPixelPacket(image,&target);
   image_view=AcquireCacheView(image);
@@ -1735,6 +1736,8 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
   image_view=DestroyCacheView(image_view);
   *x_offset=x;
   *y_offset=y;
+  if (status == MagickFalse)
+    return(status);
   return(y < (ssize_t) image->rows ? MagickTrue : MagickFalse);
 }
 

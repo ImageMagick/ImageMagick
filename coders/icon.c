@@ -391,6 +391,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             break;
         bytes_per_line=(((image->columns*icon_info.bits_per_pixel)+31) &
           ~31) >> 3;
+        (void) bytes_per_line;
         scanline_pad=((((image->columns*icon_info.bits_per_pixel)+31) & ~31)-
           (image->columns*icon_info.bits_per_pixel)) >> 3;
         switch (icon_info.bits_per_pixel)
@@ -1217,6 +1218,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       break;
   } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
   offset=SeekBlob(image,0,SEEK_SET);
+  (void) offset;
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,1);
   (void) WriteBlobLSBShort(image,(unsigned short) (scene+1));

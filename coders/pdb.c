@@ -353,6 +353,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   img_offset=(int) ReadBlobMSBLong(image); /* TS */
   attributes=(unsigned char) ReadBlobByte(image);
+  (void) attributes;
   count=ReadBlob(image,3,(unsigned char *) tag);
   if (count != 3  ||  memcmp(tag,"\x6f\x80\x00",3) != 0)
     ThrowReaderException(CorruptImageError,"CorruptImage");

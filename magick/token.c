@@ -227,6 +227,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
           *q;
 
         value=strtod(p,&q);
+        (void) value;
         if ((p != q) && (*p != ','))
           {
             for ( ; (p < q) && (*p != ','); p++)

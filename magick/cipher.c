@@ -559,9 +559,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   const unsigned char
     *digest;
 
-  IndexPacket
-    *indexes;
-
   ssize_t
     y;
 
@@ -656,7 +653,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetCacheViewAuthenticIndexQueue(image_view);
     length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
     p=pixels;
@@ -762,9 +758,6 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   const unsigned char
     *digest;
 
-  IndexPacket
-    *indexes;
-
   ssize_t
     y;
 
@@ -866,7 +859,6 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetCacheViewAuthenticIndexQueue(image_view);
     length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
     p=pixels;

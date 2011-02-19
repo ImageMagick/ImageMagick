@@ -3437,7 +3437,6 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   XrmDatabase database,const char *client_name,XResourceInfo *resource_info)
 {
   char
-    *cwd,
     *resource_value;
 
   /*
@@ -3526,7 +3525,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     (char *) "Center");
   resource_info->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
     MagickFalse,resource_value);
-  cwd=getcwd(resource_info->home_directory,MaxTextExtent);
+  (void) getcwd(resource_info->home_directory,MaxTextExtent);
   resource_info->icon_geometry=XGetResourceClass(database,client_name,
     "iconGeometry",(char *) NULL);
   resource_value=XGetResourceClass(database,client_name,"iconic",

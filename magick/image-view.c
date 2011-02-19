@@ -220,7 +220,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 
   Image
     *destination_image,
-    *duplex_image,
     *source_image;
 
   MagickBooleanType
@@ -237,7 +236,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   if (transfer == (DuplexTransferImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
-  duplex_image=duplex->image;
   destination_image=destination->image;
   if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
     return(MagickFalse);
@@ -255,16 +253,9 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
     MagickBooleanType
       sync;
 
-    register const IndexPacket
-      *restrict duplex_indexes,
-      *restrict indexes;
-
     register const PixelPacket
       *restrict duplex_pixels,
       *restrict pixels;
-
-    register IndexPacket
-      *restrict destination_indexes;
 
     register PixelPacket
       *restrict destination_pixels;
@@ -278,7 +269,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewVirtualIndexQueue(source->view);
     duplex_pixels=GetCacheViewVirtualPixels(duplex->view,duplex->extent.x,y,
       duplex->extent.width,1,duplex->exception);
     if (duplex_pixels == (const PixelPacket *) NULL)
@@ -286,7 +276,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         status=MagickFalse;
         continue;
       }
-    duplex_indexes=GetCacheViewVirtualIndexQueue(duplex->view);
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->extent.x,y,destination->extent.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -294,7 +283,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         status=MagickFalse;
         continue;
       }
-    destination_indexes=GetCacheViewAuthenticIndexQueue(destination->view);
     if (transfer(source,duplex,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
@@ -568,9 +556,6 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
     const int
       id = GetOpenMPThreadId();
 
-    register const IndexPacket
-      *indexes;
-
     register const PixelPacket
       *pixels;
 
@@ -583,7 +568,6 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewVirtualIndexQueue(source->view);
     if (get(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -913,9 +897,6 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
     MagickBooleanType
       sync;
 
-    register IndexPacket
-      *restrict indexes;
-
     register PixelPacket
       *restrict pixels;
 
@@ -930,7 +911,6 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(destination->view);
     if (set(destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
@@ -1081,14 +1061,8 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
     MagickBooleanType
       sync;
 
-    register const IndexPacket
-      *restrict indexes;
-
     register const PixelPacket
       *restrict pixels;
-
-    register IndexPacket
-      *restrict destination_indexes;
 
     register PixelPacket
       *restrict destination_pixels;
@@ -1102,7 +1076,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewVirtualIndexQueue(source->view);
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->extent.x,y,destination->extent.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -1110,7 +1083,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
         status=MagickFalse;
         continue;
       }
-    destination_indexes=GetCacheViewAuthenticIndexQueue(destination->view);
     if (transfer(source,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
@@ -1216,9 +1188,6 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
     const int
       id = GetOpenMPThreadId();
 
-    register IndexPacket
-      *restrict indexes;
-
     register PixelPacket
       *restrict pixels;
 
@@ -1232,7 +1201,6 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(source->view);
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
