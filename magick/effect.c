@@ -1806,15 +1806,16 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  register ssize_t
+    i;
+
   Quantum
     **restrict buffers,
     **restrict pixels;
 
   size_t
-    length;
-
-  ssize_t
-    channel;
+    length,
+    number_channels;
 
   static const ssize_t
     X[4] = {0, 1, 1,-1},
@@ -1858,12 +1859,13 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Reduce speckle in the image.
   */
   status=MagickTrue;
+  number_channels=image->colorspace == CMYKColorspace ? 5 : 4;
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,1) shared(status)
 #endif
-  for (channel=0; channel <= 3; channel++)
+  for (i=0; i <= (ssize_t) number_channels; i++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -1873,7 +1875,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       *pixel;
 
     register ssize_t
-      i,
+      k,
       x;
 
     ssize_t
@@ -1888,21 +1890,26 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      register const IndexPacket
+        *restrict indexes;
+
       register const PixelPacket
         *restrict p;
 
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
         break;
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
       j++;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        switch (channel)
+        switch (i)
         {
           case 0: pixel[j]=GetRedPixelComponent(p); break;
           case 1: pixel[j]=GetGreenPixelComponent(p); break;
           case 2: pixel[j]=GetBluePixelComponent(p); break;
           case 3: pixel[j]=GetOpacityPixelComponent(p); break;
+          case 4: pixel[j]=GetBlackPixelComponent(indexes,x); break;
           default: break;
         }
         p++;
@@ -1911,18 +1918,21 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       j++;
     }
     (void) ResetMagickMemory(buffer,0,length*sizeof(*buffer));
-    for (i=0; i < 4; i++)
+    for (k=0; k < 4; k++)
     {
-      Hull(X[i],Y[i],image->columns,image->rows,pixel,buffer,1);
-      Hull(-X[i],-Y[i],image->columns,image->rows,pixel,buffer,1);
-      Hull(-X[i],-Y[i],image->columns,image->rows,pixel,buffer,-1);
-      Hull(X[i],Y[i],image->columns,image->rows,pixel,buffer,-1);
+      Hull(X[k],Y[k],image->columns,image->rows,pixel,buffer,1);
+      Hull(-X[k],-Y[k],image->columns,image->rows,pixel,buffer,1);
+      Hull(-X[k],-Y[k],image->columns,image->rows,pixel,buffer,-1);
+      Hull(X[k],Y[k],image->columns,image->rows,pixel,buffer,-1);
     }
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       MagickBooleanType
         sync;
+
+      register IndexPacket
+        *restrict indexes;
 
       register PixelPacket
         *restrict q;
@@ -1931,15 +1941,17 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         1,exception);
       if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetCacheViewAuthenticIndexQueue(image_view);
       j++;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        switch (channel)
+        switch (i)
         {
           case 0: q->red=pixel[j]; break;
           case 1: q->green=pixel[j]; break;
           case 2: q->blue=pixel[j]; break;
           case 3: q->opacity=pixel[j]; break;
+          case 4: indexes[x]=pixel[j]; break;
           default: break;
         }
         q++;
@@ -1961,8 +1973,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_DespeckleImage)
 #endif
-        proceed=SetImageProgress(image,DespeckleImageTag,(MagickOffsetType)
-          channel,3);
+        proceed=SetImageProgress(image,DespeckleImageTag,(MagickOffsetType) i,
+          number_channels);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

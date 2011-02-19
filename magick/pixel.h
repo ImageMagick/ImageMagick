@@ -60,12 +60,12 @@ extern "C" {
 #define GetCyanPixelComponent(p) ((p)->red)
 #define GetMagentaPixelComponent(p) ((p)->green)
 #define GetYellowPixelComponent(p) ((p)->blue)
-#define GetBlackPixelComponent(x) (indexes[x])
+#define GetBlackPixelComponent(p,x) (p[x])
 
 #define SetCyanPixelComponent(q,value) ((q)->red=(value))
 #define SetMagentaPixelComponent(q,value) ((q)->green=(value))
 #define SetYellowPixelComponent(q,value) ((q)->blue=(value))
-#define SetBlackPixelComponent(x,value) (indexes[x]=(value))
+#define SetBlackPixelComponent(p,x,value) (p[x]=(value))
 
 typedef struct _DoublePixelPacket
 {
