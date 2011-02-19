@@ -91,7 +91,9 @@
 /* #define PNG_USE_RESULT   The result of this function must be checked */
 /* #define PNG_NORETURN     This function does not return */
 /* #define PNG_ALLOCATED    The result of the function is new memory */
-/* #define PNG_DEPSTRUCT    Access to this struct member is deprecated */
+#if (PNG_LIBPNG_VER >= 10400 && PNG_LIBPNG_VER < 10500)
+   #define PNG_DEPSTRUCT  /* Access to this struct member is deprecated */
+#endif
 
 #include "png.h"
 #include "zlib.h"
@@ -1731,7 +1733,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   ping_pixels=(unsigned char *) NULL;
 
+#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
+#else
+  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
+  if (setjmp(ping->jmpbuf))
+#endif
     {
       /*
         PNG image is corrupt.
@@ -2392,7 +2399,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
+#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
+#else
+  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
+  if (setjmp(ping->jmpbuf))
+#endif
     {
       /*
         PNG image is corrupt.
@@ -7439,7 +7451,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   ping_pixels=(unsigned char *) NULL;
 
+#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
+#else
+  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
+  if (setjmp(ping->jmpbuf))
+#endif
     {
       /*
         PNG write failed.
@@ -8732,7 +8749,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Initialize image scanlines.
   */
+#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
+#else
+  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
+  if (setjmp(ping->jmpbuf))
+#endif
     {
       /*
         PNG write failed.
