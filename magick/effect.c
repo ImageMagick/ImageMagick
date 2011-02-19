@@ -1868,13 +1868,13 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     const int
       id = GetOpenMPThreadId();
 
-    register ssize_t
-      i,
-      x;
-
     register Quantum
       *buffer,
       *pixel;
+
+    register ssize_t
+      i,
+      x;
 
     ssize_t
       j,
