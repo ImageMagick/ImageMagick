@@ -66,7 +66,7 @@ AS_IF([test -z "$ARGZ_H"],
 	   ;; #(
 	 *) lt_cv_sys_argz_works=yes ;;
 	 esac]])
-     AS_IF([test $lt_cv_sys_argz_works = yes],
+     AS_IF([test "$lt_cv_sys_argz_works" = yes],
         [AC_DEFINE([HAVE_WORKING_ARGZ], 1,
                    [This value is set to 1 to indicate that the system argz facility works])],
         [ARGZ_H=argz.h

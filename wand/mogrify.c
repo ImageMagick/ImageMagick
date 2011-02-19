@@ -5275,6 +5275,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
+            (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;

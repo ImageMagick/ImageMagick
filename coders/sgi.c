@@ -353,6 +353,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (iris_info.pixel_format != 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     count=ReadBlob(image,sizeof(iris_info.filler),iris_info.filler);
+    (void) count;
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
     image->depth=(size_t) MagickMin(iris_info.depth,MAGICKCORE_QUANTUM_DEPTH);

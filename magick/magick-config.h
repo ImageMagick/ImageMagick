@@ -465,11 +465,6 @@
 #define MAGICKCORE_HAVE_LSTAT 1
 #endif
 
-/* define if the compiler implements L"widestring" */
-#ifndef MAGICKCORE_HAVE_LSTRING
-#define MAGICKCORE_HAVE_LSTRING /**/
-#endif
-
 /* Define this if a modern libltdl is already installed */
 #ifndef MAGICKCORE_HAVE_LTDL
 #define MAGICKCORE_HAVE_LTDL 1
@@ -1124,6 +1119,11 @@
 #define MAGICKCORE_LT_LIBEXT "a"
 #endif
 
+/* The archive prefix */
+#ifndef MAGICKCORE_LT_LIBPREFIX
+#define MAGICKCORE_LT_LIBPREFIX "lib"
+#endif
+
 /* Define to the extension used for runtime loadable modules, say, ".so". */
 #ifndef MAGICKCORE_LT_MODULE_EXT
 #define MAGICKCORE_LT_MODULE_EXT ".so"
@@ -1403,9 +1403,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-#ifndef MAGICKCORE__FILE_OFFSET_BITS
-#define MAGICKCORE__FILE_OFFSET_BITS 64
-#endif
+/* #undef _FILE_OFFSET_BITS */
 
 /* enable run-time bounds-checking */
 /* #undef _FORTIFY_SOURCE */

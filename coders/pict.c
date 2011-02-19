@@ -499,6 +499,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
         q=pixels+y*width;
         number_pixels=bytes_per_line;
         count=ReadBlob(blob,(size_t) number_pixels,scanline);
+        (void) count;
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         if ((q+number_pixels) > (pixels+(*extent)))
           {
@@ -1271,6 +1272,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (info == (unsigned char *) NULL)
               break;
             count=ReadBlob(image,length,info);
+            (void) count;
             switch (type)
             {
               case 0xe0:

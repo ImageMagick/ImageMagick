@@ -782,6 +782,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             profile_data=ReadBlobLSBLong(image);
             profile_size=ReadBlobLSBLong(image);
+            (void) profile_data;
+            (void) profile_size;
             (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }

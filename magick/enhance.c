@@ -2996,9 +2996,6 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
     *histogram,
     intensity;
 
-  MagickSizeType
-    number_pixels;
-
   ssize_t
     black,
     white,
@@ -3039,7 +3036,6 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   /*
     Find the histogram boundaries by locating the black and white point levels.
   */
-  number_pixels=(MagickSizeType) image->columns*image->rows;
   intensity=0.0;
   for (black=0; black < (ssize_t) MaxMap; black++)
   {

@@ -4614,6 +4614,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   j=0;
   depth=stegano_image->depth;
   k=image->offset;
+  status=MagickTrue;
   watermark_view=AcquireCacheView(watermark);
   stegano_view=AcquireCacheView(stegano_image);
   for (i=(ssize_t) depth-1; (i >= 0) && (j < (ssize_t) depth); i--)
@@ -4675,6 +4676,11 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   watermark_view=DestroyCacheView(watermark_view);
   if (stegano_image->storage_class == PseudoClass)
     (void) SyncImage(stegano_image);
+  if (status == MagickFalse)
+    {
+      stegano_image=DestroyImage(stegano_image);
+      return((Image *) NULL);
+    }
   return(stegano_image);
 }
 
@@ -4771,6 +4777,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
   /*
     Copy left image to red channel and right image to blue channel.
   */
+  status=MagickTrue;
   for (y=0; y < (ssize_t) stereo_image->rows; y++)
   {
     register const PixelPacket
@@ -4813,6 +4820,11 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
           status=MagickFalse;
       }
   }
+  if (status == MagickFalse)
+    {
+      stereo_image=DestroyImage(stereo_image);
+      return((Image *) NULL);
+    }
   return(stereo_image);
 }
 

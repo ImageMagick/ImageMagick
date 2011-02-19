@@ -2849,7 +2849,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_pixel,
     colors,
     height,
-    high_bit,
     mask,
     max_value,
     number_scenes,
@@ -2902,7 +2901,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(photometric,"MONOCHROME1 ",MaxTextExtent);
   bits_allocated=8;
   bytes_per_pixel=1;
-  high_bit=0;
   polarity=MagickFalse;
   data=(unsigned char *) NULL;
   element=0;
@@ -3482,6 +3480,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (ssize_t) stream_info->remaining; i++)
         (void) ReadBlobByte(image);
       tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
+      (void) tag;
       length=(size_t) ReadBlobLSBLong(image);
       stream_info->offset_count=length >> 2;
       if (stream_info->offset_count != 0)
@@ -3607,6 +3606,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (ssize_t) stream_info->remaining; i++)
         (void) ReadBlobByte(image);
       tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
+      (void) tag;
       length=(size_t) ReadBlobLSBLong(image);
       stream_info->offset_count=length >> 2;
       if (stream_info->offset_count != 0)

@@ -1413,6 +1413,7 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(channel_distortion,0,length*
     sizeof(*channel_distortion));
+  status=MagickTrue;
   switch (metric)
   {
     case AbsoluteErrorMetric:
@@ -1471,6 +1472,11 @@ MagickExport double *GetImageChannelDistortions(Image *image,
       break;
     }
   }
+  if (status == MagickFalse)
+    {
+      channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
+      return((double *) NULL);
+    }
   return(channel_distortion);
 }
 

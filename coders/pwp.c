@@ -208,6 +208,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     length=fwrite("SFW94A",1,6,file);
+    (void) length;
     filesize=65535UL*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < (ssize_t) filesize; i++)
     {

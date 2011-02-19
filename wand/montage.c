@@ -1120,6 +1120,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
+            (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowMontageInvalidArgumentException(option,argv[i]);
             break;

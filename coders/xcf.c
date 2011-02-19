@@ -728,8 +728,11 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
     bytes_per_pixel;
 
   width=ReadBlobMSBLong(image);
+  (void) width;
   height=ReadBlobMSBLong(image);
+  (void) height;
   bytes_per_pixel=inDocInfo->bytes_per_pixel=ReadBlobMSBLong(image);
+  (void) bytes_per_pixel;
 
   /* load in the levels...we make sure that the number of levels
    *  calculated when the TileManager was created is the same

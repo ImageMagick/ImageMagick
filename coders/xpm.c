@@ -242,7 +242,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register ssize_t
-    i,
     x;
 
   register PixelPacket
@@ -327,7 +326,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Remove unquoted characters.
   */
-  i=0;
   active=MagickFalse;
   q=xpm_buffer;
   while (*p != '\0')
@@ -352,7 +350,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image colormap.
   */
-  i=1;
   next=NextXPMLine(xpm_buffer);
   for (j=0; (j < (ssize_t) image->colors) && (next != (char*) NULL); j++)
   {

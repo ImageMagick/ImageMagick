@@ -719,6 +719,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     x_offset+=extract_info.x;
     y_offset+=(ssize_t) title_offset+extract_info.y;
     max_height=0;
+    status=MagickTrue;
     for (tile=0; tile < MagickMin((ssize_t) tiles_per_page,(ssize_t) number_images); tile++)
     {
       /*
@@ -870,6 +871,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       image=DestroyImage(image);
       tiles++;
     }
+    (void) status;
     if ((i+1) < (ssize_t) images_per_page)
       {
         /*

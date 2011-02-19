@@ -240,6 +240,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   if (argc < 3)
     return(StreamUsage());
   format="%w,%h,%m";
+  (void) format;
   j=1;
   k=0;
   NewImageStack();
@@ -543,6 +544,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
+            (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowStreamInvalidArgumentException(option,argv[i]);
             break;

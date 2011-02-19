@@ -6159,6 +6159,7 @@ static inline MagickBooleanType IsPoint(const char *point)
     value;
 
   value=strtol(point,&p,10);
+  (void) value;
   return(p != point ? MagickTrue : MagickFalse);
 }
 

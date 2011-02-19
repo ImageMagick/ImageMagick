@@ -660,6 +660,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             value=strtod(argv[i],&p);
+            (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;

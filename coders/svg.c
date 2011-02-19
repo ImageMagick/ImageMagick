@@ -382,6 +382,7 @@ static char **GetStyleTokens(void *context,const char *style,int *number_tokens)
     *svg_info;
 
   svg_info=(SVGInfo *) context;
+  (void) svg_info;
   *number_tokens=0;
   if (style == (const char *) NULL)
     return((char **) NULL);
@@ -713,6 +714,7 @@ static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.setDocumentLocator()");
   svg_info=(SVGInfo *) context;
+  (void) svg_info;
 }
 
 static void SVGStartDocument(void *context)
@@ -2483,6 +2485,7 @@ static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.ignorableWhitespace(%.30s, %d)",c,length);
   svg_info=(SVGInfo *) context;
+  (void) svg_info;
 }
 
 static void SVGProcessingInstructions(void *context,const xmlChar *target,
@@ -2497,6 +2500,7 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.processingInstruction(%s, %s)",target,data);
   svg_info=(SVGInfo *) context;
+  (void) svg_info;
 }
 
 static void SVGComment(void *context,const xmlChar *value)
@@ -3241,6 +3245,7 @@ static MagickBooleanType IsPoint(const char *point)
     value;
 
   value=strtol(point,&p,10);
+  (void) value;
   return(p != point ? MagickTrue : MagickFalse);
 }
 

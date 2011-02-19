@@ -998,7 +998,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               progress;
 
             size_t
-              length,
               source_channels,
               target_channels;
 
@@ -1191,7 +1190,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             /*
               Transform image as dictated by the source & target image profiles.
             */
-            length=(size_t) image->columns;
             source_pixels=AcquirePixelThreadSet(image->columns,source_channels);
             target_pixels=AcquirePixelThreadSet(image->columns,target_channels);
             if ((source_pixels == (unsigned short **) NULL) ||

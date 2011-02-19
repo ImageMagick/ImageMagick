@@ -502,6 +502,7 @@ static void MSLSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
     "  SAX.setDocumentLocator()\n");
   (void) location;
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
 }
 
 static void MSLStartDocument(void *context)
@@ -1975,6 +1976,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         ThrowMSLException(OptionError,"UnrecognizedBooleanType",
                           value);
                       tile=(MagickBooleanType) option;
+                      (void) tile;
                       if (rotate_image != (Image *) NULL)
                         (void) SetImageArtifact(rotate_image,
                           "compose:outside-overlay","false");
@@ -7357,6 +7359,7 @@ static void MSLIgnorableWhitespace(void *context,const xmlChar *c,int length)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.ignorableWhitespace(%.30s, %d)",c,length);
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
 }
 
 static void MSLProcessingInstructions(void *context,const xmlChar *target,
@@ -7372,6 +7375,7 @@ static void MSLProcessingInstructions(void *context,const xmlChar *target,
     "  SAX.processingInstruction(%s, %s)",
     target,data);
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
 }
 
 static void MSLComment(void *context,const xmlChar *value)
@@ -7385,6 +7389,7 @@ static void MSLComment(void *context,const xmlChar *value)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.comment(%s)",value);
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
 }
 
 static void MSLWarning(void *context,const char *format,...)
@@ -7407,6 +7412,7 @@ static void MSLWarning(void *context,const char *format,...)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.warning: ");
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
@@ -7437,6 +7443,7 @@ static void MSLError(void *context,const char *format,...)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.error: ");
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
@@ -7463,6 +7470,7 @@ static void MSLCDataBlock(void *context,const xmlChar *value,int length)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.pcdata(%s, %d)",value,length);
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
   parser=msl_info->parser;
   child=xmlGetLastChild(parser->node);
   if ((child != (xmlNodePtr) NULL) && (child->type == XML_CDATA_SECTION_NODE))
@@ -7496,6 +7504,7 @@ static void MSLExternalSubset(void *context,const xmlChar *name,
     (external_id != (const xmlChar *) NULL ? (const char *) external_id : " "),
     (system_id != (const xmlChar *) NULL ? (const char *) system_id : " "));
   msl_info=(MSLInfo *) context;
+  (void) msl_info;
   parser=msl_info->parser;
   if (((external_id == NULL) && (system_id == NULL)) ||
       ((parser->validate == 0) || (parser->wellFormed == 0) ||

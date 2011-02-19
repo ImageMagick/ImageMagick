@@ -288,9 +288,6 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const IndexPacket
-    *indexes;
-
   register const PixelPacket
     *p;
 
@@ -324,7 +321,6 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetVirtualIndexQueue(image);
     bit=0;
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)

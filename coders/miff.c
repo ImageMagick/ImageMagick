@@ -1110,6 +1110,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
               p=GetStringInfoDatum(profile);
               count=ReadBlob(image,GetStringInfoLength(profile),p);
+              (void) count;
             }
           name=(const char *) GetNextValueInLinkedList(profiles);
         }

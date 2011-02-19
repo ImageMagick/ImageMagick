@@ -1037,6 +1037,7 @@ MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
       content = p;
     }
     value=(double) strtol(content,&p,10);
+    (void) value;
     if (p != content)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,

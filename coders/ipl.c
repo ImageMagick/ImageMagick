@@ -221,6 +221,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
    If we get back "iiii", we have LSB,"mmmm", MSB
    */
   count=ReadBlob(image,4,magick); 
+  (void) count;
   if((LocaleNCompare((char *) magick,"iiii",4) == 0))  
     image->endian=LSBEndian;
   else{
