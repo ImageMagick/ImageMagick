@@ -1,8 +1,3 @@
-2011-02-18  6.6.7-8 Glenn Randers-Pehrson <glennrp@image...>
-  * Use setjmp() instead of png_setjmp() when building with libpng-1.4.x
-    because png_setjmp() references png_set_longjmp_fn() which was not
-    exported by libpng-1.4.x.
-
 2011-02-15  6.6.7-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.7-8.
 

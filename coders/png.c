@@ -91,9 +91,7 @@
 /* #define PNG_USE_RESULT   The result of this function must be checked */
 /* #define PNG_NORETURN     This function does not return */
 /* #define PNG_ALLOCATED    The result of the function is new memory */
-#if (PNG_LIBPNG_VER >= 10400 && PNG_LIBPNG_VER < 10500)
-   #define PNG_DEPSTRUCT  /* Access to this struct member is deprecated */
-#endif
+/* #define PNG_DEPSTRUCT    Access to this struct member is deprecated */
 
 #include "png.h"
 #include "zlib.h"
@@ -1347,6 +1345,9 @@ static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
     message,"`%s'",image->filename);
 
 #if (PNG_LIBPNG_VER < 10500)
+  /* A warning about deprecated use of jmpbuf here is unavoidable if you
+   * are building with libpng-1.4.x and can be ignored.
+   */
   longjmp(ping->jmpbuf,1);
 #else
   png_longjmp(ping,1);
@@ -1733,12 +1734,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   ping_pixels=(unsigned char *) NULL;
 
-#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
-#else
-  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
-  if (setjmp(ping->jmpbuf))
-#endif
     {
       /*
         PNG image is corrupt.
@@ -2399,12 +2395,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
-#else
-  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
-  if (setjmp(ping->jmpbuf))
-#endif
     {
       /*
         PNG image is corrupt.
@@ -7451,12 +7442,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   ping_pixels=(unsigned char *) NULL;
 
-#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
-#else
-  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
-  if (setjmp(ping->jmpbuf))
-#endif
     {
       /*
         PNG write failed.
@@ -8749,12 +8735,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Initialize image scanlines.
   */
-#if (PNG_LIBPNG_VER < 10400 || PNG_LIBPNG_VER >= 10500)
   if (setjmp(png_jmpbuf(ping)))
-#else
-  /* Warning is unavoidable if #define PNG_DEPSTRUCT is not defined */
-  if (setjmp(ping->jmpbuf))
-#endif
     {
       /*
         PNG write failed.
