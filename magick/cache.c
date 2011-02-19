@@ -705,7 +705,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
       (MagickSizeType) SSIZE_MAX));
 #else
     count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX),offset+i);
+      (MagickSizeType) SSIZE_MAX),(off_t) (offset+i));
 #endif
     if (count > 0)
       continue;
@@ -749,7 +749,7 @@ static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
       (MagickSizeType) SSIZE_MAX));
 #else
     count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX),offset+i);
+      (MagickSizeType) SSIZE_MAX),(off_t) (offset+i));
 #endif
     if (count > 0)
       continue;
