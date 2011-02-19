@@ -523,17 +523,17 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
   Quantum
     pixel;
 
+  register const unsigned char
+    *p;
+
   register IndexPacket
     *indexes;
-
-  register ssize_t
-    x;
 
   register PixelPacket
     *q;
 
-  register const unsigned char
-    *p;
+  register ssize_t
+    x;
 
   size_t
     packet_size;
