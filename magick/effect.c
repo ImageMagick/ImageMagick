@@ -1859,7 +1859,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Reduce speckle in the image.
   */
   status=MagickTrue;
-  number_channels=image->colorspace == CMYKColorspace ? 5 : 4;
+  number_channels=(size_t) (image->colorspace == CMYKColorspace ? 5 : 4);
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
