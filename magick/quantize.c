@@ -1465,6 +1465,9 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
   exception=(&image->exception);
   status=MagickTrue;
   image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const int
@@ -1498,7 +1501,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
-        break;
+        continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     cube=(*cube_info);
@@ -2328,7 +2331,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+    #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2398,7 +2401,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_PosterizeImageChannel)
+        #pragma omp critical (MagickCore_PosterizeImageChannel)
 #endif
         proceed=SetImageProgress(image,PosterizeImageTag,progress++,
           image->rows);
@@ -3244,7 +3247,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       exception=(&image->exception);
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+      #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
