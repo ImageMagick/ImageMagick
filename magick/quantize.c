@@ -1878,7 +1878,7 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
   size_t
     depth;
 
-  if (cube_info->quantize_info->dither_method == FloydSteinbergDitherMethod)
+  if (cube_info->quantize_info->dither_method != RiemersmaDitherMethod)
     return(FloydSteinbergDither(image,cube_info));
   /*
     Distribute quantization error along a Hilbert curve.
