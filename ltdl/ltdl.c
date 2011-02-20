@@ -54,6 +54,10 @@ or obtained by writing to the Free Software Foundation, Inc.,
 #  define LT_LIBEXT "a"
 #endif
 
+#if !defined(LT_LIBPREFIX)
+#  define LT_LIBPREFIX "lib"
+#endif
+
 /* This is the maximum symbol size that won't require malloc/free */
 #undef	LT_SYMBOL_LENGTH
 #define LT_SYMBOL_LENGTH	128
@@ -72,6 +76,7 @@ or obtained by writing to the Free Software Foundation, Inc.,
 static	const char	objdir[]		= LT_OBJDIR;
 static	const char	archive_ext[]		= LT_ARCHIVE_EXT;
 static  const char	libext[]		= LT_LIBEXT;
+static  const char	libprefix[]		= LT_LIBPREFIX;
 #if defined(LT_MODULE_EXT)
 static	const char	shlib_ext[]		= LT_MODULE_EXT;
 #endif
@@ -208,7 +213,7 @@ LT_BEGIN_C_DECLS
 LT_SCOPE const lt_dlvtable *	get_vtable (lt_user_data data);
 LT_END_C_DECLS
 #ifdef HAVE_LIBDLLOADER
-extern lt_dlsymlist		preloaded_symbols[];
+extern LT_DLSYM_CONST lt_dlsymlist preloaded_symbols[];
 #endif
 
 /* Initialize libltdl. */
@@ -1079,14 +1084,17 @@ parse_dotla_file(FILE *file, char **dlname, char **libdir, char **deplibs,
 
       /* Windows native tools do not understand the POSIX paths we store
 	 in libdir. */
-#ifndef __WINDOWS__
 #undef  STR_LIBDIR
 #define STR_LIBDIR	"libdir="
       else if (strncmp (line, STR_LIBDIR, sizeof (STR_LIBDIR) - 1) == 0)
 	{
 	  errors += trim (libdir, &line[sizeof(STR_LIBDIR) - 1]);
-	}
+#ifdef __WINDOWS__
+	  /* Disallow following unix-style paths on MinGW.  */
+	  if (*libdir && (**libdir == '/' || **libdir == '\\'))
+	    **libdir = '\0';
 #endif
+	}
 
 #undef  STR_DL_DEPLIBS
 #define STR_DL_DEPLIBS	"dependency_libs="
@@ -1269,8 +1277,8 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 
       if (vtable)
 	{
-	  /* name + "." + libext + NULL */
-	  archive_name = MALLOC (char, LT_STRLEN (name) + strlen (libext) + 2);
+	  /* libprefix + name + "." + libext + NULL */
+	  archive_name = MALLOC (char, strlen (libprefix) + LT_STRLEN (name) + strlen (libext) + 2);
 	  *phandle = (lt_dlhandle) lt__zalloc (sizeof (struct lt__handle));
 
 	  if ((*phandle == NULL) || (archive_name == NULL))
@@ -1282,7 +1290,14 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 
 	  /* Preloaded modules are always named according to their old
 	     archive name.  */
-	  sprintf (archive_name, "%s.%s", name, libext);
+	  if (strncmp(name, "lib", 3) == 0)
+	    {
+	      sprintf (archive_name, "%s%s.%s", libprefix, name + 3, libext);
+	    }
+	  else
+	    {
+	      sprintf (archive_name, "%s.%s", name, libext);
+	    }
 
 	  if (tryall_dlopen (&newhandle, archive_name, advise, vtable) == 0)
 	    {

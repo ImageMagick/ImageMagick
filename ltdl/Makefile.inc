@@ -36,7 +36,7 @@ AM_CPPFLAGS	       += -DLT_CONFIG_H='<$(LT_CONFIG_H)>' \
 			  -DLTDL -I. -I$(srcdir) -Iltdl \
 			  -I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl
 AM_LDFLAGS	       += -no-undefined
-LTDL_VERSION_INFO	= -version-info 9:2:2
+LTDL_VERSION_INFO	= -version-info 10:0:3
 
 noinst_LTLIBRARIES	+= $(LT_DLLOADERS)
 
