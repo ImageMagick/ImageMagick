@@ -572,7 +572,6 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
               break;
             node_info=node_info->child[id];
           }
-          node_info=node_info->parent;
           /*
             Find closest color among siblings and their children.
           */
@@ -2204,7 +2203,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
 {
 #define PosterizeImageTag  "Posterize/Image"
 #define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
-  QuantumScale*pixel*(levels-1)))/MagickMax(levels-1,1))
+  QuantumScale*pixel*(levels-1)))/MagickMax((ssize_t) levels-1,1))
 
   CacheView
     *image_view;
@@ -2316,6 +2315,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
   quantize_info->number_colors=(size_t) MagickMin((ssize_t) levels*levels*
     levels,MaxColormapSize+1);
   quantize_info->dither=dither;
+  quantize_info->tree_depth=MaxTreeDepth;
   status=QuantizeImage(quantize_info,image);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   return(status);
