@@ -1292,6 +1292,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   char
     command[MaxTextExtent],
+    *directory,
     geometry[MaxTextExtent],
     resource_name[MaxTextExtent];
 
@@ -2826,7 +2827,8 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Change to home directory.
   */
-  (void) getcwd(working_directory,MaxTextExtent);
+  directory=getcwd(working_directory,MaxTextExtent);
+  (void) directory;
   status=chdir(resource_info->home_directory);
   if (status == -1)
     (void) ThrowMagickException(&images->exception,GetMagickModule(),

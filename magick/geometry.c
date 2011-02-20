@@ -90,6 +90,9 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_
     pedantic_geometry[MaxTextExtent],
     *q;
 
+  double
+    value;
+
   MagickStatusType
     flags;
 
@@ -185,9 +188,10 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_
   if (*p == '\0')
     return(flags);
   q=p;
-  (void) strtod(p,&q);
+  value=strtod(p,&q);
+  (void) value;
   if (LocaleNCompare(p,"0x",2) == 0)
-    (void) strtol(p,&q,10);
+    value=strtol(p,&q,10);
   if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == '\0'))
     {
       /*
@@ -545,10 +549,14 @@ MagickExport MagickBooleanType IsSceneGeometry(const char *geometry,
   char
     *p;
 
+  double
+    value;
+
   if (geometry == (const char *) NULL)
     return(MagickFalse);
   p=(char *) geometry;
-  (void) strtod(geometry,&p);
+  value=strtod(geometry,&p);
+  (void) value;
   if (p == geometry)
     return(MagickFalse);
   if (strspn(geometry,"0123456789-, ") != strlen(geometry))

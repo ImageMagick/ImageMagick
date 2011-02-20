@@ -14264,6 +14264,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
   char
     command[MaxTextExtent],
+    *directory,
     geometry[MaxTextExtent],
     resource_name[MaxTextExtent];
 
@@ -15977,7 +15978,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Change to home directory.
   */
-  (void) getcwd(working_directory,MaxTextExtent);
+  directory=getcwd(working_directory,MaxTextExtent);
+  (void) directory;
   {
     int
       status;
