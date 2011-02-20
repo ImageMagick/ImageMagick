@@ -2867,7 +2867,11 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         t=token;
         for (s=token; *s != '\0'; s=t)
         {
-          (void) strtod(s,&t);
+          double
+            value;
+
+          value=strtod(s,&t);
+          (void) value;
           if (s == t)
             {
               t++;

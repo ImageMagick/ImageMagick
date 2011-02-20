@@ -3437,6 +3437,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   XrmDatabase database,const char *client_name,XResourceInfo *resource_info)
 {
   char
+    *directory,
     *resource_value;
 
   /*
@@ -3461,7 +3462,8 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     "borderColor",BorderColor);
   resource_value=XGetResourceClass(database,client_name,"borderWidth",
     (char *) "2");
-  resource_info->border_width=(unsigned int) StringToUnsignedLong(resource_value);
+  resource_info->border_width=(unsigned int) StringToUnsignedLong(
+    resource_value);
   resource_value=XGetResourceClass(database,client_name,"colormap",
     (char *) "shared");
   resource_info->colormap=UndefinedColormap;
@@ -3525,7 +3527,8 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     (char *) "Center");
   resource_info->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
     MagickFalse,resource_value);
-  (void) getcwd(resource_info->home_directory,MaxTextExtent);
+  directory=getcwd(resource_info->home_directory,MaxTextExtent);
+  (void) directory;
   resource_info->icon_geometry=XGetResourceClass(database,client_name,
     "iconGeometry",(char *) NULL);
   resource_value=XGetResourceClass(database,client_name,"iconic",
