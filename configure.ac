@@ -1075,7 +1075,6 @@ if test "$with_magick_plus_plus" = 'yes'; then
     AC_MSG_CHECKING([whether C++ compiler is sufficient for Magick++])
     if \
         test $ax_cv_cxx_bool = 'yes' && \
-        test $ac_cv_cxx_have_lstring = 'yes' && \
         test $ax_cv_cxx_namespaces = 'yes' && \
         test $ac_cv_cxx_have_std_libs = 'yes' && \
         test $ax_cv_cxx_have_std_namespace = 'yes'; then

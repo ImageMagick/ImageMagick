@@ -1,6 +1,6 @@
 /* lt_system.h -- system portability abstraction layer
 
-   Copyright (C) 2004, 2007 Free Software Foundation, Inc.
+   Copyright (C) 2004, 2007, 2010 Free Software Foundation, Inc.
    Written by Gary V. Vaughan, 2004
 
    NOTE: The canonical source of this file is maintained with the
@@ -74,6 +74,18 @@ or obtained by writing to the Free Software Foundation, Inc.,
 #    define LT_STMT_START      do
 #    define LT_STMT_END        while (0)
 #  endif
+#endif
+
+/* Keep this code in sync between libtool.m4, ltmain, lt_system.h, and tests.  */
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(_WIN32_WCE)
+/* DATA imports from DLLs on WIN32 con't be const, because runtime
+   relocations are performed -- see ld's documentation on pseudo-relocs.  */
+# define LT_DLSYM_CONST
+#elif defined(__osf__)
+/* This system does not cope well with relocations in const data.  */
+# define LT_DLSYM_CONST
+#else
+# define LT_DLSYM_CONST const
 #endif
 
 /* Canonicalise Windows and Cygwin recognition macros.

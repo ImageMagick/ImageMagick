@@ -24816,7 +24816,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 $as_echo_n "checking whether C++ compiler is sufficient for Magick++... " >&6; }
     if \
         test $ax_cv_cxx_bool = 'yes' && \
-        test $ac_cv_cxx_have_lstring = 'yes' && \
         test $ax_cv_cxx_namespaces = 'yes' && \
         test $ac_cv_cxx_have_std_libs = 'yes' && \
         test $ax_cv_cxx_have_std_namespace = 'yes'; then
