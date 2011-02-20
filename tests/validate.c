@@ -1291,6 +1291,7 @@ int main(int argc,char **argv)
   status=MagickFalse;
   type=AllValidate;
   regard_warnings=MagickFalse;
+  (void) regard_warnings;
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   (void) CopyMagickString(image_info->filename,ReferenceFilename,MaxTextExtent);
