@@ -95,7 +95,7 @@
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
-#   Free Software Foundation; either version 2 of the License, or (at your
+#   Free Software Foundation; either version 3 of the License, or (at your
 #   option) any later version.
 #
 #   This program is distributed in the hope that it will be useful, but
@@ -119,7 +119,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 10
+#serial 11
 
 AC_DEFUN([AX_PREFIX_CONFIG_H],[dnl
 AC_PREREQ([2.62])
