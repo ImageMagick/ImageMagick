@@ -1091,29 +1091,28 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   EndianType
     endian;
 
-  ssize_t
-    all,
-    id,
-    level,
-    tag_value;
+  MagickBooleanType
+    status;
 
   register ssize_t
     i;
 
   size_t
-    length;
-
-  ssize_t
-    offset;
-
-  static int
-    tag_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
-
-  size_t
     entry,
+    length,
     number_entries,
     tag_offset,
     tag;
+
+  ssize_t
+    all,
+    id,
+    level,
+    offset,
+    tag_value;
+
+  static int
+    tag_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
 
   /*
     If EXIF data exists, then try to parse the request for a tag.
@@ -1245,6 +1244,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   /*
     Set the pointer to the first IFD and follow it were it leads.
   */
+  status=MagickFalse;
   directory=exif+offset;
   level=0;
   entry=0;
@@ -1446,6 +1446,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
               if (p == (const char *) NULL)
                 (void) SetImageProperty((Image *) image,key,value);
               value=DestroyString(value);
+              status=MagickTrue;
             }
         }
         if ((tag_value == TAG_EXIF_OFFSET) ||
@@ -1488,7 +1489,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           }
     }
   } while (level > 0);
-  return(MagickTrue);
+  return(status);
 }
 
 static MagickBooleanType GetXMPProperty(const Image *image,
