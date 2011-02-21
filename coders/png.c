@@ -3106,9 +3106,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Verify PNG signature.
   */
   count=ReadBlob(image,8,(unsigned char *) magic_number);
-  (void) count;
 
-  if (memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
+  if (count < 8 || memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   /*
@@ -6948,8 +6947,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   ping_exclude_bKGD=mng_info->ping_exclude_bKGD;
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
-  ping_exclude_EXIF=mng_info->ping_exclude_EXIF; /* hex-encoded EXIF in zTXt */
-  (void) ping_exclude_EXIF;
+  /* ping_exclude_EXIF=mng_info->ping_exclude_EXIF; */
   ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
   ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
@@ -6958,8 +6956,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_pHYs=mng_info->ping_exclude_pHYs;
   ping_exclude_sRGB=mng_info->ping_exclude_sRGB;
   ping_exclude_tEXt=mng_info->ping_exclude_tEXt;
-  ping_exclude_tRNS=mng_info->ping_exclude_tRNS;
-  (void) ping_exclude_tRNS;
+  /* ping_exclude_tRNS=mng_info->ping_exclude_tRNS; */
   ping_exclude_vpAg=mng_info->ping_exclude_vpAg;
   ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
   ping_exclude_zTXt=mng_info->ping_exclude_zTXt;
