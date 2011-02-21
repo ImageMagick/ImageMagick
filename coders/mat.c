@@ -446,10 +446,10 @@ static void RelinquishZIPMemory(voidpf context,voidpf memory)
 }
 #endif
 
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
 /** This procedure decompreses an image block for a new MATLAB format. */
 static Image *DecompressBlock(Image *orig, MagickOffsetType Size, ImageInfo *clone_info, ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
 
 Image *image2;
 void *CacheBlock, *DecompressBlock;
@@ -534,14 +534,8 @@ UnlinkFile:
   }
 
   return image2;
-#else
-  (void) orig;
-  (void) Size;
-  (void) clone_info;
-  (void) exception;
-  return NULL;
-#endif
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
