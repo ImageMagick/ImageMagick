@@ -6838,7 +6838,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
     ping_exclude_bKGD,
     ping_exclude_cHRM,
-    ping_exclude_EXIF,
+    /* ping_exclude_EXIF, */
     ping_exclude_gAMA,
     ping_exclude_iCCP,
     /* ping_exclude_iTXt, */
@@ -6846,7 +6846,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_pHYs,
     ping_exclude_sRGB,
     ping_exclude_tEXt,
-    ping_exclude_tRNS,
+    /* ping_exclude_tRNS, */
     ping_exclude_vpAg,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
