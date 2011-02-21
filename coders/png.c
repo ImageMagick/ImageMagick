@@ -3965,9 +3965,8 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /* Verify JNG signature.  */
 
   count=(size_t) ReadBlob(image,8,(unsigned char *) magic_number);
-  (void) count;
 
-  if (memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
+  if (count < 8 || memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   /* Allocate a MngInfo structure.  */
