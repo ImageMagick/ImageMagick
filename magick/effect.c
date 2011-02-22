@@ -1654,44 +1654,6 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 %
 */
 
-static Quantum **DestroyPixelThreadSet(Quantum **pixels)
-{
-  register ssize_t
-    i;
-
-  assert(pixels != (Quantum **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-    if (pixels[i] != (Quantum *) NULL)
-      pixels[i]=(Quantum *) RelinquishMagickMemory(pixels[i]);
-  pixels=(Quantum **) RelinquishMagickMemory(pixels);
-  return(pixels);
-}
-
-static Quantum **AcquirePixelThreadSet(const size_t count)
-{
-  Quantum
-    **pixels;
-
-  register ssize_t
-    i;
-
-  size_t
-    number_threads;
-
-  number_threads=GetOpenMPMaximumThreads();
-  pixels=(Quantum **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
-  if (pixels == (Quantum **) NULL)
-    return((Quantum **) NULL);
-  (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
-  for (i=0; i < (ssize_t) number_threads; i++)
-  {
-    pixels[i]=(Quantum *) AcquireQuantumMemory(count,sizeof(**pixels));
-    if (pixels[i] == (Quantum *) NULL)
-      return(DestroyPixelThreadSet(pixels));
-  }
-  return(pixels);
-}
-
 static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   const size_t columns,const size_t rows,Quantum *f,Quantum *g,
   const int polarity)
@@ -1810,8 +1772,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     i;
 
   Quantum
-    **restrict buffers,
-    **restrict pixels;
+    *restrict buffers,
+    *restrict pixels;
 
   size_t
     length,
@@ -1844,14 +1806,14 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Allocate image buffers.
   */
   length=(size_t) ((image->columns+2)*(image->rows+2));
-  pixels=AcquirePixelThreadSet(length);
-  buffers=AcquirePixelThreadSet(length);
-  if ((pixels == (Quantum **) NULL) || (buffers == (Quantum **) NULL))
+  pixels=(Quantum *) AcquireQuantumMemory(length,2*sizeof(*pixels));
+  buffers=(Quantum *) AcquireQuantumMemory(length,2*sizeof(*pixels));
+  if ((pixels == (Quantum *) NULL) || (buffers == (Quantum *) NULL))
     {
-      if (buffers != (Quantum **) NULL)
-        buffers=DestroyPixelThreadSet(buffers);
-      if (pixels != (Quantum **) NULL)
-        pixels=DestroyPixelThreadSet(pixels);
+      if (buffers != (Quantum *) NULL)
+        buffers=(Quantum *) RelinquishMagickMemory(buffers);
+      if (pixels != (Quantum *) NULL)
+        pixels=(Quantum *) RelinquishMagickMemory(pixels);
       despeckle_image=DestroyImage(despeckle_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
@@ -1862,14 +1824,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   number_channels=(size_t) (image->colorspace == CMYKColorspace ? 5 : 4);
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,1) shared(status)
-#endif
   for (i=0; i < (ssize_t) number_channels; i++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     register Quantum
       *buffer,
       *pixel;
@@ -1884,9 +1840,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 
     if (status == MagickFalse)
       continue;
-    pixel=pixels[id];
+    pixel=pixels;
     (void) ResetMagickMemory(pixel,0,length*sizeof(*pixel));
-    buffer=buffers[id];
+    buffer=buffers;
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -1970,9 +1926,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_DespeckleImage)
-#endif
         proceed=SetImageProgress(image,DespeckleImageTag,(MagickOffsetType) i,
           number_channels);
         if (proceed == MagickFalse)
@@ -1981,8 +1934,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   }
   despeckle_view=DestroyCacheView(despeckle_view);
   image_view=DestroyCacheView(image_view);
-  buffers=DestroyPixelThreadSet(buffers);
-  pixels=DestroyPixelThreadSet(pixels);
+  buffers=(Quantum *) RelinquishMagickMemory(buffers);
+  pixels=(Quantum *) RelinquishMagickMemory(pixels);
   despeckle_image->type=image->type;
   if (status == MagickFalse)
     despeckle_image=DestroyImage(despeckle_image);
