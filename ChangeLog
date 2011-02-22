@@ -1,3 +1,6 @@
+2011-02-22  6.6.7-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.7-9.
+
 2011-02-21  6.6.7-9 Cristy  <quetzlzacatenango@image...>
   * Check image has properties before accessing the splay tree (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18136).
