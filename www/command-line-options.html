@@ -175,7 +175,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011050100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -238,56 +238,87 @@ otherwise noted, each option is recognized by the commands <a href="../www/conve
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Join images into a single multi-image file.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option is enabled by default. An attempt is made to save all
-images of an image sequence into the given output file.
-However, some formats, such as JPEG and PNG, do not support more than one
-image per file, and in that case ImageMagick is forced to write each image as a separate file.  As
-such, if more than one image needs to be written, the filename given is
-modified by adding a <a href="#scene">-scene</a> number before the
-suffix, in order to make distinct names for each image. </p>
+<p>This option is enabled by default. An attempt is made to save all images of
+an image sequence into the given output file.  However, some formats, such as
+JPEG and PNG, do not support more than one image per file, and in that case
+ImageMagick is forced to write each image as a separate file.  As such, if
+more than one image needs to be written, the filename given is modified by
+adding a <a href="#scene">-scene</a> number before the suffix, in order to
+make distinct names for each image. </p>
 
-<p>Use <a href="#adjoin">+adjoin</a> to force each image to be written
-to separate files, whether or not the file format allows multiple images
-per file (for example, GIF, MIFF, and TIFF). </p>
+<p>Use <a href="#adjoin">+adjoin</a> to force each image to be written to
+separate files, whether or not the file format allows multiple images per file
+(for example, GIF, MIFF, and TIFF). </p>
 
-<p>Including a C-style integer format string in the output filename will automagically enable <a href="#adjoin">+adjoin</a> and are used to specify where the <a href="#scene">-scene</a> number is placed in the filenames. These strings, such as '<kbd>%d</kbd>' or '<kbd>%03d</kbd>', are familiar to those who have used the standard <kbd>printf()</kbd>' C-library function. As an example, the command</p>
+<p>Including a C-style integer format string in the output filename will
+automagically enable <a href="#adjoin">+adjoin</a> and are used to specify
+where the <a href="#scene">-scene</a> number is placed in the filenames. These
+strings, such as '<kbd>%d</kbd>' or '<kbd>%03d</kbd>', are familiar to those
+who have used the standard <kbd>printf()</kbd>' C-library function. As an
+example, the command</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: rose: -morph 15 my%02dmorph.jpg</span></p>
-<p>will create a sequence of 17 images named my00morph.jpg, my01morph.jpg, my02morph.jpg, ..., my16morph.jpg.
-</p>
+<p>will create a sequence of 17 images (the two given plus 15 more created by
+<a href="#morph">-morph</a>), named: my00morph.jpg, my01morph.jpg,
+my02morph.jpg, ..., my16morph.jpg.  </p>
 
-<p>In summary, ImageMagick tries to write all images to one file, but will use
-multiple files if either<br />
- (1) the output image's file format does not allow multi-image files,<br />
- (2) the <a href="#adjoin">+adjoin</a> option is given, or<br />
- (3) a printf() integer format string (eg: "%d") is present in the output filename. </p>
+<p>In summary, ImageMagick tries to write all images to one file, but will
+save to multiple files, if any of the following conditions exist...
+<ol>
+<li>the output image's file format does not allow multi-image files,
+<li>the <a href="#adjoin">+adjoin</a> option is given, or
+<li>a printf() integer format string (eg: "%d") is present in the output
+ filename.
+</ol></p>
 
 
 <div style="margin: auto;">
-  <h4><a id="affine"></a>-affine <em class="arg">s<sub>x</sub></em>,<em class="arg">r<sub>x</sub></em>,<em class="arg">r<sub>y</sub></em>,<em class="arg">s<sub>y</sub></em>,<em class="arg">t<sub>x</sub></em>,<em class="arg">t<sub>y</sub></em><br/>
-  -affine <em class="arg">s<sub>x</sub></em>,<em class="arg">r<sub>x</sub></em>,<em class="arg">r<sub>y</sub></em>,<em class="arg">s<sub>y</sub></em></h4>
+  <h4><a id="affine"></a>-affine
+  <em class="arg">s<sub>x</sub></em>,<em class="arg">r<sub>x</sub></em>,<em
+  class="arg">r<sub>y</sub></em>,<em class="arg">s<sub>y</sub></em>[,<em
+  class="arg">t<sub>x</sub></em>,<em class="arg">t<sub>y</sub></em>]
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Set the drawing transformation matrix for combined rotating and scaling.</td><td style='text-align:right;'></td></tr></table>
 
-<p>This option sets a transformation matrix, encoded as (<em class="arg">s<sub>x</sub></em>, <em class="arg">r<sub>x</sub></em>, <em class="arg">r<sub>y</sub></em>, <em class="arg">s<sub>y</sub></em>, <em class="arg">t<sub>x</sub></em>, <em class="arg">t<sub>y</sub></em>), for use by subsequent <a href="#draw">-draw</a> or <a href="#transform">-transform</a> options.</p>
+<p>This option sets a transformation matrix, for use by subsequent <a
+href="#draw">-draw</a> or <a href="#transform">-transform</a> options. </p>
 
-<p>The matrix entries are entered as comma-separated numeric values <i>with no spaces</i>. </p>
+<p>The matrix entries are entered as comma-separated numeric values either in
+quotes or without spaces. </p>
 
-<p>Internally, the transformation matrix has 3x3 elements, but three of them are omitted from the input because they are constant. The new (transformed) coordinates (<em class="arg">x'</em>, <em class="arg">y'</em>) of a pixel at position (<em class="arg">x</em>, <em class="arg">y</em>) in the original image are calculated using the following matrix equation.</p>
+<p>Internally, the transformation matrix has 3x3 elements, but three of them
+are omitted from the input because they are constant. The new (transformed)
+coordinates (<em class="arg">x'</em>, <em class="arg">y'</em>) of a pixel at
+position (<em class="arg">x</em>, <em class="arg">y</em>) in the original
+image are calculated using the following matrix equation.</p>
 
 <div class="eqn">
 <img alt="affine transformation"  src="../images/affine.png"/>
 </div>
 
-<p>
-The size of the resulting image is that of the smallest rectangle that contains the transformed source image.  The parameters <em class="arg">t<sub>x</sub></em> and <em class="arg">t<sub>y</sub></em>  subsequently shift the image pixels so that those that are moved out of the image area are cut off.</p>
+<p> The size of the resulting image is that of the smallest rectangle that
+contains the transformed source image.  The parameters <em
+class="arg">t<sub>x</sub></em> and <em class="arg">t<sub>y</sub></em>
+subsequently shift the image pixels so that those that are moved out of the
+image area are cut off.</p>
 
-<p>The transformation matrix complies with the left-handed pixel coordinate system: positive <em class="arg">x</em> and <em class="arg">y</em> directions are rightward and downward, resp.; positive rotation is clockwise.</p>
+<p>The transformation matrix complies with the left-handed pixel coordinate
+system: positive <em class="arg">x</em> and <em class="arg">y</em> directions
+are rightward and downward, resp.; positive rotation is clockwise.</p>
 
-<p> If the translation coefficients <em class="arg">t<sub>x</sub></em> and <em class="arg">t<sub>y</sub></em> are omotted they default to 0,0. Therefore, four parameters suffice for rotation and scaling without translation.</p>
+<p> If the translation coefficients <em class="arg">t<sub>x</sub></em> and <em
+class="arg">t<sub>y</sub></em> are omotted they default to 0,0. Therefore,
+four parameters suffice for rotation and scaling without translation.</p>
 
-<p>Scaling by the factors <em class="arg">s<sub>x</sub></em> and <em class="arg">s<sub>y</sub></em> in the <em>x</em> and <em>y</em> directions, respectively, is accomplished with the following.</p>
+<p>Scaling by the factors <em class="arg">s<sub>x</sub></em> and <em
+class="arg">s<sub>y</sub></em> in the <em>x</em> and <em>y</em> directions,
+respectively, is accomplished with the following.</p>
+
+<p>See <a href="#transform">-transform</a>, and the <a
+href="#distort">-distort</a> method '<kbd>Affineprojection</kbd> for more
+information </p>
+
 
 <p class="crtsnip">
  -affine <em class="arg">s<sub>x</sub></em>,0,0,<em class="arg">s<sub>y</sub></em>
@@ -1039,11 +1070,27 @@ and <a href="#gravity">-gravity</a> settings. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Clip the image as defined by this mask.</td><td style='text-align:right;'></td></tr></table>
 
+<p>Use the given image as a 'do-not-modify' mask of the current images in the
+current image sequence.  Assuming the clipmask is a greyscale image the same
+size at the one already in memory, any areas that is white will not be
+modified by any of the 'image processing operators' that follow, until the
+mask is removed. Pixels in the black areas of the clip mask will be modified
+as normal. </p>
+
+<p>In some ways this is similar to (though not the same) as defining
+a rectangular <a href="#region" >-region</a>, or using the negative of the
+mask (thrid) image in a three image <a href="#composite" >-composite</a>,
+operation. </p>
+
+
 <div style="margin: auto;">
   <h4><a id="clip-path"></a>-clip-path <em class="arg">id</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Clip along a named path from the 8BImageMagick profile.</td><td style='text-align:right;'></td></tr></table>
+
+<p>This is almost identicate to <a href="#clip">-clip</a>. </p>
+
 
 <div style="margin: auto;">
   <h4><a id="clone"></a>-clone <em class="arg">index(s)</em></h4>
