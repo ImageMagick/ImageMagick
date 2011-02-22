@@ -3208,7 +3208,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   GetMagickPixelPacket(image,&bias);
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3328,7 +3328,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_MotionBlurImageChannel)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
@@ -5207,7 +5207,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     UndefinedVirtualPixelMethod,MagickTrue,exception);
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(spread_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
@@ -5253,7 +5253,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SpreadImage)
 #endif
         proceed=SetImageProgress(image,SpreadImageTag,progress++,image->rows);
@@ -5448,10 +5448,9 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
         {
           pixel.index=unsharp_indexes[x]-(MagickRealType) indexes[x];
           if (fabs(2.0*pixel.index) < quantum_threshold)
-            pixel.index=(MagickRealType) unsharp_indexes[x];
+            pixel.index=(MagickRealType) indexes[x];
           else
-            pixel.index=(MagickRealType) unsharp_indexes[x]+(pixel.index*
-              amount);
+            pixel.index=(MagickRealType) indexes[x]+(pixel.index*amount);
           unsharp_indexes[x]=ClampToQuantum(pixel.index);
         }
       p++;
