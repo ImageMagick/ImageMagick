@@ -1445,6 +1445,9 @@ Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
 
   length=(png_uint_32) StringToLong(sp);
 
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "      length: %lu",(unsigned long) length);
+
   while (*sp != ' ' && *sp != '\n')
      sp++;
 
@@ -1976,8 +1979,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
-      image->page.x=png_get_x_offset_pixels(ping, ping_info);
-      image->page.y=png_get_y_offset_pixels(ping, ping_info);
+      image->page.x=(ssize_t) png_get_x_offset_pixels(ping, ping_info);
+      image->page.y=(ssize_t) png_get_y_offset_pixels(ping, ping_info);
 
       if (logging != MagickFalse)
         if (image->page.x || image->page.y)
@@ -2946,8 +2949,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           (void) SetImageProperty(image,text[i].key,value);
 
           if (logging != MagickFalse)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "      length: %lu",(unsigned long) length);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "      Keyword: %s",text[i].key);
+          }
 
           value=DestroyString(value);
         }
@@ -3177,6 +3184,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (LocaleCompare(image_info->magick,"PNG32") == 0)
     (void) SetImageType(image,TrueColorMatteType);
+
+  if (logging != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  page.w: %.20g, page.h: %.20g,page.x: %.20g, page.y: %.20g.",
+            (double) image->page.width,(double) image->page.height,
+            (double) image->page.x,(double) image->page.y);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadPNGImage()");
@@ -3680,8 +3693,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > 8)
           {
-            image->page.x=mng_get_long(p);
-            image->page.y=mng_get_long(&p[4]);
+            image->page.x=(ssize_t) mng_get_long(p);
+            image->page.y=(ssize_t) mng_get_long(&p[4]);
 
             if ((int) p[8] != 0)
               {
