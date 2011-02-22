@@ -1979,8 +1979,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
-      image->page.x=(ssize_t) png_get_x_offset_pixels(ping, ping_info);
-      image->page.y=(ssize_t) png_get_y_offset_pixels(ping, ping_info);
+      image->page.x=(int) png_get_x_offset_pixels(ping, ping_info);
+      image->page.y=(int) png_get_y_offset_pixels(ping, ping_info);
 
       if (logging != MagickFalse)
         if (image->page.x || image->page.y)
