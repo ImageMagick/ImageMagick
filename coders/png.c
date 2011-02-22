@@ -1979,8 +1979,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
-      image->page.x=(int) png_get_x_offset_pixels(ping, ping_info);
-      image->page.y=(int) png_get_y_offset_pixels(ping, ping_info);
+      image->page.x=(ssize_t) png_get_x_offset_pixels(ping, ping_info);
+      image->page.y=(ssize_t) png_get_y_offset_pixels(ping, ping_info);
 
       if (logging != MagickFalse)
         if (image->page.x || image->page.y)
@@ -3693,8 +3693,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > 8)
           {
-            image->page.x=(int) mng_get_long(p);
-            image->page.y=(int) mng_get_long(&p[4]);
+            image->page.x=(ssize_t) mng_get_long(p);
+            image->page.y=(ssize_t) mng_get_long(&p[4]);
 
             if ((int) p[8] != 0)
               {
@@ -8024,6 +8024,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   }
               }
 
+#if 0 /* TO DO: Enable this when low bit-depth grayscale is working */
             else if (ping_color_type ==
                 PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
                 mng_info->IsPalette)
@@ -8061,6 +8062,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 else if (depth_4_ok && mng_info->write_png_depth <= 4)
                   ping_bit_depth=4;
               }
+#endif /* 0 */
           }
 
           image_depth=ping_bit_depth;
@@ -9009,17 +9011,27 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   }
 
                 else
-                  (void) ExportQuantumPixels(image,(const CacheView *) NULL,
-                    quantum_info,IndexQuantum,ping_pixels,&image->exception);
-
-                  if (logging != MagickFalse && y <= 2)
                   {
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "  Writing row of pixels (4)");
+                    /* TO DO:
+                     *
+                     * This is failing to account for 1, 2, 4-bit depths
+                     * The call to png_set_packing() above is supposed to
+                     * take care of those.
+                     */
 
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "  ping_pixels[0]=%d,ping_pixels[1]=%d",
-                        (int)ping_pixels[0],(int)ping_pixels[1]);
+                    /* GrayQuantum does not work here */
+                    (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+                      quantum_info,IndexQuantum,ping_pixels,&image->exception);
+
+                    if (logging != MagickFalse && y <= 2)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  Writing row of pixels (4)");
+
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  ping_pixels[0]=%d,ping_pixels[1]=%d",
+                          (int)ping_pixels[0],(int)ping_pixels[1]);
+                    }
                   }
                 png_write_row(ping,ping_pixels);
               }
