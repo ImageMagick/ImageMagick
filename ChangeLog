@@ -1,13 +1,15 @@
 2011-02-22  6.6.7-10 Glenn Randers-Pehrson <glennrp@image...>
-  * Disabled reduction of grayscale images (color-type 0) to less than 8 bits
-    when writing because this sometimes produced incorrect output (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18098).
-    Writing them as sub-8-bit palette-indexed images usually makes smaller
-    files anyhow.
-  * Eliminated a number of redundant tests for gray images.
+  * Writing sub-8-bit grayscale PNG images as palette-indexed images.  This
+    usually makes smaller files anyhow.
+  * Eliminated a number of redundant tests for gray images in the PNG encoder.
 
 2011-02-22  6.6.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.7-9.
+
+2011-02-22  6.6.7-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Disabled reduction of grayscale images (color-type 0) to less than 8 bits
+    when writing because this sometimes produced incorrect output (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18098).
 
 2011-02-21  6.6.7-9 Cristy  <quetzlzacatenango@image...>
   * Check image has properties before accessing the splay tree (reference
