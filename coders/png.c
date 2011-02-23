@@ -7066,6 +7066,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          if (q == (PixelPacket *) NULL)
            break;
 
+         /* Worst case is black-and-white; we are looking at every
+          * pixel twice.
+          *
+          * TO DO: Do the following 2 loops over the colormap, if
+          * possible, after it has been generated, instead of over
+          * the pixels.  Only resort to looping over the pixels
+          * when more than 256 colors (or gray levels) are present.
+          */
+
          if (ping_have_color == MagickFalse)
            {
              s=q;
@@ -7086,9 +7095,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              s=q;
              for (x=0; x < (ssize_t) image->columns; x++)
              {
-               if (s->red != 0 && s->red != QuantumRange &&
-                  s->green != 0 && s->green != QuantumRange &&
-                  s->blue != 0 && s->blue != QuantumRange)
+               if (s->red != 0 && s->red != QuantumRange)
                  {
                    ping_have_non_bw=MagickTrue;
                    break;
