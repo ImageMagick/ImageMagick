@@ -240,6 +240,7 @@ Image Sequence Operators:
   \-mosaic              create a mosaic from an image sequence
   \-process arguments   process the image with a custom image filter
   \-separate            separate an image channel into a grayscale image
+  \-smush geometry      smush an image sequence together
   \-write filename      write images to this file
 
 Image Stack Operators:
