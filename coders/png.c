@@ -709,70 +709,6 @@ static MagickBooleanType ImageIsGray(Image *image)
   }
   return(MagickTrue);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I m a g e I s M o n o c h r o m e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%   Like IsMonochromeImage except does not change DirectClass to PseudoClass  %
-%   and is more accurate.                                                     %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
-static MagickBooleanType ImageIsMonochrome(Image *image)
-{
-  register const PixelPacket
-    *p;
-
-  register ssize_t
-    i,
-    x,
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->storage_class == PseudoClass)
-    {
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        if ((IsGray(image->colormap+i) == MagickFalse) ||
-            ((image->colormap[i].red != 0) &&
-             (image->colormap[i].red != (Quantum) QuantumRange)))
-          return(MagickFalse);
-      }
-      return(MagickTrue);
-    }
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      return(MagickFalse);
-    for (x=(ssize_t) image->columns-1; x >= 0; x--)
-    {
-      if ((p->red != 0) && (p->red != (Quantum) QuantumRange))
-        return(MagickFalse);
-
-      if (IsGray(p) == MagickFalse)
-        return(MagickFalse);
-
-      if ((p->opacity != OpaqueOpacity) &&
-          (p->opacity != (Quantum) TransparentOpacity))
-        return(MagickFalse);
-
-      p++;
-    }
-  }
-  return(MagickTrue);
-}
 #endif /* PNG_LIBPNG_VER > 10011 */
 #endif /* MAGICKCORE_PNG_DELEGATE */
 
@@ -6844,6 +6780,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     matte,
 
     ping_have_color,
+    ping_have_non_bw,
     ping_have_PLTE,
     ping_have_bKGD,
     ping_have_pHYs,
@@ -6952,6 +6889,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_pHYs_y_resolution = 0;
 
   ping_have_color=MagickTrue;
+  ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
   ping_have_bKGD=MagickFalse;
   ping_have_pHYs=MagickFalse;
@@ -7053,6 +6991,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        *indexes;
 
      register const PixelPacket
+       *s,
        *q;
 
      if (logging != MagickFalse)
@@ -7117,6 +7056,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        exception=(&image->exception);
 
        ping_have_color=MagickFalse;
+       ping_have_non_bw=MagickFalse;
        image_colors=0;
 
        for (y=0; y < (ssize_t) image->rows; y++)
@@ -7126,11 +7066,39 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          if (q == (PixelPacket *) NULL)
            break;
 
+         if (ping_have_color == MagickFalse)
+           {
+             s=q;
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+               if (s->red != s->green || s->red != s->blue)
+                 {
+                    ping_have_color=MagickTrue;
+                    ping_have_non_bw=MagickTrue;
+                    break;
+                 }
+               s++;
+             }
+           }
+
+         if (ping_have_non_bw == MagickFalse)
+           {
+             s=q;
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+               if (s->red != 0 && s->red != QuantumRange &&
+                  s->green != 0 && s->green != QuantumRange &&
+                  s->blue != 0 && s->blue != QuantumRange)
+                 {
+                   ping_have_non_bw=MagickTrue;
+                   break;
+                 }
+               s++;
+             }
+           }
+
          for (x=0; x < (ssize_t) image->columns; x++)
             {
-                if (q->red != q->green || q->red != q->blue)
-                  ping_have_color=MagickTrue;
-
                 if (image->matte == MagickFalse || q->opacity == OpaqueOpacity)
                   {
                     if (number_opaque < 259)
@@ -7402,6 +7370,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif /* BUILD_PNG_PALETTE */
 
+  /* Force sub-8-bit grayscale images, except for black-and-white images,
+   * to be written as indexed-color PNG
+   */
+  if ((number_transparent == 0 && number_semitransparent == 0) &&
+      mng_info->write_png_colortype == 0 &&
+      ((number_opaque <= 2 && ping_have_non_bw != MagickFalse) ||
+      (number_opaque > 2 && number_opaque < 17)))
+    ping_have_color = MagickTrue;
+
   if (mng_info->ping_exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
@@ -7413,7 +7390,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       else
         mng_info->write_png_colortype = 7;
 
-      if (colortype != 0 && mng_info->write_png_colortype != (ssize_t) colortype)
+      if (colortype != 0 &&
+         mng_info->write_png_colortype != (ssize_t) colortype)
         ping_need_colortype_warning=MagickTrue;
 
     }
@@ -7797,13 +7775,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       if (ping_color_type == PNG_COLOR_TYPE_GRAY)
         {
-          if (image->matte == MagickFalse && image->colors < 256)
-            {
-              if (ImageIsMonochrome(image))
-                {
-                  ping_bit_depth=1;
-                }
-            }
+          if (image->matte == MagickFalse && ping_have_non_bw == MagickFalse)
+             ping_bit_depth=1;
         }
 
       if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
@@ -7978,7 +7951,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
     if ((mng_info->IsPalette) &&
         mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE &&
-        ImageIsGray(image) && (image_matte == MagickFalse || image_depth >= 8))
+        ping_have_color == MagickFalse &&
+        (image_matte == MagickFalse || image_depth >= 8))
       {
         size_t one=1;
 
@@ -8499,7 +8473,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->write_png_colortype != 0)
     {
      if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY)
-       if (ImageIsGray(image) == MagickFalse)
+       if (ping_have_color != MagickFalse)
          {
            ping_color_type = PNG_COLOR_TYPE_RGB;
 
@@ -8508,7 +8482,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          }
 
      if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY_ALPHA)
-       if (ImageIsGray(image) == MagickFalse)
+       if (ping_have_color != MagickFalse)
          ping_color_type = PNG_COLOR_TYPE_RGB_ALPHA;
     }
 
@@ -8784,7 +8758,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        !mng_info->write_png32) &&
        (mng_info->IsPalette ||
        (image_info->type == BilevelType)) &&
-       image_matte == MagickFalse && ImageIsMonochrome(image))
+       image_matte == MagickFalse &&
+       ping_have_non_bw == MagickFalse)
     {
       /* Palette, Bilevel, or Opaque Monochrome */
       register const PixelPacket
@@ -8855,7 +8830,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          !mng_info->write_png32) &&
          (image_matte != MagickFalse ||
          (ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH)) &&
-         (mng_info->IsPalette) && ImageIsGray(image))
+         (mng_info->IsPalette) && ping_have_color == MagickFalse)
         {
           register const PixelPacket
             *p;
