@@ -7454,7 +7454,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_matte=image->matte;
 
   mng_info->IsPalette=image->storage_class == PseudoClass &&
-    image_colors <= 256;
+    image_colors <= 256 && image->colormap != NULL;
 
   /*
     Allocate the PNG structures
@@ -7640,7 +7640,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   matte=image_matte;
   old_bit_depth=0;
 
-  if (mng_info->write_png8)
+  if (mng_info->IsPalette && mng_info->write_png8)
     {
 
       /* TO DO: make this a function cause it's used twice, except
@@ -7708,11 +7708,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              ping_have_tRNS=MagickTrue;
       }
 
-    if (ping_exclude_bKGD == MagickFalse)
+      if (ping_exclude_bKGD == MagickFalse)
       {
-        /*
-         * Identify which colormap entry is the background color.
-         */
+       /*
+        * Identify which colormap entry is the background color.
+        */
+
         for (i=0; i < (ssize_t) MagickMax(1L*number_colors-1L,1L); i++)
           if (IsPNGColorEqual(ping_background,image->colormap[i]))
             break;
@@ -7884,7 +7885,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       if (mng_info->IsPalette)
         {
-
           ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
 
           if (ping_have_color != MagickFalse)
@@ -7906,7 +7906,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           else
             {
               unsigned int
-                mask;
+                mask; 
 
               mask=0xffff;
 
@@ -8247,7 +8247,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (ping_exclude_bKGD == MagickFalse)
   {
-    if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
+    if (mng_info->IsPalette && (int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
       {
         /*
            Identify which colormap entry is the background color.
