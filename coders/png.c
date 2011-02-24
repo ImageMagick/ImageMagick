@@ -6947,7 +6947,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-  if (image->depth == 16 && mng_info->write_png_colortype != 16)
+  if (image->depth == 16 && mng_info->write_png_depth != 16)
     if (mng_info->write_png8 || LosslessReduceDepthOK(image) != MagickFalse)
       image->depth = 8;
 #endif
@@ -7429,6 +7429,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (number_opaque > 2 && number_opaque < 17)))
     ping_have_color = MagickTrue;
 
+
   if (mng_info->ping_exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
@@ -7502,6 +7503,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image=DestroyImage(image);
       return(MagickFalse);
     }
+
+  if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
+     (image->colors == 0 || image->colormap == NULL))
+    {
+      png_error(ping, "Cannot write PNG8 or color-type 3; colormap is NULL");
+    }
+
   /*
     Prepare PNG for writing.
   */
