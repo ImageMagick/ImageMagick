@@ -45,7 +45,7 @@
 2011-02-08  6.6.7-7 Cristy  <quetzlzacatenango@image...>
   * Support 16-bit per pixel YUV image files.
   * Fix off-by-one error in PosterizeImage().
-  * Posterize now distributes color uniformally (reference
+  * Posterize now distributes color uniformly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17623).
   * Add -smush option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=17953).
