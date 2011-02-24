@@ -1558,7 +1558,7 @@ MagickExport MagickRealType GetResizeFilterWeight(
       scale=resize_filter->window(x_blur*scale,resize_filter);
     }
   weight=scale*resize_filter->filter(x_blur,resize_filter);
-  return(weight <= MagickEpsilon ? MagickEpsilon : weight);
+  return(weight);
 }
 
 /*
