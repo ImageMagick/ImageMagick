@@ -1,5 +1,5 @@
 2011-02-23  6.6.7-10 Cristy  <quetzlzacatenango@image...>
-  * Return MagickEpsilon for GetResizeFilterWeight() rather then 0 (reference
+  * Return MagickEpsilon for GetResizeFilterWeight() rather than 0 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18132).
 
 2011-02-22  6.6.7-10 Glenn Randers-Pehrson <glennrp@image...>
@@ -7,6 +7,9 @@
     usually makes smaller files anyhow.
   * Eliminated a number of redundant tests for gray images in the PNG encoder.
   * Removed now-unused IsMonochromeImage() function from coders/png.c
+  * Scan the colormap instead of all of the pixels, when possible, to
+    determine whether the image received by the PNG encoder is grayscale
+    or black-and-white.
 
 2011-02-22  6.6.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.7-9.
