@@ -547,7 +547,8 @@ MagickExport Image *AppendImages(const Image *images,
         SetOpacityPixelComponent(q,OpaqueOpacity);
         if (image->matte != MagickFalse)
           SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
-        if (image->colorspace == CMYKColorspace)
+        if ((image->colorspace == CMYKColorspace) &&
+            (append_image->colorspace == CMYKColorspace))
           append_indexes[x]=indexes[x];
         p++;
         q++;
