@@ -1540,6 +1540,7 @@ MagickExport MagickRealType GetResizeFilterWeight(
 {
   MagickRealType
     scale,
+    weight,
     x_blur;
 
   /*
@@ -1556,7 +1557,8 @@ MagickExport MagickRealType GetResizeFilterWeight(
       scale=resize_filter->scale;
       scale=resize_filter->window(x_blur*scale,resize_filter);
     }
-  return(scale*resize_filter->filter(x_blur,resize_filter));
+  weight=scale*resize_filter->filter(x_blur,resize_filter);
+  return(weight <= MagickEpsilon ? MagickEpsilon : weight);
 }
 
 /*
