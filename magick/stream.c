@@ -1111,6 +1111,7 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
   StreamInfo
     *stream_info;
 
+  (void) pixels;
   stream_info=(StreamInfo *) image->client_data;
   switch (stream_info->storage_type)
   {
