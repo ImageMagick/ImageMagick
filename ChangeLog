@@ -10,7 +10,8 @@
   * Scan the colormap instead of all of the pixels, when possible, to
     determine whether the image received by the PNG encoder is grayscale
     or black-and-white.
-  * Avoid reading from the colormap in coders/png.c when it is NULL.
+  * Avoid reading from the colormap in coders/png.c when it is NULL (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18162).
 
 2011-02-22  6.6.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.7-9.
