@@ -1,3 +1,7 @@
+2011-02-23  6.6.7-10 Cristy  <quetzlzacatenango@image...>
+  * Return MagickEpsilon for GetResizeFilterWeight() rather then 0 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18132).
+
 2011-02-22  6.6.7-10 Glenn Randers-Pehrson <glennrp@image...>
   * Write sub-8-bit grayscale PNG images as palette-indexed PNG images.  This
     usually makes smaller files anyhow.
