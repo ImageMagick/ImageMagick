@@ -2035,7 +2035,7 @@ MagickExport Image *MergeImageLayers(Image *image,
     page.height = (page.y < 0) ? height : height+page.y;
 
   /*
-    Handle "TrimBoundsLayer" method seperatally to normal 'layer merge'
+    Handle "TrimBoundsLayer" method seperately to normal 'layer merge'
   */
   if ( method == TrimBoundsLayer ) {
     number_images=GetImageListLength(image);
