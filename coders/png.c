@@ -7477,7 +7477,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
 
-             if (image->colors != 0 && image->colors <= 256)
+             if (image_colors != 0 && image_colors <= 256 &&
+                image->colormap != NULL)
                for (i=0; i<image_colors; i++)
                    image->colormap[i].opacity =
                        image->colormap[i].opacity > OpaqueOpacity/2 ? 0 :
@@ -7490,7 +7491,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         * quantization of the pixels and background color to the 3-3-2
         * palette.
         */
-       if (image_colors == 0 || image_colors > 256)
+       if (image_colors != 0 && image_colors <= 256 &&
+           image->colormap != NULL)
          {
            if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7546,7 +7548,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 break;
            }
 
-         if (image_colors != 0 && image_colors <= 256)
+         if (image_colors != 0 && image_colors <= 256 &&
+           image->colormap != NULL)
            {
              if (logging != MagickFalse)
                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
