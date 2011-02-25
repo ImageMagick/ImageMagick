@@ -487,9 +487,10 @@ static MagickBooleanType
 
 #if PNG_LIBPNG_VER > 10011
 
+
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
 static MagickBooleanType
-  LosslessReduceDepthOK(Image *image)
+LosslessReduceDepthOK(Image *image)
 {
     MagickBooleanType
       ok_to_reduce=MagickFalse;
@@ -583,12 +584,12 @@ static MagickBooleanType
         if (ok_to_reduce != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  OK to reduce PNG bit depth to 8 without loss of info");
+                "    OK to reduce PNG bit depth to 8 without loss of info");
           }
         else
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Not OK to reduce PNG bit depth to 8 without loss of info");
+                "    Not OK to reduce PNG bit depth to 8 without loss of info");
           }
       }
 
@@ -1603,7 +1604,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  enter ReadOnePNGImage()");
+    "  Enter ReadOnePNGImage()");
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(ping_semaphore);
@@ -3036,7 +3037,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadPNGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadPNGImage()");
   image=AcquireImage(image_info);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -3235,7 +3236,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image_info=(ImageInfo *) NULL;
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  enter ReadOneJNGImage()");
+    "  Enter ReadOneJNGImage()");
 
   image=mng_info->image;
 
@@ -3665,7 +3666,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 #if 0
     if (memcmp(type,mng_iCCP,4) == 0)
       {
-        /* To do. */
+        /* To do: */
         if (length)
           chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
@@ -3899,7 +3900,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadJNGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadJNGImage()");
   image=AcquireImage(image_info);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -4075,7 +4076,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadMNGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadMNGImage()");
   image=AcquireImage(image_info);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -4591,7 +4592,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (memcmp(type,mng_iCCP,4) == 0)
           {
-            /* To do. */
+            /* To do: */
 
             /*
               Read global iCCP.
@@ -5713,7 +5714,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                     for (x=(ssize_t) image->columns-1; x >= 0; x--)
                     {
-                      /* TO DO: get color as function of indexes[x] */
+                      /* To do: get color as function of indexes[x] */
                       /*
                       if (image->storage_class == PseudoClass)
                         {
@@ -6778,6 +6779,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     logging,
     matte,
 
+    ping_have_cheap_transparency,
     ping_have_color,
     ping_have_non_bw,
     ping_have_PLTE,
@@ -6833,6 +6835,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     save_image_depth;
 
   int
+    j,
     number_colors,
     number_opaque,
     number_semitransparent,
@@ -6844,7 +6847,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_pHYs_y_resolution;
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  enter WriteOnePNGImage()");
+    "  Enter WriteOnePNGImage()");
 
   image = CloneImage(IMimage,0,0,MagickFalse,&IMimage->exception);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
@@ -6916,6 +6919,19 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   number_semitransparent = 0;
   number_transparent = 0;
 
+  if (logging != MagickFalse)
+    {
+      if (image->storage_class == UndefinedClass)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    storage_class=UndefinedClass");
+      if (image->storage_class == DirectClass)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    storage_class=DirectClass");
+      if (image->storage_class == PseudoClass)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    storage_class=PseudoClass");
+    }
+   
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
 
@@ -6952,6 +6968,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth = 8;
 #endif
 
+  for (j=0; j<3; j++)
   {
     /* BUILD_PALETTE
      *
@@ -6993,6 +7010,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      *s,
      *q;
 
+   register PixelPacket
+     *r;
+
    if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
          "    Enter BUILD_PALETTE:");
@@ -7008,7 +7028,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "      image->depth=%.20g",(double) image->depth);
 
-       if (image->colormap != NULL)
+       if (image->storage_class == PseudoClass && image->colormap != NULL)
        {
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "      Original colormap:");
@@ -7055,6 +7075,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      exception=(&image->exception);
 
      image_colors=0;
+     number_opaque = 0;
+     number_semitransparent = 0;
+     number_transparent = 0;
 
      for (y=0; y < (ssize_t) image->rows; y++)
      {
@@ -7182,8 +7205,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   "      image has %d colors",image_colors);
        }
 
-     if (mng_info->write_png_colortype != 7 &&  /* We won't need this info */
-         mng_info->write_png_colortype != 3)    /* for these color types */
+     if (mng_info->write_png_colortype != 7) /* We won't need this info */
        {
          ping_have_color=MagickFalse;
          ping_have_non_bw=MagickFalse;
@@ -7319,6 +7341,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       "      Update the pixel indexes");
               }
 
+            /* Sync the pixel indices with the new colormap */
+
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               q=GetAuthenticPixels(image,0,y,image->columns,1,
@@ -7418,18 +7442,146 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    Exit BUILD_PALETTE:");
        }
+
+   if (mng_info->write_png8)
+     {
+       if (image_colors <= 256 &&
+           image_colors != 0 &&
+           number_semitransparent == 0 &&
+           number_transparent <= 1)
+         break;
+
+       /* PNG8 can't have semitransparent colors so we threshold them
+        * to 0 or OpaqueOpacity
+        */
+       if (number_semitransparent != 0)
+         {
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    Thresholding the alpha channel to binary");
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                 r->opacity = r->opacity > OpaqueOpacity/2 ? 0 :
+                      OpaqueOpacity;
+                 r++;
+             }
+    
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+
+             if (image->colors != 0 && image->colors <= 256)
+               for (i=0; i<image_colors; i++)
+                   image->colormap[i].opacity =
+                       image->colormap[i].opacity > OpaqueOpacity/2 ? 0 :
+                       OpaqueOpacity;
+           }
+         continue;
+       }
+
+       /* PNG8 can't have more than 256 colors so we do a quick and dirty
+        * quantization of the pixels and background color to the 3-3-2
+        * palette.
+        */
+       if (image_colors == 0 || image_colors > 256)
+         {
+           if (logging != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Quantizing the background color to 3-3-2");
+
+           image->background_color.red =
+                 (image->background_color.red & 0xe0) |
+                 ((image->background_color.red & 0xe0) >> 3) |
+                 ((image->background_color.red & 0xc0) >> 6);
+           image->background_color.green =
+                 (image->background_color.green & 0xe0) |
+                 ((image->background_color.green & 0xe0) >> 3) |
+                 ((image->background_color.green & 0xc0) >> 6);
+           image->background_color.blue =
+                 (image->background_color.blue & 0xe0) |
+                 ((image->background_color.blue & 0xe0) >> 3) |
+                 ((image->background_color.blue & 0xc0) >> 6);
+
+#if (MAGICKCORE_QUANTUM_DEPTH > 8)
+           image->background_color.red <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+           image->background_color.green <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+           image->background_color.blue <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+#endif
+
+           if (logging != MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Quantizing the pixel colors to 3-3-2");
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                 r->red = (r->red & 0xe0) | ((r->red & 0xe0) >> 3) |
+                     ((r->red & 0xc0) >> 6);
+                 r->green = (r->green & 0xe0) | ((r->green & 0xe0) >> 3) |
+                     ((r->green & 0xc0) >> 6);
+                 r->blue = (r->blue & 0xe0) | ((r->blue & 0xe0) >> 3) |
+                     ((r->blue & 0xc0) >> 6);
+#if (MAGICKCORE_QUANTUM_DEPTH > 8)
+                 r->red <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+                 r->green <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+                 r->blue <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+#endif
+                 r++;
+             }
+    
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+           }
+
+         if (image_colors != 0 && image_colors <= 256)
+           {
+             if (logging != MagickFalse)
+                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "    Quantizing the colormap to 3-3-2");
+             for (i=0; i<image_colors; i++)
+             {
+                 image->colormap[i].red = (image->colormap[i].red & 0xe0) |
+                     ((image->colormap[i].red & 0xe0) >> 3) |
+                     ((image->colormap[i].red & 0xc0) >> 6);
+                 image->colormap[i].green = (image->colormap[i].green & 0xe0) |
+                     ((image->colormap[i].green & 0xe0) >> 3) |
+                     ((image->colormap[i].green & 0xc0) >> 6);
+                 image->colormap[i].blue = (image->colormap[i].blue & 0xe0) |
+                     ((image->colormap[i].blue & 0xe0) >> 3) |
+                     ((image->colormap[i].blue & 0xc0) >> 6);
+#if (MAGICKCORE_QUANTUM_DEPTH > 8)
+                 image->colormap[i].red <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+                 image->colormap[i].green <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+                 image->colormap[i].blue <<= (MAGICKCORE_QUANTUM_DEPTH-8);
+#endif
+              }
+         }
+         continue;
+       }
+       break;
+     }
+   else
+     break;
   }
+  /* END OF BUILD_PALETTE */
 
-  /* Force sub-8-bit grayscale images, except for black-and-white images,
-   * to be written as indexed-color PNG
+  /* If we are excluding the tRNS chunk and there is transparency,
+   * then we must write a Gray-Alpha (color-type 4) or RGBA (color-type 6)
+   * PNG.
    */
-  if ((number_transparent == 0 && number_semitransparent == 0) &&
-      mng_info->write_png_colortype == 0 &&
-      ((number_opaque <= 2 && ping_have_non_bw != MagickFalse) ||
-      (number_opaque > 2 && number_opaque < 17)))
-    ping_have_color = MagickTrue;
-
-
   if (mng_info->ping_exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
@@ -7446,6 +7598,84 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         ping_need_colortype_warning=MagickTrue;
 
     }
+
+  /* See if cheap transparency is possible.  It is only possible
+   * when there is a single transparent color, no semitransparent
+   * color, and no opaque color that has the same RGB components
+   * as the transparent color.
+   */
+  if (number_transparent == 1)
+    {
+       ping_have_cheap_transparency = MagickTrue;
+
+       if (number_semitransparent != 0)
+         ping_have_cheap_transparency = MagickFalse;
+
+       else if (image_colors == 0 || image_colors > 256 ||
+           image->colormap == NULL)
+         {
+           ExceptionInfo
+             *exception;
+
+           register const PixelPacket
+             *q;
+
+           exception=(&image->exception);
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             q=GetVirtualPixels(image,0,y,image->columns,1, exception);
+
+             if (q == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                 if (q->opacity != TransparentOpacity &&
+                     (unsigned short) q->red == ping_trans_color.red &&
+                     (unsigned short) q->green == ping_trans_color.green &&
+                     (unsigned short) q->blue == ping_trans_color.blue)
+                   {
+                     ping_have_cheap_transparency = MagickFalse;
+                     break;
+                   }
+
+                 q++;
+             }
+    
+             if (ping_have_cheap_transparency == MagickFalse)
+                break;
+           }
+         }
+       else
+         {
+            /* Assuming that image->colormap[0] is the one transparent color
+             * and that all others are opaque.
+             */
+            if (image_colors > 1)
+              for (i=1; i<image_colors; i++)
+                if (image->colormap[i].red == image->colormap[0].red &&
+                    image->colormap[i].green == image->colormap[0].green &&
+                    image->colormap[i].blue == image->colormap[0].blue)
+                  {
+                     ping_have_cheap_transparency = MagickFalse;
+                     break;
+                  }
+         }
+       
+       if (logging != MagickFalse)
+         {
+           if (ping_have_cheap_transparency == MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "   Cheap transparency is not possible.");
+
+           else
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "   Cheap transparency is possible.");
+         }
+     }
+  else
+    ping_have_cheap_transparency = MagickFalse;
 
   image_depth=image->depth;
 
@@ -7651,7 +7881,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->IsPalette && mng_info->write_png8)
     {
 
-      /* TO DO: make this a function cause it's used twice, except
+      /* To do: make this a function cause it's used twice, except
          for reducing the sample depth from 8. */
 
       number_colors=image_colors;
@@ -7699,12 +7929,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           for (i=0; i < (ssize_t) number_transparent; i++)
              ping_trans_alpha[i]=0;
 
-          /* PNG8 can't have semitransparent colors so we threshold them
-           * to 0 or 255
-           */
-          for (; i < (ssize_t) number_semitransparent; i++)
-             ping_trans_alpha[i]=image->colormap[i].opacity >
-                OpaqueOpacity/2 ? 0 : 255;
 
           ping_num_trans=(unsigned short) (number_transparent +
              number_semitransparent);
@@ -7951,30 +8175,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (ping_have_tRNS != MagickFalse)
             {
               /*
-                Determine if there is one and only one transparent color
-                and if so if it is fully transparent.
-              */
-              if (logging != MagickFalse)
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  Is there a single fully transparent color?");
-
-              if (number_transparent > 1 || number_semitransparent > 0)
-              {
-                ping_have_tRNS = MagickFalse;
-                if (logging != MagickFalse)
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  ... No.");
-              }
-              else
-              {
-                if (logging != MagickFalse)
-                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  ... Yes: (%d,%d,%d), (gray: %d)",
-                    (int) ping_trans_color.red,
-                    (int) ping_trans_color.green,
-                    (int) ping_trans_color.blue,
-                    (int) ping_trans_color.gray);
-              }
+               * Determine if there is one and only one transparent color
+               * and if so if it is fully transparent.
+               */
+              if (ping_have_cheap_transparency == MagickFalse)
+                ping_have_tRNS=MagickFalse;
             }
 
           if (ping_have_tRNS != MagickFalse)
@@ -8056,7 +8261,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   }
               }
 
-#if 1 /* TO DO: Enable this when low bit-depth grayscale is working */
+#if 1 /* To do: Enable this when low bit-depth grayscale is working */
             else if (ping_color_type ==
                 PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
                 mng_info->IsPalette)
@@ -8088,11 +8293,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 if (depth_1_ok && mng_info->write_png_depth <= 1)
                   ping_bit_depth=1;
 
+#if 0 /* To do: Enable this when bit depths 2 and 4 are working. */
                 else if (depth_2_ok && mng_info->write_png_depth <= 2)
                   ping_bit_depth=2;
 
                 else if (depth_4_ok && mng_info->write_png_depth <= 4)
                   ping_bit_depth=4;
+#endif
               }
 #endif /* 1 */
           }
@@ -9044,7 +9251,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 else
                   {
-                    /* TO DO:
+                    /* To do:
                      *
                      * This is failing to account for 1, 2, 4-bit depths
                      * The call to png_set_packing() above is supposed to
@@ -9402,7 +9609,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WritePNGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter WritePNGImage()");
   /*
     Allocate a MngInfo structure.
   */
@@ -9928,7 +10135,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     jng_quality;
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  enter WriteOneJNGImage()");
+    "  Enter WriteOneJNGImage()");
 
   blob=(unsigned char *) NULL;
   jpeg_image=(Image *) NULL;
@@ -10470,7 +10677,7 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteJNGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter WriteJNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
@@ -10567,7 +10774,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteMNGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter WriteMNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
