@@ -217,7 +217,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
@@ -258,6 +259,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   status=MagickTrue;
   /*
     Identify an image.

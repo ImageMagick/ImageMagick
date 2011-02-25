@@ -229,6 +229,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   MagickBooleanType
     fire,
     pend,
+    respect_parenthesis,
     subimage_search;
 
   MagickStatusType
@@ -283,6 +284,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   option=(char *) NULL;
   pend=MagickFalse;
   reconstruct_image=NewImageList();
+  respect_parenthesis=MagickFalse;
   status=MagickTrue;
   subimage_search=MagickFalse;
   /*

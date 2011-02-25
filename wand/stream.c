@@ -204,7 +204,8 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
@@ -246,6 +247,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   stream_info=AcquireStreamInfo(image_info);
   status=MagickTrue;
   /*

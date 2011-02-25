@@ -182,7 +182,6 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   image=NewImageList();
   number_images=0;
   option=(char *) NULL;
-  (void) respect_parenthesis;
   /*
     Conjure an image.
   */

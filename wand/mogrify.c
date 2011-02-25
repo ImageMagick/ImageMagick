@@ -596,10 +596,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   ImageInfo
     *mogrify_info;
 
-  ssize_t
-    count;
-
-  MagickBooleanType
+  MagickStatusType
     status;
 
   MagickPixelPacket
@@ -617,6 +614,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
   register ssize_t
     i;
+
+  ssize_t
+    count;
 
   /*
     Initialize method variables.
@@ -2724,11 +2724,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             *image=resize_image;
             break;
           }
-        if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
-          {
-            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
-            break;
-          }
         if (LocaleCompare("roll",option+1) == 0)
           {
             Image
@@ -3974,22 +3969,23 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
-    j,
-    k;
-
-  register ssize_t
-    i;
-
   MagickBooleanType
     global_colormap;
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    j,
+    k;
 
   /*
     Set defaults.
@@ -4022,6 +4018,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   status=MagickTrue;
   /*
     Parse command line.
@@ -5758,6 +5755,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
+          {
+            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
         if (LocaleCompare("reverse",option+1) == 0)

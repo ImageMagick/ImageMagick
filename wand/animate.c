@@ -276,7 +276,8 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
@@ -326,6 +327,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   resource_database=(XrmDatabase) NULL;
   (void) ResetMagickMemory(&resource_info,0,sizeof(XResourceInfo));
   server_name=(char *) NULL;

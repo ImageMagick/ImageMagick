@@ -306,7 +306,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
@@ -350,6 +351,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   scene=0;
   status=MagickFalse;
   transparent_color=(char *) NULL;
