@@ -7605,9 +7605,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* See if cheap transparency is possible.  It is only possible
    * when there is a single transparent color, no semitransparent
    * color, and no opaque color that has the same RGB components
-   * as the transparent color.
+   * as the transparent color.  We only need this information if
+   * we are writing a PNG with colortype 0 or 2, and we have not
+   * excluded the tRNS chunk.
    */
-  if (number_transparent == 1)
+  if (number_transparent == 1 &&
+      mng_info->write_png_colortype < 4)
     {
        ping_have_cheap_transparency = MagickTrue;
 
@@ -9493,22 +9496,36 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %  be given the "png" file extension, this method also writes the following
 %  pseudo-formats which are subsets of PNG:
 %
-%    o PNG8:    An 8-bit indexed PNG datastream is written.  If transparency
+%    o PNG8:    An 8-bit indexed PNG datastream is written.  If the image has
+%               a depth greater than 8, the depth is reduced. If transparency
 %               is present, the tRNS chunk must only have values 0 and 255
 %               (i.e., transparency is binary: fully opaque or fully
-%               transparent).  The pixels contain 8-bit indices even if
-%               they could be represented with 1, 2, or 4 bits. Note: grayscale
+%               transparent).  If other values are present they will be
+%               50%-thresholded to binary transparency.  If more than 256
+%               colors are present, they will be quantized to the 3-3-2
+%               palette.  If you want better quantization or dithering of
+%               the colors or alpha, you need to do it before calling the
+%               PNG encoder. The pixels contain 8-bit indices even if
+%               they could be represented with 1, 2, or 4 bits.  Grayscale
 %               images will be written as indexed PNG files even though the
-%               PNG grayscale type might be slightly more efficient.
+%               PNG grayscale type might be slightly more efficient.  Please
+%               note that writing to the PNG8 format may result in loss
+%               of color and alpha data.
 %
 %    o PNG24:   An 8-bit per sample RGB PNG datastream is written.  The tRNS
 %               chunk can be present to convey binary transparency by naming
-%               one of the colors as transparent.
+%               one of the colors as transparent.  The only loss incurred
+%               is reduction of sample depth to 8.  If the image has more
+%               than one transparent color, has semitransparent pixels, or
+%               has an opaque pixel with the same RGB components as the
+%               transparent color, an image is not written.
 %
 %    o PNG32:   An 8-bit per sample RGBA PNG is written.  Partial
 %               transparency is permitted, i.e., the alpha sample for
 %               each pixel can have any value from 0 to 255. The alpha
 %               channel is present even if the image is fully opaque.
+%               The only loss in data is the reduction of the sample depth
+%               to 8.
 %
 %    o -define: For more precise control of the PNG output, you can use the
 %               Image options "png:bit-depth" and "png:color-type".  These
@@ -9533,14 +9550,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %               When png:color-type is 4 (Gray-Matte) or 6 (RGB-Matte),
 %               png:bit-depth can be 8 or 16.
 %
-%  If the image cannot be written without loss in the requested PNG8, PNG24,
-%  or PNG32 format or with the requested bit-depth and color-type without loss,
-%  a PNG file will not be written, and the encoder will return MagickFalse.
+%  If the image cannot be written without loss with the requested bit-depth
+%  and color-type, a PNG file will not be written, and the encoder will
+%  return MagickFalse.
+%
 %  Since image encoders should not be responsible for the "heavy lifting",
 %  the user should make sure that ImageMagick has already reduced the
 %  image depth and number of colors and limit transparency to binary
-%  transparency prior to attempting to write the image in a format that
-%  is subject to depth, color, or transparency limitations.
+%  transparency prior to attempting to write the image with depth, color,
+%   or transparency limitations.
 %
 %  TODO: Enforce the previous paragraph.
 %
