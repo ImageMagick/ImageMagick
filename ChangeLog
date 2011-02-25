@@ -16,6 +16,11 @@
     or black-and-white.
   * Avoid reading from the colormap in coders/png.c when it is NULL (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18162).
+  * Add a check whether the PNG "cheap transparency" criteria are met.  That
+    is, there is a single transparent color, no semitransparent colors, and
+    no opaque color that has the same RGB components as the transparent
+    color. (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18167).
 
 2011-02-22  6.6.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.7-9.
