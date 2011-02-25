@@ -4,7 +4,7 @@
 Name:           ImageMagick
 Version:        %{VERSION}
 Release:        %{Patchlevel}
-Summary:        ImageMagick is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 200) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bezier curves.
+Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
 Group:          Applications/Multimedia
 License:        http://www.imagemagick.org/script/license.php
 Url:            http://www.imagemagick.org/
@@ -26,8 +26,6 @@ The functionality of ImageMagick is typically utilized from the command line or 
 ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style license, approved by the OSI.
 
 The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory and thread error detection to help prevent exploits.ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style license, approved by the OSI.
-
-The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory and thread error detection to help prevent exploits.
 
 %package devel
 Summary: Library links and header files for ImageMagick application development
@@ -63,10 +61,10 @@ commandline tools) and API (for the libraries) documentation in HTML format.
 Note this documentation can also be found on the ImageMagick website:
 http://www.imagemagick.org/
 
-
-%package perl
+%package -n perl-%{name}
 Summary: ImageMagick perl bindings
 Group: System Environment/Libraries
+Requires: perl-base
 Requires: %{name} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
