@@ -756,7 +756,7 @@ MagickExport void RandomComponentTerminus(void)
 %    o seed: the seed.
 %
 */
-MagickExport void SeedPseudoRandomGenerator(const size_t seed)
+MagickExport void SeedPseudoRandomGenerator(const unsigned long seed)
 {
   random_seed=seed;
 }
