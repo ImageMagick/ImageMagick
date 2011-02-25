@@ -121,7 +121,7 @@ extern char
 static SemaphoreInfo
   *random_semaphore = (SemaphoreInfo *) NULL;
 
-static size_t
+static unsigned long
   random_seed = ~0UL;
 
 static MagickBooleanType
