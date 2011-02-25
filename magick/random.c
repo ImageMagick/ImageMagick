@@ -84,7 +84,7 @@ struct _RandomInfo
   size_t
     i;
 
-  size_t
+  unsigned long
     seed[4];
 
   double
