@@ -274,7 +274,8 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
@@ -322,6 +323,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   option=(char *) NULL;
   pend=MagickFalse;
   resource_database=(XrmDatabase) NULL;
+  respect_parenthesis=MagickFalse;
   (void) ResetMagickMemory(&resource_info,0,sizeof(resource_info));
   server_name=(char *) NULL;
   status=MagickTrue;

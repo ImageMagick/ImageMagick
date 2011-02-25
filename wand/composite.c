@@ -427,7 +427,8 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
 
   MagickBooleanType
     fire,
-    pend;
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
     status;
@@ -470,6 +471,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   status=MagickTrue;
   /*
     Check command syntax.

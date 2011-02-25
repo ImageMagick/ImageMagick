@@ -320,10 +320,11 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
     l;
 
   MagickBooleanType
-    fire;
+    fire,
+    pend,
+    respect_parenthesis;
 
   MagickStatusType
-    pend,
     status;
 
   QuantizeInfo
@@ -375,6 +376,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
+  respect_parenthesis=MagickFalse;
   resource_database=(XrmDatabase) NULL;
   (void) ResetMagickMemory(&resource_info,0,sizeof(resource_info));
   server_name=(char *) NULL;

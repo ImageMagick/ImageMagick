@@ -122,9 +122,6 @@ typedef struct _ImageStack
     *image;
 } ImageStack;
 
-static MagickBooleanType
-  respect_parenthesis = MagickFalse;
-
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
