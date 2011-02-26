@@ -672,7 +672,7 @@ MagickExport StringInfo *GetRandomKey(RandomInfo *random_info,
 */
 MagickExport double GetRandomValue(RandomInfo *random_info)
 {
-  size_t
+  unsigned long
     key,
     range;
 
