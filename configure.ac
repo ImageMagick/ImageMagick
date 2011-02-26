@@ -14,8 +14,15 @@
 #
 #  Copyright (C) 2003 - 2008 GraphicsMagick Group
 
-AC_PREREQ(2.64)
-AC_INIT([ImageMagick],[6.6.8],[http://www.imagemagick.org],[ImageMagick])
+AC_PREREQ(2.59)
+
+m4_define([magick_major_version], [6])
+m4_define([magick_minor_version], [6])
+m4_define([magick_micro_version], [8])
+m4_define([magick_version],
+          [magick_major_version.magick_minor_version.magick_micro_version])
+
+AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick])
 AC_CONFIG_SRCDIR([magick/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
@@ -121,7 +128,7 @@ AM_SANITY_CHECK
 AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
 
 # Enable support for silent build rules
-AM_SILENT_RULES([yes])
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 MAGICK_LIB_VERSION="0x"
 if test ${MAGICK_LIBRARY_CURRENT} -lt 10 ; then
