@@ -8,7 +8,7 @@ Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a 
 Group:          Applications/Multimedia
 License:        http://www.imagemagick.org/script/license.php
 Url:            http://www.imagemagick.org/
-Source0:        ftp://ftp.imagemagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
+Source0:        ftp://ftp.imagemagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.xz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
@@ -16,16 +16,38 @@ BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
 BuildRequires:  ghostscript-devel, djvulibre-devel
 BuildRequires:  libwmf-devel, jasper-devel, libtool-ltdl-devel
 BuildRequires:  libX11-devel, libXext-devel, libXt-devel
-BuildRequires:  lcms-devel, libxml2-devel, librsvg2-devel
+BuildRequires:  lcms-devel, libxml2-devel, librsvg2-devel, OpenEXR-devel
 
 %description
-ImageMagick is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including DPX, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG, and TIFF. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
+ImageMagick is a software suite to create, edit, and compose bitmap images. It
+can read, convert and write images in a variety of formats (about 100)
+including DPX, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG,
+and TIFF. Use ImageMagick to translate, flip, mirror, rotate, scale, shear
+and transform images, adjust image colors, apply various special effects,
+or draw text, lines, polygons, ellipses and Bézier curves.
 
-The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), nMagick (Neko/haXe), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images automagically and dynamically.
+The functionality of ImageMagick is typically utilized from the command line
+or you can use the features from programs written in your favorite programming
+language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand
+(C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), nMagick
+(Neko/haXe), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP
+(PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a
+language interface, use ImageMagick to modify or create images automagically
+and dynamically.
 
-ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style license, approved by the OSI.
+ImageMagick is free software delivered as a ready-to-run binary distribution
+or as source code that you may freely use, copy, modify, and distribute in
+both open and proprietary applications. It is distributed under an Apache
+2.0-style license, approved by the OSI.
 
-The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory and thread error detection to help prevent exploits.ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may freely use, copy, modify, and distribute in both open and proprietary applications. It is distributed under an Apache 2.0-style license, approved by the OSI.
+The ImageMagick development process ensures a stable API and ABI. Before
+each ImageMagick release, we perform a comprehensive security assessment that
+includes memory and thread error detection to help prevent exploits.ImageMagick
+is free software delivered as a ready-to-run binary distribution or as source
+code that you may freely use, copy, modify, and distribute in both open and
+proprietary applications. It is distributed under an Apache 2.0-style license,
+approved by the OSI.
+
 
 %package devel
 Summary: Library links and header files for ImageMagick application development
@@ -51,15 +73,28 @@ APIs, you need to install ImageMagick-devel as well as ImageMagick.
 You do not need to install it if you just want to use ImageMagick,
 however.
 
+
 %package doc
 Summary: ImageMagick HTML documentation
 Group: Documentation
+
+
+%package djvu
+Summary: DjVu plugin for ImageMagick
+Group: Applications/Multimedia
+Requires: %{name} = %{version}-%{release}
+
+%description djvu
+This packages contains a plugin for ImageMagick which makes it possible to
+save and load DjvU files from ImageMagick and libMagickCore using applications.
+
 
 %description doc
 ImageMagick documentation, this package contains usage (for the
 commandline tools) and API (for the libraries) documentation in HTML format.
 Note this documentation can also be found on the ImageMagick website:
-http://www.imagemagick.org/
+http://www.imagemagick.org/.
+
 
 %package -n perl-%{name}
 Summary: ImageMagick perl bindings
@@ -68,11 +103,13 @@ Requires: perl-base
 Requires: %{name} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
+
 %description perl
 Perl bindings to ImageMagick.
 
 Install ImageMagick-perl if you want to use any perl scripts that use
 ImageMagick.
+
 
 %package c++
 Summary: ImageMagick Magick++ library (C++ bindings)
@@ -136,6 +173,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
 # Disable rpath
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+# Do *NOT* use %%{?_smp_mflags}, this causes PerlMagick to be silently misbuild
 make
 
 
@@ -200,7 +238,6 @@ cat >$RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config.h <<EOF
 #endif
 EOF
 
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -218,13 +255,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc QuickStart.txt ChangeLog Platforms.txt
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore.so.*
-%{_libdir}/libMagickWand.so.*
+%{_libdir}/libMagickCore.so.4*
+%{_libdir}/libMagickWand.so.4*
 %{_bindir}/[a-z]*
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
+%exclude %{_libdir}/%{name}-%{VER}/modules-Q16/coders/djvu.*
 
 
 %files devel
@@ -247,15 +285,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/Wand-config.*
 %{_mandir}/man1/MagickWand-config.*
 
+%files djvu
+%defattr(-,root,root,-)
+%{_libdir}/%{name}-%{VER}/modules-Q16/coders/djvu.*
+
 %files doc
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}-%{VERSION}
+%doc LICENSE
 
 %files c++
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++.so.*
+%{_libdir}/libMagick++.so.4*
 
 %files c++-devel
 %defattr(-,root,root,-)
