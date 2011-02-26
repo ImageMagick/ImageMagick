@@ -150,22 +150,25 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-  <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
+  <a title="Sponsor: Website Hosting" href="http://hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
-<div class="sponsor">
-  <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
+<div  class="sponsor">
+  <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
 </div>
 <div  class="sponsor">
+  <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
+</div>
+<div  class="sponsor">
   <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+</div>
+<div class="sponsor">
+  <a title="Sponsor: Web Hosting" href="http://www.bodhost.com/hosting.shtml">Web Hosting</a><!-- 201104010090 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
@@ -194,10 +197,21 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-02-22  6.6.7-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> Disabled reduction of grayscale images (color-type 0) to less than 8 bits    when writing because this sometimes produced incorrect output (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18098).</dd>
+<dl><dt>2011-02-23  6.6.7-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Return MagickEpsilon for GetResizeFilterWeight() rather than 0 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18132).</dd>
+  <dd> Avoid seg fault in AppendImages() when one image is in the RGB colorspace    but the other is in the CMYK colorspace.</dd>
+  <dd> Get rid of 'respect_parenthesis defined but not used' warnings (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=18173).</dd>
+<dt>2011-02-22  6.6.7-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Write sub-8-bit grayscale PNG images as palette-indexed PNG images.  This    usually makes smaller files anyhow.</dd>
+  <dd> Eliminated a number of redundant tests for gray images in the PNG encoder.</dd>
+  <dd> Removed now-unused IsMonochromeImage() function from coders/png.c</dd>
+  <dd> Scan the colormap instead of all of the pixels, when possible, to    determine whether the image received by the PNG encoder is grayscale    or black-and-white.</dd>
+  <dd> Avoid reading from the colormap in coders/png.c when it is NULL (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18162).</dd>
+  <dd> Add a check whether the PNG "cheap transparency" criteria are met.  That    is, there is a single transparent color, no semitransparent colors, and    no opaque color that has the same RGB components as the transparent    color.  If they aren't, a color that is transparent in one pixel    and opaque in another would always be rendered as transparent. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18167).</dd>
 <dt>2011-02-22  6.6.7-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.7-9.</dd>
+<dt>2011-02-22  6.6.7-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Disabled reduction of grayscale images (color-type 0) to less than 8 bits    when writing because this sometimes produced incorrect output (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18098).</dd>
 <dt>2011-02-21  6.6.7-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Check image has properties before accessing the splay tree (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18136).</dd>
 <dt>2011-02-15  6.6.7-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -212,7 +226,7 @@
 <dt>2011-02-08  6.6.7-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support 16-bit per pixel YUV image files.</dd>
   <dd> Fix off-by-one error in PosterizeImage().</dd>
-  <dd> Posterize now distributes color uniformally (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17623).</dd>
+  <dd> Posterize now distributes color uniformly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17623).</dd>
   <dd> Add -smush option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=17953).</dd>
   <dd> Repair memory leak in the display program.</dd>
 <dt>2011-02-07  6.6.7-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
