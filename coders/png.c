@@ -6996,6 +6996,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      * we need to check for bogus non-opaque values, at least.
      */
 
+#if (MAGICKCORE_QUANTUM_DEPTH == 8)
+#  define PNGK 0 /* Shift */
+#  define PNGM 1 /* Scale */
+#elif (MAGICKCORE_QUANTUM_DEPTH == 16)
+#  define PNGK 8
+#  define PNGM 0x0101
+#else
+#  define PNGK 24
+#  define PNGM 0x01010101
+#endif
+
    ExceptionInfo
      *exception;
 
@@ -7497,48 +7508,25 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      * background color to the 3-3-2 palette.
      */
 
-
     if (image_colors == 0 || image_colors > 256)
       {
         if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    Quantizing the background color to 3-3-2");
 
-    if (image->depth == 8)
-      {
         image->background_color.red=
-              (image->background_color.red & 0xe0)       |
-              ((image->background_color.red & 0xe0) >> 3) |
-              ((image->background_color.red & 0xc0) >> 6);
+             ((((image->background_color.red >> PNGK) & 0xe0)     )  |
+              (((image->background_color.red >> PNGK) & 0xe0) >> 3)  |
+              (((image->background_color.red >> PNGK) & 0xc0) >> 6)) * PNGM;
         image->background_color.green=
-              (image->background_color.green & 0xe0)       |
-              ((image->background_color.green & 0xe0) >> 3) |
-              ((image->background_color.green & 0xc0) >> 6);
+             ((((image->background_color.green >> PNGK) & 0xe0)     )  |
+              (((image->background_color.green >> PNGK) & 0xe0) >> 3)  |
+              (((image->background_color.green >> PNGK) & 0xc0) >> 6)) * PNGM;
         image->background_color.blue=
-              (image->background_color.blue & 0xc0)       |
-              ((image->background_color.blue & 0xc0) >> 2) |
-              ((image->background_color.blue & 0xc0) >> 4) |
-              ((image->background_color.blue & 0xc0) >> 6);
-      }
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-    else
-      {
-        image->background_color.red=
-             (((image->background_color.red & 0xe0) >> 8) |
-              ((image->background_color.red & 0xe0) >> 11) |
-              ((image->background_color.red & 0xc0) >> 14))*0x0101;
-        image->background_color.green=
-            (((image->background_color.green & 0xe0) >> 8) |
-              ((image->background_color.green & 0xe0) >> 11) |
-              ((image->background_color.green & 0xc0) >> 14))*0x0101;
-        image->background_color.blue=
-             (((image->background_color.blue & 0xc0)>>  8) |
-              ((image->background_color.blue & 0xc0) >> 10) |
-              ((image->background_color.blue & 0xc0) >> 12) |
-              ((image->background_color.blue & 0xc0) >> 14))*0x0101;
-      }
-#endif
-/* To do: Add Q32 case */
+             ((((image->background_color.blue >> PNGK) & 0xc0)     )  |
+              (((image->background_color.blue >> PNGK) & 0xc0) >> 2)  |
+              (((image->background_color.blue >> PNGK) & 0xc0) >> 4)  |
+              (((image->background_color.blue >> PNGK) & 0xc0) >> 6)) * PNGM;
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7556,35 +7544,20 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (image->depth == 8)
-              {
-               r->red=  (r->red & 0xe0)        |
-                        ((r->red & 0xe0) >> 3) |
-                        ((r->red & 0xc0) >> 6);
-               r->green=(r->green & 0xe0)        |
-                        ((r->green & 0xe0) >> 3) |
-                        ((r->green & 0xc0) >> 6);
-               r->blue= (r->blue & 0xc0)        |
-                        ((r->blue & 0xc0) >> 2) |
-                        ((r->blue & 0xc0) >> 4) |
-                        ((r->blue & 0xc0) >> 6);
-               }
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-             else
-               {
-               r->red= (((r->red & 0xe0) >> 8) |
-                       ((r->red & 0xe0) >> 11) |
-                       ((r->red & 0xc0) >> 14))*0x0101;
-               r->green=(((r->green & 0xe0) >> 8) |
-                       ((r->green & 0xe0) >> 11) |
-                       ((r->green & 0xc0) >> 14))*0x0101;
-               r->blue=(((r->blue & 0xc0)>>  8) |
-                       ((r->blue & 0xc0) >> 10) |
-                       ((r->blue & 0xc0) >> 12) |
-                       ((r->blue & 0xc0) >> 14))*0x0101;
-               }
-#endif
-                r++;
+              r->red=
+                   ((((r->red >> PNGK) & 0xe0)     )  |
+                    (((r->red >> PNGK) & 0xe0) >> 3)  |
+                    (((r->red >> PNGK) & 0xc0) >> 6)) * PNGM;
+              r->green=
+                   ((((r->green >> PNGK) & 0xe0)     )  |
+                    (((r->green >> PNGK) & 0xe0) >> 3)  |
+                    (((r->green >> PNGK) & 0xc0) >> 6)) * PNGM;
+              r->blue=
+                   ((((r->blue >> PNGK) & 0xc0)     )  |
+                    (((r->blue >> PNGK) & 0xc0) >> 2)  |
+                    (((r->blue >> PNGK) & 0xc0) >> 4)  |
+                    (((r->blue >> PNGK) & 0xc0) >> 6)) * PNGM;
+              r++;
             }
     
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -7600,40 +7573,19 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "    Quantizing the colormap to 3-3-2");
           for (i=0; i<image_colors; i++)
           {
-            if (image->depth == 8)
-             {
-             image->colormap[i].red=
-                     (image->colormap[i].red & 0xe0)        |
-                     ((image->colormap[i].red & 0xe0) >> 3) |
-                     ((image->colormap[i].red & 0xc0) >> 6);
-             image->colormap[i].green=
-                     (image->colormap[i].green & 0xe0)        |
-                     ((image->colormap[i].green & 0xe0) >> 3) |
-                     ((image->colormap[i].green & 0xc0) >> 6);
-             image->colormap[i].blue=
-                     (image->colormap[i].blue & 0xc0)        |
-                     ((image->colormap[i].blue & 0xc0) >> 2) |
-                     ((image->colormap[i].blue & 0xc0) >> 4) |
-                     ((image->colormap[i].blue & 0xc0) >> 6);
-             }
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
-          else
-             {
-             image->colormap[i].red=
-                     (((image->colormap[i].red & 0xe0) >> 8) |
-                     ((image->colormap[i].red & 0xe0) >> 11) |
-                     ((image->colormap[i].red & 0xc0) >> 14))*0x0101;
-             image->colormap[i].green=
-                     (((image->colormap[i].green & 0xe0) >> 8) |
-                     ((image->colormap[i].green & 0xe0) >> 11) |
-                     ((image->colormap[i].green & 0xc0) >> 14))*0x0101;
-             image->colormap[i].blue=
-                     (((image->colormap[i].blue & 0xc0)>>  8) |
-                     ((image->colormap[i].blue & 0xc0) >> 10) |
-                     ((image->colormap[i].blue & 0xc0) >> 12) |
-                     ((image->colormap[i].blue & 0xc0) >> 14))*0x0101;
-             }
-#endif
+              image->colormap[i].red=
+                   ((((image->colormap[i].red >> PNGK) & 0xe0)     )  |
+                    (((image->colormap[i].red >> PNGK) & 0xe0) >> 3)  |
+                    (((image->colormap[i].red >> PNGK) & 0xc0) >> 6)) * PNGM;
+              image->colormap[i].green=
+                   ((((image->colormap[i].green >> PNGK) & 0xe0)     )  |
+                    (((image->colormap[i].green >> PNGK) & 0xe0) >> 3)  |
+                    (((image->colormap[i].green >> PNGK) & 0xc0) >> 6)) * PNGM;
+              image->colormap[i].blue=
+                   ((((image->colormap[i].blue >> PNGK) & 0xc0)     )  |
+                    (((image->colormap[i].blue >> PNGK) & 0xc0) >> 2)  |
+                    (((image->colormap[i].blue >> PNGK) & 0xc0) >> 4)  |
+                    (((image->colormap[i].blue >> PNGK) & 0xc0) >> 6)) * PNGM;
           }
       }
       continue;
@@ -7754,6 +7706,23 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   mng_info->IsPalette=image->storage_class == PseudoClass &&
     image_colors <= 256 && image->colormap != NULL;
 
+  if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
+     (image->colors == 0 || image->colormap == NULL))
+    {
+      (void) ThrowMagickException(&image->exception,
+          GetMagickModule(),CoderWarning,
+          "Cannot write PNG8 or color-type 3; colormap is NULL",
+          "`%s'",image->filename);
+      if (mng_info->need_blob != MagickFalse)
+          (void) CloseBlob(image);
+      image_info=DestroyImageInfo(image_info);
+      image=DestroyImage(image);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      UnlockSemaphoreInfo(ping_semaphore);
+#endif
+      return(MagickFalse);
+    }
+
   /*
     Allocate the PNG structures
   */
@@ -7800,13 +7769,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image=DestroyImage(image);
       return(MagickFalse);
     }
-
-  if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
-     (image->colors == 0 || image->colormap == NULL))
-    {
-      png_error(ping, "Cannot write PNG8 or color-type 3; colormap is NULL");
-    }
-
   /*
     Prepare PNG for writing.
   */
