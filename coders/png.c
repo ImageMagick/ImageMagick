@@ -6779,6 +6779,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     logging,
     matte,
 
+    ping_have_blob,
     ping_have_cheap_transparency,
     ping_have_color,
     ping_have_non_bw,
@@ -6852,17 +6853,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image = CloneImage(IMimage,0,0,MagickFalse,&IMimage->exception);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
 
-  if (mng_info->need_blob != MagickFalse)
-  {
-    if (OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception) ==
-       MagickFalse)
-    {
-      image_info=DestroyImageInfo(image_info);
-      image=DestroyImage(image);
-      return(MagickFalse);
-    }
-  }
-
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(ping_semaphore);
 #endif
@@ -6890,6 +6880,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_pHYs_x_resolution = 0;
   ping_pHYs_y_resolution = 0;
 
+  ping_have_blob=MagickFalse;
   ping_have_color=MagickTrue;
   ping_have_non_bw=MagickTrue;
   ping_have_PLTE=MagickFalse;
@@ -7713,8 +7704,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           GetMagickModule(),CoderWarning,
           "Cannot write PNG8 or color-type 3; colormap is NULL",
           "`%s'",image->filename);
-      if (mng_info->need_blob != MagickFalse)
-          (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
@@ -7763,7 +7752,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
-      if (mng_info->need_blob != MagickFalse)
+      if (ping_have_blob != MagickFalse)
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
@@ -8909,6 +8898,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
+  if (mng_info->need_blob != MagickFalse)
+  {
+    if (OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception) ==
+       MagickFalse)
+       png_error(ping,"WriteBlob Failed");
+
+     ping_have_blob=MagickTrue;
+  }
+
   png_write_info_before_PLTE(ping, ping_info);
 
   if (ping_have_tRNS != MagickFalse && ping_color_type < 4)
@@ -8945,6 +8943,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   /* write any png-chunk-b profiles */
   (void) Magick_png_write_chunk_from_profile(image,"PNG-chunk-b",logging);
+
   png_write_info(ping,ping_info);
 
   /* write any PNG-chunk-m profiles */
@@ -9035,7 +9034,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
-      if (mng_info->need_blob != MagickFalse)
+      if (ping_have_blob != MagickFalse)
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
@@ -9465,7 +9464,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
-  if (mng_info->need_blob != MagickFalse)
+  if (ping_have_blob != MagickFalse)
      (void) CloseBlob(image);
 
   image_info=DestroyImageInfo(image_info);

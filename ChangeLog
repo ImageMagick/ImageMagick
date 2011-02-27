@@ -1,6 +1,10 @@
-2011-02-22  6.6.8-0 Glenn Randers-Pehrson <glennrp@image...>
+2011-02-27  6.6.8-0 Glenn Randers-Pehrson <glennrp@image...>
   * Fix scaling of new color-reduction method in the PNG encoder (16-bit
     images were scaled down to 0 or 1, or nearly black).
+  * Delay opening the PNG output blob until the PNG encoder is ready
+    to write the IHDR chunk, to avoid writing zero-length PNG files when
+    errors are found while building the palette.  (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18162).
 
 2011-02-25  6.6.7-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.7-10.
