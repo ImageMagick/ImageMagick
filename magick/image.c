@@ -4521,7 +4521,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     if (value != (const char *) NULL)
       {
         (void) FormatMagickString(property,MaxTextExtent,"%s",option);
-        (void) SetImageArtifact(image,property,value);
+        (void) SetImageProperty(image,property,value);
       }
     option=GetNextImageOption(image_info);
   }
