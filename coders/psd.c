@@ -940,15 +940,33 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           size_t
             quantum;
 
+          unsigned long
+            tag;
+
           /*
             Skip layers & masks.
           */
           quantum=psd_info.version == 1 ? 4UL : 8UL;
-          if (DiscardBlobBytes(image,length-quantum) == MagickFalse)
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
+          tag=ReadBlobMSBLong(image);
+          tag=ReadBlobMSBLong(image);
+          if (tag != '8BIM')
+            {
+              if (DiscardBlobBytes(image,length-quantum-8) == MagickFalse)
+                ThrowFileException(exception,CorruptImageError,
+                  "UnexpectedEndOfFile",image->filename);
+            }
+          else
+            {
+              tag=ReadBlobMSBLong(image);
+              if (tag == 'Lr16')
+                size=GetPSDSize(&psd_info,image);
+              else
+                if (DiscardBlobBytes(image,length-quantum-12) == MagickFalse)
+                  ThrowFileException(exception,CorruptImageError,
+                    "UnexpectedEndOfFile",image->filename);
+            }
         }
-      else
+      if (size != 0)
         {
           MagickOffsetType
             layer_offset;
