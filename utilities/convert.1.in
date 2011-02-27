@@ -155,6 +155,7 @@ Image Operators:
   \-linear-stretch geometry
                        improve contrast by `stretching with saturation' the intensity range
   \-median radius       apply a median filter to the image
+  \-mode radius         make each pixel the 'predominate color' of the neighborhood
   \-modulate value      vary the brightness, saturation, and hue
   \-monochrome          transform image to black and white
   \-morphology method kernel

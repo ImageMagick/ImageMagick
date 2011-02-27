@@ -211,6 +211,7 @@ extern WandExport MagickBooleanType
   MagickMagnifyImage(MagickWand *),
   MagickMedianFilterImage(MagickWand *,const double),
   MagickMinifyImage(MagickWand *),
+  MagickModeImage(MagickWand *,const double),
   MagickModulateImage(MagickWand *,const double,const double,const double),
   MagickMorphologyImage(MagickWand *,MorphologyMethod,const ssize_t,
     KernelInfo *),
