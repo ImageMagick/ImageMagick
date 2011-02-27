@@ -1207,10 +1207,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             if (*option == '+')
               {
-                (void) DeleteImageProperty(image_info,option+1);
+                (void) DeleteImageProperty(*image,option+1);
                 break;
               }
-            (void) SetImageProperty(image_info,option+1,argv[i+1]);
+            (void) SetImageProperty(*image,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("contrast",option+1) == 0)
@@ -1982,10 +1982,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             if (*option == '+')
               {
-                (void) DeleteImageProperty(image_info,option+1);
+                (void) DeleteImageProperty(*image,option+1);
                 break;
               }
-            (void) SetImageProperty(image_info,option+1,argv[i+1]);
+            (void) SetImageProperty(*image,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("lat",option+1) == 0)
