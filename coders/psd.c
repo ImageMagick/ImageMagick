@@ -940,13 +940,31 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           size_t
             quantum;
 
+          unsigned char
+            *blocks;
+
           /*
             Skip layers & masks.
           */
           quantum=psd_info.version == 1 ? 4UL : 8UL;
-          if (DiscardBlobBytes(image,length-quantum) == MagickFalse)
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
+          size=ReadBlobMSBLong(image);
+          length-=(quantum+4);
+          if (image->debug != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  reading image resource blocks - %.20g bytes",(double) length);
+          blocks=(unsigned char *) AcquireQuantumMemory((size_t) length,
+            sizeof(*blocks));
+          if (blocks == (unsigned char *) NULL)
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          count=ReadBlob(image,(size_t) length,blocks);
+          if ((count != (ssize_t) length) ||
+              (LocaleNCompare((char *) blocks,"8BIM",4) != 0))
+            {
+              blocks=(unsigned char *) RelinquishMagickMemory(blocks);
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+            }
+          (void) ParseImageResourceBlocks(image,blocks,(size_t) length);
+          blocks=(unsigned char *) RelinquishMagickMemory(blocks);
         }
       else
         {
