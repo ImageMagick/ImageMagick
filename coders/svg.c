@@ -2355,7 +2355,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 *text;
 
               text=EscapeString(svg_info->text,'\'');
-              StripString(text);
               MVGPrintf(svg_info->file,"text %g,%g '%s'\n",
                 svg_info->bounds.x-svg_info->center.x,svg_info->bounds.y-
                 svg_info->center.y,text);
@@ -2379,7 +2378,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 *text;
 
               text=EscapeString(svg_info->text,'\'');
-              StripString(text);
               MVGPrintf(svg_info->file,"text %g,%g '%s'\n",
                 svg_info->bounds.x,svg_info->bounds.y,text);
               text=DestroyString(text);
