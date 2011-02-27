@@ -4521,11 +4521,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     if (value != (const char *) NULL)
       {
         (void) FormatMagickString(property,MaxTextExtent,"%s",option);
-        if ((LocaleCompare(option,"label") == 0) ||
-            (LocaleCompare(option,"comment") == 0))
-          (void) SetImageProperty(image,property,value);
-        else
-          (void) SetImageArtifact(image,property,value);
+        (void) SetImageArtifact(image,property,value);
       }
     option=GetNextImageOption(image_info);
   }
