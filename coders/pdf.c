@@ -1313,7 +1313,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image_info->pointsize != 0.0)
       pointsize=image_info->pointsize;
     text_size=0;
-    value=GetImageProperty(image,"Label");
+    value=GetImageProperty(image,"label");
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     (void) text_size;
@@ -1331,7 +1331,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/Resources <<\n");
     labels=(char **) NULL;
-    value=GetImageProperty(image,"Label");
+    value=GetImageProperty(image,"label");
     if (value != (const char *) NULL)
       labels=StringToList(value);
     if (labels != (char **) NULL)

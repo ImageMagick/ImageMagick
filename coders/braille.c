@@ -221,7 +221,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     return(status);
   if (!iso_11548_1)
     {
-      value=GetImageProperty(image,"Label");
+      value=GetImageProperty(image,"label");
       if (value != (const char *) NULL) {
         (void) FormatMagickString(buffer,MaxTextExtent,"Title: %s\n", value);
         (void) WriteBlobString(image,buffer);
