@@ -2217,6 +2217,23 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             *image=median_image;
             break;
           }
+        if (LocaleCompare("mode",option+1) == 0)
+          {
+            Image
+              *mode_image;
+
+            /*
+              Mode image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            (void) ParseGeometry(argv[i+1],&geometry_info);
+            mode_image=ModeImage(*image,geometry_info.rho,exception);
+            if (mode_image == (Image *) NULL)
+              break;
+            *image=DestroyImage(*image);
+            *image=mode_image;
+            break;
+          }
         if (LocaleCompare("modulate",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
@@ -5394,6 +5411,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("median",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("mode",option+1) == 0)
           {
             if (*option == '+')
               break;

@@ -6960,6 +6960,51 @@ WandExport MagickBooleanType MagickMinifyImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k M o d e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickModeImage() makes each pixel the 'predominate color' of the
+%  neighborhood if the specified radius.
+%
+%  The format of the MagickModeImage method is:
+%
+%      MagickBooleanType MagickModeImage(MagickWand *wand,
+%        const double radius)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+*/
+WandExport MagickBooleanType MagickModeImage(MagickWand *wand,
+  const double radius)
+{
+  Image
+    *mode_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  mode_image=ModeImage(wand->images,radius,wand->exception);
+  if (mode_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,mode_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k M o d u l a t e I m a g e                                     %
 %                                                                             %
 %                                                                             %

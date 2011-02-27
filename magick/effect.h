@@ -82,6 +82,7 @@ extern MagickExport Image
   *GaussianBlurImageChannel(const Image *,const ChannelType,const double,
     const double,ExceptionInfo *),
   *MedianFilterImage(const Image *,const double,ExceptionInfo *),
+  *ModeImage(const Image *,const double,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
   *MotionBlurImageChannel(const Image *,const ChannelType,const double,
