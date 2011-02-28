@@ -2880,7 +2880,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(OptionError,"ImageSmallerThanKernelRadius");
+    ThrowImageException(OptionError,"ImageSmallerThanRadius");
   median_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (median_image == (Image *) NULL)
@@ -3113,7 +3113,7 @@ MagickExport Image *ModeImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(OptionError,"ImageSmallerThanKernelRadius");
+    ThrowImageException(OptionError,"ImageSmallerThanRadius");
   mode_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (mode_image == (Image *) NULL)
@@ -4467,7 +4467,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(OptionError,"ImageSmallerThanKernelRadius");
+    ThrowImageException(OptionError,"ImageSmallerThanRadius");
   noise_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (noise_image == (Image *) NULL)
