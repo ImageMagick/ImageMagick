@@ -3033,39 +3033,38 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    center,
     color,
     count,
-    previous,
-    next;
+    max_count,
+    mode,
+    width;
 
   unsigned short
     channels[5];
 
   /*
-    Finds the median value for each of the color.
+    Make each pixel the 'predominate color' of the specified neighborhood.
   */
-  center=pixel_list->center;
+  width=pixel_list->center << 1;
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536UL;
-    next=list->nodes[color].next[0];
+    mode=color;
+    max_count=list->nodes[mode].count;
     count=0;
     do
     {
-      previous=color;
-      color=next;
-      next=list->nodes[color].next[0];
+      color=list->nodes[color].next[0];
+      if (list->nodes[color].count > max_count)
+        {
+          mode=color;
+          max_count=list->nodes[mode].count;
+        }
       count+=list->nodes[color].count;
     }
-    while (count <= center);
-    if ((previous == 65536UL) && (next != 65536UL))
-      color=next;
-    else
-      if ((previous != 65536UL) && (next == 65536UL))
-        color=previous;
-    channels[channel]=(unsigned short) color;
+    while (count <= width);
+    channels[channel]=(unsigned short) mode;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
@@ -4390,8 +4389,8 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
     center,
     color,
     count,
-    previous,
-    next;
+    next,
+    previous;
 
   unsigned short
     channels[5];
