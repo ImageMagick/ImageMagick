@@ -104,7 +104,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 
-%description perl
+%description -n perl-%{name}
 Perl bindings to ImageMagick.
 
 Install ImageMagick-perl if you want to use any perl scripts that use
