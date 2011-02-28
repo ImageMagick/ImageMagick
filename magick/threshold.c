@@ -176,8 +176,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < width) || (image->rows < height))
-    ThrowImageException(OptionError,"ImageSmallerThanRadius");
   threshold_image=CloneImage(image,0,0,MagickTrue,exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
