@@ -601,9 +601,6 @@
         <message name="ImageSizeMustExceedBevelWidth">
           la taille doit être supérieure à la largeur de la facette
         </message>
-        <message name="ImageSmallerThanRadius">
-          image plus petite que le rayon
-        </message>
         <message name="ImageWidthsOrHeightsDiffer">
           différences dans la hauteur ou la largeur de l'image
         </message>

@@ -610,9 +610,6 @@
         <message name="ImageSizeMustExceedBevelWidth">
           size must exceed bevel width
         </message>
-        <message name="ImageSmallerThanRadius">
-          image smaller than radius
-        </message>
         <message name="ImageWidthsOrHeightsDiffer">
           image widths or heights differ
         </message>

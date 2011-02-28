@@ -591,8 +591,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,0.5);
-  if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(OptionError,"ImageSmallerThanRadius");
   paint_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
@@ -640,8 +638,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t) (width/
-      2L),image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(paint_view,0,y,paint_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
