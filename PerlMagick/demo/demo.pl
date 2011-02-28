@@ -250,6 +250,12 @@ $example->Label('Median Filter');
 $example->MedianFilter();
 push(@$images,$example);
 
+print "Mode...\n";
+$example=$model->Clone();
+$example->Label('Mode');
+$example->Mode();
+push(@$images,$example);
+
 print "Modulate...\n";
 $example=$model->Clone();
 $example->Label('Modulate');
