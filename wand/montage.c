@@ -1177,6 +1177,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             MontageMode
               mode;
 
+            (void) CopyMagickString(argv[i]+1,"sans",MaxTextExtent);
             if (*option == '+')
               break;
             i++;
