@@ -5623,7 +5623,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          pixel.index=unsharp_indexes[x]-(MagickRealType) indexes[x];
+          pixel.index=indexes[x]-(MagickRealType) unsharp_indexes[x];
           if (fabs(2.0*pixel.index) < quantum_threshold)
             pixel.index=(MagickRealType) indexes[x];
           else
