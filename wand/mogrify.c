@@ -6886,7 +6886,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               *q;
 
             for (q=strchr(argv[i+1],'%'); q != (char *) NULL; q=strchr(q+1,'%'))
-              if (strchr("gkrz@[#",*(q+1)) != (char *) NULL)
+              if (strchr("Agkrz@[#",*(q+1)) != (char *) NULL)
                 image_info->ping=MagickFalse;
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
