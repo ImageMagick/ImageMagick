@@ -1411,11 +1411,11 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
       return(MagickFalse);
     }
   }
-  /* Set channel levels from extra comma seperated arguments
+  /* Set channel levels from extra comma separated arguments
      Default to 2, the single value given, or individual channel values
   */
 #if 1
-  { /* parse directly as a comma seperated list of integers */
+  { /* parse directly as a comma separated list of integers */
     char *p;
 
     p = strchr((char *) threshold_map,',');

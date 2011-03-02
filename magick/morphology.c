@@ -183,7 +183,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %         Values can be space or comma separated.  This is not recommended.
 %
 %  You can define a 'list of kernels' which can be used by some morphology
-%  operators A list is defined as a semi-colon seperated list kernels.
+%  operators A list is defined as a semi-colon separated list kernels.
 %
 %     " kernel ; kernel ; kernel ; "
 %
@@ -497,7 +497,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
   while ( GetMagickToken(p,NULL,token),  *token != '\0' ) {
 
-    /* ignore extra or multiple ';' kernel seperators */
+    /* ignore extra or multiple ';' kernel separators */
     if ( *token != ';' ) {
 
       /* tokens starting with alpha is a Named kernel */
@@ -3975,7 +3975,7 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 %  For special kernels designed for locating shapes using 'Correlate', (often
 %  only containing +1 and -1 values, representing foreground/brackground
 %  matching) a special normalization method is provided to scale the positive
-%  values seperatally to those of the negative values, so the kernel will be
+%  values separately to those of the negative values, so the kernel will be
 %  forced to become a zero-sum kernel better suited to such searches.
 %
 %  WARNING: Correct normalization of the kernel assumes that the '*_range'
