@@ -2852,7 +2852,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
 %  LevelImageColor() maps the given color to "black" and "white" values,
 %  linearly spreading out the colors, and level values on a channel by channel
 %  bases, as per LevelImage().  The given colors allows you to specify
-%  different level ranges for each of the color channels seperatally.
+%  different level ranges for each of the color channels separately.
 %
 %  If the boolean 'invert' is set true the image values will modifyed in the
 %  reverse direction. That is any existing "black" and "white" colors in the
