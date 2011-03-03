@@ -2667,8 +2667,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         if ((size_t) (q-interpret_text+length+1) >= extent)
           {
             extent+=length;
-            interpret_text=(char *) ResizeQuantumMemory(interpret_text,
-              extent+MaxTextExtent,sizeof(*interpret_text));
+            interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+
+              MaxTextExtent,sizeof(*interpret_text));
             if (interpret_text == (char *) NULL)
               break;
             q=interpret_text+strlen(interpret_text);
@@ -2734,8 +2734,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image geometry.
         */
         q+=FormatMagickString(q,extent,"%.20gx%.20g%+.20g%+.20g",(double)
-          image->page.width,(double) image->page.height,(double)
-          image->page.x,(double) image->page.y);
+          image->page.width,(double) image->page.height,(double) image->page.x,
+          (double) image->page.y);
         break;
       }
       case 'h':
@@ -2743,8 +2743,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image height.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double)
-          (image->rows != 0 ? image->rows : image->magick_rows));
+        q+=FormatMagickString(q,extent,"%.20g",(double) (image->rows != 0 ?
+          image->rows : image->magick_rows));
         break;
       }
       case 'i':
@@ -2760,8 +2760,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Number of unique colors.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double)
-          GetNumberColors(image,(FILE *) NULL,&image->exception));
+        q+=FormatMagickString(q,extent,"%.20g",(double) GetNumberColors(image,
+          (FILE *) NULL,&image->exception));
         break;
       }
       case 'l':
@@ -2776,8 +2776,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         if ((size_t) (q-interpret_text+length+1) >= extent)
           {
             extent+=length;
-            interpret_text=(char *) ResizeQuantumMemory(interpret_text,
-              extent+MaxTextExtent,sizeof(*interpret_text));
+            interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+
+              MaxTextExtent,sizeof(*interpret_text));
             if (interpret_text == (char *) NULL)
               break;
             q=interpret_text+strlen(interpret_text);
@@ -2806,8 +2806,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Number of images in the list.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double)
-          GetImageListLength(image));
+        q+=FormatMagickString(q,extent,"%.20g",(double) GetImageListLength(
+          image));
         break;
       }
       case 'o':
@@ -2886,8 +2886,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image width.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double)
-          (image->columns != 0 ? image->columns : image->magick_columns));
+        q+=FormatMagickString(q,extent,"%.20g",(double) (image->columns != 0 ?
+          image->columns : image->magick_columns));
         break;
       }
       case 'x':
@@ -2953,14 +2953,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 'H':
       {
-        q+=FormatMagickString(q,extent,"%.20g",(double)
-          image->page.height);
+        q+=FormatMagickString(q,extent,"%.20g",(double) image->page.height);
         break;
       }
       case 'O':
       {
-        q+=FormatMagickString(q,extent,"%+ld%+ld",(long) image->page.x,
-          (long) image->page.y);
+        q+=FormatMagickString(q,extent,"%+ld%+ld",(long) image->page.x,(long)
+          image->page.y);
         break;
       }
       case 'P':
@@ -2982,8 +2981,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         if (text_info->number_scenes == 0)
           q+=CopyMagickString(q,"2147483647",extent);
         else
-          q+=FormatMagickString(q,extent,"%.20g",(double)
-            (text_info->scene+text_info->number_scenes));
+          q+=FormatMagickString(q,extent,"%.20g",(double) (text_info->scene+
+            text_info->number_scenes));
         break;
       }
       case 'T':
