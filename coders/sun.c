@@ -244,14 +244,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
 
   register ssize_t
-    i;
+    i,
+    x;
 
   register unsigned char
     *p;
@@ -467,7 +465,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+              image->rows);
             if (status == MagickFalse)
               break;
           }
@@ -709,9 +707,6 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
       maplength;
   } SUNInfo;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -728,10 +723,11 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
     *p;
 
   register ssize_t
+    i,
     x;
 
-  register ssize_t
-    i;
+  ssize_t
+    y;
 
   SUNInfo
     sun_info;
