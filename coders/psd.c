@@ -948,8 +948,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           quantum=psd_info.version == 1 ? 4UL : 8UL;
           tag=ReadBlobMSBLong(image);
-          tag=ReadBlobMSBLong(image);
-          if (tag != '8BIM')
+          (void) tag;
+          count=ReadBlob(image,4,(unsigned char *) type);
+          if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
             {
               if (DiscardBlobBytes(image,length-quantum-8) == MagickFalse)
                 ThrowFileException(exception,CorruptImageError,
@@ -957,8 +958,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           else
             {
-              tag=ReadBlobMSBLong(image);
-              if (tag == 'Lr16')
+              count=ReadBlob(image,4,(unsigned char *) type);
+              if ((count != 0) && (LocaleNCompare(type,"Lr16",4) == 0))
                 size=GetPSDSize(&psd_info,image);
               else
                 if (DiscardBlobBytes(image,length-quantum-12) == MagickFalse)

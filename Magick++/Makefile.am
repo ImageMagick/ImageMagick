@@ -94,7 +94,7 @@ MAGICKPP_EXTRA_DIST = \
 	Magick++/tests/test_image_anim.miff
 
 MAGICKPP_CLEANFILES = \
-	Magick++/demo/*_out.* \
+	Magick++/demo/*_out* \
 	Magick++/demo/ir.out \
 	Magick++/tests/colorHistogram.txt \
 	Magick++/tests/testmagick_anim_out.miff \
