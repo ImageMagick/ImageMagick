@@ -14,7 +14,7 @@
 #
 #  Copyright (C) 2003 - 2008 GraphicsMagick Group
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.64)
 
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [6])
