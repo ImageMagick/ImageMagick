@@ -8,7 +8,7 @@ Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a 
 Group:          Applications/Multimedia
 License:        http://www.imagemagick.org/script/license.php
 Url:            http://www.imagemagick.org/
-Source0:        ftp://ftp.imagemagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.xz
+Source0:        ftp://ftp.imagemagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
