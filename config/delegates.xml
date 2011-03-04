@@ -47,6 +47,7 @@
     %g  image geometry
     %h  image rows (height)
     %k  input image number colors
+    %l  image label
     %m  input image format
     %p  page number
     %q  input image depth

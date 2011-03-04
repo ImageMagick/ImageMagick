@@ -96,7 +96,7 @@ Note this documentation can also be found on the ImageMagick website:
 http://www.imagemagick.org/.
 
 
-%package -n perl-%{name}
+%package perl
 Summary: ImageMagick perl bindings
 Group: System Environment/Libraries
 Requires: perl-base

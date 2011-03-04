@@ -2759,7 +2759,10 @@ MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
     Free font.
   */
   if (font_info != (XFontStruct *) NULL)
-    (void) XFreeFont(display,font_info);
+    {
+      (void) XFreeFont(display,font_info);
+      font_info=(XFontStruct *) NULL;
+    }
   if (map_info != (XStandardColormap *) NULL)
     {
       /*
