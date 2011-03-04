@@ -96,7 +96,7 @@ Note this documentation can also be found on the ImageMagick website:
 http://www.imagemagick.org/.
 
 
-%package -n perl-%{name}
+%package perl
 Summary: ImageMagick perl bindings
 Group: System Environment/Libraries
 Requires: perl-base
@@ -104,7 +104,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 
-%description -n perl-%{name}
+%description perl
 Perl bindings to ImageMagick.
 
 Install ImageMagick-perl if you want to use any perl scripts that use
