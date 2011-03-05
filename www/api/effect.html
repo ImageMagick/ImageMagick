@@ -150,16 +150,16 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-  <a title="Sponsor: Website Hosting" href="http://hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
+  <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
@@ -197,7 +197,7 @@
 <div class="main">
 
 <h1>Module effect Methods</h1>
-<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#ConvolveImage">ConvolveImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#FilterImage">FilterImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
+<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#ConvolveImage">ConvolveImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#FilterImage">FilterImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#ModeImage">ModeImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
 <div class="doc-section">
@@ -475,6 +475,30 @@
 
 <pre class="code">
   Image *MedianFilterImage(const Image *image,const double radius,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>radius</h5>
+<p>the radius of the pixel neighborhood.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="ModeImage">ModeImage</a></h2>
+<div class="doc-section">
+
+<p>ModeImage() makes each pixel the 'predominate color' of the neighborhood of the specified radius.</p>
+
+<p>The format of the ModeImage method is:</p>
+
+<pre class="code">
+  Image *ModeImage(const Image *image,const double radius,
     ExceptionInfo *exception)
 </pre>
 

@@ -150,16 +150,16 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-  <a title="Sponsor: Website Hosting" href="http://hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
+  <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
@@ -174,7 +174,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011050100025 gabi.schulze-->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011060100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -197,8 +197,14 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-02-23  6.6.7-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Return MagickEpsilon for GetResizeFilterWeight() rather than 0 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18132).</dd>
+<dl><dt>2011-02-27  6.6.8-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add support for the -mode option.</dd>
+<dt>2011-02-27  6.6.8-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fix scaling of new color-reduction method in the PNG encoder (16-bit    images were scaled down to 0 or 1, or nearly black).</dd>
+  <dd> Delay opening the PNG output blob until the PNG encoder is ready    to write the IHDR chunk, to avoid writing zero-length PNG files when    errors are found while building the palette.  (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18162).</dd>
+<dt>2011-02-25  6.6.7-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.6.7-10.</dd>
+<dt>2011-02-23  6.6.7-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Avoid seg fault in AppendImages() when one image is in the RGB colorspace    but the other is in the CMYK colorspace.</dd>
   <dd> Get rid of 'respect_parenthesis defined but not used' warnings (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=18173).</dd>
 <dt>2011-02-22  6.6.7-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -207,7 +213,7 @@
   <dd> Removed now-unused IsMonochromeImage() function from coders/png.c</dd>
   <dd> Scan the colormap instead of all of the pixels, when possible, to    determine whether the image received by the PNG encoder is grayscale    or black-and-white.</dd>
   <dd> Avoid reading from the colormap in coders/png.c when it is NULL (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18162).</dd>
-  <dd> Add a check whether the PNG "cheap transparency" criteria are met.  That    is, there is a single transparent color, no semitransparent colors, and    no opaque color that has the same RGB components as the transparent    color.  If they aren't, a color that is transparent in one pixel    and opaque in another would always be rendered as transparent. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18167).</dd>
+  <dd> Add a check whether the PNG "cheap transparency" criteria are met.  That    is, there is a single transparent color, no semitransparent colors, and    no opaque color that has the same RGB components as the transparent    color.  If those aren't met, a color that is transparent in one pixel    and opaque in another would always be rendered as transparent (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18167).</dd>
 <dt>2011-02-22  6.6.7-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.7-9.</dd>
 <dt>2011-02-22  6.6.7-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -244,7 +250,7 @@
   <dd> Renamed variables, macros, and functions defined/declared in coders/png.c    that were in the libpng namespace (beginning with "png_" or "PNG_").</dd>
 <dt>2011-01-25  6.6.7-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Removed a call to GetNumberColors() from the PNG encoder that was    only there for debugging purposes and was consuming a huge amount    of CPU time. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=17799).</dd>
-  <dd> Sometimes black was still written as transparent, when the PNG    encoder received an image with image-&gt;matte==true no transparent    pixels were present. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17913);</dd>
+  <dd> Sometimes black was still written as transparent, when the PNG    encoder received an image with image-&gt;matte==true but no transparent    pixels were present. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17913);</dd>
 <dt>2011-01-24  6.6.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Remove memory leak from ThrowFileException() macro (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17908).</dd>
   <dd> Multiple blue error count by 'count' in ClassifyImageColors()</dd>

@@ -1,5 +1,5 @@
 %global VERSION  6.6.8
-%global Patchlevel  0
+%global Patchlevel  1
 
 Name:           ImageMagick
 Version:        %{VERSION}
@@ -287,7 +287,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files djvu
 %defattr(-,root,root,-)
-%{_libdir}/%{name}-%{VER}/modules-Q16/coders/djvu.*
+%{_libdir}/%{name}-%{version}/modules-Q16/coders/djvu.*
 
 %files doc
 %defattr(-,root,root,-)
