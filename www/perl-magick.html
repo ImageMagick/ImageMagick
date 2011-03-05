@@ -150,16 +150,16 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
-  <a title="Sponsor: Website Hosting" href="http://hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
+  <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
+</div>
+<div  class="sponsor">
+  <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Image Converter" href="http://www.batchphoto.com">Image Converter</a><!-- 201103010900 Bits Coffee-->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
@@ -174,7 +174,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
@@ -218,10 +218,10 @@
 
 <p>ImageMagick must already be installed on your system. Next, get
 the <a href="../www/download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
-(e.g., PerlMagick 6.67 for
-ImageMagick 6.6.7) and unpack it as shown below:</p>
+(e.g., PerlMagick 6.68 for
+ImageMagick 6.6.8) and unpack it as shown below:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz PerlMagick-6.67.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz PerlMagick-6.68.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span></p>
 <p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make install</span></p>
@@ -940,6 +940,12 @@ ImageMagick 6.6.7) and unpack it as shown below:</p>
     <td valign="top">Minify</td>
     <td valign="top"><br /></td>
     <td valign="top">half the size of an image</td>
+  </tr>
+
+  <tr>
+    <td valign="top">Mode</td>
+    <td valign="top">radius=&gt;<i>double</i></td>
+    <td valign="top">make each pixel the <em>predominate color</em> of the neighborhood.</td>
   </tr>
 
   <tr>
