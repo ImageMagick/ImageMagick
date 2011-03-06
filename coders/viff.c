@@ -92,7 +92,6 @@ static MagickBooleanType
 %
 %    o length: Specifies the length of the magick string.
 %
-%
 */
 static MagickBooleanType IsVIFF(const unsigned char *magick,const size_t length)
 {
