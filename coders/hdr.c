@@ -246,7 +246,6 @@ ModuleExport size_t RegisterHDRImage(void)
 
   entry=SetMagickInfo("HDR");
   entry->decoder=(DecodeImageHandler *) ReadHDRImage;
-  entry->encoder=(EncodeImageHandler *) WriteHDRImage;
   entry->description=ConstantString("Radiance HDR image format");
   entry->module=ConstantString("HDR");
   (void) RegisterMagickInfo(entry);
