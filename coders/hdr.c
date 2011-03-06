@@ -289,8 +289,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case 'Y':
           case 'y':
           {
-            if ((LocaleCompare(keyword,"Y") == 0) &&
-                (LocaleCompare(format,"32-bit_rle_rgbe") == 0))
+            if (strcmp(keyword,"Y") == 0)
               {
                 int
                   height,
