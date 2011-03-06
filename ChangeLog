@@ -45,7 +45,8 @@
     is, there is a single transparent color, no semitransparent colors, and
     no opaque color that has the same RGB components as the transparent
     color.  If those aren't met, a color that is transparent in one pixel
-    and opaque in another would always be rendered as transparent (reference
+    and opaque in another would always be rendered as transparent, so we
+    must write a PNG colortype that has an alpha channel (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18167).
 
 2011-02-22  6.6.7-9 Cristy  <quetzlzacatenango@image...>
