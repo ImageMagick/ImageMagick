@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # libtool - Provide generalized library-building support services.
-# Generated automatically by config.status (ImageMagick) 6.6.8-1
+# Generated automatically by config.status (ImageMagick) 6.6.8-2
 # Libtool was configured on host magick.imagemagick.org:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
@@ -10220,7 +10220,7 @@ compiler_lib_search_dirs="/usr/lib/gcc/x86_64-redhat-linux/4.6.0 /usr/lib/gcc/x8
 predep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.6.0/crtbeginS.o"
 postdep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.6.0/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../../../lib64/crtn.o"
 predeps=""
-postdeps="-lstdc++ -lm -lgcc_s -lpthread -lc -lgcc_s"
+postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.

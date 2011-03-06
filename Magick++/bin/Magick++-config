@@ -43,10 +43,10 @@ while test $# -gt 0; do
       echo '6.6.8 Q16 '
       ;;
     --cflags)
-      echo "-I${includedir} -fopenmp"
+      echo "-I${includedir} "
       ;;
     --cxxflags)
-      echo '-g -O2 -pthread'
+      echo '-g -O2'
       ;;
     --cppflags)
       echo '-I/usr/local/include/ImageMagick'
