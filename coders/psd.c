@@ -1421,9 +1421,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offsets=(MagickOffsetType *) RelinquishMagickMemory(offsets);
   if (image->colorspace == CMYKColorspace)
     (void) NegateImage(image,MagickFalse);
-  if ((number_layers == 1) && (image->next != (Image *) NULL) &&
-      (image->matte != MagickFalse))
-    DeleteImageFromList(&image);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }

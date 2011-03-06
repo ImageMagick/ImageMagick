@@ -1,4 +1,11 @@
-2011-04-05  6.6.8-0 Cristy  <quetzlzacatenango@image...>
+2011-03-06  6.6.8-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.8-1.
+
+2011-03-05  6.6.8-1 Cristy  <quetzlzacatenango@image...>
+  * Support PSD files with one layer and one composite layer.
+  * We must cast a Quantum type when bit shifting and HDRI is enabled.
+
+2011-03-05  6.6.8-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-0.
 
 2011-02-27  6.6.8-0 Cristy  <quetzlzacatenango@image...>
