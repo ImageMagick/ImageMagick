@@ -72,7 +72,6 @@
   <delegate decode="eps" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="fig" command="&quot;fig2dev&quot; -L ps &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="gplt" command="&quot;echo&quot; &quot;set size 1.25,0.62     set terminal postscript portrait color solid; set output &quot;%o&quot;; load &quot;%i&quot;&quot; &gt; &quot;%u&quot;;&quot;gnuplot&quot; &quot;%u&quot;"/>
-  <delegate decode="hdr" command="&quot;ra_pfm&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="hpg" command="&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
   <delegate decode="hpgl" command="if [ -e hp2xx -o -e /usr/bin/hp2xx ]; then     hp2xx -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;;   else     echo &quot;You need to install hp2xx to use HPGL files with ImageMagick.&quot;;     exit 1;   fi"/>
   <delegate decode="htm" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
@@ -88,7 +87,6 @@
   <delegate decode="pcl:mono" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=epswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="pic" command="&quot;ra_pfm&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="png" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
   <delegate decode="png" encode="webp" command="cp &quot;%i&quot; &quot;%i.png&quot;; &quot;webpconv&quot; &quot;%i.png&quot;; rm &quot;%i.png&quot;; mv &quot;%i.webp&quot; &quot;%o&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
@@ -100,7 +98,6 @@
   <delegate decode="ps:cmyk" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pam&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="ps:color" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="ps:mono" stealth="True" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
-  <delegate decode="rad" command="&quot;ra_pfm&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="rgba" encode="rle" mode="encode" command="&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;"/>
   <delegate decode="scan" command="&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="scanx" command="&quot;scanimage&quot; &gt; &quot;%o&quot;"/>

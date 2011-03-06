@@ -706,7 +706,6 @@ ILBMEncodeDelegate
 ILBMDecodeDelegate
 HTMLDecodeDelegate
 HPGLDecodeDelegate
-HDRDecodeDelegate
 GnuplotDecodeDelegate
 MogrifyDelegate
 DisplayDelegate
@@ -30410,7 +30409,6 @@ ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DisplayDelegateDefault=`echo display | sed ${configure_transform_name}`
 MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
 GnuplotDecodeDelegateDefault='gnuplot'
-HDRDecodeDelegateDefault='ra_pfm'
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
@@ -31098,47 +31096,6 @@ GnuplotDecodeDelegate=$ac_cv_path_GnuplotDecodeDelegate
 if test -n "$GnuplotDecodeDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GnuplotDecodeDelegate" >&5
 $as_echo "$GnuplotDecodeDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-# Extract the first word of ""$HDRDecodeDelegateDefault"", so it can be a program name with args.
-set dummy "$HDRDecodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_HDRDecodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $HDRDecodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_HDRDecodeDelegate="$HDRDecodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_HDRDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_HDRDecodeDelegate" && ac_cv_path_HDRDecodeDelegate=""$HDRDecodeDelegateDefault""
-  ;;
-esac
-fi
-HDRDecodeDelegate=$ac_cv_path_HDRDecodeDelegate
-if test -n "$HDRDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $HDRDecodeDelegate" >&5
-$as_echo "$HDRDecodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -32362,7 +32319,6 @@ have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefa
 have_mrsid='no'; if test "$MrSIDDecodeDelegate" != "$MrSIDDecodeDelegateDefault" ; then have_mrsid='yes'; fi
 have_pcl='no'        ; if test "$PCLDelegate" != "$PCLDelegateDefault"; then have_pcl='yes'; fi
 have_ppmtoilbm='no'  ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes'; fi
-have_ra_pfm='no'     ; if test "$HDRDecodeDelegate" != "$HDRDecodeDelegateDefault" ; then have_ra_pfm='yes'; fi
 have_ralcgm='no'     ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes'; fi
 have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then have_xps='yes'; fi
 
@@ -32502,7 +32458,6 @@ if test "$with_frozenpaths" != 'yes'; then
   PGPDecodeDelegate="$PGPDecodeDelegateDefault"
   POVDelegate="$POVDelegateDefault"
   PSDelegate="$PSDelegateDefault"
-  HDRDecodeDelegate="$HDRDecodeDelegateDefault"
   RLEEncodeDelegate="$RLEEncodeDelegateDefault"
   RMDelegate="$RMDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
@@ -32518,7 +32473,6 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
-
 
 
 

@@ -104,6 +104,7 @@ MAGICK_CODER_SRCS = \
 	coders/gradient.c \
 	coders/gray.c \
 	coders/hald.c \
+	coders/hdr.c \
 	coders/histogram.c \
 	coders/hrz.c \
 	coders/html.c \
@@ -219,6 +220,7 @@ coders_LTLIBRARIES = \
 	coders/gradient.la \
 	coders/gray.la \
 	coders/hald.la \
+	coders/hdr.la \
 	coders/histogram.la \
 	coders/hrz.la \
 	coders/html.la \
@@ -512,6 +514,12 @@ coders_hald_la_SOURCES     = coders/hald.c
 coders_hald_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_hald_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_hald_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
+
+# HDR coder module
+coders_hdr_la_SOURCES     = coders/hdr.c
+coders_hdr_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_hdr_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_hdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES      = coders/hrz.c
