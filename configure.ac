@@ -2767,7 +2767,6 @@ ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DisplayDelegateDefault=`echo display | sed ${configure_transform_name}`
 MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
 GnuplotDecodeDelegateDefault='gnuplot'
-HDRDecodeDelegateDefault='ra_pfm'
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
@@ -2821,7 +2820,6 @@ AC_PATH_PROG(ConvertDelegate, "$ConvertDelegateDefault", "$ConvertDelegateDefaul
 AC_PATH_PROG(DisplayDelegate, "$DisplayDelegateDefault", "$DisplayDelegateDefault")
 AC_PATH_PROG(MogrifyDelegate, "$MogrifyDelegateDefault", "$MogrifyDelegateDefault")
 AC_PATH_PROG(GnuplotDecodeDelegate, "$GnuplotDecodeDelegateDefault", "$GnuplotDecodeDelegateDefault")
-AC_PATH_PROG(HDRDecodeDelegate, "$HDRDecodeDelegateDefault", "$HDRDecodeDelegateDefault")
 AC_PATH_PROG(HPGLDecodeDelegate, "$HPGLDecodeDelegateDefault", "$HPGLDecodeDelegateDefault")
 AC_PATH_PROG(HTMLDecodeDelegate, "$HTMLDecodeDelegateDefault", "$HTMLDecodeDelegateDefault")
 AC_PATH_PROG(ILBMDecodeDelegate, "$ILBMDecodeDelegateDefault", "$ILBMDecodeDelegateDefault")
@@ -2874,7 +2872,6 @@ have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefa
 have_mrsid='no'; if test "$MrSIDDecodeDelegate" != "$MrSIDDecodeDelegateDefault" ; then have_mrsid='yes'; fi
 have_pcl='no'        ; if test "$PCLDelegate" != "$PCLDelegateDefault"; then have_pcl='yes'; fi
 have_ppmtoilbm='no'  ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes'; fi
-have_ra_pfm='no'     ; if test "$HDRDecodeDelegate" != "$HDRDecodeDelegateDefault" ; then have_ra_pfm='yes'; fi
 have_ralcgm='no'     ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes'; fi
 have_xps='no'        ; if test "$XPSDelegate" != "$XPSDelegateDefault"; then have_xps='yes'; fi
 
@@ -3008,7 +3005,6 @@ if test "$with_frozenpaths" != 'yes'; then
   PGPDecodeDelegate="$PGPDecodeDelegateDefault"
   POVDelegate="$POVDelegateDefault"
   PSDelegate="$PSDelegateDefault"
-  HDRDecodeDelegate="$HDRDecodeDelegateDefault"
   RLEEncodeDelegate="$RLEEncodeDelegateDefault"
   RMDelegate="$RMDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
@@ -3037,7 +3033,6 @@ AC_SUBST(EchoDelegate)
 AC_SUBST(EditorDelegate)
 AC_SUBST(FIGDecodeDelegate)
 AC_SUBST(GnuplotDecodeDelegate)
-AC_SUBST(HDRDecodeDelegate)
 AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
 AC_SUBST(ILBMDecodeDelegate)
