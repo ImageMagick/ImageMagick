@@ -7776,6 +7776,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
+      (void) ThrowMagickException(&IMimage->exception,
+          GetMagickModule(),CoderError,
+          "PNG write has failed","`%s'",IMimage->filename);
       return(MagickFalse);
     }
   /*
@@ -8108,9 +8111,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (image->colors == 0)
            {
               /* DO SOMETHING */
-              (void) ThrowMagickException(&image->exception,
+              (void) ThrowMagickException(&IMimage->exception,
                  GetMagickModule(),CoderError,
-                "image has 0 colors", "`%s'","");
+                "image has 0 colors", "`%s'",IMimage->filename);
            }
 
            while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
@@ -9469,9 +9472,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
   if (mng_info->write_mng && !mng_info->need_fram &&
       ((int) image->dispose == 3))
-     (void) ThrowMagickException(&image->exception,GetMagickModule(),
+     (void) ThrowMagickException(&IMimage->exception,GetMagickModule(),
        CoderError,"Cannot convert GIF with disposal method 3 to MNG-LC",
-       "`%s'",image->filename);
+       "`%s'",IMimage->filename);
 
   /*
     Free PNG resources.
