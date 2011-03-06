@@ -1,3 +1,9 @@
+2011-03-06  6.6.8-2 Glenn Randers-Pehrson <glennrp@image...>
+  * Throw error message when the requested color-type or bit-depth
+    cannot be written by the PNG encoder (error was being thrown
+    into the wrong image structure).  (Reference
+http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18162).
+
 2011-03-06  6.6.8-2 Cristy  <quetzlzacatenango@image...>
   * Support the Radiance HDR image format.
 

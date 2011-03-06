@@ -7720,12 +7720,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
      (image->colors == 0 || image->colormap == NULL))
     {
-      (void) ThrowMagickException(&image->exception,
-          GetMagickModule(),CoderWarning,
-          "Cannot write PNG8 or color-type 3; colormap is NULL",
-          "`%s'",image->filename);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
+      (void) ThrowMagickException(&IMimage->exception,
+          GetMagickModule(),CoderError,
+          "Cannot write PNG8 or color-type 3; colormap is NULL",
+          "`%s'",IMimage->filename);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
