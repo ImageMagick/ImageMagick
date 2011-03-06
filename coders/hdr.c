@@ -10,7 +10,7 @@
 %                            H   H  DDDD   R  R                               %
 %                                                                             %
 %                                                                             %
-%                        Read/Write HDR RGBE Format                           %
+%                    Read/Write Radiance HDR Image Format                     %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
@@ -75,8 +75,9 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadHDRImage() reads an HDR RGBE and returns it.  It allocates the memory
-%  necessary for the new Image structure and returns a pointer to the new image.
+%  ReadHDRImage() reads the Radiance HDR image format and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
 %
 %  The format of the ReadHDRImage method is:
 %
@@ -233,8 +234,8 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterHDRImage() adds attributes for the HDR RGBE image format to the list
-%  of supported formats.  The attributes include the image format tag, a
+%  RegisterHDRImage() adds attributes for the Radiance HDR image format to the
+%  list of supported formats.  The attributes include the image format tag, a
 %  method to read and/or write the format, whether the format supports the
 %  saving of more than one frame to the same file or blob, whether the format
 %  supports native in-memory I/O, and a brief description of the format.
@@ -252,7 +253,7 @@ ModuleExport size_t RegisterHDRImage(void)
   entry=SetMagickInfo("HDR");
   entry->decoder=(DecodeImageHandler *) ReadHDRImage;
   entry->encoder=(EncodeImageHandler *) WriteHDRImage;
-  entry->description=ConstantString("HDR RGBE image");
+  entry->description=ConstantString("Radiance HDR image format");
   entry->module=ConstantString("HDR");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
