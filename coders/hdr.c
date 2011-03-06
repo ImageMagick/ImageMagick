@@ -59,12 +59,6 @@
 #include "magick/module.h"
 
 /*
-  Forward declarations.
-*/
-static MagickBooleanType
-  WriteHDRImage(const ImageInfo *,Image *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
