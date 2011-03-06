@@ -7506,18 +7506,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                "    Quantizing the background color to 3-3-2");
 
         image->background_color.red=
-             ((((image->background_color.red >> PNGK) & 0xe0)     )  |
-              (((image->background_color.red >> PNGK) & 0xe0) >> 3)  |
-              (((image->background_color.red >> PNGK) & 0xc0) >> 6)) * PNGM;
+             ((((((size_t) image->background_color.red) >> PNGK) & 0xe0)     )  |
+              (((((size_t) image->background_color.red) >> PNGK) & 0xe0) >> 3)  |
+              (((((size_t) image->background_color.red) >> PNGK) & 0xc0) >> 6)) * PNGM;
         image->background_color.green=
-             ((((image->background_color.green >> PNGK) & 0xe0)     )  |
-              (((image->background_color.green >> PNGK) & 0xe0) >> 3)  |
-              (((image->background_color.green >> PNGK) & 0xc0) >> 6)) * PNGM;
+             ((((((size_t) image->background_color.green) >> PNGK) & 0xe0)     )  |
+              (((((size_t) image->background_color.green) >> PNGK) & 0xe0) >> 3)  |
+              (((((size_t) image->background_color.green) >> PNGK) & 0xc0) >> 6)) * PNGM;
         image->background_color.blue=
-             ((((image->background_color.blue >> PNGK) & 0xc0)     )  |
-              (((image->background_color.blue >> PNGK) & 0xc0) >> 2)  |
-              (((image->background_color.blue >> PNGK) & 0xc0) >> 4)  |
-              (((image->background_color.blue >> PNGK) & 0xc0) >> 6)) * PNGM;
+             ((((((size_t) image->background_color.blue) >> PNGK) & 0xc0)     )  |
+              (((((size_t) image->background_color.blue) >> PNGK) & 0xc0) >> 2)  |
+              (((((size_t) image->background_color.blue) >> PNGK) & 0xc0) >> 4)  |
+              (((((size_t) image->background_color.blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7536,18 +7536,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               r->red=
-                   ((((r->red >> PNGK) & 0xe0)     )  |
-                    (((r->red >> PNGK) & 0xe0) >> 3)  |
-                    (((r->red >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) r->red) >> PNGK) & 0xe0)     )  |
+                    (((((size_t) r->red) >> PNGK) & 0xe0) >> 3)  |
+                    (((((size_t) r->red) >> PNGK) & 0xc0) >> 6)) * PNGM;
               r->green=
-                   ((((r->green >> PNGK) & 0xe0)     )  |
-                    (((r->green >> PNGK) & 0xe0) >> 3)  |
-                    (((r->green >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) r->green) >> PNGK) & 0xe0)     )  |
+                    (((((size_t) r->green) >> PNGK) & 0xe0) >> 3)  |
+                    (((((size_t) r->green) >> PNGK) & 0xc0) >> 6)) * PNGM;
               r->blue=
-                   ((((r->blue >> PNGK) & 0xc0)     )  |
-                    (((r->blue >> PNGK) & 0xc0) >> 2)  |
-                    (((r->blue >> PNGK) & 0xc0) >> 4)  |
-                    (((r->blue >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) r->blue) >> PNGK) & 0xc0)     )  |
+                    (((((size_t) r->blue) >> PNGK) & 0xc0) >> 2)  |
+                    (((((size_t) r->blue) >> PNGK) & 0xc0) >> 4)  |
+                    (((((size_t) r->blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
               r++;
             }
     
@@ -7565,18 +7565,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           for (i=0; i<image_colors; i++)
           {
               image->colormap[i].red=
-                   ((((image->colormap[i].red >> PNGK) & 0xe0)     )  |
-                    (((image->colormap[i].red >> PNGK) & 0xe0) >> 3)  |
-                    (((image->colormap[i].red >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) image->colormap[i].red) >> PNGK) & 0xe0)     )  |
+                    (((((size_t) image->colormap[i].red) >> PNGK) & 0xe0) >> 3)  |
+                    (((((size_t) image->colormap[i].red) >> PNGK) & 0xc0) >> 6)) * PNGM;
               image->colormap[i].green=
-                   ((((image->colormap[i].green >> PNGK) & 0xe0)     )  |
-                    (((image->colormap[i].green >> PNGK) & 0xe0) >> 3)  |
-                    (((image->colormap[i].green >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) image->colormap[i].green) >> PNGK) & 0xe0)     )  |
+                    (((((size_t) image->colormap[i].green) >> PNGK) & 0xe0) >> 3)  |
+                    (((((size_t) image->colormap[i].green) >> PNGK) & 0xc0) >> 6)) * PNGM;
               image->colormap[i].blue=
-                   ((((image->colormap[i].blue >> PNGK) & 0xc0)     )  |
-                    (((image->colormap[i].blue >> PNGK) & 0xc0) >> 2)  |
-                    (((image->colormap[i].blue >> PNGK) & 0xc0) >> 4)  |
-                    (((image->colormap[i].blue >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0)     )  |
+                    (((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0) >> 2)  |
+                    (((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0) >> 4)  |
+                    (((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
           }
       }
       continue;
