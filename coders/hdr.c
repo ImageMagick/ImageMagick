@@ -326,7 +326,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(GetFirstImageInList(image));
     }
   /*
-    Read RGBE pixels.
+    Read RGBE (red+green+blue+exponent) pixels.
   */
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
     4*sizeof(*pixels));
