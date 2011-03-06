@@ -7506,18 +7506,28 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                "    Quantizing the background color to 3-3-2");
 
         image->background_color.red=
-             ((((((size_t) image->background_color.red) >> PNGK) & 0xe0)     )  |
-              (((((size_t) image->background_color.red) >> PNGK) & 0xe0) >> 3)  |
-              (((((size_t) image->background_color.red) >> PNGK) & 0xc0) >> 6)) * PNGM;
+            ((((((size_t)
+            image->background_color.red) >> PNGK) & 0xe0)     )  |
+            (((((size_t)
+            image->background_color.red) >> PNGK) & 0xe0) >> 3)  |
+            (((((size_t)
+            image->background_color.red) >> PNGK) & 0xc0) >> 6)) * PNGM;
         image->background_color.green=
-             ((((((size_t) image->background_color.green) >> PNGK) & 0xe0)     )  |
-              (((((size_t) image->background_color.green) >> PNGK) & 0xe0) >> 3)  |
-              (((((size_t) image->background_color.green) >> PNGK) & 0xc0) >> 6)) * PNGM;
+            ((((((size_t)
+            image->background_color.green) >> PNGK) & 0xe0)     )  |
+            (((((size_t)
+            image->background_color.green) >> PNGK) & 0xe0) >> 3)  |
+            (((((size_t)
+            image->background_color.green) >> PNGK) & 0xc0) >> 6)) * PNGM;
         image->background_color.blue=
-             ((((((size_t) image->background_color.blue) >> PNGK) & 0xc0)     )  |
-              (((((size_t) image->background_color.blue) >> PNGK) & 0xc0) >> 2)  |
-              (((((size_t) image->background_color.blue) >> PNGK) & 0xc0) >> 4)  |
-              (((((size_t) image->background_color.blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
+            ((((((size_t)
+            image->background_color.blue) >> PNGK) & 0xc0)     )  |
+            (((((size_t)
+            image->background_color.blue) >> PNGK) & 0xc0) >> 2)  |
+            (((((size_t)
+            image->background_color.blue) >> PNGK) & 0xc0) >> 4)  |
+            (((((size_t)
+            image->background_color.blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7536,18 +7546,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               r->red=
-                   ((((((size_t) r->red) >> PNGK) & 0xe0)     )  |
-                    (((((size_t) r->red) >> PNGK) & 0xe0) >> 3)  |
-                    (((((size_t) r->red) >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) r->red) >> PNGK) & 0xe0)    )  |
+                   (((((size_t) r->red) >> PNGK) & 0xe0) >> 3)  |
+                   (((((size_t) r->red) >> PNGK) & 0xc0) >> 6)) * PNGM;
               r->green=
-                   ((((((size_t) r->green) >> PNGK) & 0xe0)     )  |
-                    (((((size_t) r->green) >> PNGK) & 0xe0) >> 3)  |
-                    (((((size_t) r->green) >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) r->green) >> PNGK) & 0xe0)    )  |
+                   (((((size_t) r->green) >> PNGK) & 0xe0) >> 3)  |
+                   (((((size_t) r->green) >> PNGK) & 0xc0) >> 6)) * PNGM;
               r->blue=
-                   ((((((size_t) r->blue) >> PNGK) & 0xc0)     )  |
-                    (((((size_t) r->blue) >> PNGK) & 0xc0) >> 2)  |
-                    (((((size_t) r->blue) >> PNGK) & 0xc0) >> 4)  |
-                    (((((size_t) r->blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
+                   ((((((size_t) r->blue) >> PNGK) & 0xc0)    )  |
+                   (((((size_t) r->blue) >> PNGK) & 0xc0) >> 2)  |
+                   (((((size_t) r->blue) >> PNGK) & 0xc0) >> 4)  |
+                   (((((size_t) r->blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
               r++;
             }
     
@@ -7565,18 +7575,28 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           for (i=0; i<image_colors; i++)
           {
               image->colormap[i].red=
-                   ((((((size_t) image->colormap[i].red) >> PNGK) & 0xe0)     )  |
-                    (((((size_t) image->colormap[i].red) >> PNGK) & 0xe0) >> 3)  |
-                    (((((size_t) image->colormap[i].red) >> PNGK) & 0xc0) >> 6)) * PNGM;
+                  ((((((size_t)
+                  image->colormap[i].red) >> PNGK) & 0xe0)     )  |
+                  (((((size_t)
+                  image->colormap[i].red) >> PNGK) & 0xe0) >> 3)  |
+                  (((((size_t)
+                  image->colormap[i].red) >> PNGK) & 0xc0) >> 6)) * PNGM;
               image->colormap[i].green=
-                   ((((((size_t) image->colormap[i].green) >> PNGK) & 0xe0)     )  |
-                    (((((size_t) image->colormap[i].green) >> PNGK) & 0xe0) >> 3)  |
-                    (((((size_t) image->colormap[i].green) >> PNGK) & 0xc0) >> 6)) * PNGM;
+                  ((((((size_t)
+                  image->colormap[i].green) >> PNGK) & 0xe0)     )  |
+                  (((((size_t)
+                  image->colormap[i].green) >> PNGK) & 0xe0) >> 3)  |
+                  (((((size_t)
+                  image->colormap[i].green) >> PNGK) & 0xc0) >> 6)) * PNGM;
               image->colormap[i].blue=
-                   ((((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0)     )  |
-                    (((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0) >> 2)  |
-                    (((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0) >> 4)  |
-                    (((((size_t) image->colormap[i].blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
+                  ((((((size_t)
+                  image->colormap[i].blue) >> PNGK) & 0xc0)     )  |
+                  (((((size_t)
+                  image->colormap[i].blue) >> PNGK) & 0xc0) >> 2)  |
+                  (((((size_t)
+                  image->colormap[i].blue) >> PNGK) & 0xc0) >> 4)  |
+                  (((((size_t)
+                  image->colormap[i].blue) >> PNGK) & 0xc0) >> 6)) * PNGM;
           }
       }
       continue;
@@ -9257,7 +9277,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  pass %d, Image Is RGB, 16-bit GRAY, or GRAY_ALPHA",pass);
 
-                p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,
+                   &image->exception);
 
                 if (p == (const PixelPacket *) NULL)
                   break;
