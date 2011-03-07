@@ -485,7 +485,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
     if (count != (ssize_t) length)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

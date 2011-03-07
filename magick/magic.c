@@ -121,7 +121,7 @@ static const MagicMapInfo
     { "GPLT", 0, MagickString("#!/usr/local/bin/gnuplot") },
     { "HDF", 1, MagickString("HDF") },
     { "HDR", 0, MagickString("#?RADIANCE") },
-    { "HDR", 0, MagickString("VIEW= ") },
+    { "HDR", 0, MagickString("#?RGBE") },
     { "HPGL", 0, MagickString("IN;") },
     { "HTML", 1, MagickString("HTML") },
     { "HTML", 1, MagickString("html") },
