@@ -337,7 +337,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=ReadBlob(image,4*sizeof(*pixel),pixel);
     if (count != 4)
       break;
-    if ((size_t) ((((size_t) pixel[2]) << 8) | pixel[3]) != image->columns) 
+    if ((size_t) ((((size_t) pixel[2]) << 8) | pixel[3]) != image->columns)
       break;
     p=pixels;
     for (i=0; i < 4; i++)
