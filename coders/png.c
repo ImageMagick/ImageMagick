@@ -8303,16 +8303,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   }
               }
 
-#if 1 /* To do: Enable this when low bit-depth grayscale is working */
             else if (ping_color_type ==
                 PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
                 mng_info->IsPalette)
               {
-
               /* Check if grayscale is reducible */
+
+#define LOW_DEPTH_OK 0 /* To do: eliminate this when low bit-depths work */
                 int
+#if LOW_DEPTH_OK==1
                   depth_4_ok=MagickTrue,
                   depth_2_ok=MagickTrue,
+#endif
                   depth_1_ok=MagickTrue;
 
                 for (i=0; i < (ssize_t) image_colors; i++)
@@ -8322,21 +8324,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    intensity=ScaleQuantumToChar(image->colormap[i].red);
 
+#if LOW_DEPTH_OK==1
                    if ((intensity & 0x0f) != ((intensity & 0xf0) >> 4))
                      depth_4_ok=depth_2_ok=depth_1_ok=MagickFalse;
-
                    else if ((intensity & 0x03) != ((intensity & 0x0c) >> 2))
                      depth_2_ok=depth_1_ok=MagickFalse;
-
-                   else if ((intensity & 0x01) != ((intensity & 0x02) >> 1))
+                   else
+#endif
+                     if ((intensity & 0x01) != ((intensity & 0x02) >> 1))
                      depth_1_ok=MagickFalse;
-                   (void) depth_4_ok;
                 }
 
                 if (depth_1_ok && mng_info->write_png_depth <= 1)
                   ping_bit_depth=1;
 
-#if 0 /* To do: Enable this when bit depths 2 and 4 are working. */
+#if LOW_DEPTH_OK==1
                 else if (depth_2_ok && mng_info->write_png_depth <= 2)
                   ping_bit_depth=2;
 
@@ -8344,7 +8346,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   ping_bit_depth=4;
 #endif
               }
-#endif /* 1 */
           }
 
           image_depth=ping_bit_depth;
