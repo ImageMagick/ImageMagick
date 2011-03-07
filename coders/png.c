@@ -8330,6 +8330,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    else if ((intensity & 0x01) != ((intensity & 0x02) >> 1))
                      depth_1_ok=MagickFalse;
+                   (void) depth_4_ok;
                 }
 
                 if (depth_1_ok && mng_info->write_png_depth <= 1)
