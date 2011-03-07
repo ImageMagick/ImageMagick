@@ -7776,9 +7776,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
-      (void) ThrowMagickException(&IMimage->exception,
-          GetMagickModule(),CoderError,
-          "PNG write has failed","`%s'",IMimage->filename);
       return(MagickFalse);
     }
   /*
@@ -8111,9 +8108,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (image->colors == 0)
            {
               /* DO SOMETHING */
-              (void) ThrowMagickException(&IMimage->exception,
+              (void) ThrowMagickException(&image->exception,
                  GetMagickModule(),CoderError,
-                "image has 0 colors", "`%s'",IMimage->filename);
+                "image has 0 colors", "`%s'","");
            }
 
            while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
@@ -9386,38 +9383,41 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         text;
 
       value=GetImageProperty(image,property);
-      if (value != (const char *) NULL)
+      if (LocaleCompare(property,"density") != 0)
         {
-          text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
-          text[0].key=(char *) property;
-          text[0].text=(char *) value;
-          text[0].text_length=strlen(value);
-
-          if (ping_exclude_tEXt != MagickFalse)
-             text[0].compression=PNG_TEXT_COMPRESSION_zTXt;
-
-          else if (ping_exclude_zTXt != MagickFalse)
-             text[0].compression=PNG_TEXT_COMPRESSION_NONE;
-
-          else
+        if (value != (const char *) NULL)
           {
-             text[0].compression=image_info->compression == NoCompression ||
-               (image_info->compression == UndefinedCompression &&
-               text[0].text_length < 128) ? PNG_TEXT_COMPRESSION_NONE :
-               PNG_TEXT_COMPRESSION_zTXt ;
-          }
+            text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
+            text[0].key=(char *) property;
+            text[0].text=(char *) value;
+            text[0].text_length=strlen(value);
 
-          if (logging != MagickFalse)
+            if (ping_exclude_tEXt != MagickFalse)
+               text[0].compression=PNG_TEXT_COMPRESSION_zTXt;
+
+            else if (ping_exclude_zTXt != MagickFalse)
+               text[0].compression=PNG_TEXT_COMPRESSION_NONE;
+
+            else
             {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  Setting up text chunk");
-
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "    keyword: %s",text[0].key);
+               text[0].compression=image_info->compression == NoCompression ||
+                 (image_info->compression == UndefinedCompression &&
+                 text[0].text_length < 128) ? PNG_TEXT_COMPRESSION_NONE :
+                 PNG_TEXT_COMPRESSION_zTXt ;
             }
 
-          png_set_text(ping,ping_info,text,1);
-          png_free(ping,text);
+            if (logging != MagickFalse)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Setting up text chunk");
+
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    keyword: %s",text[0].key);
+              }
+
+            png_set_text(ping,ping_info,text,1);
+            png_free(ping,text);
+          }
         }
       property=GetNextImageProperty(image);
     }
@@ -9472,9 +9472,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
   if (mng_info->write_mng && !mng_info->need_fram &&
       ((int) image->dispose == 3))
-     (void) ThrowMagickException(&IMimage->exception,GetMagickModule(),
+     (void) ThrowMagickException(&image->exception,GetMagickModule(),
        CoderError,"Cannot convert GIF with disposal method 3 to MNG-LC",
-       "`%s'",IMimage->filename);
+       "`%s'",image->filename);
 
   /*
     Free PNG resources.
