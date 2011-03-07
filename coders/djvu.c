@@ -381,6 +381,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                     format,
                                     stride, /* ?? */
                                     (char*)q);
+        (void) ret;
         ddjvu_format_release(format);
 
 
@@ -436,13 +437,15 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                if (i % 1000 == 0) printf("%d\n",i);
 #endif
                                r = QueueAuthenticPixels(lc->image,0,i,lc->image->columns,1,&image->exception);
+                               if (r == (PixelPacket *) NULL)
+                                 break;
 
-                                ImportQuantumPixels(lc->image,
+                               ImportQuantumPixels(lc->image,
                                                     (CacheView *) NULL,
                                                     quantum_info,
                                                     RGBQuantum, /*GrayQuantum*/
                                                     q+i*stride,&image->exception);
-                                SyncAuthenticPixels(lc->image,&image->exception);
+                              SyncAuthenticPixels(lc->image,&image->exception);
                         }
         }
         q=(unsigned char *) RelinquishMagickMemory(q);
@@ -778,6 +781,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
 
 
   logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadDJVUImage()");
+  (void) logging;
 
   image = AcquireImage(image_info); /* mmc: ?? */
 
