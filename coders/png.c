@@ -2882,7 +2882,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
           *value='\0';
           (void) ConcatenateMagickString(value,text[i].text,length+2);
-          (void) SetImageProperty(image,text[i].key,value);
+
+          /* Don't save "density" property if we have a pHYs chunk */
+          if (LocaleCompare(text[i].key,"density") != 0 ||
+              !png_get_valid(ping,ping_info,PNG_INFO_pHYs))
+             (void) SetImageProperty(image,text[i].key,value);
 
           if (logging != MagickFalse)
           {
