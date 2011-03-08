@@ -11,6 +11,8 @@
 
 2011-03-06  6.6.8-2 Cristy  <quetzlzacatenango@image...>
   * Support the Radiance HDR image format.
+  * Update the offset in the black channel when sharpening to avoid incorrect
+    results.
 
 2011-03-06  6.6.8-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-1.
