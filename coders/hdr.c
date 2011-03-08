@@ -201,125 +201,166 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   while (isgraph(c) && (image->columns == 0) && (image->rows == 0))
   {
-    if (isalnum(c) == MagickFalse)
-      c=ReadBlobByte(image);
-    else
+    if (c == (int) '#')
       {
+        char
+          *comment;
+
         register char
           *p;
 
-        /*
-          Determine a keyword and its value.
-        */
-        p=keyword;
-        do
-        {
-          if ((size_t) (p-keyword) < (MaxTextExtent-1))
-            *p++=c;
-          c=ReadBlobByte(image);
-        } while (isalnum(c) || (c == '_'));
-        *p='\0';
-        value_expected=MagickFalse;
-        while ((isspace((int) ((unsigned char) c)) != 0) || (c == '='))
-        {
-          if (c == '=')
-            value_expected=MagickTrue;
-          c=ReadBlobByte(image);
-        }
-        if (LocaleCompare(keyword,"Y") == 0)
-          value_expected=MagickTrue;
-        if (value_expected == MagickFalse)
-          continue;
-        p=value;
-        while ((c != '\n') && (c != '\0'))
-        {
-          if ((size_t) (p-value) < (MaxTextExtent-1))
-            *p++=c;
-          c=ReadBlobByte(image);
-        }
-        *p='\0';
-        /*
-          Assign a value to the specified keyword.
-        */
-        switch (*keyword)
-        {
-          case 'F':
-          case 'f':
-          {
-            if (LocaleCompare(keyword,"format") == 0)
-              {
-                (void) CopyMagickString(format,value,MaxTextExtent);
-                break;
-              }
-            (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
-            (void) SetImageProperty(image,tag,value);
-            break;
-          }
-          case 'G':
-          case 'g':
-          {
-            if (LocaleCompare(keyword,"gamma") == 0)
-              {
-                image->gamma=StringToDouble(value);
-                break;
-              }
-            (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
-            (void) SetImageProperty(image,tag,value);
-            break;
-          }
-          case 'P':
-          case 'p':
-          {
-            if (LocaleCompare(keyword,"primaries") == 0)
-              {
-                float
-                  chromaticity[6],
-                  white_point[2];
+        size_t
+          length;
 
-                (void) sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
-                  &chromaticity[1],&chromaticity[2],&chromaticity[3],
-                  &chromaticity[4],&chromaticity[5],&white_point[0],
-                  &white_point[1]);
-                image->chromaticity.red_primary.x=chromaticity[0];
-                image->chromaticity.red_primary.y=chromaticity[1];
-                image->chromaticity.green_primary.x=chromaticity[2];
-                image->chromaticity.green_primary.y=chromaticity[3];
-                image->chromaticity.blue_primary.x=chromaticity[4];
-                image->chromaticity.blue_primary.y=chromaticity[5];
-                image->chromaticity.white_point.x=white_point[0],
-                image->chromaticity.white_point.y=white_point[1];
+        /*
+          Read comment-- any text between # and end-of-line.
+        */
+        length=MaxTextExtent;
+        comment=AcquireString((char *) NULL);
+        for (p=comment; comment != (char *) NULL; p++)
+        {
+          c=ReadBlobByte(image);
+          if ((c == EOF) || (c == (int) '\n'))
+            break;
+          if ((size_t) (p-comment+1) >= length)
+            {
+              *p='\0';
+              length<<=1;
+              comment=(char *) ResizeQuantumMemory(comment,length+
+                MaxTextExtent,sizeof(*comment));
+              if (comment == (char *) NULL)
                 break;
-              }
-            (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
-            (void) SetImageProperty(image,tag,value);
-            break;
-          }
-          case 'Y':
-          case 'y':
-          {
-            if (strcmp(keyword,"Y") == 0)
-              {
-                int
-                  height,
-                  width;
-
-                (void) sscanf(value,"%d +X %d",&height,&width);
-                image->columns=(size_t) width;
-                image->rows=(size_t) height;
-                break;
-              }
-            (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
-            (void) SetImageProperty(image,tag,value);
-            break;
-          }
-          default:
-          {
-            (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
-            (void) SetImageProperty(image,tag,value);
-            break;
-          }
+              p=comment+strlen(comment);
+            }
+          *p=(char) c;
         }
+        if (comment == (char *) NULL)
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        *p='\0';
+        (void) SetImageProperty(image,"comment",comment);
+        comment=DestroyString(comment);
+        c=ReadBlobByte(image);
       }
+    else
+      if (isalnum(c) == MagickFalse)
+        c=ReadBlobByte(image);
+      else
+        {
+          register char
+            *p;
+
+          /*
+            Determine a keyword and its value.
+          */
+          p=keyword;
+          do
+          {
+            if ((size_t) (p-keyword) < (MaxTextExtent-1))
+              *p++=c;
+            c=ReadBlobByte(image);
+          } while (isalnum(c) || (c == '_'));
+          *p='\0';
+          value_expected=MagickFalse;
+          while ((isspace((int) ((unsigned char) c)) != 0) || (c == '='))
+          {
+            if (c == '=')
+              value_expected=MagickTrue;
+            c=ReadBlobByte(image);
+          }
+          if (LocaleCompare(keyword,"Y") == 0)
+            value_expected=MagickTrue;
+          if (value_expected == MagickFalse)
+            continue;
+          p=value;
+          while ((c != '\n') && (c != '\0'))
+          {
+            if ((size_t) (p-value) < (MaxTextExtent-1))
+              *p++=c;
+            c=ReadBlobByte(image);
+          }
+          *p='\0';
+          /*
+            Assign a value to the specified keyword.
+          */
+          switch (*keyword)
+          {
+            case 'F':
+            case 'f':
+            {
+              if (LocaleCompare(keyword,"format") == 0)
+                {
+                  (void) CopyMagickString(format,value,MaxTextExtent);
+                  break;
+                }
+              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) SetImageProperty(image,tag,value);
+              break;
+            }
+            case 'G':
+            case 'g':
+            {
+              if (LocaleCompare(keyword,"gamma") == 0)
+                {
+                  image->gamma=StringToDouble(value);
+                  break;
+                }
+              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) SetImageProperty(image,tag,value);
+              break;
+            }
+            case 'P':
+            case 'p':
+            {
+              if (LocaleCompare(keyword,"primaries") == 0)
+                {
+                  float
+                    chromaticity[6],
+                    white_point[2];
+
+                  (void) sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
+                    &chromaticity[1],&chromaticity[2],&chromaticity[3],
+                    &chromaticity[4],&chromaticity[5],&white_point[0],
+                    &white_point[1]);
+                  image->chromaticity.red_primary.x=chromaticity[0];
+                  image->chromaticity.red_primary.y=chromaticity[1];
+                  image->chromaticity.green_primary.x=chromaticity[2];
+                  image->chromaticity.green_primary.y=chromaticity[3];
+                  image->chromaticity.blue_primary.x=chromaticity[4];
+                  image->chromaticity.blue_primary.y=chromaticity[5];
+                  image->chromaticity.white_point.x=white_point[0],
+                  image->chromaticity.white_point.y=white_point[1];
+                  break;
+                }
+              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) SetImageProperty(image,tag,value);
+              break;
+            }
+            case 'Y':
+            case 'y':
+            {
+              if (strcmp(keyword,"Y") == 0)
+                {
+                  int
+                    height,
+                    width;
+
+                  (void) sscanf(value,"%d +X %d",&height,&width);
+                  image->columns=(size_t) width;
+                  image->rows=(size_t) height;
+                  break;
+                }
+              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) SetImageProperty(image,tag,value);
+              break;
+            }
+            default:
+            {
+              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) SetImageProperty(image,tag,value);
+              break;
+            }
+          }
+        }
     if ((image->columns == 0) && (image->rows == 0))
       while (isspace((int) ((unsigned char) c)) != 0)
         c=ReadBlobByte(image);
@@ -342,53 +383,73 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    count=ReadBlob(image,4*sizeof(*pixel),pixel);
-    if (count != 4)
-      break;
-    if ((size_t) ((((size_t) pixel[2]) << 8) | pixel[3]) != image->columns)
-      break;
-    p=pixels;
-    for (i=0; i < 4; i++)
-    {
-      end=&pixels[(i+1)*image->columns];
-      while (p < end)
+    if ((image->columns < 8) || (image->columns > 0x7ffff))
       {
-        count=ReadBlob(image,2*sizeof(*pixel),pixel);
-        if (count < 1)
+        count=ReadBlob(image,4*image->columns*sizeof(*pixel),pixel);
+        if (count != (ssize_t) (4*image->columns*sizeof(*pixel)))
           break;
-        if (pixel[0] > 128)
+      }
+    else
+      {
+        count=ReadBlob(image,4*sizeof(*pixel),pixel);
+        if (count != 4)
+          break;
+        if ((size_t) ((((size_t) pixel[2]) << 8) | pixel[3]) != image->columns)
+          break;
+        p=pixels;
+        for (i=0; i < 4; i++)
+        {
+          end=&pixels[(i+1)*image->columns];
+          while (p < end)
           {
-            count=(ssize_t) pixel[0]-128;
-            if ((count == 0) || (count > (ssize_t) (end-p)))
+            count=ReadBlob(image,2*sizeof(*pixel),pixel);
+            if (count < 1)
               break;
-            while (count-- > 0)
-              *p++=pixel[1];
-          }
-        else
-          {
-            count=(ssize_t) pixel[0];
-            if ((count == 0) || (count > (ssize_t) (end-p)))
-              break;
-            *p++=pixel[1];
-            if (--count > 0)
+            if (pixel[0] > 128)
               {
-                count=ReadBlob(image,(size_t) count*sizeof(*p),p);
-                if (count < 1)
+                count=(ssize_t) pixel[0]-128;
+                if ((count == 0) || (count > (ssize_t) (end-p)))
                   break;
-                p+=count;
+                while (count-- > 0)
+                  *p++=pixel[1];
+              }
+            else
+              {
+                count=(ssize_t) pixel[0];
+                if ((count == 0) || (count > (ssize_t) (end-p)))
+                  break;
+                *p++=pixel[1];
+                if (--count > 0)
+                  {
+                    count=ReadBlob(image,(size_t) count*sizeof(*p),p);
+                    if (count < 1)
+                      break;
+                    p+=count;
+                  }
               }
           }
+        }
       }
-    }
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
+    i=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      pixel[0]=pixels[x];
-      pixel[1]=pixels[x+image->columns];
-      pixel[2]=pixels[x+2*image->columns];
-      pixel[3]=pixels[x+3*image->columns];
+      if ((image->columns >= 8) && (image->columns <= 0x7ffff))
+        {
+          pixel[0]=pixels[x];
+          pixel[1]=pixels[x+image->columns];
+          pixel[2]=pixels[x+2*image->columns];
+          pixel[3]=pixels[x+3*image->columns];
+        }
+      else
+        {
+          pixel[0]=pixels[i++];
+          pixel[1]=pixels[i++];
+          pixel[2]=pixels[i++];
+          pixel[3]=pixels[i++];
+        }
       q->red=0;
       q->green=0;
       q->blue=0;
@@ -502,30 +563,98 @@ ModuleExport void UnregisterHDRImage(void)
 %    o image:  The image.
 %
 */
+
+static size_t HDRWriteRunlengthPixels(Image *image,unsigned char *pixels)
+{
+#define MinimumRunlength 4
+
+  register size_t
+    p,
+    q;
+
+  size_t
+    runlength;
+
+  ssize_t
+    count,
+    previous_count;
+
+  unsigned char
+    pixel[2];
+
+  for (p=0; p < image->columns; )
+  {
+    q=p;
+    runlength=0;
+    previous_count=0;
+    while ((runlength < MinimumRunlength) && (q < image->columns))
+    {
+      q+=runlength;
+      previous_count=(ssize_t) runlength;
+      runlength=1;
+      while ((pixels[q] == pixels[q+runlength]) &&
+             ((q+runlength) < image->columns) && (runlength < 127))
+       runlength++;
+    }
+    if ((previous_count > 1) && (previous_count == (ssize_t) (q-p)))
+      {
+        pixel[0]=(unsigned char) (128+previous_count);
+        pixel[1]=pixels[p];
+        if (WriteBlob(image,2*sizeof(*pixel),pixel) < 1)
+          break;
+        p=q;
+      }
+    while (p < q)
+    {
+      count=(ssize_t) (q-p);
+      if (count > 128)
+        count=128;
+      pixel[0]=(unsigned char) count;
+      if (WriteBlob(image,sizeof(*pixel),pixel) < 1)
+        break;
+      if (WriteBlob(image,(size_t) count*sizeof(*pixel),&pixels[p]) < 1)
+        break;
+      p+=count;
+    }
+    if (runlength >= MinimumRunlength)
+      {
+        pixel[0]=(unsigned char) (128+runlength);
+        pixel[1]=pixels[q];
+        if (WriteBlob(image,2*sizeof(*pixel),pixel) < 1)
+          break;
+        p+=runlength;
+      }
+  }
+  return(p);
+}
+
 static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
 {
   char
     header[MaxTextExtent];
 
-  int
-    y;
+  const char
+    *property;
 
   MagickBooleanType
     status;
 
-  QuantumInfo
-    *quantum_info;
-
   register const PixelPacket
     *p;
 
-  ssize_t
-    count;
+  register ssize_t
+    i,
+    x;
 
   size_t
     length;
 
+  ssize_t
+    count,
+    y;
+
   unsigned char
+    pixel[4],
     *pixels;
 
   /*
@@ -546,36 +675,120 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
     Write header.
   */
   (void) ResetMagickMemory(header,' ',MaxTextExtent);
-  (void) FormatMagickString(header,MaxTextExtent,
-    "LBLSIZE=%.20g FORMAT='BYTE' TYPE='IMAGE' BUFSIZE=20000 DIM=2 EOL=0 "
-    "RECSIZE=%.20g ORG='BSQ' NL=%.20g NS=%.20g NB=1 N1=0 N2=0 N3=0 N4=0 NBB=0 "
-    "NLB=0 TASK='ImageMagick'",(double) MaxTextExtent,(double) image->columns,
+  length=CopyMagickString(header,"#?RGBE\n",MaxTextExtent);
+  (void) WriteBlob(image,length,(unsigned char *) header);
+  property=GetImageProperty(image,"comment");
+  if ((property != (const char *) NULL) &&
+      (strchr(property,'\n') == (char *) NULL))
+    {
+      count=FormatMagickString(header,MaxTextExtent,"#%s\n",property);
+      (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
+    }
+  property=GetImageProperty(image,"hdr:exposure");
+  if (property != (const char *) NULL)
+    {
+      count=FormatMagickString(header,MaxTextExtent,"EXPOSURE=%g\n",
+        atof(property));
+      (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
+    }
+  if (image->gamma != 0.0)
+    {
+      count=FormatMagickString(header,MaxTextExtent,"GAMMA=%g\n",image->gamma);
+      (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
+    }
+  count=FormatMagickString(header,MaxTextExtent,
+    "PRIMARIES=%g %g %g %g %g %g %g %g\n",
+    image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
+    image->chromaticity.green_primary.x,image->chromaticity.green_primary.y,
+    image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y,
+    image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+  (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
+  length=CopyMagickString(header,"FORMAT=32-bit_rle_rgbe\n\n",MaxTextExtent);
+  (void) WriteBlob(image,length,(unsigned char *) header);
+  count=FormatMagickString(header,MaxTextExtent,"-Y %.20g +X %.20g\n",
     (double) image->rows,(double) image->columns);
-  (void) WriteBlob(image,MaxTextExtent,(unsigned char *) header);
+  (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
   /*
     Write HDR pixels.
   */
-  image->depth=8;
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
+    4*sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-      GrayQuantum,pixels,&image->exception);
-    count=WriteBlob(image,length,pixels);
-    if (count != (ssize_t) length)
-      break;
+    if ((image->columns >= 8) && (image->columns <= 0x7ffff))
+      {
+        pixel[0]=2;
+        pixel[1]=2;
+        pixel[2]=(unsigned char) (image->columns >> 8);
+        pixel[3]=(unsigned char) (image->columns & 0xff);
+        count=WriteBlob(image,4*sizeof(*pixel),pixel);
+        if (count != (ssize_t) (4*sizeof(*pixel)))
+          break;
+      }
+    i=0;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double
+        gamma;
+
+      pixel[0]=0;
+      pixel[1]=0;
+      pixel[2]=0;
+      pixel[3]=0;
+      gamma=QuantumScale*p->red;
+      if ((QuantumScale*p->green) > gamma)
+        gamma=QuantumScale*p->green;
+      if ((QuantumScale*p->blue) > gamma)
+        gamma=QuantumScale*p->blue;
+      if (gamma > MagickEpsilon)
+        {
+          int
+            exponent;
+
+          gamma=frexp(gamma,&exponent)*256.0/gamma;
+          pixel[0]=(unsigned char) (gamma*QuantumScale*p->red);
+          pixel[1]=(unsigned char) (gamma*QuantumScale*p->green);
+          pixel[2]=(unsigned char) (gamma*QuantumScale*p->blue);
+          pixel[3]=(unsigned char) (exponent+128);
+        }
+      if ((image->columns >= 8) && (image->columns <= 0x7ffff))
+        {
+          pixels[x]=pixel[0];
+          pixels[x+image->columns]=pixel[1];
+          pixels[x+2*image->columns]=pixel[2];
+          pixels[x+3*image->columns]=pixel[3];
+        }
+      else
+        {
+          pixels[i++]=pixel[0];
+          pixels[i++]=pixel[1];
+          pixels[i++]=pixel[2];
+          pixels[i++]=pixel[3];
+        }
+      p++;
+    }
+    if ((image->columns >= 8) && (image->columns <= 0x7ffff))
+      {
+        for (i=0; i < 4; i++)
+          length=HDRWriteRunlengthPixels(image,&pixels[i*image->columns]);
+      }
+    else
+      {
+        count=WriteBlob(image,4*image->columns*sizeof(*pixel),pixel);
+        if (count != (ssize_t) (4*image->columns*sizeof(*pixel)))
+          break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
-  quantum_info=DestroyQuantumInfo(quantum_info);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   (void) CloseBlob(image);
   return(MagickTrue);
 }
