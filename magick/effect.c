@@ -1055,6 +1055,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
+      indexes++;
       p++;
       q++;
     }
@@ -1234,6 +1235,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
+      indexes++;
       p++;
       q++;
     }
@@ -1600,6 +1602,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
+      indexes++;
       p++;
       q++;
     }
@@ -2400,6 +2403,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
+      indexes++;
       p++;
       q++;
     }
@@ -4965,6 +4969,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 }
             }
         }
+      indexes++;
       p++;
       q++;
     }
