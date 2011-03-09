@@ -328,14 +328,12 @@ static RadonInfo *DestroyRadonInfo(RadonInfo *radon_info)
 
 static MagickBooleanType ResetRadonCells(RadonInfo *radon_info)
 {
-  ssize_t
-    y;
-
   register ssize_t
     x;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned short
     value;
@@ -593,11 +591,11 @@ static void RadonProjection(RadonInfo *source_cells,
   {
     for (x=0; x < (ssize_t) p->width; x+=2*(ssize_t) step)
     {
-      ssize_t
-        y;
-
       register ssize_t
         i;
+
+      ssize_t
+        y;
 
       unsigned short
         cell;
@@ -661,9 +659,6 @@ static MagickBooleanType RadonTransform(const Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -674,12 +669,15 @@ static MagickBooleanType RadonTransform(const Image *image,
   register ssize_t
     i;
 
-  unsigned char
-    byte;
-
   size_t
     count,
     width;
+
+  ssize_t
+    y;
+
+  unsigned char
+    byte;
 
   unsigned short
     bits[256];
@@ -824,14 +822,14 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickPixelPacket
     background;
 
   MagickRealType
     count;
+
+  ssize_t
+    y;
 
   /*
     Compute average background color.
@@ -895,9 +893,6 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
     *deskew_image,
     *median_image;
 
-  ssize_t
-    skew;
-
   MagickBooleanType
     status;
 
@@ -911,6 +906,9 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
     max_projection,
     *projection,
     width;
+
+  ssize_t
+    skew;
 
   /*
     Compute deskew angle.
@@ -1072,12 +1070,12 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
     }
     case 1:
     {
-      ssize_t
-        tile_y;
-
       size_t
         tile_height,
         tile_width;
+
+      ssize_t
+        tile_y;
 
       /*
         Rotate 90 degrees.
@@ -1263,12 +1261,12 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
     }
     case 3:
     {
-      ssize_t
-        tile_y;
-
       size_t
         tile_height,
         tile_width;
+
+      ssize_t
+        tile_y;
 
       /*
         Rotate 270 degrees.
@@ -1476,9 +1474,6 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
-    ssize_t
-      step;
-
     MagickPixelPacket
       pixel,
       source,
@@ -1488,9 +1483,6 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
       area,
       displacement;
 
-    register ssize_t
-      i;
-
     register IndexPacket
       *restrict indexes,
       *restrict shear_indexes;
@@ -1499,8 +1491,14 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
       *restrict p,
       *restrict q;
 
+    register ssize_t
+      i;
+
     ShearDirection
       direction;
+
+    ssize_t
+      step;
 
     if (status == MagickFalse)
       continue;
