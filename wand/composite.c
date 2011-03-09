@@ -174,12 +174,12 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
         else
           if (composite_options->tile != MagickFalse)
             {
+              size_t
+                columns;
+
               ssize_t
                 x,
                 y;
-
-              size_t
-                columns;
 
               /*
                 Tile the composite image.
@@ -433,12 +433,12 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   MagickStatusType
     status;
 
+  register ssize_t
+    i;
+
   ssize_t
     j,
     k;
-
-  register ssize_t
-    i;
 
   /*
     Set default.

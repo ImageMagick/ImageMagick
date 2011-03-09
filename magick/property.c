@@ -1267,18 +1267,16 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     number_entries=ReadPropertyShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
-      ssize_t
-        components;
-
       register unsigned char
         *p,
         *q;
 
       size_t
+        format,
         number_bytes;
 
-      size_t
-        format;
+      ssize_t
+        components;
 
       q=(unsigned char *) (directory+2+(12*entry));
       tag_value=(ssize_t) (ReadPropertyShort(endian,q)+tag_offset);
@@ -1577,11 +1575,6 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
     *path,
     *message;
 
-  ssize_t
-    knot_count,
-    selector,
-    y;
-
   MagickBooleanType
     in_subpath;
 
@@ -1593,6 +1586,11 @@ static char *TracePSClippath(const unsigned char *blob,size_t length,
   register ssize_t
     i,
     x;
+
+  ssize_t
+    knot_count,
+    selector,
+    y;
 
   path=AcquireString((char *) NULL);
   if (path == (char *) NULL)
@@ -1785,12 +1783,6 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
     *path,
     *message;
 
-  ssize_t
-    knot_count,
-    selector,
-    x,
-    y;
-
   MagickBooleanType
     in_subpath;
 
@@ -1801,6 +1793,12 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
 
   register ssize_t
     i;
+
+  ssize_t
+    knot_count,
+    selector,
+    x,
+    y;
 
   path=AcquireString((char *) NULL);
   if (path == (char *) NULL)

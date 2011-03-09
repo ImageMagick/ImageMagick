@@ -6298,11 +6298,11 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       const char
         *q;
 
-      ssize_t
-        j;
-
       register ssize_t
         x;
+
+      ssize_t
+        j;
 
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)

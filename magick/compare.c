@@ -355,14 +355,14 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   MagickPixelPacket
     zero;
+
+  ssize_t
+    y;
 
   /*
     Compute the absolute difference in pixels between two images.
@@ -475,14 +475,14 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -591,14 +591,14 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -699,9 +699,6 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     *image_view,
     *reconstruct_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -711,6 +708,9 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     beta,
     maximum_error,
     mean_error;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   alpha=1.0;
@@ -828,14 +828,14 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -1082,11 +1082,11 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   image_view=AcquireCacheView(image);
@@ -1537,9 +1537,6 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -1548,6 +1545,9 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
     maximum_error,
     mean_error,
     mean_error_per_pixel;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

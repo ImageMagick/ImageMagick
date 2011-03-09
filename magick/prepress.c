@@ -88,11 +88,11 @@ MagickExport double GetImageTotalInkDensity(Image *image)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)

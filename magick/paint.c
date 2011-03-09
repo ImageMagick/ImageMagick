@@ -135,14 +135,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   Image
     *floodplane_image;
 
-  ssize_t
-    offset,
-    start,
-    x,
-    x1,
-    x2,
-    y;
-
   MagickBooleanType
     skip;
 
@@ -158,6 +150,14 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 
   SegmentInfo
     *segment_stack;
+
+  ssize_t
+    offset,
+    start,
+    x,
+    x1,
+    x2,
+    y;
 
   /*
     Check boundary conditions.
@@ -652,17 +652,17 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     histogram=histograms[GetOpenMPThreadId()];
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        j,
-        k,
-        v;
-
       register ssize_t
         i,
         u;
 
       size_t
         count;
+
+      ssize_t
+        j,
+        k,
+        v;
 
       /*
         Assign most frequent color.

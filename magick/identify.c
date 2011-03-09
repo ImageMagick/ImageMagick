@@ -284,9 +284,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   ImageType
     type;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     ping;
 
@@ -297,6 +294,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   size_t
     distance,
     scale;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

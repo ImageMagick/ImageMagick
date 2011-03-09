@@ -193,11 +193,11 @@ static pascal void StandardPixmap(PixMapPtr source,Rect *source_rectangle,
 {
 #pragma unused (source_rectangle,matrix,mode,mask,matte,matte_rectangle,flags)
 
-  ssize_t
-    size;
-
   Ptr
     data;
+
+  ssize_t
+    size;
 
   GetCompressedPixMapInfo(source,&image_description,&data,&size,nil,nil);
 }
@@ -218,11 +218,11 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   int
     status;
 
-  ssize_t
-    version;
-
   Rect
     rectangle;
+
+  ssize_t
+    version;
 
   status=Gestalt(gestaltQuickTime,&version);
   if (status != noErr)
@@ -1206,9 +1206,6 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     depth,
     status;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed,
     status;
@@ -1230,6 +1227,9 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
 
   short
     colormap_id;
+
+  ssize_t
+    y;
 
   /*
     Open image file.
@@ -1417,9 +1417,6 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
   HParamBlockRec
     parameter_info;
 
-  ssize_t
-    buffer_size = 16384;
-
   OSErr
     error;
 
@@ -1428,6 +1425,9 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 
   ProcessSerialNumber
     serial_number;
+
+  ssize_t
+    buffer_size = 16384;
 
   serial_number.lowLongOfPSN=kCurrentProcess;
   serial_number.highLongOfPSN=0;

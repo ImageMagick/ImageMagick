@@ -1309,11 +1309,6 @@ MagickExport Image *XAnimateImages(Display *display,
   int
     status;
 
-  ssize_t
-    first_scene,
-    iterations,
-    scene;
-
   KeySym
     key_symbol;
 
@@ -1329,6 +1324,11 @@ MagickExport Image *XAnimateImages(Display *display,
 
   register ssize_t
     i;
+
+  ssize_t
+    first_scene,
+    iterations,
+    scene;
 
   static char
     working_directory[MaxTextExtent];

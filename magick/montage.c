@@ -364,13 +364,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  ssize_t
-    tile,
-    x,
-    x_offset,
-    y,
-    y_offset;
-
   MagickBooleanType
     concatenate,
     proceed,
@@ -379,11 +372,11 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   MagickOffsetType
     tiles;
 
-  MagickStatusType
-    flags;
-
   MagickProgressMonitor
     progress_monitor;
+
+  MagickStatusType
+    flags;
 
   register ssize_t
     i;
@@ -393,15 +386,11 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     geometry,
     extract_info;
 
-  size_t
-    extent;
-
-  TypeMetric
-    metrics;
 
   size_t
     bevel_width,
     border_width,
+    extent,
     height,
     images_per_page,
     max_height,
@@ -414,6 +403,16 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     title_offset,
     total_tiles,
     width;
+
+  ssize_t
+    tile,
+    x,
+    x_offset,
+    y,
+    y_offset;
+
+  TypeMetric
+    metrics;
 
   /*
     Create image tiles.

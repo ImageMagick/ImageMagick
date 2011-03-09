@@ -476,9 +476,6 @@ MagickExport MagickBooleanType SignatureImage(Image *image)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   QuantumInfo
     *quantum_info;
 
@@ -493,6 +490,9 @@ MagickExport MagickBooleanType SignatureImage(Image *image)
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   StringInfo
     *signature;
@@ -601,14 +601,14 @@ static void TransformSignature(SignatureInfo *signature_info)
 #define Suma0(x)  (RotateRight(x,2) ^ RotateRight(x,13) ^ RotateRight(x,22))
 #define Suma1(x)  (RotateRight(x,6) ^ RotateRight(x,11) ^ RotateRight(x,25))
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   register unsigned char
     *p;
+
+  ssize_t
+    j;
 
   static unsigned int
     K[64] =

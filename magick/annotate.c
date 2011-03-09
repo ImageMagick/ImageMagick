@@ -1067,16 +1067,16 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     glyph,
     last_glyph;
 
-  ssize_t
-    code,
-    y;
-
   PointInfo
     point,
     resolution;
 
   register char
     *p;
+
+  ssize_t
+    code,
+    y;
 
   static FT_Outline_Funcs
     OutlineMethods =
@@ -1600,9 +1600,6 @@ static MagickBooleanType RenderPostscript(Image *image,
   int
     unique_file;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     identity;
 
@@ -1613,6 +1610,9 @@ static MagickBooleanType RenderPostscript(Image *image,
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   /*
     Render label with a Postscript font.

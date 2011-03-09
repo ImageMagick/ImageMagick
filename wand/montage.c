@@ -299,11 +299,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
     first_scene,
     last_scene;
 
-  ssize_t
-    j,
-    k,
-    scene;
-
   MagickBooleanType
     fire,
     pend,
@@ -317,6 +312,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 
   register ssize_t
     i;
+
+  ssize_t
+    j,
+    k,
+    scene;
 
   /*
     Set defaults.

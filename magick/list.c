@@ -512,9 +512,6 @@ MagickExport Image *GetFirstImageInList(const Image *images)
 */
 MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
 {
-  ssize_t
-    offset;
-
   register const Image
     *p;
 
@@ -523,6 +520,9 @@ MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
 
   size_t
     length;
+
+  ssize_t
+    offset;
 
   if (images == (Image *) NULL)
     return((Image *) NULL);

@@ -1658,10 +1658,6 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
     *image_view,
     *target_view;
 
-  ssize_t
-    j,
-    y;
-
   MagickBooleanType
     status;
 
@@ -1680,6 +1676,10 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
   register ssize_t
     i,
     x;
+
+  ssize_t
+    j,
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2524,9 +2524,6 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   GeometryInfo
     geometry_info;
 
-  ssize_t
-    type;
-
   MagickRealType
     scale;
 
@@ -2538,6 +2535,9 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
 
   register ssize_t
     i;
+
+  ssize_t
+    type;
 
   /*
     Initialize color return value.

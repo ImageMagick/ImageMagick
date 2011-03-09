@@ -347,9 +347,6 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 {
 #define MaxEntropyExtent  64
 
-  ssize_t
-    pid;
-
   MagickThreadType
     tid;
 
@@ -360,6 +357,9 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   size_t
     nanoseconds,
     seconds;
+
+  ssize_t
+    pid;
 
   /*
     Initialize random reservoir.

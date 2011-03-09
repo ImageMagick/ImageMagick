@@ -579,14 +579,14 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
   const CoderInfo
     **coder_info;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     number_coders;
+
+  ssize_t
+    j;
 
   if (file == (const FILE *) NULL)
     file=stdout;

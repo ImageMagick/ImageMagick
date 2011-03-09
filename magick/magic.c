@@ -573,14 +573,14 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   const MagicInfo
     **magic_info;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     number_aliases;
+
+  ssize_t
+    j;
 
   if (file == (const FILE *) NULL)
     file=stdout;

@@ -3304,8 +3304,8 @@ MagickExport Image *MorphImages(const Image *image,
     *morph_image,
     *morph_images;
 
-  ssize_t
-    y;
+  MagickBooleanType
+    status;
 
   MagickOffsetType
     scene;
@@ -3320,8 +3320,8 @@ MagickExport Image *MorphImages(const Image *image,
   register ssize_t
     i;
 
-  MagickBooleanType
-    status;
+  ssize_t
+    y;
 
   /*
     Clone first frame in sequence.
@@ -3538,18 +3538,18 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    x,
-    x_mid,
-    y,
-    y_mid;
-
   MagickRealType
     plasma;
 
   PixelPacket
     u,
     v;
+
+  ssize_t
+    x,
+    x_mid,
+    y,
+    y_mid;
 
   if (((segment->x2-segment->x1) == 0.0) && ((segment->y2-segment->y1) == 0.0))
     return(MagickTrue);
@@ -3785,9 +3785,6 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   const char
     *value;
 
-  ssize_t
-    quantum;
-
   Image
     *bend_image,
     *caption_image,
@@ -3799,6 +3796,9 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
 
   size_t
     height;
+
+  ssize_t
+    quantum;
 
   /*
     Simulate a Polaroid picture.
@@ -3823,11 +3823,11 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       DrawInfo
         *annotate_info;
 
-      ssize_t
-        count;
-
       MagickBooleanType
         status;
+
+      ssize_t
+        count;
 
       TypeMetric
         metrics;
@@ -4282,9 +4282,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     *random_image,
     *sketch_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -4293,6 +4290,9 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 
   RandomInfo
     **restrict random_info;
+
+  ssize_t
+    y;
 
   /*
     Sketch image.
@@ -4741,11 +4741,11 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
   Image
     *stereo_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(left_image != (const Image *) NULL);
   assert(left_image->signature == MagickSignature);

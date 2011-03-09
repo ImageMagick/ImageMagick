@@ -1016,12 +1016,12 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
     bytes,
     length;
 
-  ssize_t
-    count;
-
   register ssize_t
     i,
     j;
+
+  ssize_t
+    count;
 
   static const char
     *bi_units[] =

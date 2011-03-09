@@ -189,11 +189,11 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -209,9 +209,6 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    ssize_t
-      index;
-
     register IndexPacket
       *restrict indexes;
 
@@ -220,6 +217,9 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 
     register PixelPacket
       *restrict q;
+
+    ssize_t
+      index;
 
     if (status == MagickFalse)
       continue;
@@ -304,14 +304,14 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   unsigned short
     *pixels;

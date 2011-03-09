@@ -559,9 +559,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   const unsigned char
     *digest;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -579,6 +576,9 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   StringInfo
     *key,
@@ -758,9 +758,6 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   const unsigned char
     *digest;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -778,6 +775,9 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   StringInfo
     *key,
@@ -956,12 +956,12 @@ static inline unsigned int RotateRight(const unsigned int x)
 
 static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
 {
+  register ssize_t
+    i;
+
   ssize_t
     bytes,
     n;
-
-  register ssize_t
-    i;
 
   unsigned char
     *datum;

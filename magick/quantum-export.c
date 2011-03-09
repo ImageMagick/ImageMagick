@@ -240,9 +240,6 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   EndianType
     endian;
 
-  ssize_t
-    bit;
-
   MagickRealType
     alpha;
 
@@ -269,6 +266,9 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
   size_t
     extent;
+
+  ssize_t
+    bit;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -985,14 +985,14 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           range=GetQuantumRange(image->depth);
           if (quantum_info->pack == MagickFalse)
             {
-              ssize_t
-                n;
-
               register ssize_t
                 i;
 
               size_t
                 quantum;
+
+              ssize_t
+                n;
 
               n=0;
               quantum=0;
@@ -2532,14 +2532,14 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           range=GetQuantumRange(image->depth);
           if (quantum_info->pack == MagickFalse)
             {
-              ssize_t
-                n;
-
               register ssize_t
                 i;
 
               size_t
                 quantum;
+
+              ssize_t
+                n;
 
               n=0;
               quantum=0;
@@ -3045,9 +3045,6 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     }
     case CbYCrYQuantum:
     {
-     ssize_t
-        n;
-
       Quantum
         cbcr[4];
 
@@ -3059,6 +3056,9 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
       size_t
         quantum;
+
+     ssize_t
+        n;
 
       n=0;
       quantum=0;

@@ -1945,17 +1945,17 @@ MagickExport void XDisplayImageInfo(Display *display,
   int
     unique_file;
 
-  ssize_t
-    bytes;
-
   register ssize_t
     i;
 
-  unsigned int
-    levels;
-
   size_t
     number_pixels;
+
+  ssize_t
+    bytes;
+
+  unsigned int
+    levels;
 
   /*
     Write info about the X server to a file.
@@ -7066,9 +7066,6 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   int
     y;
 
-  ssize_t
-    n;
-
   MagickPixelPacket
     pixel;
 
@@ -7081,6 +7078,9 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   register unsigned char
     *p,
     *q;
+
+  ssize_t
+    n;
 
   static unsigned int
     previous_magnify = 0;

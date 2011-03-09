@@ -839,6 +839,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     {
       ssize_t
         option;
+
       option=ParseMagickOption(MagickFilterOptions,MagickFalse,artifact);
       if ((UndefinedFilter < option) && (option < SentinelFilter))
         { /* Raw filter request - no window function. */
@@ -862,6 +863,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         {
           ssize_t
             option;
+
           option=ParseMagickOption(MagickFilterOptions,MagickFalse,
             artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))

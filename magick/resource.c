@@ -906,13 +906,13 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
   char
     *limit;
 
+  MagickSizeType
+    memory;
+
   ssize_t
     files,
     pages,
     pagesize;
-
-  MagickSizeType
-    memory;
 
   /*
     Set Magick resource limits.

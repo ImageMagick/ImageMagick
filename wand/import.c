@@ -267,11 +267,6 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
-    j,
-    k,
-    snapshots;
-
   MagickBooleanType
     fire,
     pend,
@@ -285,6 +280,11 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
 
   register ssize_t
     i;
+
+  ssize_t
+    j,
+    k,
+    snapshots;
 
   XImportInfo
     ximage_info;
