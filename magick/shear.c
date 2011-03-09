@@ -1466,7 +1466,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   if (image->colorspace == CMYKColorspace)
     ConvertRGBToCMYK(&background);
   /*
-    XShear image.
+    X shear image.
   */
   status=MagickTrue;
   progress=0;

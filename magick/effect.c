@@ -986,7 +986,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 *restrict kernel_indexes;
 
               k=kernel;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (i=0; i < (ssize_t) width; i++)
               {
                 pixel.index+=(*k)*(*kernel_indexes);
@@ -1041,7 +1041,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
 
               k=kernel;
               kernel_pixels=p;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (i=0; i < (ssize_t) width; i++)
               {
                 alpha=(MagickRealType) (QuantumScale*
@@ -1055,7 +1055,6 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
-      indexes++;
       p++;
       q++;
     }
@@ -1166,7 +1165,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 *restrict kernel_indexes;
 
               k=kernel;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (i=0; i < (ssize_t) width; i++)
               {
                 pixel.index+=(*k)*(*kernel_indexes);
@@ -1221,7 +1220,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
 
               k=kernel;
               kernel_pixels=p;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (i=0; i < (ssize_t) width; i++)
               {
                 alpha=(MagickRealType) (QuantumScale*
@@ -1235,7 +1234,6 @@ MagickExport Image *BlurImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
-      indexes++;
       p++;
       q++;
     }
@@ -1521,7 +1519,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 *restrict kernel_indexes;
 
               k=normal_kernel;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (v=0; v < (ssize_t) width; v++)
               {
                 for (u=0; u < (ssize_t) width; u++)
@@ -1585,7 +1583,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 
               k=normal_kernel;
               kernel_pixels=p;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (v=0; v < (ssize_t) width; v++)
               {
                 for (u=0; u < (ssize_t) width; u++)
@@ -1602,7 +1600,6 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
-      indexes++;
       p++;
       q++;
     }
@@ -2322,7 +2319,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
                 *restrict kernel_indexes;
 
               k=kernel->values;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (v=0; v < (ssize_t) kernel->width; v++)
               {
                 for (u=0; u < (ssize_t) kernel->height; u++)
@@ -2386,7 +2383,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
 
               k=kernel->values;
               kernel_pixels=p;
-              kernel_indexes=indexes;
+              kernel_indexes=indexes[x];
               for (v=0; v < (ssize_t) kernel->width; v++)
               {
                 for (u=0; u < (ssize_t) kernel->height; u++)
@@ -2403,7 +2400,6 @@ MagickExport Image *FilterImageChannel(const Image *image,
                 GetIndexPixelComponent(&pixel));
             }
         }
-      indexes++;
       p++;
       q++;
     }
@@ -4969,7 +4965,6 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 }
             }
         }
-      indexes++;
       p++;
       q++;
     }
