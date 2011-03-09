@@ -938,14 +938,14 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
   const MagickInfo
     **magick_info;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     number_formats;
+
+  ssize_t
+    j;
 
   if (file == (FILE *) NULL)
     file=stdout;

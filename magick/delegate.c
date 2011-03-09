@@ -1111,14 +1111,14 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
   const char
     *path;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     number_delegates;
+
+  ssize_t
+    j;
 
   if (file == (const FILE *) NULL)
     file=stdout;

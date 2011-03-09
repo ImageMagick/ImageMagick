@@ -97,8 +97,14 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 {
 #define CropImageTag  "Crop/Image"
 
-  ssize_t
-    y;
+  BITMAP
+    bitmap;
+
+  HBITMAP
+    bitmapH;
+
+  HANDLE
+    bitmap_bitsH;
 
   MagickBooleanType
     proceed;
@@ -109,20 +115,14 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   register const PixelPacket
     *p;
 
-  BITMAP
-    bitmap;
-
-  HBITMAP
-    bitmapH;
-
-  HANDLE
-    bitmap_bitsH;
-
   register RGBQUAD
     *q;
 
   RGBQUAD
     *bitmap_bits;
+
+  ssize_t
+    y;
 
   /*
     Check crop geometry.
@@ -592,9 +592,6 @@ MagickExport void *ImageToHBITMAP(Image *image)
   HBITMAP
     bitmapH;
 
-  ssize_t
-    y;
-
   register ssize_t
     x;
 
@@ -609,6 +606,9 @@ MagickExport void *ImageToHBITMAP(Image *image)
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   (void) ResetMagickMemory(&bitmap,0,sizeof(bitmap));
   bitmap.bmType=0;

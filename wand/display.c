@@ -312,13 +312,6 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
-    image_number,
-    iteration,
-    j,
-    k,
-    l;
-
   MagickBooleanType
     fire,
     pend,
@@ -338,6 +331,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
     iterations,
     last_image,
     state;
+
+  ssize_t
+    image_number,
+    iteration,
+    j,
+    k,
+    l;
 
   XResourceInfo
     resource_info;

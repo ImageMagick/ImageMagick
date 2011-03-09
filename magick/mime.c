@@ -650,14 +650,14 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
   const MimeInfo
     **mime_info;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     number_aliases;
+
+  ssize_t
+    j;
 
   if (file == (const FILE *) NULL)
     file=stdout;

@@ -106,9 +106,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   Image
     *chop_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -117,6 +114,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
   RectangleInfo
     extent;
+
+  ssize_t
+    y;
 
   /*
     Check chop geometry.
@@ -1191,11 +1191,11 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
     *source_view,
     *destination_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   status=MagickTrue;
   source_view=AcquireCacheView(source);
@@ -1721,10 +1721,6 @@ MagickExport MagickBooleanType TransformImage(Image **image,
     *resize_image,
     *transform_image;
 
-  ssize_t
-    x,
-    y;
-
   MagickStatusType
     flags;
 
@@ -1734,6 +1730,10 @@ MagickExport MagickBooleanType TransformImage(Image **image,
   size_t
     height,
     width;
+
+  ssize_t
+    x,
+    y;
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);

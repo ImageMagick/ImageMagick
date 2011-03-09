@@ -688,11 +688,11 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 
 static void ChopLocaleComponents(char *path,const size_t components)
 {
-  ssize_t
-    count;
-
   register char
     *p;
+
+  ssize_t
+    count;
 
   if (*path == '\0')
     return;

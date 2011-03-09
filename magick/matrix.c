@@ -193,17 +193,17 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
     max,
     scale;
 
+  register ssize_t
+    i,
+    j,
+    k;
+
   ssize_t
     column,
     *columns,
     *pivots,
     row,
     *rows;
-
-  register ssize_t
-    i,
-    j,
-    k;
 
   columns=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*columns));
   rows=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*rows));

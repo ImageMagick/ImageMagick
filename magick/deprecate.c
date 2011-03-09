@@ -1157,14 +1157,6 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
   Image
     *floodplane_image;
 
-  ssize_t
-    offset,
-    start,
-    x,
-    x1,
-    x2,
-    y;
-
   MagickBooleanType
     skip;
 
@@ -1176,6 +1168,14 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
 
   SegmentInfo
     *segment_stack;
+
+  ssize_t
+    offset,
+    start,
+    x,
+    x1,
+    x2,
+    y;
 
   /*
     Check boundary conditions.
@@ -1779,20 +1779,20 @@ MagickExport unsigned int DispatchImage(const Image *image,const ssize_t x_offse
 */
 
 static double GetSimilarityMetric(const Image *image,const Image *reference,
-  const ssize_t x_offset,const ssize_t y_offset,const double similarity_threshold,
-  ExceptionInfo *exception)
+  const ssize_t x_offset,const ssize_t y_offset,
+  const double similarity_threshold,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
     *reference_view;
 
-  ssize_t
-    y;
-
   double
     channels,
     normalized_similarity,
     similarity;
+
+  ssize_t
+    y;
 
   /*
     Compute the similarity in pixels between two images.
@@ -1866,14 +1866,14 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
 MagickExport Image *ExtractSubimageFromImage(Image *image,
   const Image *reference,ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
   double
     similarity_threshold;
 
   RectangleInfo
     offset;
+
+  ssize_t
+    y;
 
   /*
     Extract reference from image.
@@ -3781,10 +3781,6 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
     }
     case SplineInterpolatePixel:
     {
-      ssize_t
-        j,
-        n;
-
       MagickPixelPacket
         pixels[16];
 
@@ -3797,8 +3793,12 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t) floor(y)-
-        1,4,4,exception);
+      ssize_t
+        j,
+        n;
+
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
+        floor(y)-1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -4285,14 +4285,6 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   Image
     *floodplane_image;
 
-  ssize_t
-    offset,
-    start,
-    x,
-    x1,
-    x2,
-    y;
-
   MagickBooleanType
     skip;
 
@@ -4301,6 +4293,14 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
 
   SegmentInfo
     *segment_stack;
+
+  ssize_t
+    offset,
+    start,
+    x,
+    x1,
+    x2,
+    y;
 
   /*
     Check boundary conditions.
@@ -4634,14 +4634,14 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
 {
 #define OpaqueImageTag  "Opaque/Image"
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   /*
     Make image color opaque.
@@ -5310,12 +5310,12 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     lower_threshold,
     upper_threshold;
 
+  RandomInfo
+    *random_info;
+
   ssize_t
     count,
     y;
-
-  RandomInfo
-    *random_info;
 
   static MagickRealType
     o2[4]={0.2f, 0.6f, 0.8f, 0.4f},
@@ -5739,11 +5739,11 @@ MagickExport MagickBooleanType SetExceptionInfo(ExceptionInfo *exception,
 */
 MagickExport void SetImage(Image *image,const Quantum opacity)
 {
-  ssize_t
-    y;
-
   PixelPacket
     background_color;
+
+  ssize_t
+    y;
 
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.2.0");
   assert(image != (Image *) NULL);
@@ -6783,11 +6783,11 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
 {
 #define TransparentImageTag  "Transparent/Image"
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
+
+  ssize_t
+    y;
 
   /*
     Make image color transparent.

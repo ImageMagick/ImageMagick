@@ -183,9 +183,6 @@ static CubeInfo *ClassifyImageColors(const Image *image,
   CubeInfo
     *cube_info;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -202,14 +199,17 @@ static CubeInfo *ClassifyImageColors(const Image *image,
   register const PixelPacket
     *p;
 
-  register ssize_t
-    i,
-    x;
-
   register size_t
     id,
     index,
     level;
+
+  register ssize_t
+    i,
+    x;
+
+  ssize_t
+    y;
 
   /*
     Initialize color description tree.
@@ -646,9 +646,6 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
   CubeInfo
     *cube_info;
 
-  ssize_t
-    y;
-
   MagickPixelPacket
     pixel,
     target;
@@ -672,6 +669,9 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
     id,
     index,
     level;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -809,9 +809,6 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
   CubeInfo
     *cube_info;
 
-  ssize_t
-    y;
-
   MagickPixelPacket
     pixel,
     target;
@@ -835,6 +832,9 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
     id,
     index,
     level;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

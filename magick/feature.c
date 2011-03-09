@@ -171,10 +171,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     gray,
     *grays;
 
-  ssize_t
-    y,
-    z;
-
   MagickBooleanType
     status;
 
@@ -183,6 +179,10 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 
   size_t
     length;
+
+  ssize_t
+    y,
+    z;
 
   unsigned int
     number_grays;
@@ -405,10 +405,6 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    ssize_t
-      u,
-      v;
-
     register const IndexPacket
       *restrict indexes;
 
@@ -419,7 +415,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
       x;
 
     ssize_t
-      offset;
+      offset,
+      u,
+      v;
 
     if (status == MagickFalse)
       continue;

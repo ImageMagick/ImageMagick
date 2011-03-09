@@ -164,15 +164,15 @@ static void ClearBounds(Image *image,RectangleInfo *bounds)
 static MagickBooleanType IsBoundsCleared(const Image *image1,
   const Image *image2,RectangleInfo *bounds,ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
   register ssize_t
     x;
 
   register const PixelPacket
     *p,
     *q;
+
+  ssize_t
+    y;
 
 #if 0
   assert(image1->matte==MagickTrue);
@@ -613,11 +613,11 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
     *p,
     *q;
 
-  ssize_t
-    y;
-
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
 #if 0
   /* only same sized images can be compared */
@@ -1806,18 +1806,17 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %
 */
 static inline void CompositeCanvas(Image *destination,
-     const CompositeOperator compose, Image *source,
-     ssize_t x_offset, ssize_t y_offset )
+  const CompositeOperator compose, Image *source,ssize_t x_offset,
+  ssize_t y_offset )
 {
-  x_offset += source->page.x - destination->page.x;
-  y_offset += source->page.y - destination->page.y;
-  (void) CompositeImage(destination, compose, source, x_offset, y_offset);
+  x_offset+=source->page.x-destination->page.x;
+  y_offset+=source->page.y-destination->page.y;
+  (void) CompositeImage(destination,compose,source,x_offset,y_offset);
 }
 
 MagickExport void CompositeLayers(Image *destination,
-      const CompositeOperator compose, Image *source,
-      const ssize_t x_offset, const ssize_t y_offset,
-      ExceptionInfo *exception)
+  const CompositeOperator compose, Image *source,const ssize_t x_offset,
+  const ssize_t y_offset,ExceptionInfo *exception)
 {
   assert(destination != (Image *) NULL);
   assert(destination->signature == MagickSignature);

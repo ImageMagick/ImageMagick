@@ -4365,10 +4365,6 @@ static MagickBooleanType XConfigureImage(Display *display,
   char
     geometry[MaxTextExtent];
 
-  ssize_t
-    x,
-    y;
-
   MagickStatusType
     status;
 
@@ -4376,6 +4372,10 @@ static MagickBooleanType XConfigureImage(Display *display,
     mask,
     height,
     width;
+
+  ssize_t
+    x,
+    y;
 
   XSizeHints
     *size_hints;
@@ -7328,13 +7328,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       int
         status;
 
-      ssize_t
-        x,
-        y;
-
       size_t
         height,
         width;
+
+      ssize_t
+        x,
+        y;
 
       /*
         Resize image.

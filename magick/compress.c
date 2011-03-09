@@ -308,14 +308,14 @@ MagickExport void Ascii85Flush(Image *image)
 
 MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 {
-  ssize_t
-    n;
-
   register char
     *q;
 
   register unsigned char
     *p;
+
+  ssize_t
+    n;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -447,6 +447,14 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
   register unsigned char
     *p;
 
+  size_t
+    bit,
+    code,
+    mask,
+    length,
+    null_lines,
+    runlength;
+
   ssize_t
     count,
     y;
@@ -457,14 +465,6 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
   unsigned int
     bail,
     color;
-
-  size_t
-    bit,
-    code,
-    mask,
-    length,
-    null_lines,
-    runlength;
 
   /*
     Allocate buffers.
@@ -725,10 +725,6 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
     k,
     runlength;
 
-  ssize_t
-    n,
-    y;
-
   Image
     *huffman_image;
 
@@ -745,15 +741,19 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
   register unsigned char
     *q;
 
-  unsigned char
-    byte,
-    bit,
-    *scanline;
-
   size_t
     mask,
     one,
     width;
+
+  ssize_t
+    n,
+    y;
+
+  unsigned char
+    byte,
+    bit,
+    *scanline;
 
   /*
     Allocate scanline buffer.
@@ -954,14 +954,8 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
       next;
   } TableType;
 
-  ssize_t
-    index;
-
   register ssize_t
     i;
-
-  TableType
-    *table;
 
   size_t
     accumulator,
@@ -969,6 +963,12 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
     code_width,
     last_code,
     next_index;
+
+  ssize_t
+    index;
+
+  TableType
+    *table;
 
   /*
     Allocate string table.

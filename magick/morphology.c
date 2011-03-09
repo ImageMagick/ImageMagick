@@ -374,24 +374,24 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
 
 static KernelInfo *ParseKernelName(const char *kernel_string)
 {
-  KernelInfo
-    *kernel;
-
   char
     token[MaxTextExtent];
-
-  ssize_t
-    type;
 
   const char
     *p,
     *end;
 
+  GeometryInfo
+    args;
+
+  KernelInfo
+    *kernel;
+
   MagickStatusType
     flags;
 
-  GeometryInfo
-    args;
+  ssize_t
+    type;
 
   /* Parse special 'named' kernel */
   GetMagickToken(kernel_string,&p,token);

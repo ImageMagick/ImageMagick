@@ -239,14 +239,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const TypeInfo
     *type_info;
 
-  ssize_t
-    range;
-
   register const TypeInfo
     *p;
 
   register ssize_t
     i;
+
+  ssize_t
+    range;
 
   static const Fontmap
     fontmap[] =

@@ -2749,11 +2749,11 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)

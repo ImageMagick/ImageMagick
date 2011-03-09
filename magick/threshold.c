@@ -232,9 +232,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     threshold_indexes=GetCacheViewAuthenticIndexQueue(threshold_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        v;
-
       MagickPixelPacket
         mean,
         pixel;
@@ -244,6 +241,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 
       register ssize_t
         u;
+
+      ssize_t
+        v;
 
       pixel=zero;
       mean=zero;

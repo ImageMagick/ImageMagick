@@ -211,10 +211,6 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
   ImageStack
     image_stack[MaxImageStackDepth+1];
 
-  ssize_t
-    j,
-    k;
-
   MagickBooleanType
     fire,
     pend,
@@ -228,6 +224,10 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
 
   size_t
     count;
+
+  ssize_t
+    j,
+    k;
 
   /*
     Set defaults.

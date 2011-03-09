@@ -123,9 +123,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -138,6 +135,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 
   register const PixelPacket
     *p;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -285,9 +285,6 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -298,6 +295,9 @@ MagickExport size_t GetImageChannelDepth(const Image *image,
     *current_depth,
     depth,
     number_threads;
+
+  ssize_t
+    y;
 
   /*
     Compute image depth.
@@ -676,14 +676,14 @@ MagickExport MagickBooleanType IsMonochromeImage(const Image *image,
   ImageType
     type;
 
-  ssize_t
-    y;
-
   register ssize_t
     x;
 
   register const PixelPacket
     *p;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -751,14 +751,14 @@ MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
   CacheView
     *image_view;
 
-  ssize_t
-    y;
-
   register const PixelPacket
     *p;
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   /*
     Determine if image is opaque.
@@ -831,14 +831,14 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   QuantumAny
     range;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)

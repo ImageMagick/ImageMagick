@@ -258,9 +258,6 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
   EndianType
     endian;
 
-  ssize_t
-    bit;
-
   MagickSizeType
     number_pixels;
 
@@ -284,6 +281,9 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
 
   size_t
     extent;
+
+  ssize_t
+    bit;
 
   unsigned int
     pixel;
@@ -1019,14 +1019,14 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           pixel=0;
           if (quantum_info->pack == MagickFalse)
             {
-              ssize_t
-                n;
-
               register ssize_t
                 i;
 
               size_t
                 quantum;
+
+              ssize_t
+                n;
 
               n=0;
               quantum=0;
@@ -2613,14 +2613,14 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           pixel=0;
           if (quantum_info->pack == MagickFalse)
             {
-              ssize_t
-                n;
-
               register ssize_t
                 i;
 
               size_t
                 quantum;
+
+              ssize_t
+                n;
 
               n=0;
               quantum=0;
@@ -3140,14 +3140,14 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           pixel=0;
           if (quantum_info->pack == MagickFalse)
             {
-              ssize_t
-                n;
-
               register ssize_t
                 i;
 
               size_t
                 quantum;
+
+              ssize_t
+                n;
 
               n=0;
               quantum=0;

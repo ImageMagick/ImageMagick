@@ -916,14 +916,14 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
   const ConfigureInfo
     **configure_info;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     number_options;
+
+  ssize_t
+    j;
 
   if (file == (const FILE *) NULL)
     file=stdout;

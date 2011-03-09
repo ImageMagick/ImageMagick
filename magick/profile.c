@@ -1828,14 +1828,14 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   int
     offset;
 
-  ssize_t
-    id,
-    level;
-
   size_t
     entry,
     length,
     number_entries;
+
+  ssize_t
+    id,
+    level;
 
   static int
     format_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
@@ -1910,16 +1910,16 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
       int
         components;
 
-      ssize_t
-        format,
-        tag_value;
-
       register unsigned char
         *p,
         *q;
 
       size_t
         number_bytes;
+
+      ssize_t
+        format,
+        tag_value;
 
       q=(unsigned char *) (directory+2+(12*entry));
       tag_value=(ssize_t) ReadProfileShort(endian,q);

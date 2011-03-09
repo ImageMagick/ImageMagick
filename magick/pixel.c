@@ -122,9 +122,6 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
   const size_t rows,const char *map,const StorageType type,void *pixels,
   ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
   QuantumType
     *quantum_map;
 
@@ -140,6 +137,9 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1702,9 +1702,6 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    y;
-
   PixelPacket
     *q;
 
@@ -1720,6 +1717,9 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   /*
     Allocate image structure.

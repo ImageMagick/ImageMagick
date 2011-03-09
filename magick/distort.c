@@ -2138,6 +2138,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             /* multi-ordered polynomial */
             register ssize_t
               k;
+
             ssize_t
               nterms=(ssize_t)coeff[1];
 

@@ -714,18 +714,18 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
   const size_t number_crossings)
 {
+  register ssize_t
+    i,
+    j,
+    k,
+    l;
+
   ssize_t
     center,
     correct,
     count,
     left,
     right;
-
-  register ssize_t
-    i,
-    j,
-    k,
-    l;
 
   /*
     Consolidate zero crossings.
@@ -958,11 +958,6 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
     green,
     red;
 
-  ssize_t
-    count,
-    *histogram[MaxDimension],
-    y;
-
   MagickBooleanType
     proceed;
 
@@ -978,6 +973,11 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
 
   short
     *extrema[MaxDimension];
+
+  ssize_t
+    count,
+    *histogram[MaxDimension],
+    y;
 
   /*
     Allocate histogram and extrema.
@@ -1233,15 +1233,15 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
 static void InitializeHistogram(const Image *image,ssize_t **histogram,
   ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
   register const PixelPacket
     *p;
 
   register ssize_t
     i,
     x;
+
+  ssize_t
+    y;
 
   /*
     Initialize histogram.
@@ -1357,14 +1357,14 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
     *node,
     *root;
 
+  register ssize_t
+    i;
+
   ssize_t
     j,
     k,
     left,
     number_nodes;
-
-  register ssize_t
-    i;
 
   /*
     Allocate interval tree.
@@ -1508,11 +1508,8 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
     *node,
     *root;
 
-  ssize_t
-    index,
-    j,
-    k,
-    number_nodes;
+  MagickBooleanType
+    peak;
 
   MagickRealType
     average_tau,
@@ -1525,12 +1522,15 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
     i,
     x;
 
-  MagickBooleanType
-    peak;
-
   size_t
     count,
     number_crossings;
+
+  ssize_t
+    index,
+    j,
+    k,
+    number_nodes;
 
   ZeroCrossing
     *zero_crossing;
@@ -1787,9 +1787,6 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   const ColorspaceType colorspace,const MagickBooleanType verbose,
   const double cluster_threshold,const double smooth_threshold)
 {
-  ssize_t
-    *histogram[MaxDimension];
-
   MagickBooleanType
     status;
 
@@ -1798,6 +1795,9 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
 
   short
     *extrema[MaxDimension];
+
+  ssize_t
+    *histogram[MaxDimension];
 
   /*
     Allocate histogram and extrema.
@@ -1883,11 +1883,11 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
 static void ZeroCrossHistogram(MagickRealType *second_derivative,
   const MagickRealType smooth_threshold,short *crossings)
 {
-  ssize_t
-    parity;
-
   register ssize_t
     i;
+
+  ssize_t
+    parity;
 
   /*
     Merge low numbers to zero to help prevent noise.

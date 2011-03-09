@@ -1452,11 +1452,11 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   const ChannelType channel,double *minima,double *maxima,
   ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
   MagickPixelPacket
     pixel;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1567,9 +1567,6 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   double
     area;
 
-  ssize_t
-    y;
-
   MagickStatusType
     status;
 
@@ -1580,11 +1577,12 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     i;
 
   size_t
+    channels,
+    depth,
     length;
 
-  size_t
-    channels,
-    depth;
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

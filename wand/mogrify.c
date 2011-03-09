@@ -1070,14 +1070,14 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             Image
               *mask_image;
 
-            ssize_t
-              y;
+            register PixelPacket
+              *restrict q;
 
             register ssize_t
               x;
 
-            register PixelPacket
-              *restrict q;
+            ssize_t
+              y;
 
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '+')
@@ -2274,11 +2274,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             KernelInfo
               *kernel;
 
-            ssize_t
-              iterations;
-
             MorphologyMethod
               method;
+
+            ssize_t
+              iterations;
 
             /*
               Morphological Image Operation

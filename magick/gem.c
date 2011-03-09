@@ -755,14 +755,14 @@ MagickExport size_t GetOptimalKernelWidth1D(const double radius,
     normalize,
     value;
 
-  ssize_t
-    j;
-
   register ssize_t
     i;
 
   size_t
     width;
+
+  ssize_t
+    j;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (radius > MagickEpsilon)
@@ -796,13 +796,13 @@ MagickExport size_t GetOptimalKernelWidth2D(const double radius,
     normalize,
     value;
 
+  size_t
+    width;
+
   ssize_t
     j,
     u,
     v;
-
-  size_t
-    width;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (radius > MagickEpsilon)
