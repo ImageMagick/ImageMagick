@@ -853,11 +853,11 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,ssize_t *curren
         *head,
         *previous;
 
-      ssize_t
-        n;
-
       register ssize_t
         i;
+
+      ssize_t
+        n;
 
       /*
         Array of images.
@@ -1061,9 +1061,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
   GeometryInfo
     geometry_info;
 
-  ssize_t
-    sp;
-
   long
     x,
     y;
@@ -1077,6 +1074,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
   PixelPacket
     *color,
     target_color;
+
+  ssize_t
+    sp;
 
   switch (*attribute)
   {
@@ -2496,11 +2496,11 @@ Append(ref,...)
     Image
       *image;
 
-    ssize_t
-      stack;
-
     register ssize_t
       i;
+
+    ssize_t
+      stack;
 
     struct PackageInfo
       *info;
@@ -2733,16 +2733,16 @@ BlobToImage(ref,...)
     Image
       *image;
 
-    ssize_t
-      ac,
-      n,
-      number_images;
-
     register char
       **p;
 
     register ssize_t
       i;
+
+    ssize_t
+      ac,
+      n,
+      number_images;
 
     STRLEN
       *length;
@@ -3115,14 +3115,14 @@ Compare(ref,...)
       *image,
       *reconstruct_image;
 
-    ssize_t
-      option;
-
     MetricType
       metric;
 
     register ssize_t
       i;
+
+    ssize_t
+      option;
 
     struct PackageInfo
       *info;
@@ -3306,14 +3306,14 @@ CompareLayers(ref)
     Image
       *image;
 
-    ssize_t
-      option;
-
     ImageLayerMethod
       method;
 
     register ssize_t
       i;
+
+    ssize_t
+      option;
 
     struct PackageInfo
       *info;
@@ -5534,11 +5534,11 @@ GetAuthenticPixels(ref,...)
     Image
       *image;
 
-    ssize_t
-      i;
-
     RectangleInfo
       region;
+
+    ssize_t
+      i;
 
     struct PackageInfo
       *info;
@@ -5692,11 +5692,11 @@ GetVirtualPixels(ref,...)
     Image
       *image;
 
-    ssize_t
-      i;
-
     RectangleInfo
       region;
+
+    ssize_t
+      i;
 
     struct PackageInfo
       *info;
@@ -6112,9 +6112,6 @@ GetPixel(ref,...)
     Image
       *image;
 
-    ssize_t
-      option;
-
     MagickBooleanType
       normalize;
 
@@ -6129,6 +6126,9 @@ GetPixel(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      option;
 
     struct PackageInfo
       *info;
@@ -6317,9 +6317,6 @@ GetPixels(ref,...)
     Image
       *image;
 
-    ssize_t
-      option;
-
     MagickBooleanType
       normalize,
       status;
@@ -6329,6 +6326,9 @@ GetPixels(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      option;
 
     struct PackageInfo
       *info;
@@ -6562,9 +6562,6 @@ ImageToBlob(ref,...)
       *image,
       *next;
 
-    ssize_t
-      scene;
-
     register ssize_t
       i;
 
@@ -6574,6 +6571,9 @@ ImageToBlob(ref,...)
 
     size_t
       length;
+
+    ssize_t
+      scene;
 
     SV
       *perl_exception,
@@ -6678,10 +6678,6 @@ Layers(ref,...)
       *image,
       *layers;
 
-    ssize_t
-      option,
-      sp;
-
     MagickBooleanType
       dither;
 
@@ -6690,6 +6686,10 @@ Layers(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      option,
+      sp;
 
     struct PackageInfo
       *info;
@@ -7316,11 +7316,6 @@ Mogrify(ref,...)
       *next,
       *region_image;
 
-    ssize_t
-      base,
-      j,
-      number_images;
-
     MagickBooleanType
       status;
 
@@ -7337,11 +7332,16 @@ Mogrify(ref,...)
     register ssize_t
       i;
 
-    struct PackageInfo
-      *info;
+    ssize_t
+      base,
+      j,
+      number_images;
 
     struct Methods
       *rp;
+
+    struct PackageInfo
+      *info;
 
     SV
       *perl_exception,
@@ -7417,12 +7417,12 @@ Mogrify(ref,...)
     Zero(&attribute_flag,NumberOf(attribute_flag),char);
     for (i=base; (i < items) || ((i == items) && (base == items)); i+=2)
     {
-      ssize_t
-        ssize_test;
-
       Arguments
         *pp,
         *qq;
+
+      ssize_t
+        ssize_test;
 
       struct ArgumentList
         *al;
@@ -8256,11 +8256,11 @@ Mogrify(ref,...)
                   QuantumRange)));
               else
                 {
+                  CacheView
+                    *composite_view;
+
                   double
                     opacity;
-
-                  ssize_t
-                    y;
 
                   MagickBooleanType
                     sync;
@@ -8271,8 +8271,8 @@ Mogrify(ref,...)
                   register PixelPacket
                     *q;
 
-                  CacheView
-                    *composite_view;
+                  ssize_t
+                    y;
 
                   /*
                     Handle dissolve composite operator (patch by
@@ -10698,9 +10698,6 @@ Montage(ref,...)
       *image,
       *next;
 
-    ssize_t
-      sp;
-
     MagickPixelPacket
       transparent_color;
 
@@ -10709,6 +10706,9 @@ Montage(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      sp;
 
     struct PackageInfo
       *info;
@@ -11107,11 +11107,11 @@ Morph(ref,...)
     Image
       *image;
 
-    ssize_t
-      number_frames;
-
     register ssize_t
       i;
+
+    ssize_t
+      number_frames;
 
     struct PackageInfo
       *info;
@@ -11333,9 +11333,6 @@ Ping(ref,...)
     int
       n;
 
-    ssize_t
-      ac;
-
     MagickBooleanType
       status;
 
@@ -11344,6 +11341,9 @@ Ping(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      ac;
 
     STRLEN
       *length;
@@ -11924,9 +11924,6 @@ QueryFontMetrics(ref,...)
     Image
       *image;
 
-    ssize_t
-      type;
-
     MagickBooleanType
       status;
 
@@ -11935,6 +11932,9 @@ QueryFontMetrics(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      type;
 
     struct PackageInfo
       *info,
@@ -12335,9 +12335,6 @@ QueryMultilineFontMetrics(ref,...)
     Image
       *image;
 
-    ssize_t
-      type;
-
     MagickBooleanType
       status;
 
@@ -12346,6 +12343,9 @@ QueryMultilineFontMetrics(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      type;
 
     struct PackageInfo
       *info,
@@ -12780,12 +12780,12 @@ QueryOption(ref,...)
     ExceptionInfo
       *exception;
 
+    register ssize_t
+      i;
+
     ssize_t
       j,
       option;
-
-    register ssize_t
-      i;
 
     SV
       *perl_exception;
@@ -12855,10 +12855,6 @@ Read(ref,...)
     int
       n;
 
-    ssize_t
-      ac,
-      number_images;
-
     MagickBooleanType
       status;
 
@@ -12867,6 +12863,10 @@ Read(ref,...)
 
     register ssize_t
       i;
+
+    ssize_t
+      ac,
+      number_images;
 
     STRLEN
       *length;
@@ -13190,9 +13190,6 @@ SetPixel(ref,...)
     Image
       *image;
 
-    ssize_t
-      option;
-
     MagickBooleanType
       normalize;
 
@@ -13207,6 +13204,9 @@ SetPixel(ref,...)
 
     register PixelPacket
       *q;
+
+    ssize_t
+      option;
 
     struct PackageInfo
       *info;
@@ -13946,12 +13946,12 @@ Write(ref,...)
       *image,
       *next;
 
+    register ssize_t
+      i;
+
     ssize_t
       number_images,
       scene;
-
-    register ssize_t
-      i;
 
     struct PackageInfo
       *info,
