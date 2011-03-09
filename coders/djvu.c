@@ -582,6 +582,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
         /* register PixelPacket *q; */
 
         logging=LogMagickEvent(CoderEvent,GetMagickModule(), "  enter ReadOneDJVUImage()");
+        (void) logging;
 
 #if DEBUG
         printf("====  Loading the page %d\n", pagenum);
