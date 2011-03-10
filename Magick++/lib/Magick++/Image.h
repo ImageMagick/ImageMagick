@@ -119,7 +119,7 @@ namespace Magick
     // offset = constant to subtract from pixel neighborhood mean
     void            adaptiveThreshold ( const size_t width,
                                         const size_t height,
-                                        const ssize_t offset = 0 );
+                                        const ::ssize_t offset = 0 );
 
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
@@ -234,8 +234,8 @@ namespace Magick
     // Compose an image onto another at specified offset and using
     // specified algorithm
     void            composite ( const Image &compositeImage_,
-        const ssize_t xOffset_,
-        const ssize_t yOffset_,
+        const ::ssize_t xOffset_,
+        const ::ssize_t yOffset_,
         const CompositeOperator compose_
                                 = InCompositeOp );
     void            composite ( const Image &compositeImage_,
@@ -260,7 +260,7 @@ namespace Magick
     void            crop ( const Geometry &geometry_ );
     
     // Cycle image colormap
-    void            cycleColormap ( const ssize_t amount_ );
+    void            cycleColormap ( const ::ssize_t amount_ );
     
     // Despeckle image (reduce speckle noise)
     void            despeckle ( void );
@@ -314,8 +314,8 @@ namespace Magick
     // Flood-fill color across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const ssize_t x_,
-                                    const ssize_t y_,
+    void            floodFillColor( const ::ssize_t x_,
+                                    const ::ssize_t y_,
             const Color &fillColor_ );
     void            floodFillColor( const Geometry &point_,
             const Color &fillColor_ );
@@ -323,8 +323,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( const ssize_t x_,
-                                    const ssize_t y_,
+    void            floodFillColor( const ::ssize_t x_,
+                                    const ::ssize_t y_,
             const Color &fillColor_,
             const Color &borderColor_ );
     void            floodFillColor( const Geometry &point_,
@@ -333,16 +333,16 @@ namespace Magick
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement opacity value using method.
-    void            floodFillOpacity ( const ssize_t x_,
-                                       const ssize_t y_,
+    void            floodFillOpacity ( const ::ssize_t x_,
+                                       const ::ssize_t y_,
                                        const unsigned int opacity_,
                                        const PaintMethod method_ );
 
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const ssize_t x_,
-                                      const ssize_t y_,
+    void            floodFillTexture( const ::ssize_t x_,
+                                      const ::ssize_t y_,
               const Image &texture_ );
     void            floodFillTexture( const Geometry &point_,
               const Image &texture_ );
@@ -350,8 +350,8 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( const ssize_t x_,
-                                      const ssize_t y_,
+    void            floodFillTexture( const ::ssize_t x_,
+                                      const ::ssize_t y_,
               const Image &texture_,
               const Color &borderColor_ );
     void            floodFillTexture( const Geometry &point_,
@@ -365,8 +365,8 @@ namespace Magick
     void            frame ( const Geometry &geometry_ = frameGeometryDefault );
     void            frame ( const size_t width_,
                             const size_t height_,
-                            const ssize_t innerBevel_ = 6,
-                            const ssize_t outerBevel_ = 6 );
+                            const ::ssize_t innerBevel_ = 6,
+                            const ::ssize_t outerBevel_ = 6 );
 
     // Applies a mathematical expression to the image.
     void            fx ( const std::string expression );
@@ -445,7 +445,7 @@ namespace Magick
     // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
              const unsigned int opacity_,
-             const ssize_t x_, const ssize_t y_,
+             const ::ssize_t x_, const ::ssize_t y_,
              const PaintMethod method_ );
 
     // Filter image by replacing each pixel component with the median
@@ -513,7 +513,7 @@ namespace Magick
                                       const MagickEvaluateOperator operator_,
                                       double rvalue_);
 
-    void            quantumOperator ( const ssize_t x_,const ssize_t y_,
+    void            quantumOperator ( const ::ssize_t x_,const ::ssize_t y_,
                                       const size_t columns_,
                                       const size_t rows_,
                                       const ChannelType channel_,
@@ -525,7 +525,7 @@ namespace Magick
     // requested process module doesn't exist, fails to load, or fails during
     // execution.
     void            process ( std::string name_,
-                              const ssize_t argc_,
+                              const ::ssize_t argc_,
                               const char **argv_ );
 
     // Raise image (lighten or darken the edges of an image to give a
@@ -745,8 +745,8 @@ namespace Magick
     // Write single image frame to an array of pixels with storage
     // type specified by user (DispatchImage), e.g.
     //   image.write( 0, 0, 640, 1, "RGB", 0, pixels );
-    void            write ( const ssize_t x_,
-                            const ssize_t y_,
+    void            write ( const ::ssize_t x_,
+                            const ::ssize_t y_,
                             const size_t columns_,
                             const size_t rows_,
                             const std::string& map_,
@@ -1083,11 +1083,11 @@ typedef struct _ImageStatistics
     Image           penTexture ( void  ) const;
 
     // Get/set pixel color at location x & y.
-    void            pixelColor ( const ssize_t x_,
-                                 const ssize_t y_,
+    void            pixelColor ( const ::ssize_t x_,
+                                 const ::ssize_t y_,
          const Color &color_ );
-    Color           pixelColor ( const ssize_t x_,
-                                 const ssize_t y_ ) const;
+    Color           pixelColor ( const ::ssize_t x_,
+                                 const ::ssize_t y_ ) const;
 
     // Add or remove a named profile to/from the image. Remove the
     // profile by passing an empty Blob (e.g. Blob()). Valid names are
@@ -1276,7 +1276,7 @@ typedef struct _ImageStatistics
 
     // Transfers read-only pixels from the image to the pixel cache as
     // defined by the specified region
-    const PixelPacket* getConstPixels ( const ssize_t x_, const ssize_t y_,
+    const PixelPacket* getConstPixels ( const ::ssize_t x_, const ::ssize_t y_,
                                         const size_t columns_,
                                         const size_t rows_ ) const;
 
@@ -1290,14 +1290,14 @@ typedef struct _ImageStatistics
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.  This method is
     // valid for DirectClass images.
-    PixelPacket* getPixels ( const ssize_t x_, const ssize_t y_,
+    PixelPacket* getPixels ( const ::ssize_t x_, const ::ssize_t y_,
            const size_t columns_,
                              const size_t rows_ );
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
-    PixelPacket* setPixels ( const ssize_t x_, const ssize_t y_,
+    PixelPacket* setPixels ( const ::ssize_t x_, const ::ssize_t y_,
            const size_t columns_,
                              const size_t rows_ );
 
@@ -1352,7 +1352,7 @@ typedef struct _ImageStatistics
     void            throwImageException( void ) const;
 
     // Register image with image registry or obtain registration id
-    ssize_t            registerId( void );
+    ::ssize_t       registerId( void );
 
     // Unregister image from image registry
     void            unregisterId( void) ;

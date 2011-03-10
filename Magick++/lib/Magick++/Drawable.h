@@ -475,7 +475,7 @@ public:
   /*virtual*/ DrawableBase* copy() const;
 
 private:
-  ssize_t   _dummy;
+  ::ssize_t   _dummy;
 };
 
 // Push (create) Clip path definition
@@ -1255,7 +1255,7 @@ public:
   /*virtual*/ DrawableBase* copy() const;
 
 private:
-  ssize_t   _dummy;
+  ::ssize_t   _dummy;
 };
 
 // Push Graphic Context
@@ -1276,7 +1276,7 @@ public:
   /*virtual*/ DrawableBase* copy() const;
 
 private:
-  ssize_t   _dummy;
+  ::ssize_t   _dummy;
 };
 
 // Pop (terminate) Pattern definition
@@ -1297,14 +1297,14 @@ public:
   /*virtual*/ DrawableBase* copy() const;
 
 private:
-  ssize_t   _dummy;
+  ::ssize_t   _dummy;
 };
 
 // Push (create) Pattern definition
 class MagickDLLDecl DrawablePushPattern : public DrawableBase
 {
 public:
-  DrawablePushPattern ( const std::string &id_, ssize_t x_, ssize_t y_,
+  DrawablePushPattern ( const std::string &id_, ::ssize_t x_, ::ssize_t y_,
                         size_t width_, size_t height_ );
 
   DrawablePushPattern ( const DrawablePushPattern& original_ );
@@ -1319,8 +1319,8 @@ public:
 
 private:
   std::string         _id;
-  ssize_t		_x;
-  ssize_t		_y;
+  ::ssize_t		_x;
+  ::ssize_t		_y;
   size_t		_width;
   size_t		_height;
 };
@@ -2055,8 +2055,8 @@ private:
 class MagickDLLDecl DrawableViewbox : public DrawableBase
 {
 public:
-  DrawableViewbox(ssize_t x1_, ssize_t y1_,
-                  ssize_t x2_, ssize_t y2_)
+  DrawableViewbox(::ssize_t x1_, ::ssize_t y1_,
+                  ::ssize_t x2_, ::ssize_t y2_)
     : _x1(x1_),
       _y1(y1_),
       _x2(x2_),
@@ -2071,47 +2071,47 @@ public:
   /*virtual*/
   DrawableBase* copy() const;
 
-  void x1( ssize_t x1_ )
+  void x1( ::ssize_t x1_ )
     {
       _x1 = x1_;
     }
-  ssize_t x1( void ) const
+  ::ssize_t x1( void ) const
     {
       return _x1;
     }
 
-  void y1( ssize_t y1_ )
+  void y1( ::ssize_t y1_ )
     {
       _y1 = y1_;
     }
-  ssize_t y1( void ) const
+  ::ssize_t y1( void ) const
     {
       return _y1;
     }
 
-  void x2( ssize_t x2_ )
+  void x2( ::ssize_t x2_ )
     {
       _x2 = x2_;
     }
-  ssize_t x2( void ) const
+  ::ssize_t x2( void ) const
     {
       return _x2;
     }
 
-  void y2( ssize_t y2_ )
+  void y2( ::ssize_t y2_ )
     {
       _y2 = y2_;
     }
-  ssize_t y2( void ) const
+  ::ssize_t y2( void ) const
     {
       return _y2;
     }
 
 private:
-  ssize_t _x1;
-  ssize_t _y1;
-  ssize_t _x2;
-  ssize_t _y2;
+  ::ssize_t _x1;
+  ::ssize_t _y1;
+  ::ssize_t _x2;
+  ::ssize_t _y2;
 };
 
 //
@@ -2295,7 +2295,7 @@ public:
   /*virtual*/ VPathBase* copy() const;
 
 private:
-  ssize_t   _dummy;
+  ::ssize_t   _dummy;
 };
 
 //

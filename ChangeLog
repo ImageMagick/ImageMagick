@@ -1,3 +1,7 @@
+2011-03-10  6.6.8-3 Cristy  <quetzlzacatenango@image...>
+  * Boost causes an ambiguity with ssize_t when building PythonMagick.  Add
+    patch from Arfrever@gento... to fix the build exception.
+
 2011-03-09  6.6.8-2 Cristy  <quetzlzacatenango@image...>
   * Support the Radiance HDR image format.
   * Update the offset in the black channel when sharpening to avoid incorrect

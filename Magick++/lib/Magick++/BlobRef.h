@@ -37,7 +37,7 @@ namespace Magick
     void *          _data;      // Blob data
     size_t          _length;    // Blob length
     Blob::Allocator _allocator; // Memory allocation system in use
-    ssize_t             _refCount;  // Reference count
+    ::ssize_t       _refCount;  // Reference count
     MutexLock       _mutexLock; // Mutex lock
   };
 
