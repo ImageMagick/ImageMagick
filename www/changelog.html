@@ -174,7 +174,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -197,7 +197,15 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-06  6.6.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-03-09  6.6.8-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support the Radiance HDR image format.</dd>
+  <dd> Update the offset in the black channel when sharpening to avoid incorrect    results.</dd>
+  <dd> Do not use GenericReadMethod for TIFF images with 64-bits per sample.</dd>
+<dt>2011-03-06  6.6.8-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Throw error message when the requested color-type or bit-depth    cannot be written by the PNG encoder (error was being thrown    into the wrong image structure).  (Reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18162).</dd>
+  <dd> Don't write a PNG text chunk with "density" keyword that overrides the    PNG pHYs chunk, if the pHYs chunk was not excluded (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18225).</dd>
+  <dd> Ignore any PNG text chunk with a "density" keyword found by the PNG    decoder, if the PNG datastream also contains a pHYs chunk.</dd>
+<dt>2011-03-06  6.6.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-1.</dd>
 <dt>2011-03-05  6.6.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support PSD files with one layer and one composite layer.</dd>
@@ -220,7 +228,7 @@
   <dd> Removed now-unused IsMonochromeImage() function from coders/png.c</dd>
   <dd> Scan the colormap instead of all of the pixels, when possible, to    determine whether the image received by the PNG encoder is grayscale    or black-and-white.</dd>
   <dd> Avoid reading from the colormap in coders/png.c when it is NULL (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18162).</dd>
-  <dd> Add a check whether the PNG "cheap transparency" criteria are met.  That    is, there is a single transparent color, no semitransparent colors, and    no opaque color that has the same RGB components as the transparent    color.  If those aren't met, a color that is transparent in one pixel    and opaque in another would always be rendered as transparent (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18167).</dd>
+  <dd> Add a check whether the PNG "cheap transparency" criteria are met.  That    is, there is a single transparent color, no semitransparent colors, and    no opaque color that has the same RGB components as the transparent    color.  If those aren't met, a color that is transparent in one pixel    and opaque in another would always be rendered as transparent, so we    must write a PNG colortype that has an alpha channel (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18167).</dd>
 <dt>2011-02-22  6.6.7-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.7-9.</dd>
 <dt>2011-02-22  6.6.7-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
