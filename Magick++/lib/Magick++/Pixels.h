@@ -27,12 +27,12 @@ namespace Magick
     // Transfer pixels from the image to the pixel view as defined by
     // the specified region. Modified pixels may be subsequently
     // transferred back to the image via sync.
-    PixelPacket* get ( const ssize_t x_, const ssize_t y_,
+    PixelPacket* get ( const ::ssize_t x_, const ::ssize_t y_,
 		       const size_t columns_,const  size_t rows_ );
 
     // Transfer read-only pixels from the image to the pixel view as
     // defined by the specified region.
-    const PixelPacket* getConst ( const ssize_t x_, const ssize_t y_,
+    const PixelPacket* getConst ( const ::ssize_t x_, const ::ssize_t y_,
                                   const size_t columns_,
                                   const size_t rows_ );
     
@@ -42,17 +42,17 @@ namespace Magick
     // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel view to the image via sync.
-    PixelPacket* set ( const ssize_t x_, const ssize_t y_,
+    PixelPacket* set ( const ::ssize_t x_, const ::ssize_t y_,
 		       const size_t columns_, const size_t rows_ );
 
     // Return pixel colormap index array
     IndexPacket* indexes ( void );
 
     // Left ordinate of view
-    ssize_t x ( void ) const;
+    ::ssize_t x ( void ) const;
 
     // Top ordinate of view
-    ssize_t y ( void ) const;
+    ::ssize_t y ( void ) const;
 
     // Width of view
     size_t columns ( void ) const;
@@ -86,8 +86,8 @@ namespace Magick
 
     Magick::Image          _image;   // Image reference
     MagickCore::CacheView*   _view;    // Image view handle
-    ssize_t                    _x;       // Left ordinate of view
-    ssize_t                    _y;       // Top ordinate of view
+    ::ssize_t                  _x;       // Left ordinate of view
+    ::ssize_t                  _y;       // Top ordinate of view
     size_t           _columns; // Width of view
     size_t           _rows;    // Height of view
     MagickCore:: ExceptionInfo _exception; // Any thrown exception
@@ -101,13 +101,13 @@ namespace Magick
 //
 
 // Left ordinate of view
-inline ssize_t Magick::Pixels::x ( void ) const
+inline ::ssize_t Magick::Pixels::x ( void ) const
 {
   return _x;
 }
 
 // Top ordinate of view
-inline ssize_t Magick::Pixels::y ( void ) const
+inline ::ssize_t Magick::Pixels::y ( void ) const
 {
   return _y;
 }

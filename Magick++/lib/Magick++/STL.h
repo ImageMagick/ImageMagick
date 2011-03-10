@@ -64,14 +64,14 @@ namespace Magick
   public:
     adaptiveThresholdImage( const size_t width_,
                             const size_t height_,
-                            const ssize_t offset_ = 0  );
+                            const ::ssize_t offset_ = 0  );
 
     void operator()( Image &image_ ) const;
 
   private:
     size_t _width;
     size_t _height;
-    ssize_t _offset;
+    ::ssize_t _offset;
   };
   
   // Add noise to image with specified noise type
@@ -279,8 +279,8 @@ namespace Magick
   {
   public:
     compositeImage( const Image &compositeImage_,
-        ssize_t xOffset_,
-        ssize_t yOffset_,
+        ::ssize_t xOffset_,
+        ::ssize_t yOffset_,
         CompositeOperator compose_ = InCompositeOp );
 
     compositeImage( const Image &compositeImage_,
@@ -291,8 +291,8 @@ namespace Magick
 
   private:
     Image             _compositeImage;
-    ssize_t               _xOffset;
-    ssize_t               _yOffset;
+    ::ssize_t         _xOffset;
+    ::ssize_t         _yOffset;
     CompositeOperator _compose;
   };
 
@@ -324,12 +324,12 @@ namespace Magick
   class MagickDLLDecl cycleColormapImage : public std::unary_function<Image&,void>
   {
   public:
-    cycleColormapImage( const ssize_t amount_ );
+    cycleColormapImage( const ::ssize_t amount_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    ssize_t _amount;
+    ::ssize_t _amount;
   };
 
   // Despeckle image (reduce speckle noise)
@@ -463,8 +463,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( const ssize_t x_,
-                         const ssize_t y_,
+    floodFillColorImage( const ::ssize_t x_,
+                         const ::ssize_t y_,
        const Color &fillColor_ );
 
     floodFillColorImage( const Geometry &point_,
@@ -473,8 +473,8 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( const ssize_t x_,
-                         const ssize_t y_,
+    floodFillColorImage( const ::ssize_t x_,
+                         const ::ssize_t y_,
        const Color &fillColor_,
        const Color &borderColor_ );
 
@@ -485,8 +485,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    ssize_t   _x;
-    ssize_t   _y;
+    ::ssize_t   _x;
+    ::ssize_t   _y;
     Color          _fillColor;
     Color          _borderColor;
   };
@@ -498,8 +498,8 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( const ssize_t x_,
-                           const ssize_t y_,
+    floodFillTextureImage( const ::ssize_t x_,
+                           const ::ssize_t y_,
          const Image &texture_ );
 
     floodFillTextureImage( const Geometry &point_,
@@ -508,8 +508,8 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( const ssize_t x_,
-                           const ssize_t y_,
+    floodFillTextureImage( const ::ssize_t x_,
+                           const ::ssize_t y_,
          const Image &texture_,
          const Color &borderColor_ );
 
@@ -520,8 +520,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    ssize_t  _x;
-    ssize_t  _y;
+    ::ssize_t  _x;
+    ::ssize_t  _y;
     Image         _texture;
     Color         _borderColor;
   };
@@ -544,15 +544,15 @@ namespace Magick
     frameImage( const Geometry &geometry_ = frameGeometryDefault );
 
     frameImage( const size_t width_, const size_t height_,
-    const ssize_t innerBevel_ = 6, const ssize_t outerBevel_ = 6 );
+    const ::ssize_t innerBevel_ = 6, const ::ssize_t outerBevel_ = 6 );
 
     void operator()( Image &image_ ) const;
 
   private:
     size_t _width;
     size_t _height;
-    ssize_t          _outerBevel;
-    ssize_t          _innerBevel;
+    ::ssize_t        _outerBevel;
+    ::ssize_t        _innerBevel;
   };
 
   // Gamma correct image
@@ -717,7 +717,7 @@ namespace Magick
   public:
     matteFloodfillImage( const Color &target_ ,
        const unsigned int matte_,
-       const ssize_t x_, const ssize_t y_,
+       const ::ssize_t x_, const ::ssize_t y_,
        const PaintMethod method_ );
 
     void operator()( Image &image_ ) const;
@@ -725,8 +725,8 @@ namespace Magick
   private:
     Color         _target;
     unsigned int  _matte;
-    ssize_t           _x;
-    ssize_t           _y;
+    ::ssize_t     _x;
+    ::ssize_t     _y;
     PaintMethod   _method;
   };
 
@@ -899,7 +899,7 @@ namespace Magick
   public:
     rollImage( const Geometry &roll_ );
 
-    rollImage( const ssize_t columns_, const ssize_t rows_ );
+    rollImage( const ::ssize_t columns_, const ::ssize_t rows_ );
 
     void operator()( Image &image_ ) const;
 
@@ -1593,15 +1593,15 @@ namespace Magick
   class MagickDLLDecl pixelColorImage : public std::unary_function<Image&,void>
   {
   public:
-    pixelColorImage( const ssize_t x_,
-                     const ssize_t y_,
+    pixelColorImage( const ::ssize_t x_,
+                     const ::ssize_t y_,
          const Color &color_);
 
     void operator()( Image &image_ ) const;
 
   private:
-    ssize_t _x;
-    ssize_t _y;
+    ::ssize_t    _x;
+    ::ssize_t    _y;
     Color        _color;
   };
 
@@ -1857,7 +1857,7 @@ namespace Magick
        InputIterator last_ ) {
 
     MagickCore::Image* previous = 0;
-    ssize_t scene = 0;
+    ::ssize_t scene = 0;
     for ( InputIterator iter = first_; iter != last_; ++iter )
       {
   // Unless we reduce the reference count to one, the same image
@@ -2036,7 +2036,7 @@ namespace Magick
     // Clear out container
     container_->clear();
 
-    for ( ssize_t i=0; i < (ssize_t) number_formats; i++)
+    for ( ::ssize_t i=0; i < (::ssize_t) number_formats; i++)
       {
         const MagickCore::MagickInfo *magick_info =
           MagickCore::GetMagickInfo( coder_list[i], &exceptionInfo );
@@ -2493,7 +2493,7 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
 
     linkImages( first_, last_ );
-    ssize_t errorStat = MagickCore::WriteImages( first_->constImageInfo(),
+    ::ssize_t errorStat = MagickCore::WriteImages( first_->constImageInfo(),
                                             first_->image(),
                                             imageSpec_.c_str(),
                                             &exceptionInfo );
