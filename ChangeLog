@@ -1,4 +1,7 @@
 2011-03-10  6.6.8-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.8-3.
+
+2011-03-10  6.6.8-3 Cristy  <quetzlzacatenango@image...>
   * Boost causes an ambiguity with ssize_t when building PythonMagick.  Add
     patch from Arfrever@gento... to fix the build exception.
 
