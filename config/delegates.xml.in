@@ -71,7 +71,7 @@
   <delegate decode="eps" encode="pdf" mode="bi" command="&quot;@PSDelegate@&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=@GSPDFDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="eps" encode="ps" mode="bi" command="&quot;@PSDelegate@&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSPSDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="fig" command="&quot;@FIGDecodeDelegate@&quot; -L ps &quot;%i&quot; &quot;%o&quot;"/>
-  <delegate decode="gplt" command="&quot;@EchoDelegate@&quot; &quot;set size 1.25,0.62; set terminal postscript portrait color solid; set output &quot;%o&quot;; load &quot;%i&quot;&quot; &gt; &quot;%u&quot;;&quot;@GnuplotDecodeDelegate@&quot; &quot;%u&quot;"/>
+  <delegate decode="plt" command="&quot;@EchoDelegate@&quot; &quot;set size 1.25,0.62; set terminal postscript portrait color solid; set output \';%o\'; load \'%i\'&quot; &gt; &quot;%u&quot;;&quot;@GnuplotDecodeDelegate@&quot; &quot;%u&quot;"/>
   <delegate decode="hpg" command="&quot;@HPGLDecodeDelegate@&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
   <delegate decode="hpgl" command="if [ -e @HPGLDecodeDelegate@ -o -e /usr/bin/@HPGLDecodeDelegate@ ]; then     @HPGLDecodeDelegate@ -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;;   else     echo &quot;You need to install hp2xx to use HPGL files with ImageMagick.&quot;;     exit 1;   fi"/>
   <delegate decode="htm" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
