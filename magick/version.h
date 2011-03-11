@@ -33,7 +33,7 @@ extern "C" {
 #define MagickLibAddendum  "-4"
 #define MagickLibInterface  4
 #define MagickLibMinInterface  4
-#define MagickReleaseDate  "2011-03-10"
+#define MagickReleaseDate  "2011-03-11"
 #define MagickChangeDate   "20110310"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
