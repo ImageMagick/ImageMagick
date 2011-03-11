@@ -183,6 +183,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     fx_info->resample_filter[i]=AcquireResampleFilter(GetImageFromList(
       fx_info->images,i),fx_info->exception);
     SetResampleFilter(fx_info->resample_filter[i],PointFilter,1.0);
+    SetResampleFilterMatte(fx_info->resample_filter[i],MagickFalse);
   }
   fx_info->random_info=AcquireRandomInfo();
   fx_info->expression=ConstantString(expression);
