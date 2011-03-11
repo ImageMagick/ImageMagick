@@ -7189,8 +7189,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           */
           for (i=0; i<number_opaque; i++)
           {
-             if (IsColorEqual(opaque+i,
-                &image->background_color))
+             if (IsColorEqual(opaque+i, &image->background_color))
              break;
           }
 
@@ -7200,9 +7199,19 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                opaque[i].opacity = OpaqueOpacity;
                number_opaque++;
             }
+          else if (logging != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "      No room in the colormap to add background color");
        }
 
      image_colors=number_opaque+number_transparent+number_semitransparent;
+
+     if (mng_info->write_png8 != MagickFalse && image_colors > 256)
+       {
+         /* No room for the background color; remove it. */
+         number_opaque--;
+         image_colors--;
+       }
 
      if (logging != MagickFalse)
        {
