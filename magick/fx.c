@@ -160,6 +160,9 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   FxInfo
     *fx_info;
 
+  Image
+    *next;
+
   register ssize_t
     i;
 
@@ -178,12 +181,13 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     GetImageListLength(fx_info->images),sizeof(*fx_info->resample_filter));
   if (fx_info->resample_filter == (ResampleFilter **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  for (i=0; i < (ssize_t) GetImageListLength(fx_info->images); i++)
+  i=0;
+  for (next=fx_info->images; next != (Image *) NULL; next=next->next)
   {
-    fx_info->resample_filter[i]=AcquireResampleFilter(GetImageFromList(
-      fx_info->images,i),fx_info->exception);
+    fx_info->resample_filter[i]=AcquireResampleFilter(next,fx_info->exception);
     SetResampleFilter(fx_info->resample_filter[i],PointFilter,1.0);
     SetResampleFilterMatte(fx_info->resample_filter[i],MagickFalse);
+    i++;
   }
   fx_info->random_info=AcquireRandomInfo();
   fx_info->expression=ConstantString(expression);
