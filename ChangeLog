@@ -3,6 +3,9 @@
     256 colors in the palette and the background colors is not in that
     palette (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18199);
+  * The "-define PNG:exclude-chunk=bKGD" option was also excluding
+    the text chunks. (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18253).
 
 2011-03-10  6.6.8-4 Cristy  <quetzlzacatenango@image...>
   * Fx is a mathematicals function.  Do not treat transparency as black.
@@ -27,7 +30,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18162).
   * Don't write a PNG text chunk with "density" keyword that overrides the
     PNG pHYs chunk, if the pHYs chunk was not excluded (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18225).
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18253).
   * Ignore any PNG text chunk with a "density" keyword found by the PNG
     decoder, if the PNG datastream also contains a pHYs chunk.
 
