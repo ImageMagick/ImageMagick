@@ -90,7 +90,6 @@ extern MagickExport MagickBooleanType
     MagickPixelPacket *),
   SetResampleFilterInterpolateMethod(ResampleFilter *,
     const InterpolatePixelMethod),
-  SetResampleFilterMatte(ResampleFilter *,const MagickBooleanType),
   SetResampleFilterVirtualPixelMethod(ResampleFilter *,
     const VirtualPixelMethod);
 
