@@ -9398,8 +9398,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         text;
 
       value=GetImageProperty(image,property);
-      if (LocaleCompare(property,"density") != 0 &&
-          ping_exclude_pHYs == MagickFalse)
+      if (LocaleCompare(property,"density") != 0 ||
+          ping_exclude_pHYs != MagickFalse)
         {
         if (value != (const char *) NULL)
           {
