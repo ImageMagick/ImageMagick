@@ -8,7 +8,9 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18253).
 
 2011-03-10  6.6.8-4 Cristy  <quetzlzacatenango@image...>
-  * Fx is a mathematicals function.  Do not treat transparency as black.
+  * Fx is a mathematical function.  Do not treat transparency as black.
+  * No image scene suffix for filenames that include a single bracket (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18267).
 
 2011-03-10  6.6.8-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-3.
