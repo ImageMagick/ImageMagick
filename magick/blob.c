@@ -2424,7 +2424,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       (void) CopyMagickString(filename,image->filename,MaxTextExtent);
       if ((image_info->adjoin == MagickFalse) ||
-          (IsGlob(filename) != MagickFalse))
+          (strchr(filename,'%') != (char *) NULL))
         {
           /*
             Form filename for multi-part images.
