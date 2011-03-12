@@ -197,7 +197,13 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-10  6.6.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-03-11  6.6.8-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't try to store a bKGD chunk in a PNG8 when there are already    256 colors in the palette and the background colors is not in that    palette (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18199);</dd>
+  <dd> The "-define PNG:exclude-chunk=bKGD" option was also excluding    the text chunks. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18253).</dd>
+<dt>2011-03-10  6.6.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fx is a mathematical function.  Do not treat transparency as black.</dd>
+  <dd> No image scene suffix for filenames that include a single bracket (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18267).</dd>
+<dt>2011-03-10  6.6.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-3.</dd>
 <dt>2011-03-10  6.6.8-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Boost causes an ambiguity with ssize_t when building PythonMagick.  Add    patch from Arfrever@gento... to fix the build exception.</dd>
@@ -207,7 +213,7 @@
   <dd> Do not use GenericReadMethod for TIFF images with 64-bits per sample.</dd>
 <dt>2011-03-06  6.6.8-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Throw error message when the requested color-type or bit-depth    cannot be written by the PNG encoder (error was being thrown    into the wrong image structure).  (Reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18162).</dd>
-  <dd> Don't write a PNG text chunk with "density" keyword that overrides the    PNG pHYs chunk, if the pHYs chunk was not excluded (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18225).</dd>
+  <dd> Don't write a PNG text chunk with "density" keyword that overrides the    PNG pHYs chunk, if the pHYs chunk was not excluded (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18253).</dd>
   <dd> Ignore any PNG text chunk with a "density" keyword found by the PNG    decoder, if the PNG datastream also contains a pHYs chunk.</dd>
 <dt>2011-03-06  6.6.8-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-1.</dd>
