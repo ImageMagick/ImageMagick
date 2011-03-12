@@ -624,6 +624,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     char
+      magick_path[MaxTextExtent],
       *property,
       timestamp[MaxTextExtent];
 
@@ -634,17 +635,17 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       *profile;
 
     next->taint=MagickFalse;
-    if (next->magick_columns == 0)
-      next->magick_columns=next->columns;
-    if (next->magick_rows == 0)
-      next->magick_rows=next->rows;
-    if ((LocaleCompare(magick,"HTTP") != 0) &&
-        (LocaleCompare(magick,"FTP") != 0) && (LocaleCompare(magick,"X") != 0))
+    GetPathComponent(magick_filename,MagickPath,magick_path);
+    if (*magick_path == '\0')
       (void) CopyMagickString(next->magick,magick,MaxTextExtent);
     (void) CopyMagickString(next->magick_filename,magick_filename,
       MaxTextExtent);
     if (IsBlobTemporary(image) != MagickFalse)
       (void) CopyMagickString(next->filename,filename,MaxTextExtent);
+    if (next->magick_columns == 0)
+      next->magick_columns=next->columns;
+    if (next->magick_rows == 0)
+      next->magick_rows=next->rows;
     value=GetImageProperty(next,"tiff:Orientation");
     if (value == (char *) NULL)
       value=GetImageProperty(next,"exif:Orientation");
