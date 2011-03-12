@@ -917,7 +917,7 @@ static void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   saturation=0.0;
   brightness=0.0;
   ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=0.5*sign*(0.5*(sin((double) (MagickPI*(brightness-0.5))+1.0))-
+  brightness+=0.5*sign*(0.5*(sin((double) (MagickPI*(brightness-0.5)))+1.0)-
     brightness);
   if (brightness > 1.0)
     brightness=1.0;
