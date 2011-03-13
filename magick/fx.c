@@ -182,7 +182,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   {
     fx_info->resample_filter[i]=AcquireResampleFilter(next,fx_info->exception);
     SetResampleFilter(fx_info->resample_filter[i],PointFilter,1.0);
-    SetResampleFilterInterpolateMethod(fx_info->resample_filter[i],
+    (void) SetResampleFilterInterpolateMethod(fx_info->resample_filter[i],
       NearestNeighborInterpolatePixel);
     i++;
   }
