@@ -1446,8 +1446,8 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	coders/ycbcr.c coders/yuv.c coders/dps.c coders/djvu.c \
 	coders/exr.c coders/fpx.c coders/clipboard.c coders/emf.c \
 	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/wmf.c coders/x.c \
-	coders/xwd.c filters/analyze.c
+	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
+	coders/x.c coders/xwd.c filters/analyze.c
 am__objects_2 = magick/magick_libMagickCore_la-accelerate.lo \
 	magick/magick_libMagickCore_la-animate.lo \
 	magick/magick_libMagickCore_la-annotate.lo \
@@ -1560,12 +1560,14 @@ am__objects_2 = magick/magick_libMagickCore_la-accelerate.lo \
 @TIFF_DELEGATE_TRUE@am__objects_13 =  \
 @TIFF_DELEGATE_TRUE@	coders/magick_libMagickCore_la-ept.lo \
 @TIFF_DELEGATE_TRUE@	coders/magick_libMagickCore_la-tiff.lo
-@WMF_DELEGATE_TRUE@am__objects_14 =  \
+@WEBP_DELEGATE_TRUE@am__objects_14 =  \
+@WEBP_DELEGATE_TRUE@	coders/magick_libMagickCore_la-webp.lo
+@WMF_DELEGATE_TRUE@am__objects_15 =  \
 @WMF_DELEGATE_TRUE@	coders/magick_libMagickCore_la-wmf.lo
-@X11_DELEGATE_TRUE@am__objects_15 =  \
+@X11_DELEGATE_TRUE@am__objects_16 =  \
 @X11_DELEGATE_TRUE@	coders/magick_libMagickCore_la-x.lo \
 @X11_DELEGATE_TRUE@	coders/magick_libMagickCore_la-xwd.lo
-am__objects_16 = coders/magick_libMagickCore_la-aai.lo \
+am__objects_17 = coders/magick_libMagickCore_la-aai.lo \
 	coders/magick_libMagickCore_la-art.lo \
 	coders/magick_libMagickCore_la-avs.lo \
 	coders/magick_libMagickCore_la-bgr.lo \
@@ -1669,11 +1671,11 @@ am__objects_16 = coders/magick_libMagickCore_la-aai.lo \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
-	$(am__objects_14) $(am__objects_15)
-am__objects_17 = filters/magick_libMagickCore_la-analyze.lo
+	$(am__objects_14) $(am__objects_15) $(am__objects_16)
+am__objects_18 = filters/magick_libMagickCore_la-analyze.lo
 @WITH_MODULES_FALSE@am_magick_libMagickCore_la_OBJECTS =  \
 @WITH_MODULES_FALSE@	$(am__objects_2) $(am__objects_3) \
-@WITH_MODULES_FALSE@	$(am__objects_16) $(am__objects_17)
+@WITH_MODULES_FALSE@	$(am__objects_17) $(am__objects_18)
 @WITH_MODULES_TRUE@am_magick_libMagickCore_la_OBJECTS =  \
 @WITH_MODULES_TRUE@	$(am__objects_2) $(am__objects_3)
 magick_libMagickCore_la_OBJECTS =  \
@@ -1685,7 +1687,7 @@ magick_libMagickCore_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 wand_libMagickWand_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am__objects_18 = wand/wand_libMagickWand_la-animate.lo \
+am__objects_19 = wand/wand_libMagickWand_la-animate.lo \
 	wand/wand_libMagickWand_la-compare.lo \
 	wand/wand_libMagickWand_la-composite.lo \
 	wand/wand_libMagickWand_la-conjure.lo \
@@ -1705,7 +1707,7 @@ am__objects_18 = wand/wand_libMagickWand_la-animate.lo \
 	wand/wand_libMagickWand_la-stream.lo \
 	wand/wand_libMagickWand_la-wand.lo \
 	wand/wand_libMagickWand_la-wand-view.lo
-am_wand_libMagickWand_la_OBJECTS = $(am__objects_18)
+am_wand_libMagickWand_la_OBJECTS = $(am__objects_19)
 wand_libMagickWand_la_OBJECTS = $(am_wand_libMagickWand_la_OBJECTS)
 wand_libMagickWand_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -2508,7 +2510,7 @@ UINTPTR_T = @UINTPTR_T@
 UMEM_LIBS = @UMEM_LIBS@
 UniconvertorDelegate = @UniconvertorDelegate@
 VERSION = @VERSION@
-WEBPDelegate = @WEBPDelegate@
+WEBP_LIBS = @WEBP_LIBS@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WMF_LIBS = @WMF_LIBS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
@@ -2840,6 +2842,8 @@ codersdir = $(CODER_PATH)
 @PNG_DELEGATE_TRUE@MAGICK_PNG_SRCS = coders/png.c
 @TIFF_DELEGATE_TRUE@MAGICK_TIFF_MODULES = coders/ept.la coders/tiff.la
 @TIFF_DELEGATE_TRUE@MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
+@WEBP_DELEGATE_TRUE@MAGICK_WEBP_MODULES = coders/webp.la
+@WEBP_DELEGATE_TRUE@MAGICK_WEBP_SRCS = coders/webp.c
 @WINGDI32_DELEGATE_TRUE@MAGICK_GDI32_MODULES = coders/clipboard.la coders/emf.la
 @WINGDI32_DELEGATE_TRUE@MAGICK_GDI32_SRCS = coders/clipboard.c coders/emf.c
 @WMF_DELEGATE_TRUE@MAGICK_WMF_MODULES = coders/wmf.la
@@ -2958,6 +2962,7 @@ MAGICK_CODER_SRCS = \
   $(MAGICK_JP2_SRCS) \
   $(MAGICK_PNG_SRCS) \
   $(MAGICK_TIFF_SRCS) \
+  $(MAGICK_WEBP_SRCS) \
   $(MAGICK_WMF_SRCS) \
   $(MAGICK_X11_SRCS)
 
@@ -3707,6 +3712,12 @@ coders_wbmp_la_SOURCES = coders/wbmp.c
 coders_wbmp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_wbmp_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_wbmp_la_LIBADD = $(MAGICKCORE_LIBS)
+
+# WEBP coder module
+coders_webp_la_SOURCES = coders/webp.c
+coders_webp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_webp_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_webp_la_LIBADD = $(MAGICKCORE_LIBS) $(WEBP_LIBS) $(MATH_LIBS)
 
 # WMF coder module
 coders_wmf_la_SOURCES = coders/wmf.c
@@ -5963,6 +5974,8 @@ coders/magick_libMagickCore_la-ept.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/magick_libMagickCore_la-tiff.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
+coders/magick_libMagickCore_la-webp.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
 coders/magick_libMagickCore_la-wmf.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/magick_libMagickCore_la-x.lo: coders/$(am__dirstamp) \
@@ -6810,6 +6823,8 @@ mostlyclean-compile:
 	-rm -f coders/magick_libMagickCore_la-viff.lo
 	-rm -f coders/magick_libMagickCore_la-wbmp.$(OBJEXT)
 	-rm -f coders/magick_libMagickCore_la-wbmp.lo
+	-rm -f coders/magick_libMagickCore_la-webp.$(OBJEXT)
+	-rm -f coders/magick_libMagickCore_la-webp.lo
 	-rm -f coders/magick_libMagickCore_la-wmf.$(OBJEXT)
 	-rm -f coders/magick_libMagickCore_la-wmf.lo
 	-rm -f coders/magick_libMagickCore_la-wpg.$(OBJEXT)
@@ -7368,6 +7383,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-vid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-viff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-wbmp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-webp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-wmf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-wpg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libMagickCore_la-x.Plo@am__quote@
@@ -10206,6 +10222,14 @@ coders/magick_libMagickCore_la-tiff.lo: coders/tiff.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/tiff.c' object='coders/magick_libMagickCore_la-tiff.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/magick_libMagickCore_la-tiff.lo `test -f 'coders/tiff.c' || echo '$(srcdir)/'`coders/tiff.c
+
+coders/magick_libMagickCore_la-webp.lo: coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/magick_libMagickCore_la-webp.lo -MD -MP -MF coders/$(DEPDIR)/magick_libMagickCore_la-webp.Tpo -c -o coders/magick_libMagickCore_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/magick_libMagickCore_la-webp.Tpo coders/$(DEPDIR)/magick_libMagickCore_la-webp.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/webp.c' object='coders/magick_libMagickCore_la-webp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/magick_libMagickCore_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
 
 coders/magick_libMagickCore_la-wmf.lo: coders/wmf.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/magick_libMagickCore_la-wmf.lo -MD -MP -MF coders/$(DEPDIR)/magick_libMagickCore_la-wmf.Tpo -c -o coders/magick_libMagickCore_la-wmf.lo `test -f 'coders/wmf.c' || echo '$(srcdir)/'`coders/wmf.c
