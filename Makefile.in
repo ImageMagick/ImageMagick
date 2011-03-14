@@ -1191,6 +1191,16 @@ coders_wbmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_wbmp_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_wbmp_la_rpath = -rpath $(codersdir)
+coders_webp_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_coders_webp_la_OBJECTS = coders/coders_webp_la-webp.lo
+coders_webp_la_OBJECTS = $(am_coders_webp_la_OBJECTS)
+coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(coders_webp_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
+@WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_webp_la_rpath =  \
+@WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
 coders_wmf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_wmf_la_OBJECTS = coders/coders_wmf_la-wmf.lo
@@ -2017,17 +2027,18 @@ SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
 	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
 	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
-	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
-	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
-	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
-	$(ltdl_shl_load_la_SOURCES) $(magick_libMagickCore_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xps_la_SOURCES) \
+	$(coders_xwd_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
+	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
+	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
+	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
+	$(magick_libMagickCore_la_SOURCES) \
 	$(wand_libMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
@@ -2107,17 +2118,17 @@ DIST_SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
 	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
 	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
-	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
-	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
-	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
-	$(ltdl_shl_load_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xps_la_SOURCES) \
+	$(coders_xwd_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
+	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
+	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
+	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
 	$(am__magick_libMagickCore_la_SOURCES_DIST) \
 	$(wand_libMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -3079,6 +3090,7 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_TRUE@  $(MAGICK_JP2_MODULES) \
 @WITH_MODULES_TRUE@  $(MAGICK_PNG_MODULES) \
 @WITH_MODULES_TRUE@  $(MAGICK_TIFF_MODULES) \
+@WITH_MODULES_TRUE@  $(MAGICK_WEBP_MODULES) \
 @WITH_MODULES_TRUE@  $(MAGICK_WMF_MODULES) \
 @WITH_MODULES_TRUE@  $(MAGICK_X11_MODULES)
 
@@ -5443,6 +5455,10 @@ coders/coders_wbmp_la-wbmp.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/wbmp.la: $(coders_wbmp_la_OBJECTS) $(coders_wbmp_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_wbmp_la_LINK) $(am_coders_wbmp_la_rpath) $(coders_wbmp_la_OBJECTS) $(coders_wbmp_la_LIBADD) $(LIBS)
+coders/coders_webp_la-webp.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+coders/webp.la: $(coders_webp_la_OBJECTS) $(coders_webp_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(AM_V_CCLD)$(coders_webp_la_LINK) $(am_coders_webp_la_rpath) $(coders_webp_la_OBJECTS) $(coders_webp_la_LIBADD) $(LIBS)
 coders/coders_wmf_la-wmf.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/wmf.la: $(coders_wmf_la_OBJECTS) $(coders_wmf_la_DEPENDENCIES) coders/$(am__dirstamp)
@@ -6591,6 +6607,8 @@ mostlyclean-compile:
 	-rm -f coders/coders_viff_la-viff.lo
 	-rm -f coders/coders_wbmp_la-wbmp.$(OBJEXT)
 	-rm -f coders/coders_wbmp_la-wbmp.lo
+	-rm -f coders/coders_webp_la-webp.$(OBJEXT)
+	-rm -f coders/coders_webp_la-webp.lo
 	-rm -f coders/coders_wmf_la-wmf.$(OBJEXT)
 	-rm -f coders/coders_wmf_la-wmf.lo
 	-rm -f coders/coders_wpg_la-wpg.$(OBJEXT)
@@ -7267,6 +7285,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_vid_la-vid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_viff_la-viff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_wbmp_la-wbmp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_webp_la-webp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_wmf_la-wmf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_wpg_la-wpg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_x_la-x.Plo@am__quote@
@@ -8406,6 +8425,14 @@ coders/coders_wbmp_la-wbmp.lo: coders/wbmp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/wbmp.c' object='coders/coders_wbmp_la-wbmp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_wbmp_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_wbmp_la-wbmp.lo `test -f 'coders/wbmp.c' || echo '$(srcdir)/'`coders/wbmp.c
+
+coders/coders_webp_la-webp.lo: coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_webp_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_webp_la-webp.lo -MD -MP -MF coders/$(DEPDIR)/coders_webp_la-webp.Tpo -c -o coders/coders_webp_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/coders_webp_la-webp.Tpo coders/$(DEPDIR)/coders_webp_la-webp.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/webp.c' object='coders/coders_webp_la-webp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_webp_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_webp_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
 
 coders/coders_wmf_la-wmf.lo: coders/wmf.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_wmf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_wmf_la-wmf.lo -MD -MP -MF coders/$(DEPDIR)/coders_wmf_la-wmf.Tpo -c -o coders/coders_wmf_la-wmf.lo `test -f 'coders/wmf.c' || echo '$(srcdir)/'`coders/wmf.c
