@@ -1,3 +1,9 @@
+2011-03-14  6.6.8-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed a rounding/truncation error while writing the pHYs chunk in the
+    png encoder.
+  * Don't write a text-encoded profile when "-define PNG:exclude-chunk=text"
+    is present.
+
 2011-03-14  6.6.8-5 Cristy  <quetzlzacatenango@image...>
   * Add support for the WebP image format.
 
