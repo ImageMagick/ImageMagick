@@ -1,3 +1,7 @@
+2011-03-14  6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Ensured that -sparse-color preserves unused channels when
+    channel limited.  Before this unused channels would be reset to black.
+
 2011-03-11  6.6.8-4 Glenn Randers-Pehrson <glennrp@image...>
   * Don't try to store a bKGD chunk in a PNG8 when there are already
     256 colors in the palette and the background colors is not in that

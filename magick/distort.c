@@ -2419,9 +2419,6 @@ MagickExport Image *SparseColorImage(const Image *image,
   Image
     *sparse_image;
 
-  MagickPixelPacket
-    zero;
-
   size_t
     number_colors;
 
@@ -2432,6 +2429,11 @@ MagickExport Image *SparseColorImage(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
+fprintf(stderr, "number_arguments = %ld\n", (long) number_arguments);
+for(number_colors=0; number_colors<number_arguments; number_colors++)
+    fprintf(stderr, "%lf, ", arguments[number_colors]);
+fprintf(stderr, "\n");
+
   /* Determine number of color values needed per control point */
   number_colors=0;
   if ( channel & RedChannel     ) number_colors++;
@@ -2439,6 +2441,8 @@ MagickExport Image *SparseColorImage(const Image *image,
   if ( channel & BlueChannel    ) number_colors++;
   if ( channel & IndexChannel   ) number_colors++;
   if ( channel & OpacityChannel ) number_colors++;
+
+fprintf(stderr, "number_colors = %ld\n", (long) number_colors);
 
   /*
     Convert input arguments into mapping coefficients to apply the distortion.
@@ -2525,6 +2529,7 @@ MagickExport Image *SparseColorImage(const Image *image,
     }
   { /* ----- MAIN CODE ----- */
     CacheView
+      *image_view,
       *sparse_view;
 
     MagickBooleanType
@@ -2538,7 +2543,7 @@ MagickExport Image *SparseColorImage(const Image *image,
 
     status=MagickTrue;
     progress=0;
-    GetMagickPixelPacket(sparse_image,&zero);
+    image_view=AcquireCacheView(image);
     sparse_view=AcquireCacheView(sparse_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2551,27 +2556,35 @@ MagickExport Image *SparseColorImage(const Image *image,
       MagickPixelPacket
         pixel;    /* pixel to assign to distorted image */
 
+      register const IndexPacket
+        *restrict p_indexes;
+
       register IndexPacket
-        *restrict indexes;
+        *restrict q_indexes;
 
       register ssize_t
         i;
 
+      register const PixelPacket
+        *restrict p;
+
       register PixelPacket
         *restrict q;
 
+      p=GetCacheViewVirtualPixels(image_view,0,j,image->columns,1,exception);
       q=QueueCacheViewAuthenticPixels(sparse_view,0,j,sparse_image->columns,
         1,exception);
-      if (q == (PixelPacket *) NULL)
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         {
           status=MagickFalse;
           continue;
         }
-/* FUTURE: get pixel from source image - so channel can replace parts */
-      indexes=GetCacheViewAuthenticIndexQueue(sparse_view);
-      pixel=zero;
+      p_indexes=GetCacheViewAuthenticIndexQueue(image_view);
+      q_indexes=GetCacheViewAuthenticIndexQueue(sparse_view);
+
       for (i=0; i < (ssize_t) sparse_image->columns; i++)
       {
+        SetMagickPixelPacket(sparse_image,p,p_indexes,&pixel);
         switch (method)
         {
           case BarycentricColorInterpolate:
@@ -2687,9 +2700,10 @@ MagickExport Image *SparseColorImage(const Image *image,
         if ( channel & BlueChannel    ) pixel.blue    *= QuantumRange;
         if ( channel & IndexChannel   ) pixel.index   *= QuantumRange;
         if ( channel & OpacityChannel ) pixel.opacity *= QuantumRange;
-        SetPixelPacket(sparse_image,&pixel,q,indexes);
-        q++;
-        indexes++;
+        SetPixelPacket(sparse_image,&pixel,q,q_indexes);
+        p++; q++;
+        p_indexes++;
+        q_indexes++;
       }
       sync=SyncCacheViewAuthenticPixels(sparse_view,exception);
       if (sync == MagickFalse)
