@@ -2429,11 +2429,6 @@ MagickExport Image *SparseColorImage(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-fprintf(stderr, "number_arguments = %ld\n", (long) number_arguments);
-for(number_colors=0; number_colors<number_arguments; number_colors++)
-    fprintf(stderr, "%lf, ", arguments[number_colors]);
-fprintf(stderr, "\n");
-
   /* Determine number of color values needed per control point */
   number_colors=0;
   if ( channel & RedChannel     ) number_colors++;
@@ -2441,8 +2436,6 @@ fprintf(stderr, "\n");
   if ( channel & BlueChannel    ) number_colors++;
   if ( channel & IndexChannel   ) number_colors++;
   if ( channel & OpacityChannel ) number_colors++;
-
-fprintf(stderr, "number_colors = %ld\n", (long) number_colors);
 
   /*
     Convert input arguments into mapping coefficients to apply the distortion.
