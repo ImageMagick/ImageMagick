@@ -681,7 +681,6 @@ ZipDelegate
 XPSDelegate
 WWWDecodeDelegate
 WMFDecodeDelegate
-WEBPDelegate
 UniconvertorDelegate
 TXTDelegate
 SCANDecodeDelegate
@@ -738,6 +737,9 @@ xml2_config
 WMF_LIBS
 WMF_DELEGATE_FALSE
 WMF_DELEGATE_TRUE
+WEBP_LIBS
+WEBP_DELEGATE_FALSE
+WEBP_DELEGATE_TRUE
 TIFF_LIBS
 TIFF_DELEGATE_FALSE
 TIFF_DELEGATE_TRUE
@@ -1130,6 +1132,7 @@ with_openexr
 with_png
 with_rsvg
 with_tiff
+with_webp
 with_windows_font_dir
 with_wmf
 with_xml
@@ -1880,6 +1883,7 @@ Optional Packages:
   --without-png           disable PNG support
   --without-rsvg          disable RSVG support
   --without-tiff          disable TIFF support
+  --without-webp          disable WEBP support
   --with-windows-font-dir=DIR
                           directory containing MS-Windows fonts
   --without-wmf           disable WMF support
@@ -29920,6 +29924,116 @@ fi
 
 
 #
+# Check for WEBP delegate library.
+#
+
+# Check whether --with-webp was given.
+if test "${with_webp+set}" = set; then :
+  withval=$with_webp; with_webp=$withval
+else
+  with_webp='yes'
+fi
+
+
+if test "$with_webp" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-webp=$with_webp "
+fi
+
+have_webp='no'
+WEBP_LIBS=''
+if test "$with_webp" != 'no'; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WEBP" >&5
+$as_echo_n "checking for WEBP... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+    ac_fn_c_check_header_mongrel "$LINENO" "webp/decode.h" "ac_cv_header_webp_decode_h" "$ac_includes_default"
+if test "x$ac_cv_header_webp_decode_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPDecodeRGB in -lwebp" >&5
+$as_echo_n "checking for WebPDecodeRGB in -lwebp... " >&6; }
+if ${ac_cv_lib_webp_WebPDecodeRGB+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwebp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char WebPDecodeRGB ();
+int
+main ()
+{
+return WebPDecodeRGB ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_webp_WebPDecodeRGB=yes
+else
+  ac_cv_lib_webp_WebPDecodeRGB=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPDecodeRGB" >&5
+$as_echo "$ac_cv_lib_webp_WebPDecodeRGB" >&6; }
+if test "x$ac_cv_lib_webp_WebPDecodeRGB" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WEBP package is complete" >&5
+$as_echo_n "checking if WEBP package is complete... " >&6; }
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+            have_webp='no (failed tests)'
+        else
+            WEBP_LIBS='-lwebp'
+            LIBS="$WEBP_LIBS $LIBS"
+
+$as_echo "#define WEBP_DELEGATE 1" >>confdefs.h
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            have_webp='yes'
+        fi
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+fi
+ if test "$have_webp" = 'yes'; then
+  WEBP_DELEGATE_TRUE=
+  WEBP_DELEGATE_FALSE='#'
+else
+  WEBP_DELEGATE_TRUE='#'
+  WEBP_DELEGATE_FALSE=
+fi
+
+
+
+
+#
 # Set Windows font directory.
 #
 
@@ -30439,7 +30553,6 @@ RSVGDecodeDelegateDefault='rsvg'
 SCANDecodeDelegateDefault='scanimage'
 TXTDelegateDefault='enscript'
 UniconvertorDelegateDefault='uniconvertor'
-WEBPDelegateDefault='webpconv'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
@@ -32091,47 +32204,6 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$WEBPDelegateDefault"", so it can be a program name with args.
-set dummy "$WEBPDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_WEBPDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $WEBPDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_WEBPDelegate="$WEBPDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_WEBPDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_WEBPDelegate" && ac_cv_path_WEBPDelegate=""$WEBPDelegateDefault""
-  ;;
-esac
-fi
-WEBPDelegate=$ac_cv_path_WEBPDelegate
-if test -n "$WEBPDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WEBPDelegate" >&5
-$as_echo "$WEBPDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
 # Extract the first word of ""$WMFDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$WMFDecodeDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -32465,7 +32537,6 @@ if test "$with_frozenpaths" != 'yes'; then
   ShowImageDelegate="$ShowImageDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
-  WEBPDelegate="$WEBPDelegateDefault"
   WMFDecodeDelegate="$WMFDecodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
@@ -32473,7 +32544,6 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
-
 
 
 
@@ -33386,7 +33456,7 @@ fi
 if test "$with_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 fi
 
 
@@ -33747,6 +33817,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${TIFF_DELEGATE_TRUE}" && test -z "${TIFF_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"TIFF_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WEBP_DELEGATE_TRUE}" && test -z "${WEBP_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"WEBP_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WMF_DELEGATE_TRUE}" && test -z "${WMF_DELEGATE_FALSE}"; then
@@ -36508,6 +36582,7 @@ PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
+WEBP              --with-webp=$with_webp		$have_webp
 Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 WMF               --with-wmf=$with_wmf		$have_wmf
 X11               --with-x=$with_x			$have_x
@@ -36582,6 +36657,7 @@ PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
+WEBP              --with-webp=$with_webp		$have_webp
 Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 WMF               --with-wmf=$with_wmf		$have_wmf
 X11               --with-x=$with_x			$have_x

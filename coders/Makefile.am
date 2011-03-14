@@ -62,6 +62,11 @@ MAGICK_TIFF_MODULES = coders/ept.la coders/tiff.la
 MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
 endif
 
+if WEBP_DELEGATE
+MAGICK_WEBP_MODULES = coders/webp.la
+MAGICK_WEBP_SRCS = coders/webp.c
+endif
+
 if WINGDI32_DELEGATE
 MAGICK_GDI32_MODULES = coders/clipboard.la coders/emf.la
 MAGICK_GDI32_SRCS = coders/clipboard.c coders/emf.c
@@ -189,6 +194,7 @@ MAGICK_CODER_SRCS = \
   $(MAGICK_JP2_SRCS) \
   $(MAGICK_PNG_SRCS) \
   $(MAGICK_TIFF_SRCS) \
+  $(MAGICK_WEBP_SRCS) \
   $(MAGICK_WMF_SRCS) \
   $(MAGICK_X11_SRCS)
 
@@ -940,6 +946,12 @@ coders_wbmp_la_SOURCES     = coders/wbmp.c
 coders_wbmp_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_wbmp_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_wbmp_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# WEBP coder module
+coders_webp_la_SOURCES      = coders/webp.c
+coders_webp_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_webp_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_webp_la_LIBADD       = $(MAGICKCORE_LIBS) $(WEBP_LIBS) $(MATH_LIBS)
 
 # WMF coder module
 coders_wmf_la_SOURCES      = coders/wmf.c

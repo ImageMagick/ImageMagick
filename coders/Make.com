@@ -120,6 +120,7 @@ $call Make uyvy.c
 $call Make vicar.c
 $call Make vid.c
 $call Make viff.c
+$call Make webp.c
 $call Make wbmp.c
 $call Make wmf.c
 $call Make wpg.c
@@ -144,8 +145,8 @@ $library/create libCoders.olb aai,art,avs,bgr,bmp,braille,clip,clipboard,cip, -
   meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg,null,otb,pattern,pcd,pcl,pcx,pdb, -
   pdf,pes,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,raw,rgb,rla,rle, -
   sct,sfw,sgi,stegano,sun,svg,tga,thumbnail,tiff,tile,tim,ttf,txt,uil,url, -
-  uyvy,vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xps,xwd,ycbcr,yuv,cin, -
-  magick,scr,[-.magick]compress,[-.magick]prervicccm
+  uyvy,vicar,vid,viff,wbmp,webp,wmf,wpg,x,xbm,xc,xcf,xpm,xps,xwd,ycbcr,yuv, -
+  cin,magick,scr,[-.magick]compress,[-.magick]prervicccm
 $exit
 $
 $Make: subroutine

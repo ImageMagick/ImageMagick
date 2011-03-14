@@ -2506,6 +2506,50 @@ AC_SUBST(TIFF_LIBS)
 dnl ===========================================================================
 
 #
+# Check for WEBP delegate library.
+#
+AC_ARG_WITH(webp,
+    [AC_HELP_STRING([--without-webp],
+                    [disable WEBP support])],
+    [with_webp=$withval],
+    [with_webp='yes'])
+
+if test "$with_webp" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-webp=$with_webp "
+fi
+
+have_webp='no'
+WEBP_LIBS=''
+if test "$with_webp" != 'no'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    AC_MSG_CHECKING([for WEBP])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+    AC_CHECK_HEADER(webp/decode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(webp,WebPDecodeRGB,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING([if WEBP package is complete])
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            AC_MSG_RESULT([no -- some components failed test])
+            have_webp='no (failed tests)'
+        else
+            WEBP_LIBS='-lwebp'
+            LIBS="$WEBP_LIBS $LIBS"
+            AC_DEFINE(WEBP_DELEGATE,1,Define if you have WEBP library)
+            AC_MSG_RESULT([yes])
+            have_webp='yes'
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+fi
+AM_CONDITIONAL(WEBP_DELEGATE,test "$have_webp" = 'yes')
+AC_SUBST(WEBP_LIBS)
+
+dnl ===========================================================================
+
+#
 # Set Windows font directory.
 #
 AC_ARG_WITH(windows-font-dir,
@@ -2797,7 +2841,6 @@ RSVGDecodeDelegateDefault='rsvg'
 SCANDecodeDelegateDefault='scanimage'
 TXTDelegateDefault='enscript'
 UniconvertorDelegateDefault='uniconvertor'
-WEBPDelegateDefault='webpconv'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='curl'
 XPSDelegateDefault='gxps'
@@ -2844,7 +2887,6 @@ AC_PATH_PROG(RSVGDecodeDelegate, "$RSVGDecodeDelegateDefault", "$RSVGDecodeDeleg
 AC_PATH_PROG(SCANDecodeDelegate, "$SCANDecodeDelegateDefault", "$SCANDecodeDelegateDefault")
 AC_PATH_PROG(TXTDelegate, "$TXTDelegateDefault", "$TXTDelegateDefault")
 AC_PATH_PROG(UniconvertorDelegate, "$UniconvertorDelegateDefault", "$UniconvertorDelegateDefault")
-AC_PATH_PROG(WEBPDelegate, "$WEBPDelegateDefault", "$WEBPDelegateDefault")
 AC_PATH_PROG(WMFDecodeDelegate, "$WMFDecodeDelegateDefault", "$WMFDecodeDelegateDefault")
 AC_PATH_PROG(WWWDecodeDelegate, "$WWWDecodeDelegateDefault", "$WWWDecodeDelegateDefault")
 AC_PATH_PROG(XPSDelegate, "$XPSDelegateDefault", "$XPSDelegateDefault")
@@ -3012,7 +3054,6 @@ if test "$with_frozenpaths" != 'yes'; then
   ShowImageDelegate="$ShowImageDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
-  WEBPDelegate="$WEBPDelegateDefault"
   WMFDecodeDelegate="$WMFDecodeDelegateDefault"
   WWWDecodeDelegate="$WWWDecodeDelegateDefault"
   XPSDelegate="$XPSDelegateDefault"
@@ -3057,7 +3098,6 @@ AC_SUBST(SCANDecodeDelegate)
 AC_SUBST(ShowImageDelegate)
 AC_SUBST(TXTDelegate)
 AC_SUBST(UniconvertorDelegate)
-AC_SUBST(WEBPDelegate)
 AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(XPSDelegate)
@@ -3431,7 +3471,7 @@ AC_SUBST(MAGICK_LTDLDEPS)
 if test "$with_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3555,6 +3595,7 @@ PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
+WEBP              --with-webp=$with_webp		$have_webp
 Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 WMF               --with-wmf=$with_wmf		$have_wmf
 X11               --with-x=$with_x			$have_x

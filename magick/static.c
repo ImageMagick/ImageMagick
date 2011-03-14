@@ -294,6 +294,9 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterVIDImage();
   (void) RegisterVIFFImage();
   (void) RegisterWBMPImage();
+#if defined(MAGICKCORE_WEBP_DELEGATE)
+  (void) RegisterWEBPImage();
+#endif
 #if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
   (void) RegisterWMFImage();
 #endif
@@ -466,6 +469,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterVIDImage();
   UnregisterVIFFImage();
   UnregisterWBMPImage();
+#if defined(MAGICKCORE_WEBP_DELEGATE)
+  UnregisterWEBPImage();
+#endif
 #if defined(MAGICKCORE_WMF_DELEGATE) || defined(MAGICKCORE_WMFLITE_DELEGATE)
   UnregisterWMFImage();
 #endif

@@ -1358,6 +1358,9 @@
 #endif
 
 
+/* Define if you have WEBP library */
+/* #undef WEBP_DELEGATE */
+
 /* Define to use the Windows GDI32 library */
 /* #undef WINGDI32_DELEGATE */
 
