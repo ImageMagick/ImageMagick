@@ -1967,6 +1967,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           (double) x_resolution,(double) y_resolution,unit_type);
     }
 #endif
+
   if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
     {
       int
@@ -2883,9 +2884,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           *value='\0';
           (void) ConcatenateMagickString(value,text[i].text,length+2);
 
-          /* Don't save "density" property if we have a pHYs chunk */
-          if (LocaleCompare(text[i].key,"density") != 0 ||
-              !png_get_valid(ping,ping_info,PNG_INFO_pHYs))
+          /* Don't save "density" or "units" property if we have a pHYs
+           * chunk
+           */
+          if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs) ||
+              (LocaleCompare(text[i].key,"density") != 0 &&
+              LocaleCompare(text[i].key,"units") != 0))
              (void) SetImageProperty(image,text[i].key,value);
 
           if (logging != MagickFalse)
@@ -7858,15 +7862,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (image->units == PixelsPerInchResolution)
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_METER;
-          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->x_resolution/2.54);
-          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->y_resolution/2.54);
+          ping_pHYs_x_resolution=
+             (png_uint_32) ((100.0*image->x_resolution+0.5)/2.54);
+          ping_pHYs_y_resolution=
+             (png_uint_32) ((100.0*image->y_resolution+0.5)/2.54);
         }
 
       else if (image->units == PixelsPerCentimeterResolution)
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_METER;
-          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->x_resolution);
-          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->y_resolution);
+          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->x_resolution+0.5);
+          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->y_resolution+0.5);
         }
 
       else
@@ -7876,6 +7882,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           ping_pHYs_y_resolution=(png_uint_32) image->y_resolution;
         }
 
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Set up PNG pHYs chunk: xres: %.20g, yres: %.20g, units: %d.",
+          (double) ping_pHYs_x_resolution,(double) ping_pHYs_y_resolution,
+          (int) ping_pHYs_unit_type);
        ping_have_pHYs = MagickTrue;
     }
   }
@@ -8662,7 +8673,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,base_filter);
   }
 
-  if (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse)
+  if ((ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse) &&
+     (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
     {
       ResetImageProfileIterator(image);
       for (name=GetNextImageProfile(image); name != (const char *) NULL; )
@@ -8914,6 +8926,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              ping_pHYs_x_resolution,
              ping_pHYs_y_resolution,
              ping_pHYs_unit_type);
+
+          if (logging)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    Setting up pHYs chunk");
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "      x_resolution=%lu",
+                   (unsigned long) ping_pHYs_x_resolution);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "      y_resolution=%lu",
+                   (unsigned long) ping_pHYs_y_resolution);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "      unit_type=%lu",
+                   (unsigned long) ping_pHYs_unit_type);
+            }
         }
     }
 
@@ -9388,7 +9415,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Generate text chunks.
   */
-  if (ping_exclude_tEXt == MagickFalse && ping_exclude_zTXt == MagickFalse)
+  if (ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse)
   {
     ResetImagePropertyIterator(image);
     property=GetNextImageProperty(image);
@@ -9398,8 +9425,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         text;
 
       value=GetImageProperty(image,property);
-      if (LocaleCompare(property,"density") != 0 ||
-          ping_exclude_pHYs != MagickFalse)
+      if (ping_exclude_pHYs != MagickFalse       ||
+          LocaleCompare(property,"density") != 0 ||
+          LocaleCompare(property,"units") != 0)
         {
         if (value != (const char *) NULL)
           {
