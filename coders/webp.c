@@ -50,6 +50,8 @@
 #include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
 #include "magick/memory_.h"
 #include "magick/option.h"
 #include "magick/quantum-private.h"
@@ -59,6 +61,10 @@
 #include "magick/utility.h"
 #include "magick/xwindow.h"
 #include "magick/xwindow-private.h"
+#if defined(MAGICKCORE_WEBP_DELEGATE)
+#include <webp/decode.h>
+#include <webp/encode.h>
+#endif
 
 /*
   Forward declarations.
@@ -97,11 +103,35 @@ static MagickBooleanType
 static Image *ReadWEBPImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  int
+    height,
+    width;
+
   Image
     *image;
 
   MagickBooleanType
     status;
+
+  register PixelPacket
+    *q;
+
+  register ssize_t
+    x;
+
+  register unsigned char
+    *p;
+
+  size_t
+    length;
+
+  ssize_t
+    count,
+    y;
+
+  unsigned char
+    *stream,
+    *pixels;
 
   /*
     Open image file.
@@ -120,8 +150,43 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  image->columns=1;
-  image->rows=1;
+  length=(size_t) GetBlobSize(image);
+  stream=(unsigned char *) AcquireQuantumMemory(length,sizeof(*stream));
+  if (stream == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  count=ReadBlob(image,length,stream);
+  if (count != (ssize_t) length)
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  pixels=(unsigned char *) WebPDecodeRGBA(stream,length,&width,&height);
+  if (pixels == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  image->columns=(size_t) width;
+  image->rows=(size_t) height;
+  p=pixels;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      q->red=ScaleCharToQuantum(*p++);
+      q->green=ScaleCharToQuantum(*p++);
+      q->blue=ScaleCharToQuantum(*p++);
+      q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p++));
+      if (q->opacity != OpaqueOpacity)
+        image->matte=MagickTrue;
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
+      break;
+  }
+  free(pixels);
+  pixels=(unsigned char *) NULL;
   return(image);
 }
 #endif
@@ -160,6 +225,7 @@ ModuleExport size_t RegisterWEBPImage(void)
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
 #endif
   entry->description=ConstantString("WebP Image Format");
+  entry->adjoin=MagickFalse;
   entry->module=ConstantString("WEBP");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
@@ -215,11 +281,49 @@ ModuleExport void UnregisterWEBPImage(void)
 %    o image:  The image.
 %
 */
+
+static int WebPWriter(const unsigned char *stream,size_t length,
+  const WebPPicture *const picture)
+{
+  Image
+    *image;
+
+  image=(Image *) picture->custom_ptr;
+  return(length != 0 ? (int) WriteBlob(image,length,stream) : 1);
+}
+
 static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   Image *image)
 {
+  int
+    webp_status;
+
   MagickBooleanType
     status;
+
+  register const PixelPacket
+    *restrict p;
+
+  register ssize_t
+    x;
+
+  register unsigned char
+    *restrict q;
+
+  ssize_t
+    y;
+
+  unsigned char
+    *pixels;
+
+  WebPConfig
+    configure;
+
+  WebPPicture
+    picture;
+
+  WebPAuxStats
+    statistics;
 
   /*
     Open output image file.
@@ -233,6 +337,60 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  return(status);
+  if (WebPPictureInit(&picture) == 0)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  picture.writer=WebPWriter;
+  picture.custom_ptr=(void *) image;
+  picture.stats=(&statistics);
+  picture.width=(int) image->columns;
+  picture.height=(int) image->rows;
+  if (image->quality != UndefinedCompressionQuality)
+    configure.quality=(float) image->quality;
+  if (WebPConfigInit(&configure) == 0)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  /*
+    Future: set custom configuration parameters here.
+  */
+  if (WebPValidateConfig(&configure) == 0)
+    ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
+  /*
+    Allocate memory for pixels.
+  */
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
+    (image->matte != MagickFalse ? 4 : 3)*image->rows*sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  /*
+    Convert image to WebP raster pixels.
+  */
+  q=pixels;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+      *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+      *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+      if (image->matte != MagickFalse)
+        *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
+          (image->matte != MagickFalse ? p->opacity : OpaqueOpacity)));
+      p++;
+    }
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
+      break;
+  }
+  if (image->matte == MagickFalse)
+    webp_status=WebPPictureImportRGB(&picture,pixels,3*picture.width);
+  else
+    webp_status=WebPPictureImportRGBA(&picture,pixels,4*picture.width);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  webp_status=WebPEncode(&configure,&picture);
+  (void) CloseBlob(image);
+  return(webp_status == 0 ? MagickFalse : MagickTrue);
 }
 #endif
