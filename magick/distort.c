@@ -2574,7 +2574,7 @@ MagickExport Image *SparseColorImage(const Image *image,
         }
       p_indexes=GetCacheViewAuthenticIndexQueue(image_view);
       q_indexes=GetCacheViewAuthenticIndexQueue(sparse_view);
-
+      GetMagickPixelPacket(sparse_image,&pixel);
       for (i=0; i < (ssize_t) sparse_image->columns; i++)
       {
         SetMagickPixelPacket(sparse_image,p,p_indexes,&pixel);
