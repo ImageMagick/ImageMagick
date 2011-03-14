@@ -97,7 +97,32 @@ static MagickBooleanType
 static Image *ReadWEBPImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  return((Image *) NULL);
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  /*
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image=AcquireImage(image_info);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  image->columns=1;
+  image->rows=1;
+  return(image);
 }
 #endif
 
@@ -193,6 +218,21 @@ ModuleExport void UnregisterWEBPImage(void)
 static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   Image *image)
 {
-  return(MagickFalse);
+  MagickBooleanType
+    status;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == MagickFalse)
+    return(status);
+  return(status);
 }
 #endif
