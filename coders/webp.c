@@ -129,12 +129,11 @@ ModuleExport size_t RegisterWEBPImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("X");
+  entry=SetMagickInfo("WEBP");
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadWEBPImage;
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
 #endif
-  entry->format_type=ImplicitFormatType;
   entry->description=ConstantString("WebP Image Format");
   entry->module=ConstantString("WEBP");
   (void) RegisterMagickInfo(entry);

@@ -85,7 +85,6 @@ typedef struct _MagicMapInfo
 static const MagicMapInfo
   MagicMap[] =
   {
-    { "AVI", 0, MagickString("RIFF") },
     { "8BIMWTEXT", 0, MagickString("8\000B\000I\000M\000#") },
     { "8BIMTEXT", 0, MagickString("8BIM#") },
     { "8BIM", 0, MagickString("8BIM") },
