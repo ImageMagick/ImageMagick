@@ -2358,8 +2358,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           p=image;
           for (page=1; GetPreviousImageInList(p) != (Image *) NULL; page++)
             p=GetPreviousImageInList(p);
-          (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
-            page);
+          (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double) page);
           break;
         }
       break;
