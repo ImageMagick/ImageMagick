@@ -14563,8 +14563,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           "%s: %s",MagickPackageName,filename);
       else
         (void) FormatMagickString(windows->image.name,MaxTextExtent,
-          "%s: %s[%.20g of %.20g]",MagickPackageName,filename,(double)
-          display_image->scene,(double) GetImageListLength(display_image));
+          "%s: %s[scene: %.20g frames: %.20g]",MagickPackageName,filename,
+          (double) display_image->scene,(double) GetImageListLength(
+          display_image));
       (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
     }
   if (resource_info->immutable)
