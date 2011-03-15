@@ -1656,7 +1656,7 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
       (void) FormatMagickString(windows->image.name,MaxTextExtent,
-        "%s: %s[%.20g of %.20g]",MagickPackageName,filename,(double)
+        "%s: %s[scene: %.20g frames: %.20g]",MagickPackageName,filename,(double)
         display_image->scene,(double) number_scenes);
       (void) CopyMagickString(windows->image.icon_name,filename,MaxTextExtent);
     }
