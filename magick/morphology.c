@@ -2385,7 +2385,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 
 /* Apply a Morphology Primative to an image using the given kernel.
 ** Two pre-created images must be provided, no image is created.
-** It returns the number of pixels that changed betwene the images
+** It returns the number of pixels that changed between the images
 ** for convergence determination.
 */
 static size_t MorphologyPrimitive(const Image *image, Image
@@ -2454,7 +2454,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
   if ( method == ConvolveMorphology && kernel->width == 1 )
   { /* Special handling (for speed) of vertical (blur) kernels.
     ** This performs its handling in columns rather than in rows.
-    ** This is only done fo convolve as it is the only method that
+    ** This is only done for convolve as it is the only method that
     ** generates very large 1-D vertical kernels (such as a 'BlurKernel')
     **
     ** Timing tests (on single CPU laptop)
@@ -3208,7 +3208,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
    * + multi-kernel compose method to use (by default)
    */
   method_limit = 1;       /* just do method once, unless otherwise set */
-  stage_limit = 1;        /* assume method is not a compount */
+  stage_limit = 1;        /* assume method is not a compound */
   rslt_compose = compose; /* and we are composing multi-kernels as given */
   switch( method ) {
     case SmoothMorphology:  /* 4 primative compound morphology */
@@ -3484,15 +3484,15 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           curr_image = (Image *) image;  /* continue with original image */
         }
       else
-        { /* add the new 'current' result to the composition
+        { /* Add the new 'current' result to the composition
           **
           ** The removal of any 'Sync' channel flag in the Image Compositon
           ** below ensures the methematical compose method is applied in a
           ** purely mathematical way, and only to the selected channels.
-          ** Turn off SVG composition 'alpha blending'.
+          ** IE: Turn off SVG composition 'alpha blending'.
           **
           ** The compose image order is specifically so that the new image can
-          ** be subtarcted 'Minus' from the collected result, to allow you to
+          ** be subtracted 'Minus' from the collected result, to allow you to
           ** convert a HitAndMiss methd into a Thinning method.
           */
           if ( verbose == MagickTrue )
@@ -3521,16 +3521,14 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
   /* Yes goto's are bad, but it makes cleanup lot more efficient */
 error_cleanup:
-  if ( curr_image != (Image *) NULL &&
-       curr_image != rslt_image &&
-       curr_image != image )
-    curr_image = DestroyImage(curr_image);
+  if ( curr_image == rslt_image )
+    curr_image = (Image *) NULL;
   if ( rslt_image != (Image *) NULL )
     rslt_image = DestroyImage(rslt_image);
 exit_cleanup:
-  if ( curr_image != (Image *) NULL &&
-       curr_image != rslt_image &&
-       curr_image != image )
+  if ( curr_image == rslt_image || curr_image == image )
+    curr_image = (Image *) NULL;
+  if ( curr_image != (Image *) NULL )
     curr_image = DestroyImage(curr_image);
   if ( work_image != (Image *) NULL )
     work_image = DestroyImage(work_image);
