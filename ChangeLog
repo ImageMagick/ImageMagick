@@ -2,7 +2,9 @@
   * Fixed a rounding/truncation error while writing the pHYs chunk in the
     png encoder.
   * Don't write a text-encoded profile when "-define PNG:exclude-chunk=text"
-    is present.
+    is present (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=17086 and
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18225).
 
 2011-03-14  6.6.8-5 Cristy  <quetzlzacatenango@image...>
   * Add support for the WebP image format.
