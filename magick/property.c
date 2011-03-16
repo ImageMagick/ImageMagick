@@ -2562,9 +2562,6 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   const char
     *value;
 
-  ImageInfo
-    *text_info;
-
   register char
     *q;
 
@@ -2591,7 +2588,6 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   /*
     Translate any embedded format characters.
   */
-  text_info=CloneImageInfo(image_info);
   interpret_text=AcquireString(text);
   extent=MaxTextExtent;
   p=text;
@@ -2812,7 +2808,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image output filename.
         */
-        q+=CopyMagickString(q,text_info->filename,extent);
+        q+=CopyMagickString(q,image_info->filename,extent);
         break;
       }
       case 'p':
@@ -2863,10 +2859,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image scene number.
         */
-        if (text_info->number_scenes == 0)
+        if (image_info->number_scenes == 0)
           q+=FormatMagickString(q,extent,"%.20g",(double) image->scene);
         else
-          q+=FormatMagickString(q,extent,"%.20g",(double) text_info->scene);
+          q+=FormatMagickString(q,extent,"%.20g",(double) image_info->scene);
         break;
       }
       case 'u':
@@ -2874,7 +2870,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Unique filename.
         */
-        (void) CopyMagickString(filename,text_info->unique,extent);
+        (void) CopyMagickString(filename,image_info->unique,extent);
         q+=CopyMagickString(q,filename,extent);
         break;
       }
@@ -2975,11 +2971,11 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image scenes.
         */
-        if (text_info->number_scenes == 0)
+        if (image_info->number_scenes == 0)
           q+=CopyMagickString(q,"2147483647",extent);
         else
-          q+=FormatMagickString(q,extent,"%.20g",(double) (text_info->scene+
-            text_info->number_scenes));
+          q+=FormatMagickString(q,extent,"%.20g",(double) (image_info->scene+
+            image_info->number_scenes));
         break;
       }
       case 'T':
@@ -3007,7 +3003,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Unique filename.
         */
-        (void) CopyMagickString(filename,text_info->zero,extent);
+        (void) CopyMagickString(filename,image_info->zero,extent);
         q+=CopyMagickString(q,filename,extent);
         break;
       }
@@ -3090,7 +3086,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
                 key=GetNextImageProperty(image);
               }
             }
-        value=GetMagickProperty(text_info,image,pattern);
+        value=GetMagickProperty(image_info,image,pattern);
         if (value != (const char *) NULL)
           {
             length=strlen(value);
@@ -3168,7 +3164,6 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     }
   }
   *q='\0';
-  text_info=DestroyImageInfo(text_info);
   if (text != (const char *) embed_text)
     text=DestroyString(text);
   (void) SubstituteString(&interpret_text,"&lt;","<");
