@@ -2549,35 +2549,27 @@ MagickExport Image *SparseColorImage(const Image *image,
       MagickPixelPacket
         pixel;    /* pixel to assign to distorted image */
 
-      register const IndexPacket
-        *restrict p_indexes;
-
       register IndexPacket
-        *restrict q_indexes;
+        *restrict indexes;
 
       register ssize_t
         i;
 
-      register const PixelPacket
-        *restrict p;
-
       register PixelPacket
         *restrict q;
 
-      p=GetCacheViewVirtualPixels(image_view,0,j,image->columns,1,exception);
-      q=QueueCacheViewAuthenticPixels(sparse_view,0,j,sparse_image->columns,
+      q=GetCacheViewAuthenticPixels(sparse_view,0,j,sparse_image->columns,
         1,exception);
-      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      if (q == (PixelPacket *) NULL)
         {
           status=MagickFalse;
           continue;
         }
-      p_indexes=GetCacheViewAuthenticIndexQueue(image_view);
-      q_indexes=GetCacheViewAuthenticIndexQueue(sparse_view);
+      indexes=GetCacheViewAuthenticIndexQueue(sparse_view);
       GetMagickPixelPacket(sparse_image,&pixel);
-      for (i=0; i < (ssize_t) sparse_image->columns; i++)
+      for (i=0; i < (ssize_t) image->columns; i++)
       {
-        SetMagickPixelPacket(sparse_image,p,p_indexes,&pixel);
+        SetMagickPixelPacket(image,q,indexes,&pixel);
         switch (method)
         {
           case BarycentricColorInterpolate:
@@ -2693,10 +2685,9 @@ MagickExport Image *SparseColorImage(const Image *image,
         if ( channel & BlueChannel    ) pixel.blue    *= QuantumRange;
         if ( channel & IndexChannel   ) pixel.index   *= QuantumRange;
         if ( channel & OpacityChannel ) pixel.opacity *= QuantumRange;
-        SetPixelPacket(sparse_image,&pixel,q,q_indexes);
-        p++; q++;
-        p_indexes++;
-        q_indexes++;
+        SetPixelPacket(sparse_image,&pixel,q,indexes);
+        q++;
+        indexes++;
       }
       sync=SyncCacheViewAuthenticPixels(sparse_view,exception);
       if (sync == MagickFalse)
