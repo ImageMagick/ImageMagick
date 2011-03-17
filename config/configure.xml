@@ -8,8 +8,8 @@
 <configuremap>
   <configure name="NAME" value="ImageMagick"/>
   <configure name="LIB_VERSION" value="0x668"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,6,8,5"/>
-  <configure name="RELEASE_DATE" value="2011-03-13"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,6,8,6"/>
+  <configure name="RELEASE_DATE" value="2011-03-17"/>
   <configure name="CONFIGURE" value="./configure  'CFLAGS=-I/usr/include/python3.1'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>

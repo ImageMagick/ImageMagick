@@ -150,13 +150,13 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
+</div>
+<div  class="sponsor">
   <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
@@ -174,7 +174,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011060100025 gabi.schulze-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -197,7 +197,16 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-11  6.6.8-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dl><dt>2011-03-17 6.6.8-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Backed out the patch for Variable Blur Composition that was added    2011-02-13 v6.6.7-7, until I can re-think the problem.    The existing fix was failing to do circular blurs correctly.</dd>
+<dt>2011-03-14  6.6.8-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed a rounding/truncation error while writing the pHYs chunk in the    png encoder.</dd>
+  <dd> Don't write a text-encoded profile when "-define PNG:exclude-chunk=text"    is present (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17086 and    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18225).</dd>
+<dt>2011-03-14  6.6.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add support for the WebP image format.</dd>
+<dt>2011-03-14  6.6.8-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Ensured that -sparse-color preserves unused channels when    channel limited.  Before this unused channels would be reset to black.</dd>
+<dt>2011-03-11  6.6.8-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Don't try to store a bKGD chunk in a PNG8 when there are already    256 colors in the palette and the background colors is not in that    palette (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18199);</dd>
   <dd> The "-define PNG:exclude-chunk=bKGD" option was also excluding    the text chunks. (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18253).</dd>
 <dt>2011-03-10  6.6.8-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
