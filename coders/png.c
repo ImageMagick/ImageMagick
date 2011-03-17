@@ -9326,8 +9326,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   break;
 
                 if (ping_color_type == PNG_COLOR_TYPE_GRAY)
-                  (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+                  {
+#if LOW_DEPTH_OK==1
+                    quantum_info->depth=ping_bit_depth;
+#endif
+                    (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                        quantum_info,GrayQuantum,ping_pixels,&image->exception);
+                  }
 
                 else if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
                   {
@@ -9348,6 +9353,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                      * The call to png_set_packing() above is supposed to
                      * take care of those.
                      */
+#if LOW_DEPTH_OK==1
+                    quantum_info->depth=ping_bit_depth;
+#endif
 
                     /* GrayQuantum does not work here */
                     (void) ExportQuantumPixels(image,(const CacheView *) NULL,
