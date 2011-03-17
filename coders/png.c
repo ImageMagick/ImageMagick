@@ -9355,11 +9355,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                      */
 #if LOW_DEPTH_OK==1
                     quantum_info->depth=ping_bit_depth;
-#endif
-
                     /* GrayQuantum does not work here */
                     (void) ExportQuantumPixels(image,(const CacheView *) NULL,
+                      quantum_info,GrayQuantum,ping_pixels,&image->exception);
+#else
+                    (void) ExportQuantumPixels(image,(const CacheView *) NULL,
                       quantum_info,IndexQuantum,ping_pixels,&image->exception);
+#endif
 
                     if (logging != MagickFalse && y <= 2)
                     {
