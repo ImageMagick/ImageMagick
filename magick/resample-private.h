@@ -65,15 +65,7 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
     if (method != UndefinedVirtualPixelMethod)
       (void) SetResampleFilterVirtualPixelMethod(filter[i],method);
     if (interpolate != MagickFalse)
-      {
-        /* turn off 2-D image filters, use interpolation instead */
-        SetResampleFilter(filter[i],PointFilter,1.0);
-        /* Removed,  Anthony Thyssen...
-           Use the default  image->interpolate  setting (user supplied)
-        (void) SetResampleFilterInterpolateMethod(filter[i],
-          MeshInterpolatePixel);
-        */
-      }
+      SetResampleFilter(filter[i],PointFilter,1.0);
   }
   return(filter);
 }
