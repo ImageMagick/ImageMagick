@@ -151,13 +151,13 @@
 
 <div class="sponsbox">
 <div  class="sponsor">
+  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
+</div>
+<div  class="sponsor">
   <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201106010090 alexanian media -->
-</div>
-<div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201107010240 r.leo -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
@@ -175,7 +175,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011060100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -205,37 +205,41 @@
 
 <pre class="text">
    %b   file size
-   %c   comment
-   %d   directory
-   %e   filename extension
-   %f   filename
-   %g   page geometry
+   %c   comment properity
+   %d   directory path
+   %e   filename suffix
+   %f   filename (excluding suffix)
+   %g   page geometry   ( = %Wx%H%X%Y )
    %h   current image height in pixels
-   %i   input filename
+   %i   input filename (full path)
    %k   number of unique colors
-   %l   label
-   %m   magick
-   %n   number of scenes
+   %l   label properity
+   %m   magick format used during read
+   %n   number of images in sequence
    %o   output filename
-   %p   page number
-   %q   quantum depth
+   %p   index of image in sequence
+   %q   quantum depth (compile-time constant)
    %r   image class and colorspace
-   %s   scene number
+   %s   scene number (from input)
    %t   top of filename
    %u   unique temporary filename
    %w   current width in pixels
    %x   x resolution
    %y   y resolution
-   %z   image depth
-   %A   image alpha channel
+   %z   image depth (as read in)
+   %A   image alpha channel (true/false)
    %C   image compression type
    %D   image dispose method
-   %H   page height
-   %W   page width
-   %X   page x offset
-   %Y   page y offset
+   %G   image size ( = %wx%h )
+   %H   page (canvas) height
+   %O   page (canvas) offset ( = %X%Y )
+   %P   page (canvas) size ( = %Wx%H )
    %Q   image compression quality
-   %T   image delay
+   %S   ?? scenes ??
+   %T   image time delay
+   %W   page (canvas) width
+   %X   page (canvas) x offset (including sign)
+   %Y   page (canvas) y offset (including sign)
    %@   bounding box
    %#   signature
    %%   a percent sign
@@ -274,9 +278,10 @@ for an image with filename <kbd>bird.miff</kbd> and whose width is 512 and heigh
    %[width]                original width of image (when it was read in)
    %[xresolution]
    %[yresolution]
+   %[*]                    list of image properity strings
 </pre>
 
-<p>Use <kbd>fx:</kbd> to evaluate <a href="../www/fx.html">FX</a> expressions:</p>
+<p>Use <kbd>%[fx:...]</kbd> to evaluate <a href="../www/fx.html">FX</a> expressions:</p>
 
 <pre class="text">
    %[fx:<em class="arg">expression</em>]
@@ -288,7 +293,8 @@ for an image with filename <kbd>bird.miff</kbd> and whose width is 512 and heigh
    %[pixel:<em class="arg">expression</em>]
 </pre>
 
-<p>You can also use the following special formatting syntax to print EXIF information contained in the file:</p>
+<p>You can also use the following special formatting syntax to print EXIF
+information contained in the file:</p>
 
 <pre class="text">
    %[EXIF:<em class="arg">tag</em>]
