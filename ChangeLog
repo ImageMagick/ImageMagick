@@ -1,3 +1,8 @@
+2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Backed out the patch for Variable Blur Composition that was added
+    2011-02-13 v6.6.7-7, until I can re-think the problem.
+    The existing fix was failing to do circular blurs correctly.
+
 2011-03-14  6.6.8-5 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed a rounding/truncation error while writing the pHYs chunk in the
     png encoder.
