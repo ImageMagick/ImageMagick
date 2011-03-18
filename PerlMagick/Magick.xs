@@ -7811,7 +7811,7 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=StatisticImage(image,channel,MedianStatistic,
+          image=StatisticImageChannel(image,channel,MedianStatistic,
             (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
@@ -7843,7 +7843,7 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=StatisticImage(image,channel,NonpeakStatistic,
+          image=StatisticImageChannel(image,channel,NonpeakStatistic,
             (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
@@ -10662,7 +10662,7 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=StatisticImage(image,channel,ModeStatistic,
+          image=StatisticImageChannel(image,channel,ModeStatistic,
             (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
@@ -10687,7 +10687,7 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             statistic=(StatisticType) argument_list[4].integer_reference;
-          image=StatisicImageChannel(image,channel,statistic,
+          image=StatisticImageChannel(image,channel,statistic,
             (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
