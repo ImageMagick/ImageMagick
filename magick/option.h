@@ -85,6 +85,7 @@ typedef enum
   MagickResolutionOptions,
   MagickResourceOptions,
   MagickSparseColorOptions,
+  MagickStatisticOptions,
   MagickStorageOptions,
   MagickStretchOptions,
   MagickStyleOptions,

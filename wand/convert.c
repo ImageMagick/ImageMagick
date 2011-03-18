@@ -269,6 +269,8 @@ static MagickBooleanType ConvertUsage(void)
       "                     fill in a image based on a few color points",
       "-splice geometry     splice the background color into the image",
       "-spread radius       displace image pixels by a random amount",
+      "-statistic type radius",
+      "                     replace each pixel with corresponding statistic from the neighborhood",
       "-strip               strip image of all profiles and comments",
       "-swirl degrees       swirl image pixels about the center",
       "-threshold value     threshold the image",
@@ -2603,6 +2605,27 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if ((i == (ssize_t) (argc-1)) ||
                 (IsGeometry(argv[i]) == MagickFalse))
               ThrowConvertException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("statistic",option+1) == 0)
+          {
+            ssize_t
+              op;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            op=ParseMagickOption(MagickStatisticOptions,MagickFalse,argv[i]);
+            if (op < 0)
+              ThrowConvertException(OptionError,"UnrecognizedStatisticType",
+                argv[i]);
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("stretch",option+1) == 0)

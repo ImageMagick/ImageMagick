@@ -5453,6 +5453,211 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     S t a t i s t i c I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StatisticImage() makes each pixel the min / max / median / mode / etc. of
+%  the neighborhood of the specified radius.
+%
+%  The format of the StatisticImage method is:
+%
+%      Image *StatisticImage(const Image *image,const StatisticType type,
+%        const double radius,ExceptionInfo *exception)
+%      Image *StatisticImageChannel(const Image *image,
+%        const ChannelType channel,const StatisticType type,
+%        const double radius,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel: the image channel.
+%
+%    o type: the statistic type (median, mode, etc.).
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
+  const double radius,ExceptionInfo *exception)
+{
+  return(StatisticImageChannel(image,DefaultChannels,type,radius,exception));
+}
+
+MagickExport Image *StatisticImageChannel(const Image *image,
+  const ChannelType channel,const StatisticType type,const double radius,
+  ExceptionInfo *exception)
+{
+#define StatisticImageTag  "Statistic/Image"
+
+  CacheView
+    *image_view,
+    *statistic_view;
+
+  Image
+    *statistic_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  PixelList
+    **restrict pixel_list;
+
+  size_t
+    width;
+
+  ssize_t
+    y;
+
+  /*
+    Initialize statistics image attributes.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=GetOptimalKernelWidth2D(radius,0.5);
+  statistic_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (statistic_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(statistic_image,DirectClass) == MagickFalse)
+    {
+      InheritException(exception,&statistic_image->exception);
+      statistic_image=DestroyImage(statistic_image);
+      return((Image *) NULL);
+    }
+  pixel_list=AcquirePixelListThreadSet(width);
+  if (pixel_list == (PixelList **) NULL)
+    {
+      statistic_image=DestroyImage(statistic_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  /*
+    Reduce statistics image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireCacheView(image);
+  statistic_view=AcquireCacheView(statistic_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (ssize_t) statistic_image->rows; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict p;
+
+    register IndexPacket
+      *restrict statistic_indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),image->columns+width,width,exception);
+    q=QueueCacheViewAuthenticPixels(statistic_view,0,y,
+      statistic_image->columns,1,exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
+    statistic_indexes=GetCacheViewAuthenticIndexQueue(statistic_view);
+    for (x=0; x < (ssize_t) statistic_image->columns; x++)
+    {
+      MagickPixelPacket
+        pixel;
+
+      register const PixelPacket
+        *restrict r;
+
+      register const IndexPacket
+        *restrict s;
+
+      register ssize_t
+        u,
+        v;
+
+      r=p;
+      s=indexes+x;
+      ResetPixelList(pixel_list[id]);
+      for (v=0; v < (ssize_t) width; v++)
+      {
+        for (u=0; u < (ssize_t) width; u++)
+          InsertPixelList(image,r+u,s+u,pixel_list[id]);
+        r+=image->columns+width;
+        s+=image->columns+width;
+      }
+      switch (type)
+      {
+        case ModeStatistic: pixel=GetModePixelList(pixel_list[id]);
+        default: break;
+      }
+      if ((channel & RedChannel) != 0)
+        q->red=ClampToQuantum(pixel.red);
+      if ((channel & GreenChannel) != 0)
+        q->green=ClampToQuantum(pixel.green);
+      if ((channel & BlueChannel) != 0)
+        q->blue=ClampToQuantum(pixel.blue);
+      if ((image->matte != MagickFalse) && ((channel & OpacityChannel) != 0))
+        q->opacity=ClampToQuantum(pixel.opacity);
+      if (((channel & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        statistic_indexes[x]=(IndexPacket) ClampToQuantum(pixel.index);
+      p++;
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(statistic_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_StatisticImage)
+#endif
+        proceed=SetImageProgress(image,StatisticImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  statistic_view=DestroyCacheView(statistic_view);
+  image_view=DestroyCacheView(image_view);
+  pixel_list=DestroyPixelListThreadSet(pixel_list);
+  return(statistic_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     U n s h a r p M a s k I m a g e                                         %
 %                                                                             %
 %                                                                             %

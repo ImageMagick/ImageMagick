@@ -3156,6 +3156,26 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             *image=spread_image;
             break;
           }
+        if (LocaleCompare("statistic",option+1) == 0)
+          {
+            Image
+              *statistic_image;
+
+            StatisticType
+              type;
+
+            (void) SyncImageSettings(mogrify_info,*image);
+            type=(StatisticType) ParseMagickOption(MagickStatisticOptions,
+              MagickFalse,argv[i+1]);
+            (void) ParseGeometry(argv[i+2],&geometry_info);
+            statistic_image=StatisticImageChannel(*image,channel,type,
+              geometry_info.rho,exception);
+            if (statistic_image == (Image *) NULL)
+              break;
+            *image=DestroyImage(*image);
+            *image=statistic_image;
+            break;
+          }
         if (LocaleCompare("stretch",option+1) == 0)
           {
             if (*option == '+')
@@ -3765,6 +3785,8 @@ static MagickBooleanType MogrifyUsage(void)
       "                     fill in a image based on a few color points",
       "-splice geometry     splice the background color into the image",
       "-spread radius       displace image pixels by a random amount",
+      "-statistic type radius",
+      "                     replace each pixel with corresponding statistic from the neighborhood",
       "-strip               strip image of all profiles and comments",
       "-swirl degrees       swirl image pixels about the center",
       "-threshold value     threshold the image",
@@ -6041,6 +6063,27 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("statistic",option+1) == 0)
+          {
+            ssize_t
+              op;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            op=ParseMagickOption(MagickStatisticOptions,MagickFalse,argv[i]);
+            if (op < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedStatisticType",
+                argv[i]);
+            i++;
+            if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
