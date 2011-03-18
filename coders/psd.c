@@ -589,7 +589,16 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
   {
     if (image->depth == 1)
       {
-        count=ReadBlob(image,(image->columns+7)/8,pixels);
+        if (image->compression != RLECompression)
+          count=ReadBlob(image,(image->columns+7)/8,pixels);
+        else
+          {
+            count=ReadBlob(image,(size_t) offsets[y],compact_pixels);
+            if (count != (ssize_t) offsets[y])
+              break;
+            count=DecodePSDPixels((size_t) offsets[y],compact_pixels,
+              (ssize_t) 123456,(size_t) ((image->columns+7)/8),pixels);
+          }
         if (count < (ssize_t) ((image->columns+7)/8))
           break;
       }
@@ -649,9 +658,13 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
               if (image->depth == 1)
                 {
                   ssize_t
-                    bit;
+                    bit,
+                    number_bits;
 
-                  for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
+                  number_bits=image->columns-x;
+                  if (number_bits > 8)
+                    number_bits=8;
+                  for (bit=0; bit < number_bits; bit++)
                   {
                     indexes[x]=((((unsigned char) pixel) & (0x01 << (7-bit)))
                       != 0 ? 0 : 255);

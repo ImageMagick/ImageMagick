@@ -1,7 +1,10 @@
+2011-03-14  6.6.8-6 Cristy  <quetzlzacatenango@image...>
+  * Fixed memory leak for PDF and Bitmap PSD RLE support (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18317).
 
 2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced Minus and Divide Composition methods with Dst and Src
-    equivelents. Now users can decide how these non-commutative mathematical
+    equivalents. Now users can decide how these non-commutative mathematical
     operators are applied the to the images being composited.
 
 2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
