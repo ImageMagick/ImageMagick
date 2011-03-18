@@ -206,6 +206,8 @@ Image Operators:
   \-solarize threshold  negate all pixels above the threshold level
   \-splice geometry     splice the background color into the image
   \-spread amount       displace image pixels by a random amount
+  \-statistic type radius
+                       replace each pixel with corresponding statistic from the neighborhood
   \-strip               strip image of all profiles and comments
   \-swirl degrees       swirl image pixels about the center
   \-threshold value     threshold the image

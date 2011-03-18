@@ -597,6 +597,8 @@ static const OptionInfo
     { "-sparse-color", 2L, MagickFalse },
     { "+spread", 0L, MagickFalse },
     { "-spread", 1L, MagickFalse },
+    { "+statistic", 2L, MagickFalse },
+    { "-statistic", 2L, MagickFalse },
     { "+stegano", 0L, MagickFalse },
     { "-stegano", 1L, MagickFalse },
     { "+stereo", 0L, MagickFalse },
@@ -1442,6 +1444,15 @@ static const OptionInfo
     { "Voronoi", (ssize_t) VoronoiColorInterpolate, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedResource, MagickFalse }
   },
+  StatisticOptions[] =
+  {
+    { "Undefined", (ssize_t) UndefinedStatistic, MagickTrue },
+    { "Maximum", (ssize_t) MaximumStatistic, MagickFalse },
+    { "Median", (ssize_t) MedianStatistic, MagickFalse },
+    { "Minimum", (ssize_t) MinimumStatistic, MagickFalse },
+    { "Mode", (ssize_t) ModeStatistic, MagickFalse },
+    { (char *) NULL, (ssize_t) UndefinedMethod, MagickFalse }
+  },
   StorageOptions[] =
   {
     { "Undefined", (ssize_t) UndefinedPixel, MagickTrue },
@@ -1809,6 +1820,7 @@ static const OptionInfo *GetOptionInfo(const MagickOption option)
     case MagickResolutionOptions: return(ResolutionOptions);
     case MagickResourceOptions: return(ResourceOptions);
     case MagickSparseColorOptions: return(SparseColorOptions);
+    case MagickStatisticOptions: return(StatisticOptions);
     case MagickStorageOptions: return(StorageOptions);
     case MagickStretchOptions: return(StretchOptions);
     case MagickStyleOptions: return(StyleOptions);
