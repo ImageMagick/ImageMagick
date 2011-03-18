@@ -1,3 +1,9 @@
+
+2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Replaced Minus and Divide Composition methods with Dst and Src
+    equivelents. Now users can decide how these non-commutative mathematical
+    operators are applied the to the images being composited.
+
 2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Backed out the patch for Variable Blur Composition that was added
     2011-02-13 v6.6.7-7, until I can re-think the problem.
