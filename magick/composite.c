@@ -449,14 +449,14 @@ static MagickRealType Divide(const MagickRealType Sca,const MagickRealType Sa,
   const MagickRealType Dca,const MagickRealType Da)
 {
   /*
-    Divide:
+    Divide Source by Destination
 
-      f(Sc,Dc) = Sc/Dc
+      f(Sc,Dc) = Sc / Dc
 
     But with appropriate handling for special case of Dc == 0 specifically
     so that   f(Black,Black)=Black  and  f(non-Black,Black)=White.
     It is however also important to correctly do 'over' alpha blending which
-    is why the formula becomes so complex looking.
+    is why the formula becomes so complex.
   */
   if ((fabs(Sca) < MagickEpsilon) && (fabs(Dca) < MagickEpsilon))
     return(Sca*(1.0-Da)+Dca*(1.0-Sa));
@@ -926,6 +926,12 @@ static inline MagickRealType Minus(const MagickRealType Sca,
   const MagickRealType Sa,const MagickRealType Dca,
   const MagickRealType magick_unused(Da))
 {
+  /*
+    Minus Source from Destination
+
+      f(Sc,Dc) = Sc - Dc
+
+  */
   return(Sca + Dca - 2*Dca*Sa);
 }
 
@@ -2364,9 +2370,14 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           CompositePlus(&source,&destination,channel,&composite);
           break;
         }
-        case MinusCompositeOp:
+        case MinusDstCompositeOp:
         {
           CompositeMinus(&source,&destination,channel,&composite);
+          break;
+        }
+        case MinusSrcCompositeOp:
+        {
+          CompositeMinus(&destination,&source,channel,&composite);
           break;
         }
         case ModulusAddCompositeOp:
@@ -2399,9 +2410,14 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           CompositeScreen(&source,&destination,channel,&composite);
           break;
         }
-        case DivideCompositeOp:
+        case DivideDstCompositeOp:
         {
           CompositeDivide(&source,&destination,channel,&composite);
+          break;
+        }
+        case DivideSrcCompositeOp:
+        {
+          CompositeDivide(&destination,&source,channel,&composite);
           break;
         }
         case DarkenCompositeOp:

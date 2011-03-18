@@ -60,7 +60,7 @@ typedef enum
   LightenCompositeOp,
   LinearLightCompositeOp,
   LuminizeCompositeOp,
-  MinusCompositeOp,
+  MinusDstCompositeOp,
   ModulateCompositeOp,
   MultiplyCompositeOp,
   OutCompositeOp,
@@ -79,7 +79,11 @@ typedef enum
   ModulusSubtractCompositeOp,
   ThresholdCompositeOp,
   XorCompositeOp,
-  DivideCompositeOp,
+  /* These are new operators, added after the above was last sorted.
+   * The list should be re-sorted only when a new library version is
+   * created.
+   */
+  DivideDstCompositeOp,
   DistortCompositeOp,
   BlurCompositeOp,
   PegtopLightCompositeOp,
@@ -87,12 +91,16 @@ typedef enum
   PinLightCompositeOp,
   LinearDodgeCompositeOp,
   LinearBurnCompositeOp,
-  MathematicsCompositeOp
+  MathematicsCompositeOp,
+  DivideSrcCompositeOp,
+  MinusSrcCompositeOp
 } CompositeOperator;
 
-/* Depreciated Method Names for backward compatibility */
+/* Depreciated (renamed) Method Names for backward compatibility */
 #define AddCompositeOp       ModulusAddCompositeOp
 #define SubtractCompositeOp  ModulusSubtractCompositeOp
+#define MinusCompositeOp     MinusDstCompositeOp
+#define DivideCompositeOp    DivideDstCompositeOp
 
 extern MagickExport MagickBooleanType
   CompositeImage(Image *,const CompositeOperator,const Image *,const ssize_t,
