@@ -241,10 +241,12 @@ static struct
     { "Implode", { {"amount", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
     { "Magnify", },
-    { "MedianFilter", { {"radius", RealReference} } },
+    { "MedianFilter", { {"radius", RealReference}
+       {"channel", MagickChannelOptions} } },
     { "Minify", },
     { "OilPaint", { {"radius", RealReference} } },
-    { "ReduceNoise", { {"radius", RealReference} } },
+    { "ReduceNoise", { {"radius", RealReference},
+      {"channel", MagickChannelOptions} } },
     { "Roll", { {"geometry", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Rotate", { {"degrees", RealReference}, {"fill", StringReference},
@@ -532,7 +534,8 @@ static struct
       {"iterations", IntegerReference} } },
     { "ColorMatrix", { {"matrix", ArrayReference} } },
     { "Color", { {"color", StringReference} } },
-    { "Mode", { {"radius", RealReference} } }
+    { "Mode", { {"radius", RealReference},
+      {"channel", MagickChannelOptions} } },
     { "Statistic", { {"radius", RealReference},
       {"channel", MagickChannelOptions}, {"type", MagickStatisticOptions} } }
   };
@@ -7793,8 +7796,10 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=0.0;
-          image=MedianFilterImage(image,argument_list[0].real_reference,
-            exception);
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].integer_reference;
+          image=StatisticImage(image,channel,MedianStatistics,
+            argument_list[0].real_reference,exception);
           break;
         }
         case 19:  /* Minify */
@@ -7816,6 +7821,10 @@ Mogrify(ref,...)
             argument_list[0].real_reference=0.0;
           image=ReduceNoiseImage(image,argument_list[0].real_reference,
             exception);
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].integer_reference;
+          image=StatisticImage(image,channel,NonpeakStatistic,
+            argument_list[0].real_reference,exception);
           break;
         }
         case 22:  /* Roll */
@@ -10622,7 +10631,10 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=0.0;
-          image=ModeImage(image,argument_list[0].real_reference,exception);
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].integer_reference;
+          image=StatisticImage(image,channel,ModeStatistic,
+            argument_list[0].real_reference,exception);
           break;
         }
         case 137:  /* Statistic */

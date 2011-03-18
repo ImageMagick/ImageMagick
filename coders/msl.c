@@ -3815,8 +3815,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          median_image=MedianFilterImage(msl_info->image[n],geometry_info.rho,
-            &msl_info->image[n]->exception);
+          median_image=StatisticImage(msl_info->image[n],MedianStatistic,
+            geometry_info.rho,&msl_info->image[n]->exception);
           if (median_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -5039,8 +5039,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          paint_image=ReduceNoiseImage(msl_info->image[n],geometry_info.rho,
-            &msl_info->image[n]->exception);
+          paint_image=StatisticImage(msl_info->image[n],NonpeakStatistic,
+            geometry_info.rho,&msl_info->image[n]->exception);
           if (paint_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);

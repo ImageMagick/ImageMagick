@@ -88,6 +88,12 @@ extern WandExport MagickBooleanType
   MagickMatteFloodfillImage(MagickWand *,const double,const double,
     const PixelWand *,const ssize_t,const ssize_t)
     magick_attribute((deprecated)),
+  MagickMedianFilterImage(MagickWand *,const double)
+    magick_attribute((deprecated)),
+  MagickModeImage(MagickWand *,const double) magick_attribute((deprecated)),
+  MagickReduceNoiseImage(MagickWand *,const double)
+    magick_attribute((deprecated)),
+  MagickRemapImage(MagickWand *,const MagickWand *,const DitherMethod),
   MagickOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double) magick_attribute((deprecated)),
   MagickPaintFloodfillImage(MagickWand *,const ChannelType,const PixelWand *,

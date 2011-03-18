@@ -2530,705 +2530,6 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M e d i a n F i l t e r I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MedianFilterImage() applies a digital filter that improves the quality
-%  of a noisy image.  Each pixel is replaced by the median in a set of
-%  neighboring pixels as defined by radius.
-%
-%  The algorithm was contributed by Mike Edmonds and implements an insertion
-%  sort for selecting median color-channel values.  For more on this algorithm
-%  see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William
-%  Pugh in the June 1990 of Communications of the ACM.
-%
-%  The format of the MedianFilterImage method is:
-%
-%      Image *MedianFilterImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o radius: the radius of the pixel neighborhood.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
-#define ListChannels  5
-
-typedef struct _ListNode
-{
-  size_t
-    next[9],
-    count,
-    signature;
-} ListNode;
-
-typedef struct _SkipList
-{
-  ssize_t
-    level;
-
-  ListNode
-    *nodes;
-} SkipList;
-
-typedef struct _PixelList
-{
-  size_t
-    center,
-    seed,
-    signature;
-
-  SkipList
-    lists[ListChannels];
-} PixelList;
-
-static PixelList *DestroyPixelList(PixelList *pixel_list)
-{
-  register ssize_t
-    i;
-
-  if (pixel_list == (PixelList *) NULL)
-    return((PixelList *) NULL);
-  for (i=0; i < ListChannels; i++)
-    if (pixel_list->lists[i].nodes != (ListNode *) NULL)
-      pixel_list->lists[i].nodes=(ListNode *) RelinquishMagickMemory(
-        pixel_list->lists[i].nodes);
-  pixel_list=(PixelList *) RelinquishMagickMemory(pixel_list);
-  return(pixel_list);
-}
-
-static PixelList **DestroyPixelListThreadSet(PixelList **pixel_list)
-{
-  register ssize_t
-    i;
-
-  assert(pixel_list != (PixelList **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-    if (pixel_list[i] != (PixelList *) NULL)
-      pixel_list[i]=DestroyPixelList(pixel_list[i]);
-  pixel_list=(PixelList **) RelinquishMagickMemory(pixel_list);
-  return(pixel_list);
-}
-
-static PixelList *AcquirePixelList(const size_t width)
-{
-  PixelList
-    *pixel_list;
-
-  register ssize_t
-    i;
-
-  pixel_list=(PixelList *) AcquireMagickMemory(sizeof(*pixel_list));
-  if (pixel_list == (PixelList *) NULL)
-    return(pixel_list);
-  (void) ResetMagickMemory((void *) pixel_list,0,sizeof(*pixel_list));
-  pixel_list->center=width*width/2;
-  for (i=0; i < ListChannels; i++)
-  {
-    pixel_list->lists[i].nodes=(ListNode *) AcquireQuantumMemory(65537UL,
-      sizeof(*pixel_list->lists[i].nodes));
-    if (pixel_list->lists[i].nodes == (ListNode *) NULL)
-      return(DestroyPixelList(pixel_list));
-    (void) ResetMagickMemory(pixel_list->lists[i].nodes,0,65537UL*
-      sizeof(*pixel_list->lists[i].nodes));
-  }
-  pixel_list->signature=MagickSignature;
-  return(pixel_list);
-}
-
-static PixelList **AcquirePixelListThreadSet(const size_t width)
-{
-  PixelList
-    **pixel_list;
-
-  register ssize_t
-    i;
-
-  size_t
-    number_threads;
-
-  number_threads=GetOpenMPMaximumThreads();
-  pixel_list=(PixelList **) AcquireQuantumMemory(number_threads,
-    sizeof(*pixel_list));
-  if (pixel_list == (PixelList **) NULL)
-    return((PixelList **) NULL);
-  (void) ResetMagickMemory(pixel_list,0,number_threads*sizeof(*pixel_list));
-  for (i=0; i < (ssize_t) number_threads; i++)
-  {
-    pixel_list[i]=AcquirePixelList(width);
-    if (pixel_list[i] == (PixelList *) NULL)
-      return(DestroyPixelListThreadSet(pixel_list));
-  }
-  return(pixel_list);
-}
-
-static void AddNodePixelList(PixelList *pixel_list,const ssize_t channel,
-  const size_t color)
-{
-  register SkipList
-    *list;
-
-  register ssize_t
-    level;
-
-  size_t
-    search,
-    update[9];
-
-  /*
-    Initialize the node.
-  */
-  list=pixel_list->lists+channel;
-  list->nodes[color].signature=pixel_list->signature;
-  list->nodes[color].count=1;
-  /*
-    Determine where it belongs in the list.
-  */
-  search=65536UL;
-  for (level=list->level; level >= 0; level--)
-  {
-    while (list->nodes[search].next[level] < color)
-      search=list->nodes[search].next[level];
-    update[level]=search;
-  }
-  /*
-    Generate a pseudo-random level for this node.
-  */
-  for (level=0; ; level++)
-  {
-    pixel_list->seed=(pixel_list->seed*42893621L)+1L;
-    if ((pixel_list->seed & 0x300) != 0x300)
-      break;
-  }
-  if (level > 8)
-    level=8;
-  if (level > (list->level+2))
-    level=list->level+2;
-  /*
-    If we're raising the list's level, link back to the root node.
-  */
-  while (level > list->level)
-  {
-    list->level++;
-    update[list->level]=65536UL;
-  }
-  /*
-    Link the node into the skip-list.
-  */
-  do
-  {
-    list->nodes[color].next[level]=list->nodes[update[level]].next[level];
-    list->nodes[update[level]].next[level]=color;
-  }
-  while (level-- > 0);
-}
-
-static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
-{
-  MagickPixelPacket
-    pixel;
-
-  register SkipList
-    *list;
-
-  register ssize_t
-    channel;
-
-  size_t
-    center,
-    color,
-    count;
-
-  unsigned short
-    channels[ListChannels];
-
-  /*
-    Find the median value for each of the color.
-  */
-  center=pixel_list->center;
-  for (channel=0; channel < 5; channel++)
-  {
-    list=pixel_list->lists+channel;
-    color=65536UL;
-    count=0;
-    do
-    {
-      color=list->nodes[color].next[0];
-      count+=list->nodes[color].count;
-    }
-    while (count <= center);
-    channels[channel]=(unsigned short) color;
-  }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
-}
-
-static inline void InsertPixelList(const Image *image,const PixelPacket *pixel,
-  const IndexPacket *indexes,PixelList *pixel_list)
-{
-  size_t
-    signature;
-
-  unsigned short
-    index;
-
-  index=ScaleQuantumToShort(pixel->red);
-  signature=pixel_list->lists[0].nodes[index].signature;
-  if (signature == pixel_list->signature)
-    pixel_list->lists[0].nodes[index].count++;
-  else
-    AddNodePixelList(pixel_list,0,index);
-  index=ScaleQuantumToShort(pixel->green);
-  signature=pixel_list->lists[1].nodes[index].signature;
-  if (signature == pixel_list->signature)
-    pixel_list->lists[1].nodes[index].count++;
-  else
-    AddNodePixelList(pixel_list,1,index);
-  index=ScaleQuantumToShort(pixel->blue);
-  signature=pixel_list->lists[2].nodes[index].signature;
-  if (signature == pixel_list->signature)
-    pixel_list->lists[2].nodes[index].count++;
-  else
-    AddNodePixelList(pixel_list,2,index);
-  index=ScaleQuantumToShort(pixel->opacity);
-  signature=pixel_list->lists[3].nodes[index].signature;
-  if (signature == pixel_list->signature)
-    pixel_list->lists[3].nodes[index].count++;
-  else
-    AddNodePixelList(pixel_list,3,index);
-  if (image->colorspace == CMYKColorspace)
-    index=ScaleQuantumToShort(*indexes);
-  signature=pixel_list->lists[4].nodes[index].signature;
-  if (signature == pixel_list->signature)
-    pixel_list->lists[4].nodes[index].count++;
-  else
-    AddNodePixelList(pixel_list,4,index);
-}
-
-static void ResetPixelList(PixelList *pixel_list)
-{
-  int
-    level;
-
-  register ListNode
-    *root;
-
-  register SkipList
-    *list;
-
-  register ssize_t
-    channel;
-
-  /*
-    Reset the skip-list.
-  */
-  for (channel=0; channel < 5; channel++)
-  {
-    list=pixel_list->lists+channel;
-    root=list->nodes+65536UL;
-    list->level=0;
-    for (level=0; level < 9; level++)
-      root->next[level]=65536UL;
-  }
-  pixel_list->seed=pixel_list->signature++;
-}
-
-MagickExport Image *MedianFilterImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
-{
-#define MedianFilterImageTag  "MedianFilter/Image"
-
-  CacheView
-    *image_view,
-    *median_view;
-
-  Image
-    *median_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  PixelList
-    **restrict pixel_list;
-
-  size_t
-    width;
-
-  ssize_t
-    y;
-
-  /*
-    Initialize median image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,0.5);
-  median_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
-  if (median_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(median_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&median_image->exception);
-      median_image=DestroyImage(median_image);
-      return((Image *) NULL);
-    }
-  pixel_list=AcquirePixelListThreadSet(width);
-  if (pixel_list == (PixelList **) NULL)
-    {
-      median_image=DestroyImage(median_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  /*
-    Median filter each image row.
-  */
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireCacheView(image);
-  median_view=AcquireCacheView(median_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) median_image->rows; y++)
-  {
-    const int
-      id = GetOpenMPThreadId();
-
-    register const IndexPacket
-      *restrict indexes;
-
-    register const PixelPacket
-      *restrict p;
-
-    register IndexPacket
-      *restrict median_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
-    q=QueueCacheViewAuthenticPixels(median_view,0,y,median_image->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    median_indexes=GetCacheViewAuthenticIndexQueue(median_view);
-    for (x=0; x < (ssize_t) median_image->columns; x++)
-    {
-      MagickPixelPacket
-        pixel;
-
-      register const IndexPacket
-        *restrict s;
-
-      register const PixelPacket
-        *restrict r;
-
-      register ssize_t
-        u,
-        v;
-
-      r=p;
-      s=indexes+x;
-      ResetPixelList(pixel_list[id]);
-      for (v=0; v < (ssize_t) width; v++)
-      {
-        for (u=0; u < (ssize_t) width; u++)
-          InsertPixelList(image,r+u,s+u,pixel_list[id]);
-        r+=image->columns+width;
-        s+=image->columns+width;
-      }
-      pixel=GetMedianPixelList(pixel_list[id]);
-      SetPixelPacket(median_image,&pixel,q,median_indexes+x);
-      p++;
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(median_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_MedianFilterImage)
-#endif
-        proceed=SetImageProgress(image,MedianFilterImageTag,progress++,
-          image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  median_view=DestroyCacheView(median_view);
-  image_view=DestroyCacheView(image_view);
-  pixel_list=DestroyPixelListThreadSet(pixel_list);
-  return(median_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     M o d e I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ModeImage() makes each pixel the 'predominate color' of the neighborhood
-%  of the specified radius.
-%
-%  The format of the ModeImage method is:
-%
-%      Image *ModeImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o radius: the radius of the pixel neighborhood.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
-static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
-{
-  MagickPixelPacket
-    pixel;
-
-  register SkipList
-    *list;
-
-  register ssize_t
-    channel;
-
-  size_t
-    color,
-    count,
-    max_count,
-    mode,
-    width;
-
-  unsigned short
-    channels[5];
-
-  /*
-    Make each pixel the 'predominate color' of the specified neighborhood.
-  */
-  width=pixel_list->center << 1;
-  for (channel=0; channel < 5; channel++)
-  {
-    list=pixel_list->lists+channel;
-    color=65536UL;
-    mode=color;
-    max_count=list->nodes[mode].count;
-    count=0;
-    do
-    {
-      color=list->nodes[color].next[0];
-      if (list->nodes[color].count > max_count)
-        {
-          mode=color;
-          max_count=list->nodes[mode].count;
-        }
-      count+=list->nodes[color].count;
-    }
-    while (count <= width);
-    channels[channel]=(unsigned short) mode;
-  }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
-}
-
-MagickExport Image *ModeImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
-{
-#define ModeImageTag  "Mode/Image"
-
-  CacheView
-    *image_view,
-    *mode_view;
-
-  Image
-    *mode_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  PixelList
-    **restrict pixel_list;
-
-  size_t
-    width;
-
-  ssize_t
-    y;
-
-  /*
-    Initialize mode image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,0.5);
-  mode_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
-  if (mode_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(mode_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&mode_image->exception);
-      mode_image=DestroyImage(mode_image);
-      return((Image *) NULL);
-    }
-  pixel_list=AcquirePixelListThreadSet(width);
-  if (pixel_list == (PixelList **) NULL)
-    {
-      mode_image=DestroyImage(mode_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  /*
-    Reduce mode image.
-  */
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireCacheView(image);
-  mode_view=AcquireCacheView(mode_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) mode_image->rows; y++)
-  {
-    const int
-      id = GetOpenMPThreadId();
-
-    register const IndexPacket
-      *restrict indexes;
-
-    register const PixelPacket
-      *restrict p;
-
-    register IndexPacket
-      *restrict mode_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
-    q=QueueCacheViewAuthenticPixels(mode_view,0,y,mode_image->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    mode_indexes=GetCacheViewAuthenticIndexQueue(mode_view);
-    for (x=0; x < (ssize_t) mode_image->columns; x++)
-    {
-      MagickPixelPacket
-        pixel;
-
-      register const PixelPacket
-        *restrict r;
-
-      register const IndexPacket
-        *restrict s;
-
-      register ssize_t
-        u,
-        v;
-
-      r=p;
-      s=indexes+x;
-      ResetPixelList(pixel_list[id]);
-      for (v=0; v < (ssize_t) width; v++)
-      {
-        for (u=0; u < (ssize_t) width; u++)
-          InsertPixelList(image,r+u,s+u,pixel_list[id]);
-        r+=image->columns+width;
-        s+=image->columns+width;
-      }
-      pixel=GetModePixelList(pixel_list[id]);
-      SetPixelPacket(mode_image,&pixel,q,mode_indexes+x);
-      p++;
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(mode_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ModeImage)
-#endif
-        proceed=SetImageProgress(image,ModeImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  mode_view=DestroyCacheView(mode_view);
-  image_view=DestroyCacheView(image_view);
-  pixel_list=DestroyPixelListThreadSet(pixel_list);
-  return(mode_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %     M o t i o n B l u r I m a g e                                           %
 %                                                                             %
 %                                                                             %
@@ -3778,7 +3079,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case ReduceNoisePreview:
       {
-        preview_image=ReduceNoiseImage(thumbnail,radius,exception);
+        preview_image=StatisticImage(thumbnail,NonpeakStatistic,radius,
+          exception);
         (void) FormatMagickString(label,MaxTextExtent,"noise %g",radius);
         break;
       }
@@ -3822,7 +3124,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
             break;
           }
         }
-        preview_image=ReduceNoiseImage(thumbnail,(double) i,exception);
+        preview_image=StatisticImage(thumbnail,NonpeakStatistic,(double) i,
+          exception);
         (void) FormatMagickString(label,MaxTextExtent,"+noise %s",factor);
         break;
       }
@@ -4341,240 +3644,6 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     R e d u c e N o i s e I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReduceNoiseImage() smooths the contours of an image while still preserving
-%  edge information.  The algorithm works by replacing each pixel with its
-%  neighbor closest in value.  A neighbor is defined by radius.  Use a radius
-%  of 0 and ReduceNoise() selects a suitable radius for you.
-%
-%  The format of the ReduceNoiseImage method is:
-%
-%      Image *ReduceNoiseImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o radius: the radius of the pixel neighborhood.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
-static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
-{
-  MagickPixelPacket
-    pixel;
-
-  register SkipList
-    *list;
-
-  register ssize_t
-    channel;
-
-  size_t
-    center,
-    color,
-    count,
-    next,
-    previous;
-
-  unsigned short
-    channels[5];
-
-  /*
-    Finds the median value for each of the color.
-  */
-  center=pixel_list->center;
-  for (channel=0; channel < 5; channel++)
-  {
-    list=pixel_list->lists+channel;
-    color=65536UL;
-    next=list->nodes[color].next[0];
-    count=0;
-    do
-    {
-      previous=color;
-      color=next;
-      next=list->nodes[color].next[0];
-      count+=list->nodes[color].count;
-    }
-    while (count <= center);
-    if ((previous == 65536UL) && (next != 65536UL))
-      color=next;
-    else
-      if ((previous != 65536UL) && (next == 65536UL))
-        color=previous;
-    channels[channel]=(unsigned short) color;
-  }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
-}
-
-MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
-{
-#define ReduceNoiseImageTag  "ReduceNoise/Image"
-
-  CacheView
-    *image_view,
-    *noise_view;
-
-  Image
-    *noise_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  PixelList
-    **restrict pixel_list;
-
-  size_t
-    width;
-
-  ssize_t
-    y;
-
-  /*
-    Initialize noise image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,0.5);
-  noise_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
-  if (noise_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(noise_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&noise_image->exception);
-      noise_image=DestroyImage(noise_image);
-      return((Image *) NULL);
-    }
-  pixel_list=AcquirePixelListThreadSet(width);
-  if (pixel_list == (PixelList **) NULL)
-    {
-      noise_image=DestroyImage(noise_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  /*
-    Reduce noise image.
-  */
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireCacheView(image);
-  noise_view=AcquireCacheView(noise_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) noise_image->rows; y++)
-  {
-    const int
-      id = GetOpenMPThreadId();
-
-    register const IndexPacket
-      *restrict indexes;
-
-    register const PixelPacket
-      *restrict p;
-
-    register IndexPacket
-      *restrict noise_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
-    q=QueueCacheViewAuthenticPixels(noise_view,0,y,noise_image->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    noise_indexes=GetCacheViewAuthenticIndexQueue(noise_view);
-    for (x=0; x < (ssize_t) noise_image->columns; x++)
-    {
-      MagickPixelPacket
-        pixel;
-
-      register const PixelPacket
-        *restrict r;
-
-      register const IndexPacket
-        *restrict s;
-
-      register ssize_t
-        u,
-        v;
-
-      r=p;
-      s=indexes+x;
-      ResetPixelList(pixel_list[id]);
-      for (v=0; v < (ssize_t) width; v++)
-      {
-        for (u=0; u < (ssize_t) width; u++)
-          InsertPixelList(image,r+u,s+u,pixel_list[id]);
-        r+=image->columns+width;
-        s+=image->columns+width;
-      }
-      pixel=GetNonpeakPixelList(pixel_list[id]);
-      SetPixelPacket(noise_image,&pixel,q,noise_indexes+x);
-      p++;
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(noise_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ReduceNoiseImage)
-#endif
-        proceed=SetImageProgress(image,ReduceNoiseImageTag,progress++,
-          image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  noise_view=DestroyCacheView(noise_view);
-  image_view=DestroyCacheView(image_view);
-  pixel_list=DestroyPixelListThreadSet(pixel_list);
-  return(noise_image);
 }
 
 /*
@@ -5483,6 +4552,401 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+#define ListChannels  5
+
+typedef struct _ListNode
+{
+  size_t
+    next[9],
+    count,
+    signature;
+} ListNode;
+
+typedef struct _SkipList
+{
+  ssize_t
+    level;
+
+  ListNode
+    *nodes;
+} SkipList;
+
+typedef struct _PixelList
+{
+  size_t
+    center,
+    seed,
+    signature;
+
+  SkipList
+    lists[ListChannels];
+} PixelList;
+
+static PixelList *DestroyPixelList(PixelList *pixel_list)
+{
+  register ssize_t
+    i;
+
+  if (pixel_list == (PixelList *) NULL)
+    return((PixelList *) NULL);
+  for (i=0; i < ListChannels; i++)
+    if (pixel_list->lists[i].nodes != (ListNode *) NULL)
+      pixel_list->lists[i].nodes=(ListNode *) RelinquishMagickMemory(
+        pixel_list->lists[i].nodes);
+  pixel_list=(PixelList *) RelinquishMagickMemory(pixel_list);
+  return(pixel_list);
+}
+
+static PixelList **DestroyPixelListThreadSet(PixelList **pixel_list)
+{
+  register ssize_t
+    i;
+
+  assert(pixel_list != (PixelList **) NULL);
+  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+    if (pixel_list[i] != (PixelList *) NULL)
+      pixel_list[i]=DestroyPixelList(pixel_list[i]);
+  pixel_list=(PixelList **) RelinquishMagickMemory(pixel_list);
+  return(pixel_list);
+}
+
+static PixelList *AcquirePixelList(const size_t width)
+{
+  PixelList
+    *pixel_list;
+
+  register ssize_t
+    i;
+
+  pixel_list=(PixelList *) AcquireMagickMemory(sizeof(*pixel_list));
+  if (pixel_list == (PixelList *) NULL)
+    return(pixel_list);
+  (void) ResetMagickMemory((void *) pixel_list,0,sizeof(*pixel_list));
+  pixel_list->center=width*width/2;
+  for (i=0; i < ListChannels; i++)
+  {
+    pixel_list->lists[i].nodes=(ListNode *) AcquireQuantumMemory(65537UL,
+      sizeof(*pixel_list->lists[i].nodes));
+    if (pixel_list->lists[i].nodes == (ListNode *) NULL)
+      return(DestroyPixelList(pixel_list));
+    (void) ResetMagickMemory(pixel_list->lists[i].nodes,0,65537UL*
+      sizeof(*pixel_list->lists[i].nodes));
+  }
+  pixel_list->signature=MagickSignature;
+  return(pixel_list);
+}
+
+static PixelList **AcquirePixelListThreadSet(const size_t width)
+{
+  PixelList
+    **pixel_list;
+
+  register ssize_t
+    i;
+
+  size_t
+    number_threads;
+
+  number_threads=GetOpenMPMaximumThreads();
+  pixel_list=(PixelList **) AcquireQuantumMemory(number_threads,
+    sizeof(*pixel_list));
+  if (pixel_list == (PixelList **) NULL)
+    return((PixelList **) NULL);
+  (void) ResetMagickMemory(pixel_list,0,number_threads*sizeof(*pixel_list));
+  for (i=0; i < (ssize_t) number_threads; i++)
+  {
+    pixel_list[i]=AcquirePixelList(width);
+    if (pixel_list[i] == (PixelList *) NULL)
+      return(DestroyPixelListThreadSet(pixel_list));
+  }
+  return(pixel_list);
+}
+
+static void AddNodePixelList(PixelList *pixel_list,const ssize_t channel,
+  const size_t color)
+{
+  register SkipList
+    *list;
+
+  register ssize_t
+    level;
+
+  size_t
+    search,
+    update[9];
+
+  /*
+    Initialize the node.
+  */
+  list=pixel_list->lists+channel;
+  list->nodes[color].signature=pixel_list->signature;
+  list->nodes[color].count=1;
+  /*
+    Determine where it belongs in the list.
+  */
+  search=65536UL;
+  for (level=list->level; level >= 0; level--)
+  {
+    while (list->nodes[search].next[level] < color)
+      search=list->nodes[search].next[level];
+    update[level]=search;
+  }
+  /*
+    Generate a pseudo-random level for this node.
+  */
+  for (level=0; ; level++)
+  {
+    pixel_list->seed=(pixel_list->seed*42893621L)+1L;
+    if ((pixel_list->seed & 0x300) != 0x300)
+      break;
+  }
+  if (level > 8)
+    level=8;
+  if (level > (list->level+2))
+    level=list->level+2;
+  /*
+    If we're raising the list's level, link back to the root node.
+  */
+  while (level > list->level)
+  {
+    list->level++;
+    update[list->level]=65536UL;
+  }
+  /*
+    Link the node into the skip-list.
+  */
+  do
+  {
+    list->nodes[color].next[level]=list->nodes[update[level]].next[level];
+    list->nodes[update[level]].next[level]=color;
+  }
+  while (level-- > 0);
+}
+
+static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    center,
+    color,
+    count;
+
+  unsigned short
+    channels[ListChannels];
+
+  /*
+    Find the median value for each of the color.
+  */
+  center=pixel_list->center;
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536UL;
+    count=0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      count+=list->nodes[color].count;
+    }
+    while (count <= center);
+    channels[channel]=(unsigned short) color;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
+static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    color,
+    count,
+    max_count,
+    mode,
+    width;
+
+  unsigned short
+    channels[5];
+
+  /*
+    Make each pixel the 'predominate color' of the specified neighborhood.
+  */
+  width=pixel_list->center << 1;
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536UL;
+    mode=color;
+    max_count=list->nodes[mode].count;
+    count=0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      if (list->nodes[color].count > max_count)
+        {
+          mode=color;
+          max_count=list->nodes[mode].count;
+        }
+      count+=list->nodes[color].count;
+    }
+    while (count <= width);
+    channels[channel]=(unsigned short) mode;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
+static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    center,
+    color,
+    count,
+    next,
+    previous;
+
+  unsigned short
+    channels[5];
+
+  /*
+    Finds the median value for each of the color.
+  */
+  center=pixel_list->center;
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536UL;
+    next=list->nodes[color].next[0];
+    count=0;
+    do
+    {
+      previous=color;
+      color=next;
+      next=list->nodes[color].next[0];
+      count+=list->nodes[color].count;
+    }
+    while (count <= center);
+    if ((previous == 65536UL) && (next != 65536UL))
+      color=next;
+    else
+      if ((previous != 65536UL) && (next == 65536UL))
+        color=previous;
+    channels[channel]=(unsigned short) color;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
+static inline void InsertPixelList(const Image *image,const PixelPacket *pixel,
+  const IndexPacket *indexes,PixelList *pixel_list)
+{
+  size_t
+    signature;
+
+  unsigned short
+    index;
+
+  index=ScaleQuantumToShort(pixel->red);
+  signature=pixel_list->lists[0].nodes[index].signature;
+  if (signature == pixel_list->signature)
+    pixel_list->lists[0].nodes[index].count++;
+  else
+    AddNodePixelList(pixel_list,0,index);
+  index=ScaleQuantumToShort(pixel->green);
+  signature=pixel_list->lists[1].nodes[index].signature;
+  if (signature == pixel_list->signature)
+    pixel_list->lists[1].nodes[index].count++;
+  else
+    AddNodePixelList(pixel_list,1,index);
+  index=ScaleQuantumToShort(pixel->blue);
+  signature=pixel_list->lists[2].nodes[index].signature;
+  if (signature == pixel_list->signature)
+    pixel_list->lists[2].nodes[index].count++;
+  else
+    AddNodePixelList(pixel_list,2,index);
+  index=ScaleQuantumToShort(pixel->opacity);
+  signature=pixel_list->lists[3].nodes[index].signature;
+  if (signature == pixel_list->signature)
+    pixel_list->lists[3].nodes[index].count++;
+  else
+    AddNodePixelList(pixel_list,3,index);
+  if (image->colorspace == CMYKColorspace)
+    index=ScaleQuantumToShort(*indexes);
+  signature=pixel_list->lists[4].nodes[index].signature;
+  if (signature == pixel_list->signature)
+    pixel_list->lists[4].nodes[index].count++;
+  else
+    AddNodePixelList(pixel_list,4,index);
+}
+
+static void ResetPixelList(PixelList *pixel_list)
+{
+  int
+    level;
+
+  register ListNode
+    *root;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  /*
+    Reset the skip-list.
+  */
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    root=list->nodes+65536UL;
+    list->level=0;
+    for (level=0; level < 9; level++)
+      root->next[level]=65536UL;
+  }
+  pixel_list->seed=pixel_list->signature++;
+}
 
 MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   const double radius,ExceptionInfo *exception)

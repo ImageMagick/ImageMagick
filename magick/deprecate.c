@@ -3455,8 +3455,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         alpha[16],
         gamma;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t) floor(y)-
-        1,4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
+        floor(y)-1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3498,8 +3498,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t) floor(y)-
-        1,4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
+        floor(y)-1,4,4,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3539,8 +3539,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t) floor(y),2,
-        2,exception);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
+        floor(y),2,2,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3624,8 +3624,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
       MagickPixelPacket
         pixels[1];
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t) floor(y),1,
-        1,exception);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
+        floor(y),1,1,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -3646,8 +3646,8 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
         delta,
         luminance;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t) floor(y),
-        2,2,exception);
+      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
+        floor(y),2,2,exception);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
@@ -4560,6 +4560,88 @@ MagickExport Image *MaximumImages(const Image *images,ExceptionInfo *exception)
 MagickExport Image *MinimumImages(const Image *images,ExceptionInfo *exception)
 {
   return(EvaluateImages(images,MinEvaluateOperator,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M e d i a n F i l t e r I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MedianFilterImage() applies a digital filter that improves the quality
+%  of a noisy image.  Each pixel is replaced by the median in a set of
+%  neighboring pixels as defined by radius.
+%
+%  The algorithm was contributed by Mike Edmonds and implements an insertion
+%  sort for selecting median color-channel values.  For more on this algorithm
+%  see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William
+%  Pugh in the June 1990 of Communications of the ACM.
+%
+%  The format of the MedianFilterImage method is:
+%
+%      Image *MedianFilterImage(const Image *image,const double radius,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MedianFilterImage(const Image *image,const double radius,
+  ExceptionInfo *exception)
+{
+  Image
+    *median_image;
+
+  median_image=StatisticImage(image,MedianStatistic,radius,exception);
+  return(median_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M o d e I m a g e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ModeImage() makes each pixel the 'predominate color' of the neighborhood
+%  of the specified radius.
+%
+%  The format of the ModeImage method is:
+%
+%      Image *ModeImage(const Image *image,const double radius,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ModeImage(const Image *image,const double radius,
+  ExceptionInfo *exception)
+{
+  Image
+    *mode_image;
+
+  mode_image=StatisticImage(image,ModeStatistic,radius,exception);
+  return(mode_image);
 }
 
 /*
@@ -5565,6 +5647,46 @@ MagickExport Image *RecolorImage(const Image *image,const size_t order,
   kernel_info->values=(double *) NULL;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(recolor_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     R e d u c e N o i s e I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReduceNoiseImage() smooths the contours of an image while still preserving
+%  edge information.  The algorithm works by replacing each pixel with its
+%  neighbor closest in value.  A neighbor is defined by radius.  Use a radius
+%  of 0 and ReduceNoise() selects a suitable radius for you.
+%
+%  The format of the ReduceNoiseImage method is:
+%
+%      Image *ReduceNoiseImage(const Image *image,const double radius,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
+  ExceptionInfo *exception)
+{
+  Image
+    *reduce_image;
+
+  reduce_image=StatisticImage(image,NonpeakStatistic,radius,exception);
+  return(reduce_image);
 }
 
 /*

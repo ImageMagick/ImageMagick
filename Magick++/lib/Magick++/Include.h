@@ -465,6 +465,10 @@ namespace Magick
   using MagickCore::ShepardsColorInterpolate;
   using MagickCore::VoronoiColorInterpolate;
 
+  // Statistic type
+  using MagickCore::MedianStatistic;
+  using MagickCore::NonpeakStatistic;
+
   // StorageType type
   using MagickCore::StorageType;
   using MagickCore::CharPixel;
@@ -785,7 +789,6 @@ namespace Magick
   using MagickCore::MagickWand;
   using MagickCore::MagnifyImage;
   using MagickCore::MapImage;
-  using MagickCore::MedianFilterImage;
   using MagickCore::MergeImageLayers;
   using MagickCore::MinifyImage;
   using MagickCore::MissingDelegateError;
@@ -834,7 +837,6 @@ namespace Magick
   using MagickCore::ReadImage;
   using MagickCore::RecolorImage;
   using MagickCore::RectangleInfo;
-  using MagickCore::ReduceNoiseImage;
   using MagickCore::RegisterMagickInfo;
   using MagickCore::RegistryError;
   using MagickCore::RegistryFatalError;
@@ -885,6 +887,7 @@ namespace Magick
   using MagickCore::SparseColorImage;
   using MagickCore::SpliceImage;
   using MagickCore::SpreadImage;
+  using MagickCore::StatisticImage;
   using MagickCore::SteganoImage;
   using MagickCore::StereoImage;
   using MagickCore::StreamError;

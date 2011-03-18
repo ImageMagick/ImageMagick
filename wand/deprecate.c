@@ -1646,39 +1646,45 @@ WandExport MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k M a x i m u m I m a g e s                                     %
+%   M a g i c k M e d i a n F i l t e r I m a g e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickMaximumImages() returns the maximum intensity of an image sequence.
+%  MagickMedianFilterImage() applies a digital filter that improves the quality
+%  of a noisy image.  Each pixel is replaced by the median in a set of
+%  neighboring pixels as defined by radius.
 %
-%  The format of the MagickMaximumImages method is:
+%  The format of the MagickMedianFilterImage method is:
 %
-%      MagickWand *MagickMaximumImages(MagickWand *wand)
+%      MagickBooleanType MagickMedianFilterImage(MagickWand *wand,
+%        const double radius)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
+%    o radius: the radius of the pixel neighborhood.
+%
 */
-WandExport MagickWand *MagickMaximumImages(MagickWand *wand)
+WandExport MagickBooleanType MagickMedianFilterImage(MagickWand *wand,
+  const double radius)
 {
   Image
-    *maximum_image;
+    *median_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
-    return((MagickWand *) NULL);
-  maximum_image=EvaluateImages(wand->images,MaxEvaluateOperator,
-    wand->exception);
-  if (maximum_image == (Image *) NULL)
-    return((MagickWand *) NULL);
-  return(CloneMagickWandFromImages(wand,maximum_image));
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  median_image=MedianFilterImage(wand->images,radius,wand->exception);
+  if (median_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,median_image);
+  return(MagickTrue);
 }
 
 /*
@@ -1719,6 +1725,51 @@ WandExport MagickWand *MagickMinimumImages(MagickWand *wand)
   if (minimum_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,minimum_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k M o d e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickModeImage() makes each pixel the 'predominate color' of the
+%  neighborhood of the specified radius.
+%
+%  The format of the MagickModeImage method is:
+%
+%      MagickBooleanType MagickModeImage(MagickWand *wand,
+%        const double radius)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+*/
+WandExport MagickBooleanType MagickModeImage(MagickWand *wand,
+  const double radius)
+{
+  Image
+    *mode_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  mode_image=ModeImage(wand->images,radius,wand->exception);
+  if (mode_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,mode_image);
+  return(MagickTrue);
 }
 
 /*
@@ -2021,6 +2072,93 @@ WandExport MagickBooleanType MagickRecolorImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     M a g i c k R e d u c e N o i s e I m a g e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickReduceNoiseImage() smooths the contours of an image while still
+%  preserving edge information.  The algorithm works by replacing each pixel
+%  with its neighbor closest in value.  A neighbor is defined by radius.  Use
+%  a radius of 0 and ReduceNoise() selects a suitable radius for you.
+%
+%  The format of the MagickReduceNoiseImage method is:
+%
+%      MagickBooleanType MagickReduceNoiseImage(MagickWand *wand,
+%        const double radius)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+*/
+WandExport MagickBooleanType MagickReduceNoiseImage(MagickWand *wand,
+  const double radius)
+{
+  Image
+    *noise_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  noise_image=ReduceNoiseImage(wand->images,radius,wand->exception);
+  if (noise_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,noise_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k M a x i m u m I m a g e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMaximumImages() returns the maximum intensity of an image sequence.
+%
+%  The format of the MagickMaximumImages method is:
+%
+%      MagickWand *MagickMaximumImages(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickWand *MagickMaximumImages(MagickWand *wand)
+{
+  Image
+    *maximum_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  maximum_image=EvaluateImages(wand->images,MaxEvaluateOperator,
+    wand->exception);
+  if (maximum_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,maximum_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e A t t r i b u t e                             %
 %                                                                             %
 %                                                                             %
@@ -2065,7 +2203,8 @@ WandExport MagickBooleanType MagickSetImageAttribute(MagickWand *wand,
 %
 %  The format of the MagickSetImageIndex method is:
 %
-%      MagickBooleanType MagickSetImageIndex(MagickWand *wand,const ssize_t index)
+%      MagickBooleanType MagickSetImageIndex(MagickWand *wand,
+%        const ssize_t index)
 %
 %  A description of each parameter follows:
 %

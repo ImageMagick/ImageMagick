@@ -2522,7 +2522,6 @@ MagickExport Image *SparseColorImage(const Image *image,
     }
   { /* ----- MAIN CODE ----- */
     CacheView
-      *image_view,
       *sparse_view;
 
     MagickBooleanType
@@ -2536,7 +2535,6 @@ MagickExport Image *SparseColorImage(const Image *image,
 
     status=MagickTrue;
     progress=0;
-    image_view=AcquireCacheView(image);
     sparse_view=AcquireCacheView(sparse_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
