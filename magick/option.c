@@ -1452,6 +1452,7 @@ static const OptionInfo
     { "Median", (ssize_t) MedianStatistic, MagickFalse },
     { "Minimum", (ssize_t) MinimumStatistic, MagickFalse },
     { "Mode", (ssize_t) ModeStatistic, MagickFalse },
+    { "Nonpeak", (ssize_t) NonpeakStatistic, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedMethod, MagickFalse }
   },
   StorageOptions[] =
