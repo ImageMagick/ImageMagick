@@ -8073,7 +8073,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
-      noise_image=ReduceNoiseImage(*image,geometry_info.rho,
+      noise_image=StatisticImage(*image,NonpeakStatistic,geometry_info.rho,
         &(*image)->exception);
       if (noise_image != (Image *) NULL)
         {

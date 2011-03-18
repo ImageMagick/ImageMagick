@@ -2190,7 +2190,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            median_image=MedianFilterImage(*image,geometry_info.rho,exception);
+            median_image=StatisticImageChannel(*image,channel,MedianStatistic,
+              geometry_info.rho,exception);
             if (median_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -2207,7 +2208,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            mode_image=ModeImage(*image,geometry_info.rho,exception);
+            mode_image=StatisticImageChannel(*image,channel,ModeStatistic,
+              geometry_info.rho,exception);
             if (mode_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -2332,8 +2334,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '-')
               {
                 (void) ParseGeometry(argv[i+1],&geometry_info);
-                noisy_image=ReduceNoiseImage(*image,geometry_info.rho,
-                  exception);
+                noisy_image=StatisticImageChannel(*image,channel,
+                  NonpeakStatistic,geometry_info.rho,exception);
               }
             else
               {

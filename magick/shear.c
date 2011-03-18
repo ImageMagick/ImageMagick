@@ -968,7 +968,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   clone_image=DestroyImage(clone_image);
   if (deskew_image == (Image *) NULL)
     return((Image *) NULL);
-  median_image=MedianFilterImage(deskew_image,0.0,exception);
+  median_image=StatisticImage(deskew_image,MedianStatistic,0.0,exception);
   if (median_image == (Image *) NULL)
     {
       deskew_image=DestroyImage(deskew_image);
