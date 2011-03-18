@@ -4577,7 +4577,7 @@ typedef struct _SkipList
 typedef struct _PixelList
 {
   size_t
-    center,
+    length,
     seed,
     signature;
 
@@ -4613,7 +4613,7 @@ static PixelList **DestroyPixelListThreadSet(PixelList **pixel_list)
   return(pixel_list);
 }
 
-static PixelList *AcquirePixelList(const size_t width)
+static PixelList *AcquirePixelList(const size_t width,const size_t height)
 {
   PixelList
     *pixel_list;
@@ -4625,7 +4625,7 @@ static PixelList *AcquirePixelList(const size_t width)
   if (pixel_list == (PixelList *) NULL)
     return(pixel_list);
   (void) ResetMagickMemory((void *) pixel_list,0,sizeof(*pixel_list));
-  pixel_list->center=width*width/2;
+  pixel_list->length=width*height;
   for (i=0; i < ListChannels; i++)
   {
     pixel_list->lists[i].nodes=(ListNode *) AcquireQuantumMemory(65537UL,
@@ -4639,7 +4639,8 @@ static PixelList *AcquirePixelList(const size_t width)
   return(pixel_list);
 }
 
-static PixelList **AcquirePixelListThreadSet(const size_t width)
+static PixelList **AcquirePixelListThreadSet(const size_t width,
+  const size_t height)
 {
   PixelList
     **pixel_list;
@@ -4658,7 +4659,7 @@ static PixelList **AcquirePixelListThreadSet(const size_t width)
   (void) ResetMagickMemory(pixel_list,0,number_threads*sizeof(*pixel_list));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    pixel_list[i]=AcquirePixelList(width);
+    pixel_list[i]=AcquirePixelList(width,height);
     if (pixel_list[i] == (PixelList *) NULL)
       return(DestroyPixelListThreadSet(pixel_list));
   }
@@ -4726,6 +4727,48 @@ static void AddNodePixelList(PixelList *pixel_list,const ssize_t channel,
   while (level-- > 0);
 }
 
+static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    color,
+    count;
+
+  unsigned short
+    channels[ListChannels];
+
+  /*
+    Find the maximum value for each of the color.
+  */
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536UL;
+    count=0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      count+=list->nodes[color].count;
+    } while (count <= pixel_list->length);
+    channels[channel]=(unsigned short) color;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
 static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
 {
   MagickPixelPacket
@@ -4738,7 +4781,6 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    center,
     color,
     count;
 
@@ -4748,7 +4790,6 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
   /*
     Find the median value for each of the color.
   */
-  center=pixel_list->center;
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
@@ -4758,8 +4799,43 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
     {
       color=list->nodes[color].next[0];
       count+=list->nodes[color].count;
-    }
-    while (count <= center);
+    } while (count <= (pixel_list->length >> 1));
+    channels[channel]=(unsigned short) color;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
+static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    color;
+
+  unsigned short
+    channels[ListChannels];
+
+  /*
+    Find the minimum value for each of the color.
+  */
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536UL;
+    color=list->nodes[color].next[0];
     channels[channel]=(unsigned short) color;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4786,8 +4862,7 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
     color,
     count,
     max_count,
-    mode,
-    width;
+    mode;
 
   unsigned short
     channels[5];
@@ -4795,7 +4870,6 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
   /*
     Make each pixel the 'predominate color' of the specified neighborhood.
   */
-  width=pixel_list->center << 1;
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
@@ -4812,8 +4886,7 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
           max_count=list->nodes[mode].count;
         }
       count+=list->nodes[color].count;
-    }
-    while (count <= width);
+    } while (count <= pixel_list->length);
     channels[channel]=(unsigned short) mode;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4837,7 +4910,6 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    center,
     color,
     count,
     next,
@@ -4847,9 +4919,8 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
     channels[5];
 
   /*
-    Finds the median value for each of the color.
+    Finds the non peak value for each of the color.
   */
-  center=pixel_list->center;
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
@@ -4862,8 +4933,7 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
       color=next;
       next=list->nodes[color].next[0];
       count+=list->nodes[color].count;
-    }
-    while (count <= center);
+    } while (count <= (pixel_list->length >> 1));
     if ((previous == 65536UL) && (next != 65536UL))
       color=next;
     else
@@ -4965,6 +5035,8 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   const ChannelType channel,const StatisticType type,const size_t width,
   const size_t height,ExceptionInfo *exception)
 {
+#define StatisticWidth  (width == 0 ? 3 : width)
+#define StatisticHeight  (height == 0 ? 3 : height)
 #define StatisticImageTag  "Statistic/Image"
 
   CacheView
@@ -5005,7 +5077,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       statistic_image=DestroyImage(statistic_image);
       return((Image *) NULL);
     }
-  pixel_list=AcquirePixelListThreadSet(width);
+  pixel_list=AcquirePixelListThreadSet(StatisticWidth,StatisticHeight);
   if (pixel_list == (PixelList **) NULL)
     {
       statistic_image=DestroyImage(statistic_image);
@@ -5043,8 +5115,9 @@ MagickExport Image *StatisticImageChannel(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (height/2L),image->columns+width,height,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) StatisticWidth/2L),y-
+      (ssize_t) (StatisticHeight/2L),image->columns+StatisticWidth,
+      StatisticHeight,exception);
     q=QueueCacheViewAuthenticPixels(statistic_view,0,y,
       statistic_image->columns,1,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -5072,18 +5145,29 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       r=p;
       s=indexes+x;
       ResetPixelList(pixel_list[id]);
-      for (v=0; v < (ssize_t) width; v++)
+      for (v=0; v < (ssize_t) StatisticWidth; v++)
       {
-        for (u=0; u < (ssize_t) height; u++)
+        for (u=0; u < (ssize_t) StatisticHeight; u++)
           InsertPixelList(image,r+u,s+u,pixel_list[id]);
-        r+=image->columns+width;
-        s+=image->columns+width;
+        r+=image->columns+StatisticWidth;
+        s+=image->columns+StatisticHeight;
       }
       switch (type)
       {
+        case MaximumStatistic:
+        {
+          pixel=GetMaximumPixelList(pixel_list[id]);
+          break;
+        }
         case MedianStatistic:
+        default:
         {
           pixel=GetMedianPixelList(pixel_list[id]);
+          break;
+        }
+        case MinimumStatistic:
+        {
+          pixel=GetMinimumPixelList(pixel_list[id]);
           break;
         }
         case ModeStatistic:
@@ -5096,8 +5180,6 @@ MagickExport Image *StatisticImageChannel(const Image *image,
           pixel=GetNonpeakPixelList(pixel_list[id]);
           break;
         }
-        default:
-          break;
       }
       if ((channel & RedChannel) != 0)
         q->red=ClampToQuantum(pixel.red);
