@@ -2731,7 +2731,7 @@ static void AddNodePixelList(PixelList *pixel_list,const ssize_t channel,
   while (level-- > 0);
 }
 
-static MagickPixelPacket GetPixelList(PixelList *pixel_list)
+static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
 {
   MagickPixelPacket
     pixel;
@@ -2967,7 +2967,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
         r+=image->columns+width;
         s+=image->columns+width;
       }
-      pixel=GetPixelList(pixel_list[id]);
+      pixel=GetMedianPixelList(pixel_list[id]);
       SetPixelPacket(median_image,&pixel,q,median_indexes+x);
       p++;
       q++;
@@ -5614,8 +5614,23 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       }
       switch (type)
       {
-        case ModeStatistic: pixel=GetModePixelList(pixel_list[id]);
-        default: break;
+        case MedianStatistic:
+        {
+          pixel=GetMedianPixelList(pixel_list[id]);
+          break;
+        }
+        case ModeStatistic:
+        {
+          pixel=GetModePixelList(pixel_list[id]);
+          break;
+        }
+        case NonpeakStatistic:
+        {
+          pixel=GetNonpeakPixelList(pixel_list[id]);
+          break;
+        }
+        default:
+          break;
       }
       if ((channel & RedChannel) != 0)
         q->red=ClampToQuantum(pixel.red);
