@@ -96,7 +96,7 @@ div.main {
   padding-top: 0px;
   padding-right: .75em;
   margin-left: 160px;
-  margin-right: 160px;
+  margin-right: 10px;
 }
 
 div.menu {
@@ -643,7 +643,7 @@ th.size-norm, tr.size-norm, td.size-norm {
   color: black;
   border: solid #d0d0d0;
   border-width: 1px 0px 1px 0px;
-  padding: 5px 5px 5px 160px;
+  padding: 5px 5px 5px 10px;
   font-weight: bold;
   text-align: center;
   margin-left:0px; 
