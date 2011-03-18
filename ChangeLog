@@ -1,6 +1,8 @@
 2011-03-14  6.6.8-6 Cristy  <quetzlzacatenango@image...>
   * Fixed memory leak for PDF and Bitmap PSD RLE support (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18317).
+  * Support the -statistic option: replace each pixel with corresponding
+    statistic from the neighborhood.
 
 2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced Minus and Divide Composition methods with Dst and Src

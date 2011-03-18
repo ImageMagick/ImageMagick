@@ -11820,6 +11820,58 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S t a t i s t i c I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickStatisticImage() replace each pixel with corresponding statistic from
+%  the neighborhood of the specified radius.
+%
+%  The format of the MagickStatisticImage method is:
+%
+%      MagickBooleanType MagickStatisticImage(MagickWand *wand,
+%        const StatisticType type,const double radius)
+%      MagickBooleanType MagickStatisticImageChannel(MagickWand *wand,
+%        const ChannelType channel,const StatisticType type,const double radius)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o type: the statistic type (e.g. median, mode, etc.).
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+*/
+WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
+  const ChannelType channel,const StatisticType type,const double radius)
+{
+  Image
+    *statistic_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  statistic_image=StatisticImageChannel(wand->images,channel,type,radius,
+    wand->exception);
+  if (statistic_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,statistic_image);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S t e g a n o I m a g e                                       %
 %                                                                             %
 %                                                                             %

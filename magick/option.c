@@ -1448,6 +1448,7 @@ static const OptionInfo
   {
     { "Undefined", (ssize_t) UndefinedStatistic, MagickTrue },
     { "Maximum", (ssize_t) MaximumStatistic, MagickFalse },
+    { "Mean", (ssize_t) MeanStatistic, MagickFalse },
     { "Median", (ssize_t) MedianStatistic, MagickFalse },
     { "Minimum", (ssize_t) MinimumStatistic, MagickFalse },
     { "Mode", (ssize_t) ModeStatistic, MagickFalse },
