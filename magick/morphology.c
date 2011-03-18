@@ -3142,6 +3142,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
      const KernelInfo *kernel, const CompositeOperator compose,
      const double bias, ExceptionInfo *exception)
 {
+  CompositeOperator
+    curr_compose;
+
   Image
     *curr_image,    /* Image we are working with or iterating */
     *work_image,    /* secondary image for primative iteration */
@@ -3199,6 +3202,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
   /* initialise for cleanup */
   curr_image = (Image *) image;
+  curr_compose = image->compose;
   work_image = save_image = rslt_image = (Image *) NULL;
   reflected_kernel = (KernelInfo *) NULL;
 
