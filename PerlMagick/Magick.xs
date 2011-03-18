@@ -533,6 +533,8 @@ static struct
     { "ColorMatrix", { {"matrix", ArrayReference} } },
     { "Color", { {"color", StringReference} } },
     { "Mode", { {"radius", RealReference} } }
+    { "Statistic", { {"radius", RealReference},
+      {"channel", MagickChannelOptions}, {"type", MagickStatisticOptions} } }
   };
 
 static SplayTreeInfo
@@ -7281,6 +7283,8 @@ Mogrify(ref,...)
     ColorImage         = 270
     Mode               = 271
     ModeImage          = 272
+    Statistic          = 273
+    StatisticImage     = 274
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10619,6 +10623,22 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=0.0;
           image=ModeImage(image,argument_list[0].real_reference,exception);
+          break;
+        }
+        case 137:  /* Statistic */
+        {
+          StatisticType
+            statistic;
+
+          statistic=UndefinedStatistic;
+          if (attribute_flag[0] == 0)
+            argument_list[0].real_reference=0.0;
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            statistic=(StatisticType) argument_list[2].integer_reference;
+          image=StatisicImageChannel(image,channel,statistic,
+            argument_list[0].real_reference,exception);
           break;
         }
       }

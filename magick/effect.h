@@ -62,6 +62,7 @@ typedef enum
 {
   UndefinedStatistic,
   MaximumStatistic,
+  MeanStatistic,
   MedianStatistic,
   MinimumStatistic,
   ModeStatistic,
