@@ -1318,7 +1318,8 @@ void Magick::Image::medianFilter ( const double radius_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    StatisticImage ( image(), MedianStatistic, radius_, &exceptionInfo );
+    StatisticImage ( image(), MedianStatistic, (size_t) radius_, (size_t)
+    radius_,&exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1709,7 +1710,8 @@ void Magick::Image::reduceNoise ( const double order_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    StatisticImage( image(), NonpeakStatistic, order_, &exceptionInfo );
+    StatisticImage( image(), NonpeakStatistic, (size_t) order_, (size_t) order_,
+    &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

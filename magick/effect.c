@@ -3079,8 +3079,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case ReduceNoisePreview:
       {
-        preview_image=StatisticImage(thumbnail,NonpeakStatistic,radius,
-          exception);
+        preview_image=StatisticImage(thumbnail,NonpeakStatistic,(size_t) radius,
+          (size_t) radius,exception);
         (void) FormatMagickString(label,MaxTextExtent,"noise %g",radius);
         break;
       }
@@ -3124,7 +3124,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
             break;
           }
         }
-        preview_image=StatisticImage(thumbnail,NonpeakStatistic,(double) i,
+        preview_image=StatisticImage(thumbnail,NonpeakStatistic,i,i,
           exception);
         (void) FormatMagickString(label,MaxTextExtent,"+noise %s",factor);
         break;
@@ -4534,10 +4534,10 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %  The format of the StatisticImage method is:
 %
 %      Image *StatisticImage(const Image *image,const StatisticType type,
-%        const double radius,ExceptionInfo *exception)
+%        const size_t width,const size_t height,ExceptionInfo *exception)
 %      Image *StatisticImageChannel(const Image *image,
 %        const ChannelType channel,const StatisticType type,
-%        const double radius,ExceptionInfo *exception)
+%        const size_t width,const size_t height,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4547,7 +4547,9 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %
 %    o type: the statistic type (median, mode, etc.).
 %
-%    o radius: the radius of the pixel neighborhood.
+%    o width: the width of the pixel neighborhood.
+%
+%    o height: the height of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -4949,14 +4951,19 @@ static void ResetPixelList(PixelList *pixel_list)
 }
 
 MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
-  const double radius,ExceptionInfo *exception)
+  const size_t width,const size_t height,ExceptionInfo *exception)
 {
-  return(StatisticImageChannel(image,DefaultChannels,type,radius,exception));
+  Image
+    *statistic_image;
+
+  statistic_image=StatisticImageChannel(image,DefaultChannels,type,width,
+    height,exception);
+  return(statistic_image);
 }
 
 MagickExport Image *StatisticImageChannel(const Image *image,
-  const ChannelType channel,const StatisticType type,const double radius,
-  ExceptionInfo *exception)
+  const ChannelType channel,const StatisticType type,const size_t width,
+  const size_t height,ExceptionInfo *exception)
 {
 #define StatisticImageTag  "Statistic/Image"
 
@@ -4976,9 +4983,6 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   PixelList
     **restrict pixel_list;
 
-  size_t
-    width;
-
   ssize_t
     y;
 
@@ -4991,7 +4995,6 @@ MagickExport Image *StatisticImageChannel(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth2D(radius,0.5);
   statistic_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (statistic_image == (Image *) NULL)
@@ -5041,7 +5044,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
+      (height/2L),image->columns+width,height,exception);
     q=QueueCacheViewAuthenticPixels(statistic_view,0,y,
       statistic_image->columns,1,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -5071,7 +5074,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       ResetPixelList(pixel_list[id]);
       for (v=0; v < (ssize_t) width; v++)
       {
-        for (u=0; u < (ssize_t) width; u++)
+        for (u=0; u < (ssize_t) height; u++)
           InsertPixelList(image,r+u,s+u,pixel_list[id]);
         r+=image->columns+width;
         s+=image->columns+width;
