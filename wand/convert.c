@@ -269,7 +269,7 @@ static MagickBooleanType ConvertUsage(void)
       "                     fill in a image based on a few color points",
       "-splice geometry     splice the background color into the image",
       "-spread radius       displace image pixels by a random amount",
-      "-statistic type radius",
+      "-statistic type geometry",
       "                     replace each pixel with corresponding statistic from the neighborhood",
       "-strip               strip image of all profiles and comments",
       "-swirl degrees       swirl image pixels about the center",

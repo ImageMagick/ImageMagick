@@ -2191,7 +2191,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
             median_image=StatisticImageChannel(*image,channel,MedianStatistic,
-              geometry_info.rho,exception);
+              (size_t) geometry_info.rho,(size_t) geometry_info.rho,exception);
             if (median_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -2209,7 +2209,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
             mode_image=StatisticImageChannel(*image,channel,ModeStatistic,
-              geometry_info.rho,exception);
+              (size_t) geometry_info.rho,(size_t) geometry_info.rho,exception);
             if (mode_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);
@@ -2335,7 +2335,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               {
                 (void) ParseGeometry(argv[i+1],&geometry_info);
                 noisy_image=StatisticImageChannel(*image,channel,
-                  NonpeakStatistic,geometry_info.rho,exception);
+                  NonpeakStatistic,(size_t) geometry_info.rho,(size_t)
+                  geometry_info.rho,exception);
               }
             else
               {
@@ -3171,7 +3172,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickFalse,argv[i+1]);
             (void) ParseGeometry(argv[i+2],&geometry_info);
             statistic_image=StatisticImageChannel(*image,channel,type,
-              geometry_info.rho,exception);
+              (size_t) geometry_info.rho,(size_t) geometry_info.sigma,
+              exception);
             if (statistic_image == (Image *) NULL)
               break;
             *image=DestroyImage(*image);

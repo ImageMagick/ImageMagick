@@ -11694,9 +11694,10 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %  The format of the MagickStatisticImage method is:
 %
 %      MagickBooleanType MagickStatisticImage(MagickWand *wand,
-%        const StatisticType type,const double radius)
+%        const StatisticType type,const double width,const size_t height)
 %      MagickBooleanType MagickStatisticImageChannel(MagickWand *wand,
-%        const ChannelType channel,const StatisticType type,const double radius)
+%        const ChannelType channel,const StatisticType type,const double width,
+%        const size_t height)
 %
 %  A description of each parameter follows:
 %
@@ -11710,7 +11711,8 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
-  const ChannelType channel,const StatisticType type,const double radius)
+  const ChannelType channel,const StatisticType type,const size_t width,
+  const size_t height)
 {
   Image
     *statistic_image;
@@ -11721,7 +11723,7 @@ WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  statistic_image=StatisticImageChannel(wand->images,channel,type,radius,
+  statistic_image=StatisticImageChannel(wand->images,channel,type,width,height,
     wand->exception);
   if (statistic_image == (Image *) NULL)
     return(MagickFalse);

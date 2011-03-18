@@ -4602,7 +4602,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   Image
     *median_image;
 
-  median_image=StatisticImage(image,MedianStatistic,radius,exception);
+  median_image=StatisticImage(image,MedianStatistic,(size_t) radius,(size_t)
+    radius,exception);
   return(median_image);
 }
 
@@ -4640,7 +4641,8 @@ MagickExport Image *ModeImage(const Image *image,const double radius,
   Image
     *mode_image;
 
-  mode_image=StatisticImage(image,ModeStatistic,radius,exception);
+  mode_image=StatisticImage(image,ModeStatistic,(size_t) radius,(size_t) radius,
+    exception);
   return(mode_image);
 }
 
@@ -5685,7 +5687,8 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   Image
     *reduce_image;
 
-  reduce_image=StatisticImage(image,NonpeakStatistic,radius,exception);
+  reduce_image=StatisticImage(image,NonpeakStatistic,(size_t) radius,(size_t)
+    radius,exception);
   return(reduce_image);
 }
 

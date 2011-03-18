@@ -76,7 +76,7 @@ Image Settings:
   \-scene value         image scene number
   \-seed value          seed a new sequence of pseudo-random numbers
   \-size geometry       width and height of image
-  \-statistic type radius
+  \-statistic type geometry
                        replace each pixel with corresponding statistic from the neighborhood
   \-stretch type        render text with this font stretch
   \-stroke color        graphic primitive stroke color
