@@ -1203,16 +1203,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             InheritException(exception,&(*image)->exception);
             break;
           }
-        if (LocaleCompare("comment",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                (void) DeleteImageProperty(*image,option+1);
-                break;
-              }
-            (void) SetImageProperty(*image,option+1,argv[i+1]);
-            break;
-          }
         if (LocaleCompare("contrast",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
@@ -1978,16 +1968,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       }
       case 'l':
       {
-        if (LocaleCompare("label",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                (void) DeleteImageProperty(*image,option+1);
-                break;
-              }
-            (void) SetImageProperty(*image,option+1,argv[i+1]);
-            break;
-          }
         if (LocaleCompare("lat",option+1) == 0)
           {
             Image
