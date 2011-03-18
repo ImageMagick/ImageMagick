@@ -661,6 +661,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       ThrowFileException(exception,DelegateError,"PostscriptDelegateFailed",
         image_info->filename);
+      image=DestroyImage(image);
       return((Image *) NULL);
     }
   if (LocaleCompare(pdf_image->magick,"BMP") == 0)
