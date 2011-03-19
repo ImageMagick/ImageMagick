@@ -49,12 +49,19 @@
 
 <body id="www-imagemagick-org">
 <div class="titlebar">
-<a href="../index.html">
-  <img src="../images/script.png" alt="[ImageMagick]"
-  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" alt="[sponsor]"
-  style="margin-top: 42px; border: 0px; float: left;" /></a>
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
+</div>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../images/logo.jpg"
   alt="ImageMagick Logo"
@@ -148,6 +155,9 @@
 <div  class="menu">
   <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
+<a href="http://www.networkredux.com">
+  <img src="../images/networkredux.png" alt="[sponsor]"
+  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
@@ -174,34 +184,30 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "0574824969";
-    google_ad_width = 160;
-    google_ad_height = 600;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-  </script>
+
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-17 6.6.8-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dl><dt>2011-03-14  6.6.8-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fixed memory leak for PDF and Bitmap PSD RLE support (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18317).</dd>
+  <dd> Support the -statistic option: replace each pixel with corresponding    statistic from the neighborhood.</dd>
+<dt>2011-03-18 6.6.8-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Replaced Minus and Divide Composition methods with Dst and Src    equivalents. Now users can decide how these non-commutative mathematical    operators are applied the to the images being composited.</dd>
+  <dd> Fix the percent escape values for  %p, %n  and  %[fx:t], %[fx:n] to    respectivally mean a the current images index and the total number of    images within the current image sequence.</dd>
+<dt>2011-03-17 6.6.8-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Backed out the patch for Variable Blur Composition that was added    2011-02-13 v6.6.7-7, until I can re-think the problem.    The existing fix was failing to do circular blurs correctly.</dd>
 <dt>2011-03-14  6.6.8-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Fixed a rounding/truncation error while writing the pHYs chunk in the    png encoder.</dd>
-  <dd> Don't write a text-encoded profile when "-define PNG:exclude-chunk=text"    is present (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17086 and    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18225).</dd>
+  <dd> Don't write text-encoded profile when "-define PNG:exclude-chunk=text,ztxt"    is present (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17086 and    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18225).</dd>
 <dt>2011-03-14  6.6.8-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add support for the WebP image format.</dd>
 <dt>2011-03-14  6.6.8-5 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>

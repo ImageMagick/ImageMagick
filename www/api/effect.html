@@ -49,12 +49,19 @@
 
 <body id="www-imagemagick-org">
 <div class="titlebar">
-<a href="../../index.html">
-  <img src="../../images/script.png" alt="[ImageMagick]"
-  style="width: 350px; height: 60px; margin: 28px auto; float: left;" /></a>
-<a href="http://www.networkredux.com">
-  <img src="../../images/networkredux.png" alt="[sponsor]"
-  style="margin-top: 42px; border: 0px; float: left;" /></a>
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
+</div>
 <a href="http://www.imagemagick.org/discourse-server/">
   <img src="../../images/logo.jpg"
   alt="ImageMagick Logo"
@@ -148,6 +155,9 @@
 <div  class="menu">
   <a title="Sponsors" href="../../www/sponsors.html">Sponsors:</a>
 
+<a href="http://www.networkredux.com">
+  <img src="../../images/networkredux.png" alt="[sponsor]"
+  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
@@ -174,30 +184,20 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011060100025 atlas.multimedia-->
+   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-  <script type="text/javascript">
-  <!--
-    google_ad_client = "pub-3129977114552745";
-    google_ad_slot = "0574824969";
-    google_ad_width = 160;
-    google_ad_height = 600;
-  //-->
-  </script>
-  <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-  </script>
+
 </div>
 
 <div class="main">
 
 <h1>Module effect Methods</h1>
-<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#ConvolveImage">ConvolveImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#FilterImage">FilterImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#ModeImage">ModeImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
+<p class="navigation-index">[<a href="#AdaptiveBlurImage">AdaptiveBlurImage</a> &bull; <a href="#AdaptiveSharpenImage">AdaptiveSharpenImage</a> &bull; <a href="#BlurImage">BlurImage</a> &bull; <a href="#ConvolveImage">ConvolveImage</a> &bull; <a href="#DespeckleImage">DespeckleImage</a> &bull; <a href="#EdgeImage">EdgeImage</a> &bull; <a href="#EmbossImage">EmbossImage</a> &bull; <a href="#FilterImage">FilterImage</a> &bull; <a href="#GaussianBlurImage">GaussianBlurImage</a> &bull; <a href="#MotionBlurImage">MotionBlurImage</a> &bull; <a href="#PreviewImage">PreviewImage</a> &bull; <a href="#RadialBlurImage">RadialBlurImage</a> &bull; <a href="#SelectiveBlurImage">SelectiveBlurImage</a> &bull; <a href="#ShadeImage">ShadeImage</a> &bull; <a href="#SharpenImage">SharpenImage</a> &bull; <a href="#SpreadImage">SpreadImage</a> &bull; <a href="#StatisticImage">StatisticImage</a> &bull; <a href="#UnsharpMaskImage">UnsharpMaskImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="AdaptiveBlurImage">AdaptiveBlurImage</a></h2>
 <div class="doc-section">
@@ -464,56 +464,6 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="MedianFilterImage">MedianFilterImage</a></h2>
-<div class="doc-section">
-
-<p>MedianFilterImage() applies a digital filter that improves the quality of a noisy image.  Each pixel is replaced by the median in a set of neighboring pixels as defined by radius.</p>
-
-<p>The algorithm was contributed by Mike Edmonds and implements an insertion sort for selecting median color-channel values.  For more on this algorithm see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William Pugh in the June 1990 of Communications of the ACM.</p>
-
-<p>The format of the MedianFilterImage method is:</p>
-
-<pre class="code">
-  Image *MedianFilterImage(const Image *image,const double radius,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>radius</h5>
-<p>the radius of the pixel neighborhood.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="ModeImage">ModeImage</a></h2>
-<div class="doc-section">
-
-<p>ModeImage() makes each pixel the 'predominate color' of the neighborhood of the specified radius.</p>
-
-<p>The format of the ModeImage method is:</p>
-
-<pre class="code">
-  Image *ModeImage(const Image *image,const double radius,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>radius</h5>
-<p>the radius of the pixel neighborhood.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="MotionBlurImage">MotionBlurImage</a></h2>
 <div class="doc-section">
 
@@ -604,30 +554,6 @@
 
 <h5>angle</h5>
 <p>the angle of the radial blur.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="ReduceNoiseImage">ReduceNoiseImage</a></h2>
-<div class="doc-section">
-
-<p>ReduceNoiseImage() smooths the contours of an image while still preserving edge information.  The algorithm works by replacing each pixel with its neighbor closest in value.  A neighbor is defined by radius.  Use a radius of 0 and ReduceNoise() selects a suitable radius for you.</p>
-
-<p>The format of the ReduceNoiseImage method is:</p>
-
-<pre class="code">
-  Image *ReduceNoiseImage(const Image *image,const double radius,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>radius</h5>
-<p>the radius of the pixel neighborhood.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -749,6 +675,42 @@
 
 <h5>radius</h5>
 <p>Choose a random pixel in a neighborhood of this extent.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/effect_8c.html" id="StatisticImage">StatisticImage</a></h2>
+<div class="doc-section">
+
+<p>StatisticImage() makes each pixel the min / max / median / mode / etc. of the neighborhood of the specified width and height.</p>
+
+<p>The format of the StatisticImage method is:</p>
+
+<pre class="code">
+  Image *StatisticImage(const Image *image,const StatisticType type,
+    const size_t width,const size_t height,ExceptionInfo *exception)
+  Image *StatisticImageChannel(const Image *image,
+    const ChannelType channel,const StatisticType type,
+    const size_t width,const size_t height,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>channel</h5>
+<p>the image channel.</p>
+
+<h5>type</h5>
+<p>the statistic type (median, mode, etc.).</p>
+
+<h5>width</h5>
+<p>the width of the pixel neighborhood.</p>
+
+<h5>height</h5>
+<p>the height of the pixel neighborhood.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
