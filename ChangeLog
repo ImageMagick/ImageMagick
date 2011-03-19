@@ -8,6 +8,9 @@
   * Replaced Minus and Divide Composition methods with Dst and Src
     equivalents. Now users can decide how these non-commutative mathematical
     operators are applied the to the images being composited.
+  * Fix the percent escape values for  %p, %n  and  %[fx:t], %[fx:n] to
+    respectivally mean a the current images index and the total number of
+    images within the current image sequence.
 
 2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Backed out the patch for Variable Blur Composition that was added

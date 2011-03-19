@@ -411,6 +411,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
     number_colors++;
   if ((channels & OpacityChannel) != 0)
     number_colors++;
+
   /*
     Read string, to determine number of arguments needed,
   */
@@ -7984,6 +7985,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *fx_image;
 
             (void) SyncImagesSettings(mogrify_info,*images);
+            PageIndexImageList(*images);
             fx_image=FxImageChannel(*images,channel,argv[i+1],exception);
             if (fx_image == (Image *) NULL)
               {
@@ -8627,11 +8629,12 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     return(MagickTrue);
   (void) SetImageInfoProgressMonitor(image_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
-  mogrify_images=NewImageList();
-  number_images=GetImageListLength(*images);
   status=0;
   if (post == MagickFalse)
     status&=MogrifyImageList(image_info,argc,argv,images,exception);
+  PageIndexImageList(*images);
+  number_images=(*images)->page_total;
+  mogrify_images=NewImageList();
   for (i=0; i < (ssize_t) number_images; i++)
   {
     image=RemoveFirstImageFromList(images);
