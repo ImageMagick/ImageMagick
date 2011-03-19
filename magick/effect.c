@@ -5145,12 +5145,12 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       r=p;
       s=indexes+x;
       ResetPixelList(pixel_list[id]);
-      for (v=0; v < (ssize_t) StatisticWidth; v++)
+      for (v=0; v < (ssize_t) StatisticHeight; v++)
       {
-        for (u=0; u < (ssize_t) StatisticHeight; u++)
+        for (u=0; u < (ssize_t) StatisticWidth; u++)
           InsertPixelList(image,r+u,s+u,pixel_list[id]);
         r+=image->columns+StatisticWidth;
-        s+=image->columns+StatisticHeight;
+        s+=image->columns+StatisticWidth;
       }
       switch (type)
       {
