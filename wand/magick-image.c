@@ -11689,7 +11689,7 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickStatisticImage() replace each pixel with corresponding statistic from
-%  the neighborhood of the specified radius.
+%  the neighborhood of the specified width and height.
 %
 %  The format of the MagickStatisticImage method is:
 %
@@ -11707,7 +11707,9 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %
 %    o type: the statistic type (e.g. median, mode, etc.).
 %
-%    o radius: the radius of the pixel neighborhood.
+%    o width: the width of the pixel neighborhood.
+%
+%    o height: the height of the pixel neighborhood.
 %
 */
 WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,

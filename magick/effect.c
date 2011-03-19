@@ -4529,7 +4529,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  StatisticImage() makes each pixel the min / max / median / mode / etc. of
-%  the neighborhood of the specified radius.
+%  the neighborhood of the specified width and height.
 %
 %  The format of the StatisticImage method is:
 %
@@ -5084,7 +5084,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   /*
-    Reduce statistics image.
+    Make each pixel the min / max / median / mode / etc. of the neighborhood.
   */
   status=MagickTrue;
   progress=0;
