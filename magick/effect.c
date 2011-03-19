@@ -5132,11 +5132,11 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       MagickPixelPacket
         pixel;
 
-      register const PixelPacket
-        *restrict r;
-
       register const IndexPacket
         *restrict s;
+
+      register const PixelPacket
+        *restrict r;
 
       register ssize_t
         u,
