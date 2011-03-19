@@ -4723,8 +4723,7 @@ static void AddNodePixelList(PixelList *pixel_list,const ssize_t channel,
   {
     list->nodes[color].next[level]=list->nodes[update[level]].next[level];
     list->nodes[update[level]].next[level]=color;
-  }
-  while (level-- > 0);
+  } while (level-- > 0);
 }
 
 static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
@@ -5035,8 +5034,10 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   const ChannelType channel,const StatisticType type,const size_t width,
   const size_t height,ExceptionInfo *exception)
 {
-#define StatisticWidth  (width == 0 ? 3 : width)
-#define StatisticHeight  (height == 0 ? 3 : height)
+#define StatisticWidth \
+  (width == 0 ? GetOptimalKernelWidth2D(width,0.5) : width)
+#define StatisticHeight \
+  (height == 0 ? GetOptimalKernelWidth2D(height,0.5) : height)
 #define StatisticImageTag  "Statistic/Image"
 
   CacheView
@@ -5118,8 +5119,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) StatisticWidth/2L),y-
       (ssize_t) (StatisticHeight/2L),image->columns+StatisticWidth,
       StatisticHeight,exception);
-    q=QueueCacheViewAuthenticPixels(statistic_view,0,y,
-      statistic_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(statistic_view,0,y,statistic_image->columns,      1,exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
