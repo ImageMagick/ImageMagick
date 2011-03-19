@@ -5187,7 +5187,8 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         q->green=ClampToQuantum(pixel.green);
       if ((channel & BlueChannel) != 0)
         q->blue=ClampToQuantum(pixel.blue);
-      if ((image->matte != MagickFalse) && ((channel & OpacityChannel) != 0))
+      if (((channel & OpacityChannel) != 0) &&
+          (image->matte != MagickFalse))
         q->opacity=ClampToQuantum(pixel.opacity);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
