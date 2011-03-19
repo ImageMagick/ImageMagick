@@ -635,6 +635,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       *profile;
 
     next->taint=MagickFalse;
+    next->page_index = next->page_total= 0;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if (*magick_path == '\0')
       (void) CopyMagickString(next->magick,magick,MaxTextExtent);
