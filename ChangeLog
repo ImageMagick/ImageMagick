@@ -4,7 +4,7 @@
   * Support the -statistic option: replace each pixel with corresponding
     statistic from the neighborhood.
 
-2011-03-17 6.6.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+2011-03-18 6.6.8-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced Minus and Divide Composition methods with Dst and Src
     equivalents. Now users can decide how these non-commutative mathematical
     operators are applied the to the images being composited.
