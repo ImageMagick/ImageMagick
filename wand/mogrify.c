@@ -3932,7 +3932,6 @@ static MagickBooleanType MogrifyUsage(void)
     },
     *stack_operators[]=
     {
-      "-clone index         clone an image",
       "-delete index        delete the image from the image sequence",
       "-insert index        insert last image into the image sequence",
       "-swap indexes        swap two images in the image sequence",

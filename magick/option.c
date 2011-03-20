@@ -305,6 +305,8 @@ static const OptionInfo
     { "-dither", 1L, MagickFalse },
     { "+draw", 0L, MagickFalse },
     { "-draw", 1L, MagickFalse },
+    { "+duplicate", 1L, MagickFalse },
+    { "-duplicate", 2L, MagickFalse },
     { "+duration", 1L, MagickTrue },
     { "-duration", 1L, MagickTrue },
     { "+edge", 0L, MagickFalse },

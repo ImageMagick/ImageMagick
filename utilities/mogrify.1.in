@@ -249,7 +249,6 @@ Image Sequence Operators:
   \-write filename      write images to this file
 
 Image Stack Operators:
-  \-clone index         clone an image
   \-delete index        delete the image from the image sequence
   \-insert index        insert last image into the image sequence
   \-swap indexes        swap two images in the image sequence
