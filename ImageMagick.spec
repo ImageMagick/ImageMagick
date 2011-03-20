@@ -260,7 +260,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/[a-z]*
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
-%{_mandir}/man[145]/[a-z]*
+%{_mandir}/man[145]/[a-zA-Z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
 
