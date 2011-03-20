@@ -45,6 +45,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/string-private.h"
 
 /*
   Define declarations.
@@ -413,6 +414,8 @@ static MagickBooleanType ConvertUsage(void)
     {
       "-clone index         clone an image",
       "-delete index        delete the image from the image sequence",
+      "-duplicate index count",
+      "                     duplicate an image one or more times",
       "-insert index        insert last image into the image sequence",
       "-swap indexes        swap two images in the image sequence",
       (char *) NULL
@@ -1279,6 +1282,48 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("duplicate",option+1) == 0)
+          {
+            Image
+              *duplicate_images;
+
+            long
+              count;
+
+            duplicate_images=image;
+            if (k != 0)
+              duplicate_images=image_stack[k-1].image;
+            if (duplicate_images == (Image *) NULL)
+              ThrowConvertException(ImageError,"ImageSequenceRequired",option);
+            FireImageStack(MagickTrue,MagickTrue,MagickTrue);
+            if (*option == '+')
+              {
+                i++;
+                if (i == (ssize_t) (argc-1))
+                  ThrowConvertException(OptionError,"MissingArgument",option);
+                count=StringToLong(argv[i+1]);
+                duplicate_images=CloneImages(duplicate_images,"-1",exception);
+              }
+            else
+              {
+                i++;
+                if (i == (ssize_t) (argc-1))
+                  ThrowConvertException(OptionError,"MissingArgument",option);
+                if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
+                  ThrowConvertInvalidArgumentException(option,argv[i]);
+                i++;
+                if (i == (ssize_t) (argc-1))
+                  ThrowConvertException(OptionError,"MissingArgument",option);
+                count=StringToLong(argv[i+1]);
+                duplicate_images=CloneImages(duplicate_images,argv[i],
+                  exception);
+              }
+            if (duplicate_images == (Image *) NULL)
+              ThrowConvertException(OptionError,"NoSuchImage",option);
+            while (count-- > 0)
+              AppendImageStack(duplicate_images);
             break;
           }
         if (LocaleCompare("duration",option+1) == 0)
