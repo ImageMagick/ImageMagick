@@ -1752,7 +1752,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     case 'n':
     {
       if (LocaleCompare(symbol,"n") == 0)
-        return((MagickRealType) GetImageListLength(fx_info->images));
+        return((MagickRealType) fx_info->images->page_total);
       break;
     }
     case 'O':
@@ -1810,7 +1810,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     case 't':
     {
       if (LocaleCompare(symbol,"t") == 0)
-        return((MagickRealType) fx_info->images->scene);
+        return((MagickRealType) fx_info->images->page_index);
       break;
     }
     case 'W':
