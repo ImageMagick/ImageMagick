@@ -10,6 +10,8 @@
     statistic from the neighborhood.
   * Add support for -duplicate option.
   * Move configuration files from /usr/share and /usr/lib to /etc and /var.
+  * Do not cache the results of fx: otherwise -format
+    '%[fx:rand()] %[fx:rand()]' returns the same random numbers.
 
 2011-03-18 6.6.8-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced Minus and Divide Composition methods with Dst and Src

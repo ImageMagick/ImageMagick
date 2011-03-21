@@ -1864,7 +1864,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         */
         for (i=0; i < 3; i++)
         {
-          size_t 
+          size_t
             xx,
             yy;
 
@@ -1981,10 +1981,13 @@ MagickExport const char *GetImageProperty(const Image *image,
             image->properties);
           return(p);
         }
-      p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-        image->properties,property);
-      if (p != (const char *) NULL)
-        return(p);
+      if (LocaleNCompare("fx:",property,3) != 0)
+        {
+          p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
+            image->properties,property);
+          if (p != (const char *) NULL)
+            return(p);
+        }
     }
   if ((property == (const char *) NULL) ||
       (strchr(property,':') == (char *) NULL))
