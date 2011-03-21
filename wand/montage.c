@@ -842,7 +842,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
+            char
+              *scenes;
+
             Image
+              *clone_images,
               *duplicate_images;
 
             long
@@ -856,11 +860,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             FireImageStack(MagickTrue,MagickTrue,MagickTrue);
             if (*option == '+')
               {
+                scenes="-1";
                 i++;
                 if (i == (ssize_t) (argc-1))
                   ThrowMontageException(OptionError,"MissingArgument",option);
-                count=StringToLong(argv[i+1]);
-                duplicate_images=CloneImages(duplicate_images,"-1",exception);
+                count=StringToLong(argv[i]);
               }
             else
               {
@@ -869,17 +873,19 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
                   ThrowMontageException(OptionError,"MissingArgument",option);
                 if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
                   ThrowMontageInvalidArgumentException(option,argv[i]);
+                scenes=argv[i];
                 i++;
                 if (i == (ssize_t) (argc-1))
-                  ThrowMogridyException(OptionError,"MissingArgument",option);
-                count=StringToLong(argv[i+1]);
-                duplicate_images=CloneImages(duplicate_images,argv[i],
-                  exception);
+                  ThrowMontageException(OptionError,"MissingArgument",option);
+                count=StringToLong(argv[i]);
               }
-            if (duplicate_images == (Image *) NULL)
-              ThrowMontageException(OptionError,"NoSuchImage",option);
             while (count-- > 0)
-              AppendImageStack(duplicate_images);
+            {
+              clone_images=CloneImages(duplicate_images,scenes,exception);
+              if (clone_images == (Image *) NULL)
+                ThrowMontageException(OptionError,"NoSuchImage",option);
+              AppendImageStack(clone_images);
+            }
             break;
           }
         if (LocaleCompare("duration",option+1) == 0)
