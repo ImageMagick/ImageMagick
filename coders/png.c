@@ -8042,9 +8042,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           else
             image_matte=MagickFalse;
+
+          if (logging != MagickFalse)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "   PNG colortype %d was specified:",(int) ping_color_type);
         }
 
-      else /* write_ping_colortype not specified */
+      else /* write_png_colortype not specified */
         {
           if (logging != MagickFalse)
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8069,8 +8073,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               image_info->type == PaletteMatteType)
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 
-          if (image_info->type == UndefinedType ||
-             image_info->type == OptimizeType)
+          if (mng_info->write_png_colortype == 0 &&
+             (image_info->type == UndefinedType ||
+             image_info->type == OptimizeType))
             {
               if (ping_have_color == MagickFalse)
                 {
@@ -8179,10 +8184,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       if (mng_info->IsPalette)
         {
-          ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
+          if (mng_info->write_png_colortype == 0)
+            {
+              ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
 
-          if (ping_have_color != MagickFalse)
-             ping_color_type=PNG_COLOR_TYPE_RGBA;
+              if (ping_have_color != MagickFalse)
+                 ping_color_type=PNG_COLOR_TYPE_RGBA;
+            }
 
           /*
            * Determine if there is any transparent color.
@@ -8194,7 +8202,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               */
 
               image_matte=MagickFalse;
-              ping_color_type&=0x03;
+
+              if (mng_info->write_png_colortype == 0)
+                ping_color_type&=0x03;
             }
 
           else
@@ -8246,7 +8256,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           if (ping_have_tRNS != MagickFalse)
             {
-              ping_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
+              if (mng_info->write_png_colortype == 0)
+                ping_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
 
               if (image_depth == 8)
                 {
@@ -8284,7 +8295,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (image_matte != MagickFalse)
           ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
 
-        else
+        else if (mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_GRAY_ALPHA)
           {
             ping_color_type=PNG_COLOR_TYPE_GRAY;
 
