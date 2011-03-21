@@ -2,6 +2,9 @@
   * Re-enabled reduction of grayscale images (color-type 0) to 2 or 4 bits
     when appropriate (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18098).
+  * The "-define PNG:color-type=4" option did not always force the PNG
+    encoder to write an all-opaque alpha channel (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18349).
 
 2011-03-14  6.6.8-6 Cristy  <quetzlzacatenango@image...>
   * Fixed memory leak for PDF and Bitmap PSD RLE support (reference
