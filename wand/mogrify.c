@@ -7959,10 +7959,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *duplicate_images;
 
-            if (*option == '+')
-              duplicate_images=DuplicateImages(images,"-1",exception);
-            else
-              duplicate_images=DuplicateImages(images,argv[i+1],exception);
+            duplicate_images=DuplicateImages(*images,argv[i+1],exception);
             if (*images != (Image *) NULL)
               *images=DestroyImage(*images);
             *images=duplicate_images;
