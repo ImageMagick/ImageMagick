@@ -382,7 +382,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   */
   for (p=(char *) scenes; *p != '\0';)
   {
-    while ((isspace((int)*p) != 0) || (*p == ','))
+    while ((isspace((int) *p) != 0) || (*p == ','))
       p++;
     first=strtol(p,&p,10);
     if (first < 0)
@@ -499,6 +499,9 @@ MagickExport Image *DuplicateImages(Image *images,const char *scenes,
     *clone_images,
     *duplicate_images;
 
+  register ssize_t
+    i;
+
   ssize_t
     count;
 
@@ -512,18 +515,18 @@ MagickExport Image *DuplicateImages(Image *images,const char *scenes,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  duplicate_images=NewImageList();
   p=(char *) scenes;
-  while ((isspace((int)*p) != 0) || (*p == ','))
+  while ((isspace((int) *p) != 0) || (*p == ','))
     p++;
   count=(ssize_t) strtol(p,&p,10);
-  duplicate_images=NewImageList();
-  while (count-- > 0)
+  while ((isspace((int) *p) != 0) || (*p == ','))
+    p++;
+  for (i=0; i < count; i++)
   {
-    clone_images=CloneImages(images,p,exception);
+    clone_images=CloneImages(images,*p == '\0' ? "0" : p,exception);
     AppendImageToList(&duplicate_images,clone_images);
   }
-  if (duplicate_images == (Image *) NULL)
-    duplicate_images=CloneImages(images,"0",exception);
   return(duplicate_images);
 }
 
