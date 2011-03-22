@@ -4738,11 +4738,14 @@ static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    color,
+    color;
+
+  ssize_t
     count;
 
   unsigned short
-    channels[ListChannels];
+    channels[ListChannels],
+    maximum;
 
   /*
     Find the maximum value for each of the color.
@@ -4750,14 +4753,64 @@ static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
-    color=65536UL;
+    color=65536L;
     count=0;
+    maximum=list->nodes[color].next[0];
     do
     {
       color=list->nodes[color].next[0];
+      if (color > maximum)
+        maximum=color;
       count+=list->nodes[color].count;
-    } while (count <= pixel_list->length);
-    channels[channel]=(unsigned short) color;
+    } while (count < pixel_list->length);
+    channels[channel]=(unsigned short) maximum;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
+static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    color,
+    mean;
+
+  ssize_t
+    count;
+
+  unsigned short
+    channels[ListChannels];
+
+  /*
+    Find the mean value for each of the color.
+  */
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536L;
+    count=0;
+    mean=0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      mean+=color;
+      count+=list->nodes[color].count;
+    } while (count < pixel_list->length);
+    channels[channel]=(unsigned short) (mean/pixel_list->length);
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
@@ -4780,7 +4833,9 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    color,
+    color;
+
+  ssize_t
     count;
 
   unsigned short
@@ -4792,7 +4847,7 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
-    color=65536UL;
+    color=65536L;
     count=0;
     do
     {
@@ -4824,8 +4879,12 @@ static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
   size_t
     color;
 
+  ssize_t
+    count;
+
   unsigned short
-    channels[ListChannels];
+    channels[ListChannels],
+    minimum;
 
   /*
     Find the minimum value for each of the color.
@@ -4833,9 +4892,17 @@ static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
+    count=0;
     color=65536UL;
-    color=list->nodes[color].next[0];
-    channels[channel]=(unsigned short) color;
+    minimum=list->nodes[color].next[0];
+    do
+    {
+      color=list->nodes[color].next[0];
+      if (color < minimum)
+        minimum=color;
+      count+=list->nodes[color].count;
+    } while (count < pixel_list->length);
+    channels[channel]=(unsigned short) minimum;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
@@ -4859,9 +4926,11 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
 
   size_t
     color,
-    count,
     max_count,
     mode;
+
+  ssize_t
+    count;
 
   unsigned short
     channels[5];
@@ -4872,7 +4941,7 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
-    color=65536UL;
+    color=65536L;
     mode=color;
     max_count=list->nodes[mode].count;
     count=0;
@@ -4885,7 +4954,7 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
           max_count=list->nodes[mode].count;
         }
       count+=list->nodes[color].count;
-    } while (count <= pixel_list->length);
+    } while (count < pixel_list->length);
     channels[channel]=(unsigned short) mode;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4910,20 +4979,22 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
 
   size_t
     color,
-    count,
     next,
     previous;
+
+  ssize_t
+    count;
 
   unsigned short
     channels[5];
 
   /*
-    Finds the non peak value for each of the color.
+    Finds the non peak value for each of the colors.
   */
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
-    color=65536UL;
+    color=65536L;
     next=list->nodes[color].next[0];
     count=0;
     do
@@ -5157,6 +5228,11 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         case MaximumStatistic:
         {
           pixel=GetMaximumPixelList(pixel_list[id]);
+          break;
+        }
+        case MeanStatistic:
+        {
+          pixel=GetMeanPixelList(pixel_list[id]);
           break;
         }
         case MedianStatistic:

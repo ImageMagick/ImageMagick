@@ -709,7 +709,10 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
     progress;
 
   MagickPixelPacket
-    zero;
+    *clut_map;
+
+  register ssize_t
+    i;
 
   ResampleFilter
     **restrict resample_filter;
@@ -726,28 +729,33 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   assert(clut_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  clut_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
+    sizeof(*clut_map));
+  if (clut_map == (MagickPixelPacket *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   /*
     Clut image.
   */
   status=MagickTrue;
   progress=0;
-  GetMagickPixelPacket(clut_image,&zero);
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
   exception=(&image->exception);
   resample_filter=AcquireResampleFilterThreadSet(clut_image,
     UndefinedVirtualPixelMethod,MagickTrue,exception);
+  for (i=0; i <= (ssize_t) MaxMap; i++)
+  {
+    GetMagickPixelPacket(clut_image,clut_map+i);
+    (void) ResamplePixelColor(resample_filter[0],QuantumScale*i*
+      (clut_image->columns-adjust),QuantumScale*i*(clut_image->rows-adjust),
+      clut_map+i);
+  }
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
-    MagickPixelPacket
-      pixel;
-
     register IndexPacket
       *restrict indexes;
 
@@ -766,85 +774,33 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      /*
-        PROGRAMMERS WARNING:
-
-        Apply OpacityChannel BEFORE the color channels.  Do not re-order.
-
-        The handling special case 2 (coloring gray-scale), requires access to
-        the unmodified colors of the original image to determine the index
-        value.  As such alpha/matte channel handling must be performed BEFORE,
-        any of the color channels are modified.
-
-      */
+      if ((channel & RedChannel) != 0)
+        SetRedPixelComponent(q,ClampRedPixelComponent(clut_map+
+          ScaleQuantumToMap(q->red)));
+      if ((channel & GreenChannel) != 0)
+        SetGreenPixelComponent(q,ClampGreenPixelComponent(clut_map+
+          ScaleQuantumToMap(q->green)));
+      if ((channel & BlueChannel) != 0)
+        SetBluePixelComponent(q,ClampBluePixelComponent(clut_map+
+          ScaleQuantumToMap(q->blue)));
       if ((channel & OpacityChannel) != 0)
         {
           if (clut_image->matte == MagickFalse)
-            {
-              /*
-                A gray-scale LUT replacement for an image alpha channel.
-              */
-              (void) ResamplePixelColor(resample_filter[id],QuantumScale*
-                GetAlphaPixelComponent(q)*(clut_image->columns+adjust),
-                QuantumScale*GetAlphaPixelComponent(q)*(clut_image->rows+
-                adjust),&pixel);
-              q->opacity=(Quantum) (QuantumRange-MagickPixelIntensityToQuantum(
-                &pixel));
-            }
+            q->opacity=(Quantum) (QuantumRange-MagickPixelIntensityToQuantum(
+              clut_map+ScaleQuantumToMap(GetAlphaPixelComponent(q))));
           else
             if (image->matte == MagickFalse)
-              {
-                /*
-                  A greyscale image being colored by a LUT with transparency.
-                */
-                (void) ResamplePixelColor(resample_filter[id],QuantumScale*
-                  PixelIntensity(q)*(clut_image->columns-adjust),QuantumScale*
-                  PixelIntensity(q)*(clut_image->rows-adjust),&pixel);
-                SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
-              }
+              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(clut_map+
+                ScaleQuantumToMap(PixelIntensity(q))));
             else
-              {
-                /*
-                  Direct alpha channel lookup.
-                */
-                (void) ResamplePixelColor(resample_filter[id],QuantumScale*
-                  q->opacity*(clut_image->columns-adjust),QuantumScale*
-                  q->opacity*(clut_image->rows-adjust),&pixel);
-                SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
-              }
-        }
-      if ((channel & RedChannel) != 0)
-        {
-          (void) ResamplePixelColor(resample_filter[id],QuantumScale*q->red*
-            (clut_image->columns-adjust),QuantumScale*q->red*
-            (clut_image->rows-adjust),&pixel);
-          SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
-        }
-      if ((channel & GreenChannel) != 0)
-        {
-          (void) ResamplePixelColor(resample_filter[id],QuantumScale*q->green*
-            (clut_image->columns-adjust),QuantumScale*q->green*
-            (clut_image->rows-adjust),&pixel);
-          SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
-        }
-      if ((channel & BlueChannel) != 0)
-        {
-          (void) ResamplePixelColor(resample_filter[id],QuantumScale*q->blue*
-            (clut_image->columns-adjust),QuantumScale*q->blue*
-            (clut_image->rows-adjust),&pixel);
-          SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(
+                clut_map+ScaleQuantumToMap(q->opacity)));
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        {
-          (void) ResamplePixelColor(resample_filter[id],QuantumScale*indexes[x]*
-            (clut_image->columns-adjust),QuantumScale*indexes[x]*
-            (clut_image->rows-adjust),&pixel);
-          indexes[x]=ClampToQuantum(pixel.index);
-        }
+        indexes[x]=ClampToQuantum((clut_map+(ssize_t) indexes[x])->index);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -864,9 +820,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   resample_filter=DestroyResampleFilterThreadSet(resample_filter);
-  /*
-    Enable alpha channel if CLUT image could enable it.
-  */
+  clut_map=(MagickPixelPacket *) RelinquishMagickMemory(clut_map);
   if ((clut_image->matte != MagickFalse) && ((channel & OpacityChannel) != 0))
     (void) SetImageAlphaChannel(image,ActivateAlphaChannel);
   return(status);
