@@ -414,7 +414,7 @@ static MagickBooleanType ConvertUsage(void)
     {
       "-clone index         clone an image",
       "-delete index        delete the image from the image sequence",
-      "-duplicate index count",
+      "-duplicate count[,index]",
       "                     duplicate an image one or more times",
       "-insert index        insert last image into the image sequence",
       "-swap indexes        swap two images in the image sequence",
@@ -1286,50 +1286,13 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            char
-              *scenes;
-
-            Image
-              *clone_images,
-              *duplicate_images;
-
-            long
-              count;
-
-            duplicate_images=image;
-            if (k != 0)
-              duplicate_images=image_stack[k-1].image;
-            if (duplicate_images == (Image *) NULL)
-              ThrowConvertException(ImageError,"ImageSequenceRequired",option);
-            FireImageStack(MagickTrue,MagickTrue,MagickTrue);
             if (*option == '+')
-              {
-                scenes="-1";
-                i++;
-                if (i == (ssize_t) (argc-1))
-                  ThrowConvertException(OptionError,"MissingArgument",option);
-                count=StringToLong(argv[i]);
-              }
-            else
-              {
-                i++;
-                if (i == (ssize_t) (argc-1))
-                  ThrowConvertException(OptionError,"MissingArgument",option);
-                if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
-                  ThrowConvertInvalidArgumentException(option,argv[i]);
-                scenes=argv[i];
-                i++;
-                if (i == (ssize_t) (argc-1))
-                  ThrowConvertException(OptionError,"MissingArgument",option);
-                count=StringToLong(argv[i]);
-              }
-            while (count-- > 0)
-            {
-              clone_images=CloneImages(duplicate_images,scenes,exception);
-              if (clone_images == (Image *) NULL)
-                ThrowConvertException(OptionError,"NoSuchImage",option);
-              AppendImageStack(clone_images);
-            }
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("duration",option+1) == 0)

@@ -276,7 +276,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageFromList() deletes an image from the list. List pointer
+%  DeleteImageFromList() duplicates an image from the list. List pointer
 %  is moved to the next image, if one is present. See RemoveImageFromList().
 %
 %  The format of the DeleteImageFromList method is:
@@ -309,7 +309,7 @@ MagickExport void DeleteImageFromList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImages() deletes one or more images from an image sequence, using a
+%  DeleteImages() duplicates one or more images from an image sequence, using a
 %  comma separated list of image numbers or ranges.
 %
 %  The numbers start at 0 for the first image, while negative numbers refer to
@@ -318,7 +318,7 @@ MagickExport void DeleteImageFromList(Image **images)
 %  of images in list are ignored.
 %
 %  If the referenced images are in the reverse order, that range will be
-%  completely ignored.  Unlike CloneImages().
+%  completely ignored, unlike CloneImages().
 %
 %  The format of the DeleteImages method is:
 %
@@ -328,7 +328,7 @@ MagickExport void DeleteImageFromList(Image **images)
 %
 %    o images: the image sequence.
 %
-%    o scenes: This character string specifies which scenes to delete
+%    o scenes: This character string specifies which scenes to duplicate
 %      (e.g. 1,3-5,-2-6,2).
 %
 %    o exception: return any errors or warnings in this structure.
@@ -348,7 +348,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     last;
 
   MagickBooleanType
-    *delete_list;
+    *duplicate_list;
 
   register ssize_t
     i;
@@ -366,9 +366,9 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   assert(exception->signature == MagickSignature);
   *images=GetFirstImageInList(*images);
   length=GetImageListLength(*images);
-  delete_list=(MagickBooleanType *) AcquireQuantumMemory(length,
-    sizeof(*delete_list));
-  if (delete_list == (MagickBooleanType *) NULL)
+  duplicate_list=(MagickBooleanType *) AcquireQuantumMemory(length,
+    sizeof(*duplicate_list));
+  if (duplicate_list == (MagickBooleanType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
@@ -376,9 +376,9 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     }
   image=(*images);
   for (i=0; i < (ssize_t) length; i++)
-    delete_list[i]=MagickFalse;
+    duplicate_list[i]=MagickFalse;
   /*
-    Note which images will be deleted, avoid duplicate deleted
+    Note which images will be duplicated, avoid duplicate duplicated
   */
   for (p=(char *) scenes; *p != '\0';)
   {
@@ -400,7 +400,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
       continue;
     for (i=(ssize_t) first; i <= (ssize_t) last; i++)
       if ((i >= 0) && (i < (ssize_t) length))
-        delete_list[i]=MagickTrue;
+        duplicate_list[i]=MagickTrue;
   }
   /*
     Delete images marked for deletion, once only
@@ -410,11 +410,11 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   {
     *images=image;
     image=GetNextImageInList(image);
-    if (delete_list[i] != MagickFalse)
+    if (duplicate_list[i] != MagickFalse)
       DeleteImageFromList(images);
 
   }
-  (void) RelinquishMagickMemory(delete_list);
+  (void) RelinquishMagickMemory(duplicate_list);
   *images=GetFirstImageInList(*images);
 }
 
@@ -450,6 +450,81 @@ MagickExport Image *DestroyImageList(Image *images)
   while (images != (Image *) NULL)
     DeleteImageFromList(&images);
   return((Image *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D u p l i c a t e I m a g e s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DuplicateImages() duplicates one or more images from an image sequence,
+%  using a count and a comma separated list of image numbers or ranges.
+%
+%  The numbers start at 0 for the first image, while negative numbers refer to
+%  images starting counting from the end of the range. Images may be refered to
+%  multiple times without problems. Image refered beyond the available number
+%  of images in list are ignored.
+%
+%  If the referenced images are in the reverse order, that range will be
+%  completely ignored, unlike CloneImages().
+%
+%  The format of the DuplicateImages method is:
+%
+%      Image *DuplicateImages(Image *images,const char *scenes,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: the image sequence.
+%
+%    o scenes: This character string specifies the count and which scenes to
+%      duplicate (e.g. 2,1,3-5,-2-6,2).
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *DuplicateImages(Image *images,const char *scenes,
+  ExceptionInfo *exception)
+{
+  char
+    *p;
+
+  Image
+    *clone_images,
+    *duplicate_images;
+
+  ssize_t
+    count;
+
+  /*
+    Duplicate images.
+  */
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  assert(scenes != (char *) NULL);
+  if (images->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  p=(char *) scenes;
+  while ((isspace((int)*p) != 0) || (*p == ','))
+    p++;
+  count=(ssize_t) strtol(p,&p,10);
+  duplicate_images=NewImageList();
+  while (count-- > 0)
+  {
+    clone_images=CloneImages(images,p,exception);
+    AppendImageToList(&duplicate_images,clone_images);
+  }
+  if (duplicate_images == (Image *) NULL)
+    duplicate_images=CloneImages(images,"0",exception);
+  return(duplicate_images);
 }
 
 /*
@@ -888,7 +963,7 @@ MagickExport void PageIndexImageList(Image *images)
   /* set page_index and page_total attributes */
   p=n-1;
   for (; images != (Image *) NULL; images=images->previous)
-    images->page_index=p--, images->page_total=n;
+    images->page_index=p--, images->page_total=(size_t) n;
 }
 
 /*
