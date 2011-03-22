@@ -4807,7 +4807,7 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
     do
     {
       color=list->nodes[color].next[0];
-      mean+=color;
+      mean+=list->nodes[color].count*color;
       count+=list->nodes[color].count;
     } while (count < pixel_list->length);
     channels[channel]=(unsigned short) (mean/pixel_list->length);
