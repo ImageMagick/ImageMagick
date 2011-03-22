@@ -1,3 +1,6 @@
+2011-03-21  6.6.8-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.8-6.
+
 2011-03-21  6.6.8-6 Glenn Randers-Pehrson <glennrp@image...>
   * Re-enabled reduction of grayscale images (color-type 0) to 2 or 4 bits
     when appropriate (reference
