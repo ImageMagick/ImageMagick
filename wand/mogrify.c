@@ -3933,6 +3933,8 @@ static MagickBooleanType MogrifyUsage(void)
     *stack_operators[]=
     {
       "-delete index        delete the image from the image sequence",
+      "-duplicate count[,index]",
+      "                     duplicate an image one or more times",
       "-insert index        insert last image into the image sequence",
       "-swap indexes        swap two images in the image sequence",
       (char *) NULL
@@ -4659,6 +4661,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("delete",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("density",option+1) == 0)
           {
             if (*option == '+')
@@ -4778,6 +4791,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("duplicate",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("duration",option+1) == 0)
@@ -6145,6 +6169,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (style < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedStyleType",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("swap",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("swirl",option+1) == 0)
@@ -7917,6 +7952,20 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) ParseMagickOption(
               MagickDitherOptions,MagickFalse,argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("duplicate",option+1) == 0)
+          {
+            Image
+              *duplicate_images;
+
+            if (*option == '+')
+              duplicate_images=DuplicateImages(images,"-1",exception);
+            else
+              duplicate_images=DuplicateImages(images,argv[i+1],exception);
+            if (*images != (Image *) NULL)
+              *images=DestroyImage(*images);
+            *images=duplicate_images;
             break;
           }
         break;
