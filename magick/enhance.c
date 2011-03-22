@@ -812,7 +812,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
                 */
                 (void) ResamplePixelColor(resample_filter[id],QuantumScale*
                   q->opacity*(clut_image->columns-adjust),QuantumScale*
-                  q->opacity* (clut_image->rows-adjust),&pixel);
+                  q->opacity*(clut_image->rows-adjust),&pixel);
                 SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
               }
         }
