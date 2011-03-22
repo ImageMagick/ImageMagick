@@ -2510,8 +2510,7 @@ MagickExport Image *SparseColorImage(const Image *image,
    * the image.
    */
 
-  sparse_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  sparse_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sparse_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(sparse_image,DirectClass) == MagickFalse)

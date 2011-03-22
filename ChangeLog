@@ -1,3 +1,6 @@
+2011-03-18 6.6.8-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Another fix for -sparse-color and unused color channels
+
 2011-03-21  6.6.8-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-6.
 
