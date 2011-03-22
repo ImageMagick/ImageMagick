@@ -2,8 +2,8 @@
   * Revised the PNG8 encoder to use 50% threshold instead of 0% when
     reducing transparency to binary.  Collapse all resulting fully transparent
     colors into one (the background color), to reduce the compressed filesize.
-  * First try the 3-3-3 palette instead of 3-3-2, to preserve gray better,
-    when reducing to PNG8.
+  * First try the 4-4-4 and 3-3-3 palettes instead of 3-3-2, to preserve
+    colors (especially gray) better, when reducing to PNG8.
 
 2011-03-18 6.6.8-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Another fix for -sparse-color and unused color channels
