@@ -842,11 +842,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowMontageException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMontageInvalidArgumentException(option,argv[i]);
             if (*option == '+')
               break;
             i++;
