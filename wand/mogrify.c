@@ -3830,7 +3830,6 @@ static MagickBooleanType MogrifyUsage(void)
       "-mosaic              create a mosaic from an image sequence",
       "-print string        interpret string and print to console",
       "-process arguments   process the image with a custom image filter",
-      "-reverse             reverse image sequence",
       "-separate            separate an image channel into a grayscale image",
       "-smush geometry      smush an image sequence together",
       "-write filename      write images to this file",
@@ -3936,6 +3935,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-duplicate count[,index]",
       "                     duplicate an image one or more times",
       "-insert index        insert last image into the image sequence",
+      "-reverse             reverse image sequence",
       "-swap indexes        swap two images in the image sequence",
       (char *) NULL
     };
@@ -4795,11 +4795,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             if (*option == '+')
               break;
             i++;
@@ -7961,22 +7956,24 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            Image
-              *duplicate_images;
-
             size_t
               number_duplicates;
 
-            number_duplicates=(ssize_t) StringToLong(argv[i+1]);
-            if (*option == '+')
-              duplicate_images=DuplicateImages(*images,number_duplicates,"-1",
-                exception);
+            char
+              *p;
+
+            if (*option == '+') {
+              AppendImageToList(images,DuplicateImages(*images,1,"-1",
+                     exception));
+              break;
+            }
+            number_duplicates=(size_t) StringToLong(argv[i+1]);
+            if ( (p=strchr(argv[i+1],',')) != (char *)NULL )
+              AppendImageToList(images,DuplicateImages(*images,
+                     number_duplicates,p,exception));
             else
-              duplicate_images=DuplicateImages(*images,number_duplicates,
-                argv[i+2],exception);
-            if (*images != (Image *) NULL)
-              *images=DestroyImage(*images);
-            *images=duplicate_images;
+              AppendImageToList(images,DuplicateImages(*images,
+                     number_duplicates,"-1",exception));
             break;
           }
         break;
