@@ -2994,6 +2994,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
     }
 #endif
+
+   /* Set image->matte to MagickTrue if the input colortype supports
+    * alpha or if a valid tRNS chunk is present, no matter whether there
+    * is actual transparency present.
+    */
+    image->matte=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+        ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+        (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
+        MagickTrue : MagickFalse;
+
   /*
     Relinquish resources.
   */
