@@ -7705,6 +7705,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       (*images)->filename);
   if ((argc <= 0) || (*argv == (char *) NULL))
     return(MagickTrue);
+  PageIndexImageList(*images);
   mogrify_info=CloneImageInfo(image_info);
   quantize_info=AcquireQuantizeInfo(mogrify_info);
   channel=mogrify_info->channel;
@@ -7956,24 +7957,29 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            size_t
-              number_duplicates;
+            Image *
+              duplicate_images;
 
-            char
-              *p;
+            if (*option == '+')
+              duplicate_images = DuplicateImages(*images,1,"-1",
+                     exception);
+            else {
+                size_t
+                  number_duplicates;
 
-            if (*option == '+') {
-              AppendImageToList(images,DuplicateImages(*images,1,"-1",
-                     exception));
-              break;
-            }
-            number_duplicates=(size_t) StringToLong(argv[i+1]);
-            if ( (p=strchr(argv[i+1],',')) != (char *)NULL )
-              AppendImageToList(images,DuplicateImages(*images,
-                     number_duplicates,p,exception));
-            else
-              AppendImageToList(images,DuplicateImages(*images,
-                     number_duplicates,"-1",exception));
+                char
+                  *p;
+
+                number_duplicates=(size_t) StringToLong(argv[i+1]);
+                if ( (p=strchr(argv[i+1],',')) != (char *)NULL )
+                  duplicate_images = DuplicateImages(*images,
+                        number_duplicates,p,exception);
+                else
+                  duplicate_images = DuplicateImages(*images,
+                        number_duplicates,"-1",exception);
+              }
+            AppendImageToList(images, duplicate_images);
+            (void) SyncImagesSettings(mogrify_info,*images);
             break;
           }
         break;
