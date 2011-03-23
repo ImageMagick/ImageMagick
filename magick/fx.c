@@ -168,7 +168,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));
   fx_info->exception=AcquireExceptionInfo();
-  fx_info->images=image;
+  fx_info->images=GetFirstImageInList(image);
   fx_info->colors=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     RelinquishMagickMemory);
   fx_info->symbols=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
@@ -1078,7 +1078,7 @@ MagickExport FxInfo *DestroyFxInfo(FxInfo *fx_info)
   fx_info->expression=DestroyString(fx_info->expression);
   fx_info->symbols=DestroySplayTree(fx_info->symbols);
   fx_info->colors=DestroySplayTree(fx_info->colors);
-  for (i=0; i < (ssize_t) GetImageListLength(fx_info->images); i++)
+  for (i=(ssize_t) GetImageListLength(fx_info->images)-1; i>=0; i--)
     fx_info->resample_filter[i]=DestroyResampleFilter(
       fx_info->resample_filter[i]);
   fx_info->resample_filter=(ResampleFilter **) RelinquishMagickMemory(
@@ -1752,7 +1752,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     case 'n':
     {
       if (LocaleCompare(symbol,"n") == 0)
-        return((MagickRealType) fx_info->images->page_total);
+        return((MagickRealType) image->page_total);
       break;
     }
     case 'O':
@@ -1810,7 +1810,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     case 't':
     {
       if (LocaleCompare(symbol,"t") == 0)
-        return((MagickRealType) fx_info->images->page_index);
+        return((MagickRealType) image->page_index);
       break;
     }
     case 'W':
