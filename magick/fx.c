@@ -168,7 +168,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(fx_info,0,sizeof(*fx_info));
   fx_info->exception=AcquireExceptionInfo();
-  fx_info->images=GetFirstImageInList(image);
+  fx_info->images=image;
   fx_info->colors=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     RelinquishMagickMemory);
   fx_info->symbols=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
@@ -178,7 +178,8 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
   if (fx_info->resample_filter == (ResampleFilter **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   i=0;
-  for (next=fx_info->images; next != (Image *) NULL; next=next->next)
+  for (next=GetFirstImageInList(fx_info->images);
+            next != (Image *) NULL; next=next->next)
   {
     fx_info->resample_filter[i]=AcquireResampleFilter(next,fx_info->exception);
     SetResampleFilter(fx_info->resample_filter[i],PointFilter,1.0);
