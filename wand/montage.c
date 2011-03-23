@@ -212,8 +212,8 @@ static MagickBooleanType MontageUsage(void)
     },
     *stack_operators[]=
     {
-      "-clone index         clone an image",
-      "-duplicate count[,index]",
+      "-clone indexes       clone an image",
+      "-duplicate count,indexes",
       "                     duplicate an image one or more times",
       (char *) NULL
     };
