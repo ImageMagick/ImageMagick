@@ -3931,8 +3931,8 @@ static MagickBooleanType MogrifyUsage(void)
     },
     *stack_operators[]=
     {
-      "-delete index        delete the image from the image sequence",
-      "-duplicate count[,index]",
+      "-delete indexes      delete the image from the image sequence",
+      "-duplicate count,indexes",
       "                     duplicate an image one or more times",
       "-insert index        insert last image into the image sequence",
       "-reverse             reverse image sequence",
