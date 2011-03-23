@@ -26,7 +26,7 @@ extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
   *CloneImages(const Image *,const char *,ExceptionInfo *),
   *DestroyImageList(Image *),
-  *DuplicateImages(Image *,const char *,ExceptionInfo *),
+  *DuplicateImages(Image *,const size_t,const char *,ExceptionInfo *),
   *GetFirstImageInList(const Image *),
   *GetImageFromList(const Image *,const ssize_t),
   *GetLastImageInList(const Image *),

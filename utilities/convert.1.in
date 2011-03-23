@@ -249,7 +249,7 @@ Image Sequence Operators:
 Image Stack Operators:
   \-clone index         clone an image
   \-delete index        delete the image from the image sequence
-  \-duplicate count[,indexes]
+  \-duplicate count indexes
                        duplicate an image one or more times
   \-insert index        insert last image into the image sequence
   \-swap indexes        swap two images in the image sequence

@@ -471,39 +471,32 @@ MagickExport Image *DestroyImageList(Image *images)
 %  multiple times without problems. Image refered beyond the available number
 %  of images in list are ignored.
 %
-%  If the referenced images are in the reverse order, that range will be
-%  completely ignored, unlike CloneImages().
-%
 %  The format of the DuplicateImages method is:
 %
-%      Image *DuplicateImages(Image *images,const char *scenes,
-%        ExceptionInfo *exception)
+%      Image *DuplicateImages(Image *images,const size_t number_duplicates,
+%        const char *scenes,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image sequence.
 %
-%    o scenes: This character string specifies the count and which scenes to
-%      duplicate (e.g. 2,1,3-5,-2-6,2).
+%    o number_duplicates: duplicate the image sequence this number of times.
+%
+%    o scenes: This character string specifies which scenes to duplicate (e.g.
+%      1,3-5,-2-6,2).
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *DuplicateImages(Image *images,const char *scenes,
-  ExceptionInfo *exception)
+MagickExport Image *DuplicateImages(Image *images,
+  const size_t number_duplicates,const char *scenes,ExceptionInfo *exception)
 {
-  char
-    *p;
-
   Image
     *clone_images,
     *duplicate_images;
 
   register ssize_t
     i;
-
-  ssize_t
-    count;
 
   /*
     Duplicate images.
@@ -516,15 +509,9 @@ MagickExport Image *DuplicateImages(Image *images,const char *scenes,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   duplicate_images=NewImageList();
-  p=(char *) scenes;
-  while ((isspace((int) *p) != 0) || (*p == ','))
-    p++;
-  count=(ssize_t) strtol(p,&p,10);
-  while ((isspace((int) *p) != 0) || (*p == ','))
-    p++;
-  for (i=0; i < count; i++)
+  for (i=0; i < (ssize_t) number_duplicates; i++)
   {
-    clone_images=CloneImages(images,*p == '\0' ? "0" : p,exception);
+    clone_images=CloneImages(images,scenes,exception);
     AppendImageToList(&duplicate_images,clone_images);
   }
   return(duplicate_images);
