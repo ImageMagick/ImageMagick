@@ -10,6 +10,10 @@
     colors into one (the background color), to reduce the compressed filesize.
   * First try the 4-4-4 and 3-3-3 palettes instead of 3-3-2, to preserve
     colors (especially gray) better, when reducing to PNG8.
+  * Force the PNG encoder to return image->matte==MagickTrue when the
+    format is RGBA or GA or if the tRNS chunk is present, even when the
+    image is fully opaque (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18349).
 
 2011-03-21  6.6.8-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-6.
