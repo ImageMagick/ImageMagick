@@ -1944,7 +1944,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 %
 %  The format of the GammaImage method is:
 %
-%      MagickBooleanType GammaImage(Image *image,const double gamma)
+%      MagickBooleanType GammaImage(Image *image,const char *level)
 %      MagickBooleanType GammaImageChannel(Image *image,
 %        const ChannelType channel,const double gamma)
 %
@@ -1953,6 +1953,8 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 %    o image: the image.
 %
 %    o channel: the channel.
+%
+%    o level: the image gamma as a string (e.g. 1.6,1.2,1.0).
 %
 %    o gamma: the image gamma.
 %
