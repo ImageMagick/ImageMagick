@@ -310,7 +310,6 @@ static MagickBooleanType ConvertUsage(void)
       "-mosaic              create a mosaic from an image sequence",
       "-print string        interpret string and print to console",
       "-process arguments   process the image with a custom image filter",
-      "-reverse             reverse image sequence",
       "-separate            separate an image channel into a grayscale image",
       "-smush geometry      smush an image sequence together",
       "-write filename      write images to this file",
@@ -417,6 +416,7 @@ static MagickBooleanType ConvertUsage(void)
       "-duplicate count[,index]",
       "                     duplicate an image one or more times",
       "-insert index        insert last image into the image sequence",
+      "-reverse             reverse image sequence",
       "-swap indexes        swap two images in the image sequence",
       (char *) NULL
     };
@@ -1286,11 +1286,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
             if (*option == '+')
               break;
             i++;
