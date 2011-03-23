@@ -4795,6 +4795,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             if (*option == '+')
               break;
             i++;
@@ -7959,7 +7964,16 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *duplicate_images;
 
-            duplicate_images=DuplicateImages(*images,argv[i+1],exception);
+            size_t
+              number_duplicates;
+
+            number_duplicates=(ssize_t) StringToLong(argv[i+1]);
+            if (*option == '+')
+              duplicate_images=DuplicateImages(*images,number_duplicates,"-1",
+                exception);
+            else
+              duplicate_images=DuplicateImages(*images,number_duplicates,
+                argv[i+2],exception);
             if (*images != (Image *) NULL)
               *images=DestroyImage(*images);
             *images=duplicate_images;

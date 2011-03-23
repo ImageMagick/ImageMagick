@@ -306,7 +306,7 @@ static const OptionInfo
     { "+draw", 0L, MagickFalse },
     { "-draw", 1L, MagickFalse },
     { "+duplicate", 1L, MagickFalse },
-    { "-duplicate", 1L, MagickFalse },
+    { "-duplicate", 2L, MagickFalse },
     { "+duration", 1L, MagickFalse },
     { "-duration", 1L, MagickFalse },
     { "+edge", 0L, MagickFalse },
