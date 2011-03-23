@@ -723,7 +723,6 @@ static const OptionInfo
     { "CopyRed", (ssize_t) CopyRedCompositeOp, MagickFalse },
     { "CopyYellow", (ssize_t) CopyYellowCompositeOp, MagickFalse },
     { "Darken", (ssize_t) DarkenCompositeOp, MagickFalse },
-    { "Divide", (ssize_t) DivideDstCompositeOp, MagickFalse },
     { "DivideDst", (ssize_t) DivideDstCompositeOp, MagickFalse },
     { "DivideSrc", (ssize_t) DivideSrcCompositeOp, MagickFalse },
     { "Dst", (ssize_t) DstCompositeOp, MagickFalse },
@@ -746,7 +745,6 @@ static const OptionInfo
     { "LinearLight", (ssize_t) LinearLightCompositeOp, MagickFalse },
     { "Luminize", (ssize_t) LuminizeCompositeOp, MagickFalse },
     { "Mathematics", (ssize_t) MathematicsCompositeOp, MagickFalse },
-    { "Minus", (ssize_t) MinusDstCompositeOp, MagickFalse },
     { "MinusDst", (ssize_t) MinusDstCompositeOp, MagickFalse },
     { "MinusSrc", (ssize_t) MinusSrcCompositeOp, MagickFalse },
     { "Modulate", (ssize_t) ModulateCompositeOp, MagickFalse },
@@ -773,6 +771,8 @@ static const OptionInfo
     { "VividLight", (ssize_t) VividLightCompositeOp, MagickFalse },
     { "Xor", (ssize_t) XorCompositeOp, MagickFalse },
     { "Add", (ssize_t) AddCompositeOp, MagickTrue }, /* deprecate */
+    { "Divide", (ssize_t) DivideDstCompositeOp, MagickTrue }, /* deprecate */
+    { "Minus", (ssize_t) MinusDstCompositeOp, MagickTrue }, /* deprecate */
     { "Subtract", (ssize_t) SubtractCompositeOp, MagickTrue }, /* deprecate */
     { "Threshold", (ssize_t) ThresholdCompositeOp, MagickTrue }, /* deprecate */
     { (char *) NULL, (ssize_t) UndefinedCompositeOp, MagickFalse }

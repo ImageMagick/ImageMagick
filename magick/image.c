@@ -726,6 +726,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CloneImage() copies an image and returns the copy as a new image object.
+%
 %  If the specified columns and rows is 0, an exact copy of the image is
 %  returned, otherwise the pixel data is undefined and must be initialized
 %  with the QueueAuthenticPixels() and SyncAuthenticPixels() methods.  On
