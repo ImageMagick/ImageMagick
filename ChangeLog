@@ -1,6 +1,8 @@
 2011-03-23 6.6.8-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Another fix for -sparse-color and unused color channels
   * Finialize the -duplicate option created by Cristy
+  * Fix of segmentation fault for second image in %[fx:..] during info:
+    (Bug in AcquireFxInfo(), as given start image is not first image)
 
 2011-03-21  6.6.8-7 Glenn Randers-Pehrson <glennrp@image...>
   * Revised the PNG8 encoder to use 50% threshold instead of 0% when
