@@ -932,7 +932,7 @@ MagickExport Image *NewImageList(void)
 */
 MagickExport void PageIndexImageList(Image *images)
 {
-  register ssize_t
+  register size_t
     p,n;
 
   if (images == (Image *) NULL)

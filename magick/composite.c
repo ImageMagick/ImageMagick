@@ -82,7 +82,8 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-:q: Command not found.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 %  CompositeImageChannel() returns the second image composited onto the first
 %  at the specified offset, using the specified composite method.
 %
