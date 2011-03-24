@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -446,7 +446,7 @@
 <p>The format of the GammaImage method is:</p>
 
 <pre class="code">
-  MagickBooleanType GammaImage(Image *image,const double gamma)
+  MagickBooleanType GammaImage(Image *image,const char *level)
   MagickBooleanType GammaImageChannel(Image *image,
     const ChannelType channel,const double gamma)
 </pre>
@@ -458,6 +458,9 @@
 
 <h5>channel</h5>
 <p>the channel.</p>
+
+<h5>level</h5>
+<p>the image gamma as a string (e.g. 1.6,1.2,1.0).</p>
 
 <h5>gamma</h5>
 <p>the image gamma.</p>

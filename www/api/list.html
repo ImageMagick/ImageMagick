@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011060100025 gabi.schulze-->
 </div>
 </div>
 </div>
@@ -197,7 +197,7 @@
 <div class="main">
 
 <h1>Module list Methods</h1>
-<p class="navigation-index">[<a href="#AppendImageToList">AppendImageToList</a> &bull; <a href="#CloneImageList">CloneImageList</a> &bull; <a href="#CloneImages">CloneImages</a> &bull; <a href="#DeleteImageFromList">DeleteImageFromList</a> &bull; <a href="#DeleteImages">DeleteImages</a> &bull; <a href="#DestroyImageList">DestroyImageList</a> &bull; <a href="#GetFirstImageInList">GetFirstImageInList</a> &bull; <a href="#GetImageFromList">GetImageFromList</a> &bull; <a href="#GetImageIndexInList">GetImageIndexInList</a> &bull; <a href="#GetImageListLength">GetImageListLength</a> &bull; <a href="#GetLastImageInList">GetLastImageInList</a> &bull; <a href="#GetNextImageInList">GetNextImageInList</a> &bull; <a href="#GetPreviousImageInList">GetPreviousImageInList</a> &bull; <a href="#ImageListToArray">ImageListToArray</a> &bull; <a href="#InsertImageInList">InsertImageInList</a> &bull; <a href="#NewImageList">NewImageList</a> &bull; <a href="#PrependImageToList">PrependImageToList</a> &bull; <a href="#RemoveImageFromList">RemoveImageFromList</a> &bull; <a href="#RemoveFirstImageFromList">RemoveFirstImageFromList</a> &bull; <a href="#RemoveLastImageFromList">RemoveLastImageFromList</a> &bull; <a href="#ReplaceImageInList">ReplaceImageInList</a> &bull; <a href="#ReverseImageList">ReverseImageList</a> &bull; <a href="#SpliceImageIntoList">SpliceImageIntoList</a> &bull; <a href="#SplitImageList">SplitImageList</a>]</p>
+<p class="navigation-index">[<a href="#AppendImageToList">AppendImageToList</a> &bull; <a href="#CloneImageList">CloneImageList</a> &bull; <a href="#CloneImages">CloneImages</a> &bull; <a href="#DeleteImageFromList">DeleteImageFromList</a> &bull; <a href="#DeleteImages">DeleteImages</a> &bull; <a href="#DestroyImageList">DestroyImageList</a> &bull; <a href="#DuplicateImages">DuplicateImages</a> &bull; <a href="#GetFirstImageInList">GetFirstImageInList</a> &bull; <a href="#GetImageFromList">GetImageFromList</a> &bull; <a href="#GetImageIndexInList">GetImageIndexInList</a> &bull; <a href="#GetImageListLength">GetImageListLength</a> &bull; <a href="#GetLastImageInList">GetLastImageInList</a> &bull; <a href="#GetNextImageInList">GetNextImageInList</a> &bull; <a href="#GetPreviousImageInList">GetPreviousImageInList</a> &bull; <a href="#ImageListToArray">ImageListToArray</a> &bull; <a href="#InsertImageInList">InsertImageInList</a> &bull; <a href="#NewImageList">NewImageList</a> &bull; <a href="#PrependImageToList">PrependImageToList</a> &bull; <a href="#RemoveImageFromList">RemoveImageFromList</a> &bull; <a href="#RemoveFirstImageFromList">RemoveFirstImageFromList</a> &bull; <a href="#RemoveLastImageFromList">RemoveLastImageFromList</a> &bull; <a href="#ReplaceImageInList">ReplaceImageInList</a> &bull; <a href="#ReverseImageList">ReverseImageList</a> &bull; <a href="#SpliceImageIntoList">SpliceImageIntoList</a> &bull; <a href="#SplitImageList">SplitImageList</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="AppendImageToList">AppendImageToList</a></h2>
 <div class="doc-section">
@@ -291,7 +291,7 @@
 
 <p>The numbers start at 0 for the first image, while negative numbers refer to images starting counting from the end of the range. Images may be refered to multiple times without problems. Image refered beyond the available number of images in list are ignored.</p>
 
-<p>If the referenced images are in the reverse order, that range will be completely ignored.  Unlike CloneImages().</p>
+<p>If the referenced images are in the reverse order, that range will be completely ignored, unlike CloneImages().</p>
 
 <p>The format of the DeleteImages method is:</p>
 
@@ -326,6 +326,35 @@
 
 <h5>image</h5>
 <p>the image sequence.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="DuplicateImages">DuplicateImages</a></h2>
+<div class="doc-section">
+
+<p>DuplicateImages() duplicates one or more images from an image sequence, using a count and a comma separated list of image numbers or ranges.</p>
+
+<p>The numbers start at 0 for the first image, while negative numbers refer to images starting counting from the end of the range. Images may be refered to multiple times without problems. Image refered beyond the available number of images in list are ignored.</p>
+
+<p>The format of the DuplicateImages method is:</p>
+
+<pre class="code">
+  Image *DuplicateImages(Image *images,const size_t number_duplicates,
+    const char *scenes,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>images</h5>
+<p>the image sequence.</p>
+
+<h5>number_duplicates</h5>
+<p>duplicate the image sequence this number of times.</p>
+
+<h5>scenes</h5>
+<p>This character string specifies which scenes to duplicate (e.g. 1,3-5,-2-6,2).</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="GetFirstImageInList">GetFirstImageInList</a></h2>
