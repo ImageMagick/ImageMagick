@@ -276,7 +276,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageFromList() duplicates an image from the list. List pointer
+%  DeleteImageFromList() deletes an image from the list. List pointer
 %  is moved to the next image, if one is present. See RemoveImageFromList().
 %
 %  The format of the DeleteImageFromList method is:
@@ -309,7 +309,7 @@ MagickExport void DeleteImageFromList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImages() duplicates one or more images from an image sequence, using a
+%  DeleteImages() deletes one or more images from an image sequence, using a
 %  comma separated list of image numbers or ranges.
 %
 %  The numbers start at 0 for the first image, while negative numbers refer to
@@ -328,7 +328,7 @@ MagickExport void DeleteImageFromList(Image **images)
 %
 %    o images: the image sequence.
 %
-%    o scenes: This character string specifies which scenes to duplicate
+%    o scenes: This character string specifies which scenes to delete
 %      (e.g. 1,3-5,-2-6,2).
 %
 %    o exception: return any errors or warnings in this structure.
@@ -348,7 +348,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     last;
 
   MagickBooleanType
-    *duplicate_list;
+    *delete_list;
 
   register ssize_t
     i;
@@ -366,9 +366,9 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   assert(exception->signature == MagickSignature);
   *images=GetFirstImageInList(*images);
   length=GetImageListLength(*images);
-  duplicate_list=(MagickBooleanType *) AcquireQuantumMemory(length,
-    sizeof(*duplicate_list));
-  if (duplicate_list == (MagickBooleanType *) NULL)
+  delete_list=(MagickBooleanType *) AcquireQuantumMemory(length,
+    sizeof(*delete_list));
+  if (delete_list == (MagickBooleanType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
@@ -376,9 +376,9 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     }
   image=(*images);
   for (i=0; i < (ssize_t) length; i++)
-    duplicate_list[i]=MagickFalse;
+    delete_list[i]=MagickFalse;
   /*
-    Note which images will be duplicated, avoid duplicate duplicated
+    Note which images will be deleted, avoid duplicate deleted
   */
   for (p=(char *) scenes; *p != '\0';)
   {
@@ -400,7 +400,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
       continue;
     for (i=(ssize_t) first; i <= (ssize_t) last; i++)
       if ((i >= 0) && (i < (ssize_t) length))
-        duplicate_list[i]=MagickTrue;
+        delete_list[i]=MagickTrue;
   }
   /*
     Delete images marked for deletion, once only
@@ -410,11 +410,11 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   {
     *images=image;
     image=GetNextImageInList(image);
-    if (duplicate_list[i] != MagickFalse)
+    if (delete_list[i] != MagickFalse)
       DeleteImageFromList(images);
 
   }
-  (void) RelinquishMagickMemory(duplicate_list);
+  (void) RelinquishMagickMemory(delete_list);
   *images=GetFirstImageInList(*images);
 }
 
