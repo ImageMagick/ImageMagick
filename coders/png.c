@@ -6980,9 +6980,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
   /* Normally we run this just once, but in the case of writing PNG8
-   * we reduce the transparency to binary and run again, then reduce
-   * the colors to a simple 3-3-3 palette and run once more, and finally
-   * to a simple 3-3-2 palette.
+   * we reduce the transparency to binary and run again, then if there
+   * are still too many colors we reduce to a simple 4-4-4-1, then 3-3-3-1
+   * RGBA palette and run again, and finally to a simple 3-3-2-1 RGBA
+   * palette.  The final reduction can only fail if there are still 256
+   * colors present and one of them has both transparent and opaque instances.
    */
 
   tried_333 = MagickFalse;
@@ -7530,8 +7532,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
     /* PNG8 can't have more than 256 colors so we quantize the pixels and
-     * background color to the 4-4-4, 3-3-3 or 3-3-2 palette.  If the image is
-     * mostly gray, the 4-4-4 palette should end up with 256 colors or less.
+     * background color to the 4-4-4-1, 3-3-3-1 or 3-3-2-1 palette.  If the
+     * image is mostly gray, the 4-4-4-1 palette is likely to end up with 256
+     * colors or less.
      */
     if (tried_444 == MagickFalse && (image_colors == 0 || image_colors > 256))
       {
@@ -7659,7 +7662,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Quantizing the pixel colors to 3-3-3");
+              "    Quantizing the pixel colors to 3-3-3-1");
 
         if (image->colormap == NULL)
         {
@@ -7707,7 +7710,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
           if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Quantizing the colormap to 3-3-3");
+              "    Quantizing the colormap to 3-3-3-1");
           for (i=0; i<image_colors; i++)
           {
               image->colormap[i].red=
@@ -7768,7 +7771,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Quantizing the pixel colors to 3-3-2");
+              "    Quantizing the pixel colors to 3-3-2-1");
 
         if (image->colormap == NULL)
         {
@@ -7817,7 +7820,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
           if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Quantizing the colormap to 3-3-2");
+              "    Quantizing the colormap to 3-3-2-1");
           for (i=0; i<image_colors; i++)
           {
               image->colormap[i].red=
@@ -9820,9 +9823,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %               (i.e., transparency is binary: fully opaque or fully
 %               transparent).  If other values are present they will be
 %               50%-thresholded to binary transparency.  If more than 256
-%               colors are present, they will be quantized to the 3-3-2
-%               palette.  If you want better quantization or dithering of
-%               the colors or alpha, you need to do it before calling the
+%               colors are present, they will be quantized to the 4-4-4-1,
+%               3-3-3-1, or  3-3-2-1 palette.
+%
+%               If you want better quantization or dithering of the colors
+%               or alpha than that, you need to do it before calling the
 %               PNG encoder. The pixels contain 8-bit indices even if
 %               they could be represented with 1, 2, or 4 bits.  Grayscale
 %               images will be written as indexed PNG files even though the
