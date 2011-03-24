@@ -44,7 +44,7 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/local/var/ImageMagick-6.6.8/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/local/var/lib/ImageMagick-6.6.8/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
