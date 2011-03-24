@@ -30,4 +30,12 @@
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2011 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
   <configure name="QuantumDepth" value="16"/>
+  <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.6.8/modules-Q16/coders"/>
+  <configure name="CONFIGURE_PATH" value="/usr/local/var/lib/ImageMagick-6.6.8/"/>
+  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-6.6.8"/>
+  <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
+  <configure name="FILTER_PATH" value="/usr/local/lib/ImageMagick-6.6.8/modules-Q16/filters"/>
+  <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.6.8"/>
+  <configure name="SHARE_CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-6.6.8"/>
+  <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6.6.8"/>
 </configuremap>
