@@ -188,7 +188,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -1838,7 +1838,7 @@ use:</p>
 
 
 <div style="margin: auto;">
-  <h4><a id="delete"></a>-delete <em class="arg">index</em></h4>
+  <h4><a id="delete"></a>-delete <em class="arg">indexes</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>delete the image, specified by its index, from the image sequence.</td><td style='text-align:right;'></td></tr></table>
@@ -2581,25 +2581,12 @@ matrix.</p>
 <p>Drawing primitives conform to the <a href="../www/magick-vector-graphics.html">Magick Vector Graphics</a> format.</p>
 
 <div style="margin: auto;">
-  <h4><a id="duplicate"></a>-duplicate <em class="arg">index(s)</em> <em class="arg">count</em></h4>
+  <h4><a id="duplicate"></a>-duplicate <em class="arg">count,indexes</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>duplicate a copy of an image (or images).</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>duplicate an image one or more times.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Inside parenthesis (where the operator is normally used) it makes a
-duplicate <em>count</em> times of the images from the last 'pushed' image
-sequence, and adds them to the end of the current image sequence. Outside
-parenthesis (not recommended) it duplicates the images from the current image
-sequence. </p>
-
-<p>Specify the image by its index in the sequence.  The first image is index
-0.  Negative indexes are relative to the end of the sequence; for
-example, <kbd>&minus;1</kbd>
-represents the last image of the sequence.  Specify a range of images with a
-dash (e.g. <kbd>0&minus;4</kbd>).  Separate multiple indexes with commas but no
-spaces (e.g. <kbd>0,2,5</kbd>).  A value of '<kbd>0&minus;&minus;1</kbd> will
-effectively duplicates all the images. </p>
-
+<p>Specify the count and the image to duplicate by its index in the sequence.  The first image is index 0.  Negative indexes are relative to the end of the sequence, for example, -1 represents the last image of the sequence.  Specify a range of images with a dash (e.g. 0-4).  Separate indexes with a comma (e.g. 0,2).  Use <kbd>+duplicate</kbd> to duplicate the last image in the current image sequence.</p>
 
 <div style="margin: auto;">
   <h4><a id="edge"></a>-edge <em class="arg">radius</em></h4>
@@ -5259,7 +5246,7 @@ the same name. </p>
 
 <p>If the given <em class="arg">key</em> does not match a specific known
 'attribute ', such as shown above, the setting is stored as a a free form
-'properity' string.  Such settings are listed in <a href="#verbose"
+'property' string.  Such settings are listed in <a href="#verbose"
 >-verbose</a> information ("<kbd>info:</kbd>" output format) as "Properties".
 </p>
 
@@ -5304,7 +5291,7 @@ the original image has long since been modified or destroyed. For example: </p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose:  -set option:rosesize '%wx%h' -delete 0 \</span><span class='crtout'>        label:'%[rosesize]'   label_size_of_rose.gif</span></p>
 <p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
 a 'artifact' if the given <em class="arg">key</em> does not match an existing
-'attribute' or 'properity'.  </p>
+'attribute' or 'property'.  </p>
 
 <p>You can set the attributes of the image registry by prefixing the value
 with <kbd>registry:</kbd>.</p>
@@ -5513,7 +5500,7 @@ default value. </p>
 <p>The argument <em class="arg">amount</em> defines the size of the neighborhood around each pixel from which to choose a candidate pixel to swap.</p>
 
 <div style="margin: auto;">
-  <h4><a id="statistic"></a>-statistic <em class="arg">type</em> <em class="arg">value</em></h4>
+  <h4><a id="statistic"></a>-statistic <em class="arg">type</em> <em class="arg">geometry</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>replace each pixel with corresponding statistic from the neighborhood.</td><td style='text-align:right;'>[<a href="../www/convert.html">convert</a>, <a href="../www/mogrify.html">mogrify</a>]</td></tr></table>
