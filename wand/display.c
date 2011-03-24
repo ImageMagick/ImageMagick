@@ -499,6 +499,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           *filename;
 
         Image
+          *display_image,
           *images;
 
         /*
@@ -523,6 +524,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         iterations=0;
         if (i == (ssize_t) (argc-1))
           iterations=image->iterations;
+        display_image=CloneImageList(image,exception);
+        if (display_image == (Image *) NULL)
+          ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
+            GetExceptionMessage(errno));
         do
         {
           /*
@@ -534,7 +539,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               /*
                 Display image to a specified X window.
               */
-              status=XDisplayBackgroundImage(display,&resource_info,image);
+              status=XDisplayBackgroundImage(display,&resource_info,
+                display_image);
               if (status != MagickFalse)
                 {
                   state|=RetainColorsState;
@@ -551,9 +557,9 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 Display image to X server.
               */
               if (resource_info.delay != 1)
-                image->delay=resource_info.delay;
-              nexus=XDisplayImage(display,&resource_info,argv,argc,&image,
-                &state);
+                display_image->delay=resource_info.delay;
+              nexus=XDisplayImage(display,&resource_info,argv,argc,
+                &display_image,&state);
               status&=nexus != (Image *) NULL;
               if (nexus == (Image *) NULL)
                 break;
@@ -567,8 +573,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                     /*
                       User selected a visual directory image (montage).
                     */
-                    RemoveAllImageStack()
-                    image=nexus;
+                    display_image=nexus;
                     break;
                   }
                 next=XDisplayImage(display,&resource_info,argv,argc,&nexus,
@@ -576,13 +581,12 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 if ((next == (Image *) NULL) &&
                     (GetNextImageInList(nexus) != (Image *) NULL))
                   {
-                    RemoveAllImageStack()
-                    image=GetNextImageInList(nexus);
+                    display_image=GetNextImageInList(nexus);
                     nexus=NewImageList();
                   }
                 else
                   {
-                    if (nexus != image)
+                    if (nexus != display_image)
                       nexus=DestroyImageList(nexus);
                     nexus=next;
                   }
@@ -593,11 +597,11 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               /*
                 Write image.
               */
-              (void) CopyMagickString(image->filename,
+              (void) CopyMagickString(display_image->filename,
                 resource_info.write_filename,MaxTextExtent);
-              (void) SetImageInfo(image_info,1,&image->exception);
-              status&=WriteImage(image_info,image);
-              GetImageException(image,exception);
+              (void) SetImageInfo(image_info,1,&display_image->exception);
+              status&=WriteImage(image_info,display_image);
+              GetImageException(display_image,exception);
             }
           /*
             Proceed to next/previous image.
@@ -605,24 +609,22 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           if ((state & FormerImageState) != 0)
             for (l=0; l < (ssize_t) resource_info.quantum; l++)
             {
-              image=GetPreviousImageInList(image);
-              if (image == (Image *) NULL)
+              display_image=GetPreviousImageInList(display_image);
+              if (display_image == (Image *) NULL)
                 break;
             }
           else
             for (l=0; l < (ssize_t) resource_info.quantum; l++)
             {
-              image=GetNextImageInList(image);
-              if (image == (Image *) NULL)
+              display_image=GetNextImageInList(display_image);
+              if (display_image == (Image *) NULL)
                 break;
             }
-        } while ((image != (Image *) NULL) && ((state & ExitState) == 0));
+        } while ((display_image != (Image *) NULL) && ((state & ExitState) == 0));
         /*
           Free image resources.
         */
-        if (image != (Image *) NULL)
-          SetImageStack(image);
-        RemoveAllImageStack();
+        display_image=DestroyImageList(display_image);
         if ((state & FormerImageState) == 0)
           {
             last_image=(size_t) image_number;
