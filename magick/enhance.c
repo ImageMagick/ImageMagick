@@ -776,15 +776,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ClampRedPixelComponent(clut_map+
-          ScaleQuantumToMap(q->red)));
-      if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ClampGreenPixelComponent(clut_map+
-          ScaleQuantumToMap(q->green)));
-      if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ClampBluePixelComponent(clut_map+
-          ScaleQuantumToMap(q->blue)));
       if ((channel & OpacityChannel) != 0)
         {
           if (clut_image->matte == MagickFalse)
@@ -798,6 +789,15 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
               SetOpacityPixelComponent(q,ClampOpacityPixelComponent(
                 clut_map+ScaleQuantumToMap(q->opacity)));
         }
+      if ((channel & RedChannel) != 0)
+        SetRedPixelComponent(q,ClampRedPixelComponent(clut_map+
+          ScaleQuantumToMap(q->red)));
+      if ((channel & GreenChannel) != 0)
+        SetGreenPixelComponent(q,ClampGreenPixelComponent(clut_map+
+          ScaleQuantumToMap(q->green)));
+      if ((channel & BlueChannel) != 0)
+        SetBluePixelComponent(q,ClampBluePixelComponent(clut_map+
+          ScaleQuantumToMap(q->blue)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         indexes[x]=ClampToQuantum((clut_map+(ssize_t) indexes[x])->index);
