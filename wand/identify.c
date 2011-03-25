@@ -322,7 +322,6 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
           continue;
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
-        PageIndexImageList(images);
         for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
         {
           if (image->scene == 0)

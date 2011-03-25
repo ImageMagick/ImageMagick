@@ -907,60 +907,6 @@ MagickExport Image *NewImageList(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   P a g e I n d e x I m a g e L i s t                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PageIndexImageList() synchronizes the page_index and page_total values
-%  in the image list.
-%
-%  These values are used by InterpretImageProperties() to set %p and %n
-%  percent escapes. The value is preserved, even if the image is later removed
-%  from the list using RemoveFirstImageFromList() for individual image
-%  processing.
-%
-%  The format of the PageIndexImageList method is:
-%
-%      void PageIndexImageList(Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport void PageIndexImageList(Image *images)
-{
-  register size_t
-    p,n;
-
-  if (images == (Image *) NULL)
-    return;
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-
-  /* find start for image counting */
-  while (images->previous != (Image *) NULL)
-    images=images->previous;
-
-  /* count up images - find end */
-  n=1;
-  while (images->next != (Image *) NULL)
-    images=images->next, n++;
-
-  /* set page_index and page_total attributes */
-  p=n-1;
-  for (; images != (Image *) NULL; images=images->previous)
-    images->page_index=p--, images->page_total=(size_t) n;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   P r e p e n d I m a g e T o L i s t                                       %
 %                                                                             %
 %                                                                             %

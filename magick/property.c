@@ -2352,8 +2352,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("page",property,4) == 0)
         {
-          FormatMagickString(value,MaxTextExtent,"%.20g",(double)
-               image->page_index+1);
+          register const Image
+            *p;
+
+          size_t
+            page;
+
+          p=image;
+          for (page=1; GetPreviousImageInList(p) != (Image *) NULL; page++)
+            p=GetPreviousImageInList(p);
+          (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double) page);
           break;
         }
       break;
@@ -2794,7 +2802,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Number of images in the list.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double) image->page_total);
+        q+=FormatMagickString(q,extent,"%.20g",(double) GetImageListLength(
+          image));
         break;
       }
       case 'o':
@@ -2807,10 +2816,19 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 'p':
       {
+        register const Image
+          *p;
+
+        size_t
+          page;
+
         /*
           Image page number.
         */
-        q+=FormatMagickString(q,extent,"%.20g",(double) image->page_index);
+        p=image;
+        for (page=1; GetPreviousImageInList(p) != (Image *) NULL; page++)
+          p=GetPreviousImageInList(p);
+        q+=FormatMagickString(q,extent,"%.20g",(double) page);
         break;
       }
       case 'q':

@@ -1,3 +1,6 @@
+2011-03-25 6.6.8-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Removed the fix for %p and %n escapes, as it was not working right
+
 2011-03-24  6.6.8-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-7.
 

@@ -52,7 +52,6 @@ extern MagickExport void
   DeleteImageFromList(Image **),
   DeleteImages(Image **,const char *,ExceptionInfo *),
   InsertImageInList(Image **,Image *),
-  PageIndexImageList(Image *),
   PrependImageToList(Image **,Image *),
   ReplaceImageInList(Image **,Image *),
   ReverseImageList(Image **),
