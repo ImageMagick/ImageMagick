@@ -744,13 +744,20 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   exception=(&image->exception);
   resample_filter=AcquireResampleFilterThreadSet(clut_image,
     UndefinedVirtualPixelMethod,MagickTrue,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4)
+#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
     GetMagickPixelPacket(clut_image,clut_map+i);
-    (void) ResamplePixelColor(resample_filter[0],QuantumScale*i*
+    (void) ResamplePixelColor(resample_filter[id],QuantumScale*i*
       (clut_image->columns-adjust),QuantumScale*i*(clut_image->rows-adjust),
       clut_map+i);
   }
+  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -825,7 +832,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   clut_map=(MagickPixelPacket *) RelinquishMagickMemory(clut_map);
   if ((clut_image->matte != MagickFalse) && ((channel & OpacityChannel) != 0))
     (void) SetImageAlphaChannel(image,ActivateAlphaChannel);
