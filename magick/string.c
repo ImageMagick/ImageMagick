@@ -223,7 +223,7 @@ MagickExport char *CloneString(char **destination,const char *source)
   if (~length < MaxTextExtent)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   *destination=(char *) ResizeQuantumMemory(*destination,length+MaxTextExtent,
-    sizeof(*destination));
+    sizeof(**destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
   if (length != 0)
