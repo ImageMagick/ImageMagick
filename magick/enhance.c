@@ -61,6 +61,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/pixel-private.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
 #include "magick/resample.h"
@@ -756,6 +757,9 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    MagickPixelPacket
+      pixel;
+
     register IndexPacket
       *restrict indexes;
 
@@ -774,21 +778,10 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    GetMagickPixelPacket(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & OpacityChannel) != 0)
-        {
-          if (clut_image->matte == MagickFalse)
-            q->opacity=(Quantum) (QuantumRange-MagickPixelIntensityToQuantum(
-              clut_map+ScaleQuantumToMap(GetAlphaPixelComponent(q))));
-          else
-            if (image->matte == MagickFalse)
-              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(clut_map+
-                ScaleQuantumToMap(PixelIntensity(q))));
-            else
-              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(
-                clut_map+ScaleQuantumToMap(q->opacity)));
-        }
+      SetMagickPixelPacket(image,q,indexes+x,&pixel);
       if ((channel & RedChannel) != 0)
         SetRedPixelComponent(q,ClampRedPixelComponent(clut_map+
           ScaleQuantumToMap(q->red)));
@@ -798,6 +791,19 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       if ((channel & BlueChannel) != 0)
         SetBluePixelComponent(q,ClampBluePixelComponent(clut_map+
           ScaleQuantumToMap(q->blue)));
+      if ((channel & OpacityChannel) != 0)
+        {
+          if (clut_image->matte == MagickFalse)
+            q->opacity=(Quantum) (QuantumRange-MagickPixelIntensityToQuantum(
+              clut_map+ScaleQuantumToMap(GetAlphaPixelComponent(q))));
+          else
+            if (image->matte == MagickFalse)
+              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(clut_map+
+                ScaleQuantumToMap(MagickPixelIntensity(&pixel))));
+            else
+              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(
+                clut_map+ScaleQuantumToMap(q->opacity)));
+        }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         indexes[x]=ClampToQuantum((clut_map+(ssize_t) indexes[x])->index);
