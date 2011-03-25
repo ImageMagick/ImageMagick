@@ -10212,6 +10212,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
 
   entry=SetMagickInfo("GRANITE");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
+  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("Granite texture");
@@ -10235,6 +10236,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MAGICK");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
+  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("Predefined Magick Image");
@@ -10242,6 +10244,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=(DecodeImageHandler *) ReadMAGICKImage;
+  entry->encoder=(EncodeImageHandler *) WriteMAGICKImage;
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
   entry->description=ConstantString("Netscape 216 color cube");
