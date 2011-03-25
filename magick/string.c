@@ -2178,7 +2178,7 @@ MagickExport char **StringToList(const char *text)
           if ((*q == '\r') || (*q == '\n'))
             break;
         textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MaxTextExtent,
-          sizeof(*textlist));
+          sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
         (void) memcpy(textlist[i],p,(size_t) (q-p));
@@ -2211,7 +2211,7 @@ MagickExport char **StringToList(const char *text)
       for (i=0; i < (ssize_t) lines; i++)
       {
         textlist[i]=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
-          sizeof(*textlist));
+          sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
         (void) FormatMagickString(textlist[i],MaxTextExtent,"0x%08lx: ",
