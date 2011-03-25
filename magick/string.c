@@ -442,7 +442,7 @@ MagickExport MagickBooleanType ConcatenateString(char **destination,
   if (~length < MaxTextExtent)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
   *destination=(char *) ResizeQuantumMemory(*destination,length+MaxTextExtent,
-    sizeof(*destination));
+    sizeof(**destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
   if (source_length != 0)
