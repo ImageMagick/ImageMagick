@@ -336,10 +336,6 @@ struct _Image
 
   MagickBooleanType
     ping;
-
-  size_t
-    page_index,        /* %p current index in working image sequence */
-    page_total;        /* %n total pages in working image sequence */
 };
 
 
