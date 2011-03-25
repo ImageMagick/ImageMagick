@@ -4,6 +4,7 @@
 2011-03-25 6.6.8-8 Cristy  <quetzlzacatenango@image...>
   * Fix memory access bug in CloneString() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=18382).
+  * Avoid infinite loop when no space is available in MagickFormatCaption().
 
 2011-03-25 6.6.8-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Removed the fix for %p and %n escapes, as it was not working right
