@@ -9,8 +9,8 @@
   <configure name="NAME" value="ImageMagick"/>
   <configure name="VERSION" value="6.6.8"/>
   <configure name="LIB_VERSION" value="0x668"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,6,8,8"/>
-  <configure name="RELEASE_DATE" value="2011-03-24"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,6,8,9"/>
+  <configure name="RELEASE_DATE" value="2011-03-25"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
