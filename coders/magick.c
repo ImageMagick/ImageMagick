@@ -10262,6 +10262,7 @@ ModuleExport size_t RegisterMAGICKImage(void)
   entry->stealth=MagickTrue;
   entry->description=ConstantString("ImageMagick Wizard");
   entry->module=ConstantString("MAGICK");
+  (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
 
