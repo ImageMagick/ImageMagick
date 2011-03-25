@@ -1480,7 +1480,7 @@ MagickExport char **GetPathComponents(const char *path,
       if (IsBasenameSeparator(*q))
         break;
     components[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MaxTextExtent,
-      sizeof(*components));
+      sizeof(**components));
     if (components[i] == (char *) NULL)
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     (void) CopyMagickString(components[i],p,(size_t) (q-p+1));
