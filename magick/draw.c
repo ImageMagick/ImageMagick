@@ -1172,9 +1172,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 #endif
   for (y=(ssize_t) ceil(edge.y1-0.5); y <= (ssize_t) floor(edge.y2+0.5); y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     MagickPixelPacket
       composite,
       pixel;
