@@ -2341,6 +2341,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'o':
     {
+      if (LocaleNCompare("opaque",property,6) == 0)
+        {
+          MagickBooleanType
+            opaque;
+
+          opaque=IsOpaqueImage(image,&image->exception);
+          (void) CopyMagickString(value,opaque == MagickFalse ? "false" :
+            "true",MaxTextExtent);
+          break;
+        }
       if (LocaleNCompare("output",property,6) == 0)
         {
           (void) CopyMagickString(value,image_info->filename,MaxTextExtent);
