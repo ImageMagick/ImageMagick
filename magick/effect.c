@@ -4401,7 +4401,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 #define SpreadImageTag  "Spread/Image"
 
   CacheView
-    *image_view;
+    *image_view,
+    *spread_view;
 
   Image
     *spread_image;
@@ -4451,7 +4452,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   GetMagickPixelPacket(spread_image,&bias);
   width=GetOptimalKernelWidth1D(radius,0.5);
   random_info=AcquireRandomInfoThreadSet();
-  image_view=AcquireCacheView(spread_image);
+  image_view=AcquireCacheView(image);
+  spread_view=AcquireCacheView(spread_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
@@ -4474,25 +4476,24 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    q=QueueCacheViewAuthenticPixels(image_view,0,y,spread_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(spread_view,0,y,spread_image->columns,1,
       exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    indexes=GetCacheViewAuthenticIndexQueue(spread_view);
     pixel=bias;
     for (x=0; x < (ssize_t) spread_image->columns; x++)
     {
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        (double) x+width*(GetPseudoRandomValue(random_info[id])-0.5),(double)
-        y+width*(GetPseudoRandomValue(random_info[id])-0.5),&pixel,
-        exception);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,(double)
+        x+width*(GetPseudoRandomValue(random_info[id])-0.5),(double) y+width*
+        (GetPseudoRandomValue(random_info[id])-0.5),&pixel,exception);
       SetPixelPacket(spread_image,&pixel,q,indexes+x);
       q++;
     }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -4507,6 +4508,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
           status=MagickFalse;
       }
   }
+  spread_view=DestroyCacheView(spread_view);
   image_view=DestroyCacheView(image_view);
   random_info=DestroyRandomInfoThreadSet(random_info);
   return(spread_image);
