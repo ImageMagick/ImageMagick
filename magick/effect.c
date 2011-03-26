@@ -3124,8 +3124,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
             break;
           }
         }
-        preview_image=StatisticImage(thumbnail,NonpeakStatistic,i,i,
-          exception);
+        preview_image=StatisticImage(thumbnail,NonpeakStatistic,(size_t) i,
+          (size_t) i,exception);
         (void) FormatMagickString(label,MaxTextExtent,"+noise %s",factor);
         break;
       }
@@ -4418,9 +4418,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   RandomInfo
     **restrict random_info;
 
-  ResampleFilter
-    **restrict resample_filter;
-
   size_t
     width;
 
@@ -4453,8 +4450,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   progress=0;
   GetMagickPixelPacket(spread_image,&bias);
   width=GetOptimalKernelWidth1D(radius,0.5);
-  resample_filter=AcquireResampleFilterThreadSet(image,
-    UndefinedVirtualPixelMethod,MagickTrue,exception);
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(spread_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4490,9 +4485,10 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     pixel=bias;
     for (x=0; x < (ssize_t) spread_image->columns; x++)
     {
-      (void) ResamplePixelColor(resample_filter[id],(double) x+width*
-        (GetPseudoRandomValue(random_info[id])-0.5),(double) y+width*
-        (GetPseudoRandomValue(random_info[id])-0.5),&pixel);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        (double) x+width*(GetPseudoRandomValue(random_info[id])-0.5),(double)
+        y+width*(GetPseudoRandomValue(random_info[id])-0.5),&pixel,
+        exception);
       SetPixelPacket(spread_image,&pixel,q,indexes+x);
       q++;
     }
@@ -4513,7 +4509,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   }
   image_view=DestroyCacheView(image_view);
   random_info=DestroyRandomInfoThreadSet(random_info);
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   return(spread_image);
 }
 
@@ -4738,14 +4733,14 @@ static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    color;
+    color,
+    maximum;
 
   ssize_t
     count;
 
   unsigned short
-    channels[ListChannels],
-    maximum;
+    channels[ListChannels];
 
   /*
     Find the maximum value for each of the color.
@@ -4762,7 +4757,7 @@ static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
       if (color > maximum)
         maximum=color;
       count+=list->nodes[color].count;
-    } while (count < pixel_list->length);
+    } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) maximum;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4809,7 +4804,7 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
       color=list->nodes[color].next[0];
       mean+=list->nodes[color].count*color;
       count+=list->nodes[color].count;
-    } while (count < pixel_list->length);
+    } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) (mean/pixel_list->length);
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4853,7 +4848,7 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
     {
       color=list->nodes[color].next[0];
       count+=list->nodes[color].count;
-    } while (count <= (pixel_list->length >> 1));
+    } while (count <= (ssize_t) (pixel_list->length >> 1));
     channels[channel]=(unsigned short) color;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4877,14 +4872,14 @@ static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    color;
+    color,
+    minimum;
 
   ssize_t
     count;
 
   unsigned short
-    channels[ListChannels],
-    minimum;
+    channels[ListChannels];
 
   /*
     Find the minimum value for each of the color.
@@ -4901,7 +4896,7 @@ static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
       if (color < minimum)
         minimum=color;
       count+=list->nodes[color].count;
-    } while (count < pixel_list->length);
+    } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) minimum;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -4954,7 +4949,7 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
           max_count=list->nodes[mode].count;
         }
       count+=list->nodes[color].count;
-    } while (count < pixel_list->length);
+    } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) mode;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
@@ -5003,7 +4998,7 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
       color=next;
       next=list->nodes[color].next[0];
       count+=list->nodes[color].count;
-    } while (count <= (pixel_list->length >> 1));
+    } while (count <= (ssize_t) (pixel_list->length >> 1));
     if ((previous == 65536UL) && (next != 65536UL))
       color=next;
     else
@@ -5106,9 +5101,9 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   const size_t height,ExceptionInfo *exception)
 {
 #define StatisticWidth \
-  (width == 0 ? GetOptimalKernelWidth2D(width,0.5) : width)
+  (width == 0 ? GetOptimalKernelWidth2D((double) width,0.5) : width)
 #define StatisticHeight \
-  (height == 0 ? GetOptimalKernelWidth2D(height,0.5) : height)
+  (height == 0 ? GetOptimalKernelWidth2D((double) height,0.5) : height)
 #define StatisticImageTag  "Statistic/Image"
 
   CacheView

@@ -115,8 +115,8 @@ struct _FxInfo
     *colors,
     *symbols;
 
-  ResampleFilter
-    **resample_filter;
+  CacheView
+    **view;
 
   RandomInfo
     *random_info;
@@ -173,18 +173,15 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     RelinquishMagickMemory);
   fx_info->symbols=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     RelinquishMagickMemory);
-  fx_info->resample_filter=(ResampleFilter **) AcquireQuantumMemory(
-    GetImageListLength(fx_info->images),sizeof(*fx_info->resample_filter));
-  if (fx_info->resample_filter == (ResampleFilter **) NULL)
+  fx_info->view=(CacheView **) AcquireQuantumMemory(GetImageListLength(
+    fx_info->images),sizeof(*fx_info->view));
+  if (fx_info->view == (CacheView **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   i=0;
   next=GetFirstImageInList(fx_info->images);
   for ( ; next != (Image *) NULL; next=next->next)
   {
-    fx_info->resample_filter[i]=AcquireResampleFilter(next,fx_info->exception);
-    SetResampleFilter(fx_info->resample_filter[i],PointFilter,1.0);
-    (void) SetResampleFilterInterpolateMethod(fx_info->resample_filter[i],
-      NearestNeighborInterpolatePixel);
+    fx_info->view[i]=AcquireCacheView(next);
     i++;
   }
   fx_info->random_info=AcquireRandomInfo();
@@ -1080,10 +1077,8 @@ MagickExport FxInfo *DestroyFxInfo(FxInfo *fx_info)
   fx_info->symbols=DestroySplayTree(fx_info->symbols);
   fx_info->colors=DestroySplayTree(fx_info->colors);
   for (i=(ssize_t) GetImageListLength(fx_info->images)-1; i >= 0; i--)
-    fx_info->resample_filter[i]=DestroyResampleFilter(
-      fx_info->resample_filter[i]);
-  fx_info->resample_filter=(ResampleFilter **) RelinquishMagickMemory(
-    fx_info->resample_filter);
+    fx_info->view[i]=DestroyCacheView(fx_info->view[i]);
+  fx_info->view=(CacheView **) RelinquishMagickMemory(fx_info->view);
   fx_info->random_info=DestroyRandomInfo(fx_info->random_info);
   fx_info=(FxInfo *) RelinquishMagickMemory(fx_info);
   return(fx_info);
@@ -1448,7 +1443,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
         "NoSuchImage","`%s'",expression);
       return(0.0);
     }
-  (void) ResamplePixelColor(fx_info->resample_filter[i],point.x,point.y,&pixel);
+  (void) InterpolatePixelPacket(image,fx_info->view[i],
+    NearestNeighborInterpolatePixel,point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) &&
       (LocaleCompare(p,"intensity") != 0) &&
       (LocaleCompare(p,"luminance") != 0) &&
@@ -3125,9 +3121,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     center,
     scale;
 
-  ResampleFilter
-    **restrict resample_filter;
-
   ssize_t
     y;
 
@@ -3173,8 +3166,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(implode_image,&zero);
-  resample_filter=AcquireResampleFilterThreadSet(image,
-    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   implode_view=AcquireCacheView(implode_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3182,9 +3173,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     MagickPixelPacket
       pixel;
 
@@ -3234,9 +3222,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           if (distance > 0.0)
             factor=pow(sin((double) (MagickPI*sqrt((double) distance)/
               radius/2)),-amount);
-          (void) ResamplePixelColor(resample_filter[id],(double)
-            (factor*delta.x/scale.x+center.x),(double) (factor*delta.y/
-            scale.y+center.y),&pixel);
+          (void) InterpolatePixelPacket(image,image_view,
+            image->interpolate,(double) (factor*delta.x/scale.x+center.x),
+            (double) (factor*delta.y/scale.y+center.y),&pixel,exception);
           SetPixelPacket(implode_image,&pixel,q,implode_indexes+x);
         }
       q++;
@@ -3258,7 +3246,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   }
   implode_view=DestroyCacheView(implode_view);
   image_view=DestroyCacheView(image_view);
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   if (status == MagickFalse)
     implode_image=DestroyImage(implode_image);
   return(implode_image);
@@ -4884,9 +4871,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     center,
     scale;
 
-  ResampleFilter
-    **restrict resample_filter;
-
   ssize_t
     y;
 
@@ -4930,8 +4914,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(swirl_image,&zero);
-  resample_filter=AcquireResampleFilterThreadSet(image,
-    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
   swirl_view=AcquireCacheView(swirl_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4939,9 +4921,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     MagickPixelPacket
       pixel;
 
@@ -4992,9 +4971,10 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           factor=1.0-sqrt((double) distance)/radius;
           sine=sin((double) (degrees*factor*factor));
           cosine=cos((double) (degrees*factor*factor));
-          (void) ResamplePixelColor(resample_filter[id],(double) ((cosine*
-            delta.x-sine*delta.y)/scale.x+center.x),(double) ((sine*delta.x+
-            cosine*delta.y)/scale.y+center.y),&pixel);
+          (void) InterpolatePixelPacket(image,image_view,
+            image->interpolate,(double) ((cosine*delta.x-sine*delta.y)/scale.x+
+            center.x),(double) ((sine*delta.x+cosine*delta.y)/scale.y+
+            center.y),&pixel,exception);
           SetPixelPacket(swirl_image,&pixel,q,swirl_indexes+x);
         }
       q++;
@@ -5016,7 +4996,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   }
   swirl_view=DestroyCacheView(swirl_view);
   image_view=DestroyCacheView(image_view);
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   if (status == MagickFalse)
     swirl_image=DestroyImage(swirl_image);
   return(swirl_image);
@@ -5335,6 +5314,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 #define WaveImageTag  "Wave/Image"
 
   CacheView
+    *image_view,
     *wave_view;
 
   Image
@@ -5354,9 +5334,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 
   register ssize_t
     i;
-
-  ResampleFilter
-    **restrict resample_filter;
 
   ssize_t
     y;
@@ -5401,17 +5378,15 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(wave_image,&zero);
-  resample_filter=AcquireResampleFilterThreadSet(image,
-    BackgroundVirtualPixelMethod,MagickTrue,exception);
+  image_view=AcquireCacheView(image);
   wave_view=AcquireCacheView(wave_image);
+  (void) SetCacheViewVirtualPixelMethod(image_view,
+    BackgroundVirtualPixelMethod);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) wave_image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     MagickPixelPacket
       pixel;
 
@@ -5437,8 +5412,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     pixel=zero;
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      (void) ResamplePixelColor(resample_filter[id],(double) x,(double) (y-
-        sine_map[x]),&pixel);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        (double) x,(double) (y-sine_map[x]),&pixel,exception);
       SetPixelPacket(wave_image,&pixel,q,indexes+x);
       q++;
     }
@@ -5458,7 +5433,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       }
   }
   wave_view=DestroyCacheView(wave_view);
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
+  image_view=DestroyCacheView(image_view);
   sine_map=(MagickRealType *) RelinquishMagickMemory(sine_map);
   if (status == MagickFalse)
     wave_image=DestroyImage(wave_image);

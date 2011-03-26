@@ -1840,7 +1840,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     {
       CacheView
         *composite_view,
-        *destination_view;
+        *destination_view,
+        *image_view;
 
       MagickPixelPacket
         pixel;
@@ -1858,9 +1859,6 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
 
       register PixelPacket
         *restrict r;
-
-      ResampleFilter
-        *resample_filter;
 
       /*
         Displace/Distort based on overlay gradient map:
@@ -1950,7 +1948,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       */
       pixel=zero;
       exception=(&image->exception);
-      resample_filter=AcquireResampleFilter(image,&image->exception);
+      image_view=AcquireCacheView(image);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
@@ -1989,8 +1987,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           offset.y=(vertical_scale*(p->green-(((MagickRealType) QuantumRange+
             1.0)/2.0)))/(((MagickRealType) QuantumRange+1.0)/2.0)+
             center.y+((compose == DisplaceCompositeOp) ? y : 0);
-          (void) ResamplePixelColor(resample_filter,(double) offset.x,
-            (double) offset.y,&pixel);
+          (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+            (double) offset.x,(double) offset.y,&pixel,exception);
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
@@ -2004,9 +2002,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         if (sync == MagickFalse)
           break;
       }
-      resample_filter=DestroyResampleFilter(resample_filter);
-      composite_view=DestroyCacheView(composite_view);
       destination_view=DestroyCacheView(destination_view);
+      composite_view=DestroyCacheView(composite_view);
+      image_view=DestroyCacheView(image_view);
       composite_image=destination_image;
       break;
     }

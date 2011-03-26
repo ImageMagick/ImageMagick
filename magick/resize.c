@@ -1130,6 +1130,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 #define AdaptiveResizeImageTag  "Resize/Image"
 
   CacheView
+    *image_view,
     *resize_view;
 
   Image
@@ -1140,9 +1141,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 
   MagickOffsetType
     progress;
-
-  ResampleFilter
-    **resample_filter;
 
   ssize_t
     y;
@@ -1171,17 +1169,13 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     }
   status=MagickTrue;
   progress=0;
-  resample_filter=AcquireResampleFilterThreadSet(image,
-    UndefinedVirtualPixelMethod,MagickTrue,exception);
+  image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     MagickPixelPacket
       pixel;
 
@@ -1209,8 +1203,8 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       offset.x=((MagickRealType) x*image->columns/resize_image->columns);
-      (void) ResamplePixelColor(resample_filter[id],offset.x-0.5,offset.y-0.5,
-        &pixel);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        offset.x-0.5,offset.y-0.5,&pixel,exception);
       SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
       q++;
     }
@@ -1230,8 +1224,8 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
           status=MagickFalse;
       }
   }
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   resize_view=DestroyCacheView(resize_view);
+  image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     resize_image=DestroyImage(resize_image);
   return(resize_image);
