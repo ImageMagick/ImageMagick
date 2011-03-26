@@ -2846,16 +2846,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   size_t
-    length;
-
-  unsigned char
-    *data;
-
-  size_t
     bits_allocated,
     bytes_per_pixel,
     colors,
     height,
+    length,
     mask,
     max_value,
     number_scenes,
@@ -2866,6 +2861,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status,
     width,
     window_width;
+
+  unsigned char
+    *data;
 
   /*
     Open image file.
@@ -3847,10 +3845,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       window_max,
                       window_min;
 
-                    window_min=(ssize_t) ceil(window_center-(window_width-1)/2.0-
-                      0.5);
-                    window_max=(ssize_t) floor(window_center+(window_width-1)/2.0+
-                      0.5);
+                    window_min=(ssize_t) ceil(window_center-(window_width-1)/
+                      2.0-0.5);
+                    window_max=(ssize_t) floor(window_center+(window_width-1)/
+                      2.0+0.5);
                     if ((ssize_t) pixel_value <= window_min)
                       index=0;
                     else
