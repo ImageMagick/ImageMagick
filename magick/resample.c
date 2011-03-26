@@ -333,7 +333,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   status=MagickTrue;
   GetMagickPixelPacket(resample_filter->image,pixel);
   if ( resample_filter->do_interpolate ) {
-    status=InterpolatePixelPacket(resample_filter->image,
+    status=InterpolateMagickPixelPacket(resample_filter->image,
       resample_filter->view,resample_filter->interpolate,u0,v0,pixel,
       resample_filter->exception);
     return(status);
@@ -411,7 +411,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   }
   if ( hit ) {
     /* whole area is a solid color -- just return that color */
-    status=InterpolatePixelPacket(resample_filter->image,
+    status=InterpolateMagickPixelPacket(resample_filter->image,
       resample_filter->view,IntegerInterpolatePixel,u0,v0,pixel,
       resample_filter->exception);
     return(status);
@@ -441,14 +441,14 @@ MagickExport MagickBooleanType ResamplePixelColor(
            works well in general, but falls down for TileEdge methods.
            This needs to be done properly!!!!!!
         */
-        status=InterpolatePixelPacket(resample_filter->image,
+        status=InterpolateMagickPixelPacket(resample_filter->image,
           resample_filter->view,AverageInterpolatePixel,u0,v0,pixel,
           resample_filter->exception);
         break;
       case HorizontalTileVirtualPixelMethod:
       case VerticalTileVirtualPixelMethod:
         /* just return the background pixel - Is there more direct way? */
-        status=InterpolatePixelPacket(resample_filter->image,
+        status=InterpolateMagickPixelPacket(resample_filter->image,
           resample_filter->view,IntegerInterpolatePixel,-1.0,-1.0,pixel,
           resample_filter->exception);
         break;
@@ -647,7 +647,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     pixel->opacity = pixel->red = pixel->green = pixel->blue = 0;
     pixel->red = QuantumRange; /* show pixels for which EWA fails */
 #else
-    status=InterpolatePixelPacket(resample_filter->image,
+    status=InterpolateMagickPixelPacket(resample_filter->image,
       resample_filter->view,resample_filter->interpolate,u0,v0,pixel,
       resample_filter->exception);
 #endif

@@ -1203,8 +1203,8 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       offset.x=((MagickRealType) x*image->columns/resize_image->columns);
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        offset.x-0.5,offset.y-0.5,&pixel,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
       SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
       q++;
     }

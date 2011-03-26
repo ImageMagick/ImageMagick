@@ -3380,20 +3380,20 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n t e r p o l a t e P i x e l P a c k e t                               %
+%   I n t e r p o l a t e M a g i c k P i x e l P a c k e t                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InterpolatePixelPacket() applies bi-linear or tri-linear interpolation
+%  InterpolateMagickPixelPacket() applies bi-linear or tri-linear interpolation
 %  between a floating point coordinate and the pixels surrounding that
 %  coordinate.  No pixel area resampling, or scaling of the result is
 %  performed.
 %
-%  The format of the InterpolatePixelPacket method is:
+%  The format of the InterpolateMagickPixelPacket method is:
 %
-%      MagickBooleanType InterpolatePixelPacket(const Image *image,
+%      MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
 %        const CacheView *image_view,const InterpolatePixelMethod method,
 %        const double x,const double y,MagickPixelPacket *pixel,
 %        ExceptionInfo *exception)
@@ -3492,7 +3492,7 @@ static inline ssize_t NearestNeighbor(const MagickRealType x)
   return((ssize_t) (x-0.5));
 }
 
-MagickExport MagickBooleanType InterpolatePixelPacket(const Image *image,
+MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
   const CacheView *image_view,const InterpolatePixelMethod method,
   const double x,const double y,MagickPixelPacket *pixel,
   ExceptionInfo *exception)
@@ -3513,7 +3513,7 @@ MagickExport MagickBooleanType InterpolatePixelPacket(const Image *image,
   assert(image->signature == MagickSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
-  switch (method)
+  switch (method == UndefinedInterpolatePixel ? image->interpolate : method)
   {
     case AverageInterpolatePixel:
     {
@@ -3626,10 +3626,7 @@ MagickExport MagickBooleanType InterpolatePixelPacket(const Image *image,
       for (i=0; i < 4L; i++)
       {
         GetMagickPixelPacket(image,pixels+i);
-        pixels[i].red=(MagickRealType) p[i].red;
-        pixels[i].green=(MagickRealType) p[i].green;
-        pixels[i].blue=(MagickRealType) p[i].blue;
-        pixels[i].opacity=(MagickRealType) p[i].opacity;
+        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
         alpha[i]=1.0;
         if (pixels[i].matte != MagickFalse)
           {
@@ -3644,6 +3641,7 @@ MagickExport MagickBooleanType InterpolatePixelPacket(const Image *image,
             if (pixels[i].colorspace == CMYKColorspace)
               pixels[i].index*=alpha[i];
           }
+        p++;
       }
       delta.x=x-floor(x);
       delta.y=y-floor(y);
