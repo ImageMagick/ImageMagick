@@ -3534,16 +3534,15 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       for (i=0; i < 16L; i++)
       {
-        GetMagickPixelPacket(image,pixels+i);
         SetMagickPixelPacket(image,p,indexes+i,pixels+i);
         alpha[i]=1.0;
-        if (pixels[i].matte != MagickFalse)
+        if (image->matte != MagickFalse)
           {
             alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
-            if (pixels[i].colorspace == CMYKColorspace)
+            if (image->colorspace == CMYKColorspace)
               pixels[i].index*=alpha[i];
           }
         gamma=alpha[i];
@@ -3552,7 +3551,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         pixel->green+=gamma*0.0625*pixels[i].green;
         pixel->blue+=gamma*0.0625*pixels[i].blue;
         pixel->opacity+=0.0625*pixels[i].opacity;
-        if (pixel->colorspace == CMYKColorspace)
+        if (image->colorspace == CMYKColorspace)
           pixel->index+=gamma*0.0625*pixels[i].index;
         p++;
       }
@@ -3580,16 +3579,15 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       for (i=0; i < 16L; i++)
       {
-        GetMagickPixelPacket(image,pixels+i);
         SetMagickPixelPacket(image,p,indexes+i,pixels+i);
         alpha[i]=1.0;
-        if (pixels[i].matte != MagickFalse)
+        if (image->matte != MagickFalse)
           {
             alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
-            if (pixels[i].colorspace == CMYKColorspace)
+            if (image->colorspace == CMYKColorspace)
               pixels[i].index*=alpha[i];
           }
         p++;
@@ -3625,20 +3623,15 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       for (i=0; i < 4L; i++)
       {
-        GetMagickPixelPacket(image,pixels+i);
         SetMagickPixelPacket(image,p,indexes+i,pixels+i);
         alpha[i]=1.0;
-        if (pixels[i].matte != MagickFalse)
+        if (image->matte != MagickFalse)
           {
             alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p[i].opacity);
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
-          }
-        if (indexes != (IndexPacket *) NULL)
-          {
-            pixels[i].index=(MagickRealType) indexes[i];
-            if (pixels[i].colorspace == CMYKColorspace)
+            if (image->colorspace == CMYKColorspace)
               pixels[i].index*=alpha[i];
           }
         p++;
@@ -3661,7 +3654,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->opacity=(epsilon.y*(epsilon.x*pixels[0].opacity+delta.x*
         pixels[1].opacity)+delta.y*(epsilon.x*pixels[2].opacity+delta.x*
         pixels[3].opacity));
-      if (pixel->colorspace == CMYKColorspace)
+      if (image->colorspace == CMYKColorspace)
         pixel->index=gamma*(epsilon.y*(epsilon.x*pixels[0].index+delta.x*
           pixels[1].index)+delta.y*(epsilon.x*pixels[2].index+delta.x*
           pixels[3].index));
@@ -3675,9 +3668,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       Image
         *excerpt_image,
         *filter_image;
-
-      MagickPixelPacket
-        pixels[1];
 
       RectangleInfo
         geometry;
@@ -3702,7 +3692,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       if (p != (const PixelPacket *) NULL)
         {
           indexes=GetVirtualIndexQueue(filter_image);
-          GetMagickPixelPacket(image,pixels);
           SetMagickPixelPacket(image,p,indexes,pixel);
         }
       filter_view=DestroyCacheView(filter_view);
@@ -3711,9 +3700,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     }
     case IntegerInterpolatePixel:
     {
-      MagickPixelPacket
-        pixels[1];
-
       p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
         floor(y),1,1,exception);
       if (p == (const PixelPacket *) NULL)
@@ -3722,7 +3708,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
           break;
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      GetMagickPixelPacket(image,pixels);
       SetMagickPixelPacket(image,p,indexes,pixel);
       break;
     }
@@ -3749,16 +3734,15 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       for (i=0; i < 4L; i++)
       {
-        GetMagickPixelPacket(image,pixels+i);
         SetMagickPixelPacket(image,p,indexes+i,pixels+i);
         alpha[i]=1.0;
-        if (pixels[i].matte != MagickFalse)
+        if (image->matte != MagickFalse)
           {
             alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
             pixels[i].red*=alpha[i];
             pixels[i].green*=alpha[i];
             pixels[i].blue*=alpha[i];
-            if (pixels[i].colorspace == CMYKColorspace)
+            if (image->colorspace == CMYKColorspace)
               pixels[i].index*=alpha[i];
           }
         p++;
@@ -3788,7 +3772,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
                 pixels[3].blue,pixels[0].blue);
               pixel->opacity=gamma*MeshInterpolate(&delta,pixels[2].opacity,
                 pixels[3].opacity,pixels[0].opacity);
-              if (pixel->colorspace == CMYKColorspace)
+              if (image->colorspace == CMYKColorspace)
                 pixel->index=gamma*MeshInterpolate(&delta,pixels[2].index,
                   pixels[3].index,pixels[0].index);
             }
@@ -3808,7 +3792,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
                 pixels[0].blue,pixels[3].blue);
               pixel->opacity=gamma*MeshInterpolate(&delta,pixels[1].opacity,
                 pixels[0].opacity,pixels[3].opacity);
-              if (pixel->colorspace == CMYKColorspace)
+              if (image->colorspace == CMYKColorspace)
                 pixel->index=gamma*MeshInterpolate(&delta,pixels[1].index,
                   pixels[0].index,pixels[3].index);
             }
@@ -3833,7 +3817,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
                 pixels[1].blue,pixels[2].blue);
               pixel->opacity=gamma*MeshInterpolate(&delta,pixels[0].opacity,
                 pixels[1].opacity,pixels[2].opacity);
-              if (pixel->colorspace == CMYKColorspace)
+              if (image->colorspace == CMYKColorspace)
                 pixel->index=gamma*MeshInterpolate(&delta,pixels[0].index,
                   pixels[1].index,pixels[2].index);
             }
@@ -3854,7 +3838,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
                 pixels[2].blue,pixels[1].blue);
               pixel->opacity=gamma*MeshInterpolate(&delta,pixels[3].opacity,
                 pixels[2].opacity,pixels[1].opacity);
-              if (pixel->colorspace == CMYKColorspace)
+              if (image->colorspace == CMYKColorspace)
                 pixel->index=gamma*MeshInterpolate(&delta,pixels[3].index,
                   pixels[2].index,pixels[1].index);
             }
@@ -3863,9 +3847,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     }
     case NearestNeighborInterpolatePixel:
     {
-      MagickPixelPacket
-        pixels[1];
-
       p=GetCacheViewVirtualPixels(image_view,NearestNeighbor(x),
         NearestNeighbor(y),1,1,exception);
       if (p == (const PixelPacket *) NULL)
@@ -3874,7 +3855,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
           break;
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      GetMagickPixelPacket(image,pixels);
       SetMagickPixelPacket(image,p,indexes,pixel);
       break;
     }
@@ -3912,17 +3892,16 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         dy=CubicWeightingFunction((MagickRealType) i-delta.y);
         for (j=(-1); j < 3L; j++)
         {
-          GetMagickPixelPacket(image,pixels+n);
           SetMagickPixelPacket(image,p,indexes+n,pixels+n);
           alpha[n]=1.0;
-          if (pixels[i].matte != MagickFalse)
+          if (image->matte != MagickFalse)
             {
               alpha[n]=QuantumScale*((MagickRealType)
                 GetAlphaPixelComponent(p));
               pixels[n].red*=alpha[n];
               pixels[n].green*=alpha[n];
               pixels[n].blue*=alpha[n];
-              if (pixels[i].colorspace == CMYKColorspace)
+              if (image->colorspace == CMYKColorspace)
                 pixels[n].index*=alpha[n];
             }
           dx=CubicWeightingFunction(delta.x-(MagickRealType) j);
@@ -3931,9 +3910,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
           pixel->red+=gamma*dx*dy*pixels[n].red;
           pixel->green+=gamma*dx*dy*pixels[n].green;
           pixel->blue+=gamma*dx*dy*pixels[n].blue;
-          if (pixel->matte != MagickFalse)
-            pixel->opacity+=dx*dy*pixels[n].opacity;
-          if (pixel->colorspace == CMYKColorspace)
+          pixel->opacity+=dx*dy*pixels[n].opacity;
+          if (image->colorspace == CMYKColorspace)
             pixel->index+=gamma*dx*dy*pixels[n].index;
           n++;
           p++;
