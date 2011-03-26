@@ -3414,7 +3414,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %
 */
 
-static inline double MagickMax(const double x,const double y)
+static inline double MagickMax(const MagickRealType x,const MagickRealType y)
 {
   if (x > y)
     return(x);
