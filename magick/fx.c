@@ -1807,7 +1807,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     case 't':
     {
       if (LocaleCompare(symbol,"t") == 0)
-        return((MagickRealType) fx_info->images->scene);
+        return((MagickRealType) GetImageIndexInList(fx_info->images) );
       break;
     }
     case 'W':
