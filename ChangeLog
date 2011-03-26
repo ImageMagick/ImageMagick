@@ -1,3 +1,6 @@
+2011-03-25 6.6.8-8 Cristy  <quetzlzacatenango@image...>
+  * Add InterpolatePixelPacket() method.
+
 2011-03-25  6.6.8-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-8.
 
