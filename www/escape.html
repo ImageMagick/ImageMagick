@@ -185,7 +185,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011060100025 gabi.schulze-->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011060100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -204,11 +204,11 @@
 <p>Use the <a href="../www/command-line-options.html#format_identify_">-format</a> option to print properties associated with an image in a format of your choosing. You can include the image filename, type, width, height, EXIF data, or other image attributes by embedding special format characters:</p>
 
 <pre class="text">
-   %b   file size
+   %b   original file size of image file
    %c   comment property
    %d   directory path
-   %e   filename suffix
-   %f   filename (excluding suffix)
+   %e   filename extension or suffix
+   %f   filename (including suffix)
    %g   page geometry   ( = %Wx%H%X%Y )
    %h   current image height in pixels
    %i   input filename (full path)
@@ -220,14 +220,14 @@
    %p   index of image in sequence
    %q   quantum depth (compile-time constant)
    %r   image class and colorspace
-   %s   scene number (from input)
-   %t   top of filename
+   %s   scene number (from input unless re-assigned)
+   %t   top of filename (excluding suffix)
    %u   unique temporary filename
    %w   current width in pixels
    %x   x resolution
    %y   y resolution
    %z   image depth (as read in)
-   %A   image alpha channel (true/false)
+   %A   image transparency channel enabled (true/false)
    %C   image compression type
    %D   image dispose method
    %G   image size ( = %wx%h )
@@ -254,27 +254,28 @@ for an image with filename <kbd>bird.miff</kbd> and whose width is 512 and heigh
 <p>Additional properties are recognized when enclosed in braces:</p>
 
 <pre class="text">
-   %[base]                base filename
+   %[base]                 base filename, no suffixes (as %t)
    %[channels]
-   %[colorspace]
-   %[copyright]
-   %[depth]
-   %[directory]
-   %[extension]
+   %[colorspace]           Colorspace of Image Data (excluding transparency)
+   %[copyright]            ImageMagick Copyright String
+   %[depth]                depth of image for write (as input unless changed)
+   %[directory]            directory part of filename (as %d)
+   %[extension]            extention part of filename (as %e)
    %[group]
    %[height]               original height of image (when it was read in)
-   %[magick]
+   %[magick]               coder used to read image (not the file suffix)
    %[max]
    %[mean]
    %[min]
    %[name]
+   %[opaque]
    %[page]
-   %[scene]
-   %[scenes]
+   %[scene]                original scene number of image in input file
+   %[scenes]               original number of scenes in input file
    %[size]                 original size of image (when it was read in)
    %[standard-deviation]
-   %[unique]               unique temporary filename
-   %[version]
+   %[unique]               unique temporary filename ???
+   %[version]              Version Information of this running ImageMagick
    %[width]                original width of image (when it was read in)
    %[xresolution]
    %[yresolution]
