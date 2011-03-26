@@ -52,6 +52,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/pixel.h"
 #include "magick/pixel-private.h"
 #include "magick/quantum.h"
 #include "magick/random_.h"
