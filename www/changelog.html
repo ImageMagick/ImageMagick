@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -197,7 +197,12 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-25  6.6.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-03-26  6.6.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.6.8-9.</dd>
+<dt>2011-03-25 6.6.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add InterpolatePixelPacket() method.</dd>
+  <dd> Add support for the %[opaque] property.</dd>
+<dt>2011-03-25  6.6.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-8.</dd>
 <dt>2011-03-25 6.6.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix memory access bug in CloneString() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=18382).</dd>
@@ -210,11 +215,11 @@
   <dd> Add support for 16-bit DCM short ints (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18371).</dd>
 <dt>2011-03-23 6.6.8-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Another fix for -sparse-color and unused color channels</dd>
-  <dd> Finialize the -duplicate option created by Cristy</dd>
+  <dd> Finalize the -duplicate option created by Cristy</dd>
   <dd> Fix of segmentation fault for second image in %[fx:..] during info:    (Bug in AcquireFxInfo(), as given start image is not first image)</dd>
 <dt>2011-03-21  6.6.8-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Revised the PNG8 encoder to use 50% threshold instead of 0% when    reducing transparency to binary.  Collapse all resulting fully transparent    colors into one (the background color), to reduce the compressed filesize.</dd>
-  <dd> First try the 4-4-4 and 3-3-3 palettes instead of 3-3-2, to preserve    colors (especially gray) better, when reducing to PNG8.</dd>
+  <dd> First try the 4-4-4-1 and 3-3-3-1 palettes instead of 3-3-2-1, to preserve    colors (especially gray) better, when reducing to PNG8.</dd>
   <dd> Force the PNG encoder to return image-&gt;matte==MagickTrue when the    format is RGBA or GA or if the tRNS chunk is present, even when the    image is fully opaque (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18349).</dd>
 <dt>2011-03-21  6.6.8-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-6.</dd>

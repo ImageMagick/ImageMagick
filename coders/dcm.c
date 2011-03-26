@@ -2842,9 +2842,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  ssize_t
-    count;
-
   size_t
     bits_allocated,
     bytes_per_pixel,
@@ -2861,6 +2858,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status,
     width,
     window_width;
+
+  ssize_t
+    count;
 
   unsigned char
     *data;
@@ -3652,7 +3652,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);
         for (i=0; i < 15; i++)
-           stream_info->segments[i]=(int) ReadBlobLSBLong(image);
+          stream_info->segments[i]=(int) ReadBlobLSBLong(image);
         stream_info->remaining-=64;
       }
     image->columns=(size_t) width;
