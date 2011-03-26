@@ -3394,7 +3394,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %  The format of the InterpolatePixelPacket method is:
 %
 %      MagickBooleanType InterpolatePixelPacket(const Image *image,
-%        CacheView *image_view,const InterpolatePixelMethod method,
+%        const CacheView *image_view,const InterpolatePixelMethod method,
 %        const double x,const double y,MagickPixelPacket *pixel,
 %        ExceptionInfo *exception)
 %
@@ -3485,7 +3485,7 @@ static inline double MeshInterpolate(const PointInfo *delta,const double p,
   return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
 }
 
-static inline ssize_t NearestNeighbor(MagickRealType x)
+static inline ssize_t NearestNeighbor(const MagickRealType x)
 {
   if (x >= 0.0)
     return((ssize_t) (x+0.5));
@@ -3493,8 +3493,9 @@ static inline ssize_t NearestNeighbor(MagickRealType x)
 }
 
 MagickExport MagickBooleanType InterpolatePixelPacket(const Image *image,
-  CacheView *image_view,const InterpolatePixelMethod method,const double x,
-  const double y,MagickPixelPacket *pixel,ExceptionInfo *exception)
+  const CacheView *image_view,const InterpolatePixelMethod method,
+  const double x,const double y,MagickPixelPacket *pixel,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;

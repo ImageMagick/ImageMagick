@@ -154,7 +154,7 @@ extern MagickExport MagickBooleanType
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
   ImportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,const void *),
-  InterpolatePixelPacket(const Image *,CacheView_ *,
+  InterpolatePixelPacket(const Image *,const CacheView_ *,
     const InterpolatePixelMethod,const double,const double,MagickPixelPacket *,
     ExceptionInfo *);
 
