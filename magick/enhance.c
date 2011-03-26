@@ -715,9 +715,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   register ssize_t
     i;
 
-  ResampleFilter
-    **restrict resample_filter;
-
   ssize_t
     adjust,
     y;
@@ -742,23 +739,17 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   progress=0;
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
   exception=(&image->exception);
-  resample_filter=AcquireResampleFilterThreadSet(clut_image,
-    UndefinedVirtualPixelMethod,MagickTrue,exception);
+  image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     GetMagickPixelPacket(clut_image,clut_map+i);
-    (void) ResamplePixelColor(resample_filter[id],QuantumScale*i*
-      (clut_image->columns-adjust),QuantumScale*i*(clut_image->rows-adjust),
-      clut_map+i);
+    (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+      QuantumScale*i*(clut_image->columns-adjust),QuantumScale*i*
+      (clut_image->rows-adjust),clut_map+i,exception);
   }
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
-  image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
@@ -802,11 +793,11 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
         {
           if (clut_image->matte == MagickFalse)
             q->opacity=(Quantum) (QuantumRange-MagickPixelIntensityToQuantum(
-              clut_map+ScaleQuantumToMap(GetAlphaPixelComponent(q))));
+              clut_map+ScaleQuantumToMap((Quantum) GetAlphaPixelComponent(q))));
           else
             if (image->matte == MagickFalse)
               SetOpacityPixelComponent(q,ClampOpacityPixelComponent(clut_map+
-                ScaleQuantumToMap(MagickPixelIntensity(&pixel))));
+                ScaleQuantumToMap((Quantum) MagickPixelIntensity(&pixel))));
             else
               SetOpacityPixelComponent(q,ClampOpacityPixelComponent(
                 clut_map+ScaleQuantumToMap(q->opacity)));
@@ -2250,9 +2241,6 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   MagickPixelPacket
     zero;
 
-  ResampleFilter
-    **restrict resample_filter;
-
   size_t
     cube_size,
     length,
@@ -2283,17 +2271,12 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   width=(double) hald_image->columns;
   GetMagickPixelPacket(hald_image,&zero);
   exception=(&image->exception);
-  resample_filter=AcquireResampleFilterThreadSet(hald_image,
-    UndefinedVirtualPixelMethod,MagickTrue,exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     double
       offset;
 
@@ -2339,17 +2322,17 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      (void) ResamplePixelColor(resample_filter[id],fmod(offset,width),
-        floor(offset/width),&pixel1);
-      (void) ResamplePixelColor(resample_filter[id],fmod(offset+level,width),
-        floor((offset+level)/width),&pixel2);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        fmod(offset,width),floor(offset/width),&pixel1,exception);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel3);
       offset+=cube_size;
-      (void) ResamplePixelColor(resample_filter[id],fmod(offset,width),
-        floor(offset/width),&pixel1);
-      (void) ResamplePixelColor(resample_filter[id],fmod(offset+level,width),
-        floor((offset+level)/width),&pixel2);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        fmod(offset,width),floor(offset/width),&pixel1,exception);
+      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+        fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel4);
       MagickPixelCompositeAreaBlend(&pixel3,pixel3.opacity,&pixel4,
@@ -2383,7 +2366,6 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  resample_filter=DestroyResampleFilterThreadSet(resample_filter);
   return(status);
 }
 

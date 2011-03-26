@@ -67,6 +67,19 @@ extern "C" {
 #define SetYellowPixelComponent(q,value) ((q)->blue=(value))
 #define SetBlackPixelComponent(p,x,value) (p[x]=(value))
 
+typedef enum
+{
+  UndefinedInterpolatePixel,
+  AverageInterpolatePixel,
+  BicubicInterpolatePixel,
+  BilinearInterpolatePixel,
+  FilterInterpolatePixel,
+  IntegerInterpolatePixel,
+  MeshInterpolatePixel,
+  NearestNeighborInterpolatePixel,
+  SplineInterpolatePixel
+} InterpolatePixelMethod;
+
 typedef struct _DoublePixelPacket
 {
   double
@@ -133,11 +146,17 @@ typedef struct _PixelPacket
 #endif
 } PixelPacket;
 
+typedef struct _CacheView
+  CacheView_;
+
 extern MagickExport MagickBooleanType
   ExportImagePixels(const Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
   ImportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,const char *,const StorageType,const void *);
+    const size_t,const char *,const StorageType,const void *),
+  InterpolatePixelPacket(const Image *,CacheView_ *,
+    const InterpolatePixelMethod,const double,const double,MagickPixelPacket *,
+    ExceptionInfo *);
 
 extern MagickExport void
   GetMagickPixelPacket(const Image *,MagickPixelPacket *);
