@@ -698,6 +698,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
 #define ClutImageTag  "Clut/Image"
 
   CacheView
+    *clut_view,
     *image_view;
 
   ExceptionInfo
@@ -739,17 +740,19 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   progress=0;
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  clut_view=AcquireCacheView(clut_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetMagickPixelPacket(clut_image,clut_map+i);
-    (void) InterpolatePixelPacket(image,image_view,image->interpolate,
+    (void) InterpolatePixelPacket(clut_image,clut_view,clut_image->interpolate,
       QuantumScale*i*(clut_image->columns-adjust),QuantumScale*i*
       (clut_image->rows-adjust),clut_map+i,exception);
   }
+  clut_view=DestroyCacheView(clut_view);
+  image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
