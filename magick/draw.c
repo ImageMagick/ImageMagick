@@ -1212,8 +1212,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
         inverse_affine.tx;
       point.y=(double) x*inverse_affine.rx+y*inverse_affine.sy+
         inverse_affine.ty;
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        point.x,point.y,&pixel,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,point.x,point.y,&pixel,exception);
       SetMagickPixelPacket(image,q,indexes+x_offset,&composite);
       MagickPixelCompositeOver(&pixel,pixel.opacity,&composite,
         composite.opacity,&composite);

@@ -747,9 +747,9 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetMagickPixelPacket(clut_image,clut_map+i);
-    (void) InterpolatePixelPacket(clut_image,clut_view,clut_image->interpolate,
-      QuantumScale*i*(clut_image->columns-adjust),QuantumScale*i*
-      (clut_image->rows-adjust),clut_map+i,exception);
+    (void) InterpolateMagickPixelPacket(clut_image,clut_view,
+      UndefinedInterpolatePixel,QuantumScale*i*(clut_image->columns-adjust),
+      QuantumScale*i*(clut_image->rows-adjust),clut_map+i,exception);
   }
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireCacheView(image);
@@ -2325,17 +2325,21 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        fmod(offset,width),floor(offset/width),&pixel1,exception);
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
+        &pixel1,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
+        width),&pixel2,exception);
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel3);
       offset+=cube_size;
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        fmod(offset,width),floor(offset/width),&pixel1,exception);
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
+        &pixel1,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
+        width),&pixel2,exception);
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel4);
       MagickPixelCompositeAreaBlend(&pixel3,pixel3.opacity,&pixel4,

@@ -1443,7 +1443,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
         "NoSuchImage","`%s'",expression);
       return(0.0);
     }
-  (void) InterpolatePixelPacket(image,fx_info->view[i],
+  (void) InterpolateMagickPixelPacket(image,fx_info->view[i],
     NearestNeighborInterpolatePixel,point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) &&
       (LocaleCompare(p,"intensity") != 0) &&
@@ -3222,9 +3222,10 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           if (distance > 0.0)
             factor=pow(sin((double) (MagickPI*sqrt((double) distance)/
               radius/2)),-amount);
-          (void) InterpolatePixelPacket(image,image_view,
-            image->interpolate,(double) (factor*delta.x/scale.x+center.x),
-            (double) (factor*delta.y/scale.y+center.y),&pixel,exception);
+          (void) InterpolateMagickPixelPacket(image,image_view,
+            UndefinedInterpolatePixel,(double) (factor*delta.x/scale.x+
+            center.x),(double) (factor*delta.y/scale.y+center.y),&pixel,
+            exception);
           SetPixelPacket(implode_image,&pixel,q,implode_indexes+x);
         }
       q++;
@@ -4971,9 +4972,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           factor=1.0-sqrt((double) distance)/radius;
           sine=sin((double) (degrees*factor*factor));
           cosine=cos((double) (degrees*factor*factor));
-          (void) InterpolatePixelPacket(image,image_view,
-            image->interpolate,(double) ((cosine*delta.x-sine*delta.y)/scale.x+
-            center.x),(double) ((sine*delta.x+cosine*delta.y)/scale.y+
+          (void) InterpolateMagickPixelPacket(image,image_view,
+            UndefinedInterpolatePixel,(double) ((cosine*delta.x-sine*delta.y)/
+            scale.x+center.x),(double) ((sine*delta.x+cosine*delta.y)/scale.y+
             center.y),&pixel,exception);
           SetPixelPacket(swirl_image,&pixel,q,swirl_indexes+x);
         }
@@ -5412,8 +5413,9 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     pixel=zero;
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      (void) InterpolatePixelPacket(image,image_view,image->interpolate,
-        (double) x,(double) (y-sine_map[x]),&pixel,exception);
+      (void) InterpolateMagickPixelPacket(image,image_view,
+        UndefinedInterpolatePixel,(double) x,(double) (y-sine_map[x]),&pixel,
+        exception);
       SetPixelPacket(wave_image,&pixel,q,indexes+x);
       q++;
     }
