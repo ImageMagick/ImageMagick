@@ -21,6 +21,7 @@ m4_define([magick_minor_version], [6])
 m4_define([magick_micro_version], [9])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version])
+m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
 
 AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick-magick_version])
 AC_CONFIG_SRCDIR([magick/MagickCore.h])
@@ -112,6 +113,7 @@ AC_SUBST([MAGICK_LIBRARY_CURRENT_MIN],
          [`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`])
 AC_SUBST([MAGICK_LIBRARY_VERSION_INFO],
          [$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE])
+AC_SUBST([MAGICK_SVN_REVISION],[magick_svn_revision])
 
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl
