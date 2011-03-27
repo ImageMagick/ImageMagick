@@ -3651,6 +3651,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         stream_info->count=0;
         stream_info->segment_count=ReadBlobLSBLong(image);
+        if (stream_info->segment_count > 1)
+          {
+            bytes_per_pixel=1;
+            image->depth=8;
+          }
         for (i=0; i < 15; i++)
           stream_info->segments[i]=(int) ReadBlobLSBLong(image);
         stream_info->remaining-=64;
@@ -3913,6 +3918,136 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
         }
+        if (stream_info->segment_count > 1)
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+            if (q == (PixelPacket *) NULL)
+              break;
+            indexes=GetAuthenticIndexQueue(image);
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              if (samples_per_pixel == 1)
+                {
+                  int
+                    pixel_value;
+
+                  if (bytes_per_pixel == 1)
+                    pixel_value=polarity != MagickFalse ?
+                      ((int) max_value-ReadDCMByte(stream_info,image)) :
+                      ReadDCMByte(stream_info,image);
+                  else
+                    if ((bits_allocated != 12) || (significant_bits != 12))
+                      {
+                        if (image->endian == MSBEndian)
+                          pixel_value=(int) (polarity != MagickFalse ?
+                            (max_value-ReadDCMMSBShort(stream_info,image)) :
+                            ReadDCMMSBShort(stream_info,image));
+                        else
+                          pixel_value=(int) (polarity != MagickFalse ?
+                            (max_value-ReadDCMLSBShort(stream_info,image)) :
+                            ReadDCMLSBShort(stream_info,image));
+                        if (signed_data == 1)
+                          pixel_value=((signed short) pixel_value);
+                      }
+                    else
+                      {
+                        if ((i & 0x01) != 0)
+                          pixel_value=(ReadDCMByte(stream_info,image) << 8) |
+                            byte;
+                        else
+                          {
+                            if (image->endian == MSBEndian)
+                              pixel_value=(int) ReadDCMMSBShort(stream_info,
+                                image);
+                            else
+                              pixel_value=(int) ReadDCMLSBShort(stream_info,
+                                image);
+                            byte=(int) (pixel_value & 0x0f);
+                            pixel_value>>=4;
+                          }
+                        i++;
+                      }
+                  index=pixel_value;
+                  if (window_width == 0)
+                    {
+                      if (signed_data == 1)
+                        index=pixel_value-32767;
+                    }
+                  else
+                    {
+                      ssize_t
+                        window_max,
+                        window_min;
+
+                      window_min=(ssize_t) ceil(window_center-(window_width-1)/
+                        2.0-0.5);
+                      window_max=(ssize_t) floor(window_center+(window_width-1)/
+                        2.0+0.5);
+                      if ((ssize_t) pixel_value <= window_min)
+                        index=0;
+                      else
+                        if ((ssize_t) pixel_value > window_max)
+                          index=(int) max_value;
+                        else
+                          index=(int) (max_value*(((pixel_value-window_center-
+                            0.5)/(window_width-1))+0.5));
+                    }
+                  index&=mask;
+                  index=(int) ConstrainColormapIndex(image,(size_t) index);
+                  indexes[x]=(IndexPacket) index;
+                  pixel.red=1UL*image->colormap[index].red;
+                  pixel.green=1UL*image->colormap[index].green;
+                  pixel.blue=1UL*image->colormap[index].blue;
+                }
+              else
+                {
+                  if (bytes_per_pixel == 1)
+                    {
+                      pixel.red=(size_t) ReadDCMByte(stream_info,image);
+                      pixel.green=(size_t) ReadDCMByte(stream_info,image);
+                      pixel.blue=(size_t) ReadDCMByte(stream_info,image);
+                    }
+                  else
+                    {
+                      if (image->endian == MSBEndian)
+                        {
+                          pixel.red=ReadDCMMSBShort(stream_info,image);
+                          pixel.green=ReadDCMMSBShort(stream_info,image);
+                          pixel.blue=ReadDCMMSBShort(stream_info,image);
+                        }
+                      else
+                        {
+                          pixel.red=ReadDCMLSBShort(stream_info,image);
+                          pixel.green=ReadDCMLSBShort(stream_info,image);
+                          pixel.blue=ReadDCMLSBShort(stream_info,image);
+                        }
+                    }
+                  pixel.red&=mask;
+                  pixel.green&=mask;
+                  pixel.blue&=mask;
+                  if (scale != (Quantum *) NULL)
+                    {
+                      pixel.red=scale[pixel.red];
+                      pixel.green=scale[pixel.green];
+                      pixel.blue=scale[pixel.blue];
+                    }
+                }
+              q->red|=((Quantum) pixel.red) << 8;
+              q->green|=((Quantum) pixel.green) << 8;
+              q->blue|=((Quantum) pixel.blue) << 8;
+              q++;
+            }
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+            if (image->previous == (Image *) NULL)
+              {
+                status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+                  image->rows);
+                if (status == MagickFalse)
+                  break;
+              }
+          }
       }
     if (EOFBlob(image) != MagickFalse)
       {
