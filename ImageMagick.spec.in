@@ -293,7 +293,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}-%{VERSION}
+%doc %{_docdir}/%{name}-%{VERSION}
 %doc LICENSE
 
 %files c++
