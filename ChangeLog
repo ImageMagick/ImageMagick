@@ -1,3 +1,6 @@
+2011-03-27  6.6.8-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.8-10.
+
 2011-03-27 6.6.8-10 Anthony Thyssen <A.Thyssen@griffith...>
   * Modified image handling in MogrigyImages() and MogrifyImage()
     which improves overally handling, and allows correct %p, %n and the
