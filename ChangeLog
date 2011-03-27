@@ -1,3 +1,9 @@
+2011-03-27 6.6.8-9 Anthony Thyssen <A.Thyssen@griffith...>
+  * Modified image handling in MogrigyImages() and MogrifyImage()
+    which improves overally handling, and allows correct %p, %n and the
+    %[fx:..] 't' and 'n' escape usage to work correctly.
+  * Added -duplicate as a multi-image sequence operator
+
 2011-03-26  6.6.8-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-9.
 
