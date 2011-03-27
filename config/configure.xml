@@ -9,14 +9,14 @@
   <configure name="NAME" value="ImageMagick"/>
   <configure name="VERSION" value="6.6.8"/>
   <configure name="LIB_VERSION" value="0x668"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,6,8,10"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,6,8,9"/>
   <configure name="RELEASE_DATE" value="2011-03-26"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
-  <configure name="CONFIGURE_PATH" value="/usr/local/var/lib/ImageMagick-6.6.8/"/>
+  <configure name="CONFIGURE_PATH" value="/usr/local/share/ImageMagick-6.6.8/"/>
   <configure name="SHARE_CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-6.6.8"/>
-  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-6.6.8"/>
+  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-6.6.8/"/>
   <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.6.8"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6.6.8"/>

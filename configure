@@ -573,7 +573,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='ImageMagick'
-PACKAGE_TARNAME='ImageMagick'
+PACKAGE_TARNAME='ImageMagick-6.6.8'
 PACKAGE_VERSION='6.6.8'
 PACKAGE_STRING='ImageMagick 6.6.8'
 PACKAGE_BUGREPORT='http://www.imagemagick.org'
@@ -959,6 +959,7 @@ LIB_DIR
 LOCALSTATE_DIR
 SHAREDSTATE_DIR
 SYSCONF_DIR
+DOC_DIR
 DATA_DIR
 LIBEXEC_DIR
 SBIN_DIR
@@ -1756,7 +1757,8 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick]
+  --docdir=DIR            documentation root
+                          [DATAROOTDIR/doc/ImageMagick-6.6.8]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -3995,6 +3997,8 @@ eval "eval SBIN_DIR=$sbindir"
 eval "eval LIBEXEC_DIR=$libexecdir"
 
 eval "eval DATA_DIR=$datadir"
+
+eval "eval DOC_DIR=$docdir"
 
 eval "eval SYSCONF_DIR=$sysconfdir"
 
@@ -30382,8 +30386,8 @@ cat >>confdefs.h <<_ACEOF
 #define CONFIGURE_RELATIVE_PATH "$CONFIGURE_RELATIVE_PATH"
 _ACEOF
 
-CONFIGURE_PATH="${LOCALSTATE_DIR}/lib/${CONFIGURE_RELATIVE_PATH}/"
-DEFINE_CONFIGURE_PATH="${LOCALSTATE_DIR}/lib/${CONFIGURE_RELATIVE_PATH}/"
+CONFIGURE_PATH="${DATA_DIR}/${CONFIGURE_RELATIVE_PATH}/"
+DEFINE_CONFIGURE_PATH="${DATA_DIR}/${CONFIGURE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_CONFIGURE_PATH=`$WinPathScript "$DEFINE_CONFIGURE_PATH" 1`
@@ -30442,9 +30446,9 @@ _ACEOF
 
 #
 # Path to ImageMagick documentation files
-DOCUMENTATION_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
-DOCUMENTATION_PATH="${DATA_DIR}/doc/${DOCUMENTATION_RELATIVE_PATH}"
-DEFINE_DOCUMENTATION_PATH="${DATA_DIR}/doc/${DOCUMENTATION_RELATIVE_PATH}/"
+DOCUMENTATION_RELATIVE_PATH=""
+DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}"
+DEFINE_DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_DOCUMENTATION_PATH=`$WinPathScript "$DEFINE_DOCUMENTATION_PATH" 1`
