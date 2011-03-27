@@ -44,7 +44,7 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/local/var/lib/ImageMagick-6.6.8/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/local/share/ImageMagick-6.6.8/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
@@ -58,7 +58,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-6.6.8/"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-6.6.8//"
 #endif
 
 /* Define if you have Display Postscript */
@@ -1181,7 +1181,7 @@
 
 /* Define to the one symbol short name of this package. */
 #ifndef MAGICKCORE_PACKAGE_TARNAME
-#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick"
+#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick-6.6.8"
 #endif
 
 /* Define to the home page for this package. */

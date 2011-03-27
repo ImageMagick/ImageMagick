@@ -1,5 +1,5 @@
 %global VERSION  6.6.8
-%global Patchlevel  10
+%global Patchlevel  9
 
 Name:           ImageMagick
 Version:        %{VERSION}
@@ -259,9 +259,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libMagickWand.so.4*
 %{_bindir}/[a-z]*
 %{_sysconfdir}/%{name}-%{VERSION}
-%{_localstatedir}/lib/%{name}-%{VERSION}
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
+%{_docdir}/%{name}-%{VERSION}
 %{_mandir}/man[145]/[a-zA-Z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*

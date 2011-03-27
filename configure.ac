@@ -22,7 +22,7 @@ m4_define([magick_micro_version], [8])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version])
 
-AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick])
+AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick-magick_version])
 AC_CONFIG_SRCDIR([magick/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
@@ -189,6 +189,8 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 AC_SUBST(LIBEXEC_DIR)
 eval "eval DATA_DIR=$datadir"
 AC_SUBST(DATA_DIR)
+eval "eval DOC_DIR=$docdir"
+AC_SUBST(DOC_DIR)
 eval "eval SYSCONF_DIR=$sysconfdir"
 AC_SUBST(SYSCONF_DIR)
 eval "eval SHAREDSTATE_DIR=$sharedstatedir"
@@ -2709,8 +2711,8 @@ AC_SUBST(LIBRARY_PATH)
 # Subdirectory to place ImageMagick configuration files
 CONFIGURE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
 AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",Subdirectory of lib where architecture-dependent configuration files live.)
-CONFIGURE_PATH="${LOCALSTATE_DIR}/lib/${CONFIGURE_RELATIVE_PATH}/"
-DEFINE_CONFIGURE_PATH="${LOCALSTATE_DIR}/lib/${CONFIGURE_RELATIVE_PATH}/"
+CONFIGURE_PATH="${DATA_DIR}/${CONFIGURE_RELATIVE_PATH}/"
+DEFINE_CONFIGURE_PATH="${DATA_DIR}/${CONFIGURE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_CONFIGURE_PATH=`$WinPathScript "$DEFINE_CONFIGURE_PATH" 1`
@@ -2749,9 +2751,9 @@ AC_SUBST(FILTER_PATH)
 
 #
 # Path to ImageMagick documentation files
-DOCUMENTATION_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
-DOCUMENTATION_PATH="${DATA_DIR}/doc/${DOCUMENTATION_RELATIVE_PATH}"
-DEFINE_DOCUMENTATION_PATH="${DATA_DIR}/doc/${DOCUMENTATION_RELATIVE_PATH}/"
+DOCUMENTATION_RELATIVE_PATH=""
+DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}"
+DEFINE_DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_DOCUMENTATION_PATH=`$WinPathScript "$DEFINE_DOCUMENTATION_PATH" 1`

@@ -30,7 +30,7 @@ extern "C" {
 #define MagickLibVersion  0x668
 #define MagickLibVersionText  "6.6.8"
 #define MagickLibVersionNumber  4,0,1
-#define MagickLibAddendum  "-10"
+#define MagickLibAddendum  "-9"
 #define MagickLibInterface  4
 #define MagickLibMinInterface  4
 #define MagickReleaseDate  "2011-03-26"
@@ -52,7 +52,7 @@ extern "C" {
 #define MagickHDRIFeature  " "
 #endif
 #define MagickFeatures MagickOpenMPFeature MagickOpenCLFeature MagickHDRIFeature
-#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.6.8/index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.6.8//index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
 #define MagickQuantumRange  "255"
