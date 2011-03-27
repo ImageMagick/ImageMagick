@@ -54,6 +54,7 @@ extern MagickExport void
   InsertImageInList(Image **,Image *),
   PrependImageToList(Image **,Image *),
   ReplaceImageInList(Image **,Image *),
+  ReplaceImageInListReturnLast(Image **,Image *),
   ReverseImageList(Image **),
   SyncImageList(Image *);
 

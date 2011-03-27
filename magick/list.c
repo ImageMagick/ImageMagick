@@ -1103,8 +1103,9 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReplaceImageInList() replaces an image in the list. Old image is destroyed.
-%  The given image list pointer is set to point to the just inserted image.
+%  ReplaceImageInList() replaces an image in the list with the given image, or
+%  list of images.  Old image is destroyed.  The image list pointer is set to
+%  point to the first image of the inserted list of images.
 %
 %  The format of the ReplaceImageInList method is:
 %
@@ -1112,9 +1113,9 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %
 %  A description of each parameter follows:
 %
-%    o images: the image list.
+%    o images: the list and pointer to image to replace
 %
-%    o image: the image.
+%    o image: the image or image list replacing the original
 %
 */
 MagickExport void ReplaceImageInList(Image **images,Image *image)
@@ -1127,14 +1128,76 @@ MagickExport void ReplaceImageInList(Image **images,Image *image)
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickSignature);
-  for ( ; image->next != (Image *) NULL; image=image->next) ;
+
+  /* link next pointer */
+  image=GetLastImageInList(image);
   image->next=(*images)->next;
   if (image->next != (Image *) NULL)
     image->next->previous=image;
-  for ( ; image->previous != (Image *) NULL; image=image->previous) ;
+
+  /* link previous pointer - set image position to first replacement image */
+  image=GetFirstImageInList(image);
   image->previous=(*images)->previous;
   if (image->previous != (Image *) NULL)
     image->previous->next=image;
+
+  /* destroy replaced image */
+  (void) DestroyImage(*images);
+  (*images)=image;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e p l a c e I m a g e I n L i s t R e t u r n L a s t                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReplaceImageInListReturnLast() is exactly as ReplaceImageInList() except
+%  the image pointer is set to the last image in the list.
+%
+%  This allows you to simply use 'next' to go to the image that follows the
+%  just replaced image.
+%
+%  The format of the ReplaceImageInList method is:
+%
+%      ReplaceImageInListReturnLast(Image **images,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o images: the list and pointer to image to replace
+%
+%    o image: the image or image list replacing the original
+%
+*/
+MagickExport void ReplaceImageInListReturnLast(Image **images,Image *image)
+{
+  assert(images != (Image **) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((*images) == (Image *) NULL)
+    return;
+  assert((*images)->signature == MagickSignature);
+
+  /* link previous pointer */
+  image=GetFirstImageInList(image);
+  image->previous=(*images)->previous;
+  if (image->previous != (Image *) NULL)
+    image->previous->next=image;
+
+  /* link next pointer - set image position to last replacement image */
+  image=GetLastImageInList(image);
+  image->next=(*images)->next;
+  if (image->next != (Image *) NULL)
+    image->next->previous=image;
+
+  /* destroy replaced image */
   (void) DestroyImage(*images);
   (*images)=image;
 }

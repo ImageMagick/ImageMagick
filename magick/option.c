@@ -1021,6 +1021,7 @@ static const OptionInfo
     { "debug", MagickTrue, MagickFalse },
     { "deconstruct", MagickTrue, MagickFalse },
     { "delete", MagickTrue, MagickFalse },
+    { "duplicate", MagickTrue, MagickFalse },
     { "evaluate-sequence", MagickTrue, MagickFalse },
     { "fft", MagickTrue, MagickFalse },
     { "flatten", MagickTrue, MagickFalse },
