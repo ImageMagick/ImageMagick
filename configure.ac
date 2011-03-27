@@ -18,7 +18,7 @@ AC_PREREQ(2.64)
 
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [6])
-m4_define([magick_micro_version], [8])
+m4_define([magick_micro_version], [9])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version])
 
