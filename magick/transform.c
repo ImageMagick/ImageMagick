@@ -2038,6 +2038,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
   */
   flags=ParseRegionGeometry(transform_image,image_geometry,&geometry,
     &(*image)->exception);
+  (void) flags;
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return(MagickTrue);
