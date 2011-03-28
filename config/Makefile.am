@@ -18,6 +18,11 @@
 # (share/ImageMagick-version)
 configsharedir = $(SHARE_CONFIGURE_PATH)
 configshare_DATA = \
+	config/configure.xml \
+	config/delegates.xml \
+	config/english.xml \
+	config/francais.xml \
+	config/locale.xml \
 	config/coder.xml \
 	config/colors.xml \
 	config/log.xml \
@@ -27,14 +32,9 @@ configshare_DATA = \
 	config/thresholds.xml
 
 # Where architecture-dependent configuration files get installed
-# (lib/ImageMagick-version)
+# (share/ImageMagick-version)
 configlibdir =  $(CONFIGURE_PATH)
 configlib_DATA = \
-	config/configure.xml \
-	config/delegates.xml \
-	config/english.xml \
-	config/francais.xml \
-	config/locale.xml \
 	config/policy.xml \
 	config/type.xml \
 	config/type-dejavu.xml \
