@@ -3621,28 +3621,31 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
           break;
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 4L; i++)
-      {
-        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
-        alpha[i]=1.0;
-        if (image->matte != MagickFalse)
-          {
-            alpha[i]=QuantumScale*((MagickRealType) QuantumRange-p[i].opacity);
-            pixels[i].red*=alpha[i];
-            pixels[i].green*=alpha[i];
-            pixels[i].blue*=alpha[i];
-            if (image->colorspace == CMYKColorspace)
-              pixels[i].index*=alpha[i];
-          }
-        p++;
-      }
+      SetMagickPixelPacket(image,p+0,indexes+0,pixels+0);
+      SetMagickPixelPacket(image,p+1,indexes+1,pixels+1);
+      SetMagickPixelPacket(image,p+2,indexes+2,pixels+2);
+      SetMagickPixelPacket(image,p+3,indexes+3,pixels+3);
+      if (image->matte != MagickFalse)
+        for (i=0; i < 4L; i++)
+        {
+          alpha[i]=QuantumScale*GetAlphaPixelComponent(p+i);
+          pixels[i].red*=alpha[i];
+          pixels[i].green*=alpha[i];
+          pixels[i].blue*=alpha[i];
+          if (image->colorspace == CMYKColorspace)
+            pixels[i].index*=alpha[i];
+        }
+      gamma=1.0;
       delta.x=x-floor(x);
       delta.y=y-floor(y);
       epsilon.x=1.0-delta.x;
       epsilon.y=1.0-delta.y;
-      gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
-        (epsilon.x*alpha[2]+delta.x*alpha[3])));
-      gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+      if (image->matte != MagickFalse)
+        {
+          gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
+            (epsilon.x*alpha[2]+delta.x*alpha[3])));
+          gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+        }
       pixel->red=gamma*(epsilon.y*(epsilon.x*pixels[0].red+delta.x*
         pixels[1].red)+delta.y*(epsilon.x*pixels[2].red+delta.x*pixels[3].red));
       pixel->green=gamma*(epsilon.y*(epsilon.x*pixels[0].green+delta.x*
@@ -3717,8 +3720,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         pixels[4];
 
       MagickRealType
-        alpha[4],
-        gamma;
+        alpha[4] = { 1.0, 1.0, 1.0, 1.0 },
+        gamma = 1.0;
 
       PointInfo
         delta,
@@ -3732,21 +3735,20 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
           break;
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 4L; i++)
-      {
-        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
-        alpha[i]=1.0;
-        if (image->matte != MagickFalse)
-          {
-            alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
-            pixels[i].red*=alpha[i];
-            pixels[i].green*=alpha[i];
-            pixels[i].blue*=alpha[i];
-            if (image->colorspace == CMYKColorspace)
-              pixels[i].index*=alpha[i];
-          }
-        p++;
-      }
+      SetMagickPixelPacket(image,p+0,indexes+0,pixels+0);
+      SetMagickPixelPacket(image,p+1,indexes+1,pixels+1);
+      SetMagickPixelPacket(image,p+2,indexes+2,pixels+2);
+      SetMagickPixelPacket(image,p+3,indexes+3,pixels+3);
+      if (image->matte != MagickFalse)
+        for (i=0; i < 4L; i++)
+        {
+          alpha[i]=QuantumScale*GetAlphaPixelComponent(p+i);
+          pixels[i].red*=alpha[i];
+          pixels[i].green*=alpha[i];
+          pixels[i].blue*=alpha[i];
+          if (image->colorspace == CMYKColorspace)
+            pixels[i].index*=alpha[i];
+        }
       delta.x=x-floor(x);
       delta.y=y-floor(y);
       luminance.x=MagickPixelLuminance(pixels+0)-MagickPixelLuminance(pixels+3);
