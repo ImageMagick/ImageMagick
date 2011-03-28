@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011080100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -197,7 +197,7 @@
 <div class="main">
 
 <h1>Module transform Methods</h1>
-<p class="navigation-index">[<a href="#ChopImage">ChopImage</a> &bull; <a href="#CropImage">CropImage</a> &bull; <a href="#ExcerptImage">ExcerptImage</a> &bull; <a href="#ExtentImage">ExtentImage</a> &bull; <a href="#FlipImage">FlipImage</a> &bull; <a href="#FlopImage">FlopImage</a> &bull; <a href="#RollImage">RollImage</a> &bull; <a href="#ShaveImage">ShaveImage</a> &bull; <a href="#SpliceImage">SpliceImage</a> &bull; <a href="#TransformImage">TransformImage</a> &bull; <a href="#TransformImages">TransformImages</a> &bull; <a href="#TransposeImage">TransposeImage</a> &bull; <a href="#TransverseImage">TransverseImage</a> &bull; <a href="#TrimImage">TrimImage</a>]</p>
+<p class="navigation-index">[<a href="#ChopImage">ChopImage</a> &bull; <a href="#CropImage">CropImage</a> &bull; <a href="#CropImageToTiles">CropImageToTiles</a> &bull; <a href="#ExcerptImage">ExcerptImage</a> &bull; <a href="#ExtentImage">ExtentImage</a> &bull; <a href="#FlipImage">FlipImage</a> &bull; <a href="#FlopImage">FlopImage</a> &bull; <a href="#RollImage">RollImage</a> &bull; <a href="#ShaveImage">ShaveImage</a> &bull; <a href="#SpliceImage">SpliceImage</a> &bull; <a href="#TransformImage">TransformImage</a> &bull; <a href="#to CropImageToTiles">to CropImageToTiles</a> &bull; <a href="#TransformImages">TransformImages</a> &bull; <a href="#TransposeImage">TransposeImage</a> &bull; <a href="#TransverseImage">TransverseImage</a> &bull; <a href="#TrimImage">TrimImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ChopImage">ChopImage</a></h2>
 <div class="doc-section">
@@ -226,7 +226,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="CropImage">CropImage</a></h2>
 <div class="doc-section">
 
-<p>CropImage() extracts a region of the image starting at the offset defined by geometry.</p>
+<p>CropImage() extracts a region of the image starting at the offset defined by geometry.  Region must be fully defined, and no special handling of geometry flags is performed.</p>
 
 <p>The format of the CropImage method is:</p>
 
@@ -242,6 +242,25 @@
 
 <h5>geometry</h5>
 <p>Define the region of the image to crop with members x, y, width, and height.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="CropImageToTiles">CropImageToTiles</a></h2>
+<div class="doc-section">
+
+<p>CropImageToTiles() will crop a single image, into a posible list of tiles. This may include a single sub-region of the image.  This basically applies all the normal geometry flags for Crop.</p>
+
+<p>Image *CropImageToTiles(const Image *image,const RectangleInfo *crop_geometry, ExceptionInfo *exception)</p>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image The transformed image is returned as this parameter.</p>
+
+<h5>crop_geometry</h5>
+<p>A crop geometry string.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -416,7 +435,9 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImage">TransformImage</a></h2>
 <div class="doc-section">
 
-<p>TransformImage() is a convenience method that behaves like ResizeImage() or CropImage() but accepts scaling and/or cropping information as a region geometry specification.  If the operation fails, the original image handle is returned.</p>
+<p>TransformImage() is a convenience method that behaves like ResizeImage() or CropImage() but accepts scaling and/or cropping information as a region geometry specification.  If the operation fails, the original image handle is left as is.</p>
+
+<p>This should only be used for single images.</p>
 
 <p>The format of the TransformImage method is:</p>
 
@@ -435,6 +456,12 @@
 
 <h5>image_geometry</h5>
 <p>An image geometry string.  This geometry defines the final size of the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="to_CropImageToTiles">to CropImageToTiles</a></h2>
+<div class="doc-section">
+
+<p>to CropImageToTiles() or ResizeImage(), as appropriate.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImages">TransformImages</a></h2>

@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -197,7 +197,9 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-27  6.6.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-03-28 6.6.9-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Separated complex cropping function from TransformImage() as a new    function CropImageToTiles().  This new function returns either the    new cropped image, or a list of tiles, according to geometry, without    replacing the source image. The Source image may be part of a larger list    of images, without the function 'loosing' the other images of the list.</dd>
+<dt>2011-03-27  6.6.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-10.</dd>
 <dt>2011-03-27 6.6.8-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Modified image handling in MogrigyImages() and MogrifyImage()    which improves overally handling, and allows correct %p, %n and the    %[fx:..] 't' and 'n' escape usage to work correctly.</dd>
