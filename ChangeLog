@@ -10,14 +10,14 @@
     function CropImageToTiles().  This new function returns either the
     new cropped image, or a list of tiles, according to geometry, without
     replacing the source image. The Source image may be part of a larger list
-    of images, without the function 'loosing' the other images of the list.
+    of images, without the function 'losing' the other images of the list.
 
 2011-03-27  6.6.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-10.
 
 2011-03-27 6.6.8-10 Anthony Thyssen <A.Thyssen@griffith...>
-  * Modified image handling in MogrigyImages() and MogrifyImage()
-    which improves overally handling, and allows correct %p, %n and the
+  * Modified image handling in MogrifyImages() and MogrifyImage()
+    which improves overall handling, and allows correct %p, %n and the
     %[fx:..] 't' and 'n' escape usage to work correctly.
   * Added -duplicate as a multi-image sequence operator
 
