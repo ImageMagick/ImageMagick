@@ -3425,6 +3425,7 @@ static inline void AlphaBlendMagickPixelPacket(const Image *image,
       pixel->green=(MagickRealType) color->green;
       pixel->blue=(MagickRealType) color->blue;
       pixel->opacity=(MagickRealType) color->opacity;
+      pixel->index=0.0;
       if (((image->colorspace == CMYKColorspace) ||
            (image->storage_class == PseudoClass)) &&
           (index != (const IndexPacket *) NULL))
@@ -3436,6 +3437,7 @@ static inline void AlphaBlendMagickPixelPacket(const Image *image,
   pixel->green=(MagickRealType) (*alpha*color->green);
   pixel->blue=(MagickRealType) (*alpha*color->blue);
   pixel->opacity=(MagickRealType) (*alpha*color->opacity);
+  pixel->index=0.0;
   if (((image->colorspace == CMYKColorspace) ||
        (image->storage_class == PseudoClass)) &&
       (index != (const IndexPacket *) NULL))
