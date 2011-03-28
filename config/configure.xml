@@ -10,12 +10,12 @@
   <configure name="VERSION" value="6.6.9"/>
   <configure name="LIB_VERSION" value="0x669"/>
   <configure name="LIB_VERSION_NUMBER" value="6,6,9,0"/>
-  <configure name="SVN_REVISION" value="4049" />
-  <configure name="RELEASE_DATE" value="2011-03-27"/>
+  <configure name="SVN_REVISION" value="4053" />
+  <configure name="RELEASE_DATE" value="2011-03-28"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
-  <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick-6.6.9/"/>
+  <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick/"/>
   <configure name="SHARE_CONFIGURE_PATH" value="/usr/local/share/ImageMagick-6.6.9"/>
   <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-6.6.9/"/>
   <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
