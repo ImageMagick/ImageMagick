@@ -1225,27 +1225,22 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             /*
               Crop a image to a smaller size
-              NOTE that 'tile cropping' (no geometry offsets) is not
-              performed here but is applied in MogrifyImageList().
-              In any case 'equal area sub-division' via the '@' flag can
-              and does generate multiple images here (if offset also given).
-
-              We could easily remove "-crop" handling in MogrifyImageList()
-              simply by removing the next 'if' statement below.
-
-              The special handling (Clone of current image) is needed as
-              TransformImage() will destory and replace the list the image is
-              located in.  This should be fixed.
             */
             (void) SyncImageSettings(mogrify_info,*image);
+#if 0
             flags=ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
             if (((geometry.width != 0) || (geometry.height != 0)) &&
                 ((flags & XValue) == 0) && ((flags & YValue) == 0))
               break;
+#endif
+#if 0
             new_image=CloneImage(*image,0,0,MagickTrue,&(*image)->exception);
             new_image->next = new_image->previous = (Image *)NULL;
             (void) TransformImage(&new_image,argv[i+1],(char *) NULL);
             InheritException(exception,&new_image->exception);
+#else
+            new_image=CropImageToTiles(*image,argv[i+1],exception);
+#endif
             break;
           }
         if (LocaleCompare("cycle",option+1) == 0)
@@ -7479,6 +7474,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             *images=image;
             break;
           }
+#if 0
+This has been merged completely into MogrifyImage()
         if (LocaleCompare("crop",option+1) == 0)
           {
             MagickStatusType
@@ -7488,12 +7485,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               geometry;
 
             /*
-              Crop Image (when offsets given - tile crop)
-
-              Note this does not include 'equal area division' which is
-              flaged by a '@' symbol.
-
-              This could be merged completely into MogrifyImage()
+              Crop Image.
             */
             (void) SyncImagesSettings(mogrify_info,*images);
             flags=ParseGravityGeometry(*images,argv[i+1],&geometry,exception);
@@ -7504,6 +7496,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             InheritException(exception,&(*images)->exception);
             break;
           }
+#endif
         break;
       }
       case 'd':

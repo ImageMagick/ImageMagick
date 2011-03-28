@@ -1,3 +1,10 @@
+2011-03-28 6.6.9-0 Anthony Thyssen <A.Thyssen@griffith...>
+  * Separated complex cropping function from TransformImage() as a new
+    function CropImageToTiles().  This new function returns either the
+    new cropped image, or a list of tiles, according to geometry, without
+    replacing the source image. The Source image may be part of a larger list
+    of images, without the function 'loosing' the other images of the list.
+
 2011-03-27  6.6.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.8-10.
 
