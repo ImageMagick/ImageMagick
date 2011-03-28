@@ -24,8 +24,6 @@ configshare_DATA = \
 	config/francais.xml \
 	config/locale.xml \
 	config/coder.xml \
-	config/colors.xml \
-	config/log.xml \
 	config/magic.xml \
 	config/mime.xml \
 	config/sRGB.icm \
@@ -35,6 +33,8 @@ configshare_DATA = \
 # (share/ImageMagick-version)
 configlibdir =  $(CONFIGURE_PATH)
 configlib_DATA = \
+	config/colors.xml \
+	config/log.xml \
 	config/policy.xml \
 	config/type.xml \
 	config/type-dejavu.xml \
