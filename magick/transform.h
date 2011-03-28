@@ -26,6 +26,7 @@ extern MagickExport Image
   *ChopImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *ConsolidateCMYKImages(const Image *,ExceptionInfo *),
   *CropImage(const Image *,const RectangleInfo *,ExceptionInfo *),
+  *CropImageToTiles(const Image *,const char *, ExceptionInfo *),
   *ExcerptImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *ExtentImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *FlipImage(const Image *,ExceptionInfo *),
