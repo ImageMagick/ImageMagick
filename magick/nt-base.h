@@ -92,9 +92,13 @@ extern "C" {
 #if !defined(fileno)
 #  define fileno  _fileno
 #endif
+#if !defined(fseek) && !defined(__MINGW32__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && (__MSVCRT_VERSION__ < 0x800)
 #  define fseek  _fseeki64
+#else
+#  define fseek  _fseek
+#endif
 #endif
 #if !defined(fstat) && !defined(__BORLANDC__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
@@ -107,9 +111,13 @@ extern "C" {
 #if !defined(fsync)
 #  define fsync  _commit
 #endif
+#if !defined(ftell) && !defined(__MINGW32__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && (__MSVCRT_VERSION__ < 0x800)
 #  define ftell  _ftelli64
+#else
+#  define ftell  _ftell
+#endif
 #endif
 #if !defined(ftruncate)
 #  define ftruncate(file,length)  NTTruncateFile(file,length)
