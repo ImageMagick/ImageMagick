@@ -1,3 +1,7 @@
+2011-03-29 6.6.9-0 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fix AdaptiveResizeImage() to use 'Mesh' Interpolation, and fix its
+    coordinate handling, as originally defined.
+
 2011-03-29  6.6.9-1 Cristy  <quetzlzacatenango@image...>
   * Support -statistic standard-deviation option.
 
