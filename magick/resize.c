@@ -1198,13 +1198,13 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     if (q == (PixelPacket *) NULL)
       continue;
     resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
-    offset.y=((MagickRealType) y*image->rows/resize_image->rows);
+    offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
     GetMagickPixelPacket(image,&pixel);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      offset.x=((MagickRealType) x*image->columns/resize_image->columns);
+      offset.x=((MagickRealType) (x+0.5)*image->columns/resize_image->columns);
       (void) InterpolateMagickPixelPacket(image,image_view,
-        UndefinedInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
+        MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
       SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
       q++;
     }
