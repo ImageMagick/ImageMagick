@@ -1,3 +1,6 @@
+2011-03-29  6.6.9-2 Cristy  <quetzlzacatenango@image...>
+  * Expand PCL compressed pixel buffer to prevent delta compressed overrun.
+
 2011-03-29  6.6.9-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-1.
 
