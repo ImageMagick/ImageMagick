@@ -7429,7 +7429,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               if (i < 300 || i >= image->colors - 10)
+               if (i < 300 || i >= (ssize_t) image->colors - 10)
                  {
                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                        "       %d     (%d,%d,%d,%d)",
@@ -8545,7 +8545,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
 
-        if (image_colors == 0 || image_colors-1 > MaxColormapSize)
+        if (image_colors == 0 || (ssize_t) image_colors-1 > MaxColormapSize)
           image_colors=(int) (one << image_depth);
 
         if (image_depth > 8)
