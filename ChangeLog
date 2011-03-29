@@ -1,9 +1,13 @@
-2011-03-29 6.6.9-0 Anthony Thyssen <A.Thyssen@griffith...>
+2011-03-29  6.6.9-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.9-1.
+
+2011-03-29 6.6.9-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Fix AdaptiveResizeImage() to use 'Mesh' Interpolation, and fix its
     coordinate handling, as originally defined.
 
 2011-03-29  6.6.9-1 Cristy  <quetzlzacatenango@image...>
   * Support -statistic standard-deviation option.
+  * Patch for coders/dcm.c so it compiled with HDRI enabled.
 
 2011-03-28  6.6.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-0.

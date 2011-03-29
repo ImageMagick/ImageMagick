@@ -4033,9 +4033,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       pixel.blue=scale[pixel.blue];
                     }
                 }
-              q->red|=((Quantum) pixel.red) << 8;
-              q->green|=((Quantum) pixel.green) << 8;
-              q->blue|=((Quantum) pixel.blue) << 8;
+              q->red=(Quantum) (((size_t) q->red) |
+                (((size_t) pixel.red) << 8));
+              q->green=(Quantum) (((size_t) q->green) |
+                (((size_t) pixel.green) << 8));
+              q->blue=(Quantum) (((size_t) q->green) |
+                (((size_t) pixel.blue) << 8));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
