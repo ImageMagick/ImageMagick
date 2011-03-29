@@ -1456,6 +1456,7 @@ static const OptionInfo
     { "Minimum", (ssize_t) MinimumStatistic, MagickFalse },
     { "Mode", (ssize_t) ModeStatistic, MagickFalse },
     { "Nonpeak", (ssize_t) NonpeakStatistic, MagickFalse },
+    { "StandardDeviation", (ssize_t) StandardDeviationStatistic, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedMethod, MagickFalse }
   },
   StorageOptions[] =

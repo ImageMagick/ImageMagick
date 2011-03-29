@@ -4785,7 +4785,7 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
 
   size_t
     color,
-    mean;
+    sum;
 
   ssize_t
     count;
@@ -4801,14 +4801,14 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
     list=pixel_list->lists+channel;
     color=65536L;
     count=0;
-    mean=0;
+    sum=0;
     do
     {
       color=list->nodes[color].next[0];
-      mean+=list->nodes[color].count*color;
+      sum+=list->nodes[color].count*color;
       count+=list->nodes[color].count;
     } while (count < (ssize_t) pixel_list->length);
-    channels[channel]=(unsigned short) (mean/pixel_list->length);
+    channels[channel]=(unsigned short) (sum/pixel_list->length);
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
@@ -5008,6 +5008,57 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
       if ((previous != 65536UL) && (next == 65536UL))
         color=previous;
     channels[channel]=(unsigned short) color;
+  }
+  GetMagickPixelPacket((const Image *) NULL,&pixel);
+  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
+  return(pixel);
+}
+
+static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
+{
+  MagickPixelPacket
+    pixel;
+
+  register SkipList
+    *list;
+
+  register ssize_t
+    channel;
+
+  size_t
+    color,
+    sum,
+    sum_squared;
+
+  ssize_t
+    count;
+
+  unsigned short
+    channels[ListChannels];
+
+  /*
+    Find the mean value for each of the color.
+  */
+  for (channel=0; channel < 5; channel++)
+  {
+    list=pixel_list->lists+channel;
+    color=65536L;
+    count=0;
+    sum=0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      sum+=list->nodes[color].count*color;
+      sum_squared+=(list->nodes[color].count*color)*
+        (list->nodes[color].count*color);
+      count+=list->nodes[color].count;
+    } while (count < (ssize_t) pixel_list->length);
+    channels[channel]=(unsigned short) sqrt((sum_squared/pixel_list->length)-
+      ((sum/pixel_list->length)*(sum/pixel_list->length)));
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
@@ -5252,6 +5303,11 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         case NonpeakStatistic:
         {
           pixel=GetNonpeakPixelList(pixel_list[id]);
+          break;
+        }
+        case StandardDeviationStatistic:
+        {
+          pixel=GetStandardDeviationPixelList(pixel_list[id]);
           break;
         }
       }

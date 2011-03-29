@@ -66,7 +66,8 @@ typedef enum
   MedianStatistic,
   MinimumStatistic,
   ModeStatistic,
-  NonpeakStatistic
+  NonpeakStatistic,
+  StandardDeviationStatistic
 } StatisticType;
 
 extern MagickExport Image
