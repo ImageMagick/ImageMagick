@@ -1236,13 +1236,13 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_CONFIGURE_PATH
-#define MAGICKCORE_SHARE_CONFIGURE_PATH "/usr/local/share/ImageMagick-6.6.9/"
+#define MAGICKCORE_SHARE_CONFIGURE_PATH "/usr/local/share/ImageMagick-6.6.9/config/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
    live. */
 #ifndef MAGICKCORE_SHARE_CONFIGURE_RELATIVE_PATH
-#define MAGICKCORE_SHARE_CONFIGURE_RELATIVE_PATH "ImageMagick-6.6.9"
+#define MAGICKCORE_SHARE_CONFIGURE_RELATIVE_PATH "ImageMagick-6.6.9/config"
 #endif
 
 /* Directory where architecture-independent files live. */
