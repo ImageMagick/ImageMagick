@@ -140,6 +140,8 @@ extern "C" {
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && (__MSVCRT_VERSION__ < 0x800)
 #  define lseek  _lseeki64
+#else
+#  define lseek  _lseek
 #endif
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 #if !defined(lt_dlclose)
@@ -224,6 +226,8 @@ extern "C" {
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(Windows95) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) &&  (__MSVCRT_VERSION__ < 0x800)
 #  define tell  _telli64
+#else
+#  define tell  _tell
 #endif
 #if !defined(telldir)
 #  define telldir(directory)  NTTellDirectory(directory)
