@@ -3184,9 +3184,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   quantize_info=DestroyQuantizeInfo(quantize_info);
   draw_info=DestroyDrawInfo(draw_info);
   mogrify_info=DestroyImageInfo(mogrify_info);
-  status=(*image)->exception.severity == UndefinedException ? MagickTrue :
-    MagickFalse;
-  return(status);
+  status=(*image)->exception.severity == UndefinedException ? 1 : 0;
+  return(status == 0 ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -7538,26 +7537,27 @@ This has been merged completely into MogrifyImage()
           }
         if (LocaleCompare("duplicate",option+1) == 0)
           {
-            Image *
-              duplicate_images;
+            Image
+              *duplicate_images;
 
             if (*option == '+')
-              duplicate_images = DuplicateImages(*images,1,"-1",
-                     exception);
-            else {
+              duplicate_images=DuplicateImages(*images,1,"-1",exception);
+            else
+              {
+                const char
+                  *p;
+
                 size_t
                   number_duplicates;
 
-                char
-                  *p;
-
                 number_duplicates=(size_t) StringToLong(argv[i+1]);
-                if ( (p=strchr(argv[i+1],',')) != (char *)NULL )
-                  duplicate_images = DuplicateImages(*images,
-                        number_duplicates,p,exception);
+                p=strchr(argv[i+1],',');
+                if (p == (const char *) NULL)
+                  duplicate_images=DuplicateImages(*images,number_duplicates,
+                    "-1",exception);
                 else
-                  duplicate_images = DuplicateImages(*images,
-                        number_duplicates,"-1",exception);
+                  duplicate_images=DuplicateImages(*images,number_duplicates,p,
+                    exception);
               }
             AppendImageToList(images, duplicate_images);
             (void) SyncImagesSettings(mogrify_info,*images);
