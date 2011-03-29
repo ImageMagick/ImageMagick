@@ -5049,6 +5049,7 @@ static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
     color=65536L;
     count=0;
     sum=0;
+    sum_squared=0;
     do
     {
       color=list->nodes[color].next[0];
