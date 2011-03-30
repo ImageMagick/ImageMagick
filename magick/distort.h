@@ -49,6 +49,7 @@ typedef enum
   BarrelDistortion,
   BarrelInverseDistortion,
   ShepardsDistortion,
+  ResizeDistortion,
   SentinelDistortion
 } DistortImageMethod;
 
@@ -68,6 +69,7 @@ typedef enum
 extern MagickExport Image
   *DistortImage(const Image *,const DistortImageMethod,const size_t,
     const double *,MagickBooleanType,ExceptionInfo *exception),
+  *DistortResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *SparseColorImage(const Image *,const ChannelType,const SparseColorMethod,
     const size_t,const double *,ExceptionInfo *);
 

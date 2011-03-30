@@ -1,3 +1,7 @@
+2011-03-30 6.6.9-2 Anthony Thyssen <A.Thyssen@griffith...>
+  * Add a "Resize" distortion method (distort equivalent of -resize).
+  * Special CLI handling so -distort Resize takes a "geometry" argument.
+
 2011-03-29  6.6.9-2 Cristy  <quetzlzacatenango@image...>
   * Expand PCL compressed pixel buffer to prevent delta compressed overrun.
 
