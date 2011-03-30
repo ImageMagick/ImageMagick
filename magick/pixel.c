@@ -3530,6 +3530,13 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
   MagickBooleanType
     status;
 
+  MagickPixelPacket
+    pixels[16];
+
+  MagickRealType
+    alpha[16],
+    gamma;
+
   register const IndexPacket
     *indexes;
 
@@ -3539,23 +3546,22 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
   register ssize_t
     i;
 
+  ssize_t
+    x_offset,
+    y_offset;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
+  x_offset=(ssize_t) floor(x);
+  y_offset=(ssize_t) floor(y);
   switch (method == UndefinedInterpolatePixel ? image->interpolate : method)
   {
     case AverageInterpolatePixel:
     {
-      MagickPixelPacket
-        pixels[16];
-
-      MagickRealType
-        alpha[16],
-        gamma;
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,
-        (ssize_t) floor(y)-1,4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
+        exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3598,17 +3604,13 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     case BicubicInterpolatePixel:
     {
       MagickPixelPacket
-        pixels[16],
         u[4];
-
-      MagickRealType
-        alpha[16];
 
       PointInfo
         delta;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
+        exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3631,8 +3633,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       AlphaBlendMagickPixelPacket(image,p+13,indexes+13,pixels+13,alpha+13);
       AlphaBlendMagickPixelPacket(image,p+14,indexes+14,pixels+14,alpha+14);
       AlphaBlendMagickPixelPacket(image,p+15,indexes+15,pixels+15,alpha+15);
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
       for (i=0; i < 4L; i++)
         BicubicInterpolate(pixels+4*i,delta.x,u+i);
       BicubicInterpolate(u,delta.y,pixel);
@@ -3641,19 +3643,11 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     case BilinearInterpolatePixel:
     default:
     {
-      MagickPixelPacket
-        pixels[4];
-
-      MagickRealType
-        alpha[4],
-        gamma;
-
       PointInfo
         delta,
         epsilon;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
-        floor(y),2,2,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3664,8 +3658,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       AlphaBlendMagickPixelPacket(image,p+1,indexes+1,pixels+1,alpha+1);
       AlphaBlendMagickPixelPacket(image,p+2,indexes+2,pixels+2,alpha+2);
       AlphaBlendMagickPixelPacket(image,p+3,indexes+3,pixels+3,alpha+3);
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
       epsilon.x=1.0-delta.x;
       epsilon.y=1.0-delta.y;
       gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
@@ -3702,8 +3696,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
 
       geometry.width=4L;
       geometry.height=4L;
-      geometry.x=(ssize_t) floor(x)-1L;
-      geometry.y=(ssize_t) floor(y)-1L;
+      geometry.x=x_offset-1;
+      geometry.y=y_offset-1;
       excerpt_image=ExcerptImage(image,&geometry,exception);
       if (excerpt_image == (Image *) NULL)
         {
@@ -3728,8 +3722,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     }
     case IntegerInterpolatePixel:
     {
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
-        floor(y),1,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3741,19 +3734,12 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     }
     case MeshInterpolatePixel:
     {
-      MagickPixelPacket
-        pixels[4];
-
-      MagickRealType
-        alpha[4],
-        gamma;
-
       PointInfo
         delta,
         luminance;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
-        floor(y),2,2,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,
+        exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3764,8 +3750,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       AlphaBlendMagickPixelPacket(image,p+1,indexes+1,pixels+1,alpha+1);
       AlphaBlendMagickPixelPacket(image,p+2,indexes+2,pixels+2,alpha+2);
       AlphaBlendMagickPixelPacket(image,p+3,indexes+3,pixels+3,alpha+3);
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
       luminance.x=MagickPixelLuminance(pixels+0)-MagickPixelLuminance(pixels+3);
       luminance.y=MagickPixelLuminance(pixels+1)-MagickPixelLuminance(pixels+2);
       if (fabs(luminance.x) < fabs(luminance.y))
@@ -3877,14 +3863,9 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     }
     case SplineInterpolatePixel:
     {
-      MagickPixelPacket
-        pixels[16];
-
       MagickRealType
-        alpha[16],
         dx,
-        dy,
-        gamma;
+        dy;
 
       PointInfo
         delta;
@@ -3893,8 +3874,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         j,
         n;
 
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
+        exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3922,8 +3903,8 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->blue=0.0;
       pixel->opacity=0.0;
       pixel->index=0.0;
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
       n=0;
       for (i=(-1); i < 3L; i++)
       {
