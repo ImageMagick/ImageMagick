@@ -2289,6 +2289,34 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
        }
     }
+
+#if 1
+
+  /* Set some properties for reporting by "identify" */
+      char
+        msg[MaxTextExtent];
+
+     /* encode ping_width, ping_height, ping_bit_depth, ping_color_type,
+        ping_interlace_method in value */
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_width);
+     (void) SetImageProperty(image,"PNG:IHDR.width           ",msg);
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_height);
+     (void) SetImageProperty(image,"PNG:IHDR.height          ",msg);
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
+     (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg);
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_color_type);
+     (void) SetImageProperty(image,"PNG:IHDR.color_type      ",msg);
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",
+        (int) ping_interlace_method);
+     (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg);
+
+#endif
+
   /*
     Read image scanlines.
   */
@@ -9657,6 +9685,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
       value=GetImageProperty(image,property);
       if (ping_exclude_pHYs != MagickFalse       ||
+          LocaleNCompare(property,"png:",4) != 0 ||
           LocaleCompare(property,"density") != 0 ||
           LocaleCompare(property,"units") != 0)
         {
