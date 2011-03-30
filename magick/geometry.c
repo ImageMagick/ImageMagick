@@ -82,8 +82,8 @@
 %      specification.
 %
 */
-MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_t *y,
-  size_t *width,size_t *height)
+MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
+  ssize_t *y,size_t *width,size_t *height)
 {
   char
     *p,
@@ -266,9 +266,9 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_
 %
 %  A description of each parameter follows.
 %
-%   o  page_geometry:  Specifies a pointer to an array of characters.
-%      The string is either a Postscript page name (e.g. A4) or a postscript
-%      page geometry (e.g. 612x792+36+36).
+%   o  page_geometry:  Specifies a pointer to an array of characters.  The
+%      string is either a Postscript page name (e.g. A4) or a postscript page
+%      geometry (e.g. 612x792+36+36).
 %
 */
 MagickExport char *GetPageGeometry(const char *page_geometry)
@@ -394,8 +394,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %                                                                             %
 %   G r a v i t y A d j u s t G e o m e t r y                                 %
 %                                                                             %
-%                                                                             %
-%                                                                             %
+%                                                                             % %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GravityAdjustGeometry() adjusts the offset of a region with regard to the
@@ -406,9 +405,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %
 %  The format of the GravityAdjustGeometry method is:
 %
-%      void GravityAdjustGeometry(const size_t width,
-%        const size_t height,const GravityType gravity,
-%        RectangleInfo *region);
+%      void GravityAdjustGeometry(const size_t width, const size_t height,
+%        const GravityType gravity,RectangleInfo *region);
 %
 %  A description of each parameter follows:
 %
@@ -617,8 +615,8 @@ MagickExport MagickStatusType ParseAbsoluteGeometry(const char *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ParseAffineGeometry() returns an affine matrix as defined by a string
-%  of 4 to 6 comma/space separated floating point values.
+%  ParseAffineGeometry() returns an affine matrix as defined by a string of 4
+%  to 6 comma/space separated floating point values.
 %
 %  The affine matrix determinant is checked for validity of the values.
 %
@@ -982,8 +980,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
 %
 %    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
-%    o region_info: the region as defined by the geometry string with
-%      respect to the image dimensions and its gravity.
+%    o region_info: the region as defined by the geometry string with respect
+%      to the image dimensions and its gravity.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1033,10 +1031,8 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       scale.y=geometry_info.sigma;
       if ((status & SigmaValue) == 0)
         scale.y=scale.x;
-      region_info->width=(size_t) floor((scale.x*image->columns/100.0)+
-        0.5);
-      region_info->height=(size_t) floor((scale.y*image->rows/100.0)+
-        0.5);
+      region_info->width=(size_t) floor((scale.x*image->columns/100.0)+0.5);
+      region_info->height=(size_t) floor((scale.y*image->rows/100.0)+0.5);
     }
   /*
     Adjust offset according to gravity setting.
@@ -1073,17 +1069,17 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %  image within the specified geometry width and height.
 %
 %  Flags are interpreted...
-%       %   geometry size is given percentage of original image size
-%       !   do not try to preserve aspect ratio
-%       <   only enlarge images smaller that geometry
-%       >   only shrink images larger than geometry
-%       @   Fit image to contain at most this many pixels
-%       ^   Contain the given geometry given, (minimal dimensions given)
+%     %   geometry size is given percentage of original image size
+%     !   do not try to preserve aspect ratio
+%     <   only enlarge images smaller that geometry
+%     >   only shrink images larger than geometry
+%     @   Fit image to contain at most this many pixels
+%     ^   Contain the given geometry given, (minimal dimensions given)
 %
 %  The format of the ParseMetaGeometry method is:
 %
 %      MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
-%             ssize_t *y, size_t *width,size_t *height)
+%        ssize_t *y, size_t *width,size_t *height)
 %
 %  A description of each parameter follows:
 %
@@ -1091,8 +1087,8 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %
 %    o x,y:  The x and y offset, set according to the geometry specification.
 %
-%    o width,height:  The width and height of original image, modified
-%              by the given geometry specification.
+%    o width,height:  The width and height of original image, modified by
+%      the given geometry specification.
 %
 */
 
@@ -1178,14 +1174,14 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
             scale_factor=(MagickRealType) *width/(MagickRealType) former_width;
             if ((flags & MinimumValue) == 0)
               {
-                if (scale_factor > ((MagickRealType) *height/
-                    (MagickRealType) former_height))
+                if (scale_factor > ((MagickRealType) *height/(MagickRealType)
+                    former_height))
                   scale_factor=(MagickRealType) *height/(MagickRealType)
                     former_height;
               }
             else
-              if (scale_factor < ((MagickRealType) *height/
-                  (MagickRealType) former_height))
+              if (scale_factor < ((MagickRealType) *height/(MagickRealType)
+                  former_height))
                 scale_factor=(MagickRealType) *height/(MagickRealType)
                   former_height;
           }
@@ -1195,8 +1191,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
               scale_factor=(MagickRealType) *width/(MagickRealType)
                 former_width;
               if (((flags & MinimumValue) != 0) &&
-                  (scale_factor < ((MagickRealType) *width/
-                    (MagickRealType) former_height)))
+                  (scale_factor < ((MagickRealType) *width/(MagickRealType)
+                   former_height)))
                 scale_factor=(MagickRealType) *width/(MagickRealType)
                   former_height;
             }
@@ -1205,15 +1201,13 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
               scale_factor=(MagickRealType) *height/(MagickRealType)
                 former_height;
               if (((flags & MinimumValue) != 0) &&
-                  (scale_factor < ((MagickRealType) *height/
-                    (MagickRealType) former_width)))
+                  (scale_factor < ((MagickRealType) *height/(MagickRealType)
+                   former_width)))
                 scale_factor=(MagickRealType) *height/(MagickRealType)
                   former_width;
             }
-      *width=MagickMax((size_t) floor(scale_factor*former_width+0.5),
-        1UL);
-      *height=MagickMax((size_t) floor(scale_factor*former_height+0.5),
-        1UL);
+      *width=MagickMax((size_t) floor(scale_factor*former_width+0.5),1UL);
+      *height=MagickMax((size_t) floor(scale_factor*former_height+0.5),1UL);
     }
   if ((flags & GreaterValue) != 0)
     {
@@ -1249,8 +1243,7 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
           *width=(size_t) (former_width/(distance/sqrt((double) area)));
-          *height=(size_t) (former_height/(distance/
-            sqrt((double) area)));
+          *height=(size_t) (former_height/(distance/sqrt((double) area)));
         }
       former_width=(*width);
       former_height=(*height);
