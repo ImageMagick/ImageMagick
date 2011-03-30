@@ -822,14 +822,14 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       }
       default:
       {
-        compress_pixels=(unsigned char *) AcquireQuantumMemory(length+256,
+        compress_pixels=(unsigned char *) AcquireQuantumMemory(3*length+256,
           sizeof(*compress_pixels));
         if (compress_pixels == (unsigned char *) NULL)
           {
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        (void) ResetMagickMemory(compress_pixels,0,(length+256)*
+        (void) ResetMagickMemory(compress_pixels,0,(3*length+256)*
           sizeof(*compress_pixels));
         previous_pixels=(unsigned char *) AcquireQuantumMemory(length+1,
           sizeof(*previous_pixels));
