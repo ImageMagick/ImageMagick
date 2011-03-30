@@ -887,6 +887,7 @@ static const OptionInfo
     { "Barrel", (ssize_t) BarrelDistortion, MagickFalse },
     { "BarrelInverse", (ssize_t) BarrelInverseDistortion, MagickFalse },
     { "Shepards", (ssize_t) ShepardsDistortion, MagickFalse },
+    { "Resize", (ssize_t) ResizeDistortion, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedDistortion, MagickFalse }
   },
   DitherOptions[] =

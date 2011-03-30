@@ -67,6 +67,7 @@
 #include "magick/string-private.h"
 #include "magick/thread-private.h"
 #include "magick/token.h"
+#include "magick/transform.h"
 
 /*
   Numerous internal routines for image distortions.
@@ -430,7 +431,6 @@ static double *GenerateCoefficients(const Image *image,
     case BarrelInverseDistortion:
       number_coeff=10;
       break;
-    case UndefinedDistortion:
     default:
       assert(! "Unknown Method Given"); /* just fail assertion */
   }
@@ -1318,6 +1318,165 @@ static double *GenerateCoefficients(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D i s t o r t R e s i z e I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DistortResizeImage() resize image using the equivelent but slower image
+%  distortion operator.  The filter is applied using a EWA cylindrical
+%  resampling. But like resize the final image size is limited to whole pixels
+%  with no effects by virtual-pixels on the result.
+%
+%  Note that images containing a transparency channel will be twice as slow to
+%  resize as images one without transparency.
+%
+%  The format of the DistortResizeImage method is:
+%
+%      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o columns: the number of columns in the resized image.
+%
+%    o rows: the number of rows in the resized image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *DistortResizeImage(const Image *image,
+  const size_t columns,const size_t rows,ExceptionInfo *exception)
+{
+#define DistortResizeImageTag  "Distort/Image"
+
+  Image
+    *resize_image,
+    *tmp_image;
+
+  RectangleInfo
+    crop_area;
+
+  double
+    distort_args[12];
+
+  VirtualPixelMethod
+    vp_save;
+
+  /*
+    Distort resize image.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if ((columns == 0) || (rows == 0))
+    return((Image *) NULL);
+  /* Do not short-circuit this resize if final image size is unchanged */
+
+  SetImageVirtualPixelMethod(image,TransparentVirtualPixelMethod);
+
+  (void) ResetMagickMemory(distort_args,0,12*sizeof(double));
+  distort_args[4]=image->columns;
+  distort_args[6]=columns;
+  distort_args[9]=image->rows;
+  distort_args[11]=rows;
+
+  vp_save=GetImageVirtualPixelMethod(image);
+
+  tmp_image=CloneImage(image,0,0,MagickTrue,exception);
+  if ( tmp_image == (Image *) NULL )
+    return((Image *) NULL);
+  (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod);
+
+  if (image->matte == MagickFalse)
+    {
+      /*
+        Image has not transparency channel, so we free to use it
+      */
+      (void) SetImageAlphaChannel(tmp_image,SetAlphaChannel);
+      resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
+            MagickTrue,exception),
+
+      tmp_image=DestroyImage(tmp_image);
+      if ( resize_image == (Image *) NULL )
+        return((Image *) NULL);
+
+      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel);
+      InheritException(exception,&image->exception);
+    }
+  else
+    {
+      /*
+        Image has transparency so handle colors and alpha separatly.
+        Basically we need to separate Virtual-Pixel alpha in the resized
+        image, so only the actual original images alpha channel is used.
+      */
+      Image
+        *resize_alpha;
+
+      /* distort alpha channel separatally */
+      (void) SeparateImageChannel(tmp_image,TrueAlphaChannel);
+      (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel);
+      resize_alpha=DistortImage(tmp_image,AffineDistortion,12,distort_args,
+            MagickTrue,exception),
+      tmp_image=DestroyImage(tmp_image);
+      if ( resize_alpha == (Image *) NULL )
+        return((Image *) NULL);
+
+      /* distort the actual image containing alpha + VP alpha */
+      tmp_image=CloneImage(image,0,0,MagickTrue,exception);
+      if ( tmp_image == (Image *) NULL )
+        return((Image *) NULL);
+      (void) SetImageVirtualPixelMethod(tmp_image,
+                   TransparentVirtualPixelMethod);
+      resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
+            MagickTrue,exception),
+      tmp_image=DestroyImage(tmp_image);
+      if ( resize_image == (Image *) NULL)
+        {
+          resize_alpha=DestroyImage(resize_alpha);
+          return((Image *) NULL);
+        }
+
+      /* replace resize images alpha with the separally distorted alpha */
+      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel);
+      (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel);
+      (void) CompositeImage(resize_image,CopyOpacityCompositeOp,resize_alpha,
+                    0,0);
+      InheritException(exception,&resize_image->exception);
+      resize_alpha=DestroyImage(resize_alpha);
+    }
+  (void) SetImageVirtualPixelMethod(resize_image,vp_save);
+
+  /*
+    Clean up the results of the Distortion
+  */
+  crop_area.width=columns;
+  crop_area.height=rows;
+  crop_area.x=0;
+  crop_area.y=0;
+
+  tmp_image=resize_image;
+  resize_image=CropImage(tmp_image,&crop_area,exception);
+  tmp_image=DestroyImage(tmp_image);
+
+  if ( resize_image == (Image *) NULL )
+    return((Image *) NULL);
+
+  return(resize_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D i s t o r t I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -1401,6 +1560,7 @@ static double *GenerateCoefficients(const Image *image,
 %                    instead
 %
 */
+
 MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   const size_t number_arguments,const double *arguments,
   MagickBooleanType bestfit,ExceptionInfo *exception)
@@ -1426,6 +1586,24 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
+
+  /*
+    Handle Special Compound Distortions (in-direct distortions)
+  */
+  if ( method == ResizeDistortion )
+    {
+      if ( number_arguments != 2 )
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+                    "InvalidArgument","%s : '%s'","Resize",
+                    "Invalid number of args: 2 only");
+          return((Image *) NULL);
+        }
+      distort_image=DistortResizeImage(image,(size_t)arguments[0],
+         (size_t)arguments[1], exception);
+      return(distort_image);
+    }
 
   /*
     Convert input arguments (usally as control points for reverse mapping)
