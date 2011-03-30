@@ -1,8 +1,8 @@
 2011-03-30  6.6.9-2 Glenn Randers-Pehrson <glennrp@image...>
-  * Revised the png decoder to store the PNG IHDR data as properties, for
-    later retrieval and reporting by "identify", so users can easily and
-    reliably discover the color-type, bit-depth, etc that were in the input
-    PNG datastream.
+  * Revised the png decoder to store the PNG IHDR and other known PNG
+    chunk data as properties, for later retrieval and reporting by "identify",
+    so users can easily and reliably discover the color-type, bit-depth, etc
+    that were in the input PNG datastream.
 
 2011-03-30  6.6.9-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Add a "Resize" distortion method (distort equivalent of -resize).

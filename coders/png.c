@@ -1526,6 +1526,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *image;
 
   int
+    num_raw_profiles,
     num_text,
     num_passes,
     pass,
@@ -1640,6 +1641,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.green=65537;
   transparent_color.blue=65537;
   transparent_color.opacity=65537;
+
+  num_text = 0;
+  num_raw_profiles = 0;
 
   /*
     Allocate the PNG structures
@@ -2290,9 +2294,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        }
     }
 
-#if 1
-
-  /* Set some properties for reporting by "identify" */
+   /* Set some properties for reporting by "identify" */
+    {
       char
         msg[MaxTextExtent];
 
@@ -2314,8 +2317,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      (void) FormatMagickString(msg,MaxTextExtent,"%d",
         (int) ping_interlace_method);
      (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg);
-
-#endif
+   }
 
   /*
     Read image scanlines.
@@ -2892,7 +2894,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "    Reading PNG text chunk");
 
       if (memcmp(text[i].key, "Raw profile type ",17) == 0)
+        {
           (void) Magick_png_read_raw_profile(image,image_info,text,(int) i);
+          num_raw_profiles++;
+        }
 
       else
         {
@@ -3031,6 +3036,51 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
         (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
         MagickTrue : MagickFalse;
+
+   /* Set more properties for identify to retrieve */
+   {
+     char
+       msg[MaxTextExtent];
+
+     if (num_text != 0)
+       {
+         /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
+         (void) FormatMagickString(msg,MaxTextExtent,
+            "%d chunks were found", num_text);
+         (void) SetImageProperty(image,"PNG:text                 ",msg);
+       }
+
+     if (num_raw_profiles != 0)
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,
+            "%d were found", num_raw_profiles);
+         (void) SetImageProperty(image,"PNG:text-encoded profiles",msg);
+       }
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%s",
+        "chunk was found");
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
+        (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+        (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
+        (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
+        (void) SetImageProperty(image,"PNG:iCCP                 ",msg);
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+        (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
+        (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+        (void) SetImageProperty(image,"PNG:tRNS                 ",msg);
+   }
 
   /*
     Relinquish resources.
@@ -10144,7 +10194,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->ping_exclude_cHRM=MagickFalse;
   mng_info->ping_exclude_EXIF=MagickFalse; /* hex-encoded EXIF in zTXt */
   mng_info->ping_exclude_gAMA=MagickFalse;
-  mng_info->ping_exclude_cHRM=MagickFalse;
   mng_info->ping_exclude_iCCP=MagickFalse;
   /* mng_info->ping_exclude_iTXt=MagickFalse; */
   mng_info->ping_exclude_oFFs=MagickFalse;
