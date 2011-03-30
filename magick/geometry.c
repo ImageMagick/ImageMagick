@@ -577,7 +577,11 @@ MagickExport MagickBooleanType IsSceneGeometry(const char *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ParseAbsoluteGeometry() returns a region as defined by the geometry string.
+%  ParseAbsoluteGeometry() returns a region as defined by the geometry string,
+%  without any modification by percentages or gravity.
+%
+%  It currently just a wrapper around GetGeometry(), but may be expanded in
+%  the future to handle other positioning information.
 %
 %  The format of the ParseAbsoluteGeometry method is:
 %
@@ -586,7 +590,7 @@ MagickExport MagickBooleanType IsSceneGeometry(const char *geometry,
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry (e.g. 100x100+10+10).
+%    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
 %    o region_info: the region as defined by the geometry string.
 %
@@ -613,8 +617,10 @@ MagickExport MagickStatusType ParseAbsoluteGeometry(const char *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ParseAffineGeometry() returns an affine matrix as defined by the geometry
-%  string.
+%  ParseAffineGeometry() returns an affine matrix as defined by a string
+%  of 4 to 6 comma/space separated floating point values.
+%
+%  The affine matrix determinant is checked for validity of the values.
 %
 %  The format of the ParseAffineGeometry method is:
 %
@@ -623,7 +629,7 @@ MagickExport MagickStatusType ParseAbsoluteGeometry(const char *geometry,
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry (e.g. 1.0,0.0,0.0,1.0,3.2,1.2).
+%    o geometry:  The geometry string (e.g. "1.0,0.0,0.0,1.0,3.2,1.2").
 %
 %    o affine_matrix: the affine matrix as defined by the geometry string.
 %
@@ -688,8 +694,11 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
 %  ParseGeometry() parses a geometry specification and returns the sigma,
 %  rho, xi, and psi values.  It also returns flags that indicates which
 %  of the four values (sigma, rho, xi, psi) were located in the string, and
-%  whether the xi or pi values are negative.  In addition, there are flags to
-%  report any meta characters (%, !, <, or >).
+%  whether the xi or pi values are negative.
+%
+%  In addition, it reports if there are any of meta characters (%, !, <, >, @,
+%  and ^) flags present. It does not report the location of the percentage
+%  relative to the values.
 %
 %  The format of the ParseGeometry method is:
 %
@@ -698,7 +707,7 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry.
+%    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
 %    o geometry_info:  returns the parsed width/height/x/y in this structure.
 %
@@ -954,7 +963,15 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ParseGravityGeometry() returns a region as defined by the geometry string
-%  with respect to the image dimensions and its gravity.
+%  with respect to the given image page (canvas) dimensions and the images
+%  gravity setting.
+%
+%  This is typically used for specifing a area within a given image for
+%  cropping images to a smaller size, chopping out rows and or columns, or
+%  resizing and positioning overlay images.
+%
+%  Percentages are relative to image size and not page size, and are set to
+%  nearest integer (pixel) size.
 %
 %  The format of the ParseGravityGeometry method is:
 %
@@ -963,7 +980,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry (e.g. 100x100+10+10).
+%    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
 %    o region_info: the region as defined by the geometry string with
 %      respect to the image dimensions and its gravity.
@@ -1005,7 +1022,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
         scale;
 
       /*
-        Geometry is a percentage of the image size.
+        Geometry is a percentage of the image size, not canvas size
       */
       if (image->gravity != UndefinedGravity)
         flags|=XValue | YValue;
@@ -1048,22 +1065,34 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ParseMetaGeometry() is similar to GetGeometry() except the returned
-%  geometry is modified as determined by the meta characters:  %, !, <, >,
-%  and ~.
+%  geometry is modified as determined by the meta characters:  %, !, <, >, @,
+%  and ^ in relation to image resizing.
+%
+%  Final image dimensions are adjusted so as to preserve the aspect ratio as
+%  much as posible, while generating a integer (pixel) size, and fitting the
+%  image within the specified geometry width and height.
+%
+%  Flags are interpreted...
+%       %   geometry size is given percentage of original image size
+%       !   do not try to preserve aspect ratio
+%       <   only enlarge images smaller that geometry
+%       >   only shrink images larger than geometry
+%       @   Fit image to contain at most this many pixels
+%       ^   Contain the given geometry given, (minimal dimensions given)
 %
 %  The format of the ParseMetaGeometry method is:
 %
-%      MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,ssize_t *y,
-%        size_t *width,size_t *height)
+%      MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
+%             ssize_t *y, size_t *width,size_t *height)
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry.
+%    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
-%    o x,y:  The x and y offset as determined by the geometry specification.
+%    o x,y:  The x and y offset, set according to the geometry specification.
 %
-%    o width,height:  The width and height as determined by the geometry
-%      specification.
+%    o width,height:  The width and height of original image, modified
+%              by the given geometry specification.
 %
 */
 
@@ -1241,7 +1270,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ParsePageGeometry() returns a region as defined by the geometry string with
-%  respect to the image dimensions.
+%  respect to the image page (canvas) dimensions.
+%
+%  WARNING: Percentage dimensions remain relative to the actual image
+%  dimensions, and not canvas dimensions.
 %
 %  The format of the ParsePageGeometry method is:
 %
@@ -1251,7 +1283,7 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry (e.g. 100x100+10+10).
+%    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
 %    o region_info: the region as defined by the geometry string with
 %      respect to the image and its gravity.
@@ -1301,6 +1333,10 @@ MagickExport MagickStatusType ParsePageGeometry(const Image *image,
 %  ParseRegionGeometry() returns a region as defined by the geometry string
 %  with respect to the image dimensions and aspect ratio.
 %
+%  This is basically a wrapper around ParseMetaGeometry.  This is typically
+%  used to parse a geometry string to work out the final integer dimensions
+%  for image resizing.
+%
 %  The format of the ParseRegionGeometry method is:
 %
 %      MagickStatusType ParseRegionGeometry(const Image *image,
@@ -1309,7 +1345,7 @@ MagickExport MagickStatusType ParsePageGeometry(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o geometry:  The geometry (e.g. 100x100+10+10).
+%    o geometry:  The geometry string (e.g. "100x100+10+10").
 %
 %    o region_info: the region as defined by the geometry string.
 %
