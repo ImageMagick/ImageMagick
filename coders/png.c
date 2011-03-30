@@ -3062,14 +3062,22 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) SetImageProperty(image,"PNG:text-encoded profiles",msg);
        }
 
-     (void) FormatMagickString(msg,MaxTextExtent,"%s",
-        "chunk was found");
-
      if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
-        (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,"%s",
+            "chunk was found (see Chromaticity, above)");
+         (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
+       }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
-        (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,"%s",
+            "chunk was found (see Background color, above)");
+         (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
+       }
+
+     (void) FormatMagickString(msg,MaxTextExtent,"%s",
+        "chunk was found");
 
      if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
         (void) SetImageProperty(image,"PNG:iCCP                 ",msg);
@@ -3080,7 +3088,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"intent=%d",
+         (void) FormatMagickString(msg,MaxTextExtent,"intent=%d (See Rendering intent)",
             (int) intent);
          (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
        }
@@ -3088,7 +3096,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"gamma=%.8g",
+         (void) FormatMagickString(msg,MaxTextExtent,"gamma=%.8g (See Gamma, above)",
             file_gamma);
          (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
        }
