@@ -3051,7 +3051,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
          (void) FormatMagickString(msg,MaxTextExtent,
-            "%d chunks were found", num_text_total);
+            "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
          (void) SetImageProperty(image,"PNG:text                 ",msg);
        }
 
