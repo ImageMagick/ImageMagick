@@ -208,9 +208,6 @@ if [ -z perl-pkg-files ] ; then
     exit -1
 fi
 
-# These don't belong here, we include them in %%doc
-rm $RPM_BUILD_ROOT%{_datadir}/%{name}-%{VERSION}/{ChangeLog,LICENSE,NEWS.txt}
-
 # fix multilib issues
 %ifarch x86_64 s390x ia64 ppc64 alpha sparc64
 %define wordsize 64

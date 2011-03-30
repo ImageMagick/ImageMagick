@@ -172,7 +172,7 @@ man_MANS = \
 	$(UTILITIES_MANS)
 
 # Architecture independent data files installed in the package's data directory
-docdir = $(SHARE_PATH)
+docdir = $(DOCUMENTATION_PATH)
 doc_DATA = \
 	LICENSE \
 	ChangeLog \
