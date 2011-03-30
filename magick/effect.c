@@ -4777,6 +4777,9 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
   MagickPixelPacket
     pixel;
 
+  MagickRealType
+    sum;
+
   register SkipList
     *list;
 
@@ -4784,8 +4787,7 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    color,
-    sum;
+    color;
 
   ssize_t
     count;
@@ -4801,14 +4803,15 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
     list=pixel_list->lists+channel;
     color=65536L;
     count=0;
-    sum=0;
+    sum=0.0;
     do
     {
       color=list->nodes[color].next[0];
-      sum+=list->nodes[color].count*color;
+      sum+=(MagickRealType) list->nodes[color].count*color;
       count+=list->nodes[color].count;
     } while (count < (ssize_t) pixel_list->length);
-    channels[channel]=(unsigned short) (sum/pixel_list->length);
+    sum/=pixel_list->length;
+    channels[channel]=(unsigned short) sum;
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
@@ -5023,6 +5026,10 @@ static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
   MagickPixelPacket
     pixel;
 
+  MagickRealType
+    sum,
+    sum_squared;
+
   register SkipList
     *list;
 
@@ -5030,9 +5037,7 @@ static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
     channel;
 
   size_t
-    color,
-    sum,
-    sum_squared;
+    color;
 
   ssize_t
     count;
@@ -5041,25 +5046,29 @@ static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
     channels[ListChannels];
 
   /*
-    Find the mean value for each of the color.
+    Find the standard-deviation value for each of the color.
   */
   for (channel=0; channel < 5; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
     count=0;
-    sum=0;
-    sum_squared=0;
+    sum=0.0;
+    sum_squared=0.0;
     do
     {
+      register ssize_t
+        i;
+
       color=list->nodes[color].next[0];
-      sum+=list->nodes[color].count*color;
-      sum_squared+=(list->nodes[color].count*color)*
-        (list->nodes[color].count*color);
+      sum+=(MagickRealType) list->nodes[color].count*color;
+      for (i=0; i < (ssize_t) list->nodes[color].count; i++)
+        sum_squared+=((MagickRealType) color)*((MagickRealType) color);
       count+=list->nodes[color].count;
     } while (count < (ssize_t) pixel_list->length);
-    channels[channel]=(unsigned short) sqrt((sum_squared/pixel_list->length)-
-      ((sum/pixel_list->length)*(sum/pixel_list->length)));
+    sum/=pixel_list->length;
+    sum_squared/=pixel_list->length;
+    channels[channel]=(unsigned short) sqrt(sum_squared-(sum*sum));
   }
   GetMagickPixelPacket((const Image *) NULL,&pixel);
   pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
