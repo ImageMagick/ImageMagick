@@ -317,10 +317,10 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     chromaticity[6],
                     white_point[2];
 
-                  (void) sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
-                    &chromaticity[1],&chromaticity[2],&chromaticity[3],
-                    &chromaticity[4],&chromaticity[5],&white_point[0],
-                    &white_point[1]);
+                  (void) sscanf(value,"%g %g %g %g %g %g %g %g",
+                    &chromaticity[0],&chromaticity[1],&chromaticity[2],
+                    &chromaticity[3],&chromaticity[4],&chromaticity[5],
+                    &white_point[0],&white_point[1]);
                   image->chromaticity.red_primary.x=chromaticity[0];
                   image->chromaticity.red_primary.y=chromaticity[1];
                   image->chromaticity.green_primary.x=chromaticity[2];
@@ -377,8 +377,8 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read RGBE (red+green+blue+exponent) pixels.
   */
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-    4*sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,4*
+    sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
