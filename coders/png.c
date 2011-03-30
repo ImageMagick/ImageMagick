@@ -1526,8 +1526,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *image;
 
   int
+    intent,
     num_raw_profiles,
     num_text,
+    num_text_total,
     num_passes,
     pass,
     ping_bit_depth,
@@ -1535,7 +1537,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_interlace_method,
     ping_compression_method,
     ping_filter_method,
-    ping_num_trans;
+    ping_num_trans,
+    unit_type;
+
+  double
+    file_gamma;
 
   LongPixelPacket
     transparent_color;
@@ -1564,7 +1570,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_uint_32
     ping_height,
     ping_width,
-    ping_rowbytes;
+    ping_rowbytes,
+    x_resolution,
+    y_resolution;
 
   QuantumInfo
     *quantum_info;
@@ -1643,6 +1651,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.opacity=65537;
 
   num_text = 0;
+  num_text_total = 0;
   num_raw_profiles = 0;
 
   /*
@@ -1839,9 +1848,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 #if defined(PNG_READ_sRGB_SUPPORTED)
   {
-    int
-      intent;
-
     if (mng_info->have_global_srgb)
       image->rendering_intent=Magick_RenderingIntent_from_PNG_RenderingIntent
         (mng_info->global_srgb_intent);
@@ -1858,9 +1864,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   }
 #endif
   {
-     double
-        file_gamma;
-
      if (!png_get_gAMA(ping,ping_info,&file_gamma))
        if (mng_info->have_global_gama)
          png_set_gAMA(ping,ping_info,mng_info->global_gamma);
@@ -1943,13 +1946,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
     {
-      int
-        unit_type;
-
-      png_uint_32
-        x_resolution,
-        y_resolution;
-
       /*
         Set image resolution.
       */
@@ -2778,7 +2774,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->matte=matte;
     }
 
-  png_read_end(ping,ping_info);
+  png_read_end(ping,end_info);
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
       (ssize_t) image_info->first_scene && image->delay != 0)
@@ -2884,57 +2880,66 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     image->colorspace=GRAYColorspace;
 
-  if (png_get_text(ping,ping_info,&text,&num_text) != 0)
-    for (i=0; i < (ssize_t) num_text; i++)
-    {
-      /* Check for a profile */
+  for (int j = 0; j < 2; j++)
+  {
+    if (j == 0)
+      status = (png_get_text(ping,ping_info,&text,&num_text) != 0);
+    else
+      status = (png_get_text(ping,end_info,&text,&num_text) != 0);
 
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Reading PNG text chunk");
+    if (status != MagickFalse)
+      for (i=0; i < (ssize_t) num_text; i++)
+      {
+        /* Check for a profile */
 
-      if (memcmp(text[i].key, "Raw profile type ",17) == 0)
-        {
-          (void) Magick_png_read_raw_profile(image,image_info,text,(int) i);
-          num_raw_profiles++;
-        }
+        if (logging != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Reading PNG text chunk");
 
-      else
-        {
-          char
-            *value;
-
-          length=text[i].text_length;
-          value=(char *) AcquireQuantumMemory(length+MaxTextExtent,
-            sizeof(*value));
-          if (value == (char *) NULL)
-            {
-              (void) ThrowMagickException(&image->exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                image->filename);
-              break;
-            }
-          *value='\0';
-          (void) ConcatenateMagickString(value,text[i].text,length+2);
-
-          /* Don't save "density" or "units" property if we have a pHYs
-           * chunk
-           */
-          if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs) ||
-              (LocaleCompare(text[i].key,"density") != 0 &&
-              LocaleCompare(text[i].key,"units") != 0))
-             (void) SetImageProperty(image,text[i].key,value);
-
-          if (logging != MagickFalse)
+        if (memcmp(text[i].key, "Raw profile type ",17) == 0)
           {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "      length: %lu",(unsigned long) length);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "      Keyword: %s",text[i].key);
+            (void) Magick_png_read_raw_profile(image,image_info,text,(int) i);
+            num_raw_profiles++;
           }
 
-          value=DestroyString(value);
-        }
+        else
+          {
+            char
+              *value;
+
+            length=text[i].text_length;
+            value=(char *) AcquireQuantumMemory(length+MaxTextExtent,
+              sizeof(*value));
+            if (value == (char *) NULL)
+              {
+                (void) ThrowMagickException(&image->exception,GetMagickModule(),
+                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  image->filename);
+                break;
+              }
+            *value='\0';
+            (void) ConcatenateMagickString(value,text[i].text,length+2);
+
+            /* Don't save "density" or "units" property if we have a pHYs
+             * chunk
+             */
+            if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs) ||
+                (LocaleCompare(text[i].key,"density") != 0 &&
+                LocaleCompare(text[i].key,"units") != 0))
+               (void) SetImageProperty(image,text[i].key,value);
+
+            if (logging != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      length: %lu",(unsigned long) length);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "      Keyword: %s",text[i].key);
+            }
+
+            value=DestroyString(value);
+          }
+      }
+      num_text_total += num_text;
     }
 
 #ifdef MNG_OBJECT_BUFFERS
@@ -3042,11 +3047,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      char
        msg[MaxTextExtent];
 
-     if (num_text != 0)
+     if (num_text_total != 0)
        {
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
          (void) FormatMagickString(msg,MaxTextExtent,
-            "%d chunks were found", num_text);
+            "%d chunks were found", num_text_total);
          (void) SetImageProperty(image,"PNG:text                 ",msg);
        }
 
@@ -3060,9 +3065,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      (void) FormatMagickString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
-        (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
-
      if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
         (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
 
@@ -3072,14 +3074,44 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
         (void) SetImageProperty(image,"PNG:iCCP                 ",msg);
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
-        (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
-
-     if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
-        (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
-
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
         (void) SetImageProperty(image,"PNG:tRNS                 ",msg);
+
+#if defined(PNG_sRGB_SUPPORTED)
+     if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,"intent=%d",
+            (int) intent);
+         (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
+       }
+#endif
+
+     if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,"gamma=%.8g",
+            file_gamma);
+         (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
+       }
+
+#if defined(PNG_pHYs_SUPPORTED)
+     if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,"x_res=%.10g, y_res=%.10g, units=%d",
+            (double) x_resolution,(double) y_resolution, unit_type);
+         (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
+       }
+#endif
+
+#if defined(PNG_oFFs_SUPPORTED)
+     if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
+            (double) image->page.x,(double) image->page.y);
+         (void) SetImageProperty(image,"PNG:oFFs                 ",msg);
+       }
+#endif
+
+     /* TO DO: vpAg */
    }
 
   /*
