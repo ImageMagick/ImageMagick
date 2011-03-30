@@ -2570,7 +2570,7 @@ datarootdir = @datarootdir@
 dejavu_font_dir = @dejavu_font_dir@
 
 # Architecture independent data files installed in the package's data directory
-docdir = $(SHARE_PATH)
+docdir = $(DOCUMENTATION_PATH)
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 freetype_config = @freetype_config@
