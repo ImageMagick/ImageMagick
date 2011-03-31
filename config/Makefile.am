@@ -19,23 +19,23 @@
 configsharedir = $(SHARE_CONFIGURE_PATH)
 configshare_DATA = \
 	config/configure.xml \
-	config/delegates.xml \
 	config/english.xml \
 	config/francais.xml \
-	config/locale.xml \
-	config/coder.xml \
-	config/magic.xml \
-	config/mime.xml \
-	config/sRGB.icm \
-	config/thresholds.xml
+	config/locale.xml
 
 # Where architecture-dependent configuration files get installed
 # (share/ImageMagick-version)
 configlibdir =  $(CONFIGURE_PATH)
 configlib_DATA = \
+	config/coder.xml \
 	config/colors.xml \
+	config/delegates.xml \
 	config/log.xml \
+	config/magic.xml \
+	config/mime.xml \
 	config/policy.xml \
+	config/sRGB.icm \
+	config/thresholds.xml \
 	config/type.xml \
 	config/type-dejavu.xml \
 	config/type-ghostscript.xml \
