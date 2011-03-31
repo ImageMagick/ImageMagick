@@ -3087,7 +3087,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"intent=%d (See Rendering intent)",
+         (void) FormatMagickString(msg,MaxTextExtent,
+            "intent=%d (See Rendering intent)",
             (int) intent);
          (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
        }
@@ -3095,7 +3096,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"gamma=%.8g (See Gamma, above)",
+         (void) FormatMagickString(msg,MaxTextExtent,
+            "gamma=%.8g (See Gamma, above)",
             file_gamma);
          (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
        }
@@ -3103,7 +3105,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_pHYs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"x_res=%.10g, y_res=%.10g, units=%d",
+         (void) FormatMagickString(msg,MaxTextExtent,
+            "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
          (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
        }
@@ -3118,7 +3121,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        }
 #endif
 
-     /* TO DO: vpAg */
+     if ((image->page.width != 0 && image->page.width != image->columns) ||
+         (image->page.height != 0 && image->page.height != image->rows))
+       {
+         (void) FormatMagickString(msg,MaxTextExtent,
+            "width=%.20g, height=%.20g",
+            (double) image->page.width,(double) image->page.height);
+         (void) SetImageProperty(image,"PNG:vpAg                 ",msg);
+       }
    }
 
   /*
