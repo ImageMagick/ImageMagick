@@ -1600,6 +1600,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     length,
     row_offset;
 
+  ssize_t
+    j;
+
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
   png_byte unused_chunks[]=
   {
@@ -2877,7 +2880,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     image->colorspace=GRAYColorspace;
 
-  for (int j = 0; j < 2; j++)
+  for (j = 0; j < 2; j++)
   {
     if (j == 0)
       status = (png_get_text(ping,ping_info,&text,&num_text) != 0);
