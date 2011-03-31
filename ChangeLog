@@ -3,6 +3,8 @@
     chunk data as properties, for later retrieval and reporting by "identify",
     so users can easily and reliably discover the color-type, bit-depth, etc
     that were in the input PNG datastream.
+  * The PNG decoder sometimes set images with more than 256 different
+    gray-alpha pixels to storage_class=PseudoClass with an incorrect colormap.
 
 2011-03-30  6.6.9-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Add a "Resize" distortion method (distort equivalent of -resize).
