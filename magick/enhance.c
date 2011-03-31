@@ -2227,6 +2227,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   } HaldInfo;
 
   CacheView
+    *hald_view,
     *image_view;
 
   double
@@ -2275,6 +2276,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   GetMagickPixelPacket(hald_image,&zero);
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
+  hald_view=AcquireCacheView(hald_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
@@ -2310,7 +2312,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
         status=MagickFalse;
         continue;
       }
-    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    indexes=GetCacheViewAuthenticIndexQueue(hald_view);
     pixel=zero;
     pixel1=zero;
     pixel2=zero;
@@ -2325,19 +2327,19 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      (void) InterpolateMagickPixelPacket(image,image_view,
+      (void) InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
         &pixel1,exception);
-      (void) InterpolateMagickPixelPacket(image,image_view,
+      (void) InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
         width),&pixel2,exception);
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
         pixel2.opacity,point.y,&pixel3);
       offset+=cube_size;
-      (void) InterpolateMagickPixelPacket(image,image_view,
+      (void) InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
         &pixel1,exception);
-      (void) InterpolateMagickPixelPacket(image,image_view,
+      (void) InterpolateMagickPixelPacket(image,hald_view,
         UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
         width),&pixel2,exception);
       MagickPixelCompositeAreaBlend(&pixel1,pixel1.opacity,&pixel2,
@@ -2372,6 +2374,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
           status=MagickFalse;
       }
   }
+  hald_view=DestroyCacheView(hald_view);
   image_view=DestroyCacheView(image_view);
   return(status);
 }
