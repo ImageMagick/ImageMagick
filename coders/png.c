@@ -2297,11 +2297,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      /* encode ping_width, ping_height, ping_bit_depth, ping_color_type,
         ping_interlace_method in value */
 
-     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_width);
-     (void) SetImageProperty(image,"PNG:IHDR.width           ",msg);
-
-     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_height);
-     (void) SetImageProperty(image,"PNG:IHDR.height          ",msg);
+     (void) FormatMagickString(msg,MaxTextExtent,
+         "%d, %d",(int) ping_width, (int) ping_height);
+     (void) SetImageProperty(image,"PNG:IHDR.width,height    ",msg);
 
      (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
      (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg);
