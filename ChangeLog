@@ -1,3 +1,6 @@
+2011-04-02  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
+  * Add of Octagon shape and Octagonal distance kernels for Morphology
+
 2011-04-01  6.6.9-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-3.
 

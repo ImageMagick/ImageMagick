@@ -1098,10 +1098,11 @@ static const OptionInfo
     { "Prewitt", (ssize_t) PrewittKernel, MagickFalse },
     { "Compass", (ssize_t) CompassKernel, MagickFalse },
     { "Kirsch", (ssize_t) KirschKernel, MagickFalse },
-    { "Rectangle", (ssize_t) RectangleKernel, MagickFalse },
-    { "Square", (ssize_t) SquareKernel, MagickFalse },
     { "Diamond", (ssize_t) DiamondKernel, MagickFalse },
+    { "Square", (ssize_t) SquareKernel, MagickFalse },
+    { "Rectangle", (ssize_t) RectangleKernel, MagickFalse },
     { "Disk", (ssize_t) DiskKernel, MagickFalse },
+    { "Octagon", (ssize_t) OctagonKernel, MagickFalse },
     { "Plus", (ssize_t) PlusKernel, MagickFalse },
     { "Cross", (ssize_t) CrossKernel, MagickFalse },
     { "Ring", (ssize_t) RingKernel, MagickFalse },
@@ -1116,6 +1117,7 @@ static const OptionInfo
     { "Skeleton", (ssize_t) SkeletonKernel, MagickFalse },
     { "Chebyshev", (ssize_t) ChebyshevKernel, MagickFalse },
     { "Manhattan", (ssize_t) ManhattanKernel, MagickFalse },
+    { "Octagonal", (ssize_t) OctagonalKernel, MagickFalse },
     { "Euclidean", (ssize_t) EuclideanKernel, MagickFalse },
     { "User Defined", (ssize_t) UserDefinedKernel, MagickTrue }, /* internal */
     { (char *) NULL, (ssize_t) UndefinedKernel, MagickFalse }

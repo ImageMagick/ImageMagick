@@ -126,7 +126,6 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
   return(kernel);
 }
 
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -435,6 +434,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
       break;
     case SquareKernel:
     case DiamondKernel:
+    case OctagonKernel:
     case DiskKernel:
     case PlusKernel:
     case CrossKernel:
@@ -448,6 +448,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
       break;
     case ChebyshevKernel:
     case ManhattanKernel:
+    case OctagonalKernel:
     case EuclideanKernel:
       if ( (flags & HeightValue) == 0 )           /* no distance scale */
         args.sigma = 100.0;                       /* default distance scaling */
@@ -653,19 +654,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %          | -2, 0,-2 |
 %          | -1, 0, 1 |
 %
-%    Sobel:{type},{angle}
-%      Type 0:  default un-nomalized version shown above.
-%
-%      Type 1:  As default but pre-normalized
-%          | 1, 0, -1 |
-%          | 2, 0, -2 |  / 4
-%          | 1, 0, -1 |
-%
-%      Type 2:  Diagonal version with same normalization as 1
-%          | 1, 0, -1 |
-%          | 2, 0, -2 |  / 4
-%          | 1, 0, -1 |
-%
 %    Roberts:{angle}
 %      Roberts convolution kernel (3x3)
 %          |  0, 0, 0 |
@@ -794,11 +782,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Generate a square shaped kernel of size radius*2+1, and defaulting
 %       to a 3x3 (radius 1).
 %
-%       Note that using a larger radius for the "Square" or the "Diamond" is
-%       also equivelent to iterating the basic morphological method that many
-%       times. However iterating with the smaller radius is actually faster
-%       than using a larger kernel radius.
-%
 %    Rectangle:{geometry}
 %       Simply generate a rectangle of 1's with the size given. You can also
 %       specify the location of the 'control point', otherwise the closest
@@ -806,22 +789,32 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %       Properly centered and odd sized rectangles work the best.
 %
-%    Disk:[{radius}[,{scale}]]
-%       Generate a binary disk of the radius given, radius may be a float.
-%       Kernel size will be ceil(radius)*2+1 square.
-%       NOTE: Here are some disk shapes of specific interest
-%          "Disk:1"    => "diamond" or "cross:1"
-%          "Disk:1.5"  => "square"
-%          "Disk:2"    => "diamond:2"
-%          "Disk:2.5"  => a general disk shape of radius 2
-%          "Disk:2.9"  => "square:2"
-%          "Disk:3.5"  => default - octagonal/disk shape of radius 3
-%          "Disk:4.2"  => roughly octagonal shape of radius 4
-%          "Disk:4.3"  => a general disk shape of radius 4
-%       After this all the kernel shape becomes more and more circular.
+%    Octagon:[{radius}[,{scale}]]
+%       Generate octagonal shaped kernel of given radius and constant scale.
+%       Default radius is 2 producing a 5x5 kernel. A radius of 1 will result
+%       in "Diamond" kernel.
 %
-%       Because a "disk" is more circular when using a larger radius, using a
-%       larger radius is preferred over iterating the morphological operation.
+%    Disk:[{radius}[,{scale}]]
+%       Generate a binary disk, thresholded at the radius given, the radius
+%       may be a float-point value. Final Kernel size is floor(radius)*2+1
+%       square. A radius of 3.5 is the default, though this is also equivelent
+%       to a "Octagon:3" Kernel
+%
+%       NOTE: That a low radii Disk kernels produce the same results as
+%       many of the previously defined kernels, but differ greatly at larger
+%       radii.  Here is a table of equivalences...
+%          "Disk:1"    => "Diamond", "Octagon:1", or "Cross:1"
+%          "Disk:1.5"  => "Square"
+%          "Disk:2"    => "Diamond:2"
+%          "Disk:2.5"  => "Octagon"
+%          "Disk:2.9"  => "Square:2"
+%          "Disk:3.5"  => "Octagon:3" and the Disk Default
+%          "Disk:4.5"  => "Octagon:4"
+%          "Disk:5.4"  => "Octagon:5"
+%          "Disk:6.4"  => "Octagon:6"
+%       All other Disk shapes are unique to this kernel, but because a "Disk"
+%       is more circular when using a larger radius, using a larger radius is
+%       preferred over iterating the morphological operation.
 %
 %  Symbol Dilation Kernels
 %
@@ -892,40 +885,45 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %    applied.
 %
 %    Chebyshev:[{radius}][x{scale}[%!]]
-%       Chebyshev Distance (also known as Tchebychev Distance) is a value of
-%       one to any neighbour, orthogonal or diagonal. One why of thinking of
-%       it is the number of squares a 'King' or 'Queen' in chess needs to
-%       traverse reach any other position on a chess board.  It results in a
-%       'square' like distance function, but one where diagonals are closer
-%       than expected.
+%       Chebyshev Distance (also known as Tchebychev or Chessboard distance)
+%       is a value of one to any neighbour, orthogonal or diagonal. One why
+%       of thinking of it is the number of squares a 'King' or 'Queen' in
+%       chess needs to traverse reach any other position on a chess board.
+%       It results in a 'square' like distance function, but one where
+%       diagonals are given a value that is closer than expected.
 %
 %    Manhattan:[{radius}][x{scale}[%!]]
-%       Manhattan Distance (also known as Rectilinear Distance, or the Taxi
-%       Cab metric), is the distance needed when you can only travel in
-%       orthogonal (horizontal or vertical) only.  It is the distance a 'Rook'
-%       in chess would travel. It results in a diamond like distances, where
-%       diagonals are further than expected.
+%       Manhattan Distance (also known as Rectilinear, City Block, or the Taxi
+%       Cab distance metric), it is the distance needed when you can only
+%       travel in horizontal or vertical directions only.  It is the
+%       distance a 'Rook' in chess would have to travel, and results in a
+%       diamond like distances, where diagonals are further than expected.
+%
+%    Octagonal:[{radius}][x{scale}[%!]]
+%       An interleving of Manhatten and Chebyshev metrics producing an
+%       increasing octagonally shaped distance.  Distances matches those of
+%       the "Octagon" shaped kernel of the same radius.  The minimum radius
+%       and default is 2, producing a 5x5 kernel.
 %
 %    Euclidean:[{radius}][x{scale}[%!]]
-%       Euclidean Distance is the 'direct' or 'as the crow flys distance.
+%       Euclidean distance is the 'direct' or 'as the crow flys' distance.
 %       However by default the kernel size only has a radius of 1, which
 %       limits the distance to 'Knight' like moves, with only orthogonal and
 %       diagonal measurements being correct.  As such for the default kernel
-%       you will get octagonal like distance function, which is reasonally
-%       accurate.
+%       you will get octagonal like distance function.
 %
-%       However if you use a larger radius such as "Euclidean:4" you will
-%       get a much smoother distance gradient from the edge of the shape.
-%       Of course a larger kernel is slower to use, and generally not needed.
+%       However using a larger radius such as "Euclidean:4" you will get a
+%       much smoother distance gradient from the edge of the shape. Especially
+%       if the image is pre-processed to include any anti-aliasing pixels.
+%       Of course a larger kernel is slower to use, and not always needed.
 %
-%       To allow the use of fractional distances that you get with diagonals
-%       the actual distance is scaled by a fixed value which the user can
-%       provide.  This is not actually nessary for either ""Chebyshev" or
-%       "Manhattan" distance kernels, but is done for all three distance
-%       kernels.  If no scale is provided it is set to a value of 100,
-%       allowing for a maximum distance measurement of 655 pixels using a Q16
-%       version of IM, from any edge.  However for small images this can
-%       result in quite a dark gradient.
+%    The first three Distance Measuring Kernels will only generate distances
+%    of exact multiples of {scale} in binary images. As such you can use a
+%    scale of 1 without loosing any information.  However you also need some
+%    scaling when handling non-binary anti-aliased shapes.
+%
+%    The "Euclidean" Distance Kernel however does generate a non-integer
+%    fractional results, and as such scaling is vital even for binary shapes.
 %
 */
 
@@ -978,6 +976,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case DiamondKernel:
     case SquareKernel:
     case RectangleKernel:
+    case OctagonKernel:
     case DiskKernel:
     case PlusKernel:
     case CrossKernel:
@@ -985,6 +984,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case PeaksKernel:
     case ChebyshevKernel:
     case ManhattanKernel:
+    case OctangonalKernel:
     case EuclideanKernel:
 #else
     default:
@@ -1293,40 +1293,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         break;
       }
     case SobelKernel:
-#if 0
-      { /* Sobel with optional 'sub-types' */
-        switch ( (int) args->rho ) {
-          default:
-          case 0:
-            kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            break;
-          case 1:
-            kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            ScaleKernelInfo(kernel, 0.25, NoValue);
-            break;
-          case 2:
-            kernel=ParseKernelArray("3: 1,2,0  2,0,-2  0,-2,-1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            ScaleKernelInfo(kernel, 0.25, NoValue);
-            break;
-        }
-        if ( fabs(args->sigma) > MagickEpsilon )
-          /* Rotate by correctly supplied 'angle' */
-          RotateKernelInfo(kernel, args->sigma);
-        else if ( args->rho > 30.0 || args->rho < -30.0 )
-          /* Rotate by out of bounds 'type' */
-          RotateKernelInfo(kernel, args->rho);
-        break;
-      }
-#else
       { /* Simple Sobel Kernel */
         kernel=ParseKernelArray("3: 1,0,-1  2,0,-2  1,0,-1");
         if (kernel == (KernelInfo *) NULL)
@@ -1335,7 +1301,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         RotateKernelInfo(kernel, args->rho);
         break;
       }
-#endif
     case RobertsKernel:
       {
         kernel=ParseKernelArray("3: 0,0,0  1,-1,0  0,0,0");
@@ -1551,402 +1516,465 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->positive_range = scale*u;
         break;
       }
-    case DiskKernel:
-      {
-        ssize_t
-         limit = (ssize_t)(args->rho*args->rho);
+      case OctagonKernel:
+        {
+          if (args->rho < 1.0)
+            kernel->width = kernel->height = 5;  /* default radius = 2 */
+          else
+            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        if (args->rho < 0.4)           /* default radius approx 3.5 */
-          kernel->width = kernel->height = 7L, limit = 10L;
-        else
-           kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
-        kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
 
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernelInfo(kernel));
-
-        /* set all kernel values within disk area to scale given */
-        for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
-          for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            if ((u*u+v*v) <= limit)
-              kernel->positive_range += kernel->values[i] = args->sigma;
-            else
-              kernel->values[i] = nan;
-        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
-        break;
-      }
-    case PlusKernel:
-      {
-        if (args->rho < 1.0)
-          kernel->width = kernel->height = 5;  /* default radius 2 */
-        else
-           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
-        kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernelInfo(kernel));
-
-        /* set all kernel values along axises to given scale */
-        for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
-          for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            kernel->values[i] = (u == 0 || v == 0) ? args->sigma : nan;
-        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
-        kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
-        break;
-      }
-    case CrossKernel:
-      {
-        if (args->rho < 1.0)
-          kernel->width = kernel->height = 5;  /* default radius 2 */
-        else
-           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
-        kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernelInfo(kernel));
-
-        /* set all kernel values along axises to given scale */
-        for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
-          for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            kernel->values[i] = (u == v || u == -v) ? args->sigma : nan;
-        kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
-        kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
-        break;
-      }
-    /* HitAndMiss Kernels */
-    case RingKernel:
-    case PeaksKernel:
-      {
-        ssize_t
-          limit1,
-          limit2,
-          scale;
-
-        if (args->rho < args->sigma)
-          {
-            kernel->width = ((size_t)args->sigma)*2+1;
-            limit1 = (ssize_t)(args->rho*args->rho);
-            limit2 = (ssize_t)(args->sigma*args->sigma);
-          }
-        else
-          {
-            kernel->width = ((size_t)args->rho)*2+1;
-            limit1 = (ssize_t)(args->sigma*args->sigma);
-            limit2 = (ssize_t)(args->rho*args->rho);
-          }
-        if ( limit2 <= 0 )
-          kernel->width = 7L, limit1 = 7L, limit2 = 11L;
-
-        kernel->height = kernel->width;
-        kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernelInfo(kernel));
-
-        /* set a ring of points of 'scale' ( 0.0 for PeaksKernel ) */
-        scale = (ssize_t) (( type == PeaksKernel) ? 0.0 : args->xi);
-        for ( i=0, v= -kernel->y; v <= (ssize_t)kernel->y; v++)
-          for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            { ssize_t radius=u*u+v*v;
-              if (limit1 < radius && radius <= limit2)
-                kernel->positive_range += kernel->values[i] = (double) scale;
+          for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              if ( (labs((long) u)+labs((long) v)) <=
+                        ((long)kernel->x + (long)(kernel->x/2)) )
+                kernel->positive_range += kernel->values[i] = args->sigma;
               else
                 kernel->values[i] = nan;
-            }
-        kernel->minimum = kernel->maximum = (double) scale;
-        if ( type == PeaksKernel ) {
-          /* set the central point in the middle */
-          kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
-          kernel->positive_range = 1.0;
-          kernel->maximum = 1.0;
+          kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+          break;
         }
-        break;
-      }
-    case EdgesKernel:
-      {
-        kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandMirrorKernelInfo(kernel); /* mirror expansion of other kernels */
-        break;
-      }
-    case CornersKernel:
-      {
-        kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandRotateKernelInfo(kernel, 90.0); /* Expand 90 degree rotations */
-        break;
-      }
-    case ThinDiagonalsKernel:
-      {
-        switch ( (int) args->rho ) {
-          case 0:
-          default:
-            { KernelInfo
-                *new_kernel;
+      case DiskKernel:
+        {
+          ssize_t
+          limit = (ssize_t)(args->rho*args->rho);
+
+          if (args->rho < 0.4)           /* default radius approx 3.5 */
+            kernel->width = kernel->height = 7L, limit = 10L;
+          else
+            kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
+
+          for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              if ((u*u+v*v) <= limit)
+                kernel->positive_range += kernel->values[i] = args->sigma;
+              else
+                kernel->values[i] = nan;
+          kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+          break;
+        }
+      case PlusKernel:
+        {
+          if (args->rho < 1.0)
+            kernel->width = kernel->height = 5;  /* default radius 2 */
+          else
+            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
+
+          /* set all kernel values along axises to given scale */
+          for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              kernel->values[i] = (u == 0 || v == 0) ? args->sigma : nan;
+          kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+          kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
+          break;
+        }
+      case CrossKernel:
+        {
+          if (args->rho < 1.0)
+            kernel->width = kernel->height = 5;  /* default radius 2 */
+          else
+            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
+
+          /* set all kernel values along axises to given scale */
+          for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              kernel->values[i] = (u == v || u == -v) ? args->sigma : nan;
+          kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+          kernel->positive_range = args->sigma*(kernel->width*2.0 - 1.0);
+          break;
+        }
+      /* HitAndMiss Kernels */
+      case RingKernel:
+      case PeaksKernel:
+        {
+          ssize_t
+            limit1,
+            limit2,
+            scale;
+
+          if (args->rho < args->sigma)
+            {
+              kernel->width = ((size_t)args->sigma)*2+1;
+              limit1 = (ssize_t)(args->rho*args->rho);
+              limit2 = (ssize_t)(args->sigma*args->sigma);
+            }
+          else
+            {
+              kernel->width = ((size_t)args->rho)*2+1;
+              limit1 = (ssize_t)(args->sigma*args->sigma);
+              limit2 = (ssize_t)(args->rho*args->rho);
+            }
+          if ( limit2 <= 0 )
+            kernel->width = 7L, limit1 = 7L, limit2 = 11L;
+
+          kernel->height = kernel->width;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
+
+          /* set a ring of points of 'scale' ( 0.0 for PeaksKernel ) */
+          scale = (ssize_t) (( type == PeaksKernel) ? 0.0 : args->xi);
+          for ( i=0, v= -kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              { ssize_t radius=u*u+v*v;
+                if (limit1 < radius && radius <= limit2)
+                  kernel->positive_range += kernel->values[i] = (double) scale;
+                else
+                  kernel->values[i] = nan;
+              }
+          kernel->minimum = kernel->maximum = (double) scale;
+          if ( type == PeaksKernel ) {
+            /* set the central point in the middle */
+            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+            kernel->positive_range = 1.0;
+            kernel->maximum = 1.0;
+          }
+          break;
+        }
+      case EdgesKernel:
+        {
+          kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
+          if (kernel == (KernelInfo *) NULL)
+            return(kernel);
+          kernel->type = type;
+          ExpandMirrorKernelInfo(kernel); /* mirror expansion of other kernels */
+          break;
+        }
+      case CornersKernel:
+        {
+          kernel=ParseKernelArray("3: 0,0,-  0,1,1  -,1,-");
+          if (kernel == (KernelInfo *) NULL)
+            return(kernel);
+          kernel->type = type;
+          ExpandRotateKernelInfo(kernel, 90.0); /* Expand 90 degree rotations */
+          break;
+        }
+      case ThinDiagonalsKernel:
+        {
+          switch ( (int) args->rho ) {
+            case 0:
+            default:
+              { KernelInfo
+                  *new_kernel;
+                kernel=ParseKernelArray("3: 0,0,0  0,1,1  1,1,-");
+                if (kernel == (KernelInfo *) NULL)
+                  return(kernel);
+                kernel->type = type;
+                new_kernel=ParseKernelArray("3: 0,0,1  0,1,1  0,1,-");
+                if (new_kernel == (KernelInfo *) NULL)
+                  return(DestroyKernelInfo(kernel));
+                new_kernel->type = type;
+                LastKernelInfo(kernel)->next = new_kernel;
+                ExpandMirrorKernelInfo(kernel);
+                break;
+              }
+            case 1:
               kernel=ParseKernelArray("3: 0,0,0  0,1,1  1,1,-");
               if (kernel == (KernelInfo *) NULL)
                 return(kernel);
               kernel->type = type;
-              new_kernel=ParseKernelArray("3: 0,0,1  0,1,1  0,1,-");
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+            case 2:
+              kernel=ParseKernelArray("3: 0,0,1  0,1,1  0,1,-");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+          }
+          break;
+        }
+      case LineEndsKernel:
+        { /* Kernels for finding the end of thin lines */
+          switch ( (int) args->rho ) {
+            case 0:
+            default:
+              /* set of kernels to find all end of lines */
+              kernel=AcquireKernelInfo("LineEnds:1>;LineEnds:2>");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              break;
+            case 1:
+              /* kernel for 4-connected line ends - no rotation */
+              kernel=ParseKernelArray("3: 0,0,-  0,1,1  0,0,-");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+          case 2:
+              /* kernel to add for 8-connected lines - no rotation */
+              kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,0,1");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+          case 3:
+              /* kernel to add for orthogonal line ends - does not find corners */
+              kernel=ParseKernelArray("3: 0,0,0  0,1,1  0,0,0");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+          case 4:
+              /* traditional line end - fails on last T end */
+              kernel=ParseKernelArray("3: 0,0,0  0,1,-  0,0,-");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+          }
+          break;
+        }
+      case LineJunctionsKernel:
+        { /* kernels for finding the junctions of multiple lines */
+          switch ( (int) args->rho ) {
+            case 0:
+            default:
+              /* set of kernels to find all line junctions */
+              kernel=AcquireKernelInfo("LineJunctions:1@;LineJunctions:2>");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              break;
+            case 1:
+              /* Y Junction */
+              kernel=ParseKernelArray("3: 1,-,1  -,1,-  -,1,-");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+            case 2:
+              /* Diagonal T Junctions */
+              kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+            case 3:
+              /* Orthogonal T Junctions */
+              kernel=ParseKernelArray("3: -,-,-  1,1,1  -,1,-");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+            case 4:
+              /* Diagonal X Junctions */
+              kernel=ParseKernelArray("3: 1,-,1  -,1,-  1,-,1");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+            case 5:
+              /* Orthogonal X Junctions - minimal diamond kernel */
+              kernel=ParseKernelArray("3: -,1,-  1,1,1  -,1,-");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              RotateKernelInfo(kernel, args->sigma);
+              break;
+          }
+          break;
+        }
+      case RidgesKernel:
+        { /* Ridges - Ridge finding kernels */
+          KernelInfo
+            *new_kernel;
+          switch ( (int) args->rho ) {
+            case 1:
+            default:
+              kernel=ParseKernelArray("3x1:0,1,0");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              ExpandRotateKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
+              break;
+            case 2:
+              kernel=ParseKernelArray("4x1:0,1,1,0");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotated kernels */
+
+              /* Kernels to find a stepped 'thick' line, 4 rotates + mirrors */
+              /* Unfortunatally we can not yet rotate a non-square kernel */
+              /* But then we can't flip a non-symetrical kernel either */
+              new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
               if (new_kernel == (KernelInfo *) NULL)
                 return(DestroyKernelInfo(kernel));
               new_kernel->type = type;
               LastKernelInfo(kernel)->next = new_kernel;
-              ExpandMirrorKernelInfo(kernel);
+              new_kernel=ParseKernelArray("4x3+2+1:0,1,1,- -,1,1,- -,1,1,0");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              new_kernel=ParseKernelArray("4x3+1+1:-,1,1,0 -,1,1,- 0,1,1,-");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              new_kernel=ParseKernelArray("4x3+2+1:-,1,1,0 -,1,1,- 0,1,1,-");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              new_kernel=ParseKernelArray("3x4+1+1:0,-,- 1,1,1 1,1,1 -,-,0");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              new_kernel=ParseKernelArray("3x4+1+2:0,-,- 1,1,1 1,1,1 -,-,0");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              new_kernel=ParseKernelArray("3x4+1+1:-,-,0 1,1,1 1,1,1 0,-,-");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              new_kernel=ParseKernelArray("3x4+1+2:-,-,0 1,1,1 1,1,1 0,-,-");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
               break;
-            }
-          case 1:
-            kernel=ParseKernelArray("3: 0,0,0  0,1,1  1,1,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-          case 2:
-            kernel=ParseKernelArray("3: 0,0,1  0,1,1  0,1,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
+          }
+          break;
         }
-        break;
-      }
-    case LineEndsKernel:
-      { /* Kernels for finding the end of thin lines */
-        switch ( (int) args->rho ) {
-          case 0:
-          default:
-            /* set of kernels to find all end of lines */
-            kernel=AcquireKernelInfo("LineEnds:1>;LineEnds:2>");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            break;
-          case 1:
-            /* kernel for 4-connected line ends - no rotation */
-            kernel=ParseKernelArray("3: 0,0,-  0,1,1  0,0,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-         case 2:
-            /* kernel to add for 8-connected lines - no rotation */
-            kernel=ParseKernelArray("3: 0,0,0  0,1,0  0,0,1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-         case 3:
-            /* kernel to add for orthogonal line ends - does not find corners */
-            kernel=ParseKernelArray("3: 0,0,0  0,1,1  0,0,0");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-         case 4:
-            /* traditional line end - fails on last T end */
-            kernel=ParseKernelArray("3: 0,0,0  0,1,-  0,0,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
+      case ConvexHullKernel:
+        {
+          KernelInfo
+            *new_kernel;
+          /* first set of 8 kernels */
+          kernel=ParseKernelArray("3: 1,1,-  1,0,-  1,-,0");
+          if (kernel == (KernelInfo *) NULL)
+            return(kernel);
+          kernel->type = type;
+          ExpandRotateKernelInfo(kernel, 90.0);
+          /* append the mirror versions too - no flip function yet */
+          new_kernel=ParseKernelArray("3: 1,1,1  1,0,-  -,-,0");
+          if (new_kernel == (KernelInfo *) NULL)
+            return(DestroyKernelInfo(kernel));
+          new_kernel->type = type;
+          ExpandRotateKernelInfo(new_kernel, 90.0);
+          LastKernelInfo(kernel)->next = new_kernel;
+          break;
         }
-        break;
-      }
-    case LineJunctionsKernel:
-      { /* kernels for finding the junctions of multiple lines */
-        switch ( (int) args->rho ) {
-          case 0:
-          default:
-            /* set of kernels to find all line junctions */
-            kernel=AcquireKernelInfo("LineJunctions:1@;LineJunctions:2>");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            break;
-          case 1:
-            /* Y Junction */
-            kernel=ParseKernelArray("3: 1,-,1  -,1,-  -,1,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-          case 2:
-            /* Diagonal T Junctions */
-            kernel=ParseKernelArray("3: 1,-,-  -,1,-  1,-,1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-          case 3:
-            /* Orthogonal T Junctions */
-            kernel=ParseKernelArray("3: -,-,-  1,1,1  -,1,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-          case 4:
-            /* Diagonal X Junctions */
-            kernel=ParseKernelArray("3: 1,-,1  -,1,-  1,-,1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
-          case 5:
-            /* Orthogonal X Junctions - minimal diamond kernel */
-            kernel=ParseKernelArray("3: -,1,-  1,1,1  -,1,-");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            RotateKernelInfo(kernel, args->sigma);
-            break;
+      case SkeletonKernel:
+        {
+          KernelInfo
+            *new_kernel;
+          switch ( (int) args->rho ) {
+            case 1:
+            default:
+              /* Traditional Skeleton...
+              ** A cyclically rotated single kernel
+              */
+              kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              ExpandRotateKernelInfo(kernel, 45.0); /* 8 rotations */
+              break;
+            case 2:
+              /* HIPR Variation of the cyclic skeleton
+              ** Corners of the traditional method made more forgiving,
+              ** but the retain the same cyclic order.
+              */
+              kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
+              if (kernel == (KernelInfo *) NULL)
+                return(kernel);
+              kernel->type = type;
+              new_kernel=ParseKernelArray("3: -,0,0  1,1,0  -,1,-");
+              if (new_kernel == (KernelInfo *) NULL)
+                return(new_kernel);
+              new_kernel->type = type;
+              LastKernelInfo(kernel)->next = new_kernel;
+              ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotations of the 2 kernels */
+              break;
+          }
+          break;
         }
-        break;
-      }
-    case RidgesKernel:
-      { /* Ridges - Ridge finding kernels */
-        KernelInfo
-          *new_kernel;
-        switch ( (int) args->rho ) {
-          case 1:
-          default:
-            kernel=ParseKernelArray("3x1:0,1,0");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            ExpandRotateKernelInfo(kernel, 90.0); /* 2 rotated kernels (symmetrical) */
-            break;
-          case 2:
-            kernel=ParseKernelArray("4x1:0,1,1,0");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotated kernels */
+      /* Distance Measuring Kernels */
+      case ChebyshevKernel:
+        {
+          if (args->rho < 1.0)
+            kernel->width = kernel->height = 3;  /* default radius = 1 */
+          else
+            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-            /* Kernels to find a stepped 'thick' line, 4 rotates + mirrors */
-            /* Unfortunatally we can not yet rotate a non-square kernel */
-            /* But then we can't flip a non-symetrical kernel either */
-            new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("4x3+2+1:0,1,1,- -,1,1,- -,1,1,0");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("4x3+1+1:-,1,1,0 -,1,1,- 0,1,1,-");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("4x3+2+1:-,1,1,0 -,1,1,- 0,1,1,-");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("3x4+1+1:0,-,- 1,1,1 1,1,1 -,-,0");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("3x4+1+2:0,-,- 1,1,1 1,1,1 -,-,0");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("3x4+1+1:-,-,0 1,1,1 1,1,1 0,-,-");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            new_kernel=ParseKernelArray("3x4+1+2:-,-,0 1,1,1 1,1,1 0,-,-");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(DestroyKernelInfo(kernel));
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            break;
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
+
+          for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              kernel->positive_range += ( kernel->values[i] =
+                  args->sigma*MagickMax(fabs((double)u),fabs((double)v)) );
+          kernel->maximum = kernel->values[0];
+          break;
         }
-        break;
-      }
-    case ConvexHullKernel:
-      {
-        KernelInfo
-          *new_kernel;
-        /* first set of 8 kernels */
-        kernel=ParseKernelArray("3: 1,1,-  1,0,-  1,-,0");
-        if (kernel == (KernelInfo *) NULL)
-          return(kernel);
-        kernel->type = type;
-        ExpandRotateKernelInfo(kernel, 90.0);
-        /* append the mirror versions too - no flip function yet */
-        new_kernel=ParseKernelArray("3: 1,1,1  1,0,-  -,-,0");
-        if (new_kernel == (KernelInfo *) NULL)
-          return(DestroyKernelInfo(kernel));
-        new_kernel->type = type;
-        ExpandRotateKernelInfo(new_kernel, 90.0);
-        LastKernelInfo(kernel)->next = new_kernel;
-        break;
-      }
-    case SkeletonKernel:
-      {
-        KernelInfo
-          *new_kernel;
-        switch ( (int) args->rho ) {
-          case 1:
-          default:
-            /* Traditional Skeleton...
-            ** A cyclically rotated single kernel
-            */
-            kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            ExpandRotateKernelInfo(kernel, 45.0); /* 8 rotations */
-            break;
-          case 2:
-            /* HIPR Variation of the cyclic skeleton
-            ** Corners of the traditional method made more forgiving,
-            ** but the retain the same cyclic order.
-            */
-            kernel=ParseKernelArray("3: 0,0,0  -,1,-  1,1,1");
-            if (kernel == (KernelInfo *) NULL)
-              return(kernel);
-            kernel->type = type;
-            new_kernel=ParseKernelArray("3: -,0,0  1,1,0  -,1,-");
-            if (new_kernel == (KernelInfo *) NULL)
-              return(new_kernel);
-            new_kernel->type = type;
-            LastKernelInfo(kernel)->next = new_kernel;
-            ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotations of the 2 kernels */
-            break;
+      case ManhattanKernel:
+        {
+          if (args->rho < 1.0)
+            kernel->width = kernel->height = 3;  /* default radius = 1 */
+          else
+            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
+                                kernel->height*sizeof(double));
+          if (kernel->values == (double *) NULL)
+            return(DestroyKernelInfo(kernel));
+
+          for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
+            for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
+              kernel->positive_range += ( kernel->values[i] =
+                  args->sigma*(labs((long) u)+labs((long) v)) );
+          kernel->maximum = kernel->values[0];
+          break;
         }
-        break;
-      }
-    /* Distance Measuring Kernels */
-    case ChebyshevKernel:
+      case OctagonalKernel:
       {
-        if (args->rho < 1.0)
-          kernel->width = kernel->height = 3;  /* default radius = 1 */
+fprintf(stderr, "args = %lf %lf\n", args->rho, args->sigma);
+        if (args->rho < 2.0)
+          kernel->width = kernel->height = 5;  /* default/minimum radius = 2 */
         else
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
@@ -1958,28 +1986,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            kernel->positive_range += ( kernel->values[i] =
-                 args->sigma*((labs((long) u)>labs((long) v)) ? labs((long) u) : labs((long) v)) );
-        kernel->maximum = kernel->values[0];
-        break;
-      }
-    case ManhattanKernel:
-      {
-        if (args->rho < 1.0)
-          kernel->width = kernel->height = 3;  /* default radius = 1 */
-        else
-           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
-        kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-
-        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
-                              kernel->height*sizeof(double));
-        if (kernel->values == (double *) NULL)
-          return(DestroyKernelInfo(kernel));
-
-        for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
-          for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
-            kernel->positive_range += ( kernel->values[i] =
-                 args->sigma*(labs((long) u)+labs((long) v)) );
+            {
+              double
+                r1 = MagickMax(fabs((double)u),fabs((double)v)),
+                r2 = floor((double)(labs((long)u)+labs((long)v)+1)/1.5);
+              kernel->positive_range += kernel->values[i] =
+                        args->sigma*MagickMax(r1,r2);
+            }
         kernel->maximum = kernel->values[0];
         break;
       }
@@ -1988,7 +2001,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
-           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
         kernel->values=(double *) AcquireQuantumMemory(kernel->width,
