@@ -1,3 +1,7 @@
+2011-04-01  6.6.9-3 Cristy  <quetzlzacatenango@image...>
+  * Set the caption height correctly for missing row geometry (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18447).
+
 2011-03-31  6.6.9-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-2.
 

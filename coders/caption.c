@@ -194,10 +194,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption);
   if (image->rows == 0)
     image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
-      draw_info->stroke_width)+0.5);
+      draw_info->interline_spacing+draw_info->stroke_width)+0.5);
   if (image->rows == 0)
     image->rows=(size_t) ((i+1)*draw_info->pointsize+
-      draw_info->stroke_width+0.5);
+      draw_info->interline_spacing+draw_info->stroke_width+0.5);
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
       InheritException(exception,&image->exception);
