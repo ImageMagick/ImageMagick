@@ -7092,6 +7092,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
+  if (image->depth < 8)
+     image->depth=8;
 
 #if (MAGICKCORE_QUANTUM_DEPTH > 16)
   /* PNG does not handle depths greater than 16 so reduce it even
