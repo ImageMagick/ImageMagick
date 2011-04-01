@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Notebook Reparatur Berlin" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur Berlin</a><!-- 2011060100025 gabi.schulze-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -197,9 +197,17 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-03-29  6.6.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-03-30  6.6.9-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Revised the png decoder to store the PNG IHDR and other known PNG    chunk data as properties, for later retrieval and reporting by "identify",    so users can easily and reliably discover the color-type, bit-depth, etc    that were in the input PNG datastream.</dd>
+  <dd> The PNG decoder sometimes set images with more than 256 different    gray-alpha pixels to storage_class=PseudoClass with an incorrect colormap.</dd>
+<dt>2011-03-30  6.6.9-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Add a "Resize" distortion method (distort equivalent of -resize).</dd>
+  <dd> Special CLI handling so -distort Resize takes a "geometry" argument.</dd>
+<dt>2011-03-29  6.6.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Expand PCL compressed pixel buffer to prevent delta compressed overrun.</dd>
+<dt>2011-03-29  6.6.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.9-1.</dd>
-<dt>2011-03-29 6.6.9-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2011-03-29  6.6.9-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Fix AdaptiveResizeImage() to use 'Mesh' Interpolation, and fix its    coordinate handling, as originally defined.</dd>
 <dt>2011-03-29  6.6.9-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support -statistic standard-deviation option.</dd>
@@ -209,24 +217,24 @@
 <dt>2011-03-28  6.6.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Optimize bilinear interpolation.</dd>
   <dd> Remove version from etc folder and instead use /etc/ImageMagick.</dd>
-<dt>2011-03-28 6.6.9-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2011-03-28  6.6.9-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Separated complex cropping function from TransformImage() as a new    function CropImageToTiles().  This new function returns either the    new cropped image, or a list of tiles, according to geometry, without    replacing the source image. The Source image may be part of a larger list    of images, without the function 'losing' the other images of the list.</dd>
 <dt>2011-03-27  6.6.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-10.</dd>
-<dt>2011-03-27 6.6.8-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2011-03-27  6.6.8-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Modified image handling in MogrifyImages() and MogrifyImage()    which improves overall handling, and allows correct %p, %n and the    %[fx:..] 't' and 'n' escape usage to work correctly.</dd>
   <dd> Added -duplicate as a multi-image sequence operator</dd>
 <dt>2011-03-26  6.6.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-9.</dd>
-<dt>2011-03-25 6.6.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2011-03-25  6.6.8-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add InterpolateMagickPixelPacket() method.</dd>
   <dd> Add support for the %[opaque] property.</dd>
 <dt>2011-03-25  6.6.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-8.</dd>
-<dt>2011-03-25 6.6.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2011-03-25  6.6.8-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix memory access bug in CloneString() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=18382).</dd>
   <dd> Avoid infinite loop when no space is available in MagickFormatCaption().</dd>
-<dt>2011-03-25 6.6.8-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+<dt>2011-03-25  6.6.8-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Removed the fix for %p and %n escapes, as it was not working right</dd>
 <dt>2011-03-24  6.6.8-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.8-7.</dd>
