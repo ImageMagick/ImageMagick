@@ -2253,7 +2253,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         blob=FileToBlob(path,~0,length,exception);
     }
 #endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_CONFIGURE_PATH))
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
   if (blob == (void *) NULL)
     {
       char

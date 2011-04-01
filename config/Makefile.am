@@ -16,7 +16,7 @@
 
 # Where architecture-independent configuration files get installed
 # (share/ImageMagick-version)
-configsharedir = $(SHARE_CONFIGURE_PATH)
+configsharedir = $(SHARE_PATH)
 configshare_DATA = \
 	config/configure.xml \
 	config/english.xml \
