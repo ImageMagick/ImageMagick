@@ -67,7 +67,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       loads them if found:
 
           $MAGICK_CONFIGURE_PATH
-          $MAGICK_HOME/etc/ImageMagick/config
+          $MAGICK_HOME/etc/ImageMagick
           $MAGICK_HOME/share/ImageMagick-6.6.9/config
           $HOME/.magick/
           <client path>/etc/ImageMagick/
@@ -80,7 +80,7 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       order, and loads them if found:
 
           $MAGICK_CONFIGURE_PATH
-          $MAGICK_HOME/etc/ImageMagick/config
+          $MAGICK_HOME/etc/ImageMagick
           $MAGICK_HOME/share/ImageMagick-6.6.9/config
           $HOME/.magick/
           <client path>/etc/ImageMagick/
