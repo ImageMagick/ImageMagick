@@ -67,10 +67,10 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       loads them if found:
 
           $MAGICK_CONFIGURE_PATH
-          $MAGICK_HOME/lib/ImageMagick-6.6.9/config
+          $MAGICK_HOME/etc/ImageMagick/config
           $MAGICK_HOME/share/ImageMagick-6.6.9/config
           $HOME/.magick/
-          <client path>/lib/ImageMagick-6.6.9/
+          <client path>/etc/ImageMagick/
           <current directory>/
 
     Font Files
@@ -80,10 +80,10 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       order, and loads them if found:
 
           $MAGICK_CONFIGURE_PATH
-          $MAGICK_HOME/lib/ImageMagick-6.6.9/config
+          $MAGICK_HOME/etc/ImageMagick/config
           $MAGICK_HOME/share/ImageMagick-6.6.9/config
           $HOME/.magick/
-          <client path>/lib/ImageMagick-6.6.9/
+          <client path>/etc/ImageMagick/
           <current directory>/
           $MAGICK_FONT_PATH
 
@@ -94,13 +94,13 @@ Unix/Linux/Darwin/Mac OS X/Cygwin/MinGW Install:
       and it uses the first match found:
 
           <current directory>/
-          $MAGICK_HOME/lib/ImageMagick-6.6.9/modules-Q16/coders/
+          $MAGICK_HOME/etc/ImageMagick/modules-Q16/coders/
           $HOME/.magick/
-          <client path>/../lib/ImageMagick-6.6.9/modules-Q16/coders/
-          $MAGICK_HOME/lib/ImageMagick-6.6.9/modules-Q16/coders
+          <client path>/../etc/ImageMagick/modules-Q16/coders/
+          $MAGICK_HOME/etc/ImageMagick/modules-Q16/coders
           $MAGICK_HOME/share/ImageMagick-6.6.9/modules-Q16/coders
           $HOME/.magick/
-          <client path>/lib/ImageMagick-6.6.9/modules-Q16/coders
+          <client path>/etc/ImageMagick/modules-Q16/coders
           <current directory>/
 
 Windows Vista, XP, and NT Install:
