@@ -1,3 +1,6 @@
+2011-03-31  6.6.9-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.9-2.
+
 2011-03-30  6.6.9-2 Glenn Randers-Pehrson <glennrp@image...>
   * Revised the png decoder to store the PNG IHDR and other known PNG
     chunk data as properties, for later retrieval and reporting by "identify",
