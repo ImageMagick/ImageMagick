@@ -2504,7 +2504,6 @@ SCANDecodeDelegate = @SCANDecodeDelegate@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHAREDSTATE_DIR = @SHAREDSTATE_DIR@
-SHARE_CONFIGURE_PATH = @SHARE_CONFIGURE_PATH@
 SHARE_PATH = @SHARE_PATH@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -2740,7 +2739,7 @@ M4_EXTRA_DIST = \
 
 # Where architecture-independent configuration files get installed
 # (share/ImageMagick-version)
-configsharedir = $(SHARE_CONFIGURE_PATH)
+configsharedir = $(SHARE_PATH)
 configshare_DATA = \
 	config/configure.xml \
 	config/english.xml \

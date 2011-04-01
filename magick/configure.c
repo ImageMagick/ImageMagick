@@ -663,9 +663,9 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       }
   }
 #if defined(MAGICKCORE_INSTALLED_SUPPORT)
-#if defined(MAGICKCORE_SHARE_CONFIGURE_PATH)
+#if defined(MAGICKCORE_SHARE_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(
-    MAGICKCORE_SHARE_CONFIGURE_PATH));
+    MAGICKCORE_SHARE_PATH));
 #endif
 #if defined(MAGICKCORE_CONFIGURE_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(
@@ -675,10 +675,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   (void) AppendValueToLinkedList(paths,ConstantString(
     MAGICKCORE_DOCUMENTATION_PATH));
 #endif
-#if defined(MAGICKCORE_SHARE_PATH)
-  (void) AppendValueToLinkedList(paths,ConstantString(MAGICKCORE_SHARE_PATH));
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_CONFIGURE_PATH))
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
   {
     char
       *registry_key;
@@ -716,11 +713,11 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
 #else
-        (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/",home,
+        (void) FormatMagickString(path,MaxTextExtent,"%s/etc/%s/",home,
           MAGICKCORE_CONFIGURE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
         (void) FormatMagickString(path,MaxTextExtent,"%s/share/%s/",home,
-          MAGICKCORE_SHARE_CONFIGURE_RELATIVE_PATH);
+          MAGICKCORE_SHARE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
         home=DestroyString(home);
@@ -741,11 +738,11 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       */
       (void) CopyMagickString(prefix,GetClientPath(),MaxTextExtent);
       ChopPathComponents(prefix,1);
-      (void) FormatMagickString(path,MaxTextExtent,"%s/share/%s/",prefix,
-        MAGICKCORE_SHARE_CONFIGURE_RELATIVE_PATH);
-      (void) AppendValueToLinkedList(paths,ConstantString(path));
-      (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/",prefix,
+      (void) FormatMagickString(path,MaxTextExtent,"%s/etc/%s/",prefix,
         MAGICKCORE_CONFIGURE_RELATIVE_PATH);
+      (void) AppendValueToLinkedList(paths,ConstantString(path));
+      (void) FormatMagickString(path,MaxTextExtent,"%s/share/%s/",prefix,
+        MAGICKCORE_SHARE_RELATIVE_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
     }

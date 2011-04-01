@@ -1310,6 +1310,9 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
   Image
     *image;
 
+  InterpolatePixelMethod
+    interpolate_method;
+
   MagickPixelPacket
     pixel;
 
@@ -1443,8 +1446,10 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
         "NoSuchImage","`%s'",expression);
       return(0.0);
     }
-  (void) InterpolateMagickPixelPacket(image,fx_info->view[i],
-    NearestNeighborInterpolatePixel,point.x,point.y,&pixel,exception);
+  interpolate_method=image->interpolate == UndefinedInterpolatePixel ?
+    NearestNeighborInterpolatePixel : image->interpolate;
+  (void) InterpolateMagickPixelPacket(image,fx_info->view[i],interpolate_method,
+    point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) &&
       (LocaleCompare(p,"intensity") != 0) &&
       (LocaleCompare(p,"luminance") != 0) &&
@@ -1499,9 +1504,13 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
         case BlueChannel: return(QuantumScale*pixel.blue);
         case OpacityChannel:
         {
+          MagickRealType
+            alpha;
+
           if (pixel.matte == MagickFalse)
             return(1.0);
-          return((MagickRealType) (QuantumScale*GetAlphaPixelComponent(&pixel)));
+          alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(&pixel));
+          return(alpha);
         }
         case IndexChannel:
         {
@@ -1514,7 +1523,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             }
           return(QuantumScale*pixel.index);
         }
-        case DefaultChannels: 
+        case DefaultChannels:
         {
           return(QuantumScale*MagickPixelIntensityToQuantum(&pixel));
         }
