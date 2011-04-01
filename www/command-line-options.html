@@ -188,7 +188,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011080100025 atlas.multimedia-->
+   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -4573,23 +4573,32 @@ c7x7b            c7x7         Circles 7x7 (black)
 c7x7w                         Circles 7x7 (white)
 </pre>
 
-<p> The <kbd>checks</kbd> pattern produces a 3 level checkerbord dither
-pattern.  Or you can define your own <em class="arg" >threshold map</em> in a
-personal or system <kbd>thresholds.xml</kbd> XML file. </p>
+<p> The <kbd>threshold</kbd> generated a simple 50% threshold of the image.
+This could be used with <em class="arg" >level</em> to do the equivelent of <a
+href="#posterize" >-posterize</a> to reduce an image to basic primary colors.
+</p>
 
-<p>To print a complete list of threshold, use the <a href="#list" >-list
-threshold</a> option.</p>
+<p>The <kbd>checks</kbd> pattern produces a 3 level checkerbord dither
+pattern. That is a grayscale will become a pattern of solid black, solid
+white, and  mid-tone colors into a checkerboard pattern of black and white.
+</p>
 
-<p>It is recommended that the <a href="#map" >+map</a> operator be used after
-applying <a href="#ordered-dither" >-ordered-dither</a> to reduce the number of
-colors an animated image sequence, to less that 256 colors. This ensures that
-a common or global color table is used when saving the result to a color
-limited file format such as GIF.  </p>
+<p>You can define your own <em class="arg" >threshold map</em> for ordered
+dithering and halftoning your images, in either personal or system
+<kbd>thresholds.xml</kbd> XML file. See <a href="resources.html" >Resources</A>
+for more details of configuration files. </p>
 
-<p>Note that at this time the exact same threshold dithering map is used for
-all color channels, no attempt is made to offset or rotate the map for
-different channels is made, to create an offset printing effect. (possible
-future expansion) </p>
+<p>To print a complete list of the thresholds that have been defined, use the
+<a href="#list" >-list threshold</a> option.</p>
+
+<p>Note that at this time the same threshold dithering map is used for all
+color channels, no attempt is made to offset or rotate the map for different
+channels is made, to create an offset printing effect. Also as the maps are
+simple threshold levels, the halftone and circle maps will create incomplete
+circles along the edges of a colored area. Also all the effects are purely
+on/off boolean effects, without anti-aliasing to make the circles smooth
+looking. Large dots can be made to look better with a small amount of blurring
+after being created. </p>
 
 
 <div style="margin: auto;">
