@@ -1,3 +1,8 @@
+2011-04-01  6.6.9-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Make the PNG encoder use depth==8 when incoming image->depth < 8
+    (the encoder later reduces the depth if it can), to avoid writing
+    an incorrect image.
+
 2011-04-02  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
   * Add of Octagon shape and Octagonal distance kernels for Morphology
 
