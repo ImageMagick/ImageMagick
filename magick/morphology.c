@@ -1971,7 +1971,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         }
       case OctagonalKernel:
       {
-fprintf(stderr, "args = %lf %lf\n", args->rho, args->sigma);
         if (args->rho < 2.0)
           kernel->width = kernel->height = 5;  /* default/minimum radius = 2 */
         else
