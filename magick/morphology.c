@@ -791,14 +791,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
 %    Octagon:[{radius}[,{scale}]]
 %       Generate octagonal shaped kernel of given radius and constant scale.
-%       Default radius is 2 producing a 5x5 kernel. A radius of 1 will result
+%       Default radius is 3 producing a 7x7 kernel. A radius of 1 will result
 %       in "Diamond" kernel.
 %
 %    Disk:[{radius}[,{scale}]]
 %       Generate a binary disk, thresholded at the radius given, the radius
 %       may be a float-point value. Final Kernel size is floor(radius)*2+1
-%       square. A radius of 3.5 is the default, though this is also equivelent
-%       to a "Octagon:3" Kernel
+%       square. A radius of 5.3 is the default.
 %
 %       NOTE: That a low radii Disk kernels produce the same results as
 %       many of the previously defined kernels, but differ greatly at larger
@@ -808,7 +807,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %          "Disk:2"    => "Diamond:2"
 %          "Disk:2.5"  => "Octagon"
 %          "Disk:2.9"  => "Square:2"
-%          "Disk:3.5"  => "Octagon:3" and the Disk Default
+%          "Disk:3.5"  => "Octagon:3"
 %          "Disk:4.5"  => "Octagon:4"
 %          "Disk:5.4"  => "Octagon:5"
 %          "Disk:6.4"  => "Octagon:6"
@@ -1519,7 +1518,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       case OctagonKernel:
         {
           if (args->rho < 1.0)
-            kernel->width = kernel->height = 5;  /* default radius = 2 */
+            kernel->width = kernel->height = 7;  /* default radius = 3 */
           else
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
@@ -1542,10 +1541,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       case DiskKernel:
         {
           ssize_t
-          limit = (ssize_t)(args->rho*args->rho);
+            limit = (ssize_t)(args->rho*args->rho);
 
-          if (args->rho < 0.4)           /* default radius approx 3.5 */
-            kernel->width = kernel->height = 7L, limit = 10L;
+          if (args->rho < 0.4)           /* default radius approx 5.3 */
+            kernel->width = kernel->height = 11L, limit = 28L;
           else
             kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
@@ -3512,10 +3511,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             fprintf(stderr, " (compose \"%s\")",
                  MagickOptionToMnemonic(MagickComposeOptions, rslt_compose) );
           (void) CompositeImageChannel(rslt_image,
-               (ChannelType) (channel & ~SyncChannels), curr_compose,
-               rslt_image, 0, 0);
-          rslt_image = DestroyImage(rslt_image);
-          rslt_image = curr_image;
+               (ChannelType) (channel & ~SyncChannels), rslt_compose,
+               curr_image, 0, 0);
+          curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */
         }
       if ( verbose == MagickTrue )
