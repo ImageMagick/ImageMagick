@@ -1,11 +1,17 @@
+2011-04-03  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
+  * Add of Octagon shape and Octagonal distance kernels for Morphology
+  * Fix minor Morphology kernel compose bug
+  * Fix segmentation fault for errors in a list of morphology 'named' kernels
+  * Added a range of kernels used for specialised thinning purposes
+  * Added a "Skeleton:3" kernel from a thinning kernel study
+  * Removed origin pixel from many Hit-and-Miss kernels allowing kernels
+    to not only be used for thinning, but also thickening.
+  * Renamed "ThinDiagonals" Kernel to just "Diagonals"
+
 2011-04-02  6.6.9-4 Glenn Randers-Pehrson <glennrp@image...>
   * Make the PNG encoder use depth==8 when incoming image->depth < 8
     (the encoder later reduces the depth if it can), to avoid writing
     an incorrect image.
-
-2011-04-02  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
-  * Add of Octagon shape and Octagonal distance kernels for Morphology
-  * Fix minor Morphology kernel compose bug
 
 2011-04-01  6.6.9-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-3.
