@@ -5403,11 +5403,11 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     register IndexPacket
       *restrict indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
