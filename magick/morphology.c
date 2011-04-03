@@ -874,12 +874,17 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %         Type 2: Find two pixel thick lines and ridges
 %    ConvexHull
 %       Octagonal thicken kernel, to generate convex hulls of 45 degrees
-%    ThinSE:type
-%       A huge variety of Thinning Kernels designed to preserve conectivity.
 %    Skeleton:type
 %       Traditional skeleton generating kernels.
 %         Type 1: Tradional Skeleton kernel (4 connected skeleton)
 %         Type 2: HIPR2 Skeleton kernel (8 connected skeleton)
+%         Type 3: Thinning skeleton based on a ressearch paper by
+%                 Dan S. Bloomberg
+%    ThinSE:type
+%       A huge variety of Thinning Kernels designed to preserve conectivity.
+%       many other kernel sets use these kernels as source definitions.
+%       Type numbers are 41-49, 81-89, 481, and 482 which are based on
+%       the super and sub notations used in the source research paper.
 %
 %  Distance Measuring Kernels
 %
