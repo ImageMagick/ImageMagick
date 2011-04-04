@@ -1312,6 +1312,8 @@ static const OptionInfo
     { "TopHat", (ssize_t) TopHatMorphology, MagickFalse },
     { "BottomHat", (ssize_t) BottomHatMorphology, MagickFalse },
     { "Distance", (ssize_t) DistanceMorphology, MagickFalse },
+    { "Hmt", (ssize_t) HitAndMissMorphology, MagickFalse },
+    { "HitNMiss", (ssize_t) HitAndMissMorphology, MagickFalse },
     { "HitAndMiss", (ssize_t) HitAndMissMorphology, MagickFalse },
     { "Thinning", (ssize_t) ThinningMorphology, MagickFalse },
     { "Thicken", (ssize_t) ThickenMorphology, MagickFalse },
