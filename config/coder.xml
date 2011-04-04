@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE codermap [
-<!ELEMENT codermap (coder)+>
+<!ELEMENT codermap (coder)*>
 <!ELEMENT coder (#PCDATA)>
 <!ATTLIST coder magick CDATA #REQUIRED>
 <!ATTLIST coder name CDATA #REQUIRED>
