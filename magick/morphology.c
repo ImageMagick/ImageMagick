@@ -420,22 +420,10 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
 
   /* special handling of missing values in input string */
   switch( type ) {
+    /* Shape Kernel Defaults */
     case UnityKernel:
-      /* If no scale given (a 0 scale is valid! - set it to 1.0 */
       if ( (flags & WidthValue) == 0 )
-        args.rho = 1.0;
-      break;
-    case RectangleKernel:
-      if ( (flags & WidthValue) == 0 ) /* if no width then */
-        args.rho = args.sigma;         /* then  width = height */
-      if ( args.rho < 1.0 )            /* if width too small */
-          args.rho = 3;                 /* then  width = 3 */
-      if ( args.sigma < 1.0 )          /* if height too small */
-        args.sigma = args.rho;         /* then  height = width */
-      if ( (flags & XValue) == 0 )     /* center offset if not defined */
-        args.xi = (double)(((ssize_t)args.rho-1)/2);
-      if ( (flags & YValue) == 0 )
-        args.psi = (double)(((ssize_t)args.sigma-1)/2);
+        args.rho = 1.0;    /* Default scale = 1.0, zero is valid */
       break;
     case SquareKernel:
     case DiamondKernel:
@@ -443,14 +431,26 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
     case DiskKernel:
     case PlusKernel:
     case CrossKernel:
-      /* If no scale given (a 0 scale is valid! - set it to 1.0 */
       if ( (flags & HeightValue) == 0 )
-        args.sigma = 1.0;
+        args.sigma = 1.0;    /* Default scale = 1.0, zero is valid */
       break;
     case RingKernel:
       if ( (flags & XValue) == 0 )
-        args.xi = 1.0;
+        args.xi = 1.0;       /* Default scale = 1.0, zero is valid */
       break;
+    case RectangleKernel:    /* Rectangle - set size defaults */
+      if ( (flags & WidthValue) == 0 ) /* if no width then */
+        args.rho = args.sigma;         /* then  width = height */
+      if ( args.rho < 1.0 )            /* if width too small */
+          args.rho = 3;                /* then  width = 3 */
+      if ( args.sigma < 1.0 )          /* if height too small */
+        args.sigma = args.rho;         /* then  height = width */
+      if ( (flags & XValue) == 0 )     /* center offset if not defined */
+        args.xi = (double)(((ssize_t)args.rho-1)/2);
+      if ( (flags & YValue) == 0 )
+        args.psi = (double)(((ssize_t)args.sigma-1)/2);
+      break;
+    /* Distance Kernel Defaults */
     case ChebyshevKernel:
     case ManhattanKernel:
     case OctagonalKernel:
@@ -788,13 +788,6 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Generate a square shaped kernel of size radius*2+1, and defaulting
 %       to a 3x3 (radius 1).
 %
-%    Rectangle:{geometry}
-%       Simply generate a rectangle of 1's with the size given. You can also
-%       specify the location of the 'control point', otherwise the closest
-%       pixel to the center of the rectangle is selected.
-%
-%       Properly centered and odd sized rectangles work the best.
-%
 %    Octagon:[{radius}[,{scale}]]
 %       Generate octagonal shaped kernel of given radius and constant scale.
 %       Default radius is 3 producing a 7x7 kernel. A radius of 1 will result
@@ -820,6 +813,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       All other Disk shapes are unique to this kernel, but because a "Disk"
 %       is more circular when using a larger radius, using a larger radius is
 %       preferred over iterating the morphological operation.
+%
+%    Rectangle:{geometry}
+%       Simply generate a rectangle of 1's with the size given. You can also
+%       specify the location of the 'control point', otherwise the closest
+%       pixel to the center of the rectangle is selected.
+%
+%       Properly centered and odd sized rectangles work the best.
 %
 %  Symbol Dilation Kernels
 %
@@ -873,7 +873,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %         Type 1: Fine single pixel thick lines and ridges
 %         Type 2: Find two pixel thick lines and ridges
 %    ConvexHull
-%       Octagonal thicken kernel, to generate convex hulls of 45 degrees
+%       Octagonal Thickening Kernel, to generate convex hulls of 45 degrees
 %    Skeleton:type
 %       Traditional skeleton generating kernels.
 %         Type 1: Tradional Skeleton kernel (4 connected skeleton)
@@ -1550,7 +1550,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       case OctagonKernel:
         {
           if (args->rho < 1.0)
-            kernel->width = kernel->height = 7;  /* default radius = 3 */
+            kernel->width = kernel->height = 5;  /* default radius = 2 */
           else
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
@@ -1567,7 +1567,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                 kernel->positive_range += kernel->values[i] = args->sigma;
               else
                 kernel->values[i] = nan;
-          kernel->minimum = kernel->maximum = args->sigma;   /* a flat shape */
+          kernel->minimum = kernel->maximum = args->sigma;  /* a flat shape */
           break;
         }
       case DiskKernel:
