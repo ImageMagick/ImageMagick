@@ -1457,6 +1457,8 @@ static const OptionInfo
   StatisticOptions[] =
   {
     { "Undefined", (ssize_t) UndefinedStatistic, MagickTrue },
+    { "BottomHat", (ssize_t) BottomHatStatistic, MagickFalse },
+    { "Gradient", (ssize_t) GradientStatistic, MagickFalse },
     { "Maximum", (ssize_t) MaximumStatistic, MagickFalse },
     { "Mean", (ssize_t) MeanStatistic, MagickFalse },
     { "Median", (ssize_t) MedianStatistic, MagickFalse },
@@ -1464,6 +1466,7 @@ static const OptionInfo
     { "Mode", (ssize_t) ModeStatistic, MagickFalse },
     { "Nonpeak", (ssize_t) NonpeakStatistic, MagickFalse },
     { "StandardDeviation", (ssize_t) StandardDeviationStatistic, MagickFalse },
+    { "TopHat", (ssize_t) TopHatStatistic, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedMethod, MagickFalse }
   },
   StorageOptions[] =

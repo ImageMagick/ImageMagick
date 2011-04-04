@@ -61,13 +61,16 @@ typedef enum
 typedef enum
 {
   UndefinedStatistic,
+  BottomHatStatistic,
+  GradientStatistic,
   MaximumStatistic,
   MeanStatistic,
   MedianStatistic,
   MinimumStatistic,
   ModeStatistic,
   NonpeakStatistic,
-  StandardDeviationStatistic
+  StandardDeviationStatistic,
+  TopHatStatistic
 } StatisticType;
 
 extern MagickExport Image
