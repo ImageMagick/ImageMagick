@@ -1575,8 +1575,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           ssize_t
             limit = (ssize_t)(args->rho*args->rho);
 
-          if (args->rho < 0.4)           /* default radius approx 5.3 */
-            kernel->width = kernel->height = 11L, limit = 28L;
+          if (args->rho < 0.4)           /* default radius approx 4.3 */
+            kernel->width = kernel->height = 9L, limit = 18L;
           else
             kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
