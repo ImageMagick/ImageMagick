@@ -1977,6 +1977,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         {
           switch ( (int) args->rho ) {
             case 1:
+            default:
               /* Traditional Skeleton...
               ** A cyclically rotated single kernel
               */
@@ -2001,7 +2002,6 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotations of the 2 kernels */
               break;
             case 3:
-            default:
               /* Dan Bloomberg Skeleton, from his paper on 3x3 thinning SE's
               ** "Connectivity-Preserving Morphological Image Thransformations"
               ** by Dan S. Bloomberg, available on Leptonica, Selected Papers,
