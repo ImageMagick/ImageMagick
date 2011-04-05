@@ -96,7 +96,9 @@ typedef enum
   MinusSrcCompositeOp
 } CompositeOperator;
 
-/* Depreciated (renamed) Method Names for backward compatibility */
+/* Depreciated (renamed) Method Names for backward compatibility
+ * However the CompositeOp value has not changed, just renamed.
+ */
 #define AddCompositeOp       ModulusAddCompositeOp
 #define SubtractCompositeOp  ModulusSubtractCompositeOp
 #define MinusCompositeOp     MinusDstCompositeOp
