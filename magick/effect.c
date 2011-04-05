@@ -5294,20 +5294,6 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         StatisticWidth*StatisticHeight/2+x,&pixel);
       switch (type)
       {
-        case BottomHatStatistic:
-        {
-          MagickPixelPacket
-            maximum;
-
-          maximum=GetMaximumPixelList(pixel_list[id]);
-          pixel.red=MagickAbsoluteValue(maximum.red-pixel.red);
-          pixel.green=MagickAbsoluteValue(maximum.green-pixel.green);
-          pixel.blue=MagickAbsoluteValue(maximum.blue-pixel.blue);
-          pixel.opacity=MagickAbsoluteValue(maximum.opacity-pixel.opacity);
-          if (image->colorspace == CMYKColorspace)
-            pixel.index=MagickAbsoluteValue(maximum.index-pixel.index);
-          break;
-        }
         case GradientStatistic:
         {
           MagickPixelPacket
@@ -5358,20 +5344,6 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         case StandardDeviationStatistic:
         {
           pixel=GetStandardDeviationPixelList(pixel_list[id]);
-          break;
-        }
-        case TopHatStatistic:
-        {
-          MagickPixelPacket
-            minimum;
-
-          minimum=GetMinimumPixelList(pixel_list[id]);
-          pixel.red=MagickAbsoluteValue(pixel.red-minimum.red);
-          pixel.green=MagickAbsoluteValue(pixel.green-minimum.green);
-          pixel.blue=MagickAbsoluteValue(pixel.blue-minimum.blue);
-          pixel.opacity=MagickAbsoluteValue(pixel.opacity-minimum.opacity);
-          if (image->colorspace == CMYKColorspace)
-            pixel.index=MagickAbsoluteValue(pixel.index-minimum.index);
           break;
         }
       }
