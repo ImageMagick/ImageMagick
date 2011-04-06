@@ -253,7 +253,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if ( end == (char *) NULL )
     end = strchr(kernel_string, '\0');
 
-  /* clear flags - for Expanding kernal lists thorugh rotations */
+  /* clear flags - for Expanding kernel lists thorugh rotations */
    flags = NoValue;
 
   /* Has a ':' in argument - New user kernel specification */
@@ -2459,15 +2459,19 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  The format of the MorphologyApply method is:
 %
 %      Image *MorphologyApply(const Image *image,MorphologyMethod method,
-%        const ssize_t iterations,const KernelInfo *kernel,
-%        const CompositeMethod compose, const double bias,
-%        ExceptionInfo *exception)
+%        const ChannelType channel, const ssize_t iterations,
+%        const KernelInfo *kernel, const CompositeMethod compose,
+%        const double bias, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the source image
 %
 %    o method: the morphology method to be applied.
+%
+%    o channel: the channels to which the operations are applied
+%               The channel 'sync' flag determines if 'alpha weighting' is
+%               applied for convolution style operations.
 %
 %    o iterations: apply the operation this many times (or no change).
 %                  A value of -1 means loop until no change found.
@@ -2489,14 +2493,13 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %
 */
 
-
 /* Apply a Morphology Primative to an image using the given kernel.
-** Two pre-created images must be provided, no image is created.
+** Two pre-created images must be provided, and no image is created.
 ** It returns the number of pixels that changed between the images
-** for convergence determination.
+** for result convergence determination.
 */
-static size_t MorphologyPrimitive(const Image *image, Image
-     *result_image, const MorphologyMethod method, const ChannelType channel,
+static size_t MorphologyPrimitive(const Image *image, Image *result_image,
+     const MorphologyMethod method, const ChannelType channel,
      const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
 {
 #define MorphologyTag  "Morphology/Image"
@@ -2506,7 +2509,9 @@ static size_t MorphologyPrimitive(const Image *image, Image
     *q_view;
 
   ssize_t
-    y, offx, offy,
+    y, offx, offy;
+
+  size_t
     changed;
 
   MagickBooleanType
@@ -2540,7 +2545,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
     case ConvolveMorphology:
     case DilateMorphology:
     case DilateIntensityMorphology:
-    case DistanceMorphology:
+    /*case DistanceMorphology:*/
       /* kernel needs to used with reflection about origin */
       offx = (ssize_t) kernel->width-offx-1;
       offy = (ssize_t) kernel->height-offy-1;
@@ -2612,7 +2617,9 @@ static size_t MorphologyPrimitive(const Image *image, Image
         }
       p_indexes=GetCacheViewVirtualIndexQueue(p_view);
       q_indexes=GetCacheViewAuthenticIndexQueue(q_view);
-      r = offy;  /* offset to the origin pixel in 'p' */
+
+      /* offset to origin in 'p'. while 'q' points to it directly */
+      r = offy;
 
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2790,7 +2797,9 @@ static size_t MorphologyPrimitive(const Image *image, Image
       }
     p_indexes=GetCacheViewVirtualIndexQueue(p_view);
     q_indexes=GetCacheViewAuthenticIndexQueue(q_view);
-    r = (image->columns+kernel->width)*offy+offx; /* offset to origin in 'p' */
+
+    /* offset to origin in 'p'. while 'q' points to it directly */
+    r = (image->columns+kernel->width)*offy+offx;
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -3118,8 +3127,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
               k_indexes += image->columns+kernel->width;
             }
             break;
-
-
+#if 0
         case DistanceMorphology:
             /* Add kernel Value and select the minimum value found.
             ** The result is a iterative distance from edge of image shape.
@@ -3149,7 +3157,7 @@ static size_t MorphologyPrimitive(const Image *image, Image
               k_indexes += image->columns+kernel->width;
             }
             break;
-
+#endif
         case UndefinedMorphology:
         default:
             break; /* Do nothing */
@@ -3240,10 +3248,383 @@ static size_t MorphologyPrimitive(const Image *image, Image
   result_image->type=image->type;
   q_view=DestroyCacheView(q_view);
   p_view=DestroyCacheView(p_view);
-  return(status ? (size_t) changed : 0);
+  return(status ? (ssize_t)changed : -1);
 }
 
+/* This is almost identical to the MorphologyPrimative() function above,
+** but will apply the primitive directly to the image in two passes.
+**
+** That is after each row is 'Sync'ed' into the image, the next row will
+** make use of those values as part of the calculation of the next row.
+** It then repeats, but going in the oppisite (bottom-up) direction.
+**
+** Because of this 'iterative' handling this function can not make use
+** of multi-threaded, parellel processing.
+*/
+static size_t MorphologyPrimitiveDirect(const Image *image,
+     const MorphologyMethod method, const ChannelType channel,
+     const KernelInfo *kernel,ExceptionInfo *exception)
+{
+  CacheView
+    *auth_view,
+    *virt_view;
 
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y, offx, offy;
+
+  size_t
+    changed;
+
+  status=MagickTrue;
+  changed=0;
+  progress=0;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(kernel != (KernelInfo *) NULL);
+  assert(kernel->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+
+  /* Some methods (including convolve) needs use a reflected kernel.
+   * Adjust 'origin' offsets to loop though kernel as a reflection.
+   */
+  offx = kernel->x;
+  offy = kernel->y;
+  switch(method) {
+    case DistanceMorphology:
+      /* kernel needs to used with reflection about origin */
+      offx = (ssize_t) kernel->width-offx-1;
+      offy = (ssize_t) kernel->height-offy-1;
+      break;
+#if 0
+    case ?????Morphology:
+      /* kernel is used as is, without reflection */
+      break;
+#endif
+    default:
+      assert("Not a PrimativeDirect Morphology Method" != (char *) NULL);
+      break;
+  }
+
+  /* DO NOT THREAD THIS CODE! */
+  /* two views into same image (virtual, and actual) */
+  virt_view=AcquireCacheView(image);
+  auth_view=AcquireCacheView(image);
+
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register const IndexPacket
+      *restrict p_indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register IndexPacket
+      *restrict q_indexes;
+
+    register ssize_t
+      x;
+
+    ssize_t
+      r;
+
+    /* NOTE read virtual pixels, and authentic pixels, from the same image!
+    ** we read using virtual to get virtual pixel handling, but write back
+    ** into the same image.
+    **
+    ** Only top half of kernel is processed as we do a single pass downward
+    ** through the image iterating the distance function as we go.
+    */
+    if (status == MagickFalse)
+      break;
+    p=GetCacheViewVirtualPixels(virt_view, -offx,  y-offy,
+         image->columns+kernel->width,  1+offy,  exception);
+    q=GetCacheViewAuthenticPixels(auth_view,0,y,image->columns,1,
+         exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      status=MagickFalse;
+    if (status == MagickFalse)
+      break;
+    p_indexes=GetCacheViewVirtualIndexQueue(virt_view);
+    q_indexes=GetCacheViewAuthenticIndexQueue(auth_view);
+
+    /* offset to origin in 'p'. while 'q' points to it directly */
+    r = (image->columns+kernel->width)*offy+offx;
+
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        v;
+
+      register ssize_t
+        u;
+
+      register const double
+        *restrict k;
+
+      register const PixelPacket
+        *restrict k_pixels;
+
+      register const IndexPacket
+        *restrict k_indexes;
+
+      MagickPixelPacket
+        result;
+
+      /* Defaults */
+      result.red     = (MagickRealType) q->red;
+      result.green   = (MagickRealType) q->green;
+      result.blue    = (MagickRealType) q->blue;
+      result.opacity = QuantumRange - (MagickRealType) q->opacity;
+      result.index   = 0.0;
+      if ( image->colorspace == CMYKColorspace)
+         result.index   = (MagickRealType) *q_indexes;
+
+      switch ( method ) {
+        case DistanceMorphology:
+            /* Add kernel Value and select the minimum value found. */
+            k = &kernel->values[ kernel->width*kernel->height-1 ];
+            k_pixels = p;
+            k_indexes = p_indexes;
+            for (v=0; v <= (ssize_t) offy; v++) {
+              for (u=0; u < (ssize_t) kernel->width; u++, k--) {
+                if ( IsNan(*k) ) continue;
+                Minimize(result.red,     (*k)+k_pixels[u].red);
+                Minimize(result.green,   (*k)+k_pixels[u].green);
+                Minimize(result.blue,    (*k)+k_pixels[u].blue);
+                Minimize(result.opacity, (*k)+QuantumRange-k_pixels[u].opacity);
+                if ( image->colorspace == CMYKColorspace)
+                  Minimize(result.index,   (*k)+k_indexes[u]);
+              }
+              k_pixels += image->columns+kernel->width;
+              k_indexes += image->columns+kernel->width;
+            }
+            /* repeat with the just processed pixels of this row */
+            k = &kernel->values[ kernel->width*(offy+1)-1 ];
+            k_pixels = q-offx;
+            k_indexes = q_indexes-offx;
+              for (u=0; u < (ssize_t) offx; u++, k--) {
+                if ( x+u-offx < 0 ) continue;  /* off the edge! */
+                if ( IsNan(*k) ) continue;
+                Minimize(result.red,     (*k)+k_pixels[u].red);
+                Minimize(result.green,   (*k)+k_pixels[u].green);
+                Minimize(result.blue,    (*k)+k_pixels[u].blue);
+                Minimize(result.opacity, (*k)+QuantumRange-k_pixels[u].opacity);
+                if ( image->colorspace == CMYKColorspace)
+                  Minimize(result.index,   (*k)+k_indexes[u]);
+              }
+            break;
+        default:
+          /* result directly calculated or assigned */
+          break;
+      }
+      /* Assign the resulting pixel values - Clamping Result */
+      if ((channel & RedChannel) != 0)
+        q->red = ClampToQuantum(result.red);
+      if ((channel & GreenChannel) != 0)
+        q->green = ClampToQuantum(result.green);
+      if ((channel & BlueChannel) != 0)
+        q->blue = ClampToQuantum(result.blue);
+      if ((channel & OpacityChannel) != 0
+          && image->matte == MagickTrue )
+        q->opacity = ClampToQuantum(QuantumRange-result.opacity);
+      if ((channel & IndexChannel) != 0
+          && image->colorspace == CMYKColorspace)
+        q_indexes[x] = ClampToQuantum(result.index);
+      /* Count up changed pixels */
+      if (   ( p[r].red != q->red )
+          || ( p[r].green != q->green )
+          || ( p[r].blue != q->blue )
+          || ( p[r].opacity != q->opacity )
+          || ( image->colorspace == CMYKColorspace &&
+                  p_indexes[r] != q_indexes[x] ) )
+        changed++;  /* The pixel was changed in some way! */
+
+      p++; /* increment pixel buffers */
+      q++;
+    } /* x */
+
+    if ( SyncCacheViewAuthenticPixels(auth_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      if ( SetImageProgress(image,MorphologyTag,progress++,image->rows)
+                == MagickFalse )
+        status=MagickFalse;
+
+  } /* y */
+
+  /* Do the reversed pass through the image */
+  for (y=(ssize_t)image->rows-1; y >= 0; y--)
+  {
+    register const PixelPacket
+      *restrict p;
+
+    register const IndexPacket
+      *restrict p_indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register IndexPacket
+      *restrict q_indexes;
+
+    register ssize_t
+      x;
+
+    ssize_t
+      r;
+
+    /* NOTE read virtual pixels, and authentic pixels, from the same image!
+    ** we read using virtual to get virtual pixel handling, but write back
+    ** into the same image.
+    **
+    ** Only the bottom half of the kernel will be processes as we
+    ** up the image.
+    */
+    if (status == MagickFalse)
+      break;
+    p=GetCacheViewVirtualPixels(virt_view, offx-kernel->height+1,  y,
+         image->columns+kernel->width, kernel->height-offx,  exception);
+    q=GetCacheViewAuthenticPixels(auth_view,0,y,image->columns,1,
+         exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      status=MagickFalse;
+    if (status == MagickFalse)
+      break;
+    p_indexes=GetCacheViewVirtualIndexQueue(virt_view);
+    q_indexes=GetCacheViewAuthenticIndexQueue(auth_view);
+
+    /* adjust positions to end of row */
+    p += image->columns-1;
+    q += image->columns-1;
+
+    /* offset to origin in 'p'. while 'q' points to it directly */
+    r = offx;
+
+    for (x=(ssize_t)image->columns-1; x >= 0; x--)
+    {
+      ssize_t
+        v;
+
+      register ssize_t
+        u;
+
+      register const double
+        *restrict k;
+
+      register const PixelPacket
+        *restrict k_pixels;
+
+      register const IndexPacket
+        *restrict k_indexes;
+
+      MagickPixelPacket
+        result;
+
+      /* Defaults */
+      result.red     = (MagickRealType) q->red;
+      result.green   = (MagickRealType) q->green;
+      result.blue    = (MagickRealType) q->blue;
+      result.opacity = QuantumRange - (MagickRealType) q->opacity;
+      result.index   = 0.0;
+      if ( image->colorspace == CMYKColorspace)
+         result.index   = (MagickRealType) *q_indexes;
+
+      switch ( method ) {
+        case DistanceMorphology:
+            /* Add kernel Value and select the minimum value found. */
+            k = &kernel->values[ kernel->width*(offy+1)-1 ];
+            k_pixels = p;
+            k_indexes = p_indexes;
+            for (v=offy; v < (ssize_t) kernel->height; v++) {
+              for (u=0; u < (ssize_t) kernel->width; u++, k--) {
+                if ( IsNan(*k) ) continue;
+                Minimize(result.red,     (*k)+k_pixels[u].red);
+                Minimize(result.green,   (*k)+k_pixels[u].green);
+                Minimize(result.blue,    (*k)+k_pixels[u].blue);
+                Minimize(result.opacity, (*k)+QuantumRange-k_pixels[u].opacity);
+                if ( image->colorspace == CMYKColorspace)
+                  Minimize(result.index,   (*k)+k_indexes[u]);
+              }
+              k_pixels += image->columns+kernel->width;
+              k_indexes += image->columns+kernel->width;
+            }
+            /* repeat with the just processed pixels of this row */
+            k = &kernel->values[ kernel->width*offy+offx-1 ];
+            k_pixels = q-offx;
+            k_indexes = q_indexes-offx;
+              for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
+                if ( (size_t)(x+u-offx) >= image->columns ) continue;
+                if ( IsNan(*k) ) continue;
+                Minimize(result.red,     (*k)+k_pixels[u].red);
+                Minimize(result.green,   (*k)+k_pixels[u].green);
+                Minimize(result.blue,    (*k)+k_pixels[u].blue);
+                Minimize(result.opacity, (*k)+QuantumRange-k_pixels[u].opacity);
+                if ( image->colorspace == CMYKColorspace)
+                  Minimize(result.index,   (*k)+k_indexes[u]);
+              }
+            break;
+        default:
+          /* result directly calculated or assigned */
+          break;
+      }
+      /* Assign the resulting pixel values - Clamping Result */
+      if ((channel & RedChannel) != 0)
+        q->red = ClampToQuantum(result.red);
+      if ((channel & GreenChannel) != 0)
+        q->green = ClampToQuantum(result.green);
+      if ((channel & BlueChannel) != 0)
+        q->blue = ClampToQuantum(result.blue);
+      if ((channel & OpacityChannel) != 0
+          && image->matte == MagickTrue )
+        q->opacity = ClampToQuantum(QuantumRange-result.opacity);
+      if ((channel & IndexChannel) != 0
+          && image->colorspace == CMYKColorspace)
+        q_indexes[x] = ClampToQuantum(result.index);
+      /* Count up changed pixels */
+      if (   ( p[r].red != q->red )
+          || ( p[r].green != q->green )
+          || ( p[r].blue != q->blue )
+          || ( p[r].opacity != q->opacity )
+          || ( image->colorspace == CMYKColorspace &&
+                  p_indexes[r] != q_indexes[x] ) )
+        changed++;  /* The pixel was changed in some way! */
+
+      p--; /* go backward through pixel buffers */
+      q--;
+    } /* x */
+
+    if ( SyncCacheViewAuthenticPixels(auth_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      if ( SetImageProgress(image,MorphologyTag,progress++,image->rows)
+                == MagickFalse )
+        status=MagickFalse;
+
+  } /* y */
+  auth_view=DestroyCacheView(auth_view);
+  virt_view=DestroyCacheView(virt_view);
+  return(status ? (ssize_t)changed : -1);
+}
+
+/* Apply a Morphology by calling theabove low level primitive application
+** functions.  This function handles any iteration loops, composition or
+** re-iteration of results, and compound morphology methods that is based
+** on multiple low-level (staged) morphology methods.
+**
+** Basically this provides the complex grue between the requested morphology
+** method and raw low-level implementation (above).
+*/
 MagickExport Image *MorphologyApply(const Image *image, const ChannelType
      channel,const MorphologyMethod method, const ssize_t iterations,
      const KernelInfo *kernel, const CompositeOperator compose,
@@ -3254,7 +3635,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
   Image
     *curr_image,    /* Image we are working with or iterating */
-    *work_image,    /* secondary image for primative iteration */
+    *work_image,    /* secondary image for primitive iteration */
     *save_image,    /* saved image - for 'edge' method only */
     *rslt_image;    /* resultant image - after multi-kernel handling */
 
@@ -3265,7 +3646,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     *this_kernel;      /* the kernel being applied */
 
   MorphologyMethod
-    primative;      /* the current morphology primative being applied */
+    primitive;      /* the current morphology primitive being applied */
 
   CompositeOperator
     rslt_compose;   /* multi-kernel compose method for results to use */
@@ -3274,17 +3655,19 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     verbose;        /* verbose output of results */
 
   size_t
-    method_loop,    /* Loop 1: number of compound method iterations */
+    method_loop,    /* Loop 1: number of compound method iterations (norm 1) */
     method_limit,   /*         maximum number of compound method iterations */
     kernel_number,  /* Loop 2: the kernel number being applied */
-    stage_loop,     /* Loop 3: primative loop for compound morphology */
-    stage_limit,    /*         how many primatives in this compound */
-    kernel_loop,    /* Loop 4: iterate the kernel (basic morphology) */
+    stage_loop,     /* Loop 3: primitive loop for compound morphology */
+    stage_limit,    /*         how many primitives are in this compound */
+    kernel_loop,    /* Loop 4: iterate the kernel over image */
     kernel_limit,   /*         number of times to iterate kernel */
-    count,          /* total count of primative steps applied */
-    changed,        /* number pixels changed by last primative operation */
+    count,          /* total count of primitive steps applied */
     kernel_changed, /* total count of changed using iterated kernel */
     method_changed; /* total count of changed over method iteration */
+
+  ssize_t
+    changed;        /* number pixels changed by last primitive operation */
 
   char
     v_info[80];
@@ -3296,7 +3679,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-  count = 0;      /* number of low-level morphology primatives performed */
+  count = 0;      /* number of low-level morphology primitives performed */
   if ( iterations == 0 )
     return((Image *)NULL);   /* null operation - nothing to do! */
 
@@ -3315,17 +3698,17 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
   /* Initialize specific methods
    * + which loop should use the given iteratations
-   * + how many primatives make up the compound morphology
+   * + how many primitives make up the compound morphology
    * + multi-kernel compose method to use (by default)
    */
   method_limit = 1;       /* just do method once, unless otherwise set */
   stage_limit = 1;        /* assume method is not a compound */
   rslt_compose = compose; /* and we are composing multi-kernels as given */
   switch( method ) {
-    case SmoothMorphology:  /* 4 primative compound morphology */
+    case SmoothMorphology:  /* 4 primitive compound morphology */
       stage_limit = 4;
       break;
-    case OpenMorphology:    /* 2 primative compound morphology */
+    case OpenMorphology:    /* 2 primitive compound morphology */
     case OpenIntensityMorphology:
     case TopHatMorphology:
     case CloseMorphology:
@@ -3342,6 +3725,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       method_limit = kernel_limit;  /* iterate the whole method */
       kernel_limit = 1;             /* do not do kernel iteration  */
       break;
+    case DistanceMorphology:
+      kernel_limit = 1;  /* Can not iterate direct modify in main loop - yet */
+      break;
     default:
       break;
   }
@@ -3352,7 +3738,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   if ( rslt_compose == UndefinedCompositeOp )
     rslt_compose = NoCompositeOp; /* still not defined! Then re-iterate */
 
-  /* Some methods require a reflected kernel to use with primatives.
+  /* Some methods require a reflected kernel to use with primitives.
    * Create the reflected kernel for those methods. */
   switch ( method ) {
     case CorrelateMorphology:
@@ -3389,66 +3775,66 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       while ( stage_loop < stage_limit ) {
         stage_loop++;   /* The stage of the compound morphology */
 
-        /* Select primative morphology for this stage of compound method */
+        /* Select primitive morphology for this stage of compound method */
         this_kernel = norm_kernel; /* default use unreflected kernel */
-        primative = method;        /* Assume method is a primative */
+        primitive = method;        /* Assume method is a primitive */
         switch( method ) {
           case ErodeMorphology:      /* just erode */
           case EdgeInMorphology:     /* erode and image difference */
-            primative = ErodeMorphology;
+            primitive = ErodeMorphology;
             break;
           case DilateMorphology:     /* just dilate */
           case EdgeOutMorphology:    /* dilate and image difference */
-            primative = DilateMorphology;
+            primitive = DilateMorphology;
             break;
           case OpenMorphology:       /* erode then dialate */
           case TopHatMorphology:     /* open and image difference */
-            primative = ErodeMorphology;
+            primitive = ErodeMorphology;
             if ( stage_loop == 2 )
-              primative = DilateMorphology;
+              primitive = DilateMorphology;
             break;
           case OpenIntensityMorphology:
-            primative = ErodeIntensityMorphology;
+            primitive = ErodeIntensityMorphology;
             if ( stage_loop == 2 )
-              primative = DilateIntensityMorphology;
+              primitive = DilateIntensityMorphology;
             break;
           case CloseMorphology:      /* dilate, then erode */
           case BottomHatMorphology:  /* close and image difference */
             this_kernel = rflt_kernel; /* use the reflected kernel */
-            primative = DilateMorphology;
+            primitive = DilateMorphology;
             if ( stage_loop == 2 )
-              primative = ErodeMorphology;
+              primitive = ErodeMorphology;
             break;
           case CloseIntensityMorphology:
             this_kernel = rflt_kernel; /* use the reflected kernel */
-            primative = DilateIntensityMorphology;
+            primitive = DilateIntensityMorphology;
             if ( stage_loop == 2 )
-              primative = ErodeIntensityMorphology;
+              primitive = ErodeIntensityMorphology;
             break;
           case SmoothMorphology:         /* open, close */
             switch ( stage_loop ) {
               case 1: /* start an open method, which starts with Erode */
-                primative = ErodeMorphology;
+                primitive = ErodeMorphology;
                 break;
               case 2:  /* now Dilate the Erode */
-                primative = DilateMorphology;
+                primitive = DilateMorphology;
                 break;
               case 3:  /* Reflect kernel a close */
                 this_kernel = rflt_kernel; /* use the reflected kernel */
-                primative = DilateMorphology;
+                primitive = DilateMorphology;
                 break;
               case 4:  /* Finish the Close */
                 this_kernel = rflt_kernel; /* use the reflected kernel */
-                primative = ErodeMorphology;
+                primitive = ErodeMorphology;
                 break;
             }
             break;
           case EdgeMorphology:        /* dilate and erode difference */
-            primative = DilateMorphology;
+            primitive = DilateMorphology;
             if ( stage_loop == 2 ) {
               save_image = curr_image;      /* save the image difference */
               curr_image = (Image *) image;
-              primative = ErodeMorphology;
+              primitive = ErodeMorphology;
             }
             break;
           case CorrelateMorphology:
@@ -3462,7 +3848,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             ** default).
             */
             this_kernel = rflt_kernel; /* use the reflected kernel */
-            primative = ConvolveMorphology;
+            primitive = ConvolveMorphology;
             break;
           default:
             break;
@@ -3475,7 +3861,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             (void) FormatMagickString(v_info,MaxTextExtent,"%s:%.20g.%.20g -> ",
              MagickOptionToMnemonic(MagickMorphologyOptions,method),(double)
              method_loop,(double) stage_loop);
-          else if ( primative != method )
+          else if ( primitive != method )
             (void) FormatMagickString(v_info, MaxTextExtent, "%s:%.20g -> ",
               MagickOptionToMnemonic(MagickMorphologyOptions, method),(double)
               method_loop);
@@ -3483,14 +3869,14 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             v_info[0] = '\0';
         }
 
-        /* Loop 4: Iterate the kernel with primative */
+        /* Loop 4: Iterate the kernel with primitive */
         kernel_loop = 0;
         kernel_changed = 0;
         changed = 1;
         while ( kernel_loop < kernel_limit && changed > 0 ) {
           kernel_loop++;     /* the iteration of this kernel */
 
-          /* Create a destination image, if not yet defined */
+          /* Create a clone as the destination image, if not yet defined */
           if ( work_image == (Image *) NULL )
             {
               work_image=CloneImage(image,0,0,MagickTrue,exception);
@@ -3505,20 +3891,27 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
           /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
-          changed = MorphologyPrimitive(curr_image, work_image, primative,
-                        channel, this_kernel, bias, exception);
-          kernel_changed += changed;
-          method_changed += changed;
+          if ( method != DistanceMorphology )
+            changed = MorphologyPrimitive(curr_image, work_image, primitive,
+                          channel, this_kernel, bias, exception);
+          else
+            changed = MorphologyPrimitiveDirect(work_image, primitive,
+                          channel, this_kernel, exception);
 
           if ( verbose == MagickTrue ) {
             if ( kernel_loop > 1 )
               fprintf(stderr, "\n"); /* add end-of-line from previous */
             (void) fprintf(stderr, "%s%s%s:%.20g.%.20g #%.20g => Changed %.20g",
               v_info,MagickOptionToMnemonic(MagickMorphologyOptions,
-              primative),(this_kernel == rflt_kernel ) ? "*" : "",
+              primitive),(this_kernel == rflt_kernel ) ? "*" : "",
               (double) (method_loop+kernel_loop-1),(double) kernel_number,
               (double) count,(double) changed);
           }
+          if ( changed < 0 )
+            goto error_cleanup;
+          kernel_changed += changed;
+          method_changed += changed;
+
           /* prepare next loop */
           { Image *tmp = work_image;   /* swap images for iteration */
             work_image = curr_image;
@@ -3527,9 +3920,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( work_image == image )
             work_image = (Image *) NULL; /* replace input 'image' */
 
-        } /* End Loop 4: Iterate the kernel with primative */
+        } /* End Loop 4: Iterate the kernel with primitive */
 
-        if ( verbose == MagickTrue && kernel_changed != changed )
+        if ( verbose == MagickTrue && kernel_changed != (size_t)changed )
           fprintf(stderr, "   Total %.20g",(double) kernel_changed);
         if ( verbose == MagickTrue && stage_loop < stage_limit )
           fprintf(stderr, "\n"); /* add end-of-line before looping */
@@ -3644,6 +4037,7 @@ exit_cleanup:
     reflected_kernel = DestroyKernelInfo(reflected_kernel);
   return(rslt_image);
 }
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
