@@ -1221,6 +1221,7 @@ static const OptionInfo
     { "QuantumFormat", (ssize_t) MagickQuantumFormatOptions, MagickFalse },
     { "Resource", (ssize_t) MagickResourceOptions, MagickFalse },
     { "SparseColor", (ssize_t) MagickSparseColorOptions, MagickFalse },
+    { "Statistic", (ssize_t) MagickStatisticOptions, MagickFalse },
     { "Storage", (ssize_t) MagickStorageOptions, MagickFalse },
     { "Stretch", (ssize_t) MagickStretchOptions, MagickFalse },
     { "Style", (ssize_t) MagickStyleOptions, MagickFalse },
@@ -1414,7 +1415,7 @@ static const OptionInfo
     { "Polygon", (ssize_t) PolygonPrimitive, MagickFalse },
     { "Polyline", (ssize_t) PolylinePrimitive, MagickFalse },
     { "Rectangle", (ssize_t) RectanglePrimitive, MagickFalse },
-    { "roundRectangle", (ssize_t) RoundRectanglePrimitive, MagickFalse },
+    { "RoundRectangle", (ssize_t) RoundRectanglePrimitive, MagickFalse },
     { "Text", (ssize_t) TextPrimitive, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedPrimitive, MagickFalse }
   },
@@ -1457,7 +1458,6 @@ static const OptionInfo
   StatisticOptions[] =
   {
     { "Undefined", (ssize_t) UndefinedStatistic, MagickTrue },
-    { "BottomHat", (ssize_t) BottomHatStatistic, MagickFalse },
     { "Gradient", (ssize_t) GradientStatistic, MagickFalse },
     { "Maximum", (ssize_t) MaximumStatistic, MagickFalse },
     { "Mean", (ssize_t) MeanStatistic, MagickFalse },
@@ -1466,7 +1466,6 @@ static const OptionInfo
     { "Mode", (ssize_t) ModeStatistic, MagickFalse },
     { "Nonpeak", (ssize_t) NonpeakStatistic, MagickFalse },
     { "StandardDeviation", (ssize_t) StandardDeviationStatistic, MagickFalse },
-    { "TopHat", (ssize_t) TopHatStatistic, MagickFalse },
     { (char *) NULL, (ssize_t) UndefinedMethod, MagickFalse }
   },
   StorageOptions[] =
