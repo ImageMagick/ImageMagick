@@ -2512,6 +2512,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
     y, offx, offy;
 
   size_t
+    virt_width,
     changed;
 
   MagickBooleanType
@@ -2535,6 +2536,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
 
   p_view=AcquireCacheView(image);
   q_view=AcquireCacheView(result_image);
+  virt_width=image->columns-kernel->width-1;
 
   /* Some methods (including convolve) needs use a reflected kernel.
    * Adjust 'origin' offsets to loop though kernel as a reflection.
@@ -2608,7 +2610,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(p_view, x,  -offy,1,
-          image->rows+kernel->height, exception);
+          image->rows+kernel->height-1, exception);
       q=GetCacheViewAuthenticPixels(q_view,x,0,1,result_image->rows,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         {
@@ -2786,8 +2788,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(p_view, -offx,  y-offy,
-         image->columns+kernel->width,  kernel->height,  exception);
+    p=GetCacheViewVirtualPixels(p_view, -offx, y-offy, virt_width,
+         kernel->height,  exception);
     q=GetCacheViewAuthenticPixels(q_view,0,y,result_image->columns,1,
          exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2799,7 +2801,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
     q_indexes=GetCacheViewAuthenticIndexQueue(q_view);
 
     /* offset to origin in 'p'. while 'q' points to it directly */
-    r = (image->columns+kernel->width)*offy+offx;
+    r = virt_width*offy + offx;
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -2906,8 +2908,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                     if ( image->colorspace == CMYKColorspace)
                       result.index   += (*k)*k_indexes[u];
                   }
-                  k_pixels += image->columns+kernel->width;
-                  k_indexes += image->columns+kernel->width;
+                  k_pixels += virt_width;
+                  k_indexes += virt_width;
                 }
                 if ((channel & RedChannel) != 0)
                   q->red = ClampToQuantum(result.red);
@@ -2945,8 +2947,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                     if ( image->colorspace == CMYKColorspace)
                       result.index   += alpha*k_indexes[u];
                   }
-                  k_pixels += image->columns+kernel->width;
-                  k_indexes += image->columns+kernel->width;
+                  k_pixels += virt_width;
+                  k_indexes += virt_width;
                 }
                 /* Sync'ed channels, all channels are modified */
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
@@ -2982,8 +2984,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(min.index,   (double) k_indexes[u]);
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             break;
 
@@ -3013,8 +3015,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                 if ( image->colorspace == CMYKColorspace)
                   Maximize(max.index,   (double) k_indexes[u]);
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             break;
 
@@ -3059,8 +3061,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                     Maximize(max.index,   (double) k_indexes[u]);
                 }
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             /* Pattern Match if difference is positive */
             min.red     -= max.red;     Maximize( min.red,     0.0 );
@@ -3093,8 +3095,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                   result.red = 1.0;
                 }
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             break;
 
@@ -3123,11 +3125,20 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                   result.red = 1.0;
                 }
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             break;
 #if 0
+  This code has been obsoleted by the MorphologyPrimitiveDirect() function.
+  However it is still (almost) correct coding for Grayscale Morphology.
+  That is...
+
+  GrayErode    is equivelent but with kernel values subtracted from pixels
+               without the kernel rotation
+  GreyDilate   is equivelent but using Maximum() instead of Minimum()
+               useing kernel rotation
+
         case DistanceMorphology:
             /* Add kernel Value and select the minimum value found.
             ** The result is a iterative distance from edge of image shape.
@@ -3136,9 +3147,6 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
             ** be the case. For example how about a distance from left edges?
             ** To work correctly with asymetrical kernels the reflected kernel
             ** needs to be applied.
-            **
-            ** Actually this is really a GreyErode with a negative kernel!
-            **
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
@@ -3153,8 +3161,8 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.index,   (*k)+k_indexes[u]);
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             break;
 #endif
@@ -3245,7 +3253,6 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
           status=MagickFalse;
       }
   } /* y */
-  result_image->type=image->type;
   q_view=DestroyCacheView(q_view);
   p_view=DestroyCacheView(p_view);
   return(status ? (ssize_t)changed : -1);
@@ -3279,6 +3286,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     y, offx, offy;
 
   size_t
+    virt_width,
     changed;
 
   status=MagickTrue;
@@ -3317,6 +3325,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
   /* two views into same image (virtual, and actual) */
   virt_view=AcquireCacheView(image);
   auth_view=AcquireCacheView(image);
+  virt_width=image->columns+kernel->width-1;
 
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3347,9 +3356,9 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     */
     if (status == MagickFalse)
       break;
-    p=GetCacheViewVirtualPixels(virt_view, -offx,  y-offy,
-         image->columns+kernel->width,  1+offy,  exception);
-    q=GetCacheViewAuthenticPixels(auth_view,0,y,image->columns,1,
+    p=GetCacheViewVirtualPixels(virt_view, -offx,  y-offy, virt_width, offy+1,
+         exception);
+    q=GetCacheViewAuthenticPixels(auth_view, 0, y, image->columns, 1,
          exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       status=MagickFalse;
@@ -3359,7 +3368,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     q_indexes=GetCacheViewAuthenticIndexQueue(auth_view);
 
     /* offset to origin in 'p'. while 'q' points to it directly */
-    r = (image->columns+kernel->width)*offy+offx;
+    r = virt_width*offy + offx;
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -3406,11 +3415,11 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.index,   (*k)+k_indexes[u]);
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             /* repeat with the just processed pixels of this row */
-            k = &kernel->values[ kernel->width*(offy+1)-1 ];
+            k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
             k_pixels = q-offx;
             k_indexes = q_indexes-offx;
               for (u=0; u < (ssize_t) offx; u++, k--) {
@@ -3484,6 +3493,8 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     ssize_t
       r;
 
+    if (status == MagickFalse)
+      break;
     /* NOTE read virtual pixels, and authentic pixels, from the same image!
     ** we read using virtual to get virtual pixel handling, but write back
     ** into the same image.
@@ -3491,11 +3502,9 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     ** Only the bottom half of the kernel will be processes as we
     ** up the image.
     */
-    if (status == MagickFalse)
-      break;
-    p=GetCacheViewVirtualPixels(virt_view, offx-kernel->height+1,  y,
-         image->columns+kernel->width, kernel->height-offx,  exception);
-    q=GetCacheViewAuthenticPixels(auth_view,0,y,image->columns,1,
+    p=GetCacheViewVirtualPixels(virt_view, -offx, y, virt_width, kernel->y+1,
+         exception);
+    q=GetCacheViewAuthenticPixels(auth_view, 0, y, image->columns, 1,
          exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       status=MagickFalse;
@@ -3543,7 +3552,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
       switch ( method ) {
         case DistanceMorphology:
             /* Add kernel Value and select the minimum value found. */
-            k = &kernel->values[ kernel->width*(offy+1)-1 ];
+            k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
             k_pixels = p;
             k_indexes = p_indexes;
             for (v=offy; v < (ssize_t) kernel->height; v++) {
@@ -3556,11 +3565,11 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.index,   (*k)+k_indexes[u]);
               }
-              k_pixels += image->columns+kernel->width;
-              k_indexes += image->columns+kernel->width;
+              k_pixels += virt_width;
+              k_indexes += virt_width;
             }
             /* repeat with the just processed pixels of this row */
-            k = &kernel->values[ kernel->width*offy+offx-1 ];
+            k = &kernel->values[ kernel->width*(kernel->y)+kernel->x-1 ];
             k_pixels = q-offx;
             k_indexes = q_indexes-offx;
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
@@ -3887,6 +3896,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
                   InheritException(exception,&work_image->exception);
                   goto error_cleanup;
                 }
+              /* work_image->type=image->type; ??? */
             }
 
           /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
