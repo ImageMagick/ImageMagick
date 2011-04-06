@@ -7070,6 +7070,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    storage_class=PseudoClass");
     }
+
+  if (image->storage_class != PseudoClass && image->colormap != NULL)
+    {
+      /* Free the bogus colormap; it can cause trouble later */
+       if (logging != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Freeing bogus colormap");
+       (void *) RelinquishMagickMemory(image->colormap);
+       image->colormap=NULL;
+    }
    
   if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
