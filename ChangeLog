@@ -14,6 +14,9 @@
   * Make the PNG encoder use depth==8 when incoming image->depth < 8
     (the encoder later reduces the depth if it can), to avoid writing
     an incorrect image.
+  * Remove any bogus colormap received by the PNG encoder with an image
+    that is not PseudoClass (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18475).
 
 2011-04-02  6.6.9-3 Cristy  <quetzlzacatenango@image...>
   * Added -statistic Gradient
