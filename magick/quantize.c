@@ -2686,11 +2686,14 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  if ((image->columns*image->rows) <= maximum_colors)
-    return(DirectToColormapImage(image,&image->exception));
-  if ((IsGrayImage(image,&image->exception) != MagickFalse) &&
-      (image->matte == MagickFalse))
-    (void) SetGrayscaleImage(image);
+  if (IsGrayImage(image,&image->exception) != MagickFalse)
+    {
+      if (image->matte == MagickFalse)
+        (void) SetGrayscaleImage(image);
+      else
+        if ((image->columns*image->rows) <= maximum_colors)
+          return(DirectToColormapImage(image,&image->exception));
+    }
   if ((image->storage_class == PseudoClass) &&
       (image->colors <= maximum_colors))
     return(MagickTrue);
