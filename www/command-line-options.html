@@ -188,7 +188,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011080100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -279,7 +279,7 @@ save to multiple files, if any of the following conditions exist...
   <h4><a id="affine"></a>-affine
   <em class="arg">s<sub>x</sub></em>,<em class="arg">r<sub>x</sub></em>,<em
   class="arg">r<sub>y</sub></em>,<em class="arg">s<sub>y</sub></em>[,<em
-  class="arg">t<sub>x</sub></em>,<em class="arg">t<sub>y</sub></em>]
+  class="arg">t<sub>x</sub></em>,<em class="arg">t<sub>y</sub></em>]</h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Set the drawing transformation matrix for combined rotating and scaling.</td><td style='text-align:right;'></td></tr></table>
@@ -1247,13 +1247,13 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 <p>As an example, to add contrast to an image with offsets, try this command:</p>
 
 <pre class="text">
-convert kittens.jpg -color-matrix \
-  " 1.5 0.0 0.0 0.0, 0.0, -0.157 \
-    0.0 1.5 0.0 0.0, 0.0, -0.157 \
-    0.0 0.0 1.5 0.0, 0.0, -0.157 \
-    0.0 0.0 0.0 1.0, 0.0,  0.0 \
-    0.0 0.0 0.0 0.0, 1.0,  0.0 \
-    0.0 0.0 0.0 0.0, 0.0,  1.0" kittens.png
+   convert kittens.jpg -color-matrix \
+     " 1.5 0.0 0.0 0.0, 0.0, -0.157 \
+       0.0 1.5 0.0 0.0, 0.0, -0.157 \
+       0.0 0.0 1.5 0.0, 0.0, -0.157 \
+       0.0 0.0 0.0 1.0, 0.0,  0.0 \
+       0.0 0.0 0.0 0.0, 1.0,  0.0 \
+       0.0 0.0 0.0 0.0, 0.0,  1.0" kittens.png
 </pre>
 <div style="margin: auto;">
   <h4><a id="colorspace"></a>-colorspace <em class="arg">value</em></h4>
@@ -1264,28 +1264,12 @@ convert kittens.jpg -color-matrix \
 <p>Choices are:</p>
 
 <pre class="text">
-  CMY
-  CMYK
-  Gray
-  HSB
-  HSL
-  HWB
-  Lab
-  Log
-  OHTA
-  Rec601Luma
-  Rec601YCbCr
-  Rec709Luma
-  Rec709YCbCr
-  RGB
-  sRGB
-  Transparent
-  XYZ
-  YCbCr
-  YCC
-  YIQ
-  YPbPr
-  YUV
+   CMY          CMYK         Gray         HSB
+   HSL          HWB          Lab          Log
+   OHTA         Rec601Luma   Rec601YCbCr  Rec709Luma
+   Rec709YCbCr  RGB          sRGB         Transparent
+   XYZ          YCbCr        YCC          YIQ
+   YPbPr        YUV
 </pre>
 
 <p>To print a complete list of colorspaces, use <a href="#list">-list colorspace</a>.</p>
@@ -1773,7 +1757,7 @@ available:</p>
     can achieve this with a single define:</p>
 
 <pre class="text">
-    -define png:include-chunk=none,gAMA
+   -define png:include-chunk=none,gAMA
 </pre>
 
     <p>The critical PNG chunks <kbd>IHDR</kbd>, <kbd>PLTE</kbd>,
@@ -1790,7 +1774,7 @@ available:</p>
     following for PNG output:</p>
 
 <pre class="text">
-    -define png:include-chunk=none,gama
+   -define png:include-chunk=none,gama
 </pre>
 
     <p>The default behavior is to include all known PNG ancillary chunks
@@ -1987,10 +1971,10 @@ animation is to be overlaid onto the display. </p>
 <p>Here are the valid methods:</p>
 
 <pre class="text">
-Undefined   0  No disposal specified (equivalent to '<kbd>none</kbd>').
-None        1  Do not dispose, just overlay next frame image.
-Background  2  Clear the frame area with the background color.
-Previous    3  Clear to the image prior to this frames overlay.
+   Undefined   0  No disposal specified (equivalent to '<kbd>none</kbd>').
+   None        1  Do not dispose, just overlay next frame image.
+   Background  2  Clear the frame area with the background color.
+   Previous    3  Clear to the image prior to this frames overlay.
 </pre>
 
 <p>You can also use the numbers given above, which is what the GIF format
@@ -2485,18 +2469,18 @@ href="#monochrome">-monochrome</a>, <a href="#remap ">-remap</a>, and <a href="#
 <p>The transformation primitives:</p>
 
 <pre class="text">
-   rotate          degrees
-   translate       dx,dy
-   scale           sx,sy
-   skewX           degrees
-   skewY           degrees
+   rotate     degrees
+   translate  dx,dy
+   scale      sx,sy
+   skewX      degrees
+   skewY      degrees
 </pre>
 
 <p>The pixel operation primitives:</p>
 
 <pre class="text">
-   color           x0,y0 method
-   matte           x0,y0 method
+   color  x0,y0 method
+   matte  x0,y0 method
 </pre>
 
 <p>The shape primitives are drawn in the color specified by the preceding <a href="#fill">-fill</a> setting.  For unfilled shapes, use <a href="#fill">-fill none</a>.  You can optionally control the stroke (the "outline" of a shape) with the <a href="#stroke">-stroke</a> and <a href="#strokewidth">-strokewidth</a> settings.</p>
@@ -3161,10 +3145,10 @@ affected by the <a href="#gravity">-gravity</a> option.</p>
 <p>Here,  <em class="arg">parameters</em> is a comma-separated list of numerical values. The number of values varies depending on which <em class="arg">function</em> is selected. Choose the <em class="arg">function</em> from:</p>
 
 <pre class="text">
-  Polynomial
-  Sinusoid
-  Arcsin
-  Arctan
+   Polynomial
+   Sinusoid
+   Arcsin
+   Arctan
 </pre>
 
 <p>To print a complete list of <a href="#function">-function</a> operators, use <a href="#list">-list function</a>. Descriptions follow.</p>
@@ -3548,13 +3532,13 @@ image histogram, and others.</p>
 <p>Choose from:</p>
 
 <pre class="text">
-  none
-  line
-  plane
-  partition
-  JPEG
-  GIF
-  PNG
+   none
+   line
+   plane
+   partition
+   JPEG
+   GIF
+   PNG
 </pre>
 
 <p>This option is used to specify the type of interlacing scheme for raw image formats such as <kbd>RGB</kbd> or <kbd>YUV</kbd>.</p>
@@ -3586,14 +3570,14 @@ the pixels surrounding that point.  That is how to determine the color of a
 point that falls between two, or even four different colored pixels. </p>
 
 <pre class="text">
-  integer:           The color of the top-left pixel (floor function)
-  nearest-neighbor:  The nearest pixel to the lookup point (rounded function)
-  average:           The average color of the surrounding four pixels
-  bilinear           A double linear interpolation of pixels (the default)
-  mesh               Divide area into two flat triangular interpolations
-  bicubic            Fitted bicubic-spines of surrounding 16 pixels
-  spline             Direct spline curves (colors are blurred)
-  filter             Use resize <a href="#filter">-filter</a> settings
+   integer           The color of the top-left pixel (floor function)
+   nearest-neighbor  The nearest pixel to the lookup point (rounded function)
+   average           The average color of the surrounding four pixels
+   bilinear          A double linear interpolation of pixels (the default)
+   mesh              Divide area into two flat triangular interpolations
+   bicubic           Fitted bicubic-spines of surrounding 16 pixels
+   spline            Direct spline curves (colors are blurred)
+   filter            Use resize <a href="#filter">-filter</a> settings
 </pre>
 
 <p>This most important for distortion operators such as <a href="#distort"
@@ -4022,9 +4006,9 @@ color (+ form). </p>
 <p>Use <a href="#list">-list resource</a> to list the current limits. For example, our system shows these limits:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'></span></p><pre class="text">
-File         Area       Memory          Map         Disk   Thread         Time
-------------------------------------------------------------------------------
- 768     12.404GB    8.6642GiB    23.104GiB  18.446744EB        8    unlimited
+  File         Area       Memory          Map         Disk   Thread         Time
+  ------------------------------------------------------------------------------
+   768     12.404GB    8.6642GiB    23.104GiB  18.446744EB        8    unlimited
 </pre>
 
 <p>Requests for pixel storage to keep intermediate images are satisfied by one of three resource categories: in-memory pool, memory-mapped files pool, and disk pool (in that order) depending on the <a href="../www/command-line-options.html#limit">&#x2011;limit</a> settings and whether the system honors a resource request. If the total size of allocated pixel storage in the given pool reaches the corresponding limit, the request is passed to the next pool. Additionally, requests that exceed the  <kbd>area</kbd> limit automagically are allocated on disk.</p>
@@ -4099,72 +4083,23 @@ normalization of mathematical images. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Print a list of supported arguments for various options or settings.  Choose from these list types:</td><td style='text-align:right;'></td></tr></table>
 
 <pre class="text">
-  Align
-  Alpha
-  Boolean
-  Channel
-  Class
-  ClipPath
-  Coder
-  Color
-  Colorspace
-  Command
-  Compose
-  Compress
-  Configure
-  DataType
-  Debug
-  Decoration
-  Delegate
-  Direction
-  Dispose
-  Distort
-  Dither
-  Endian
-  Evaluate
-  FillRule
-  Filter
-  Font
-  Format
-  Function
-  Gravity
-  ImageList
-  Intent
-  Interlace
-  Interpolate
-  Kernel
-  Layers
-  LineCap
-  LineJoin
-  List
-  Locale
-  LogEvent
-  Log
-  Magic
-  Method
-  Metric
-  Mime
-  Mode
-  Morphology
-  Module
-  Noise
-  Orientation
-  Policy
-  PolicyDomain
-  PolicyRights
-  Preview
-  Primitive
-  QuantumFormat
-  Resource
-  SparseColor
-  Storage
-  Stretch
-  Style
-  Threshold
-  Type
-  Units
-  Validate
-  VirtualPixel
+   Align          Alpha          Boolean        Channel
+   Class          ClipPath       Coder          Color
+   Colorspace     Command        Compose        Compress
+   Configure      DataType       Debug          Decoration
+   Delegate       Direction      Dispose        Distort
+   Dither         Endian         Evaluate       FillRule
+   Filter         Font           Format         Function
+   Gravity        ImageList      Intent         Interlace
+   Interpolate    Kernel         Layers         LineCap
+   LineJoin       List           Locale         LogEvent
+   Log            Magic          Method         Metric
+   Mime           Mode           Morphology     Module
+   Noise          Orientation    Policy         PolicyDomain
+   PolicyRights   Preview        Primitive      QuantumFormat
+   Resource       SparseColor    Storage        Stretch
+   Style          Threshold      Type           Units
+   Validate       VirtualPixel
 </pre>
 
 <p>These lists vary depending on your version of ImageMagick. Use "<kbd>-list
@@ -4185,18 +4120,18 @@ href="#debug">-debug</a> option is active.</p>
 characters:</p>
 
 <pre class="text">
-   %d   domain
-   %e   event
-   %f   function
-   %l   line
-   %m   module
-   %p   process ID
-   %r   real CPU time
-   %t   wall clock time
-   %u   user CPU time
-   %%   percent sign
-   \n   newline
-   \r   carriage return
+   %d  domain
+   %e  event
+   %f  function
+   %l  line
+   %m  module
+   %p  process ID
+   %r  real CPU time
+   %t  wall clock time
+   %u  user CPU time
+   %%  percent sign
+   \n  newline
+   \r  carriage return
 </pre>
 
 <p>For example:</p>
@@ -4236,12 +4171,12 @@ times.</p>
 <p>Choose from these <em class="arg">Standard Colormap</em> types:</p>
 
 <pre class="text">
-  best
-  default
-  gray
-  red
-  green
-  blue
+   best
+   default
+   gray
+   red
+   green
+   blue
 </pre>
 
 <p>The <em class="arg">X server</em> must support the <em class="arg">Standard
@@ -4260,17 +4195,17 @@ class="arg">xstdcmap(1)</em> for one way of creating Standard Colormaps.</p>
 <p>Here are the valid components of a map:</p>
 
 <pre class="text">
-  r        red pixel component
-  g        green pixel component
-  b        blue pixel component
-  a        alpha pixel component (0 is transparent)
-  o        opacity pixel component (0 is opaque)
-  i        grayscale intensity pixel component
-  c        cyan pixel component
-  m        magenta pixel component
-  y        yellow pixel component
-  k        black pixel component
-  p        pad component (always 0)
+   r  red pixel component
+   g  green pixel component
+   b  blue pixel component
+   a  alpha pixel component (0 is transparent)
+   o  opacity pixel component (0 is opaque)
+   i  grayscale intensity pixel component
+   c  cyan pixel component
+   m  magenta pixel component
+   y  yellow pixel component
+   k  black pixel component
+   p  pad component (always 0)
 </pre>
 
 <p>You can specify as many of these components as needed in any order (e.g.
@@ -4304,7 +4239,7 @@ style="background-color: #bdbdbd;">this shade of gray</span>.</p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>return the maximum intensity of an image sequence.</td><td style='text-align:right;'></td></tr></table>
 
 <div style="margin: auto;">
-  <h4><a id="median"></a>-median <em class="arg">radius</em></h4>
+  <h4><a id="median"></a>-median <em class="arg">geometry</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>apply a median filter to the image.</td><td style='text-align:right;'></td></tr></table>
@@ -4318,15 +4253,15 @@ style="background-color: #bdbdbd;">this shade of gray</span>.</p>
 <p>Choose from:</p>
 
 <pre class="text">
- AE      absolute error count, number of different pixels (-fuzz effected)
- FUZZ    mean color distance
- MAE     mean absolute error (normalized), average channel error distance
- MEPP    mean error per pixel (normalized mean error, normalized peak error)
- MSE     mean error squared, average of the channel error squared
- NCC     normalized cross correlation
- PAE     peak absolute (normalize peak absolute)
- PSNR    peak signal to noise ratio
- RMSE    root mean squared (normalized root mean squared)
+  AE     absolute error count, number of different pixels (-fuzz effected)
+  FUZZ   mean color distance
+  MAE    mean absolute error (normalized), average channel error distance
+  MEPP   mean error per pixel (normalized mean error, normalized peak error)
+  MSE    mean error squared, average of the channel error squared
+  NCC    normalized cross correlation
+  PAE    peak absolute (normalize peak absolute)
+  PSNR   peak signal to noise ratio
+  RMSE   root mean squared (normalized root mean squared)
 </pre>
 
 <p>Control the '<kbd>AE</kbd>', or absolute count of pixels that are different,
@@ -4352,7 +4287,7 @@ metrics</a> option.</p>
 
 
 <div style="margin: auto;">
-  <h4><a id="mode"></a>-mode <em class="arg">value</em></h4>
+  <h4><a id="mode"></a>-mode <em class="arg">geometry</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>make each pixel the 'predominate color' of the neighborhood.</td><td style='text-align:right;'>[<a href="../www/convert.html">convert</a>, <a href="../www/mogrify.html">mogrify</a>]</td></tr></table>
@@ -4485,7 +4420,7 @@ pixels which are outside the image proper are blurred into the final result.
 <p>The red, green, and blue intensities of an image are negated. White becomes black, yellow becomes blue, etc.  Use <a href="#negate">+negate</a> to only negate the grayscale pixels of the image.</p>
 
 <div style="margin: auto;">
-  <h4><a id="noise"></a>-noise <em class="arg">radius</em><br/>
+  <h4><a id="noise"></a>-noise <em class="arg">geometry</em><br/>
   +noise <em class="arg">type</em></h4>
 </div>
 
@@ -4498,13 +4433,13 @@ pixels which are outside the image proper are blurred into the final result.
 <p>Use <a href="#noise">+noise</a> followed by a noise <em class="arg">type</em> to add noise to an image. Choose from these noise types:</p>
 
 <pre class="text">
-Gaussian
-Impulse
-Laplacian
-Multiplicative
-Poisson
-Random
-Uniform
+   Gaussian
+   Impulse
+   Laplacian
+   Multiplicative
+   Poisson
+   Random
+   Uniform
 </pre>
 
 <p>To print a complete list of noises, use the <a href="#list">-list noise</a> option.</p>
@@ -4552,25 +4487,25 @@ given number of <em class="arg">levels</em> per color channel .  </td><td style=
 <p>You can choose from these standard threshold maps:</p>
 
 <pre class="text">
-threshold        1x1          Threshold 1x1 (non-dither)
-checks           2x1          Checkerboard 2x1 (dither)
-o2x2             2x2          Ordered 2x2 (dispersed)
-o3x3             3x3          Ordered 3x3 (dispersed)
-o4x4             4x4          Ordered 4x4 (dispersed)
-o8x8             8x8          Ordered 8x8 (dispersed)
-h4x4a            4x1          Halftone 4x4 (angled)
-h6x6a            6x1          Halftone 6x6 (angled)
-h8x8a            8x1          Halftone 8x8 (angled)
-h4x4o                         Halftone 4x4 (orthogonal)
-h6x6o                         Halftone 6x6 (orthogonal)
-h8x8o                         Halftone 8x8 (orthogonal)
-h16x16o                       Halftone 16x16 (orthogonal)
-c5x5b            c5x5         Circles 5x5 (black)
-c5x5w                         Circles 5x5 (white)
-c6x6b            c6x6         Circles 6x6 (black)
-c6x6w                         Circles 6x6 (white)
-c7x7b            c7x7         Circles 7x7 (black)
-c7x7w                         Circles 7x7 (white)
+   threshold   1x1   Threshold 1x1 (non-dither)
+   checks      2x1   Checkerboard 2x1 (dither)
+   o2x2        2x2   Ordered 2x2 (dispersed)
+   o3x3        3x3   Ordered 3x3 (dispersed)
+   o4x4        4x4   Ordered 4x4 (dispersed)
+   o8x8        8x8   Ordered 8x8 (dispersed)
+   h4x4a       4x1   Halftone 4x4 (angled)
+   h6x6a       6x1   Halftone 6x6 (angled)
+   h8x8a       8x1   Halftone 8x8 (angled)
+   h4x4o             Halftone 4x4 (orthogonal)
+   h6x6o             Halftone 6x6 (orthogonal)
+   h8x8o             Halftone 8x8 (orthogonal)
+   h16x16o           Halftone 16x16 (orthogonal)
+   c5x5b       c5x5  Circles 5x5 (black)
+   c5x5w             Circles 5x5 (white)
+   c6x6b       c6x6  Circles 6x6 (black)
+   c6x6w             Circles 6x6 (white)
+   c7x7b       c7x7  Circles 7x7 (black)
+   c7x7w             Circles 7x7 (white)
 </pre>
 
 <p> The <kbd>threshold</kbd> generated a simple 50% threshold of the image.
@@ -4633,15 +4568,15 @@ href="#channel">-channel</a> to enable alpha channel handling. </p>
 <p>Choose from these orientations:</p>
 
 <pre class="text">
-  bottom-left
-  bottom-right
-  left-bottom
-  left-top
-  right-bottom
-  right-top
-  top-left
-  top-right
-  undefined
+   bottom-left
+   bottom-right
+   left-bottom
+   left-top
+   right-bottom
+   right-top
+   top-left
+   top-right
+   undefined
 </pre>
 
 <p>To print a complete list of orientations, use the <a href="#list" >-list
@@ -4795,35 +4730,14 @@ orientation</a> option.</p>
 <p>Use this option to affect the preview operation of an image (e.g. <kbd>convert file.png -preview Gamma Preview:gamma.png</kbd>). Choose from these previews:</p>
 
 <pre class="text">
-  Rotate
-  Shear
-  Roll
-  Hue
-  Saturation
-  Brightness
-  Gamma
-  Spiff
-  Dull
-  Grayscale
-  Quantize
-  Despeckle
-  ReduceNoise
-  Add Noise
-  Sharpen
-  Blur
-  Threshold
-  EdgeDetect
-  Spread
-  Shade
-  Raise
-  Segment
-  Solarize
-  Swirl
-  Implode
-  Wave
-  OilPaint
-  CharcoalDrawing
-  JPEG
+   Rotate           Shear            Roll             Hue
+   Saturation       Brightness       Gamma            Spiff
+   Dull             Grayscale        Quantize         Despeckle
+   ReduceNoise      Add Noise        Sharpen          Blur
+   Threshold        EdgeDetect       Spread           Shade
+   Raise            Segment          Solarize         Swirl
+   Implode          Wave             OilPaint         CharcoalDrawing
+   JPEG
 </pre>
 
 <p>To print a complete list of previews, use the <a href="#list">-list preview</a> option.</p>
@@ -4905,11 +4819,11 @@ subsequent profiles from overwriting the preceding ones, e.g.,</p>
 <p>If filter-type is 4 or less, the specified filter-type is used for all scanlines:</p>
 
 <pre class="text">
-  0: none
-  1: sub
-  2: up
-  3: average
-  4: Paeth
+   0: none
+   1: sub
+   2: up
+   3: average
+   4: Paeth
 </pre>
 
 <p>If filter-type is 5, adaptive filtering is used when quality is greater than 50 and the image does not have a color map, otherwise no filtering is used.</p>
@@ -5402,11 +5316,11 @@ id="shared-memory"></a>-shared-memory</h4>
 <p>For Photo CD images, choose from these sizes:</p>
 
 <pre class="text">
-  192x128
-  384x256
-  768x512
-  1536x1024
-  3072x2048
+   192x128
+   384x256
+   768x512
+   1536x1024
+   3072x2048
 </pre>
 
 <div style="margin: auto;">
@@ -5527,12 +5441,13 @@ default value. </p>
 
 <p>Choose from these statistic types:</p>
 <pre class="text">
-  Maximum
-  Minimum
-  Mean
-  Median
-  Mode
-  Nonpeak
+   Gradient   maximum difference in area
+   Maximum    maximum value per channel in neighborhood
+   Minimum    minimum value per channel in neighborhood
+   Mean       average value per channel in neighborhood
+   Median     median value per channel in neighborhood
+   Mode       mode (most frequent) value per channel in neighborhood
+   Nonpeak    value just before or after the median value per channel in neighborhood
 </pre>
 
 <div style="margin: auto;">
@@ -5558,13 +5473,13 @@ default value. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>pixel storage type.  Here are the valid types:</td><td style='text-align:right;'></td></tr></table>
 
 <pre class="text">
-  char        store pixels as unsigned characters
-  double      store pixels as doubles
-  float       store pixels as floats
-  integer     store pixels as integers
-  long        store pixels as longs
-  quantum     store pixels in the native depth of your ImageMagick distribution
-  short       store pixels as unsigned shorts
+   char     unsigned characters
+   double   doubles
+   float    floats
+   integer  integers
+   long     longs
+   quantum  pixels in the native depth of your ImageMagick distribution
+   short    unsigned shorts
 </pre>
 
 <p>Float and double types are normalized from 0.0 to 1.0 otherwise the pixels
@@ -5579,16 +5494,16 @@ values range from 0 to the maximum value the storage type can support.</p>
 <p>This setting suggests a type of stretch that ImageMagick should try to apply to the currently selected font family. Select <em class="arg">fontStretch</em> from the following.</p>
 
 <pre class="text">
-        Any
-        Condensed
-        Expanded
-        ExtraCondensed
-        ExtraExpanded
-        Normal
-        SemiCondensed
-        SemiExpanded
-        UltraCondensed
-        UltraExpanded
+   Any
+   Condensed
+   Expanded
+   ExtraCondensed
+   ExtraExpanded
+   Normal
+   SemiCondensed
+   SemiExpanded
+   UltraCondensed
+   UltraExpanded
 </pre>
 
 <p>To print a complete list of stretch types, use <a href="#list">-list stretch</a>.</p>
@@ -5630,10 +5545,10 @@ the currently selected font family. Select <em class="arg">fontStyle</em> from
 the following.</p>
 
 <pre class="text">
-        Any
-        Italic
-        Normal
-        Oblique
+   Any
+   Italic
+   Normal
+   Oblique
 </pre>
 
 <p>For other settings that affect fonts, see the options <a href="#font">-font</a>, <a href="#family">-family</a>, <a href="#stretch">-stretch</a>, and <a href="#weight">-weight</a>. </p>
@@ -5973,13 +5888,13 @@ single pixel transparent 'missed' image is returned, in the same way as when a
 <p>The parameters are:</p>
 
 <pre class="text">
-  radius:    The radius of the Gaussian, in pixels,  not counting the center
-             pixel (default 0).
-  sigma:     The standard deviation of the Gaussian, in pixels (default 1.0).
-  amount:    The fraction of the difference between the original and the blur
-             image that is added back into the original (default 1.0).
-  threshold: The threshold, as a fraction of <em class="QR">QuantumRange</em>, needed to apply the
-             difference amount (default 0.05).
+   radius     The radius of the Gaussian, in pixels,  not counting the center
+              pixel (default 0).
+   sigma      The standard deviation of the Gaussian, in pixels (default 1.0).
+   amount     The fraction of the difference between the original and the blur
+              image that is added back into the original (default 1.0).
+   threshold  The threshold, as a fraction of <em class="QR">QuantumRange</em>, needed to apply the
+              difference amount (default 0.05).
 </pre>
 
 
@@ -6025,21 +5940,21 @@ image, but could also be set to a specify background color. </p>
 <p>Choose from these methods:</p>
 
 <pre class="text">
-  background:           the area surrounding the image is the background color
-  black:                the area surrounding the image is black
-  checker-tile:         alternate squares with image and background color
-  dither:               non-random 32x32 dithered pattern
-  edge:                 extend the edge pixel toward infinity
-  gray:                 the area surrounding the image is gray
-  horizontal-tile:      horizontally tile the image, background color above/below
-  horizontal-tile-edge: horizontally tile the image and replicate the side edge pixels
-  mirror:               mirror tile the image
-  random:               choose a random pixel from the image
-  tile:                 tile the image (default)
-  transparent:          the area surrounding the image is transparent blackness
-  vertical-tile:        vertically tile the image, sides are background color
-  vertical-tile-edge:   vertically tile the image and replicate the side edge pixels
-  white:                the area surrounding the image is white
+   background            the area surrounding the image is the background color
+   black                 the area surrounding the image is black
+   checker-tile          alternate squares with image and background color
+   dither                non-random 32x32 dithered pattern
+   edge                  extend the edge pixel toward infinity
+   gray                  the area surrounding the image is gray
+   horizontal-tile       horizontally tile the image, background color above/below
+   horizontal-tile-edge  horizontally tile the image and replicate the side edge pixels
+   mirror                mirror tile the image
+   random                choose a random pixel from the image
+   tile                  tile the image (default)
+   transparent           the area surrounding the image is transparent blackness
+   vertical-tile         vertically tile the image, sides are background color
+   vertical-tile-edge    vertically tile the image and replicate the side edge pixels
+   white                 the area surrounding the image is white
 </pre>
 
 <p>The default value is "edge".</p>
@@ -6062,14 +5977,14 @@ href="#blur">-blur</a>, and <a href="#sharpen">-sharpen</a>. </p>
 <p>Choose from these visual classes:</p>
 
 <pre class="text">
-  StaticGray
-  GrayScale
-  StaticColor
-  PseudoColor
-  TrueColor
-  DirectColor
-  default
-  visual id
+   StaticGray
+   GrayScale
+   StaticColor
+   PseudoColor
+   TrueColor
+   DirectColor
+   default
+   visual id
 </pre>
 
 <p>The X server must support the visual you choose, otherwise an error occurs. If a visual is not specified, the visual class that can display the most simultaneous colors on the default screen is chosen.</p>
