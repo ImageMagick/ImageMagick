@@ -185,7 +185,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Custom T-Shirts" href="http://www.ooshirts.com">Custom T-Shirts</a><!-- 2011050100030 ooshirts.com-->
+   <a title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011070100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -248,6 +248,13 @@
 <p class="image">
   <a href="../images/radial-gradient.png"><img src="../images/radial-gradient.png" width="70" height="70" alt="radial-gradient" /></a>
 </p>
+
+<p>This FX expression adds random noise to an image:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert photo.jpg -fx 'iso=32; rone=rand(); rtwo=rand(); \<br />
+     myn=sqrt(-2*ln(rone))*cos(2*Pi*rtwo); myntwo=sqrt(-2*ln(rtwo))* \<br />
+     cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \ <br />
+     channel(4.28,3.86,6.68,0)/255; max(0,p+pnoise)' noisy.png</span></p>
 <p>See <a href="http://www.imagemagick.org/Usage/transform/index.html#fx">Using FX, The Special Effects Image Operator</a> for more examples.</p>
 
 <p>The next section discusses the Fx expression language.</p>

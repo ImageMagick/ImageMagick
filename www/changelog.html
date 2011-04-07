@@ -184,7 +184,7 @@
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011080100025 atlas.multimedia-->
+   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
 </div>
 </div>
 </div>
@@ -197,7 +197,21 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-04-01  6.6.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-04-03  6.6.9-4 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Add of Octagon shape and Octagonal distance kernels for Morphology</dd>
+  <dd> Fix minor Morphology kernel compose bug (cleanup after Src/Dst swap)</dd>
+  <dd> Fix segmentation fault after error in a morphology 'named' kernel</dd>
+  <dd> Added a range of kernels used for specialised thinning purposes    as defined in a research paper by Dan S. Bloomberg.</dd>
+  <dd> Added Dan Bloomberd best thinning skeletion, "Skeleton:3"</dd>
+  <dd> Removed origin pixel from many Hit-and-Miss kernels allowing kernels    to not only be used for thinning, but also thickening.</dd>
+  <dd> Renamed "ThinDiagonals" kernel to just "Diagonals"</dd>
+  <dd> Distance uses a fast two pass algorithm, and no longer needs 'iteration'</dd>
+<dt>2011-04-02  6.6.9-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Make the PNG encoder use depth==8 when incoming image->depth < 8    (the encoder later reduces the depth if it can), to avoid writing    an incorrect image.</dd>
+  <dd> Remove any bogus colormap received by the PNG encoder with an image    that is not PseudoClass (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18475).</dd>
+<dt>2011-04-02  6.6.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Added -statistic Gradient</dd>
+<dt>2011-04-01  6.6.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.9-3.</dd>
 <dt>2011-04-01  6.6.9-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Set the caption height correctly for missing row geometry (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18447).</dd>
