@@ -1,3 +1,6 @@
+2011-04-06  6.6.9-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.9-4.
+
 2011-04-03  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
   * Add of Octagon shape and Octagonal distance kernels for Morphology
   * Fix minor Morphology kernel compose bug (cleanup after Src/Dst swap)
