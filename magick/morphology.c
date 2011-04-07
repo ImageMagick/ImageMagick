@@ -2536,7 +2536,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
 
   p_view=AcquireCacheView(image);
   q_view=AcquireCacheView(result_image);
-  virt_width=image->columns-kernel->width-1;
+  virt_width=image->columns+kernel->width-1;
 
   /* Some methods (including convolve) needs use a reflected kernel.
    * Adjust 'origin' offsets to loop though kernel as a reflection.

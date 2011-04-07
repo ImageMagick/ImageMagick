@@ -1,4 +1,5 @@
-2011-04-07  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
+2011-04-07  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Major BUG FIX - wrong sign breaks most morphology methods in IM v6.6.9-4
   * Fixed -region handling of transparency. Original images without
     transparency will use 'Over' while images with transparency will
     preverse transparency using 'Copy'. Before this only 'Over' was used
