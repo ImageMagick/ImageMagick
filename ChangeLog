@@ -1,3 +1,9 @@
+2011-04-07  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fixed -region handling of transparency. Original images without
+    transparency will use 'Over' while images with transparency will
+    preverse transparency using 'Copy'. Before this only 'Over' was used
+    due to the testing of the wrong image.
+
 2011-04-06  6.6.9-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-4.
 
