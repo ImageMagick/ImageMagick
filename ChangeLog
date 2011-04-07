@@ -2,12 +2,12 @@
   * New version 6.6.9-4.
 
 2011-04-03  6.6.9-4 Anthony Thyssen <A.Thyssen@griffith...>
-  * Add of Octagon shape and Octagonal distance kernels for Morphology
+  * Add Octagon shape and Octagonal distance kernels for Morphology
   * Fix minor Morphology kernel compose bug (cleanup after Src/Dst swap)
   * Fix segmentation fault after error in a morphology 'named' kernel
   * Added a range of kernels used for specialised thinning purposes
     as defined in a research paper by Dan S. Bloomberg.
-  * Added Dan Bloomberd best thinning skeletion, "Skeleton:3"
+  * Added Dan Bloomberg best thinning skeletion, "Skeleton:3"
   * Removed origin pixel from many Hit-and-Miss kernels allowing kernels
     to not only be used for thinning, but also thickening.
   * Renamed "ThinDiagonals" kernel to just "Diagonals"
