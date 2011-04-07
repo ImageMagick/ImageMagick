@@ -4,6 +4,7 @@
     transparency will use 'Over' while images with transparency will
     preverse transparency using 'Copy'. Before this only 'Over' was used
     due to the testing of the wrong image.
+  * Added Compose methods  DarkenIntensity and LightenIntensity
 
 2011-04-06  6.6.9-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-4.

@@ -93,7 +93,9 @@ typedef enum
   LinearBurnCompositeOp,
   MathematicsCompositeOp,
   DivideSrcCompositeOp,
-  MinusSrcCompositeOp
+  MinusSrcCompositeOp,
+  DarkenIntensityCompositeOp,
+  LightenIntensityCompositeOp
 } CompositeOperator;
 
 /* Depreciated (renamed) Method Names for backward compatibility

@@ -403,6 +403,40 @@ static inline void CompositeDarken(const MagickPixelPacket *p,
   }
 }
 
+static inline void CompositeDarkenIntensity(const MagickPixelPacket *p,
+  const MagickPixelPacket *q,const ChannelType channel,
+  MagickPixelPacket *composite)
+{
+  /*
+    Select the pixel based on the intensity level.
+    If 'Sync' flag select whole pixel based on alpha weighted intensity.
+    Otherwise use Intenisty only, but restrict copy according to channel.
+  */
+  if ( (channel & SyncChannels) != 0 ) {
+    MagickRealType
+      Da,
+      Sa;
+
+    Sa=1.0-QuantumScale*p->opacity;
+    Da=1.0-QuantumScale*q->opacity;
+    *composite = (Sa*MagickPixelIntensity(p) < Da*MagickPixelIntensity(q))
+              ? *p : *q;
+  }
+  else {
+    int from_p = (MagickPixelIntensity(p) < MagickPixelIntensity(q));
+    if ( (channel & AlphaChannel) != 0 )
+      composite->opacity = from_p ? p->opacity : q->opacity;
+    if ( (channel & RedChannel) != 0 )
+      composite->red = from_p ? p->red : q->red;
+    if ( (channel & GreenChannel) != 0 )
+      composite->green = from_p ? p->green : q->green;
+    if ( (channel & BlueChannel) != 0 )
+      composite->blue = from_p ? p->blue : q->blue;
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+      composite->index = from_p ? p->index : q->index;
+  }
+}
+
 static inline MagickRealType Difference(const MagickRealType p,
   const MagickRealType Sa,const MagickRealType q,const MagickRealType Da)
 {
@@ -700,6 +734,40 @@ static inline void CompositeLighten(const MagickPixelPacket *p,
       composite->blue=MagickMax(p->blue,q->blue);
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=MagickMax(p->index,q->index);
+  }
+}
+
+static inline void CompositeLightenIntensity(const MagickPixelPacket *p,
+  const MagickPixelPacket *q,const ChannelType channel,
+  MagickPixelPacket *composite)
+{
+  /*
+    Select the pixel based on the intensity level.
+    If 'Sync' flag select whole pixel based on alpha weighted intensity.
+    Otherwise use Intenisty only, but restrict copy according to channel.
+  */
+  if ( (channel & SyncChannels) != 0 ) {
+    MagickRealType
+      Da,
+      Sa;
+
+    Sa=1.0-QuantumScale*p->opacity;
+    Da=1.0-QuantumScale*q->opacity;
+    *composite = (Sa*MagickPixelIntensity(p) > Da*MagickPixelIntensity(q))
+               ? *p : *q;
+  }
+  else {
+    int from_p = (MagickPixelIntensity(p) > MagickPixelIntensity(q));
+    if ( (channel & AlphaChannel) != 0 )
+      composite->opacity = from_p ? p->opacity : q->opacity;
+    if ( (channel & RedChannel) != 0 )
+      composite->red = from_p ? p->red : q->red;
+    if ( (channel & GreenChannel) != 0 )
+      composite->green = from_p ? p->green : q->green;
+    if ( (channel & BlueChannel) != 0 )
+      composite->blue = from_p ? p->blue : q->blue;
+    if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
+      composite->index = from_p ? p->index : q->index;
   }
 }
 
@@ -2428,6 +2496,16 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         case LightenCompositeOp:
         {
           CompositeLighten(&source,&destination,channel,&composite);
+          break;
+        }
+        case DarkenIntensityCompositeOp:
+        {
+          CompositeDarkenIntensity(&source,&destination,channel,&composite);
+          break;
+        }
+        case LightenIntensityCompositeOp:
+        {
+          CompositeLightenIntensity(&source,&destination,channel,&composite);
           break;
         }
         case MathematicsCompositeOp:
