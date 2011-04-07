@@ -2498,7 +2498,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 ** It returns the number of pixels that changed between the images
 ** for result convergence determination.
 */
-static size_t MorphologyPrimitive(const Image *image, Image *result_image,
+static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
      const MorphologyMethod method, const ChannelType channel,
      const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
 {
@@ -2757,7 +2757,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
     result_image->type=image->type;
     q_view=DestroyCacheView(q_view);
     p_view=DestroyCacheView(p_view);
-    return(status ? (size_t) changed : 0);
+    return(status ? (ssize_t) changed : 0);
   }
 
   /*
@@ -3268,7 +3268,7 @@ static size_t MorphologyPrimitive(const Image *image, Image *result_image,
 ** Because of this 'iterative' handling this function can not make use
 ** of multi-threaded, parellel processing.
 */
-static size_t MorphologyPrimitiveDirect(const Image *image,
+static ssize_t MorphologyPrimitiveDirect(const Image *image,
      const MorphologyMethod method, const ChannelType channel,
      const KernelInfo *kernel,ExceptionInfo *exception)
 {
@@ -3356,7 +3356,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     */
     if (status == MagickFalse)
       break;
-    p=GetCacheViewVirtualPixels(virt_view, -offx,  y-offy, virt_width, offy+1,
+    p=GetCacheViewVirtualPixels(virt_view, -offx,  y-offy, virt_width, (size_t) offy+1,
          exception);
     q=GetCacheViewAuthenticPixels(auth_view, 0, y, image->columns, 1,
          exception);
@@ -3368,7 +3368,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     q_indexes=GetCacheViewAuthenticIndexQueue(auth_view);
 
     /* offset to origin in 'p'. while 'q' points to it directly */
-    r = virt_width*offy + offx;
+    r = (ssize_t) virt_width*offy + offx;
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -3502,7 +3502,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
     ** Only the bottom half of the kernel will be processes as we
     ** up the image.
     */
-    p=GetCacheViewVirtualPixels(virt_view, -offx, y, virt_width, kernel->y+1,
+    p=GetCacheViewVirtualPixels(virt_view, -offx, y, virt_width, (size_t) kernel->y+1,
          exception);
     q=GetCacheViewAuthenticPixels(auth_view, 0, y, image->columns, 1,
          exception);
@@ -3623,7 +3623,7 @@ static size_t MorphologyPrimitiveDirect(const Image *image,
   } /* y */
   auth_view=DestroyCacheView(auth_view);
   virt_view=DestroyCacheView(virt_view);
-  return(status ? (ssize_t)changed : -1);
+  return(status ? (ssize_t) changed : -1);
 }
 
 /* Apply a Morphology by calling theabove low level primitive application
@@ -3702,6 +3702,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
   /* initialise for cleanup */
   curr_image = (Image *) image;
   curr_compose = image->compose;
+  (void) curr_compose;
   work_image = save_image = rslt_image = (Image *) NULL;
   reflected_kernel = (KernelInfo *) NULL;
 

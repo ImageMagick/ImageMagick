@@ -2883,9 +2883,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   for (j = 0; j < 2; j++)
   {
     if (j == 0)
-      status = (png_get_text(ping,ping_info,&text,&num_text) != 0);
+      status = png_get_text(ping,ping_info,&text,&num_text) != 0 ? MagickTrue : MagickFalse;
     else
-      status = (png_get_text(ping,end_info,&text,&num_text) != 0);
+      status = png_get_text(ping,end_info,&text,&num_text) != 0 ? MagickTrue : MagickFalse;
 
     if (status != MagickFalse)
       for (i=0; i < (ssize_t) num_text; i++)
@@ -8685,7 +8685,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
 
-        if ((image_colors == 0) || ((ssize_t) image_colors-1 > MaxColormapSize))
+        if ((image_colors == 0) || ((ssize_t) (image_colors-1) > MaxColormapSize))
           image_colors=(int) (one << image_depth);
 
         if (image_depth > 8)
