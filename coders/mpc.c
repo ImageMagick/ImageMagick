@@ -275,8 +275,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=keyword;
             do
             {
-              if (isspace((int) ((unsigned char) c)) != 0)
-                break;
               if (c == (int) '=')
                 break;
               if ((size_t) (p-keyword) < (MaxTextExtent-1))
