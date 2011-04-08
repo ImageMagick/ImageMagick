@@ -1,3 +1,6 @@
+2011-04-08  6.6.9-5 Cristy  <quetzlzacatenango@image...>
+  * MIFF keywords sometimes includes spaces.
+
 2011-04-07  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Major BUG FIX - wrong sign breaks most morphology methods in IM v6.6.9-4
   * Fixed -region handling of transparency. Original images without
