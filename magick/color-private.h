@@ -104,11 +104,7 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
-  MagickRealType
-    intensity;
-
-  intensity=0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue;
-  return(intensity);
+  return(0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue);
 }
 
 static inline Quantum MagickPixelIntensityToQuantum(
