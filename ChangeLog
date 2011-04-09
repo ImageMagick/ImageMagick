@@ -1,3 +1,8 @@
+2011-04-09  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Add a special 'Voronoi' Distance method that will fill in holes using
+    the nearest non-transparent edge pixel. This is experimental, and one
+    step toward a fast Color 'Diffusion' method.
+
 2011-04-08  6.6.9-5 Cristy  <quetzlzacatenango@image...>
   * MIFF keywords sometimes includes spaces.
 

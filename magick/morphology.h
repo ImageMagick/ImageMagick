@@ -92,7 +92,9 @@ typedef enum
 /* Recursive Morphology methods */
   HitAndMissMorphology,        /* Foreground/Background pattern matching */
   ThinningMorphology,          /* Remove matching pixels from image */
-  ThickenMorphology            /* Add matching pixels from image */
+  ThickenMorphology,           /* Add matching pixels from image */
+/* Experimental Morphology methods */
+  VoronoiMorphology
 } MorphologyMethod;
 
 typedef struct KernelInfo
