@@ -3268,7 +3268,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
 ** Because of this 'iterative' handling this function can not make use
 ** of multi-threaded, parellel processing.
 */
-static ssize_t MorphologyPrimitiveDirect(const Image *image,
+static ssize_t MorphologyPrimitiveDirect(Image *image,
      const MorphologyMethod method, const ChannelType channel,
      const KernelInfo *kernel,ExceptionInfo *exception)
 {
@@ -3307,6 +3307,7 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
   offy = kernel->y;
   switch(method) {
     case DistanceMorphology:
+    case VoronoiMorphology:
       /* kernel needs to used with reflection about origin */
       offx = (ssize_t) kernel->width-offx-1;
       offy = (ssize_t) kernel->height-offy-1;
@@ -3390,14 +3391,10 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
       MagickPixelPacket
         result;
 
-      /* Defaults */
-      result.red     = (MagickRealType) q->red;
-      result.green   = (MagickRealType) q->green;
-      result.blue    = (MagickRealType) q->blue;
-      result.opacity = QuantumRange - (MagickRealType) q->opacity;
-      result.index   = 0.0;
-      if ( image->colorspace == CMYKColorspace)
-         result.index   = (MagickRealType) *q_indexes;
+      /* Starting Defaults */
+      SetMagickPixelPacket(image,q,q_indexes,&result);
+      if ( method != VoronoiMorphology )
+        result.opacity = QuantumRange - result.opacity;
 
       switch ( method ) {
         case DistanceMorphology:
@@ -3433,23 +3430,66 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
                   Minimize(result.index,   (*k)+k_indexes[u]);
               }
             break;
+        case VoronoiMorphology:
+            /* Apply Distance to 'Matte' channel, coping the closest color.
+            **
+            ** This is experimental, and realy the 'alpha' component should
+            ** be completely separate 'masking' channel.
+            */
+            k = &kernel->values[ kernel->width*kernel->height-1 ];
+            k_pixels = p;
+            k_indexes = p_indexes;
+            for (v=0; v <= (ssize_t) offy; v++) {
+              for (u=0; u < (ssize_t) kernel->width; u++, k--) {
+                if ( IsNan(*k) ) continue;
+                if( result.opacity > (*k)+k_pixels[u].opacity )
+                  {
+                    SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
+                         &result);
+                    result.opacity += *k;
+                  }
+              }
+              k_pixels += virt_width;
+              k_indexes += virt_width;
+            }
+            /* repeat with the just processed pixels of this row */
+            k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
+            k_pixels = q-offx;
+            k_indexes = q_indexes-offx;
+              for (u=0; u < (ssize_t) offx; u++, k--) {
+                if ( x+u-offx < 0 ) continue;  /* off the edge! */
+                if ( IsNan(*k) ) continue;
+                if( result.opacity > (*k)+k_pixels[u].opacity )
+                  {
+                    SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
+                         &result);
+                    result.opacity += *k;
+                  }
+              }
+            break;
         default:
           /* result directly calculated or assigned */
           break;
       }
       /* Assign the resulting pixel values - Clamping Result */
-      if ((channel & RedChannel) != 0)
-        q->red = ClampToQuantum(result.red);
-      if ((channel & GreenChannel) != 0)
-        q->green = ClampToQuantum(result.green);
-      if ((channel & BlueChannel) != 0)
-        q->blue = ClampToQuantum(result.blue);
-      if ((channel & OpacityChannel) != 0
-          && image->matte == MagickTrue )
-        q->opacity = ClampToQuantum(QuantumRange-result.opacity);
-      if ((channel & IndexChannel) != 0
-          && image->colorspace == CMYKColorspace)
-        q_indexes[x] = ClampToQuantum(result.index);
+      switch ( method ) {
+        case VoronoiMorphology:
+          SetPixelPacket(image,&result,q,q_indexes);
+          break;
+        default:
+          if ((channel & RedChannel) != 0)
+            q->red = ClampToQuantum(result.red);
+          if ((channel & GreenChannel) != 0)
+            q->green = ClampToQuantum(result.green);
+          if ((channel & BlueChannel) != 0)
+            q->blue = ClampToQuantum(result.blue);
+          if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
+            q->opacity = ClampToQuantum(QuantumRange-result.opacity);
+          if ((channel & IndexChannel) != 0
+              && image->colorspace == CMYKColorspace)
+            q_indexes[x] = ClampToQuantum(result.index);
+          break;
+      }
       /* Count up changed pixels */
       if (   ( p[r].red != q->red )
           || ( p[r].green != q->green )
@@ -3540,14 +3580,10 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
       MagickPixelPacket
         result;
 
-      /* Defaults */
-      result.red     = (MagickRealType) q->red;
-      result.green   = (MagickRealType) q->green;
-      result.blue    = (MagickRealType) q->blue;
-      result.opacity = QuantumRange - (MagickRealType) q->opacity;
-      result.index   = 0.0;
-      if ( image->colorspace == CMYKColorspace)
-         result.index   = (MagickRealType) *q_indexes;
+      /* Default - previously modified pixel */
+      SetMagickPixelPacket(image,q,q_indexes,&result);
+      if ( method != VoronoiMorphology )
+        result.opacity = QuantumRange - result.opacity;
 
       switch ( method ) {
         case DistanceMorphology:
@@ -3573,7 +3609,7 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
             k_pixels = q-offx;
             k_indexes = q_indexes-offx;
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
-                if ( (size_t)(x+u-offx) >= image->columns ) continue;
+                if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
                 if ( IsNan(*k) ) continue;
                 Minimize(result.red,     (*k)+k_pixels[u].red);
                 Minimize(result.green,   (*k)+k_pixels[u].green);
@@ -3583,23 +3619,66 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
                   Minimize(result.index,   (*k)+k_indexes[u]);
               }
             break;
+        case VoronoiMorphology:
+            /* Apply Distance to 'Matte' channel, coping the closest color.
+            **
+            ** This is experimental, and realy the 'alpha' component should
+            ** be completely separate 'masking' channel.
+            */
+            k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
+            k_pixels = p;
+            k_indexes = p_indexes;
+            for (v=offy; v < (ssize_t) kernel->height; v++) {
+              for (u=0; u < (ssize_t) kernel->width; u++, k--) {
+                if ( IsNan(*k) ) continue;
+                if( result.opacity > (*k)+k_pixels[u].opacity )
+                  {
+                    SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
+                         &result);
+                    result.opacity += *k;
+                  }
+              }
+              k_pixels += virt_width;
+              k_indexes += virt_width;
+            }
+            /* repeat with the just processed pixels of this row */
+            k = &kernel->values[ kernel->width*(kernel->y)+kernel->x-1 ];
+            k_pixels = q-offx;
+            k_indexes = q_indexes-offx;
+              for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
+                if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
+                if ( IsNan(*k) ) continue;
+                if( result.opacity > (*k)+k_pixels[u].opacity )
+                  {
+                    SetMagickPixelPacket(image,&k_pixels[u],&k_indexes[u],
+                         &result);
+                    result.opacity += *k;
+                  }
+              }
+            break;
         default:
           /* result directly calculated or assigned */
           break;
       }
       /* Assign the resulting pixel values - Clamping Result */
-      if ((channel & RedChannel) != 0)
-        q->red = ClampToQuantum(result.red);
-      if ((channel & GreenChannel) != 0)
-        q->green = ClampToQuantum(result.green);
-      if ((channel & BlueChannel) != 0)
-        q->blue = ClampToQuantum(result.blue);
-      if ((channel & OpacityChannel) != 0
-          && image->matte == MagickTrue )
-        q->opacity = ClampToQuantum(QuantumRange-result.opacity);
-      if ((channel & IndexChannel) != 0
-          && image->colorspace == CMYKColorspace)
-        q_indexes[x] = ClampToQuantum(result.index);
+      switch ( method ) {
+        case VoronoiMorphology:
+          SetPixelPacket(image,&result,q,q_indexes);
+          break;
+        default:
+          if ((channel & RedChannel) != 0)
+            q->red = ClampToQuantum(result.red);
+          if ((channel & GreenChannel) != 0)
+            q->green = ClampToQuantum(result.green);
+          if ((channel & BlueChannel) != 0)
+            q->blue = ClampToQuantum(result.blue);
+          if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
+            q->opacity = ClampToQuantum(QuantumRange-result.opacity);
+          if ((channel & IndexChannel) != 0
+              && image->colorspace == CMYKColorspace)
+            q_indexes[x] = ClampToQuantum(result.index);
+          break;
+      }
       /* Count up changed pixels */
       if (   ( p[r].red != q->red )
           || ( p[r].green != q->green )
@@ -3612,7 +3691,6 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
       p--; /* go backward through pixel buffers */
       q--;
     } /* x */
-
     if ( SyncCacheViewAuthenticPixels(auth_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -3621,6 +3699,7 @@ static ssize_t MorphologyPrimitiveDirect(const Image *image,
         status=MagickFalse;
 
   } /* y */
+
   auth_view=DestroyCacheView(auth_view);
   virt_view=DestroyCacheView(virt_view);
   return(status ? (ssize_t) changed : -1);
@@ -3661,6 +3740,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
     rslt_compose;   /* multi-kernel compose method for results to use */
 
   MagickBooleanType
+    special,        /* do we use a direct modify function? */
     verbose;        /* verbose output of results */
 
   size_t
@@ -3694,8 +3774,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
   kernel_limit = (size_t) iterations;
   if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
-     kernel_limit = image->columns > image->rows ? image->columns : image->rows;
-
+     kernel_limit = image->columns>image->rows ? image->columns : image->rows;
 
   verbose = IsMagickTrue(GetImageArtifact(image,"verbose"));
 
@@ -3713,6 +3792,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
    */
   method_limit = 1;       /* just do method once, unless otherwise set */
   stage_limit = 1;        /* assume method is not a compound */
+  special = MagickFalse;   /* assume it is NOT a direct modify primative */
   rslt_compose = compose; /* and we are composing multi-kernels as given */
   switch( method ) {
     case SmoothMorphology:  /* 4 primitive compound morphology */
@@ -3736,11 +3816,47 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       kernel_limit = 1;             /* do not do kernel iteration  */
       break;
     case DistanceMorphology:
-      kernel_limit = 1;  /* Can not iterate direct modify in main loop - yet */
+    case VoronoiMorphology:
+      special = MagickTrue;
       break;
     default:
       break;
   }
+
+  /* Apply special methods with special requirments
+  ** For example, single run only, or post-processing requirements
+  */
+  if ( special == MagickTrue )
+    {
+      rslt_image=CloneImage(image,0,0,MagickTrue,exception);
+      if (rslt_image == (Image *) NULL)
+        goto error_cleanup;
+      if (SetImageStorageClass(rslt_image,DirectClass) == MagickFalse)
+        {
+          InheritException(exception,&rslt_image->exception);
+          goto error_cleanup;
+        }
+
+      changed = MorphologyPrimitiveDirect(rslt_image, method,
+                      channel, kernel, exception);
+
+      if ( verbose == MagickTrue )
+        (void) fprintf(stderr, "%s:%.20g.%.20g #%.20g => Changed %.20g\n",
+            MagickOptionToMnemonic(MagickMorphologyOptions, method),
+            1.0,0.0,1.0, (double) changed);
+
+      if ( changed < 0 )
+        goto error_cleanup;
+
+      if ( method == VoronoiMorphology ) {
+        /* Preserve the alpha channel of input image - but turned off */
+        SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
+        (void) CompositeImageChannel(rslt_image, DefaultChannels,
+                CopyOpacityCompositeOp, image, 0, 0);
+        SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
+      }
+      goto exit_cleanup;
+    }
 
   /* Handle user (caller) specified multi-kernel composition method */
   if ( compose != UndefinedCompositeOp )
@@ -3765,6 +3881,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       break;
   }
 
+  /* Loops around more primitive morpholgy methods
+  **  erose, dilate, open, close, smooth, edge, etc...
+  */
   /* Loop 1:  iterate the compound method */
   method_loop = 0;
   method_changed = 1;
@@ -3902,12 +4021,8 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
           /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
-          if ( method != DistanceMorphology )
-            changed = MorphologyPrimitive(curr_image, work_image, primitive,
-                          channel, this_kernel, bias, exception);
-          else
-            changed = MorphologyPrimitiveDirect(work_image, primitive,
-                          channel, this_kernel, exception);
+          changed = MorphologyPrimitive(curr_image, work_image, primitive,
+                       channel, this_kernel, bias, exception);
 
           if ( verbose == MagickTrue ) {
             if ( kernel_loop > 1 )

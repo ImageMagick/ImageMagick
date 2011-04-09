@@ -1320,6 +1320,7 @@ static const OptionInfo
     { "HitAndMiss", (ssize_t) HitAndMissMorphology, MagickFalse },
     { "Thinning", (ssize_t) ThinningMorphology, MagickFalse },
     { "Thicken", (ssize_t) ThickenMorphology, MagickFalse },
+    { "Voronoi", (ssize_t) VoronoiMorphology, MagickTrue },
     { (char *) NULL, (ssize_t) UndefinedMorphology, MagickFalse }
   },
   NoiseOptions[] =
