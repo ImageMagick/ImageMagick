@@ -32,6 +32,9 @@
   <configure name="CXX" value="@CXX@"/>
   <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="@DISTCHECK_CONFIG_FLAGS@"/>
+  <configure name="TARGET_CPU" value="@MAGICK_TARGET_CPU@"/>
+  <configure name="TARGET_VENDOR" value="@MAGICK_TARGET_VENDOR@"/>
+  <configure name="TARGET_OS" value="@MAGICK_TARGET_OS@"/>
   <configure name="HOST" value="@host@"/>
   <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
   <configure name="DELEGATES" value="@DELEGATES@"/>
