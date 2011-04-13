@@ -263,6 +263,7 @@ ModuleExport size_t RegisterWMFImage(void)
 #endif
   entry->description=ConstantString("Compressed Windows Meta File");
   entry->module=ConstantString("WMZ");
+  entry->seekable_stream=MagickTrue;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("WMF");
 #if defined(MAGICKCORE_WMF_DELEGATE)
