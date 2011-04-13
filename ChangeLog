@@ -10,7 +10,7 @@
   * Major BUG FIX - wrong sign breaks most morphology methods in IM v6.6.9-4
   * Fixed -region handling of transparency. Original images without
     transparency will use 'Over' while images with transparency will
-    preverse transparency using 'Copy'. Before this only 'Over' was used
+    preserve transparency using 'Copy'. Before this only 'Over' was used
     due to the testing of the wrong image.
   * Added Compose methods  DarkenIntensity and LightenIntensity
 
