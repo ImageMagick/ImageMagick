@@ -984,6 +984,7 @@ ModuleExport size_t RegisterDDSImage(void)
   entry = SetMagickInfo("DDS");
   entry->decoder = (DecodeImageHandler *) ReadDDSImage;
   entry->magick = (IsImageFormatHandler *) IsDDS;
+  entry->seekable_stream=MagickTrue;
   entry->description = ConstantString("Microsoft DirectDraw Surface");
   entry->module = ConstantString("DDS");
   (void) RegisterMagickInfo(entry);

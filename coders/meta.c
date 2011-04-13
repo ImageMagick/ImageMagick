@@ -1411,7 +1411,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Photoshop resource format");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("8BIMTEXT");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1421,7 +1420,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Photoshop resource text format");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("8BIMWTEXT");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1431,7 +1429,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Photoshop resource wide text format");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("APP1");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1441,7 +1438,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Raw application information");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("APP1JPEG");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1451,7 +1447,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Raw JPEG binary data");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("EXIF");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1461,7 +1456,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Exif digital camera binary data");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("XMP");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1471,7 +1465,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("Adobe XML metadata");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("ICM");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1481,7 +1474,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("ICC Color Profile");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("ICC");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1491,7 +1483,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("ICC Color Profile");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("IPTC");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1501,7 +1492,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("IPTC Newsphoto");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("IPTCTEXT");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;
@@ -1511,7 +1501,6 @@ ModuleExport size_t RegisterMETAImage(void)
   entry->description=ConstantString("IPTC Newsphoto text format");
   entry->module=ConstantString("META");
   (void) RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("IPTCWTEXT");
   entry->decoder=(DecodeImageHandler *) ReadMETAImage;
   entry->encoder=(EncodeImageHandler *) WriteMETAImage;

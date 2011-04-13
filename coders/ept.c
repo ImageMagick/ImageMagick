@@ -279,6 +279,7 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
+  entry->seekable_stream=MagickTrue;
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
   entry->description=ConstantString(
@@ -290,6 +291,7 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
   entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->description=ConstantString(
     "Encapsulated PostScript Level II with TIFF preview");
@@ -299,6 +301,7 @@ ModuleExport size_t RegisterEPTImage(void)
   entry->decoder=(DecodeImageHandler *) ReadEPTImage;
   entry->encoder=(EncodeImageHandler *) WriteEPTImage;
   entry->magick=(IsImageFormatHandler *) IsEPT;
+  entry->seekable_stream=MagickTrue;
   entry->blob_support=MagickFalse;
   entry->description=ConstantString(
     "Encapsulated PostScript Level III with TIFF preview");
