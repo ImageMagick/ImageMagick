@@ -1,3 +1,6 @@
+2011-04-15  6.6.9-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.9-5.
+
 2011-04-14  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Layers Composition Bug Fix, animations attributes of first image not
     transfered in a single destination, multi-source image composition.
