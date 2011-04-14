@@ -2444,8 +2444,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Composite region.
                 */
-                (void) CompositeImage(region_image, CopyCompositeOp,*image,
-                  region_geometry.x,region_geometry.y);
+                (void) CompositeImage(region_image,region_image->matte !=
+                     MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
+                     region_geometry.x,region_geometry.y);
                 InheritException(exception,&region_image->exception);
                 *image=DestroyImage(*image);
                 *image=region_image;
@@ -3186,7 +3187,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         Composite transformed region onto image.
       */
       (void) SyncImageSettings(mogrify_info,*image);
-      (void) CompositeImage(region_image,CopyCompositeOp,*image,
+      (void) CompositeImage(region_image,region_image->matte !=
+           MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
            region_geometry.x,region_geometry.y);
       InheritException(exception,&region_image->exception);
       *image=DestroyImage(*image);
@@ -7473,14 +7475,15 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     /*
                       Set a blending mask for the composition.
                     */
+                    /* POSIBLE ERROR; what if image->mask already set */
                     image->mask=mask_image;
                     (void) NegateImage(image->mask,MagickFalse);
                   }
               }
             (void) CompositeImageChannel(image,channel,image->compose,
               composite_image,geometry.x,geometry.y);
-            if (image->mask != (Image *) NULL)
-              image->mask=DestroyImage(image->mask);
+            if (mask_image != (Image *) NULL)
+              mask_image=image->mask=DestroyImage(image->mask);
             composite_image=DestroyImage(composite_image);
             InheritException(exception,&image->exception);
             *images=DestroyImageList(*images);
