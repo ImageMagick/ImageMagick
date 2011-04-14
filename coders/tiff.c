@@ -1401,7 +1401,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 image->rows-y);
             }
           i--;
-          p=((uint32 *) pixels)+image->columns*i;
+          p=(unsigned char *) (((uint32 *) pixels)+image->columns*i);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             q->red=ScaleCharToQuantum((unsigned char) (TIFFGetR(*p)));
