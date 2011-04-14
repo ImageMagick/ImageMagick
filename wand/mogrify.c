@@ -1061,6 +1061,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               }
             /*
               Set the image mask.
+              FUTURE: This Should Be a SetImageAlphaChannel() call, Or two.
             */
             mask_image=GetImageCache(mogrify_info,argv[i+1],exception);
             if (mask_image == (Image *) NULL)
