@@ -8,7 +8,7 @@
 
 2011-04-14  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Layers Composition Bug Fix, animations attributes of first image not
-    transfered in a single destination, multi-source image composition.
+    transferred in a single destination, multi-source image composition.
 
 2011-04-09  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Add a special 'Voronoi' Distance method that will fill in holes using
