@@ -1852,6 +1852,11 @@ MagickExport void CompositeLayers(Image *destination,
 
     CompositeCanvas(destination, compose, source, x_offset, y_offset);
     /* copy source image attributes ? */
+    if ( source->next != (Image *) NULL )
+      {
+        destination->delay = source->delay;
+        destination->iterations = source->iterations;
+      }
     source=GetNextImageInList(source);
 
     while ( source != (Image *) NULL )
@@ -1987,10 +1992,10 @@ MagickExport Image *MergeImageLayers(Image *image,
              height += page.y-next->page.y;
              page.y = next->page.y;
         }
-        if ( (ssize_t) width < (next->page.x + next->columns - page.x) )
-           width = (size_t) next->page.x + next->columns - page.x;
-        if ( (ssize_t) height < (next->page.y + next->rows - page.y) )
-           height = (size_t) next->page.y + next->rows - page.y;
+        if ( (ssize_t) width < (next->page.x + (ssize_t)next->columns - page.x) )
+           width = (size_t) next->page.x + (ssize_t)next->columns - page.x;
+        if ( (ssize_t) height < (next->page.y + (ssize_t)next->rows - page.y) )
+           height = (size_t) next->page.y + (ssize_t)next->rows - page.y;
       }
       break;
     }
@@ -2014,9 +2019,9 @@ MagickExport Image *MergeImageLayers(Image *image,
         if (method == MosaicLayer) {
           page.x=next->page.x;
           page.y=next->page.y;
-          if ( (ssize_t) width < (next->page.x + next->columns) )
+          if ( (ssize_t) width < (next->page.x + (ssize_t)next->columns) )
              width = (size_t) next->page.x + next->columns;
-          if ( (ssize_t) height < (next->page.y + next->rows) )
+          if ( (ssize_t) height < (next->page.y + (ssize_t)next->rows) )
              height = (size_t) next->page.y + next->rows;
         }
       }
