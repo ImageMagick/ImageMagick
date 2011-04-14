@@ -3392,6 +3392,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         result;
 
       /* Starting Defaults */
+      GetMagickPixelPacket(image,&result);
       SetMagickPixelPacket(image,q,q_indexes,&result);
       if ( method != VoronoiMorphology )
         result.opacity = QuantumRange - result.opacity;
@@ -3581,6 +3582,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         result;
 
       /* Default - previously modified pixel */
+      GetMagickPixelPacket(image,&result);
       SetMagickPixelPacket(image,q,q_indexes,&result);
       if ( method != VoronoiMorphology )
         result.opacity = QuantumRange - result.opacity;
