@@ -847,6 +847,14 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       clone_image->cache=ReferencePixelCache(image->cache);
       return(clone_image);
     }
+  if ((columns == image->columns) && (rows == image->rows))
+    {
+      if (image->clip_mask != (Image *) NULL)
+        clone_image->clip_mask=CloneImage(image->clip_mask,0,0,MagickTrue,
+          exception);
+      if (image->mask != (Image *) NULL)
+        clone_image->mask=CloneImage(image->mask,0,0,MagickTrue,exception);
+    }
   scale=(MagickRealType) columns/(MagickRealType) image->columns;
   clone_image->page.width=(size_t) floor(scale*image->page.width+0.5);
   clone_image->page.x=(ssize_t) ceil(scale*image->page.x-0.5);
