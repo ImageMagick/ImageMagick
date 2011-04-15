@@ -300,7 +300,9 @@ static const struct ReferenceFormats
     { "PFM", UndefinedCompression, 0.0 },
     { "PGM", UndefinedCompression, 0.0 },
     { "PGX", UndefinedCompression, 0.0 },
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
     { "PICT", UndefinedCompression, 0.003 },
+#endif
     { "PIX", UndefinedCompression, 0.0 },
     { "PJPEG", UndefinedCompression, 0.003 },
     { "PLASMA", UndefinedCompression, 0.0 },
