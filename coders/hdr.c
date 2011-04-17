@@ -368,10 +368,12 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((LocaleCompare(format,"32-bit_rle_rgbe") != 0) &&
       (LocaleCompare(format,"32-bit_rle_xyze") != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (LocaleCompare(format,"32-bit_rle_rgbe") == 0)
-    image->colorspace=XYZColorspace;
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  if (LocaleCompare(format,"32-bit_rle_rgbe") == 0)
+    image->colorspace=XYZColorspace;
+  image->compression=(image->columns < 8) || (image->columns > 0x7ffff) ?
+    NoCompression : RLECompression;
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -386,7 +388,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    if ((image->columns < 8) || (image->columns > 0x7ffff))
+    if (image->compression != RLECompression)
       {
         count=ReadBlob(image,4*image->columns*sizeof(*pixels),pixels);
         if (count != (ssize_t) (4*image->columns*sizeof(*pixels)))
@@ -398,40 +400,47 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (count != 4)
           break;
         if ((size_t) ((((size_t) pixel[2]) << 8) | pixel[3]) != image->columns)
-          break;
-        p=pixels;
-        for (i=0; i < 4; i++)
-        {
-          end=&pixels[(i+1)*image->columns];
-          while (p < end)
           {
-            count=ReadBlob(image,2*sizeof(*pixel),pixel);
-            if (count < 1)
-              break;
-            if (pixel[0] > 128)
+            (void) memcpy(pixels,pixel,4*sizeof(*pixel));
+            count=ReadBlob(image,4*(image->columns-1)*sizeof(*pixels),pixels+4);
+            image->compression=NoCompression;
+          }
+        else
+          {
+            p=pixels;
+            for (i=0; i < 4; i++)
+            {
+              end=&pixels[(i+1)*image->columns];
+              while (p < end)
               {
-                count=(ssize_t) pixel[0]-128;
-                if ((count == 0) || (count > (ssize_t) (end-p)))
+                count=ReadBlob(image,2*sizeof(*pixel),pixel);
+                if (count < 1)
                   break;
-                while (count-- > 0)
-                  *p++=pixel[1];
-              }
-            else
-              {
-                count=(ssize_t) pixel[0];
-                if ((count == 0) || (count > (ssize_t) (end-p)))
-                  break;
-                *p++=pixel[1];
-                if (--count > 0)
+                if (pixel[0] > 128)
                   {
-                    count=ReadBlob(image,(size_t) count*sizeof(*p),p);
-                    if (count < 1)
+                    count=(ssize_t) pixel[0]-128;
+                    if ((count == 0) || (count > (ssize_t) (end-p)))
                       break;
-                    p+=count;
+                    while (count-- > 0)
+                      *p++=pixel[1];
+                  }
+                else
+                  {
+                    count=(ssize_t) pixel[0];
+                    if ((count == 0) || (count > (ssize_t) (end-p)))
+                      break;
+                    *p++=pixel[1];
+                    if (--count > 0)
+                      {
+                        count=ReadBlob(image,(size_t) count*sizeof(*p),p);
+                        if (count < 1)
+                          break;
+                        p+=count;
+                      }
                   }
               }
+            }
           }
-        }
       }
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
@@ -439,7 +448,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((image->columns >= 8) && (image->columns <= 0x7ffff))
+      if (image->compression == RLECompression)
         {
           pixel[0]=pixels[x];
           pixel[1]=pixels[x+image->columns];
