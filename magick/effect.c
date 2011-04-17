@@ -1868,7 +1868,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
           case 1: pixel[j]=GetGreenPixelComponent(p); break;
           case 2: pixel[j]=GetBluePixelComponent(p); break;
           case 3: pixel[j]=GetOpacityPixelComponent(p); break;
-          case 4: pixel[j]=GetBlackPixelComponent(indexes,x); break;
+          case 4: pixel[j]=GetBlackPixelComponent(indexes+x); break;
           default: break;
         }
         p++;
