@@ -1007,6 +1007,9 @@ WandExport void MagickWandTerminus(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  NewMagickWand() returns a wand required for all other methods in the API.
+%  A fatal exception is thrown if there is not enough memory to allocate the
+%  wand.   Use DestroyMagickWand() to dispose of the wand when it is no longer
+%  needed.
 %
 %  The format of the NewMagickWand method is:
 %
