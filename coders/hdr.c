@@ -365,8 +365,11 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       while (isspace((int) ((unsigned char) c)) != 0)
         c=ReadBlobByte(image);
   }
-  if (LocaleCompare(format,"32-bit_rle_rgbe") != 0)
+  if ((LocaleCompare(format,"32-bit_rle_rgbe") != 0) &&
+      (LocaleCompare(format,"32-bit_rle_xyze") != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (LocaleCompare(format,"32-bit_rle_rgbe") == 0)
+    image->colorspace=XYZColorspace;
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   if (image_info->ping != MagickFalse)
@@ -385,8 +388,8 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if ((image->columns < 8) || (image->columns > 0x7ffff))
       {
-        count=ReadBlob(image,4*image->columns*sizeof(*pixel),pixel);
-        if (count != (ssize_t) (4*image->columns*sizeof(*pixel)))
+        count=ReadBlob(image,4*image->columns*sizeof(*pixels),pixels);
+        if (count != (ssize_t) (4*image->columns*sizeof(*pixels)))
           break;
       }
     else
