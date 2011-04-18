@@ -458,6 +458,7 @@ typedef struct _MngInfo
   MagickBooleanType
     ping_exclude_bKGD,
     ping_exclude_cHRM,
+    ping_exclude_date,
     ping_exclude_EXIF,
     ping_exclude_gAMA,
     ping_exclude_iCCP,
@@ -2886,9 +2887,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   for (j = 0; j < 2; j++)
   {
     if (j == 0)
-      status = png_get_text(ping,ping_info,&text,&num_text) != 0 ? MagickTrue : MagickFalse;
+      status = png_get_text(ping,ping_info,&text,&num_text) != 0 ?
+          MagickTrue : MagickFalse;
     else
-      status = png_get_text(ping,end_info,&text,&num_text) != 0 ? MagickTrue : MagickFalse;
+      status = png_get_text(ping,end_info,&text,&num_text) != 0 ?
+          MagickTrue : MagickFalse;
 
     if (status != MagickFalse)
       for (i=0; i < (ssize_t) num_text; i++)
@@ -6939,6 +6942,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
     ping_exclude_bKGD,
     ping_exclude_cHRM,
+    ping_exclude_date,
     /* ping_exclude_EXIF, */
     ping_exclude_gAMA,
     ping_exclude_iCCP,
@@ -7041,9 +7045,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   ping_exclude_bKGD=mng_info->ping_exclude_bKGD;
   ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
+  ping_exclude_date=mng_info->ping_exclude_date;
   /* ping_exclude_EXIF=mng_info->ping_exclude_EXIF; */
   ping_exclude_gAMA=mng_info->ping_exclude_gAMA;
-  ping_exclude_cHRM=mng_info->ping_exclude_cHRM;
   ping_exclude_iCCP=mng_info->ping_exclude_iCCP;
   /* ping_exclude_iTXt=mng_info->ping_exclude_iTXt; */
   ping_exclude_oFFs=mng_info->ping_exclude_oFFs;
@@ -8688,7 +8692,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
 
-        if ((image_colors == 0) || ((ssize_t) (image_colors-1) > MaxColormapSize))
+        if ((image_colors == 0) || ((ssize_t) image_colors-1 > MaxColormapSize))
           image_colors=(int) (one << image_depth);
 
         if (image_depth > 8)
@@ -9787,7 +9791,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         "    PNG Interlace method: %d",ping_interlace_method);
     }
   /*
-    Generate text chunks.
+    Generate text chunks after IDAT.
   */
   if (ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse)
   {
@@ -9799,10 +9803,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         text;
 
       value=GetImageProperty(image,property);
-      if (ping_exclude_pHYs != MagickFalse       ||
-          LocaleNCompare(property,"png:",4) != 0 ||
+
+      /* Don't write any "png:" properties; those are just for "identify" */
+      if (LocaleNCompare(property,"png:",4) != 0 &&
+
+          /* Suppress density and units if we wrote a pHYs chunk */
+          (ping_exclude_pHYs != MagickFalse      ||
           LocaleCompare(property,"density") != 0 ||
-          LocaleCompare(property,"units") != 0)
+          LocaleCompare(property,"units") != 0) &&
+
+          /* Suppress the IM-generated Date:create and Date:modify */
+          (ping_exclude_date == MagickFalse      ||
+          LocaleNCompare(property, "Date:",5) != 0))
         {
         if (value != (const char *) NULL)
           {
@@ -10257,6 +10269,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   mng_info->ping_exclude_bKGD=MagickFalse;
   mng_info->ping_exclude_cHRM=MagickFalse;
+  mng_info->ping_exclude_date=MagickFalse;
   mng_info->ping_exclude_EXIF=MagickFalse; /* hex-encoded EXIF in zTXt */
   mng_info->ping_exclude_gAMA=MagickFalse;
   mng_info->ping_exclude_iCCP=MagickFalse;
@@ -10316,6 +10329,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       {
         mng_info->ping_exclude_bKGD=MagickTrue;
         mng_info->ping_exclude_cHRM=MagickTrue;
+        mng_info->ping_exclude_date=MagickTrue;
         mng_info->ping_exclude_EXIF=MagickTrue;
         mng_info->ping_exclude_gAMA=MagickTrue;
         mng_info->ping_exclude_iCCP=MagickTrue;
@@ -10335,6 +10349,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       {
         mng_info->ping_exclude_bKGD=MagickFalse;
         mng_info->ping_exclude_cHRM=MagickFalse;
+        mng_info->ping_exclude_date=MagickFalse;
         mng_info->ping_exclude_EXIF=MagickFalse;
         mng_info->ping_exclude_gAMA=MagickFalse;
         mng_info->ping_exclude_iCCP=MagickFalse;
@@ -10354,6 +10369,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
       if (LocaleNCompare(value+i,"chrm",4) == 0)
         mng_info->ping_exclude_cHRM=MagickTrue;
+
+      if (LocaleNCompare(value+i,"date",4) == 0)
+        mng_info->ping_exclude_date=MagickTrue;
 
       if (LocaleNCompare(value+i,"exif",4) == 0)
         mng_info->ping_exclude_EXIF=MagickTrue;
@@ -10442,6 +10460,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         {
           mng_info->ping_exclude_bKGD=MagickFalse;
           mng_info->ping_exclude_cHRM=MagickFalse;
+          mng_info->ping_exclude_date=MagickFalse;
           mng_info->ping_exclude_EXIF=MagickFalse;
           mng_info->ping_exclude_gAMA=MagickFalse;
           mng_info->ping_exclude_iCCP=MagickFalse;
@@ -10461,6 +10480,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         {
           mng_info->ping_exclude_bKGD=MagickTrue;
           mng_info->ping_exclude_cHRM=MagickTrue;
+          mng_info->ping_exclude_date=MagickTrue;
           mng_info->ping_exclude_EXIF=MagickTrue;
           mng_info->ping_exclude_gAMA=MagickTrue;
           mng_info->ping_exclude_iCCP=MagickTrue;
@@ -10480,6 +10500,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
       if (LocaleNCompare(value+i,"chrm",4) == 0)
         mng_info->ping_exclude_cHRM=MagickFalse;
+
+      if (LocaleNCompare(value+i,"date",4) == 0)
+        mng_info->ping_exclude_date=MagickFalse;
 
       if (LocaleNCompare(value+i,"exif",4) == 0)
         mng_info->ping_exclude_EXIF=MagickFalse;
@@ -10536,6 +10559,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     if (mng_info->ping_exclude_cHRM != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    cHRM");
+    if (mng_info->ping_exclude_date != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    date");
     if (mng_info->ping_exclude_EXIF != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    EXIF");
@@ -12016,9 +12042,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
        /* We don't want any ancillary chunks written */
        mng_info->ping_exclude_bKGD=MagickTrue;
        mng_info->ping_exclude_cHRM=MagickTrue;
+       mng_info->ping_exclude_date=MagickTrue;
        mng_info->ping_exclude_EXIF=MagickTrue;
        mng_info->ping_exclude_gAMA=MagickTrue;
-       mng_info->ping_exclude_cHRM=MagickTrue;
        mng_info->ping_exclude_iCCP=MagickTrue;
        /* mng_info->ping_exclude_iTXt=MagickTrue; */
        mng_info->ping_exclude_oFFs=MagickTrue;
