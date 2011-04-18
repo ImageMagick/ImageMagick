@@ -7007,6 +7007,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   image = CloneImage(IMimage,0,0,MagickFalse,&IMimage->exception);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
+  if (image == (Image *)NULL || image_info == (ImageInfo *) NULL)
+     ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(ping_semaphore);
