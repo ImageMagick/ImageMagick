@@ -1526,6 +1526,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 {
   /* Read one PNG image */
 
+  /* To do: Read the tIME chunk into the date:modify property */
+  /* To do: Read the tEXt/Creation Time chunk into the date:create property */
+
   Image
     *image;
 
@@ -7111,6 +7114,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
+#if 0 /* To do: honor -depth */
+  if (image->depth < MAGICKCORE_QUANTUM_DEPTH)
+    {
+    }
+#endif
+
+  /* To do: set to next higher multiple of 8 */
   if (image->depth < 8)
      image->depth=8;
 
@@ -7516,8 +7526,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             if (AcquireImageColormap(image,image_colors) ==
                 MagickFalse)
-               ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+               ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
 
             for (i=0; i< (ssize_t) image_colors; i++)
                image->colormap[i] = colormap[i];
