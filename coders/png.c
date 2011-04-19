@@ -470,7 +470,8 @@ typedef struct _MngInfo
     ping_exclude_tRNS,
     ping_exclude_vpAg,
     ping_exclude_zCCP, /* hex-encoded iCCP */
-    ping_exclude_zTXt;
+    ping_exclude_zTXt,
+    ping_preserve_colormap;
 
 } MngInfo;
 #endif /* VER */
@@ -6959,6 +6960,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_exclude_zCCP, /* hex-encoded iCCP */
     ping_exclude_zTXt,
 
+    ping_preserve_colormap,
     ping_need_colortype_warning,
 
     status,
@@ -7010,7 +7012,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   image = CloneImage(IMimage,0,0,MagickFalse,&IMimage->exception);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
-  if (image == (Image *)NULL || image_info == (ImageInfo *) NULL)
+  if (image_info == (ImageInfo *) NULL)
      ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
@@ -7064,6 +7066,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_exclude_zCCP=mng_info->ping_exclude_zCCP; /* hex-encoded iCCP in zTXt */
   ping_exclude_zTXt=mng_info->ping_exclude_zTXt;
 
+  ping_preserve_colormap = mng_info->ping_preserve_colormap;
   ping_need_colortype_warning = MagickFalse;
 
   number_opaque = 0;
@@ -7111,6 +7114,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "    Reducing PNG bit depth to 8 since this is a Q8 build.");
 
       image->depth=8;
+    }
+#endif
+
+#if 0 /* To do: Option to use the original colormap */
+  if (ping_preserve_colormap != MagickFalse)
+    {
     }
 #endif
 
@@ -7260,8 +7269,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "        (zero means unknown)");
 
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "      Regenerate the colormap");
+       if (ping_preserve_colormap == MagickFalse)
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "      Regenerate the colormap");
      }
 
      exception=(&image->exception);
@@ -7405,6 +7415,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "      image has %d colors",image_colors);
        }
+
+#if 1 /* To do */
+     if (ping_preserve_colormap != MagickFalse)
+       break;
+#endif
 
      if (mng_info->write_png_colortype != 7) /* We won't need this info */
        {
@@ -10294,6 +10309,14 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->ping_exclude_zCCP=MagickFalse; /* hex-encoded iCCP in zTXt */
   mng_info->ping_exclude_zTXt=MagickFalse;
 
+  mng_info->ping_preserve_colormap=MagickFalse;
+
+  value=GetImageArtifact(image,"png:preserve-colormap");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:preserve-colormap");
+  if (value != NULL)
+     mng_info->ping_preserve_colormap=MagickTrue;
+
   excluding=MagickFalse;
 
   for (source=0; source<1; source++)
@@ -12049,6 +12072,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
            "  Writing PNG object.");
 
        mng_info->need_blob = MagickFalse;
+       mng_info->ping_preserve_colormap = MagickFalse;
 
        /* We don't want any ancillary chunks written */
        mng_info->ping_exclude_bKGD=MagickTrue;
