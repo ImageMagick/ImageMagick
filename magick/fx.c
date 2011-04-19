@@ -5131,11 +5131,11 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
     register const PixelPacket
       *restrict p;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
