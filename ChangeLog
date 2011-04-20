@@ -1,12 +1,12 @@
 2011-04-18  6.6.9-6 Glenn Randers-Pehrson <glennrp@image...>
-  * Added "-define PNG:preserve-colormap" option (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18564I)
-
-2011-04-16  6.6.9-6 Cristy  <quetzlzacatenango@image...>
-  * Support the HDR 32-bit_rle_xyze format.
   * Added "date" to the things that can appear on the -define PNG:exclude-chunk
     list.  This excludes the IM-generated Date:modify and Date:create properties
     PNG output text chunks without excluding the rest of the text chunks.
+  * Added "-define PNG:preserve-colormap" option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18564)
+
+2011-04-16  6.6.9-6 Cristy  <quetzlzacatenango@image...>
+  * Support the HDR 32-bit_rle_xyze format.
 
 2011-04-15  6.6.9-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-5.
