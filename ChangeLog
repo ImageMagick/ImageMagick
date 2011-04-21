@@ -1,3 +1,7 @@
+2011-04-21  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * Make filter:blur define a multiplicative adjustment of filter settings
+    rather than a complete override of those settings.
+
 2011-04-18  6.6.9-6 Glenn Randers-Pehrson <glennrp@image...>
   * Added "date" to the things that can appear on the -define PNG:exclude-chunk
     list.  This excludes the IM-generated Date:modify and Date:create properties
