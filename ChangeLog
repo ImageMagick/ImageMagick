@@ -1,4 +1,4 @@
-2011-04-21  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
+2011-04-21  6.6.9-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Make filter:blur define a multiplicative adjustment of filter settings
     rather than a complete override of those settings.
 
