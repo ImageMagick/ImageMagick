@@ -175,6 +175,8 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
   register ssize_t
     i;
 
+  assert(start != (const char *) NULL);
+  assert(token != (char *) NULL);
   i=0;
   for (p=start; *p != '\0'; )
   {
