@@ -1186,8 +1186,8 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGXFSZ)
     abort();
 #endif
-#if defined(SIGBUS)
-  if (signal_number == SIGBUS)
+#if defined(SIGSEGV)
+  if (signal_number == SIGSEGV)
     abort();
 #endif
 #if !defined(MAGICKCORE_HAVE__EXIT)
@@ -1289,9 +1289,9 @@ MagickExport void MagickCoreGenesis(const char *path,
       if (signal_handlers[SIGABRT] == (SignalHandler *) NULL)
         signal_handlers[SIGABRT]=RegisterMagickSignalHandler(SIGABRT);
 #endif
-#if defined(SIGBUS)
-      if (signal_handlers[SIGBUS] == (SignalHandler *) NULL)
-        signal_handlers[SIGBUS]=RegisterMagickSignalHandler(SIGBUS);
+#if defined(SIGSEGV)
+      if (signal_handlers[SIGSEGV] == (SignalHandler *) NULL)
+        signal_handlers[SIGSEGV]=RegisterMagickSignalHandler(SIGSEGV);
 #endif
 #if defined(SIGFPE)
       if (signal_handlers[SIGFPE] == (SignalHandler *) NULL)
