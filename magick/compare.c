@@ -262,14 +262,14 @@ MagickExport Image *CompareImageChannels(Image *image,
         }
       else
         {
-          if (((channel & RedChannel) != 0) && (p->red != q->red))
+          if (((channel & RedChannel) != 0) && (GetRedPixelComponent(p) != q->red))
             difference=MagickTrue;
-          if (((channel & GreenChannel) != 0) && (p->green != q->green))
+          if (((channel & GreenChannel) != 0) && (GetGreenPixelComponent(p) != q->green))
             difference=MagickTrue;
-          if (((channel & BlueChannel) != 0) && (p->blue != q->blue))
+          if (((channel & BlueChannel) != 0) && (GetBluePixelComponent(p) != q->blue))
             difference=MagickTrue;
           if (((channel & OpacityChannel) != 0) &&
-              (image->matte != MagickFalse) && (p->opacity != q->opacity))
+              (image->matte != MagickFalse) && (GetOpacityPixelComponent(p) != q->opacity))
             difference=MagickTrue;
           if ((((channel & IndexChannel) != 0) &&
                (image->colorspace == CMYKColorspace) &&

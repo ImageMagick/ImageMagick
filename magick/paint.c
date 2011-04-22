@@ -341,7 +341,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (p->opacity != OpaqueOpacity)
+      if (GetOpacityPixelComponent(p) != OpaqueOpacity)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color);
           SetMagickPixelPacket(image,&fill_color,(IndexPacket *) NULL,&fill);

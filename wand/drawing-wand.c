@@ -4503,13 +4503,13 @@ WandExport void DrawScale(DrawingWand *wand,const double x,const double y)
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
 {
-  if (p->red != q->red)
+  if (GetRedPixelComponent(p) != q->red)
     return(MagickFalse);
-  if (p->green != q->green)
+  if (GetGreenPixelComponent(p) != q->green)
     return(MagickFalse);
-  if (p->blue != q->blue)
+  if (GetBluePixelComponent(p) != q->blue)
     return(MagickFalse);
-  if (p->opacity != q->opacity)
+  if (GetOpacityPixelComponent(p) != q->opacity)
     return(MagickFalse);
   return(MagickTrue);
 }
