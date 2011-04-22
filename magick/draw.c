@@ -1891,7 +1891,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               fill_rule;
 
             GetMagickToken(q,&q,token);
-            fill_rule=ParseMagickOption(MagickFillRuleOptions,MagickFalse,
+            fill_rule=ParseCommandOption(MagickFillRuleOptions,MagickFalse,
               token);
             if (fill_rule == -1)
               {
@@ -1907,7 +1907,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               clip_units;
 
             GetMagickToken(q,&q,token);
-            clip_units=ParseMagickOption(MagickClipPathOptions,MagickFalse,
+            clip_units=ParseCommandOption(MagickClipPathOptions,MagickFalse,
               token);
             if (clip_units == -1)
               {
@@ -1948,7 +1948,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               decorate;
 
             GetMagickToken(q,&q,token);
-            decorate=ParseMagickOption(MagickDecorateOptions,MagickFalse,
+            decorate=ParseCommandOption(MagickDecorateOptions,MagickFalse,
               token);
             if (decorate == -1)
               {
@@ -2022,7 +2022,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               fill_rule;
 
             GetMagickToken(q,&q,token);
-            fill_rule=ParseMagickOption(MagickFillRuleOptions,MagickFalse,
+            fill_rule=ParseCommandOption(MagickFillRuleOptions,MagickFalse,
               token);
             if (fill_rule == -1)
               {
@@ -2059,7 +2059,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               stretch;
 
             GetMagickToken(q,&q,token);
-            stretch=ParseMagickOption(MagickStretchOptions,MagickFalse,token);
+            stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,token);
             if (stretch == -1)
               {
                 status=MagickFalse;
@@ -2074,7 +2074,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               style;
 
             GetMagickToken(q,&q,token);
-            style=ParseMagickOption(MagickStyleOptions,MagickFalse,token);
+            style=ParseCommandOption(MagickStyleOptions,MagickFalse,token);
             if (style == -1)
               {
                 status=MagickFalse;
@@ -2118,7 +2118,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               gravity;
 
             GetMagickToken(q,&q,token);
-            gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,token);
+            gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,token);
             if (gravity == -1)
               {
                 status=MagickFalse;
@@ -2140,7 +2140,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
 
             primitive_type=ImagePrimitive;
             GetMagickToken(q,&q,token);
-            compose=ParseMagickOption(MagickComposeOptions,MagickFalse,token);
+            compose=ParseCommandOption(MagickComposeOptions,MagickFalse,token);
             if (compose == -1)
               {
                 status=MagickFalse;
@@ -2594,7 +2594,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               linecap;
 
             GetMagickToken(q,&q,token);
-            linecap=ParseMagickOption(MagickLineCapOptions,MagickFalse,token);
+            linecap=ParseCommandOption(MagickLineCapOptions,MagickFalse,token);
             if (linecap == -1)
               {
                 status=MagickFalse;
@@ -2609,7 +2609,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               linejoin;
 
             GetMagickToken(q,&q,token);
-            linejoin=ParseMagickOption(MagickLineJoinOptions,MagickFalse,token);
+            linejoin=ParseCommandOption(MagickLineJoinOptions,MagickFalse,token);
             if (linejoin == -1)
               {
                 status=MagickFalse;
@@ -2655,7 +2655,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               align;
 
             GetMagickToken(q,&q,token);
-            align=ParseMagickOption(MagickAlignOptions,MagickFalse,token);
+            align=ParseCommandOption(MagickAlignOptions,MagickFalse,token);
             if (align == -1)
               {
                 status=MagickFalse;
@@ -2670,7 +2670,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
               align;
 
             GetMagickToken(q,&q,token);
-            align=ParseMagickOption(MagickAlignOptions,MagickFalse,token);
+            align=ParseCommandOption(MagickAlignOptions,MagickFalse,token);
             if (align == -1)
               {
                 status=MagickFalse;
@@ -3031,7 +3031,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         GetMagickToken(q,&q,token);
-        method=ParseMagickOption(MagickMethodOptions,MagickFalse,token);
+        method=ParseCommandOption(MagickMethodOptions,MagickFalse,token);
         if (method == -1)
           {
             status=MagickFalse;
@@ -4768,7 +4768,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     draw_info->interword_spacing=StringToDouble(option);
   option=GetImageOption(clone_info,"direction");
   if (option != (const char *) NULL)
-    draw_info->direction=(DirectionType) ParseMagickOption(
+    draw_info->direction=(DirectionType) ParseCommandOption(
       MagickDirectionOptions,MagickFalse,option);
   option=GetImageOption(clone_info,"fill");
   if (option != (const char *) NULL)
@@ -4784,7 +4784,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     (void) QueryColorDatabase(option,&draw_info->undercolor,exception);
   option=GetImageOption(clone_info,"gravity");
   if (option != (const char *) NULL)
-    draw_info->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
+    draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,option);
   exception=DestroyExceptionInfo(exception);
   draw_info->signature=MagickSignature;

@@ -3181,7 +3181,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   colorspace=UndefinedColorspace;
   artifact=GetImageArtifact(image,"modulate:colorspace");
   if (artifact != (const char *) NULL)
-    colorspace=(ColorspaceType) ParseMagickOption(MagickColorspaceOptions,
+    colorspace=(ColorspaceType) ParseCommandOption(MagickColorspaceOptions,
       MagickFalse,artifact);
   if (image->storage_class == PseudoClass)
     {

@@ -840,7 +840,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       ssize_t
         option;
 
-      option=ParseMagickOption(MagickFilterOptions,MagickFalse,artifact);
+      option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
       if ((UndefinedFilter < option) && (option < SentinelFilter))
         { /* Raw filter request - no window function. */
           filter_type=(FilterTypes) option;
@@ -850,7 +850,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
-          option=ParseMagickOption(MagickFilterOptions,MagickFalse,artifact);
+          option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             window_type=(FilterTypes) option;
         }
@@ -864,7 +864,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           ssize_t
             option;
 
-          option=ParseMagickOption(MagickFilterOptions,MagickFalse,
+          option=ParseCommandOption(MagickFilterOptions,MagickFalse,
             artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
@@ -1058,9 +1058,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         support=GetResizeFilterSupport(resize_filter); /* practical_support */
         (void) fprintf(stdout,"# Resize Filter (for graphing)\n#\n");
         (void) fprintf(stdout,"# filter = %s\n",
-             MagickOptionToMnemonic(MagickFilterOptions,filter_type));
+             CommandOptionToMnemonic(MagickFilterOptions,filter_type));
         (void) fprintf(stdout,"# window = %s\n",
-             MagickOptionToMnemonic(MagickFilterOptions, window_type));
+             CommandOptionToMnemonic(MagickFilterOptions, window_type));
         (void) fprintf(stdout,"# support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->support);
         (void) fprintf(stdout,"# win-support = %.*g\n",

@@ -3528,7 +3528,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     client_name,"geometry",(char *) NULL));
   resource_value=XGetResourceClass(database,client_name,"gravity",
     (char *) "Center");
-  resource_info->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
+  resource_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
     MagickFalse,resource_value);
   directory=getcwd(resource_info->home_directory,MaxTextExtent);
   (void) directory;

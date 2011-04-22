@@ -1352,14 +1352,14 @@ static Image *OptimizeLayerFrames(const Image *image,
 #if DEBUG_OPT_FRAME
     fprintf(stderr, "final   %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
          (double) i-1,
-         MagickOptionToMnemonic(MagickDisposeOptions, disposals[i-1]),
+         CommandOptionToMnemonic(MagickDisposeOptions, disposals[i-1]),
          (double) bounds[i-1].width, (double) bounds[i-1].height,
          (double) bounds[i-1].x, (double) bounds[i-1].y );
 #endif
 #if DEBUG_OPT_FRAME
     fprintf(stderr, "interum %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
          (double) i,
-         MagickOptionToMnemonic(MagickDisposeOptions, disposals[i]),
+         CommandOptionToMnemonic(MagickDisposeOptions, disposals[i]),
          (double) bounds[i].width, (double) bounds[i].height,
          (double) bounds[i].x, (double) bounds[i].y );
     fprintf(stderr, "\n");

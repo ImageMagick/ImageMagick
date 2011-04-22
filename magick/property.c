@@ -2184,7 +2184,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             Image channels.
           */
           (void) FormatMagickString(value,MaxTextExtent,"%s",
-            MagickOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+            CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
             image->colorspace));
           LocaleLower(value);
           if (image->matte != MagickFalse)
@@ -2203,7 +2203,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           if (IsGrayImage(image,&image->exception) != MagickFalse)
             colorspace=GRAYColorspace;
           (void) FormatMagickString(value,MaxTextExtent,"%s",
-            MagickOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+            CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
             colorspace));
           break;
         }
@@ -2845,9 +2845,9 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         colorspace=image->colorspace;
         if (IsGrayImage(image,&image->exception) != MagickFalse)
           colorspace=GRAYColorspace;
-        q+=FormatMagickString(q,extent,"%s%s%s",MagickOptionToMnemonic(
+        q+=FormatMagickString(q,extent,"%s%s%s",CommandOptionToMnemonic(
           MagickClassOptions,(ssize_t) image->storage_class),
-          MagickOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace),
+          CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace),
           image->matte != MagickFalse ? "Matte" : "");
         break;
       }
@@ -2886,7 +2886,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image horizontal resolution.
         */
         q+=FormatMagickString(q,extent,"%g %s",image->x_resolution,
-          MagickOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+          CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
             image->units));
         break;
       }
@@ -2896,7 +2896,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image vertical resolution.
         */
         q+=FormatMagickString(q,extent,"%g %s",image->y_resolution,
-          MagickOptionToMnemonic(MagickResolutionOptions,(ssize_t)
+          CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
           image->units));
         break;
       }
@@ -2913,7 +2913,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image alpha channel.
         */
-        q+=FormatMagickString(q,extent,"%s",MagickOptionToMnemonic(
+        q+=FormatMagickString(q,extent,"%s",CommandOptionToMnemonic(
           MagickBooleanOptions,(ssize_t) image->matte));
         break;
       }
@@ -2922,7 +2922,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image compression method.
         */
-        q+=FormatMagickString(q,extent,"%s",MagickOptionToMnemonic(
+        q+=FormatMagickString(q,extent,"%s",CommandOptionToMnemonic(
           MagickCompressOptions,(ssize_t) image->compression));
         break;
       }
@@ -2931,7 +2931,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image dispose method.
         */
-        q+=FormatMagickString(q,extent,"%s",MagickOptionToMnemonic(
+        q+=FormatMagickString(q,extent,"%s",CommandOptionToMnemonic(
           MagickDisposeOptions,(ssize_t) image->dispose));
         break;
       }
@@ -3325,7 +3325,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             colorspace;
 
-          colorspace=ParseMagickOption(MagickColorspaceOptions,MagickFalse,
+          colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
             value);
           if (colorspace < 0)
             break;
@@ -3337,7 +3337,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             compose;
 
-          compose=ParseMagickOption(MagickComposeOptions,MagickFalse,value);
+          compose=ParseCommandOption(MagickComposeOptions,MagickFalse,value);
           if (compose < 0)
             break;
           image->compose=(CompositeOperator) compose;
@@ -3348,7 +3348,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             compression;
 
-          compression=ParseMagickOption(MagickCompressOptions,MagickFalse,
+          compression=ParseCommandOption(MagickCompressOptions,MagickFalse,
             value);
           if (compression < 0)
             break;
@@ -3407,7 +3407,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             dispose;
 
-          dispose=ParseMagickOption(MagickDisposeOptions,MagickFalse,value);
+          dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,value);
           if (dispose < 0)
             break;
           image->dispose=(DisposeType) dispose;
@@ -3425,7 +3425,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             gravity;
 
-          gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,value);
+          gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,value);
           if (gravity < 0)
             break;
           image->gravity=(GravityType) gravity;
@@ -3443,7 +3443,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             rendering_intent;
 
-          rendering_intent=ParseMagickOption(MagickIntentOptions,MagickFalse,
+          rendering_intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
             value);
           if (rendering_intent < 0)
             break;
@@ -3455,7 +3455,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             interpolate;
 
-          interpolate=ParseMagickOption(MagickInterpolateOptions,MagickFalse,
+          interpolate=ParseCommandOption(MagickInterpolateOptions,MagickFalse,
             value);
           if (interpolate < 0)
             break;
@@ -3520,7 +3520,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             rendering_intent;
 
-          rendering_intent=ParseMagickOption(MagickIntentOptions,MagickFalse,
+          rendering_intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
             value);
           if (rendering_intent < 0)
             break;
@@ -3556,7 +3556,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             units;
 
-          units=ParseMagickOption(MagickResolutionOptions,MagickFalse,value);
+          units=ParseCommandOption(MagickResolutionOptions,MagickFalse,value);
           if (units < 0)
             break;
           image->units=(ResolutionType) units;

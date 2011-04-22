@@ -484,8 +484,8 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
 
   (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
     "Domain: %s; rights=%s; pattern=\"%s\" ...",
-    MagickOptionToMnemonic(MagickPolicyDomainOptions,domain),
-    MagickOptionToMnemonic(MagickPolicyRightsOptions,rights),pattern);
+    CommandOptionToMnemonic(MagickPolicyDomainOptions,domain),
+    CommandOptionToMnemonic(MagickPolicyRightsOptions,rights),pattern);
   exception=AcquireExceptionInfo();
   policy_info=GetPolicyInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
@@ -574,7 +574,7 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
          (policy_info[i]->path != (char *) NULL))
       (void) fprintf(file,"\nPath: %s\n",policy_info[i]->path);
     path=policy_info[i]->path;
-    domain=MagickOptionToMnemonic(MagickPolicyDomainOptions,
+    domain=CommandOptionToMnemonic(MagickPolicyDomainOptions,
       policy_info[i]->domain);
     (void) fprintf(file,"  Policy: %s\n",domain);
     if ((policy_info[i]->domain == ResourcePolicyDomain) ||
@@ -779,7 +779,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"domain") == 0)
           {
-            policy_info->domain=(PolicyDomain) ParseMagickOption(
+            policy_info->domain=(PolicyDomain) ParseCommandOption(
               MagickPolicyDomainOptions,MagickTrue,token);
             break;
           }
@@ -810,7 +810,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"rights") == 0)
           {
-            policy_info->rights=(PolicyRights) ParseMagickOption(
+            policy_info->rights=(PolicyRights) ParseCommandOption(
               MagickPolicyRightsOptions,MagickTrue,token);
             break;
           }

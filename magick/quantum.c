@@ -368,7 +368,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
     return;
   option=GetImageOption(image_info,"quantum:format");
   if (option != (char *) NULL)
-    quantum_info->format=(QuantumFormatType) ParseMagickOption(
+    quantum_info->format=(QuantumFormatType) ParseCommandOption(
       MagickQuantumFormatOptions,MagickFalse,option);
   option=GetImageOption(image_info,"quantum:minimum");
   if (option != (char *) NULL)

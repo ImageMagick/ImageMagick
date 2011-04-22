@@ -1135,7 +1135,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
       UnlockSemaphoreInfo(log_semaphore);
       return(MagickTrue);
     }
-  domain=MagickOptionToMnemonic(MagickLogEventOptions,type);
+  domain=CommandOptionToMnemonic(MagickLogEventOptions,type);
 #if defined(MAGICKCORE_HAVE_VSNPRINTF)
   n=vsnprintf(event,MaxTextExtent,format,operands);
 #else
@@ -1413,7 +1413,7 @@ static MagickBooleanType LoadLogList(const char *xml,const char *filename,
         if (LocaleCompare((char *) keyword,"events") == 0)
           {
             log_info->event_mask=(LogEventType) (log_info->event_mask |
-              ParseMagickOption(MagickLogEventOptions,MagickTrue,token));
+              ParseCommandOption(MagickLogEventOptions,MagickTrue,token));
             break;
           }
         break;
@@ -1686,7 +1686,7 @@ MagickExport LogEventType SetLogEventMask(const char *events)
   exception=AcquireExceptionInfo();
   log_info=(LogInfo *) GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
-  option=ParseMagickOption(MagickLogEventOptions,MagickTrue,events);
+  option=ParseCommandOption(MagickLogEventOptions,MagickTrue,events);
   LockSemaphoreInfo(log_semaphore);
   log_info=(LogInfo *) GetValueFromLinkedList(log_list,0);
   log_info->event_mask=(LogEventType) option;

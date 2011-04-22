@@ -385,7 +385,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         PopImageStack();
         continue;
       }
-    if (IsMagickOption(option) == MagickFalse)
+    if (IsCommandOption(option) == MagickFalse)
       {
         Image
           *images;
@@ -466,7 +466,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickAlphaOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowMontageException(OptionError,"UnrecognizedAlphaChannelType",
                 argv[i]);
@@ -666,7 +666,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
             if (colorspace < 0)
               ThrowMontageException(OptionError,"UnrecognizedColorspace",
@@ -692,7 +692,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            compose=ParseMagickOption(MagickComposeOptions,MagickFalse,argv[i]);
+            compose=ParseCommandOption(MagickComposeOptions,MagickFalse,argv[i]);
             if (compose < 0)
               ThrowMontageException(OptionError,"UnrecognizedComposeOperator",
                 argv[i]);
@@ -710,7 +710,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            compress=ParseMagickOption(MagickCompressOptions,MagickFalse,
+            compress=ParseCommandOption(MagickCompressOptions,MagickFalse,
               argv[i]);
             if (compress < 0)
               ThrowMontageException(OptionError,"UnrecognizedCompressType",
@@ -744,7 +744,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            event=ParseMagickOption(MagickLogEventOptions,MagickFalse,argv[i]);
+            event=ParseCommandOption(MagickLogEventOptions,MagickFalse,argv[i]);
             if (event < 0)
               ThrowMontageException(OptionError,"UnrecognizedEventType",
                 argv[i]);
@@ -809,7 +809,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            dispose=ParseMagickOption(MagickDisposeOptions,MagickFalse,argv[i]);
+            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,argv[i]);
             if (dispose < 0)
               ThrowMontageException(OptionError,"UnrecognizedDisposeMethod",
                 argv[i]);
@@ -825,7 +825,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            method=ParseMagickOption(MagickDitherOptions,MagickFalse,argv[i]);
+            method=ParseCommandOption(MagickDitherOptions,MagickFalse,argv[i]);
             if (method < 0)
               ThrowMontageException(OptionError,"UnrecognizedDitherMethod",
                 argv[i]);
@@ -885,7 +885,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            endian=ParseMagickOption(MagickEndianOptions,MagickFalse,
+            endian=ParseCommandOption(MagickEndianOptions,MagickFalse,
               argv[i]);
             if (endian < 0)
               ThrowMontageException(OptionError,"UnrecognizedEndianType",
@@ -929,7 +929,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            filter=ParseMagickOption(MagickFilterOptions,MagickFalse,argv[i]);
+            filter=ParseCommandOption(MagickFilterOptions,MagickFalse,argv[i]);
             if (filter < 0)
               ThrowMontageException(OptionError,"UnrecognizedImageFilter",
                 argv[i]);
@@ -1016,7 +1016,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,
+            gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
               argv[i]);
             if (gravity < 0)
               ThrowMontageException(OptionError,"UnrecognizedGravityType",
@@ -1058,7 +1058,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            interlace=ParseMagickOption(MagickInterlaceOptions,MagickFalse,
+            interlace=ParseCommandOption(MagickInterlaceOptions,MagickFalse,
               argv[i]);
             if (interlace < 0)
               ThrowMontageException(OptionError,"UnrecognizedInterlaceType",
@@ -1075,7 +1075,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            interpolate=ParseMagickOption(MagickInterpolateOptions,MagickFalse,
+            interpolate=ParseCommandOption(MagickInterpolateOptions,MagickFalse,
               argv[i]);
             if (interpolate < 0)
               ThrowMontageException(OptionError,"UnrecognizedInterpolateMethod",
@@ -1126,7 +1126,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            resource=ParseMagickOption(MagickResourceOptions,MagickFalse,
+            resource=ParseCommandOption(MagickResourceOptions,MagickFalse,
               argv[i]);
             if (resource < 0)
               ThrowMontageException(OptionError,"UnrecognizedResourceType",
@@ -1150,7 +1150,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
+            list=ParseCommandOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
               ThrowMontageException(OptionError,"UnrecognizedListType",argv[i]);
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
@@ -1325,7 +1325,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMontageException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
             if (colorspace < 0)
               ThrowMontageException(OptionError,"UnrecognizedColorspace",
@@ -1639,7 +1639,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickTypeOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickTypeOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowMontageException(OptionError,"UnrecognizedImageType",
                 argv[i]);
@@ -1659,7 +1659,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMontageException(OptionError,"MissingArgument",option);
-            units=ParseMagickOption(MagickResolutionOptions,MagickFalse,
+            units=ParseCommandOption(MagickResolutionOptions,MagickFalse,
               argv[i]);
             if (units < 0)
               ThrowMontageException(OptionError,"UnrecognizedUnitsType",
@@ -1704,7 +1704,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            method=ParseMagickOption(MagickVirtualPixelOptions,MagickFalse,
+            method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
             if (method < 0)
               ThrowMontageException(OptionError,
@@ -1733,8 +1733,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       default:
         ThrowMontageException(OptionError,"UnrecognizedOption",option)
     }
-    fire=(ParseMagickOption(MagickCommandOptions,MagickFalse,option)
-            &FireOption) == 0 ?  MagickFalse : MagickTrue;
+    fire=(GetCommandOptionFlags(MagickCommandOptions,MagickFalse,option) &
+      FireOptionFlag) == 0 ?  MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickTrue,MagickTrue,MagickTrue);
   }

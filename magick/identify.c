@@ -337,7 +337,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           (double) image->page.y);
       (void) fprintf(file,"%.20g-bit ",(double) image->depth);
       if (image->type != UndefinedType)
-        (void) fprintf(file,"%s ",MagickOptionToMnemonic(MagickTypeOptions,
+        (void) fprintf(file,"%s ",CommandOptionToMnemonic(MagickTypeOptions,
           (ssize_t) image->type));
       if (image->storage_class == DirectClass)
         {
@@ -397,7 +397,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   else
     (void) fprintf(file,"  Format: %s (%s)\n",image->magick,
       GetMagickDescription(magick_info));
-  (void) fprintf(file,"  Class: %s\n",MagickOptionToMnemonic(MagickClassOptions,
+  (void) fprintf(file,"  Class: %s\n",CommandOptionToMnemonic(MagickClassOptions,
     (ssize_t) image->storage_class));
   (void) fprintf(file,"  Geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
     image->columns,(double) image->rows,(double) image->tile_offset.x,(double)
@@ -414,19 +414,19 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       (void) fprintf(file,"  Print size: %gx%g\n",(double) image->columns/
         image->x_resolution,(double) image->rows/image->y_resolution);
     }
-  (void) fprintf(file,"  Units: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Units: %s\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
-  (void) fprintf(file,"  Type: %s\n",MagickOptionToMnemonic(MagickTypeOptions,
+  (void) fprintf(file,"  Type: %s\n",CommandOptionToMnemonic(MagickTypeOptions,
     (ssize_t) type));
   if (image->type != UndefinedType)
-    (void) fprintf(file,"  Base type: %s\n",MagickOptionToMnemonic(
+    (void) fprintf(file,"  Base type: %s\n",CommandOptionToMnemonic(
       MagickTypeOptions,(ssize_t) image->type));
-  (void) fprintf(file,"  Endianess: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Endianess: %s\n",CommandOptionToMnemonic(
     MagickEndianOptions,(ssize_t) image->endian));
   /*
     Detail channel depth and extrema.
   */
-  (void) fprintf(file,"  Colorspace: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Colorspace: %s\n",CommandOptionToMnemonic(
     MagickColorspaceOptions,(ssize_t) image->colorspace));
   channel_statistics=(ChannelStatistics *) NULL;
   channel_features=(ChannelFeatures *) NULL;
@@ -692,7 +692,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (image->error.normalized_maximum_error != 0.0)
     (void) fprintf(file,"  Normalized maximum error: %g\n",
       image->error.normalized_maximum_error);
-  (void) fprintf(file,"  Rendering intent: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Rendering intent: %s\n",CommandOptionToMnemonic(
     MagickIntentOptions,(ssize_t) image->rendering_intent));
   if (image->gamma != 0.0)
     (void) fprintf(file,"  Gamma: %g\n",image->gamma);
@@ -719,7 +719,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     (void) fprintf(file,"  Tile geometry: %.20gx%.20g%+.20g%+.20g\n",(double)
       image->extract_info.width,(double) image->extract_info.height,(double)
       image->extract_info.x,(double) image->extract_info.y);
-  (void) fprintf(file,"  Interlace: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Interlace: %s\n",CommandOptionToMnemonic(
     MagickInterlaceOptions,(ssize_t) image->interlace));
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     &image->exception);
@@ -733,7 +733,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   (void) QueryColorname(image,&image->transparent_color,SVGCompliance,color,
     &image->exception);
   (void) fprintf(file,"  Transparent color: %s\n",color);
-  (void) fprintf(file,"  Compose: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Compose: %s\n",CommandOptionToMnemonic(
     MagickComposeOptions,(ssize_t) image->compose));
   if ((image->page.width != 0) || (image->page.height != 0) ||
       (image->page.x != 0) || (image->page.y != 0))
@@ -743,7 +743,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if ((image->page.x != 0) || (image->page.y != 0))
     (void) fprintf(file,"  Origin geometry: %+.20g%+.20g\n",(double)
       image->page.x,(double) image->page.y);
-  (void) fprintf(file,"  Dispose: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Dispose: %s\n",CommandOptionToMnemonic(
     MagickDisposeOptions,(ssize_t) image->dispose));
   if (image->delay != 0)
     (void) fprintf(file,"  Delay: %.20gx%.20g\n",(double) image->delay,
@@ -756,11 +756,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   else
     if (image->scene != 0)
       (void) fprintf(file,"  Scene: %.20g\n",(double) image->scene);
-  (void) fprintf(file,"  Compression: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Compression: %s\n",CommandOptionToMnemonic(
     MagickCompressOptions,(ssize_t) image->compression));
   if (image->quality != UndefinedCompressionQuality)
     (void) fprintf(file,"  Quality: %.20g\n",(double) image->quality);
-  (void) fprintf(file,"  Orientation: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Orientation: %s\n",CommandOptionToMnemonic(
     MagickOrientationOptions,(ssize_t) image->orientation));
   if (image->montage != (char *) NULL)
     (void) fprintf(file,"  Montage: %s\n",image->montage);
@@ -1060,7 +1060,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         registry=GetNextImageRegistry();
       }
     }
-  (void) fprintf(file,"  Tainted: %s\n",MagickOptionToMnemonic(
+  (void) fprintf(file,"  Tainted: %s\n",CommandOptionToMnemonic(
     MagickBooleanOptions,(ssize_t) image->taint));
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,format);
   (void) fprintf(file,"  Filesize: %sB\n",format);

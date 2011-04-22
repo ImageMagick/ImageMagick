@@ -288,7 +288,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
     }
   option=GetImageOption(image_info,"dispose");
   if (option != (const char *) NULL)
-    image->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
+    image->dispose=(DisposeType) ParseCommandOption(MagickDisposeOptions,
       MagickFalse,option);
   return(image);
 }
@@ -4336,7 +4336,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->bias=SiPrefixToDouble(option,QuantumRange);
   option=GetImageOption(image_info,"black-point-compensation");
   if (option != (const char *) NULL)
-    image->black_point_compensation=(MagickBooleanType) ParseMagickOption(
+    image->black_point_compensation=(MagickBooleanType) ParseCommandOption(
       MagickBooleanOptions,MagickFalse,option);
   option=GetImageOption(image_info,"blue-primary");
   if (option != (const char *) NULL)
@@ -4355,15 +4355,15 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->colors=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)
-    image->compose=(CompositeOperator) ParseMagickOption(MagickComposeOptions,
+    image->compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"compress");
   if (option != (const char *) NULL)
-    image->compression=(CompressionType) ParseMagickOption(
+    image->compression=(CompressionType) ParseCommandOption(
       MagickCompressOptions,MagickFalse,option);
   option=GetImageOption(image_info,"debug");
   if (option != (const char *) NULL)
-    image->debug=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,
+    image->debug=(MagickBooleanType) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"density");
   if (option != (const char *) NULL)
@@ -4385,18 +4385,18 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->depth=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"endian");
   if (option != (const char *) NULL)
-    image->endian=(EndianType) ParseMagickOption(MagickEndianOptions,
+    image->endian=(EndianType) ParseCommandOption(MagickEndianOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"filter");
   if (option != (const char *) NULL)
-    image->filter=(FilterTypes) ParseMagickOption(MagickFilterOptions,
+    image->filter=(FilterTypes) ParseCommandOption(MagickFilterOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"fuzz");
   if (option != (const char *) NULL)
     image->fuzz=SiPrefixToDouble(option,QuantumRange);
   option=GetImageOption(image_info,"gravity");
   if (option != (const char *) NULL)
-    image->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
+    image->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"green-primary");
   if (option != (const char *) NULL)
@@ -4409,15 +4409,15 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"intent");
   if (option != (const char *) NULL)
-    image->rendering_intent=(RenderingIntent) ParseMagickOption(
+    image->rendering_intent=(RenderingIntent) ParseCommandOption(
       MagickIntentOptions,MagickFalse,option);
   option=GetImageOption(image_info,"interlace");
   if (option != (const char *) NULL)
-    image->interlace=(InterlaceType) ParseMagickOption(MagickInterlaceOptions,
+    image->interlace=(InterlaceType) ParseCommandOption(MagickInterlaceOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"interpolate");
   if (option != (const char *) NULL)
-    image->interpolate=(InterpolatePixelMethod) ParseMagickOption(
+    image->interpolate=(InterpolatePixelMethod) ParseCommandOption(
       MagickInterpolateOptions,MagickFalse,option);
   option=GetImageOption(image_info,"loop");
   if (option != (const char *) NULL)
@@ -4427,7 +4427,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     (void) QueryColorDatabase(option,&image->matte_color,&image->exception);
   option=GetImageOption(image_info,"orient");
   if (option != (const char *) NULL)
-    image->orientation=(OrientationType) ParseMagickOption(
+    image->orientation=(OrientationType) ParseCommandOption(
       MagickOrientationOptions,MagickFalse,option);
   option=GetImageOption(image_info,"page");
   if (option != (const char *) NULL)
@@ -4458,7 +4458,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->scene=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"taint");
   if (option != (const char *) NULL)
-    image->taint=(MagickBooleanType) ParseMagickOption(MagickBooleanOptions,
+    image->taint=(MagickBooleanType) ParseCommandOption(MagickBooleanOptions,
       MagickFalse,option);
   option=GetImageOption(image_info,"tile-offset");
   if (option != (const char *) NULL)
@@ -4476,11 +4476,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       &image->exception);
   option=GetImageOption(image_info,"type");
   if (option != (const char *) NULL)
-    image->type=(ImageType) ParseMagickOption(MagickTypeOptions,MagickFalse,
+    image->type=(ImageType) ParseCommandOption(MagickTypeOptions,MagickFalse,
       option);
   option=GetImageOption(image_info,"units");
   if (option != (const char *) NULL)
-    units=(ResolutionType) ParseMagickOption(MagickResolutionOptions,
+    units=(ResolutionType) ParseCommandOption(MagickResolutionOptions,
       MagickFalse,option);
   else
     units = image_info->units;

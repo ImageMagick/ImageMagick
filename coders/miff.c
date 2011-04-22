@@ -650,7 +650,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       storage_class;
 
-                    storage_class=ParseMagickOption(MagickClassOptions,
+                    storage_class=ParseCommandOption(MagickClassOptions,
                       MagickFalse,options);
                     if (storage_class < 0)
                       break;
@@ -667,7 +667,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       colorspace;
 
-                    colorspace=ParseMagickOption(MagickColorspaceOptions,
+                    colorspace=ParseCommandOption(MagickColorspaceOptions,
                       MagickFalse,options);
                     if (colorspace < 0)
                       break;
@@ -679,7 +679,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       compression;
 
-                    compression=ParseMagickOption(MagickCompressOptions,
+                    compression=ParseCommandOption(MagickCompressOptions,
                       MagickFalse,options);
                     if (compression < 0)
                       break;
@@ -712,7 +712,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       dispose;
 
-                    dispose=ParseMagickOption(MagickDisposeOptions,MagickFalse,
+                    dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,
                       options);
                     if (dispose < 0)
                       break;
@@ -730,7 +730,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       endian;
 
-                    endian=ParseMagickOption(MagickEndianOptions,MagickFalse,
+                    endian=ParseCommandOption(MagickEndianOptions,MagickFalse,
                       options);
                     if (endian < 0)
                       break;
@@ -753,7 +753,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       gravity;
 
-                    gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,
+                    gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
                       options);
                     if (gravity < 0)
                       break;
@@ -797,7 +797,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       matte;
 
-                    matte=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+                    matte=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                       options);
                     if (matte < 0)
                       break;
@@ -826,7 +826,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       matte;
 
-                    matte=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+                    matte=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                       options);
                     if (matte < 0)
                       break;
@@ -838,7 +838,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       orientation;
 
-                    orientation=ParseMagickOption(MagickOrientationOptions,
+                    orientation=ParseCommandOption(MagickOrientationOptions,
                       MagickFalse,options);
                     if (orientation < 0)
                       break;
@@ -893,7 +893,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       format;
 
-                    format=ParseMagickOption(MagickQuantumFormatOptions,
+                    format=ParseCommandOption(MagickQuantumFormatOptions,
                       MagickFalse,options);
                     if (format < 0)
                       break;
@@ -921,7 +921,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       rendering_intent;
 
-                    rendering_intent=ParseMagickOption(MagickIntentOptions,
+                    rendering_intent=ParseCommandOption(MagickIntentOptions,
                       MagickFalse,options);
                     if (rendering_intent < 0)
                       break;
@@ -979,7 +979,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       type;
 
-                    type=ParseMagickOption(MagickTypeOptions,MagickFalse,
+                    type=ParseCommandOption(MagickTypeOptions,MagickFalse,
                       options);
                     if (type < 0)
                       break;
@@ -997,7 +997,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       units;
 
-                    units=ParseMagickOption(MagickResolutionOptions,MagickFalse,
+                    units=ParseCommandOption(MagickResolutionOptions,MagickFalse,
                       options);
                     if (units < 0)
                       break;
@@ -1947,9 +1947,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     */
     (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
     (void) FormatMagickString(buffer,MaxTextExtent,
-      "class=%s  colors=%.20g  matte=%s\n",MagickOptionToMnemonic(
+      "class=%s  colors=%.20g  matte=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
-      MagickOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
+      CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
     (void) WriteBlobString(image,buffer);
     (void) FormatMagickString(buffer,MaxTextExtent,"columns=%.20g  rows=%.20g  "
       "depth=%.20g\n",(double) image->columns,(double) image->rows,(double)
@@ -1958,26 +1958,26 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if (image->type != UndefinedType)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"type=%s\n",
-          MagickOptionToMnemonic(MagickTypeOptions,image->type));
+          CommandOptionToMnemonic(MagickTypeOptions,image->type));
         (void) WriteBlobString(image,buffer);
       }
     if (image->colorspace != UndefinedColorspace)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"colorspace=%s\n",
-          MagickOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
+          CommandOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
         (void) WriteBlobString(image,buffer);
       }
     if (compression != UndefinedCompression)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"compression=%s  "
-          "quality=%.20g\n",MagickOptionToMnemonic(MagickCompressOptions,
+          "quality=%.20g\n",CommandOptionToMnemonic(MagickCompressOptions,
           compression),(double) image->quality);
         (void) WriteBlobString(image,buffer);
       }
     if (image->units != UndefinedResolution)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"units=%s\n",
-          MagickOptionToMnemonic(MagickResolutionOptions,image->units));
+          CommandOptionToMnemonic(MagickResolutionOptions,image->units));
         (void) WriteBlobString(image,buffer);
       }
     if ((image->x_resolution != 0) || (image->y_resolution != 0))
@@ -2050,20 +2050,20 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if (image->gravity != UndefinedGravity)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"gravity=%s\n",
-          MagickOptionToMnemonic(MagickGravityOptions,image->gravity));
+          CommandOptionToMnemonic(MagickGravityOptions,image->gravity));
         (void) WriteBlobString(image,buffer);
       }
     if (image->dispose != UndefinedDispose)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"dispose=%s\n",
-          MagickOptionToMnemonic(MagickDisposeOptions,image->dispose));
+          CommandOptionToMnemonic(MagickDisposeOptions,image->dispose));
         (void) WriteBlobString(image,buffer);
       }
     if (image->rendering_intent != UndefinedIntent)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,
           "rendering-intent=%s\n",
-           MagickOptionToMnemonic(MagickIntentOptions,image->rendering_intent));
+           CommandOptionToMnemonic(MagickIntentOptions,image->rendering_intent));
         (void) WriteBlobString(image,buffer);
       }
     if (image->gamma != 0.0)
@@ -2093,7 +2093,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if (image->orientation != UndefinedOrientation)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,"orientation=%s\n",
-          MagickOptionToMnemonic(MagickOrientationOptions,image->orientation));
+          CommandOptionToMnemonic(MagickOrientationOptions,image->orientation));
         (void) WriteBlobString(image,buffer);
       }
     if (image->profiles != (void *) NULL)

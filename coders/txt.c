@@ -441,7 +441,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         colorspace[i]='\0';
         image->matte=MagickTrue;
       }
-    type=ParseMagickOption(MagickColorspaceOptions,MagickFalse,colorspace);
+    type=ParseCommandOption(MagickColorspaceOptions,MagickFalse,colorspace);
     if (type < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->colorspace=(ColorspaceType) type;
@@ -652,7 +652,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    (void) CopyMagickString(colorspace,MagickOptionToMnemonic(
+    (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);

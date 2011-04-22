@@ -315,7 +315,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
         PopImageStack();
         continue;
       }
-    if (IsMagickOption(option) == MagickFalse)
+    if (IsCommandOption(option) == MagickFalse)
       {
         Image
           *images;
@@ -351,7 +351,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickAlphaOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowCompareException(OptionError,"UnrecognizedAlphaChannelType",
                 argv[i]);
@@ -408,7 +408,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowCompareException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,MagickFalse,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
               argv[i]);
             if (colorspace < 0)
               ThrowCompareException(OptionError,"UnrecognizedColorspace",
@@ -425,7 +425,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            compose=ParseMagickOption(MagickComposeOptions,MagickFalse,
+            compose=ParseCommandOption(MagickComposeOptions,MagickFalse,
               argv[i]);
             if (compose < 0)
               ThrowCompareException(OptionError,"UnrecognizedComposeOperator",
@@ -442,7 +442,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowCompareException(OptionError,"MissingArgument",option);
-            compress=ParseMagickOption(MagickCompressOptions,MagickFalse,
+            compress=ParseCommandOption(MagickCompressOptions,MagickFalse,
               argv[i]);
             if (compress < 0)
               ThrowCompareException(OptionError,"UnrecognizedImageCompression",
@@ -626,7 +626,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            interlace=ParseMagickOption(MagickInterlaceOptions,MagickFalse,
+            interlace=ParseCommandOption(MagickInterlaceOptions,MagickFalse,
               argv[i]);
             if (interlace < 0)
               ThrowCompareException(OptionError,"UnrecognizedInterlaceType",
@@ -653,7 +653,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            resource=ParseMagickOption(MagickResourceOptions,MagickFalse,
+            resource=ParseCommandOption(MagickResourceOptions,MagickFalse,
               argv[i]);
             if (resource < 0)
               ThrowCompareException(OptionError,"UnrecognizedResourceType",
@@ -677,7 +677,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
+            list=ParseCommandOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
               ThrowCompareException(OptionError,"UnrecognizedListType",argv[i]);
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
@@ -719,7 +719,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickMetricOptions,MagickTrue,argv[i]);
+            type=ParseCommandOption(MagickMetricOptions,MagickTrue,argv[i]);
             if (type < 0)
               ThrowCompareException(OptionError,"UnrecognizedMetricType",
                 argv[i]);
@@ -773,7 +773,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowCompareException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
             if (colorspace < 0)
               ThrowCompareException(OptionError,"UnrecognizedColorspace",
@@ -879,7 +879,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickTypeOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickTypeOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowCompareException(OptionError,"UnrecognizedImageType",
                 argv[i]);
@@ -910,7 +910,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowCompareException(OptionError,"MissingArgument",option);
-            method=ParseMagickOption(MagickVirtualPixelOptions,MagickFalse,
+            method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
             if (method < 0)
               ThrowCompareException(OptionError,
@@ -924,8 +924,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
       default:
         ThrowCompareException(OptionError,"UnrecognizedOption",option)
     }
-    fire=(ParseMagickOption(MagickCommandOptions,MagickFalse,option)
-            &FireOption) == 0 ?  MagickFalse : MagickTrue;
+    fire=(GetCommandOptionFlags(MagickCommandOptions,MagickFalse,option) &
+      FireOptionFlag) == 0 ?  MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickTrue,MagickTrue,MagickTrue);
   }
@@ -1055,7 +1055,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             (void) fprintf(stderr,"Offset: %.20g,%.20g\n",(double)
               difference_image->page.x,(double) difference_image->page.y);
           (void) fprintf(stderr,"  Channel distortion: %s\n",
-            MagickOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
+            CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
           switch (metric)
           {
             case FuzzErrorMetric:

@@ -140,7 +140,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   draw_info->text=ConstantString(caption);
   gravity=GetImageOption(image_info,"gravity");
   if (gravity != (char *) NULL)
-    draw_info->gravity=(GravityType) ParseMagickOption(MagickGravityOptions,
+    draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
       MagickFalse,gravity);
   if ((*caption != '\0') && (image->rows != 0) &&
       (image_info->pointsize == 0.0))

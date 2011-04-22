@@ -1439,7 +1439,7 @@ MagickExport void GetColorTuple(const MagickPixelPacket *pixel,
       if (status != MagickFalse)
         color.depth=8;
     }
-  (void) ConcatenateMagickString(tuple,MagickOptionToMnemonic(
+  (void) ConcatenateMagickString(tuple,CommandOptionToMnemonic(
     MagickColorspaceOptions,(ssize_t) color.colorspace),MaxTextExtent);
   if (color.matte != MagickFalse)
     (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
@@ -2662,7 +2662,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           colorspace[i]='\0';
           color->matte=MagickTrue;
         }
-      type=ParseMagickOption(MagickColorspaceOptions,MagickFalse,colorspace);
+      type=ParseCommandOption(MagickColorspaceOptions,MagickFalse,colorspace);
       if (type < 0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),

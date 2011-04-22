@@ -491,9 +491,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       */
       CatchException(exception);
       (void) fprintf(stdout,"  test %.20g: %s/%s/%s/%.20g-bits",(double)
-        (test++),reference_formats[i].magick,MagickOptionToMnemonic(
+        (test++),reference_formats[i].magick,CommandOptionToMnemonic(
         MagickCompressOptions,reference_formats[i].compression),
-        MagickOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
+        CommandOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
         (double) reference_types[j].depth);
       (void) CopyMagickString(image_info->filename,reference_filename,
         MaxTextExtent);
@@ -702,9 +702,9 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       */
       CatchException(exception);
       (void) fprintf(stdout,"  test %.20g: %s/%s/%s/%.20g-bits",(double)
-        (test++),reference_formats[i].magick,MagickOptionToMnemonic(
+        (test++),reference_formats[i].magick,CommandOptionToMnemonic(
         MagickCompressOptions,reference_formats[i].compression),
-        MagickOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
+        CommandOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
         (double) reference_types[j].depth);
       (void) CopyMagickString(image_info->filename,reference_filename,
         MaxTextExtent);
@@ -905,7 +905,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       */
       CatchException(exception);
       (void) fprintf(stdout,"  test %.20g: %s/%s",(double) (test++),
-        reference_map[i],MagickOptionToMnemonic(MagickStorageOptions,
+        reference_map[i],CommandOptionToMnemonic(MagickStorageOptions,
         reference_storage[j].type));
       (void) CopyMagickString(image_info->filename,reference_filename,
         MaxTextExtent);
@@ -1298,7 +1298,7 @@ int main(int argc,char **argv)
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
-    if (IsMagickOption(option) == MagickFalse)
+    if (IsCommandOption(option) == MagickFalse)
       {
         (void) CopyMagickString(image_info->filename,option,MaxTextExtent);
         continue;
@@ -1363,7 +1363,7 @@ int main(int argc,char **argv)
             i++;
             if (i == (ssize_t) argc)
               ThrowValidateException(OptionError,"MissingArgument",option);
-            validate=ParseMagickOption(MagickValidateOptions,MagickFalse,
+            validate=ParseCommandOption(MagickValidateOptions,MagickFalse,
               argv[i]);
             if (validate < 0)
               ThrowValidateException(OptionError,"UnrecognizedValidateType",
@@ -1415,7 +1415,7 @@ int main(int argc,char **argv)
           (void) fprintf(stdout,"Copyright: %s\n\n",
             GetMagickCopyright());
           (void) fprintf(stdout,"ImageMagick Validation Suite (%s)\n\n",
-            MagickOptionToMnemonic(MagickValidateOptions,(ssize_t) type));
+            CommandOptionToMnemonic(MagickValidateOptions,(ssize_t) type));
           if ((type & CompareValidate) != 0)
             tests+=ValidateCompareCommand(image_info,reference_filename,
               output_filename,&fail,exception);

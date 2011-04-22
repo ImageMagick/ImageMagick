@@ -861,8 +861,8 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     family="unknown";
     if (type_info[i]->family != (char *) NULL)
       family=type_info[i]->family;
-    style=MagickOptionToMnemonic(MagickStyleOptions,type_info[i]->style);
-    stretch=MagickOptionToMnemonic(MagickStretchOptions,type_info[i]->stretch);
+    style=CommandOptionToMnemonic(MagickStyleOptions,type_info[i]->style);
+    stretch=CommandOptionToMnemonic(MagickStretchOptions,type_info[i]->stretch);
     glyphs="unknown";
     if (type_info[i]->glyphs != (char *) NULL)
       glyphs=type_info[i]->glyphs;
@@ -1214,13 +1214,13 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
           }
         if (LocaleCompare((char *) keyword,"stretch") == 0)
           {
-            type_info->stretch=(StretchType) ParseMagickOption(
+            type_info->stretch=(StretchType) ParseCommandOption(
               MagickStretchOptions,MagickFalse,token);
             break;
           }
         if (LocaleCompare((char *) keyword,"style") == 0)
           {
-            type_info->style=(StyleType) ParseMagickOption(MagickStyleOptions,
+            type_info->style=(StyleType) ParseCommandOption(MagickStyleOptions,
               MagickFalse,token);
             break;
           }
