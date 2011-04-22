@@ -13,6 +13,7 @@
     text chunks.
   * Added "-define PNG:preserve-colormap" option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18564).
+  * Add support for writing RGB FITS images as separate planes.
 
 2011-04-16  6.6.9-6 Cristy  <quetzlzacatenango@image...>
   * Support the HDR 32-bit_rle_xyze format.

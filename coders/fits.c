@@ -661,7 +661,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"NAXIS   =           %10lu",
-    2UL);
+    IsGrayImage(image,&image->exception) != MagickFalse ? 2UL : 3UL);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatMagickString(header,FITSBlocksize,"NAXIS1  =           %10lu",
@@ -672,6 +672,13 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     (unsigned long) image->rows);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
+  if (IsGrayImage(image,&image->exception) == MagickFalse)
+    {
+      (void) FormatMagickString(header,FITSBlocksize,
+        "NAXIS3  =           %10lu",3UL);
+      (void) strncpy(fits_info+offset,header,strlen(header));
+      offset+=80;
+    }
   (void) FormatMagickString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
@@ -704,27 +711,96 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     Convert image to fits scale PseudoColor class.
   */
   pixels=GetQuantumPixels(quantum_info);
-  length=GetQuantumExtent(image,quantum_info,GrayQuantum);
-  for (y=(ssize_t) image->rows-1; y >= 0; y--)
-  {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-      GrayQuantum,pixels,&image->exception);
-    if (image->depth == 16)
-      SetFITSUnsignedPixels(image->columns,image->depth,pixels);
-    if (((image->depth == 32) || (image->depth == 64)) &&
-        (quantum_info->format != FloatingPointQuantumFormat))
-      SetFITSUnsignedPixels(image->columns,image->depth,pixels);
-    count=WriteBlob(image,length,pixels);
-    if (count != (ssize_t) length)
-      break;
-    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-      image->rows);
-    if (status == MagickFalse)
-      break;
-  }
+  if (IsGrayImage(image,&image->exception) != MagickFalse)
+    {
+      length=GetQuantumExtent(image,quantum_info,GrayQuantum);
+      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+      {
+        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+          GrayQuantum,pixels,&image->exception);
+        if (image->depth == 16)
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        if (((image->depth == 32) || (image->depth == 64)) &&
+            (quantum_info->format != FloatingPointQuantumFormat))
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        count=WriteBlob(image,length,pixels);
+        if (count != (ssize_t) length)
+          break;
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
+    }
+  else
+    {
+      length=GetQuantumExtent(image,quantum_info,RedQuantum);
+      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+      {
+        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+          RedQuantum,pixels,&image->exception);
+        if (image->depth == 16)
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        if (((image->depth == 32) || (image->depth == 64)) &&
+            (quantum_info->format != FloatingPointQuantumFormat))
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        count=WriteBlob(image,length,pixels);
+        if (count != (ssize_t) length)
+          break;
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
+      length=GetQuantumExtent(image,quantum_info,GreenQuantum);
+      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+      {
+        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+          GreenQuantum,pixels,&image->exception);
+        if (image->depth == 16)
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        if (((image->depth == 32) || (image->depth == 64)) &&
+            (quantum_info->format != FloatingPointQuantumFormat))
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        count=WriteBlob(image,length,pixels);
+        if (count != (ssize_t) length)
+          break;
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
+      length=GetQuantumExtent(image,quantum_info,BlueQuantum);
+      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+      {
+        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+          BlueQuantum,pixels,&image->exception);
+        if (image->depth == 16)
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        if (((image->depth == 32) || (image->depth == 64)) &&
+            (quantum_info->format != FloatingPointQuantumFormat))
+          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+        count=WriteBlob(image,length,pixels);
+        if (count != (ssize_t) length)
+          break;
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
+    }
   quantum_info=DestroyQuantumInfo(quantum_info);
   length=(size_t) (FITSBlocksize-TellBlob(image) % FITSBlocksize);
   if (length != 0)
