@@ -5348,14 +5348,14 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         }
       }
       if ((channel & RedChannel) != 0)
-        q->red=ClampToQuantum(pixel.red);
+        SetRedPixelComponent(q,ClampToQuantum(pixel.red));
       if ((channel & GreenChannel) != 0)
-        q->green=ClampToQuantum(pixel.green);
+        SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
       if ((channel & BlueChannel) != 0)
-        q->blue=ClampToQuantum(pixel.blue);
+        SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
-        q->opacity=ClampToQuantum(pixel.opacity);
+        SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         statistic_indexes[x]=(IndexPacket) ClampToQuantum(pixel.index);
@@ -5526,38 +5526,38 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
     {
       if ((channel & RedChannel) != 0)
         {
-          pixel.red=p->red-(MagickRealType) q->red;
+          pixel.red=GetRedPixelComponent(p)-(MagickRealType) q->red;
           if (fabs(2.0*pixel.red) < quantum_threshold)
             pixel.red=(MagickRealType) GetRedPixelComponent(p);
           else
-            pixel.red=(MagickRealType) p->red+(pixel.red*amount);
+            pixel.red=(MagickRealType) GetRedPixelComponent(p)+(pixel.red*amount);
           SetRedPixelComponent(q,ClampToQuantum(pixel.red));
         }
       if ((channel & GreenChannel) != 0)
         {
-          pixel.green=p->green-(MagickRealType) q->green;
+          pixel.green=GetGreenPixelComponent(p)-(MagickRealType) q->green;
           if (fabs(2.0*pixel.green) < quantum_threshold)
             pixel.green=(MagickRealType) GetGreenPixelComponent(p);
           else
-            pixel.green=(MagickRealType) p->green+(pixel.green*amount);
+            pixel.green=(MagickRealType) GetGreenPixelComponent(p)+(pixel.green*amount);
           SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
         }
       if ((channel & BlueChannel) != 0)
         {
-          pixel.blue=p->blue-(MagickRealType) q->blue;
+          pixel.blue=GetBluePixelComponent(p)-(MagickRealType) q->blue;
           if (fabs(2.0*pixel.blue) < quantum_threshold)
             pixel.blue=(MagickRealType) GetBluePixelComponent(p);
           else
-            pixel.blue=(MagickRealType) p->blue+(pixel.blue*amount);
+            pixel.blue=(MagickRealType) GetBluePixelComponent(p)+(pixel.blue*amount);
           SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
         }
       if ((channel & OpacityChannel) != 0)
         {
-          pixel.opacity=p->opacity-(MagickRealType) q->opacity;
+          pixel.opacity=GetOpacityPixelComponent(p)-(MagickRealType) q->opacity;
           if (fabs(2.0*pixel.opacity) < quantum_threshold)
             pixel.opacity=(MagickRealType) GetOpacityPixelComponent(p);
           else
-            pixel.opacity=p->opacity+(pixel.opacity*amount);
+            pixel.opacity=GetOpacityPixelComponent(p)+(pixel.opacity*amount);
           SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
         }
       if (((channel & IndexChannel) != 0) &&

@@ -885,7 +885,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (p->opacity == (Quantum) TransparentOpacity))
+                      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
                     {
                       *q++=ScaleQuantumToChar((Quantum) QuantumRange);
                       *q++=ScaleQuantumToChar((Quantum) QuantumRange);
@@ -940,7 +940,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (p->opacity == (Quantum) TransparentOpacity))
+                      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
                     {
                       Ascii85Encode(image,ScaleQuantumToChar((Quantum)
                         QuantumRange));

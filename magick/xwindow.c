@@ -107,12 +107,12 @@
   (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) blue_gamma)* \
   QuantumRange)))
 #define XGammaPixel(map,color)  (size_t) (map->base_pixel+ \
-  ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535L)* \
-    map->red_mult)+ \
-  ((ScaleQuantumToShort(XGreenGamma((color)->green))*map->green_max/65535L)* \
-    map->green_mult)+ \
-  ((ScaleQuantumToShort(XBlueGamma((color)->blue))*map->blue_max/65535L)* \
-    map->blue_mult))
+  ((ScaleQuantumToShort(XRedGamma((color)->red))*maGetRedPixelComponent(p)_max/65535L)* \
+    maGetRedPixelComponent(p)_mult)+ \
+  ((ScaleQuantumToShort(XGreenGamma((color)->green))*maGetGreenPixelComponent(p)_max/65535L)* \
+    maGetGreenPixelComponent(p)_mult)+ \
+  ((ScaleQuantumToShort(XBlueGamma((color)->blue))*maGetBluePixelComponent(p)_max/65535L)* \
+    maGetBluePixelComponent(p)_mult))
 #define XGreenGamma(color) ClampToQuantum(green_gamma == 1.0 ? (double) \
   (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) green_gamma)* \
   QuantumRange)))
@@ -120,9 +120,9 @@
   (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) red_gamma)* \
   QuantumRange)))
 #define XStandardPixel(map,color)  (size_t) (map->base_pixel+ \
-  (((color)->red*map->red_max/65535L)*map->red_mult)+ \
-  (((color)->green*map->green_max/65535L)*map->green_mult)+ \
-  (((color)->blue*map->blue_max/65535L)*map->blue_mult))
+  (((color)->red*maGetRedPixelComponent(p)_max/65535L)*maGetRedPixelComponent(p)_mult)+ \
+  (((color)->green*maGetGreenPixelComponent(p)_max/65535L)*maGetGreenPixelComponent(p)_mult)+ \
+  (((color)->blue*maGetBluePixelComponent(p)_max/65535L)*maGetBluePixelComponent(p)_mult))
 
 #define AccentuateModulate  ScaleCharToQuantum(80)
 #define HighlightModulate  ScaleCharToQuantum(125)
@@ -6385,7 +6385,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         for (x=(int) canvas->columns-1; x >= 0; x--)
         {
           byte>>=1;
-          if (p->opacity > (QuantumRange/2))
+          if (GetOpacityPixelComponent(p) > (QuantumRange/2))
             byte|=0x80;
           bit++;
           if (bit == 8)
@@ -7012,7 +7012,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         for (x=(int) canvas->columns-1; x >= 0; x--)
         {
           byte<<=1;
-          if (p->opacity > (QuantumRange/2))
+          if (GetOpacityPixelComponent(p) > (QuantumRange/2))
             byte|=0x01;
           bit++;
           if (bit == 8)

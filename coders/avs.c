@@ -372,7 +372,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
-          (image->matte != MagickFalse ? p->opacity : OpaqueOpacity)));
+          (image->matte != MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
         *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
         *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
         *q++=ScaleQuantumToChar(GetBluePixelComponent(p));

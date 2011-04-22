@@ -1091,15 +1091,15 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
           alpha=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(p));
           beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
         }
-      pixel=alpha*p->red-beta*q->red;
+      pixel=alpha*GetRedPixelComponent(p)-beta*q->red;
       distance=pixel*pixel;
       if (distance <= cube_info->distance)
         {
-          pixel=alpha*p->green-beta*q->green;
+          pixel=alpha*GetGreenPixelComponent(p)-beta*q->green;
           distance+=pixel*pixel;
           if (distance <= cube_info->distance)
             {
-              pixel=alpha*p->blue-beta*q->blue;
+              pixel=alpha*GetBluePixelComponent(p)-beta*q->blue;
               distance+=pixel*pixel;
               if (distance <= cube_info->distance)
                 {
@@ -2182,17 +2182,17 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
           beta=(MagickRealType) (QuantumScale*(QuantumRange-
             image->colormap[index].opacity));
         }
-      distance=fabs(alpha*p->red-beta*image->colormap[index].red);
+      distance=fabs(alpha*GetRedPixelComponent(p)-beta*image->colormap[index].red);
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      distance=fabs(alpha*p->green-beta*image->colormap[index].green);
+      distance=fabs(alpha*GetGreenPixelComponent(p)-beta*image->colormap[index].green);
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      distance=fabs(alpha*p->blue-beta*image->colormap[index].blue);
+      distance=fabs(alpha*GetBluePixelComponent(p)-beta*image->colormap[index].blue);
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)

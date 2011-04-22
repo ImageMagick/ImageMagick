@@ -574,11 +574,11 @@ LosslessReduceDepthOK(Image *image)
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
                 ok_to_reduce=
-                  (p->red == ScaleQuantumToCharToQuantum(p->red) &&
-                  p->green == ScaleQuantumToCharToQuantum(p->green) &&
-                  p->blue == ScaleQuantumToCharToQuantum(p->blue) &&
+                  (GetRedPixelComponent(p) == ScaleQuantumToCharToQuantum(GetRedPixelComponent(p)) &&
+                  GetGreenPixelComponent(p) == ScaleQuantumToCharToQuantum(GetGreenPixelComponent(p)) &&
+                  GetBluePixelComponent(p) == ScaleQuantumToCharToQuantum(GetBluePixelComponent(p)) &&
                   (image->matte == MagickFalse ||
-                  p->opacity == ScaleQuantumToCharToQuantum(p->opacity)))
+                  GetOpacityPixelComponent(p) == ScaleQuantumToCharToQuantum(GetOpacityPixelComponent(p))))
                   ? MagickTrue : MagickFalse;
 
                 if (ok_to_reduce == MagickFalse)

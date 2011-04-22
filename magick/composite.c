@@ -211,7 +211,7 @@ static inline void CompositeAtop(const MagickPixelPacket *p,
   MagickRealType
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   composite->opacity=q->opacity;   /* optimized  Da = 1.0-Gamma */
   composite->red=Atop(GetRedPixelComponent(p),Sa,q->red,1.0);
   composite->green=Atop(GetGreenPixelComponent(p),Sa,q->green,1.0);
@@ -281,16 +281,16 @@ static inline void CompositeColorBurn(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*ColorBurn(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*ColorBurn(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*ColorBurn(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*ColorBurn(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*ColorBurn(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*ColorBurn(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*ColorBurn(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -343,16 +343,16 @@ static inline void CompositeColorDodge(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*ColorDodge(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*ColorDodge(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*ColorDodge(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*ColorDodge(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*ColorDodge(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*ColorDodge(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*ColorDodge(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -380,14 +380,14 @@ static inline void CompositeDarken(const MagickPixelPacket *p,
     gamma;
 
   if ( (channel & SyncChannels) != 0 ) {
-    composite->opacity=QuantumScale*p->opacity*q->opacity; /* Over Blend */
+    composite->opacity=QuantumScale*GetOpacityPixelComponent(p)*q->opacity; /* Over Blend */
     gamma=1.0-QuantumScale*composite->opacity;
     gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Darken(GetRedPixelComponent(p),p->opacity,q->red,q->opacity);
-    composite->green=gamma*Darken(GetGreenPixelComponent(p),p->opacity,q->green,q->opacity);
-    composite->blue=gamma*Darken(GetBluePixelComponent(p),p->opacity,q->blue,q->opacity);
+    composite->red=gamma*Darken(GetRedPixelComponent(p),GetOpacityPixelComponent(p),q->red,q->opacity);
+    composite->green=gamma*Darken(GetGreenPixelComponent(p),GetOpacityPixelComponent(p),q->green,q->opacity);
+    composite->blue=gamma*Darken(GetBluePixelComponent(p),GetOpacityPixelComponent(p),q->blue,q->opacity);
     if (q->colorspace == CMYKColorspace)
-      composite->index=gamma*Darken(p->index,p->opacity,q->index,q->opacity);
+      composite->index=gamma*Darken(p->index,GetOpacityPixelComponent(p),q->index,q->opacity);
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
@@ -417,7 +417,7 @@ static inline void CompositeDarkenIntensity(const MagickPixelPacket *p,
       Da,
       Sa;
 
-    Sa=1.0-QuantumScale*p->opacity;
+    Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);
     Da=1.0-QuantumScale*q->opacity;
     *composite = (Sa*MagickPixelIntensity(p) < Da*MagickPixelIntensity(q))
               ? *p : *q;
@@ -425,13 +425,13 @@ static inline void CompositeDarkenIntensity(const MagickPixelPacket *p,
   else {
     int from_p = (MagickPixelIntensity(p) < MagickPixelIntensity(q));
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity = from_p ? p->opacity : q->opacity;
+      composite->opacity = from_p ? GetOpacityPixelComponent(p) : q->opacity;
     if ( (channel & RedChannel) != 0 )
-      composite->red = from_p ? p->red : q->red;
+      composite->red = from_p ? GetRedPixelComponent(p) : q->red;
     if ( (channel & GreenChannel) != 0 )
-      composite->green = from_p ? p->green : q->green;
+      composite->green = from_p ? GetGreenPixelComponent(p) : q->green;
     if ( (channel & BlueChannel) != 0 )
-      composite->blue = from_p ? p->blue : q->blue;
+      composite->blue = from_p ? GetBluePixelComponent(p) : q->blue;
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index = from_p ? p->index : q->index;
   }
@@ -453,7 +453,7 @@ static inline void CompositeDifference(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
@@ -468,13 +468,13 @@ static inline void CompositeDifference(const MagickPixelPacket *p,
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity=QuantumRange-fabs(p->opacity - q->opacity);
+      composite->opacity=QuantumRange-fabs(GetOpacityPixelComponent(p) - q->opacity);
     if ( (channel & RedChannel) != 0 )
-      composite->red=fabs(p->red - q->red);
+      composite->red=fabs(GetRedPixelComponent(p) - q->red);
     if ( (channel & GreenChannel) != 0 )
-      composite->green=fabs(p->green - q->green);
+      composite->green=fabs(GetGreenPixelComponent(p) - q->green);
     if ( (channel & BlueChannel) != 0 )
-      composite->blue=fabs(p->blue - q->blue);
+      composite->blue=fabs(GetBluePixelComponent(p) - q->blue);
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=fabs(p->index - q->index);
   }
@@ -509,17 +509,17 @@ static inline void CompositeDivide(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
     gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Divide(QuantumScale*p->red*Sa,Sa,QuantumScale*
+    composite->red=gamma*Divide(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
       q->red*Da,Da);
-    composite->green=gamma*Divide(QuantumScale*p->green*Sa,Sa,QuantumScale*
+    composite->green=gamma*Divide(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
       q->green*Da,Da);
-    composite->blue=gamma*Divide(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+    composite->blue=gamma*Divide(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
       q->blue*Da,Da);
     if (q->colorspace == CMYKColorspace)
       composite->index=gamma*Divide(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -530,13 +530,13 @@ static inline void CompositeDivide(const MagickPixelPacket *p,
       composite->opacity=QuantumRange*(1.0-Divide(Sa,1.0,Da,1.0));
     if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*
-          Divide(QuantumScale*p->red,1.0,QuantumScale*q->red,1.0);
+          Divide(QuantumScale*GetRedPixelComponent(p),1.0,QuantumScale*q->red,1.0);
     if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*
-          Divide(QuantumScale*p->green,1.0,QuantumScale*q->green,1.0);
+          Divide(QuantumScale*GetGreenPixelComponent(p),1.0,QuantumScale*q->green,1.0);
     if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*
-          Divide(QuantumScale*p->blue,1.0,QuantumScale*q->blue,1.0);
+          Divide(QuantumScale*GetBluePixelComponent(p),1.0,QuantumScale*q->blue,1.0);
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*
           Divide(QuantumScale*p->index,1.0,QuantumScale*q->index,1.0);
@@ -558,17 +558,17 @@ static inline void CompositeExclusion(const MagickPixelPacket *p,
     Sa,
     Da;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
     gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Exclusion(QuantumScale*p->red*Sa,Sa,QuantumScale*
+    composite->red=gamma*Exclusion(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
       q->red*Da,Da);
-    composite->green=gamma*Exclusion(QuantumScale*p->green*Sa,Sa,QuantumScale*
+    composite->green=gamma*Exclusion(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
       q->green*Da,Da);
-    composite->blue=gamma*Exclusion(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+    composite->blue=gamma*Exclusion(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
       q->blue*Da,Da);
     if (q->colorspace == CMYKColorspace)
       composite->index=gamma*Exclusion(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -579,13 +579,13 @@ static inline void CompositeExclusion(const MagickPixelPacket *p,
       composite->opacity=QuantumRange*(1.0-Exclusion(Sa,1.0,Da,1.0));
     if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*
-          Exclusion(QuantumScale*p->red,1.0,QuantumScale*q->red,1.0);
+          Exclusion(QuantumScale*GetRedPixelComponent(p),1.0,QuantumScale*q->red,1.0);
     if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*
-          Exclusion(QuantumScale*p->green,1.0,QuantumScale*q->green,1.0);
+          Exclusion(QuantumScale*GetGreenPixelComponent(p),1.0,QuantumScale*q->green,1.0);
     if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*
-          Exclusion(QuantumScale*p->blue,1.0,QuantumScale*q->blue,1.0);
+          Exclusion(QuantumScale*GetBluePixelComponent(p),1.0,QuantumScale*q->blue,1.0);
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*
           Exclusion(QuantumScale*p->index,1.0,QuantumScale*q->index,1.0);
@@ -608,16 +608,16 @@ static inline void CompositeHardLight(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*HardLight(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*HardLight(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*HardLight(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*HardLight(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*HardLight(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*HardLight(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*HardLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -681,7 +681,7 @@ static inline void CompositeIn(const MagickPixelPacket *p,
     Sa,
     Da;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=Sa*Da;
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
@@ -714,14 +714,14 @@ static inline void CompositeLighten(const MagickPixelPacket *p,
     gamma;
 
   if ( (channel & SyncChannels) != 0 ) {
-    composite->opacity=QuantumScale*p->opacity*q->opacity; /* Over Blend */
+    composite->opacity=QuantumScale*GetOpacityPixelComponent(p)*q->opacity; /* Over Blend */
     gamma=1.0-QuantumScale*composite->opacity;
     gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Lighten(GetRedPixelComponent(p),p->opacity,q->red,q->opacity);
-    composite->green=gamma*Lighten(GetGreenPixelComponent(p),p->opacity,q->green,q->opacity);
-    composite->blue=gamma*Lighten(GetBluePixelComponent(p),p->opacity,q->blue,q->opacity);
+    composite->red=gamma*Lighten(GetRedPixelComponent(p),GetOpacityPixelComponent(p),q->red,q->opacity);
+    composite->green=gamma*Lighten(GetGreenPixelComponent(p),GetOpacityPixelComponent(p),q->green,q->opacity);
+    composite->blue=gamma*Lighten(GetBluePixelComponent(p),GetOpacityPixelComponent(p),q->blue,q->opacity);
     if (q->colorspace == CMYKColorspace)
-      composite->index=gamma*Lighten(p->index,p->opacity,q->index,q->opacity);
+      composite->index=gamma*Lighten(p->index,GetOpacityPixelComponent(p),q->index,q->opacity);
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
@@ -751,7 +751,7 @@ static inline void CompositeLightenIntensity(const MagickPixelPacket *p,
       Da,
       Sa;
 
-    Sa=1.0-QuantumScale*p->opacity;
+    Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);
     Da=1.0-QuantumScale*q->opacity;
     *composite = (Sa*MagickPixelIntensity(p) > Da*MagickPixelIntensity(q))
                ? *p : *q;
@@ -759,13 +759,13 @@ static inline void CompositeLightenIntensity(const MagickPixelPacket *p,
   else {
     int from_p = (MagickPixelIntensity(p) > MagickPixelIntensity(q));
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity = from_p ? p->opacity : q->opacity;
+      composite->opacity = from_p ? GetOpacityPixelComponent(p) : q->opacity;
     if ( (channel & RedChannel) != 0 )
-      composite->red = from_p ? p->red : q->red;
+      composite->red = from_p ? GetRedPixelComponent(p) : q->red;
     if ( (channel & GreenChannel) != 0 )
-      composite->green = from_p ? p->green : q->green;
+      composite->green = from_p ? GetGreenPixelComponent(p) : q->green;
     if ( (channel & BlueChannel) != 0 )
-      composite->blue = from_p ? p->blue : q->blue;
+      composite->blue = from_p ? GetBluePixelComponent(p) : q->blue;
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index = from_p ? p->index : q->index;
   }
@@ -792,14 +792,14 @@ static inline void CompositeLinearDodge(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*(p->red*Sa+q->red*Da);
-  composite->green=gamma*(p->green*Sa+q->green*Da);
-  composite->blue=gamma*(p->blue*Sa+q->blue*Da);
+  composite->red=gamma*(GetRedPixelComponent(p)*Sa+q->red*Da);
+  composite->green=gamma*(GetGreenPixelComponent(p)*Sa+q->green*Da);
+  composite->blue=gamma*(GetBluePixelComponent(p)*Sa+q->blue*Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*(p->index*Sa+q->index*Da);
 }
@@ -825,16 +825,16 @@ static inline void CompositeLinearBurn(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*LinearBurn(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*LinearBurn(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*LinearBurn(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*LinearBurn(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*LinearBurn(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*LinearBurn(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*LinearBurn(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -868,16 +868,16 @@ static inline void CompositeLinearLight(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*LinearLight(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*LinearLight(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*LinearLight(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*LinearLight(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*LinearLight(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*LinearLight(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*LinearLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -926,11 +926,11 @@ static inline void CompositeMathematics(const MagickPixelPacket *p,
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
     gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Mathematics(QuantumScale*p->red*Sa,Sa,QuantumScale*
+    composite->red=gamma*Mathematics(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
       q->red*Da,Da,args);
-    composite->green=gamma*Mathematics(QuantumScale*p->green*Sa,Sa,QuantumScale*
+    composite->green=gamma*Mathematics(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
       q->green*Da,Da,args);
-    composite->blue=gamma*Mathematics(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+    composite->blue=gamma*Mathematics(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
       q->blue*Da,Da,args);
     if (q->colorspace == CMYKColorspace)
       composite->index=gamma*Mathematics(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -941,13 +941,13 @@ static inline void CompositeMathematics(const MagickPixelPacket *p,
       composite->opacity=QuantumRange*(1.0-Mathematics(Sa,1.0,Da,1.0,args));
     if ( (channel & RedChannel) != 0 )
       composite->red=QuantumRange*
-          Mathematics(QuantumScale*p->red,1.0,QuantumScale*q->red,1.0,args);
+          Mathematics(QuantumScale*GetRedPixelComponent(p),1.0,QuantumScale*q->red,1.0,args);
     if ( (channel & GreenChannel) != 0 )
       composite->green=QuantumRange*
-          Mathematics(QuantumScale*p->green,1.0,QuantumScale*q->green,1.0,args);
+          Mathematics(QuantumScale*GetGreenPixelComponent(p),1.0,QuantumScale*q->green,1.0,args);
     if ( (channel & BlueChannel) != 0 )
       composite->blue=QuantumRange*
-          Mathematics(QuantumScale*p->blue,1.0,QuantumScale*q->blue,1.0,args);
+          Mathematics(QuantumScale*GetBluePixelComponent(p),1.0,QuantumScale*q->blue,1.0,args);
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*
           Mathematics(QuantumScale*p->index,1.0,QuantumScale*q->index,1.0,args);
@@ -975,17 +975,17 @@ static inline void CompositePlus(const MagickPixelPacket *p,
       The MagickPixelCompositePlus() function is defined in
       "composite-private.h" so it can also be used for Image Blending.
     */
-    MagickPixelCompositePlus(p,p->opacity,q,q->opacity,composite);
+    MagickPixelCompositePlus(p,GetOpacityPixelComponent(p),q,q->opacity,composite);
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity=p->opacity+q->opacity-QuantumRange;
+      composite->opacity=GetOpacityPixelComponent(p)+q->opacity-QuantumRange;
     if ( (channel & RedChannel) != 0 )
-      composite->red=p->red+q->red;
+      composite->red=GetRedPixelComponent(p)+q->red;
     if ( (channel & GreenChannel) != 0 )
-      composite->green=p->green+q->green;
+      composite->green=GetGreenPixelComponent(p)+q->green;
     if ( (channel & BlueChannel) != 0 )
-      composite->blue=p->blue+q->blue;
+      composite->blue=GetBluePixelComponent(p)+q->blue;
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=p->index+q->index;
   }
@@ -1013,15 +1013,15 @@ static inline void CompositeMinus(const MagickPixelPacket *p,
     Da,
     gamma;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
     gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Minus(p->red*Sa,Sa,q->red*Da,Da);
-    composite->green=gamma*Minus(p->green*Sa,Sa,q->green*Da,Da);
-    composite->blue=gamma*Minus(p->blue*Sa,Sa,q->blue*Da,Da);
+    composite->red=gamma*Minus(GetRedPixelComponent(p)*Sa,Sa,q->red*Da,Da);
+    composite->green=gamma*Minus(GetGreenPixelComponent(p)*Sa,Sa,q->green*Da,Da);
+    composite->blue=gamma*Minus(GetBluePixelComponent(p)*Sa,Sa,q->blue*Da,Da);
     if (q->colorspace == CMYKColorspace)
       composite->index=gamma*Minus(p->index*Sa,Sa,q->index*Da,Da);
   }
@@ -1029,11 +1029,11 @@ static inline void CompositeMinus(const MagickPixelPacket *p,
     if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-(Sa-Da));
     if ( (channel & RedChannel) != 0 )
-      composite->red=p->red-q->red;
+      composite->red=GetRedPixelComponent(p)-q->red;
     if ( (channel & GreenChannel) != 0 )
-      composite->green=p->green-q->green;
+      composite->green=GetGreenPixelComponent(p)-q->green;
     if ( (channel & BlueChannel) != 0 )
-      composite->blue=p->blue-q->blue;
+      composite->blue=GetBluePixelComponent(p)-q->blue;
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=p->index-q->index;
   }
@@ -1061,7 +1061,7 @@ static inline void CompositeModulusAdd(const MagickPixelPacket *p,
       Da,
       gamma;
 
-    Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+    Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
     Da=1.0-QuantumScale*q->opacity;
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
@@ -1074,7 +1074,7 @@ static inline void CompositeModulusAdd(const MagickPixelPacket *p,
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity=QuantumRange-ModulusAdd(QuantumRange-p->opacity,
+      composite->opacity=QuantumRange-ModulusAdd(QuantumRange-GetOpacityPixelComponent(p),
            1.0,QuantumRange-q->opacity,1.0);
     if ( (channel & RedChannel) != 0 )
       composite->red=ModulusAdd(GetRedPixelComponent(p),1.0,q->red,1.0);
@@ -1109,7 +1109,7 @@ static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
       Da,
       gamma;
 
-    Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+    Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
     Da=1.0-QuantumScale*q->opacity;
     gamma = RoundToUnity(Sa+Da-Sa*Da);
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
@@ -1122,7 +1122,7 @@ static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
   }
   else { /* handle channels as separate grayscale channels */
     if ( (channel & AlphaChannel) != 0 )
-      composite->opacity=QuantumRange-ModulusSubtract(QuantumRange-p->opacity,
+      composite->opacity=QuantumRange-ModulusSubtract(QuantumRange-GetOpacityPixelComponent(p),
            1.0,QuantumRange-q->opacity,1.0);
     if ( (channel & RedChannel) != 0 )
       composite->red=ModulusSubtract(GetRedPixelComponent(p),1.0,q->red,1.0);
@@ -1150,17 +1150,17 @@ static inline void CompositeMultiply(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
     gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Multiply(QuantumScale*p->red*Sa,Sa,QuantumScale*
+    composite->red=gamma*Multiply(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
       q->red*Da,Da);
-    composite->green=gamma*Multiply(QuantumScale*p->green*Sa,Sa,QuantumScale*
+    composite->green=gamma*Multiply(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
       q->green*Da,Da);
-    composite->blue=gamma*Multiply(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+    composite->blue=gamma*Multiply(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
       q->blue*Da,Da);
     if (q->colorspace == CMYKColorspace)
       composite->index=gamma*Multiply(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -1170,11 +1170,11 @@ static inline void CompositeMultiply(const MagickPixelPacket *p,
     if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Sa*Da);
     if ( (channel & RedChannel) != 0 )
-      composite->red=QuantumScale*p->red*q->red;
+      composite->red=QuantumScale*GetRedPixelComponent(p)*q->red;
     if ( (channel & GreenChannel) != 0 )
-      composite->green=QuantumScale*p->green*q->green;
+      composite->green=QuantumScale*GetGreenPixelComponent(p)*q->green;
     if ( (channel & BlueChannel) != 0 )
-      composite->blue=QuantumScale*p->blue*q->blue;
+      composite->blue=QuantumScale*GetBluePixelComponent(p)*q->blue;
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumScale*p->index*q->index;
   }
@@ -1195,7 +1195,7 @@ static inline void CompositeOut(const MagickPixelPacket *p,
     Da,
     gamma;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=Sa*(1.0-Da);
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
@@ -1231,16 +1231,16 @@ static inline void CompositePegtopLight(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*PegtopLight(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*PegtopLight(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*PegtopLight(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*PegtopLight(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*PegtopLight(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*PegtopLight(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*PegtopLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -1271,16 +1271,16 @@ static inline void CompositePinLight(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*PinLight(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*PinLight(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*PinLight(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*PinLight(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*PinLight(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*PinLight(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*PinLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -1305,16 +1305,16 @@ static inline void CompositeScreen(const MagickPixelPacket *p,
     Da,
     gamma;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
     Sa*=QuantumScale; Da*=QuantumScale; /* optimization */
     gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-    composite->red=gamma*Screen(p->red*Sa,q->red*Da);
-    composite->green=gamma*Screen(p->green*Sa,q->green*Da);
-    composite->blue=gamma*Screen(p->blue*Sa,q->blue*Da);
+    composite->red=gamma*Screen(GetRedPixelComponent(p)*Sa,q->red*Da);
+    composite->green=gamma*Screen(GetGreenPixelComponent(p)*Sa,q->green*Da);
+    composite->blue=gamma*Screen(GetBluePixelComponent(p)*Sa,q->blue*Da);
     if (q->colorspace == CMYKColorspace)
       composite->index=gamma*Screen(p->index*Sa,q->index*Da);
     }
@@ -1322,13 +1322,13 @@ static inline void CompositeScreen(const MagickPixelPacket *p,
     if ( (channel & AlphaChannel) != 0 )
       composite->opacity=QuantumRange*(1.0-Screen(Sa,Da));
     if ( (channel & RedChannel) != 0 )
-      composite->red=QuantumRange*Screen(QuantumScale*p->red,
+      composite->red=QuantumRange*Screen(QuantumScale*GetRedPixelComponent(p),
            QuantumScale*q->red);
     if ( (channel & GreenChannel) != 0 )
-      composite->green=QuantumRange*Screen(QuantumScale*p->green,
+      composite->green=QuantumRange*Screen(QuantumScale*GetGreenPixelComponent(p),
            QuantumScale*q->green);
     if ( (channel & BlueChannel) != 0 )
-      composite->blue=QuantumRange*Screen(QuantumScale*p->blue,
+      composite->blue=QuantumRange*Screen(QuantumScale*GetBluePixelComponent(p),
            QuantumScale*q->blue);
     if ( (channel & IndexChannel) != 0 && q->colorspace == CMYKColorspace)
       composite->index=QuantumRange*Screen(QuantumScale*p->index,
@@ -1381,16 +1381,16 @@ static inline void CompositeSoftLight(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*SoftLight(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*SoftLight(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*SoftLight(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*SoftLight(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*SoftLight(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*SoftLight(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*SoftLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -1454,16 +1454,16 @@ static inline void CompositeVividLight(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=QuantumRange/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*VividLight(QuantumScale*p->red*Sa,Sa,QuantumScale*
+  composite->red=gamma*VividLight(QuantumScale*GetRedPixelComponent(p)*Sa,Sa,QuantumScale*
     q->red*Da,Da);
-  composite->green=gamma*VividLight(QuantumScale*p->green*Sa,Sa,QuantumScale*
+  composite->green=gamma*VividLight(QuantumScale*GetGreenPixelComponent(p)*Sa,Sa,QuantumScale*
     q->green*Da,Da);
-  composite->blue=gamma*VividLight(QuantumScale*p->blue*Sa,Sa,QuantumScale*
+  composite->blue=gamma*VividLight(QuantumScale*GetBluePixelComponent(p)*Sa,Sa,QuantumScale*
     q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*VividLight(QuantumScale*p->index*Sa,Sa,QuantumScale*
@@ -1484,14 +1484,14 @@ static inline void CompositeXor(const MagickPixelPacket *p,
     gamma,
     Sa;
 
-  Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
+  Sa=1.0-QuantumScale*GetOpacityPixelComponent(p);  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
   gamma=Sa+Da-2*Sa*Da;        /* Xor blend mode X=0,Y=1,Z=1 */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*Xor(p->red*Sa,Sa,q->red*Da,Da);
-  composite->green=gamma*Xor(p->green*Sa,Sa,q->green*Da,Da);
-  composite->blue=gamma*Xor(p->blue*Sa,Sa,q->blue*Da,Da);
+  composite->red=gamma*Xor(GetRedPixelComponent(p)*Sa,Sa,q->red*Da,Da);
+  composite->green=gamma*Xor(GetGreenPixelComponent(p)*Sa,Sa,q->green*Da,Da);
+  composite->blue=gamma*Xor(GetBluePixelComponent(p)*Sa,Sa,q->blue*Da,Da);
   if (q->colorspace == CMYKColorspace)
     composite->index=gamma*Xor(p->index*Sa,Sa,q->index*Da,Da);
 }
@@ -1884,8 +1884,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               blur.y1=(-height*sin(angle));
               blur.y2=height*cos(angle);
             }
-          ScaleResampleFilter(resample_filter,blur.x1*QuantumScale*p->red,
-            blur.y1*QuantumScale*p->green,blur.x2*QuantumScale*p->red,
+          ScaleResampleFilter(resample_filter,blur.x1*QuantumScale*GetRedPixelComponent(p),
+            blur.y1*QuantumScale*GetGreenPixelComponent(p),blur.x2*QuantumScale*GetRedPixelComponent(p),
             blur.y2*QuantumScale*GetGreenPixelComponent(p));
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
@@ -2049,10 +2049,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           /*
             Displace the offset.
           */
-          offset.x=(horizontal_scale*(p->red-(((MagickRealType) QuantumRange+
+          offset.x=(horizontal_scale*(GetRedPixelComponent(p)-(((MagickRealType) QuantumRange+
             1.0)/2.0)))/(((MagickRealType) QuantumRange+1.0)/2.0)+
             center.x+((compose == DisplaceCompositeOp) ? x : 0);
-          offset.y=(vertical_scale*(p->green-(((MagickRealType) QuantumRange+
+          offset.y=(vertical_scale*(GetGreenPixelComponent(p)-(((MagickRealType) QuantumRange+
             1.0)/2.0)))/(((MagickRealType) QuantumRange+1.0)/2.0)+
             center.y+((compose == DisplaceCompositeOp) ? y : 0);
           (void) InterpolateMagickPixelPacket(image,image_view,

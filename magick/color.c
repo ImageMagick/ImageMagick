@@ -1564,7 +1564,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=(MagickRealType) ((image->matte != MagickFalse ? p->opacity :
+      pixel=(MagickRealType) ((image->matte != MagickFalse ? GetOpacityPixelComponent(p) :
         OpaqueOpacity)-(image->matte != MagickFalse ? q->opacity :
         OpaqueOpacity));
       distance=pixel*pixel;
@@ -1584,7 +1584,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-  pixel=(MagickRealType) p->red-q->red;
+  pixel=(MagickRealType) GetRedPixelComponent(p)-q->red;
   if ((image->colorspace == HSLColorspace) ||
       (image->colorspace == HSBColorspace) ||
       (image->colorspace == HWBColorspace))
@@ -1593,18 +1593,18 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
          angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
          other words this is a hack - Anthony
       */
-      if (fabs((double) (p->red-q->red)) > (QuantumRange/2))
-        pixel=(MagickRealType) p->red-q->red-QuantumRange;
+      if (fabs((double) (GetRedPixelComponent(p)-q->red)) > (QuantumRange/2))
+        pixel=(MagickRealType) GetRedPixelComponent(p)-q->red-QuantumRange;
       pixel*=2;
     }
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=(MagickRealType) p->green-q->green;
+  pixel=(MagickRealType) GetGreenPixelComponent(p)-q->green;
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=(MagickRealType) p->blue-q->blue;
+  pixel=(MagickRealType) GetBluePixelComponent(p)-q->blue;
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
@@ -1809,7 +1809,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   if ((p->matte != MagickFalse) || (q->matte != MagickFalse))
     {
       /* transparencies are involved - set alpha distance */
-      pixel = ( p->matte != MagickFalse ? p->opacity : OpaqueOpacity )
+      pixel = ( p->matte != MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity )
             - ( q->matte != MagickFalse ? q->opacity : OpaqueOpacity );
       distance=pixel*pixel;
       if (distance > fuzz)
@@ -1842,7 +1842,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
 
-  pixel=p->red-q->red;
+  pixel=GetRedPixelComponent(p)-q->red;
   if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
       (p->colorspace == HWBColorspace))
     {
@@ -1851,20 +1851,20 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
          with 'L'/'B' forming appropriate cones.
          In other words this is a hack - Anthony
       */
-      if (fabs((double) (p->red-q->red)) > (QuantumRange/2))
-        pixel=p->red-q->red-QuantumRange;
+      if (fabs((double) (GetRedPixelComponent(p)-q->red)) > (QuantumRange/2))
+        pixel=GetRedPixelComponent(p)-q->red-QuantumRange;
       pixel*=2;
     }
   distance += pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
 
-  pixel=p->green-q->green;
+  pixel=GetGreenPixelComponent(p)-q->green;
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
 
-  pixel=p->blue-q->blue;
+  pixel=GetBluePixelComponent(p)-q->blue;
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
@@ -1913,10 +1913,10 @@ MagickExport MagickBooleanType IsOpacitySimilar(const Image *image,
 
   if (image->matte == MagickFalse)
     return(MagickTrue);
-  if (p->opacity == q->opacity)
+  if (GetOpacityPixelComponent(p) == q->opacity)
     return(MagickTrue);
   fuzz=MagickMax(image->fuzz,MagickSQ1_2)*MagickMax(image->fuzz,MagickSQ1_2);
-  pixel=(MagickRealType) p->opacity-(MagickRealType) q->opacity;
+  pixel=(MagickRealType) GetOpacityPixelComponent(p)-(MagickRealType) q->opacity;
   distance=pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
