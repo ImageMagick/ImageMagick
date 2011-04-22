@@ -4,7 +4,7 @@
   * Add Flags to CommandOptions parse table, removing the need for
     ImageListOptions parsing table. This is part of development to produce
     a "convert" replacement that can read options from both command line and
-    from files or pipelines, in "Do it Immediatally" handling.
+    from files or pipelines, in "Do it Immediately" handling.
 
 2011-04-18  6.6.9-6 Glenn Randers-Pehrson <glennrp@image...>
   * Added "date" to the things that can appear on the -define PNG:exclude-chunk
