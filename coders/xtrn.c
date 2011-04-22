@@ -172,27 +172,6 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
       CatchException(exception);
     }
-  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
-    {
-#ifdef IMPLEMENT_THIS
-      MagickBooleanType
-        status;
-#endif
-
-      char
-        filename[MaxTextExtent];
-
-      size_t
-        (*fifo)(const Image *,const void *,const size_t);
-
-      (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
-      fifo=(size_t (*)(const Image *,const void *,const size_t)) param1;
-      clone_info->client_data=param2;
-#ifdef IMPLEMENT_THIS
-      status=ReadStream(clone_info,fifo,exception);
-      CatchException(exception);
-#endif
-    }
   else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
     {
       SAFEARRAY
@@ -204,7 +183,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       size_t
         blob_length;
 
-                  long
+      long
         lBoundl,
         lBoundu;
 
@@ -239,54 +218,13 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
                   else
                     {
                       *clone_info->magick = '\0';
-                      clone_info->filename[0] = '\0';
+                      *clone_info->filename = '\0';
                     }
                   image=BlobToImage(clone_info,blob_data,blob_length,exception);
                   hr = SafeArrayUnaccessData(pSafeArray);
                   CatchException(exception);
                 }
             }
-        }
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNBSTR") == 0)
-    {
-      BSTR
-        bstr;
-
-      char
-        *blob_data;
-
-      size_t
-        blob_length;
-
-      HRESULT
-        hr;
-
-      char
-        filename[MaxTextExtent];
-
-      filename[0] = '\0';
-      (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
-      hr = S_OK;
-      bstr = (BSTR) param1;
-      blob_length = SysStringLen(bstr) * 2;
-      blob_data = (char *)bstr;
-      if ((blob_data != (char *)NULL) && (blob_length>0))
-        {
-          if (filename[0] != '\0')
-            {
-              (void) CopyMagickString(clone_info->filename,filename,
-                MaxTextExtent);
-              (void) CopyMagickString(clone_info->magick,filename,
-                MaxTextExtent);
-            }
-          else
-            {
-              *clone_info->magick = '\0';
-              clone_info->filename[0] = '\0';
-            }
-          image=BlobToImage(clone_info,blob_data,blob_length,exception);
-          CatchException(exception);
         }
     }
   clone_info=DestroyImageInfo(clone_info);
@@ -348,25 +286,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("XTRNSTREAM");
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-  entry->adjoin=MagickFalse;
-  entry->stealth=MagickTrue;
-  entry->description=ConstantString("External transfer via a streaming interface");
-  entry->module=ConstantString("XTRN");
-  RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("XTRNARRAY");
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-  entry->adjoin=MagickFalse;
-  entry->stealth=MagickTrue;
-  entry->description=ConstantString("External transfer via a smart array interface");
-  entry->module=ConstantString("XTRN");
-  RegisterMagickInfo(entry);
-
-  entry=SetMagickInfo("XTRNBSTR");
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=MagickFalse;
@@ -400,9 +320,7 @@ ModuleExport void UnregisterXTRNImage(void)
   UnregisterMagickInfo("XTRNFILE");
   UnregisterMagickInfo("XTRNIMAGE");
   UnregisterMagickInfo("XTRNBLOB");
-  UnregisterMagickInfo("XTRNSTREAM");
   UnregisterMagickInfo("XTRNARRAY");
-  UnregisterMagickInfo("XTRNBSTR");
 }
 
 /*
@@ -565,39 +483,6 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             &exception);
           if (*blob_data == NULL)
             status=MagickFalse;
-          if (status == MagickFalse)
-            CatchImageException(image);
-        }
-      clone_info=DestroyImageInfo(clone_info);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
-    {
-      size_t
-        (*fifo)(const Image *,const void *,const size_t);
-
-      char
-        filename[MaxTextExtent];
-
-      clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
-        {
-          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
-            &param1,&param2,&filename);
-
-          fifo=(size_t (*)(const Image *,const void *,const size_t)) param1;
-          image->client_data=param2;
-
-          scene=0;
-          (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
-          for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
-          {
-            (void) CopyMagickString(p->filename,filename,MaxTextExtent);
-            p->scene=scene++;
-          }
-          SetImageInfo(clone_info,1,&image->exception);
-          (void) CopyMagickString(image->magick,clone_info->magick,
-            MaxTextExtent);
-          status=WriteStream(clone_info,image,fifo);
           if (status == MagickFalse)
             CatchImageException(image);
         }
