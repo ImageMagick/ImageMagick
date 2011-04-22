@@ -499,28 +499,31 @@ LosslessReduceDepthOK(Image *image)
 {
     MagickBooleanType
       ok_to_reduce=MagickFalse;
-
-    /* Reduce bit depth if it can be reduced losslessly from 16 to 8.
+    /* Reduce bit depth if it can be reduced losslessly from 16+ to 8.
      * Note that the method GetImageDepth doesn't check background
-     * and doesn't handle PseudoClass specially.  Also it uses
+     * and doesn't handle PseudoClass specially.  Also GetImageDepth uses
      * multiplication and division by 257 instead of shifting, so
      * might be slower.
      */
 
-    if (image->depth == 16)
+    if (image->depth >= 16)
       {
 
         const PixelPacket
           *p;
 
+        const int
+          pnghi= MAGICKCORE_QUANTUM_DEPTH - 8,
+          pnglo= MAGICKCORE_QUANTUM_DEPTH - 16;
+
         ok_to_reduce=
-          (((((size_t) image->background_color.red >> 8) & 0xff)
-          == ((size_t) image->background_color.red & 0xff)) &&
-           ((((size_t) image->background_color.green >> 8) & 0xff)
-          == ((size_t) image->background_color.green & 0xff)) &&
-           ((((size_t) image->background_color.blue >> 8) & 0xff)
-          == ((size_t) image->background_color.blue & 0xff))) ? MagickTrue :
-          MagickFalse;
+          (((((size_t) image->background_color.red >> pnghi) & 0xff)
+          == (((size_t) image->background_color.red >> pnglo) & 0xff)) &&
+           ((((size_t) image->background_color.green >> pnghi) & 0xff)
+          == (((size_t) image->background_color.green >> pnglo) & 0xff)) &&
+           ((((size_t) image->background_color.blue >> pnghi) & 0xff)
+          == (((size_t) image->background_color.blue >> pnglo) & 0xff))) ?
+          MagickTrue : MagickFalse;
 
         if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
           {
@@ -528,17 +531,17 @@ LosslessReduceDepthOK(Image *image)
 
             for (indx=0; indx < (ssize_t) image->colors; indx++)
               {
-                ok_to_reduce=(((((size_t) image->colormap[indx].red >>
-                    8) & 0xff)
-                  == ((size_t) image->colormap[indx].red & 0xff)) &&
-                  ((((size_t) image->colormap[indx].green >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].green & 0xff)) &&
-                  ((((size_t) image->colormap[indx].blue >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].blue & 0xff)) &&
+                ok_to_reduce=
+                 (((((size_t) image->colormap[indx].red >> pnghi) & 0xff)
+                  == (((size_t) image->colormap[indx].red >> pnglo) & 0xff)) &&
+                  ((((size_t) image->colormap[indx].green >> pnghi) & 0xff)
+                  == (((size_t) image->colormap[indx].green >> pnglo) & 0xff))
+                  && ((((size_t) image->colormap[indx].blue >> pnghi) & 0xff)
+                  == (((size_t) image->colormap[indx].blue >> pnglo) & 0xff)) &&
                   (image->matte == MagickFalse ||
-                  (((size_t) image->colormap[indx].opacity >> 8) & 0xff)
-                  == ((size_t) image->colormap[indx].opacity & 0xff))) ?
-                  MagickTrue : MagickFalse;
+                  (((size_t) image->colormap[indx].opacity >> pnghi) & 0xff)
+                  == (((size_t) image->colormap[indx].opacity >> pnglo)
+                  & 0xff))) ?  MagickTrue : MagickFalse;
                 if (ok_to_reduce == MagickFalse)
                   break;
               }
@@ -565,16 +568,17 @@ LosslessReduceDepthOK(Image *image)
 
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
-                ok_to_reduce=((
-                  (((size_t) p->red >> 8) & 0xff) ==
-                  ((size_t) p->red & 0xff)) &&
-                  ((((size_t) p->green >> 8) & 0xff) ==
-                  ((size_t) p->green & 0xff)) &&
-                  ((((size_t) p->blue >> 8) & 0xff) ==
-                  ((size_t) p->blue & 0xff)) &&
+                ok_to_reduce=(
+                  ((((size_t) p->red >> pnghi) & 0xff) ==
+                  (((size_t) p->red >> pnglo) & 0xff)) &&
+                  ((((size_t) p->green >> pnghi) & 0xff) ==
+                  (((size_t) p->green >> pnglo) & 0xff)) &&
+                  ((((size_t) p->blue >> pnghi) & 0xff) ==
+                  (((size_t) p->blue >> pnglo) & 0xff)) &&
                   (((image->matte == MagickFalse ||
-                  (((size_t) p->opacity >> 8) & 0xff) ==
-                  ((size_t) p->opacity & 0xff))))) ? MagickTrue : MagickFalse;
+                  (((size_t) p->opacity >> pnghi) & 0xff) ==
+                  (((size_t) p->opacity >> pnglo) & 0xff))))) ?
+                  MagickTrue : MagickFalse;
 
                 if (ok_to_reduce == MagickFalse)
                   break;
