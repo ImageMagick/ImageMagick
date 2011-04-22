@@ -444,11 +444,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       if (image->storage_class == PseudoClass)
         indexes[x]=index;
-      SetRedPixelComponent(q,GetRedPixelComponent(&pixel));
-      SetGreenPixelComponent(q,GetGreenPixelComponent(&pixel));
-      SetBluePixelComponent(q,GetBluePixelComponent(&pixel));
+      SetRedPixelComponent(q,pixel.red);
+      SetGreenPixelComponent(q,pixel.green);
+      SetBluePixelComponent(q,pixel.blue);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,GetOpacityPixelComponent(&pixel));
+        SetOpacityPixelComponent(q,pixel.opacity);
       q++;
     }
     if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
