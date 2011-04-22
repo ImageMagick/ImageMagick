@@ -922,17 +922,17 @@ MagickExport Image *CropImageToTiles(const Image *image,
       /*
         Crop into tiles of fixed size WxH.
       */
-      width=geometry.width;
-      if (width == 0)
-        width=image->page.width;
-      height=geometry.height;
-      if (height == 0)
-        height=image->page.height;
       page=image->page;
       if (page.width == 0)
         page.width=image->columns;
-      if (image->page.height == 0)
+      if (page.height == 0)
         page.height=image->rows;
+      width=geometry.width;
+      if (width == 0)
+        width=page.width;
+      height=geometry.height;
+      if (height == 0)
+        height=page.height;
       next=NewImageList();
       /*proceed=MagickTrue;
       i=0;
