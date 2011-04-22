@@ -2659,9 +2659,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           if (q->opacity == TransparentOpacity)
             {
-              SetRedPixelComponent(q,GetRedPixelComponent(&pixel));
-              SetGreenPixelComponent(q,GetGreenPixelComponent(&pixel));
-              SetBluePixelComponent(q,GetBluePixelComponent(&pixel));
+              SetRedPixelComponent(q,pixel.red);
+              SetGreenPixelComponent(q,pixel.green);
+              SetBluePixelComponent(q,pixel.blue);
             }
           q++;
         }
@@ -4235,11 +4235,11 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     {
       index=PushColormapIndex(image,(size_t) indexes[x],&range_exception);
       pixel=image->colormap[(ssize_t) index];
-      SetRedPixelComponent(q,GetRedPixelComponent(&pixel));
-      SetGreenPixelComponent(q,GetGreenPixelComponent(&pixel));
-      SetBluePixelComponent(q,GetBluePixelComponent(&pixel));
+      SetRedPixelComponent(q,pixel.red);
+      SetGreenPixelComponent(q,pixel.green);
+      SetBluePixelComponent(q,pixel.blue);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,GetOpacityPixelComponent(&pixel));
+        SetOpacityPixelComponent(q,pixel.opacity);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

@@ -2347,13 +2347,13 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       MagickPixelCompositeAreaBlend(&pixel3,pixel3.opacity,&pixel4,
         pixel4.opacity,point.z,&pixel);
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
+        SetRedPixelComponent(q,ClampToQuantum(pixel.red));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
+        SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+        SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
+        SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         indexes[x]=ClampToQuantum(pixel.index);

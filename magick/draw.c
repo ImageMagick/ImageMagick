@@ -4288,7 +4288,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           if (q == (PixelPacket *) NULL)
             break;
           (void) GetFillColor(draw_info,x,y,&pixel);
-          SetOpacityPixelComponent(q,GetOpacityPixelComponent(&pixel));
+          SetOpacityPixelComponent(q,pixel.opacity);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
         }
@@ -4322,7 +4322,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel);
-              SetOpacityPixelComponent(q,GetOpacityPixelComponent(&pixel));
+              SetOpacityPixelComponent(q,pixel.opacity);
               q++;
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4372,7 +4372,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,&pixel);
-              SetOpacityPixelComponent(q,GetOpacityPixelComponent(&pixel));
+              SetOpacityPixelComponent(q,pixel.opacity);
               q++;
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);

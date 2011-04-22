@@ -556,9 +556,9 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
       pixel.red=0.5*(pixel.red+factor*quantum);
       pixel.green=0.5*(pixel.green+factor*quantum);
       pixel.blue=0.5*(pixel.blue+factor*quantum);
-      SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
-      SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
-      SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+      SetRedPixelComponent(q,ClampToQuantum(pixel.red));
+      SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
+      SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
       p++;
       q++;
     }
@@ -5158,15 +5158,15 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       weight=QuantumScale*p->red-0.5;
       pixel.red=(MagickRealType) p->red+color_vector.red*(1.0-(4.0*
         (weight*weight)));
-      SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
+      SetRedPixelComponent(q,ClampToQuantum(pixel.red));
       weight=QuantumScale*p->green-0.5;
       pixel.green=(MagickRealType) p->green+color_vector.green*(1.0-(4.0*
         (weight*weight)));
-      SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
+      SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
       weight=QuantumScale*p->blue-0.5;
       pixel.blue=(MagickRealType) p->blue+color_vector.blue*(1.0-(4.0*
         (weight*weight)));
-      SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
+      SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
       SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       p++;
       q++;

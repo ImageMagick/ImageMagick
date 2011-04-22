@@ -2182,10 +2182,10 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             pixel.blue+=alpha*(p+j)->blue;
             pixel.opacity+=alpha*(p+j)->opacity;
           }
-          SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
-          SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
-          SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
-          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
+          SetRedPixelComponent(q,ClampToQuantum(pixel.red));
+          SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
+          SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
+          SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -2218,10 +2218,10 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             gamma+=alpha;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          q->red=ClampToQuantum(gamma*GetRedPixelComponent(&pixel));
-          q->green=ClampToQuantum(gamma*GetGreenPixelComponent(&pixel));
-          q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
-          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
+          q->red=ClampToQuantum(gamma*pixel.red);
+          q->green=ClampToQuantum(gamma*pixel.green);
+          q->blue=ClampToQuantum(gamma*pixel.blue);
+          SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -2234,7 +2234,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
                 pixel.index+=alpha*indexes[j];
               }
               resize_indexes[y]=(IndexPacket) ClampToQuantum(gamma*
-                GetIndexPixelComponent(&pixel));
+                pixel.index);
             }
         }
       if ((resize_image->storage_class == PseudoClass) &&
@@ -2425,10 +2425,10 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             pixel.blue+=alpha*(p+j)->blue;
             pixel.opacity+=alpha*(p+j)->opacity;
           }
-          SetRedPixelComponent(q,ClampRedPixelComponent(&pixel));
-          SetGreenPixelComponent(q,ClampGreenPixelComponent(&pixel));
-          SetBluePixelComponent(q,ClampBluePixelComponent(&pixel));
-          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
+          SetRedPixelComponent(q,ClampToQuantum(pixel.red));
+          SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
+          SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
+          SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -2461,10 +2461,10 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             gamma+=alpha;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          q->red=ClampToQuantum(gamma*GetRedPixelComponent(&pixel));
-          q->green=ClampToQuantum(gamma*GetGreenPixelComponent(&pixel));
-          q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
-          SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
+          q->red=ClampToQuantum(gamma*pixel.red);
+          q->green=ClampToQuantum(gamma*pixel.green);
+          q->blue=ClampToQuantum(gamma*pixel.blue);
+          SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
           if ((image->colorspace == CMYKColorspace) &&
               (resize_image->colorspace == CMYKColorspace))
             {
@@ -2477,7 +2477,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
                 pixel.index+=alpha*indexes[j];
               }
               resize_indexes[x]=(IndexPacket) ClampToQuantum(gamma*
-                GetIndexPixelComponent(&pixel));
+                pixel.index);
             }
         }
       if ((resize_image->storage_class == PseudoClass) &&
