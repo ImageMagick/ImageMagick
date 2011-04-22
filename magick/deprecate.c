@@ -1360,7 +1360,7 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (p->opacity != OpaqueOpacity)
+      if (GetOpacityPixelComponent(p) != OpaqueOpacity)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color);
           MagickCompositeOver(&fill_color,(MagickRealType) fill_color.opacity,q,
@@ -4483,7 +4483,7 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (p->opacity != OpaqueOpacity)
+      if (GetOpacityPixelComponent(p) != OpaqueOpacity)
         q->opacity=opacity;
       p++;
       q++;

@@ -46,23 +46,23 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (p->opacity != OpaqueOpacity))
+      (GetOpacityPixelComponent(p) != OpaqueOpacity))
     return(MagickFalse);
   if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
       (q->opacity != OpaqueOpacity))
     return(MagickFalse);
   if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
     {
-      if (p->opacity != q->opacity)
+      if (GetOpacityPixelComponent(p) != q->opacity)
         return(MagickFalse);
       if (p->opacity == TransparentOpacity)
         return(MagickTrue);
     }
-  if (p->red != q->red)
+  if (GetRedPixelComponent(p) != q->red)
     return(MagickFalse);
-  if (p->green != q->green)
+  if (GetGreenPixelComponent(p) != q->green)
     return(MagickFalse);
-  if (p->blue != q->blue)
+  if (GetBluePixelComponent(p) != q->blue)
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) && (p->index != q->index))
     return(MagickFalse);

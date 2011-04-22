@@ -3796,9 +3796,9 @@ static inline void MagickPixelCompositeMask(const MagickPixelPacket *p,
     }
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
   gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*MagickOver_(p->red,alpha,q->red,beta);
-  composite->green=gamma*MagickOver_(p->green,alpha,q->green,beta);
-  composite->blue=gamma*MagickOver_(p->blue,alpha,q->blue,beta);
+  composite->red=gamma*MagickOver_(GetRedPixelComponent(p),alpha,q->red,beta);
+  composite->green=gamma*MagickOver_(GetGreenPixelComponent(p),alpha,q->green,beta);
+  composite->blue=gamma*MagickOver_(GetBluePixelComponent(p),alpha,q->blue,beta);
   if ((p->colorspace == CMYKColorspace) && (q->colorspace == CMYKColorspace))
     composite->index=gamma*MagickOver_(p->index,alpha,q->index,beta);
 }

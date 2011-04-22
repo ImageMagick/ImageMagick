@@ -476,9 +476,9 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
 static inline MagickBooleanType IsSameColor(const Image *image,
   const PixelPacket *p,const PixelPacket *q)
 {
-  if ((p->red != q->red) || (p->green != q->green) || (p->blue != q->blue))
+  if ((GetRedPixelComponent(p) != q->red) || (GetGreenPixelComponent(p) != q->green) || (GetBluePixelComponent(p) != q->blue))
     return(MagickFalse);
-  if ((image->matte != MagickFalse) && (p->opacity != q->opacity))
+  if ((image->matte != MagickFalse) && (GetOpacityPixelComponent(p) != q->opacity))
     return(MagickFalse);
   return(MagickTrue);
 }
