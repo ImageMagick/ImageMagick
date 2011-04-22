@@ -211,10 +211,8 @@ static const CoderMapInfo
     { "XMP", "META" },
     { "XTRNARRAY", "XTRN" },
     { "XTRNBLOB", "XTRN" },
-    { "XTRNBSTR", "XTRN" },
     { "XTRNFILE", "XTRN" },
     { "XTRNIMAGE", "XTRN" },
-    { "XTRNSTREAM", "XTRN" },
     { "XV", "VIFF" },
     { "Y", "RAW" },
     { "YCbCrA", "YCbCr" }
