@@ -358,32 +358,32 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
   SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
   if (pSafeArray != NULL)
   {
-                long lBoundl, lBoundu, lCount;
-          HRESULT hr = S_OK;
+    long lBoundl, lBoundu, lCount;
+    HRESULT hr = S_OK;
     /* First see how big the buffer currently is */
-                hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+    hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
     if (FAILED(hr))
       return MagickFalse;
-                hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+    hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
     if (FAILED(hr))
       return MagickFalse;
-                lCount = lBoundu - lBoundl + 1;
+    lCount = lBoundu - lBoundl + 1;
 
     if (length>0)
     {
-            unsigned char       *pReturnBuffer = NULL;
+      unsigned char       *pReturnBuffer = NULL;
       NewArrayBounds[0].lLbound = 0;   /* Start-Index 0 */
       NewArrayBounds[0].cElements = (unsigned long) (length+lCount);  /* # Elemente */
       hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
       if (FAILED(hr))
         return 0;
       hr = SafeArrayAccessData(pSafeArray, (void**)&pReturnBuffer);
-            if( FAILED(hr) )
-                    return 0;
-            (void) memcpy( pReturnBuffer+lCount, (unsigned char *)data, length );
+      if( FAILED(hr) )
+        return 0;
+      (void) memcpy( pReturnBuffer+lCount, (unsigned char *)data, length );
       hr = SafeArrayUnaccessData(pSafeArray);
-            if( FAILED(hr) )
-                    return 0;
+      if( FAILED(hr) )
+        return 0;
     }
     else
     {
@@ -493,15 +493,18 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
       char
         filename[MaxTextExtent];
 
+      size_t
+        *blob_length;
+
+      unsigned char
+        *blob_data;
+
       clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
+      if (*clone_info->filename != '\0')
         {
-          (void) sscanf(clone_info->filename,"%lx,%s",
-            &param1,&filename);
-
+          (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
           image->client_data=param1;
-
-          scene = 0;
+          scene=0;
           (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
           for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
           {
@@ -511,7 +514,12 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
           SetImageInfo(clone_info,1,&image->exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
-          status=WriteStream(clone_info,image,SafeArrayFifo);
+          blob_data=ImageToBlob(clone_info,image,&blob_length,
+            &image->exception);
+          if (blob_data == (unsigned char *) NULL)
+            status=False;
+          else
+            SafeArrayFifo(image,blob_data,blob_length);
           if (status == MagickFalse)
             CatchImageException(image);
         }
