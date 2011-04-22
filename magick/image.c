@@ -2373,8 +2373,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->green=q->red;
-          q->blue=q->red;
+          SetGreenPixelComponent(q,GetRedPixelComponent(q));
+          SetBluePixelComponent(q,GetRedPixelComponent(q));
           q++;
         }
         break;
@@ -2383,8 +2383,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->red=q->green;
-          q->blue=q->green;
+          SetRedPixelComponent(q,GetGreenPixelComponent(q));
+          SetBluePixelComponent(q,GetGreenPixelComponent(q));
           q++;
         }
         break;
@@ -2393,8 +2393,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->red=q->blue;
-          q->green=q->blue;
+          SetRedPixelComponent(q,GetBluePixelComponent(q));
+          SetGreenPixelComponent(q,GetBluePixelComponent(q));
           q++;
         }
         break;
@@ -2403,9 +2403,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->red=q->opacity;
-          q->green=q->opacity;
-          q->blue=q->opacity;
+          SetRedPixelComponent(q,GetOpacityPixelComponent(q));
+          SetGreenPixelComponent(q,GetOpacityPixelComponent(q));
+          SetBluePixelComponent(q,GetOpacityPixelComponent(q));
           q++;
         }
         break;
@@ -2417,9 +2417,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->red=indexes[x];
-          q->green=indexes[x];
-          q->blue=indexes[x];
+          SetRedPixelComponent(q,indexes[x]);
+          SetGreenPixelComponent(q,indexes[x]);
+          SetBluePixelComponent(q,indexes[x]);
           q++;
         }
         break;
@@ -2428,9 +2428,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->red=(Quantum) GetAlphaPixelComponent(q);
-          q->green=(Quantum) GetAlphaPixelComponent(q);
-          q->blue=(Quantum) GetAlphaPixelComponent(q);
+          SetRedPixelComponent(q,(Quantum) GetAlphaPixelComponent(q));
+          SetGreenPixelComponent(q,(Quantum) GetAlphaPixelComponent(q));
+          SetBluePixelComponent(q,(Quantum) GetAlphaPixelComponent(q));
           q++;
         }
         break;
@@ -2439,7 +2439,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->opacity=(Quantum) (QuantumRange-PixelIntensityToQuantum(q));
+          SetOpacityPixelComponent(q,(Quantum) (QuantumRange-
+            PixelIntensityToQuantum(q)));
           q++;
         }
         break;
@@ -2658,9 +2659,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           if (q->opacity == TransparentOpacity)
             {
-              q->red=pixel.red;
-              q->green=pixel.green;
-              q->blue=pixel.blue;
+              SetRedPixelComponent(q,GetRedPixelComponent(&pixel));
+              SetGreenPixelComponent(q,GetGreenPixelComponent(&pixel));
+              SetBluePixelComponent(q,GetBluePixelComponent(&pixel));
             }
           q++;
         }
@@ -4232,14 +4233,13 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=PushColormapIndex(image,(size_t) indexes[x],
-        &range_exception);
+      index=PushColormapIndex(image,(size_t) indexes[x],&range_exception);
       pixel=image->colormap[(ssize_t) index];
-      q->red=pixel.red;
-      q->green=pixel.green;
-      q->blue=pixel.blue;
+      SetRedPixelComponent(q,GetRedPixelComponent(&pixel));
+      SetGreenPixelComponent(q,GetGreenPixelComponent(&pixel));
+      SetBluePixelComponent(q,GetBluePixelComponent(&pixel));
       if (image->matte != MagickFalse)
-        q->opacity=pixel.opacity;
+        SetOpacityPixelComponent(q,GetOpacityPixelComponent(&pixel));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
