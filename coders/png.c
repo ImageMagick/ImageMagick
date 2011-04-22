@@ -497,14 +497,20 @@ static MagickBooleanType
 static MagickBooleanType
 LosslessReduceDepthOK(Image *image)
 {
+    /* Reduce bit depth if it can be reduced losslessly from 16+ to 8.
+     *
+     * This is true if the high byte and the next highest byte of
+     * each sample of the image, the colormap, and the background color
+     * are equal to each other.
+     *
+     * We don't use the method GetImageDepth() because it doesn't check
+     * background * and doesn't handle PseudoClass specially.  Also
+     * GetImageDepth() uses multiplication and division by 257 instead of
+     * shifting, so it might be slower.
+     */
+
     MagickBooleanType
       ok_to_reduce=MagickFalse;
-    /* Reduce bit depth if it can be reduced losslessly from 16+ to 8.
-     * Note that the method GetImageDepth doesn't check background
-     * and doesn't handle PseudoClass specially.  Also GetImageDepth uses
-     * multiplication and division by 257 instead of shifting, so
-     * might be slower.
-     */
 
     if (image->depth >= 16)
       {
@@ -7193,16 +7199,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      * we need to check for bogus non-opaque values, at least.
      */
 
-#if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#  define PNGK 0 /* Shift */
-#  define PNGM 1 /* Scale */
-#elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#  define PNGK 8
-#  define PNGM 0x0101
-#else
-#  define PNGK 24
-#  define PNGM 0x01010101
-#endif
+#  define PNGK (MAGICKCORE_QUANTUM_DEPTH-8) /* Shift */
+#  define PNGM (ScaleCharToQuantum((unsigned char) 0x01)) /* Scale */
 
    ExceptionInfo
      *exception;
