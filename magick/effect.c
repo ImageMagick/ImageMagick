@@ -359,11 +359,14 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
       }
       gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
       if ((channel & RedChannel) != 0)
-        q->red=ClampToQuantum(gamma*GetRedPixelComponent(&pixel));
+        SetRedPixelComponent(q,ClampToQuantum(gamma*
+          GetRedPixelComponent(&pixel)));
       if ((channel & GreenChannel) != 0)
-        q->green=ClampToQuantum(gamma*GetGreenPixelComponent(&pixel));
+        SetGreenPixelComponent(q,ClampToQuantum(gamma*
+          GetGreenPixelComponent(&pixel)));
       if ((channel & BlueChannel) != 0)
-        q->blue=ClampToQuantum(gamma*GetBluePixelComponent(&pixel));
+        SetBluePixelComponent(q,ClampToQuantum(gamma*
+          GetBluePixelComponent(&pixel)));
       if ((channel & OpacityChannel) != 0)
         SetOpacityPixelComponent(q,ClampOpacityPixelComponent(&pixel));
       if (((channel & IndexChannel) != 0) &&

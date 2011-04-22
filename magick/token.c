@@ -236,7 +236,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
               token[i++]=(*p++);
             break;
           }
-        if ((isalpha((int) ((unsigned char) *p)) == 0) &&
+        if ((*p != '\0') && (isalpha((int) ((unsigned char) *p)) == 0) &&
             (*p != *DirectorySeparator) && (*p != '#') && (*p != '<'))
           {
             token[i++]=(*p++);
