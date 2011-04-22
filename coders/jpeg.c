@@ -929,6 +929,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   /*
     Initialize JPEG parameters.
   */
+  (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
   (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.err=jpeg_std_error(&jpeg_error);
@@ -1414,7 +1415,8 @@ ModuleExport void UnregisterJPEGImage(void)
 %
 %  The format of the WriteJPEGImage method is:
 %
-%      MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1709,11 +1711,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   /*
     Initialize JPEG parameters.
   */
+  (void) ResetMagickMemory(&error_manager,0,sizeof(error_manager));
   (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   error_manager.image=image;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_manager.error_recovery) != 0)
