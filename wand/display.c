@@ -1879,8 +1879,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       default:
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);
     }
-    fire=ParseMagickOption(MagickImageListOptions,MagickFalse,option+1) < 0 ?
-      MagickFalse : MagickTrue;
+    fire=(ParseMagickOption(MagickCommandOptions,MagickFalse,option)
+            &FireOption) == 0 ?  MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }

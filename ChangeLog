@@ -1,6 +1,10 @@
 2011-04-21  6.6.9-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Make filter:blur define a multiplicative adjustment of filter settings
     rather than a complete override of those settings.
+  * Add Flags to CommandOptions parse table, removing the need for
+    ImageListOptions parsing table. This is part of development to produce
+    a "convert" replacement that can read options from both command line and
+    from files or pipelines, in "Do it Immediatally" handling.
 
 2011-04-18  6.6.9-6 Glenn Randers-Pehrson <glennrp@image...>
   * Added "date" to the things that can appear on the -define PNG:exclude-chunk
@@ -28,9 +32,10 @@
     transferred in a single destination, multi-source image composition.
 
 2011-04-09  6.6.9-5 Anthony Thyssen <A.Thyssen@griffith...>
-  * Add a special 'Voronoi' Distance method that will fill in holes using
-    the nearest non-transparent edge pixel. This is experimental, and one
-    step toward a fast Color 'Diffusion' method.
+  * Add a special 'Voronoi' Morphology Distance method that will fill in holes
+    using the nearest non-transparent edge pixel. It is experimental, and
+    hidden from normal morphology usage, as it may be interfaced with a
+    future hole-filling color 'Diffusion' method.
 
 2011-04-08  6.6.9-5 Cristy  <quetzlzacatenango@image...>
   * MIFF keywords sometimes includes spaces.

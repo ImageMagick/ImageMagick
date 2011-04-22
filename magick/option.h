@@ -55,7 +55,7 @@ typedef enum
   MagickFormatOptions,
   MagickFunctionOptions,
   MagickGravityOptions,
-  MagickImageListOptions,
+/*  MagickImageListOptions, */
   MagickIntentOptions,
   MagickInterlaceOptions,
   MagickInterpolateOptions,
@@ -122,6 +122,19 @@ typedef struct _OptionInfo
   MagickBooleanType
     stealth;
 } OptionInfo;
+
+/* Flags to describe classes of Image Processing Options */
+typedef enum
+{
+  NumArgsOption = 0x0007,    /* Number of Arguments which follows the option */
+  FireOption = 0x0008,       /* Option Sequence Firing Point */
+#if 0
+  ImageInfoOption = 0x0010,  /* Sets ImageInfo only, no image needed */
+  SimpleOption = 0x0020,     /* Simple Image Processing Option */
+  ImageListOption = 0x0040,  /* Multi-Image List Processing Option */
+#endif
+  DepreciatedOption = 0x1000 /* Depreciated Option - Give Warning */
+} CommandOptionFlags;
 
 extern MagickExport char
   **GetMagickOptions(const MagickOption),
