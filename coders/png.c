@@ -5759,7 +5759,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 magn_methx=mng_info->magn_methx;
                 magn_methy=mng_info->magn_methy;
 
-#if (MAGICKCORE_QUANTUM_DEPTH == 32)
+#if (MAGICKCORE_QUANTUM_DEPTH > 16)
 #define QM unsigned short
                 if (magn_methx != 1 || magn_methy != 1)
                   {
@@ -6063,7 +6063,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                 }
-#if (MAGICKCORE_QUANTUM_DEPTH == 32)
+#if (MAGICKCORE_QUANTUM_DEPTH > 16)
               if (magn_methx != 1 || magn_methy != 1)
                 {
                 /*
@@ -6181,7 +6181,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
          image->depth=16;
 #endif
 
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+#if (MAGICKCORE_QUANTUM_DEPTH > 8)
       if (LosslessReduceDepthOK(image) != MagickFalse)
          image->depth = 8;
 #endif
@@ -7128,7 +7128,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
-#if 0 /* To do: honor -depth */
+#if 0 /* To do: respect the -depth option */
   if (image->depth < MAGICKCORE_QUANTUM_DEPTH)
     {
     }
@@ -7146,7 +7146,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth=16;
 #endif
 
-#if (MAGICKCORE_QUANTUM_DEPTH >= 16)
+#if (MAGICKCORE_QUANTUM_DEPTH > 8)
   if (image->depth == 16 && mng_info->write_png_depth != 16)
     if (mng_info->write_png8 || LosslessReduceDepthOK(image) != MagickFalse)
       image->depth = 8;
@@ -10062,7 +10062,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %  transparency prior to attempting to write the image with depth, color,
 %   or transparency limitations.
 %
-%  TODO: Enforce the previous paragraph.
+%  To do: Enforce the previous paragraph.
 %
 %  Note that another definition, "png:bit-depth-written" exists, but it
 %  is not intended for external use.  It is only used internally by the
