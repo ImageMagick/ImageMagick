@@ -107,12 +107,12 @@
   (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) blue_gamma)* \
   QuantumRange)))
 #define XGammaPixel(map,color)  (size_t) (map->base_pixel+ \
-  ((ScaleQuantumToShort(XRedGamma((color)->red))*maGetRedPixelComponent(p)_max/65535L)* \
-    maGetRedPixelComponent(p)_mult)+ \
-  ((ScaleQuantumToShort(XGreenGamma((color)->green))*maGetGreenPixelComponent(p)_max/65535L)* \
-    maGetGreenPixelComponent(p)_mult)+ \
-  ((ScaleQuantumToShort(XBlueGamma((color)->blue))*maGetBluePixelComponent(p)_max/65535L)* \
-    maGetBluePixelComponent(p)_mult))
+  ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535L)* \
+    map->red_mult)+ \
+  ((ScaleQuantumToShort(XGreenGamma((color)->green))*map->green_max/65535L)* \
+    map->green_mult)+ \
+  ((ScaleQuantumToShort(XBlueGamma((color)->blue))*map->blue_max/65535L)* \
+    map->blue_mult))
 #define XGreenGamma(color) ClampToQuantum(green_gamma == 1.0 ? (double) \
   (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) green_gamma)* \
   QuantumRange)))
@@ -120,9 +120,9 @@
   (color) : ((pow(((double) QuantumScale*(color)),1.0/(double) red_gamma)* \
   QuantumRange)))
 #define XStandardPixel(map,color)  (size_t) (map->base_pixel+ \
-  (((color)->red*maGetRedPixelComponent(p)_max/65535L)*maGetRedPixelComponent(p)_mult)+ \
-  (((color)->green*maGetGreenPixelComponent(p)_max/65535L)*maGetGreenPixelComponent(p)_mult)+ \
-  (((color)->blue*maGetBluePixelComponent(p)_max/65535L)*maGetBluePixelComponent(p)_mult))
+  (((color)->red*map->red_max/65535L)*map->red_mult)+ \
+  (((color)->green*map->green_max/65535L)*map->green_mult)+ \
+  (((color)->blue*map->blue_max/65535L)*map->blue_mult))
 
 #define AccentuateModulate  ScaleCharToQuantum(80)
 #define HighlightModulate  ScaleCharToQuantum(125)
@@ -3200,8 +3200,7 @@ MagickExport void XGetPixelPacket(Display *display,
             Initialize pixel array for images of type PseudoClass.
           */
           for (i=0; i < (ssize_t) image->colors; i++)
-            pixel->pixels[i]=
-              XGammaPixel(map_info,image->colormap+i);
+            pixel->pixels[i]=XGammaPixel(map_info,image->colormap+i);
           for (i=0; i < MaxNumberPens; i++)
             pixel->pixels[image->colors+i]=pixel->pen_colors[i].pixel;
           pixel->colors+=MaxNumberPens;
