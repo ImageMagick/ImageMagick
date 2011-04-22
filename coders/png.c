@@ -574,11 +574,15 @@ LosslessReduceDepthOK(Image *image)
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
                 ok_to_reduce=
-                  (GetRedPixelComponent(p) == ScaleQuantumToCharToQuantum(GetRedPixelComponent(p)) &&
-                  GetGreenPixelComponent(p) == ScaleQuantumToCharToQuantum(GetGreenPixelComponent(p)) &&
-                  GetBluePixelComponent(p) == ScaleQuantumToCharToQuantum(GetBluePixelComponent(p)) &&
+                  (GetRedPixelComponent(p) ==
+                  ScaleQuantumToCharToQuantum(GetRedPixelComponent(p)) &&
+                  GetGreenPixelComponent(p) ==
+                  ScaleQuantumToCharToQuantum(GetGreenPixelComponent(p)) &&
+                  GetBluePixelComponent(p) ==
+                  ScaleQuantumToCharToQuantum(GetBluePixelComponent(p)) &&
                   (image->matte == MagickFalse ||
-                  GetOpacityPixelComponent(p) == ScaleQuantumToCharToQuantum(GetOpacityPixelComponent(p))))
+                  GetOpacityPixelComponent(p)
+                  == ScaleQuantumToCharToQuantum(GetOpacityPixelComponent(p))))
                   ? MagickTrue : MagickFalse;
 
                 if (ok_to_reduce == MagickFalse)
@@ -7499,7 +7503,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             if (AcquireImageColormap(image,image_colors) ==
                 MagickFalse)
-               ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
+               ThrowWriterException(ResourceLimitError,
+                   "MemoryAllocationFailed");
 
             for (i=0; i< (ssize_t) image_colors; i++)
                image->colormap[i] = colormap[i];
