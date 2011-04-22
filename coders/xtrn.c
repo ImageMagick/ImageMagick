@@ -214,22 +214,22 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       char
         filename[MaxTextExtent];
 
-      filename[0] = '\0';
+      *filename = '\0';
       (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
-            hr = S_OK;
+      hr = S_OK;
       pSafeArray = (SAFEARRAY *) param1;
       if (pSafeArray)
         {
-                      hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+          hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
           if (SUCCEEDED(hr))
-                        hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+            hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
           if (SUCCEEDED(hr))
             {
-                          blob_length = lBoundu - lBoundl + 1;
+              blob_length = lBoundu - lBoundl + 1;
               hr = SafeArrayAccessData(pSafeArray, (void**)&blob_data);
-                    if(SUCCEEDED(hr))
+              if(SUCCEEDED(hr))
                 {
-                  if (filename[0] != '\0')
+                  if (*filename != '\0')
                     {
                       (void) CopyMagickString(clone_info->filename,filename,
                         MaxTextExtent);
