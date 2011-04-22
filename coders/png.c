@@ -2019,7 +2019,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     png_set_tRNS(ping,ping_info,mng_info->global_trns,
                       (int) mng_info->global_trns_length,NULL);
                   }
-#if defined(PNG_READ_bKGD_SUPPORTED)
+#ifdef PNG_READ_bKGD_SUPPORTED
               if (
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                    mng_info->have_saved_bkgd_index ||
@@ -2056,13 +2056,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
         }
 
-#if defined(PNG_READ_bKGD_SUPPORTED)
+#ifdef PNG_READ_bKGD_SUPPORTED
   if (mng_info->have_global_bkgd &&
           (!png_get_valid(ping,ping_info,PNG_INFO_bKGD)))
       image->background_color=mng_info->mng_global_bkgd;
 
   if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
     {
+      unsigned int
+        bkgd_scale;
+
       /*
         Set image background color.
       */
@@ -2070,71 +2073,61 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG bKGD chunk.");
 
-      if (ping_bit_depth == MAGICKCORE_QUANTUM_DEPTH)
-        {
-          image->background_color.red=ping_background->red;
-          image->background_color.green=ping_background->green;
-          image->background_color.blue=ping_background->blue;
-        }
+      /* Scale background components to 16-bit, then scale
+       * to quantum depth
+       */
+        if (logging != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    raw ping_background=(%d,%d,%d).",ping_background->red,
+            ping_background->green,ping_background->blue);
 
-      else /* Scale background components to 16-bit */
-        {
-          unsigned int
-            bkgd_scale;
+        bkgd_scale = 1;
 
-          if (logging != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    raw ping_background=(%d,%d,%d).",ping_background->red,
-              ping_background->green,ping_background->blue);
+        if (ping_bit_depth == 1)
+           bkgd_scale = 255;
 
-          bkgd_scale = 1;
+        else if (ping_bit_depth == 2)
+           bkgd_scale = 85;
 
-          if (ping_bit_depth == 1)
-             bkgd_scale = 255;
+        else if (ping_bit_depth == 4)
+           bkgd_scale = 17;
 
-          else if (ping_bit_depth == 2)
-             bkgd_scale = 85;
+        if (ping_bit_depth <= 8)
+           bkgd_scale *= 257;
 
-          else if (ping_bit_depth == 4)
-             bkgd_scale = 17;
+        ping_background->red *= bkgd_scale;
+        ping_background->green *= bkgd_scale;
+        ping_background->blue *= bkgd_scale;
 
-          if (ping_bit_depth <= 8)
-             bkgd_scale *= 257;
-
-          ping_background->red *= bkgd_scale;
-          ping_background->green *= bkgd_scale;
-          ping_background->blue *= bkgd_scale;
-
-          if (logging != MagickFalse)
-            {
+        if (logging != MagickFalse)
+          {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    bkgd_scale=%d.",bkgd_scale);
 
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    ping_background=(%d,%d,%d).",ping_background->red,
               ping_background->green,ping_background->blue);
-            }
+          }
 
-          image->background_color.red=
+        image->background_color.red=
             ScaleShortToQuantum(ping_background->red);
 
-          image->background_color.green=
+        image->background_color.green=
             ScaleShortToQuantum(ping_background->green);
 
-          image->background_color.blue=
-            ScaleShortToQuantum(ping_background->blue);
+        image->background_color.blue=
+          ScaleShortToQuantum(ping_background->blue);
 
-          image->background_color.opacity=OpaqueOpacity;
+        image->background_color.opacity=OpaqueOpacity;
 
-          if (logging != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    image->background_color=(%.20g,%.20g,%.20g).",
-              (double) image->background_color.red,
-              (double) image->background_color.green,
-              (double) image->background_color.blue);
-        }
+        if (logging != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    image->background_color=(%.20g,%.20g,%.20g).",
+            (double) image->background_color.red,
+            (double) image->background_color.green,
+            (double) image->background_color.blue);
     }
-#endif
+#endif /* PNG_READ_bKGD_SUPPORTED */
 
   if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
     {
