@@ -1244,7 +1244,7 @@
 2010-01-24  6.5.9-1 Anthony Thyssen <A.Thyssen@griffith...>
   * added use of -precision in 'showkernel' output of -morphology
   * correct use of a 'reflected kernel' for 'Convolve' 'Dilate' and
-    'Distance' Morphology primatives. This does not have a performance hit,
+    'Distance' Morphology primitives. This does not have a performance hit,
     though is only truely applicable when the kernel is asymmetric.  Note that
     'Erode' does not use a 'reflected' kernel, so that 'Open' and 'Close'
     operations work properly.  This 'reflected usage is defined by online
@@ -2292,7 +2292,7 @@
 
 2008-09-25  6.4.4-0 Anthony <A.Thyssen@griffith...>
   * Attempt to fix three image "composite -displace" while also allowing use
-    of seperate X, Y grayscale displacement maps, or a merged X=red Y=green
+    of separate X, Y grayscale displacement maps, or a merged X=red Y=green
     (later transparency mask will also be added) as discussed in IM Examples,
     'distortion maps', but for -displace.
 
@@ -2322,7 +2322,7 @@
   * Fix -alpha to allow Set, Copy, and Extract from command line
   * Fix -alpha Set so it only clears the alpha when it was previously off
   * Changed 'AllChannels' to be just the 'real' channels (including K).
-  * Special handling if  +level-colors is given one color, and no seperator.
+  * Special handling if  +level-colors is given one color, and no separator.
   * Fix 'matte' flag in DisposeImages() (for -layer dispose)
 
 2008-09-01  6.4.3-7 Cristy  <quetzlzacatenango@image...>
@@ -2436,7 +2436,7 @@
     equivelent -fx functions for DistortImages to report of the internal
     coefficents that was calculated, and who they are used.
   * Initial implementation of SparseColor for interpolated gradients from
-    sparsely seperated points of color (or posibily other forms of arguments)
+    sparsely separated points of color (or posibily other forms of arguments)
   * New distortion Barrel as defined by Helmut Dersch options A,B,C,D
     on his web page  http://www.all-in-one.ee/~dersch/barrel/barrel.html
     And as developed by Fred WeinHaus in his PinBarrel script
