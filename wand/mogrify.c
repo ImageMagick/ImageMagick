@@ -682,8 +682,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
     option=argv[i];
     if (IsMagickOption(option) == MagickFalse)
       continue;
-    count=MagickMax(ParseMagickOption(MagickCommandOptions,MagickFalse,option),
-      0L);
+    count=ParseMagickOption(MagickCommandOptions,MagickFalse,option);
+    count=MagickMax(count,0L);
+    count&=NumArgsOption;
     if ((i+count) >= (ssize_t) argc)
       break;
     status=MogrifyImageInfo(mogrify_info,(int) count+1,argv+i,exception);
@@ -6060,8 +6061,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
       default:
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)
     }
-    fire=ParseMagickOption(MagickImageListOptions,MagickFalse,option+1) < 0 ?
-      MagickFalse : MagickTrue;
+    fire=(ParseMagickOption(MagickCommandOptions,MagickFalse,option)
+            &FireOption) == 0 ?  MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }
@@ -6138,8 +6139,9 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
     option=argv[i];
     if (IsMagickOption(option) == MagickFalse)
       continue;
-    count=MagickMax(ParseMagickOption(MagickCommandOptions,MagickFalse,option),
-      0L);
+    count=ParseMagickOption(MagickCommandOptions,MagickFalse,option);
+    count=MagickMax(count,0L);
+    count&=NumArgsOption;
     if ((i+count) >= (ssize_t) argc)
       break;
     switch (*(option+1))
@@ -7309,8 +7311,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
     option=argv[i];
     if (IsMagickOption(option) == MagickFalse)
       continue;
-    count=MagickMax(ParseMagickOption(MagickCommandOptions,MagickFalse,option),
-      0L);
+    count=ParseMagickOption(MagickCommandOptions,MagickFalse,option);
+    count=MagickMax(count,0L);
+    count&=NumArgsOption;
     if ((i+count) >= (ssize_t) argc)
       break;
     status=MogrifyImageInfo(mogrify_info,(int) count+1,argv+i,exception);
@@ -8286,6 +8289,10 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     (void *) NULL);
   status=0;
 
+#if 0
+fprintf(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,post?"post":"pre");
+#endif
+
   /*
     Pre-process multi-image sequence operators
   */
@@ -8299,6 +8306,10 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
   n=GetImageListLength(*images);
   for (;;)
   {
+#if 0
+fprintf(stderr, "mogrify %ld of %ld\n",
+  (long)GetImageIndexInList(*images),(long)GetImageListLength(*images));
+#endif
     status&=MogrifyImage(image_info,argc,argv,images,exception);
     proceed=SetImageProgress(*images,MogrifyImageTag,(MagickOffsetType) i, n);
     if (proceed == MagickFalse)
@@ -8309,6 +8320,10 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     i++;
   }
   assert( *images != (Image *) NULL );
+#if 0
+fprintf(stderr, "mogrify end %ld of %ld\n",
+  (long)GetImageIndexInList(*images),(long)GetImageListLength(*images));
+#endif
 
   /*
     Post-process, multi-image sequence operators

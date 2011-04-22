@@ -747,6 +747,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         /*
           Do not expand command option parameters.
         */
+        parameters &= NumArgsOption;
         for (j=0; j < parameters; j++)
         {
           i++;
@@ -840,6 +841,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           /*
             Do not expand command option parameters.
           */
+          parameters &= NumArgsOption;
           vector[count++]=ConstantString(option);
           for (k=0; k < parameters; k++)
           {
