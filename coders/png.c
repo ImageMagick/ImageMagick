@@ -501,13 +501,15 @@ LosslessReduceDepthOK(Image *image)
      *
      * This is true if the high byte and the next highest byte of
      * each sample of the image, the colormap, and the background color
-     * are equal to each other.
+     * are equal to each other.  We check this by seeing if the samples
+     * are unchanged when we scale them down to 8 and back up to Quantum.
      *
      * We don't use the method GetImageDepth() because it doesn't check
-     * background * and doesn't handle PseudoClass specially.  Also
-     * GetImageDepth() uses multiplication and division by 257 instead of
-     * shifting, so it might be slower.
+     * background and doesn't handle PseudoClass specially.
      */
+
+#define ScaleQuantumToCharToQuantum(quantum) \
+        (ScaleCharToQuantum((unsigned char) ScaleQuantumToChar(quantum)))
 
     MagickBooleanType
       ok_to_reduce=MagickFalse;
@@ -518,17 +520,13 @@ LosslessReduceDepthOK(Image *image)
         const PixelPacket
           *p;
 
-        const int
-          pnghi= MAGICKCORE_QUANTUM_DEPTH - 8,
-          pnglo= MAGICKCORE_QUANTUM_DEPTH - 16;
-
         ok_to_reduce=
-          (((((size_t) image->background_color.red >> pnghi) & 0xff)
-          == (((size_t) image->background_color.red >> pnglo) & 0xff)) &&
-           ((((size_t) image->background_color.green >> pnghi) & 0xff)
-          == (((size_t) image->background_color.green >> pnglo) & 0xff)) &&
-           ((((size_t) image->background_color.blue >> pnghi) & 0xff)
-          == (((size_t) image->background_color.blue >> pnglo) & 0xff))) ?
+          (image->background_color.red == 
+             ScaleQuantumToCharToQuantum(image->background_color.red) &&
+          image->background_color.green == 
+             ScaleQuantumToCharToQuantum(image->background_color.green) &&
+          image->background_color.blue == 
+             ScaleQuantumToCharToQuantum(image->background_color.blue)) ? 
           MagickTrue : MagickFalse;
 
         if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
@@ -537,19 +535,20 @@ LosslessReduceDepthOK(Image *image)
 
             for (indx=0; indx < (ssize_t) image->colors; indx++)
               {
-                ok_to_reduce=
-                 (((((size_t) image->colormap[indx].red >> pnghi) & 0xff)
-                  == (((size_t) image->colormap[indx].red >> pnglo) & 0xff)) &&
-                  ((((size_t) image->colormap[indx].green >> pnghi) & 0xff)
-                  == (((size_t) image->colormap[indx].green >> pnglo) & 0xff))
-                  && ((((size_t) image->colormap[indx].blue >> pnghi) & 0xff)
-                  == (((size_t) image->colormap[indx].blue >> pnglo) & 0xff)) &&
-                  (image->matte == MagickFalse ||
-                  (((size_t) image->colormap[indx].opacity >> pnghi) & 0xff)
-                  == (((size_t) image->colormap[indx].opacity >> pnglo)
-                  & 0xff))) ?  MagickTrue : MagickFalse;
+                ok_to_reduce=(
+                   image->colormap[indx].red == 
+                   ScaleQuantumToCharToQuantum(image->colormap[indx].red) &&
+                   image->colormap[indx].green == 
+                   ScaleQuantumToCharToQuantum(image->colormap[indx].green) &&
+                   image->colormap[indx].blue == 
+                   ScaleQuantumToCharToQuantum(image->colormap[indx].blue) &&
+                   (image->matte == MagickFalse ||
+                   image->colormap[indx].opacity == 
+                   ScaleQuantumToCharToQuantum(image->colormap[indx].opacity)))
+                   ? MagickTrue : MagickFalse;
+
                 if (ok_to_reduce == MagickFalse)
-                  break;
+                   break;
               }
           }
 
@@ -574,17 +573,13 @@ LosslessReduceDepthOK(Image *image)
 
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
-                ok_to_reduce=(
-                  ((((size_t) p->red >> pnghi) & 0xff) ==
-                  (((size_t) p->red >> pnglo) & 0xff)) &&
-                  ((((size_t) p->green >> pnghi) & 0xff) ==
-                  (((size_t) p->green >> pnglo) & 0xff)) &&
-                  ((((size_t) p->blue >> pnghi) & 0xff) ==
-                  (((size_t) p->blue >> pnglo) & 0xff)) &&
-                  (((image->matte == MagickFalse ||
-                  (((size_t) p->opacity >> pnghi) & 0xff) ==
-                  (((size_t) p->opacity >> pnglo) & 0xff))))) ?
-                  MagickTrue : MagickFalse;
+                ok_to_reduce=
+                  (p->red == ScaleQuantumToCharToQuantum(p->red) &&
+                  p->green == ScaleQuantumToCharToQuantum(p->green) &&
+                  p->blue == ScaleQuantumToCharToQuantum(p->blue) &&
+                  (image->matte == MagickFalse ||
+                  p->opacity == ScaleQuantumToCharToQuantum(p->opacity)))
+                  ? MagickTrue : MagickFalse;
 
                 if (ok_to_reduce == MagickFalse)
                   break;
