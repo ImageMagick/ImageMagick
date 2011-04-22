@@ -2273,11 +2273,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
           (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
 
-          for (i=0; i < (ssize_t) image->colors; i++)
+          for (i=0; i < (ssize_t) number_colors; i++)
           {
             image->colormap[i].red=ScaleCharToQuantum(palette[i].red);
             image->colormap[i].green=ScaleCharToQuantum(palette[i].green);
             image->colormap[i].blue=ScaleCharToQuantum(palette[i].blue);
+          }
+
+          for ( ; i < (ssize_t) image->colors; i++)
+          {
+            image->colormap[i].red=0;
+            image->colormap[i].green=0;
+            image->colormap[i].blue=0;
           }
         }
 
