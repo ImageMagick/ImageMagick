@@ -552,7 +552,7 @@ static double *GenerateCoefficients(const Image *image,
           coeff = (double *) RelinquishMagickMemory(coeff);
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument","%s : 'Unsolvable Matrix'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method) );
+              CommandOptionToMnemonic(MagickDistortOptions, *method) );
           return((double *) NULL);
         }
       }
@@ -578,7 +578,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument","%s : 'Needs 6 coeff values'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method) );
+              CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       /* FUTURE: trap test for sx*sy-rx*ry == 0 (determinant = 0, no inverse) */
@@ -627,7 +627,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument","%s : 'Needs at least 1 argument'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method) );
+              CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       case 1:
         a = arguments[0];
@@ -669,7 +669,7 @@ static double *GenerateCoefficients(const Image *image,
           coeff = (double *) RelinquishMagickMemory(coeff);
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument","%s : 'Too Many Arguments (7 or less)'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method) );
+              CommandOptionToMnemonic(MagickDistortOptions, *method) );
           return((double *) NULL);
         }
         break;
@@ -679,7 +679,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument","%s : 'Zero Scale Given'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method) );
+              CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       /* Save the given arguments as an affine distortion */
@@ -741,7 +741,7 @@ static double *GenerateCoefficients(const Image *image,
            number_arguments < cp_size*4 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument", "%s : 'require at least %.20g CPs'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method), 4.0);
+              CommandOptionToMnemonic(MagickDistortOptions, *method), 4.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -786,7 +786,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument","%s : 'Unsolvable Matrix'",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       /*
@@ -809,7 +809,7 @@ static double *GenerateCoefficients(const Image *image,
       if (number_arguments != 8) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument", "%s : 'Needs 8 coefficient values'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method));
+              CommandOptionToMnemonic(MagickDistortOptions, *method));
         return((double *) NULL);
       }
       /* FUTURE: trap test  c0*c4-c3*c1 == 0  (determinate = 0, no inverse) */
@@ -857,7 +857,7 @@ static double *GenerateCoefficients(const Image *image,
            number_arguments < cp_size*4 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument", "%s : 'require at least %.20g CPs'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method), 4.0);
+              CommandOptionToMnemonic(MagickDistortOptions, *method), 4.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -894,7 +894,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument","%s : 'Unsolvable Matrix'",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       if ( *method == BilinearForwardDistortion ) {
@@ -1037,7 +1037,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument","%s : 'Unsolvable Matrix'",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       return(coeff);
@@ -1082,14 +1082,14 @@ static double *GenerateCoefficients(const Image *image,
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument","%s : 'Arc Angle Too Small'",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       if ( number_arguments >= 3 && arguments[2] < MagickEpsilon ) {
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument","%s : 'Outer Radius Too Small'",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
       coeff[0] = -MagickPI2;   /* -90, place at top! */
@@ -1133,7 +1133,7 @@ static double *GenerateCoefficients(const Image *image,
           || number_arguments > 8 ) {
           (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError,"InvalidArgument", "%s : number of arguments",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -1193,7 +1193,7 @@ static double *GenerateCoefficients(const Image *image,
            || (coeff[0]-coeff[1]) < MagickEpsilon ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument", "%s : Invalid Radius",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
@@ -1239,7 +1239,7 @@ static double *GenerateCoefficients(const Image *image,
           coeff=(double *) RelinquishMagickMemory(coeff);
           (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError,"InvalidArgument", "%s : number of arguments",
-            MagickOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
           return((double *) NULL);
         }
       /* A,B,C,D coefficients */
@@ -1299,7 +1299,7 @@ static double *GenerateCoefficients(const Image *image,
            number_arguments < cp_size ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "InvalidArgument", "%s : 'require at least %.20g CPs'",
-              MagickOptionToMnemonic(MagickDistortOptions, *method), 1.0);
+              CommandOptionToMnemonic(MagickDistortOptions, *method), 1.0);
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }

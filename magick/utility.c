@@ -741,13 +741,12 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     *subimage='\0';
     vector[count++]=ConstantString(option);
     destroy=MagickTrue;
-    parameters=ParseMagickOption(MagickCommandOptions,MagickFalse,option);
+    parameters=ParseCommandOption(MagickCommandOptions,MagickFalse,option);
     if (parameters > 0)
       {
         /*
           Do not expand command option parameters.
         */
-        parameters &= NumArgsOption;
         for (j=0; j < parameters; j++)
         {
           i++;
@@ -832,7 +831,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     for (j=0; j < (ssize_t) number_files; j++)
     {
       option=filelist[j];
-      parameters=ParseMagickOption(MagickCommandOptions,MagickFalse,option);
+      parameters=ParseCommandOption(MagickCommandOptions,MagickFalse,option);
       if (parameters > 0)
         {
           ssize_t
@@ -841,7 +840,6 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           /*
             Do not expand command option parameters.
           */
-          parameters &= NumArgsOption;
           vector[count++]=ConstantString(option);
           for (k=0; k < parameters; k++)
           {

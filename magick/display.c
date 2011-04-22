@@ -3385,13 +3385,13 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Select a method from the pop-up menu.
             */
-            methods=(char **) GetMagickOptions(MagickMethodOptions);
+            methods=(char **) GetCommandOptions(MagickMethodOptions);
             if (methods == (char **) NULL)
               break;
             entry=XMenuWidget(display,windows,ColorEditMenu[id],
               (const char **) methods,command);
             if (entry >= 0)
-              method=(PaintMethod) ParseMagickOption(MagickMethodOptions,
+              method=(PaintMethod) ParseCommandOption(MagickMethodOptions,
                 MagickFalse,methods[entry]);
             methods=DestroyStringList(methods);
             break;
@@ -4015,13 +4015,13 @@ static MagickBooleanType XCompositeImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            operators=GetMagickOptions(MagickComposeOptions);
+            operators=GetCommandOptions(MagickComposeOptions);
             if (operators == (char **) NULL)
               break;
             entry=XMenuWidget(display,windows,CompositeMenu[id],
               (const char **) operators,command);
             if (entry >= 0)
-              compose=(CompositeOperator) ParseMagickOption(
+              compose=(CompositeOperator) ParseCommandOption(
                 MagickComposeOptions,MagickFalse,operators[entry]);
             operators=DestroyStringList(operators);
             break;
@@ -8102,7 +8102,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Add noise to the image.
       */
-      noises=GetMagickOptions(MagickNoiseOptions);
+      noises=GetCommandOptions(MagickNoiseOptions);
       if (noises == (char **) NULL)
         break;
       XListBrowserWidget(display,windows,&windows->widget,
@@ -8113,7 +8113,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         break;
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      noise_image=AddNoiseImage(*image,(NoiseType) ParseMagickOption(
+      noise_image=AddNoiseImage(*image,(NoiseType) ParseCommandOption(
         MagickNoiseOptions,MagickFalse,noise_type),&(*image)->exception);
       if (noise_image != (Image *) NULL)
         {
@@ -8985,7 +8985,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Select preview type from menu.
       */
-      previews=GetMagickOptions(MagickPreviewOptions);
+      previews=GetCommandOptions(MagickPreviewOptions);
       if (previews == (char **) NULL)
         break;
       XListBrowserWidget(display,windows,&windows->widget,
@@ -9000,7 +9000,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       image_info->preview_type=(PreviewType)
-        ParseMagickOption(MagickPreviewOptions,MagickFalse,preview_type);
+        ParseCommandOption(MagickPreviewOptions,MagickFalse,preview_type);
       image_info->group=(ssize_t) windows->image.id;
       (void) DeleteImageProperty(*image,"label");
       (void) SetImageProperty(*image,"label","Preview");
@@ -9671,13 +9671,13 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Select a method from the pop-up menu.
             */
-            methods=GetMagickOptions(MagickMethodOptions);
+            methods=GetCommandOptions(MagickMethodOptions);
             if (methods == (char **) NULL)
               break;
             entry=XMenuWidget(display,windows,MatteEditMenu[id],
               (const char **) methods,command);
             if (entry >= 0)
-              method=(PaintMethod) ParseMagickOption(MagickMethodOptions,
+              method=(PaintMethod) ParseCommandOption(MagickMethodOptions,
                 MagickFalse,methods[entry]);
             methods=DestroyStringList(methods);
             break;
@@ -10606,13 +10606,13 @@ static MagickBooleanType XPasteImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            operators=GetMagickOptions(MagickComposeOptions);
+            operators=GetCommandOptions(MagickComposeOptions);
             if (operators == (char **) NULL)
               break;
             entry=XMenuWidget(display,windows,PasteMenu[id],
               (const char **) operators,command);
             if (entry >= 0)
-              compose=(CompositeOperator) ParseMagickOption(
+              compose=(CompositeOperator) ParseCommandOption(
                 MagickComposeOptions,MagickFalse,operators[entry]);
             operators=DestroyStringList(operators);
             break;

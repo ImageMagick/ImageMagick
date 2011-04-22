@@ -792,7 +792,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
     option=GetImageOption(image_info,"dispose");
     if (option != (const char *) NULL)
-      next->dispose=(DisposeType) ParseMagickOption(MagickDisposeOptions,
+      next->dispose=(DisposeType) ParseCommandOption(MagickDisposeOptions,
         MagickFalse,option);
     if (read_info->verbose != MagickFalse)
       (void) IdentifyImage(next,stderr,MagickFalse);

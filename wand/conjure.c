@@ -193,7 +193,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];
-    if (IsMagickOption(option) != MagickFalse)
+    if (IsCommandOption(option) != MagickFalse)
       {
         if (LocaleCompare("concurrent",option+1) == 0)
           break;
@@ -207,7 +207,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConjureException(OptionError,"MissingArgument",option);
-            event=ParseMagickOption(MagickLogEventOptions,MagickFalse,argv[i]);
+            event=ParseCommandOption(MagickLogEventOptions,MagickFalse,argv[i]);
             if (event < 0)
               ThrowConjureException(OptionError,"UnrecognizedEventType",
                 argv[i]);

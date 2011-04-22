@@ -379,7 +379,7 @@ MagickExport QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
       quantize_info->dither=image_info->dither;
       option=GetImageOption(image_info,"dither");
       if (option != (const char *) NULL)
-        quantize_info->dither_method=(DitherMethod) ParseMagickOption(
+        quantize_info->dither_method=(DitherMethod) ParseCommandOption(
           MagickDitherOptions,MagickFalse,option);
       quantize_info->measure_error=image_info->verbose;
     }

@@ -1043,7 +1043,7 @@ WandExport MagickBooleanType DrawComposite(DrawingWand *wand,
         wand->name);
       return(MagickFalse);
     }
-  mode=MagickOptionToMnemonic(MagickComposeOptions,(ssize_t) compose);
+  mode=CommandOptionToMnemonic(MagickComposeOptions,(ssize_t) compose);
   media_type=MagickToMime(image->magick);
   (void) MvgPrintf(wand,"image %s %g,%g %g,%g 'data:%s;base64,\n",
     mode,x,y,width,height,media_type);
@@ -1104,7 +1104,7 @@ WandExport void DrawColor(DrawingWand *wand,const double x,const double y,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"color %g,%g '%s'\n",x,y,MagickOptionToMnemonic(
+  (void) MvgPrintf(wand,"color %g,%g '%s'\n",x,y,CommandOptionToMnemonic(
     MagickMethodOptions,(ssize_t) paint_method));
 }
 
@@ -2459,14 +2459,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"clip-units",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickClipPathOptions,(ssize_t) CurrentContext->clip_units),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"decorate",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickDecorateOptions,(ssize_t) CurrentContext->decorate),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2494,7 +2494,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"fill-rule",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickFillRuleOptions,(ssize_t) CurrentContext->fill_rule),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2514,14 +2514,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"font-stretch",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickStretchOptions,(ssize_t) CurrentContext->stretch),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"font-style",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickStyleOptions,(ssize_t) CurrentContext->style),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2535,7 +2535,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"gravity",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(MagickGravityOptions,
+      (void) CopyMagickString(value,CommandOptionToMnemonic(MagickGravityOptions,
         (ssize_t) CurrentContext->gravity),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2586,14 +2586,14 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"stroke-linecap",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(MagickLineCapOptions,
+      (void) CopyMagickString(value,CommandOptionToMnemonic(MagickLineCapOptions,
         (ssize_t) CurrentContext->linecap),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"stroke-linejoin",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(
+      (void) CopyMagickString(value,CommandOptionToMnemonic(
         MagickLineJoinOptions,(ssize_t) CurrentContext->linejoin),
         MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
@@ -2622,7 +2622,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   child=AddChildToXMLTree(xml_info,"text-align",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) CopyMagickString(value,MagickOptionToMnemonic(MagickAlignOptions,
+      (void) CopyMagickString(value,CommandOptionToMnemonic(MagickAlignOptions,
         (ssize_t) CurrentContext->align),MaxTextExtent);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2777,7 +2777,7 @@ WandExport void DrawMatte(DrawingWand *wand,const double x,const double y,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) MvgPrintf(wand,"matte %g,%g '%s'\n",x,y,MagickOptionToMnemonic(
+  (void) MvgPrintf(wand,"matte %g,%g '%s'\n",x,y,CommandOptionToMnemonic(
     MagickMethodOptions,(ssize_t) paint_method));
 }
 
@@ -4623,7 +4623,7 @@ WandExport void DrawSetClipRule(DrawingWand *wand,const FillRule fill_rule)
       (CurrentContext->fill_rule != fill_rule))
     {
       CurrentContext->fill_rule=fill_rule;
-      (void) MvgPrintf(wand, "clip-rule '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand, "clip-rule '%s'\n",CommandOptionToMnemonic(
         MagickFillRuleOptions,(ssize_t) fill_rule));
     }
 }
@@ -4677,7 +4677,7 @@ WandExport void DrawSetClipUnits(DrawingWand *wand,
           affine.ty=CurrentContext->bounds.y1;
           AdjustAffine(wand,&affine);
         }
-      (void) MvgPrintf(wand, "clip-units '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand, "clip-units '%s'\n",CommandOptionToMnemonic(
         MagickClipPathOptions,(ssize_t) clip_units));
     }
 }
@@ -4958,7 +4958,7 @@ WandExport void DrawSetFillRule(DrawingWand *wand,const FillRule fill_rule)
       (CurrentContext->fill_rule != fill_rule))
     {
       CurrentContext->fill_rule=fill_rule;
-      (void) MvgPrintf(wand, "fill-rule '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand, "fill-rule '%s'\n",CommandOptionToMnemonic(
         MagickFillRuleOptions,(ssize_t) fill_rule));
     }
 }
@@ -5127,7 +5127,7 @@ WandExport void DrawSetFontStretch(DrawingWand *wand,
       (CurrentContext->stretch != font_stretch))
     {
       CurrentContext->stretch=font_stretch;
-      (void) MvgPrintf(wand, "font-stretch '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand, "font-stretch '%s'\n",CommandOptionToMnemonic(
         MagickStretchOptions,(ssize_t) font_stretch));
     }
 }
@@ -5167,7 +5167,7 @@ WandExport void DrawSetFontStyle(DrawingWand *wand,const StyleType style)
       (CurrentContext->style != style))
     {
       CurrentContext->style=style;
-      (void) MvgPrintf(wand, "font-style '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand, "font-style '%s'\n",CommandOptionToMnemonic(
         MagickStyleOptions,(ssize_t) style));
     }
 }
@@ -5250,7 +5250,7 @@ WandExport void DrawSetGravity(DrawingWand *wand,const GravityType gravity)
       (CurrentContext->gravity != gravity) || (gravity != ForgetGravity))
     {
       CurrentContext->gravity=gravity;
-      (void) MvgPrintf(wand,"gravity '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand,"gravity '%s'\n",CommandOptionToMnemonic(
         MagickGravityOptions,(ssize_t) gravity));
     }
 }
@@ -5607,7 +5607,7 @@ WandExport void DrawSetStrokeLineCap(DrawingWand *wand,const LineCap linecap)
       (CurrentContext->linecap != linecap))
     {
       CurrentContext->linecap=linecap;
-      (void) MvgPrintf(wand,"stroke-linecap '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand,"stroke-linecap '%s'\n",CommandOptionToMnemonic(
         MagickLineCapOptions,(ssize_t) linecap));
     }
 }
@@ -5649,7 +5649,7 @@ WandExport void DrawSetStrokeLineJoin(DrawingWand *wand,const LineJoin linejoin)
       (CurrentContext->linejoin != linejoin))
     {
       CurrentContext->linejoin=linejoin;
-      (void) MvgPrintf(wand, "stroke-linejoin '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand, "stroke-linejoin '%s'\n",CommandOptionToMnemonic(
         MagickLineJoinOptions,(ssize_t) linejoin));
     }
 }
@@ -5818,7 +5818,7 @@ WandExport void DrawSetTextAlignment(DrawingWand *wand,
       (CurrentContext->align != alignment))
     {
       CurrentContext->align=alignment;
-      (void) MvgPrintf(wand,"text-align '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand,"text-align '%s'\n",CommandOptionToMnemonic(
         MagickAlignOptions,(ssize_t) alignment));
     }
 }
@@ -5903,7 +5903,7 @@ WandExport void DrawSetTextDecoration(DrawingWand *wand,
       (CurrentContext->decorate != decoration))
     {
       CurrentContext->decorate=decoration;
-      (void) MvgPrintf(wand,"decorate '%s'\n",MagickOptionToMnemonic(
+      (void) MvgPrintf(wand,"decorate '%s'\n",CommandOptionToMnemonic(
         MagickDecorateOptions,(ssize_t) decoration));
     }
 }
@@ -6192,7 +6192,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->clip_units=(ClipPathUnits) ParseMagickOption(
+        CurrentContext->clip_units=(ClipPathUnits) ParseCommandOption(
           MagickClipPathOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"decorate");
@@ -6200,7 +6200,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->decorate=(DecorationType) ParseMagickOption(
+        CurrentContext->decorate=(DecorationType) ParseCommandOption(
           MagickDecorateOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"encoding");
@@ -6226,7 +6226,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->fill_rule=(FillRule) ParseMagickOption(
+        CurrentContext->fill_rule=(FillRule) ParseCommandOption(
           MagickFillRuleOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"font");
@@ -6247,7 +6247,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stretch=(StretchType) ParseMagickOption(
+        CurrentContext->stretch=(StretchType) ParseCommandOption(
           MagickStretchOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"font-style");
@@ -6255,7 +6255,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->style=(StyleType) ParseMagickOption(MagickStyleOptions,
+        CurrentContext->style=(StyleType) ParseCommandOption(MagickStyleOptions,
           MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"font-weight");
@@ -6270,7 +6270,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->gravity=(GravityType) ParseMagickOption(
+        CurrentContext->gravity=(GravityType) ParseCommandOption(
           MagickGravityOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"stroke");
@@ -6358,7 +6358,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->linecap=(LineCap) ParseMagickOption(
+        CurrentContext->linecap=(LineCap) ParseCommandOption(
           MagickLineCapOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"stroke-linejoin");
@@ -6366,7 +6366,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->linejoin=(LineJoin) ParseMagickOption(
+        CurrentContext->linejoin=(LineJoin) ParseCommandOption(
           MagickLineJoinOptions,MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"stroke-miterlimit");
@@ -6396,7 +6396,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->align=(AlignType) ParseMagickOption(MagickAlignOptions,
+        CurrentContext->align=(AlignType) ParseCommandOption(MagickAlignOptions,
           MagickFalse,value);
     }
   child=GetXMLTreeChild(xml_info,"text-antialias");

@@ -822,14 +822,14 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
     mime_info->signature=MagickSignature;
     attribute=GetXMLTreeAttribute(mime,"data-type");
     if (attribute != (const char *) NULL)
-      mime_info->data_type=(DataType) ParseMagickOption(MagickDataTypeOptions,
+      mime_info->data_type=(DataType) ParseCommandOption(MagickDataTypeOptions,
         MagickTrue,attribute);
     attribute=GetXMLTreeAttribute(mime,"description");
     if (attribute != (const char *) NULL)
       mime_info->description=ConstantString(attribute);
     attribute=GetXMLTreeAttribute(mime,"endian");
     if (attribute != (const char *) NULL)
-      mime_info->endian=(EndianType) ParseMagickOption(MagickEndianOptions,
+      mime_info->endian=(EndianType) ParseCommandOption(MagickEndianOptions,
         MagickTrue,attribute);
     attribute=GetXMLTreeAttribute(mime,"magic");
     if (attribute != (const char *) NULL)

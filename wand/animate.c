@@ -379,7 +379,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "interlace","none");
   image_info->interlace=(InterlaceType)
-    ParseMagickOption(MagickInterlaceOptions,MagickFalse,resource_value);
+    ParseCommandOption(MagickInterlaceOptions,MagickFalse,resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "verbose","False");
   image_info->verbose=IsMagickTrue(resource_value);
@@ -430,7 +430,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
         PopImageStack();
         continue;
       }
-    if (IsMagickOption(option) == MagickFalse)
+    if (IsCommandOption(option) == MagickFalse)
       {
         const char
           *filename;
@@ -475,7 +475,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickAlphaOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowAnimateException(OptionError,"UnrecognizedAlphaChannelType",
                 argv[i]);
@@ -632,7 +632,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
             if (colorspace < 0)
               ThrowAnimateException(OptionError,"UnrecognizedColorspace",
@@ -666,7 +666,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            event=ParseMagickOption(MagickLogEventOptions,MagickFalse,argv[i]);
+            event=ParseCommandOption(MagickLogEventOptions,MagickFalse,argv[i]);
             if (event < 0)
               ThrowAnimateException(OptionError,"UnrecognizedEventType",
                 argv[i]);
@@ -751,7 +751,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            dispose=ParseMagickOption(MagickDisposeOptions,MagickFalse,argv[i]);
+            dispose=ParseCommandOption(MagickDisposeOptions,MagickFalse,argv[i]);
             if (dispose < 0)
               ThrowAnimateException(OptionError,"UnrecognizedDisposeMethod",
                 argv[i]);
@@ -768,7 +768,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            method=ParseMagickOption(MagickDitherOptions,MagickFalse,argv[i]);
+            method=ParseCommandOption(MagickDitherOptions,MagickFalse,argv[i]);
             if (method < 0)
               ThrowAnimateException(OptionError,"UnrecognizedDitherMethod",
                 argv[i]);
@@ -816,7 +816,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            filter=ParseMagickOption(MagickFilterOptions,MagickFalse,argv[i]);
+            filter=ParseCommandOption(MagickFilterOptions,MagickFalse,argv[i]);
             if (filter < 0)
               ThrowAnimateException(OptionError,"UnrecognizedImageFilter",
                 argv[i]);
@@ -890,7 +890,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            gravity=ParseMagickOption(MagickGravityOptions,MagickFalse,
+            gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,
               argv[i]);
             if (gravity < 0)
               ThrowAnimateException(OptionError,"UnrecognizedGravityType",
@@ -943,7 +943,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            interlace=ParseMagickOption(MagickInterlaceOptions,MagickFalse,
+            interlace=ParseCommandOption(MagickInterlaceOptions,MagickFalse,
               argv[i]);
             if (interlace < 0)
               ThrowAnimateException(OptionError,"UnrecognizedInterlaceType",
@@ -960,7 +960,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            interpolate=ParseMagickOption(MagickInterpolateOptions,MagickFalse,
+            interpolate=ParseCommandOption(MagickInterpolateOptions,MagickFalse,
               argv[i]);
             if (interpolate < 0)
               ThrowAnimateException(OptionError,"UnrecognizedInterpolateMethod",
@@ -996,7 +996,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            resource=ParseMagickOption(MagickResourceOptions,MagickFalse,
+            resource=ParseCommandOption(MagickResourceOptions,MagickFalse,
               argv[i]);
             if (resource < 0)
               ThrowAnimateException(OptionError,"UnrecognizedResourceType",
@@ -1020,7 +1020,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
+            list=ParseCommandOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
               ThrowAnimateException(OptionError,"UnrecognizedListType",argv[i]);
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
@@ -1151,7 +1151,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
             if (colorspace < 0)
               ThrowAnimateException(OptionError,"UnrecognizedColorspace",
@@ -1383,7 +1383,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            method=ParseMagickOption(MagickVirtualPixelOptions,MagickFalse,
+            method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
             if (method < 0)
               ThrowAnimateException(OptionError,
@@ -1423,8 +1423,8 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
       default:
         ThrowAnimateException(OptionError,"UnrecognizedOption",option);
     }
-    fire=(ParseMagickOption(MagickCommandOptions,MagickFalse,option)
-            &FireOption) == 0 ?  MagickFalse : MagickTrue;
+    fire=(GetCommandOptionFlags(MagickCommandOptions,MagickFalse,option) &
+      FireOptionFlag) == 0 ?  MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }

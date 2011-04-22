@@ -260,7 +260,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
   }
   UnlockSemaphoreInfo(resource_semaphore);
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
-    MagickOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
+    CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
     resource_request,resource_current,resource_limit);
   return(status);
 }
@@ -808,7 +808,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
   }
   UnlockSemaphoreInfo(resource_semaphore);
   (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s: %s/%s/%s",
-    MagickOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
+    CommandOptionToMnemonic(MagickResourceOptions,(ssize_t) type),
       resource_request,resource_current,resource_limit);
 }
 

@@ -2589,7 +2589,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (TIFFIsCODECConfigured(compress_tag) == 0))
       {
         (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          CoderError,"CompressionNotSupported","`%s'",MagickOptionToMnemonic(
+          CoderError,"CompressionNotSupported","`%s'",CommandOptionToMnemonic(
           MagickCompressOptions,(ssize_t) compression));
         compress_tag=COMPRESSION_NONE;
         compression=NoCompression;
@@ -2621,7 +2621,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         default:
         {
           (void) ThrowMagickException(&image->exception,GetMagickModule(),
-            CoderError,"CompressionNotSupported","`%s'",MagickOptionToMnemonic(
+            CoderError,"CompressionNotSupported","`%s'",CommandOptionToMnemonic(
               MagickCompressOptions,(ssize_t) compression));
           compress_tag=COMPRESSION_NONE;
           compression=NoCompression;

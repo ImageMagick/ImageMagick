@@ -1094,7 +1094,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"adjoin") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickBooleanOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickBooleanOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1108,7 +1108,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"alpha") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickAlphaOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickAlphaOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1122,7 +1122,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"antialias") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickBooleanOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickBooleanOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1270,7 +1270,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"colorspace") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickColorspaceOptions,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickColorspaceOptions,
             MagickFalse,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1292,7 +1292,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"compression") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickCompressOptions,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickCompressOptions,
             MagickFalse,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1373,7 +1373,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"dispose") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickDisposeOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickDisposeOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1389,7 +1389,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
           if (info)
             {
-              sp=SvPOK(sval) ? ParseMagickOption(MagickBooleanOptions,
+              sp=SvPOK(sval) ? ParseCommandOption(MagickBooleanOptions,
                 MagickFalse,SvPV(sval,na)) : SvIV(sval);
               if (sp < 0)
                 {
@@ -1419,7 +1419,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"endian") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickEndianOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickEndianOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1526,7 +1526,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"gravity") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickGravityOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickGravityOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1609,7 +1609,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"interlace") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickInterlaceOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickInterlaceOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1694,7 +1694,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"matte") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickBooleanOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickBooleanOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1719,7 +1719,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"monochrome") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickBooleanOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickBooleanOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1750,7 +1750,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"orientation") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickOrientationOptions,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickOrientationOptions,
             MagickFalse,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1863,7 +1863,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"preview") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickPreviewOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickPreviewOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -1916,7 +1916,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"render") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickIntentOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickIntentOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -2098,7 +2098,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"type") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickTypeOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickTypeOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -2123,7 +2123,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"units") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickResolutionOptions,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickResolutionOptions,
             MagickFalse,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -2177,7 +2177,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"verbose") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickBooleanOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickBooleanOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -2197,7 +2197,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"virtual-pixel") == 0)
         {
-          sp=SvPOK(sval) ? ParseMagickOption(MagickVirtualPixelOptions,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickVirtualPixelOptions,
             MagickFalse,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
@@ -2561,7 +2561,7 @@ Append(ref,...)
         {
           if (LocaleCompare(attribute,"stack") == 0)
             {
-              stack=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              stack=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (stack < 0)
                 {
@@ -3232,7 +3232,7 @@ Compare(ref,...)
         {
           if (LocaleCompare(attribute,"metric") == 0)
             {
-              option=ParseMagickOption(MagickMetricOptions,MagickFalse,
+              option=ParseCommandOption(MagickMetricOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (option < 0)
                 {
@@ -3368,7 +3368,7 @@ CompareLayers(ref)
         {
           if (LocaleCompare(attribute,"method") == 0)
             {
-              option=ParseMagickOption(MagickLayerOptions,MagickFalse,
+              option=ParseCommandOption(MagickLayerOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (option < 0)
                 {
@@ -3656,7 +3656,7 @@ EvaluateImages(ref)
         ssize_t
           in;
 
-        in=ParseMagickOption(MagickEvaluateOptions,MagickFalse,(char *)
+        in=ParseCommandOption(MagickEvaluateOptions,MagickFalse,(char *)
           SvPV(ST(1),na));
         if (in < 0)
           {
@@ -3680,7 +3680,7 @@ EvaluateImages(ref)
                 ssize_t
                   in;
 
-                in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+                in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                   MagickEvaluateOptions,MagickFalse,SvPV(ST(i),na));
                 if (in < 0)
                   {
@@ -4440,7 +4440,7 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               s=newSViv(image->storage_class);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickClassOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickClassOptions,
                 image->storage_class));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4492,7 +4492,7 @@ Get(ref,...)
                 if (info->image_info->compression == UndefinedCompression)
                   j=image->compression;
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickCompressOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickCompressOptions,
                 j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4502,7 +4502,7 @@ Get(ref,...)
             {
               j=image ? image->colorspace : RGBColorspace;
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickColorspaceOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickColorspaceOptions,
                 j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4608,7 +4608,7 @@ Get(ref,...)
 
               s=newSViv(image->dispose);
               (void) sv_setpv(s,
-                MagickOptionToMnemonic(MagickDisposeOptions,image->dispose));
+                CommandOptionToMnemonic(MagickDisposeOptions,image->dispose));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4652,7 +4652,7 @@ Get(ref,...)
               j=info ? info->image_info->endian : image ? image->endian :
                 UndefinedEndian;
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickEndianOptions,j));
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickEndianOptions,j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4691,7 +4691,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"filter") == 0)
             {
               s=image ? newSViv(image->filter) : newSViv(0);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickFilterOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickFilterOptions,
                 image->filter));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4755,7 +4755,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"gravity") == 0)
             {
               s=image ? newSViv(image->gravity) : newSViv(0);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickGravityOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickGravityOptions,
                 image->gravity));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4913,7 +4913,7 @@ Get(ref,...)
               j=info ? info->image_info->interlace : image ? image->interlace :
                 UndefinedInterlace;
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickInterlaceOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickInterlaceOptions,
                 j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5067,7 +5067,7 @@ Get(ref,...)
               j=info ? info->image_info->orientation : image ?
                 image->orientation : UndefinedOrientation;
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickOrientationOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickOrientationOptions,
                 j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5159,7 +5159,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"preview") == 0)
             {
               s=newSViv(info->image_info->preview_type);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickPreviewOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickPreviewOptions,
                 info->image_info->preview_type));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5198,7 +5198,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"rendering-intent") == 0)
             {
               s=newSViv(image->rendering_intent);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickIntentOptions,
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickIntentOptions,
                 image->rendering_intent));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -5346,7 +5346,7 @@ Get(ref,...)
                 break;
               j=(ssize_t) GetImageType(image,&image->exception);
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(MagickTypeOptions,j));
+              (void) sv_setpv(s,CommandOptionToMnemonic(MagickTypeOptions,j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5415,7 +5415,7 @@ Get(ref,...)
                 break;
               j=(ssize_t) GetImageVirtualPixelMethod(image);
               s=newSViv(j);
-              (void) sv_setpv(s,MagickOptionToMnemonic(
+              (void) sv_setpv(s,CommandOptionToMnemonic(
                 MagickVirtualPixelOptions,j));
               SvIOK_on(s);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -6213,7 +6213,7 @@ GetPixel(ref,...)
         {
           if (LocaleCompare(attribute,"normalize") == 0)
             {
-              option=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              option=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (option < 0)
                 {
@@ -6423,7 +6423,7 @@ GetPixels(ref,...)
         {
           if (LocaleCompare(attribute,"normalize") == 0)
             {
-              option=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              option=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (option < 0)
                 {
@@ -6746,7 +6746,7 @@ Layers(ref,...)
         {
           if (LocaleCompare(attribute,"compose") == 0)
             {
-              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                 MagickComposeOptions,MagickFalse,SvPV(ST(i),na));
               if (sp < 0)
                 {
@@ -6766,7 +6766,7 @@ Layers(ref,...)
         {
           if (LocaleCompare(attribute,"dither") == 0)
             {
-              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                 MagickBooleanOptions,MagickFalse,SvPV(ST(i),na));
               if (sp < 0)
                 {
@@ -6786,7 +6786,7 @@ Layers(ref,...)
         {
           if (LocaleCompare(attribute,"method") == 0)
             {
-              option=ParseMagickOption(MagickLayerOptions,MagickFalse,
+              option=ParseCommandOption(MagickLayerOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (option < 0)
                 {
@@ -7528,7 +7528,7 @@ Mogrify(ref,...)
               al->integer_reference=(-1);
               break;
             }
-          al->integer_reference=ParseMagickOption((MagickOption) pp->type,
+          al->integer_reference=ParseCommandOption((CommandOption) pp->type,
             MagickFalse,SvPV(sv,na));
           if (pp->type == MagickChannelOptions)
             al->integer_reference=ParseChannelOption(SvPV(sv,na));
@@ -8494,7 +8494,7 @@ Mogrify(ref,...)
                 (void) CloneString(&draw_info->primitive,
                   argument_list[0].string_reference);
               else
-                (void) CloneString(&draw_info->primitive,MagickOptionToMnemonic(
+                (void) CloneString(&draw_info->primitive,CommandOptionToMnemonic(
                   MagickPrimitiveOptions,argument_list[0].integer_reference));
             }
           if (attribute_flag[1] != 0)
@@ -8517,7 +8517,7 @@ Mogrify(ref,...)
             {
               (void) ConcatenateString(&draw_info->primitive," ");
               (void) ConcatenateString(&draw_info->primitive,
-                MagickOptionToMnemonic(MagickMethodOptions,
+                CommandOptionToMnemonic(MagickMethodOptions,
                 argument_list[2].integer_reference));
             }
           if (attribute_flag[3] != 0)
@@ -10863,7 +10863,7 @@ Montage(ref,...)
         {
           if (LocaleCompare(attribute,"compose") == 0)
             {
-              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                 MagickComposeOptions,MagickFalse,SvPV(ST(i),na));
               if (sp < 0)
                 {
@@ -10939,7 +10939,7 @@ Montage(ref,...)
              ssize_t
                in;
 
-             in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+             in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                MagickGravityOptions,MagickFalse,SvPV(ST(i),na));
              if (in < 0)
                {
@@ -10988,7 +10988,7 @@ Montage(ref,...)
                 in;
 
               in=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-                ParseMagickOption(MagickModeOptions,MagickFalse,SvPV(ST(i),na));
+                ParseCommandOption(MagickModeOptions,MagickFalse,SvPV(ST(i),na));
               switch (in)
               {
                 default:
@@ -11041,7 +11041,7 @@ Montage(ref,...)
         {
           if (LocaleCompare(attribute,"shadow") == 0)
             {
-              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                 MagickBooleanOptions,MagickFalse,SvPV(ST(i),na));
               if (sp < 0)
                 {
@@ -11650,7 +11650,7 @@ Preview(ref,...)
     preview_type=GammaPreview;
     if (items > 1)
       preview_type=(PreviewType)
-        ParseMagickOption(MagickPreviewOptions,MagickFalse,SvPV(ST(1),na));
+        ParseCommandOption(MagickPreviewOptions,MagickFalse,SvPV(ST(1),na));
     for ( ; image; image=image->next)
     {
       preview_image=PreviewImage(image,preview_type,exception);
@@ -11911,12 +11911,12 @@ QueryFont(ref,...)
       if (type_info->style == UndefinedStyle)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(MagickOptionToMnemonic(MagickStyleOptions,
+        PUSHs(sv_2mortal(newSVpv(CommandOptionToMnemonic(MagickStyleOptions,
           type_info->style),0)));
       if (type_info->stretch == UndefinedStretch)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(MagickOptionToMnemonic(MagickStretchOptions,
+        PUSHs(sv_2mortal(newSVpv(CommandOptionToMnemonic(MagickStretchOptions,
           type_info->stretch),0)));
       (void) FormatMagickString(message,MaxTextExtent,"%.20g",(double)
         type_info->weight);
@@ -12051,7 +12051,7 @@ QueryFontMetrics(ref,...)
         {
           if (LocaleCompare(attribute,"antialias") == 0)
             {
-              type=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              type=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (type < 0)
                 {
@@ -12076,7 +12076,7 @@ QueryFontMetrics(ref,...)
             }
           if (LocaleCompare(attribute,"direction") == 0)
             {
-              draw_info->direction=(DirectionType) ParseMagickOption(
+              draw_info->direction=(DirectionType) ParseCommandOption(
                 MagickDirectionOptions,MagickFalse,SvPV(ST(i),na));
               break;
             }
@@ -12130,7 +12130,7 @@ QueryFontMetrics(ref,...)
             }
           if (LocaleCompare(attribute,"gravity") == 0)
             {
-              draw_info->gravity=(GravityType) ParseMagickOption(
+              draw_info->gravity=(GravityType) ParseCommandOption(
                 MagickGravityOptions,MagickFalse,SvPV(ST(i),na));
               break;
             }
@@ -12235,7 +12235,7 @@ QueryFontMetrics(ref,...)
             }
           if (LocaleCompare(attribute,"style") == 0)
             {
-              type=ParseMagickOption(MagickStyleOptions,MagickFalse,
+              type=ParseCommandOption(MagickStyleOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (type < 0)
                 {
@@ -12462,7 +12462,7 @@ QueryMultilineFontMetrics(ref,...)
         {
           if (LocaleCompare(attribute,"antialias") == 0)
             {
-              type=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              type=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (type < 0)
                 {
@@ -12535,7 +12535,7 @@ QueryMultilineFontMetrics(ref,...)
             }
           if (LocaleCompare(attribute,"gravity") == 0)
             {
-              draw_info->gravity=(GravityType) ParseMagickOption(
+              draw_info->gravity=(GravityType) ParseCommandOption(
                 MagickGravityOptions,MagickFalse,SvPV(ST(i),na));
               break;
             }
@@ -12608,7 +12608,7 @@ QueryMultilineFontMetrics(ref,...)
             }
           if (LocaleCompare(attribute,"style") == 0)
             {
-              type=ParseMagickOption(MagickStyleOptions,MagickFalse,
+              type=ParseCommandOption(MagickStyleOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (type < 0)
                 {
@@ -12867,9 +12867,9 @@ QueryOption(ref,...)
     EXTEND(sp,8*items);
     for (i=1; i < items; i++)
     {
-      option=ParseMagickOption(MagickListOptions,MagickFalse,(char *)
+      option=ParseCommandOption(MagickListOptions,MagickFalse,(char *)
         SvPV(ST(i),na));
-      options=GetMagickOptions((MagickOption) option);
+      options=GetCommandOptions((CommandOption) option);
       if (options == (char **) NULL)
         PUSHs(&sv_undef);
       else
@@ -13368,7 +13368,7 @@ SetPixel(ref,...)
         {
           if (LocaleCompare(attribute,"normalize") == 0)
             {
-              option=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              option=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (option < 0)
                 {
@@ -13574,7 +13574,7 @@ Smush(ref,...)
         {
           if (LocaleCompare(attribute,"stack") == 0)
             {
-              stack=ParseMagickOption(MagickBooleanOptions,MagickFalse,
+              stack=ParseCommandOption(MagickBooleanOptions,MagickFalse,
                 SvPV(ST(i),na));
               if (stack < 0)
                 {
@@ -13933,7 +13933,7 @@ Transform(ref,...)
              ssize_t
                in;
 
-             in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseMagickOption(
+             in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
                MagickGravityOptions,MagickFalse,SvPV(ST(i),na));
              if (in < 0)
                {

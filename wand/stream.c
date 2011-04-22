@@ -283,7 +283,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
         PopImageStack();
         continue;
       }
-    if (IsMagickOption(option) == MagickFalse)
+    if (IsCommandOption(option) == MagickFalse)
       {
         Image
           *images;
@@ -359,7 +359,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowStreamException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,MagickFalse,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
               argv[i]);
             if (colorspace < 0)
               ThrowStreamException(OptionError,"UnrecognizedColorspace",
@@ -376,7 +376,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowStreamException(OptionError,"MissingArgument",option);
-            compress=ParseMagickOption(MagickCompressOptions,MagickFalse,
+            compress=ParseCommandOption(MagickCompressOptions,MagickFalse,
               argv[i]);
             if (compress < 0)
               ThrowStreamException(OptionError,"UnrecognizedImageCompression",
@@ -399,7 +399,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
-            event=ParseMagickOption(MagickLogEventOptions,MagickFalse,argv[i]);
+            event=ParseCommandOption(MagickLogEventOptions,MagickFalse,argv[i]);
             if (event < 0)
               ThrowStreamException(OptionError,"UnrecognizedEventType",argv[i]);
             (void) SetLogEventMask(argv[i]);
@@ -493,7 +493,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
-            interlace=ParseMagickOption(MagickInterlaceOptions,MagickFalse,
+            interlace=ParseCommandOption(MagickInterlaceOptions,MagickFalse,
               argv[i]);
             if (interlace < 0)
               ThrowStreamException(OptionError,"UnrecognizedInterlaceType",
@@ -510,7 +510,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
-            interpolate=ParseMagickOption(MagickInterpolateOptions,MagickFalse,
+            interpolate=ParseCommandOption(MagickInterpolateOptions,MagickFalse,
               argv[i]);
             if (interpolate < 0)
               ThrowStreamException(OptionError,"UnrecognizedInterpolateMethod",
@@ -537,7 +537,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
-            resource=ParseMagickOption(MagickResourceOptions,MagickFalse,
+            resource=ParseCommandOption(MagickResourceOptions,MagickFalse,
               argv[i]);
             if (resource < 0)
               ThrowStreamException(OptionError,"UnrecognizedResourceType",
@@ -561,7 +561,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowStreamException(OptionError,"MissingArgument",option);
-            list=ParseMagickOption(MagickListOptions,MagickFalse,argv[i]);
+            list=ParseCommandOption(MagickListOptions,MagickFalse,argv[i]);
             if (list < 0)
               ThrowStreamException(OptionError,"UnrecognizedListType",argv[i]);
             status=MogrifyImageInfo(image_info,(int) (i-j+1),(const char **)
@@ -607,7 +607,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowStreamException(OptionError,"MissingArgument",option);
-            colorspace=ParseMagickOption(MagickColorspaceOptions,
+            colorspace=ParseCommandOption(MagickColorspaceOptions,
               MagickFalse,argv[i]);
             if (colorspace < 0)
               ThrowStreamException(OptionError,"UnrecognizedColorspace",
@@ -686,7 +686,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowStreamException(OptionError,"MissingArgument",option);
-            type=ParseMagickOption(MagickStorageOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickStorageOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowStreamException(OptionError,"UnrecognizedStorageType",
                 argv[i]);
@@ -735,7 +735,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowStreamException(OptionError,"MissingArgument",option);
-            method=ParseMagickOption(MagickVirtualPixelOptions,MagickFalse,
+            method=ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
               argv[i]);
             if (method < 0)
               ThrowStreamException(OptionError,
@@ -749,8 +749,8 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
       default:
         ThrowStreamException(OptionError,"UnrecognizedOption",option)
     }
-    fire=(ParseMagickOption(MagickCommandOptions,MagickFalse,option)
-            &FireOption) == 0 ?  MagickFalse : MagickTrue;
+    fire=(GetCommandOptionFlags(MagickCommandOptions,MagickFalse,option) &
+      FireOptionFlag) == 0 ?  MagickFalse : MagickTrue;
     if (fire != MagickFalse)
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }

@@ -394,7 +394,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
 
   /* Parse special 'named' kernel */
   GetMagickToken(kernel_string,&p,token);
-  type=ParseMagickOption(MagickKernelOptions,MagickFalse,token);
+  type=ParseCommandOption(MagickKernelOptions,MagickFalse,token);
   if ( type < 0 || type == UserDefinedKernel )
     return((KernelInfo *)NULL);  /* not a valid named kernel */
 
@@ -3844,7 +3844,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
 
       if ( verbose == MagickTrue )
         (void) fprintf(stderr, "%s:%.20g.%.20g #%.20g => Changed %.20g\n",
-            MagickOptionToMnemonic(MagickMorphologyOptions, method),
+            CommandOptionToMnemonic(MagickMorphologyOptions, method),
             1.0,0.0,1.0, (double) changed);
 
       if ( changed < 0 )
@@ -3990,11 +3990,11 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         if ( verbose == MagickTrue ) {
           if ( stage_limit > 1 )
             (void) FormatMagickString(v_info,MaxTextExtent,"%s:%.20g.%.20g -> ",
-             MagickOptionToMnemonic(MagickMorphologyOptions,method),(double)
+             CommandOptionToMnemonic(MagickMorphologyOptions,method),(double)
              method_loop,(double) stage_loop);
           else if ( primitive != method )
             (void) FormatMagickString(v_info, MaxTextExtent, "%s:%.20g -> ",
-              MagickOptionToMnemonic(MagickMorphologyOptions, method),(double)
+              CommandOptionToMnemonic(MagickMorphologyOptions, method),(double)
               method_loop);
           else
             v_info[0] = '\0';
@@ -4030,7 +4030,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
             if ( kernel_loop > 1 )
               fprintf(stderr, "\n"); /* add end-of-line from previous */
             (void) fprintf(stderr, "%s%s%s:%.20g.%.20g #%.20g => Changed %.20g",
-              v_info,MagickOptionToMnemonic(MagickMorphologyOptions,
+              v_info,CommandOptionToMnemonic(MagickMorphologyOptions,
               primitive),(this_kernel == rflt_kernel ) ? "*" : "",
               (double) (method_loop+kernel_loop-1),(double) kernel_number,
               (double) count,(double) changed);
@@ -4079,7 +4079,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         case BottomHatMorphology:
           if ( verbose == MagickTrue )
             fprintf(stderr, "\n%s: Difference with original image",
-                 MagickOptionToMnemonic(MagickMorphologyOptions, method) );
+                 CommandOptionToMnemonic(MagickMorphologyOptions, method) );
           (void) CompositeImageChannel(curr_image,
                   (ChannelType) (channel & ~SyncChannels),
                   DifferenceCompositeOp, image, 0, 0);
@@ -4087,7 +4087,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         case EdgeMorphology:
           if ( verbose == MagickTrue )
             fprintf(stderr, "\n%s: Difference of Dilate and Erode",
-                 MagickOptionToMnemonic(MagickMorphologyOptions, method) );
+                 CommandOptionToMnemonic(MagickMorphologyOptions, method) );
           (void) CompositeImageChannel(curr_image,
                   (ChannelType) (channel & ~SyncChannels),
                   DifferenceCompositeOp, save_image, 0, 0);
@@ -4125,7 +4125,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           */
           if ( verbose == MagickTrue )
             fprintf(stderr, " (compose \"%s\")",
-                 MagickOptionToMnemonic(MagickComposeOptions, rslt_compose) );
+                 CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
           (void) CompositeImageChannel(rslt_image,
                (ChannelType) (channel & ~SyncChannels), rslt_compose,
                curr_image, 0, 0);
@@ -4271,7 +4271,7 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
     artifact = GetImageArtifact(image,"morphology:compose");
     compose = UndefinedCompositeOp;  /* use default for method */
     if ( artifact != (const char *) NULL)
-      compose = (CompositeOperator) ParseMagickOption(
+      compose = (CompositeOperator) ParseCommandOption(
                              MagickComposeOptions,MagickFalse,artifact);
   }
   /* Apply the Morphology */
@@ -4731,7 +4731,7 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
     if ( kernel->next != (KernelInfo *) NULL )
       fprintf(stderr, " #%lu", (unsigned long) c );
     fprintf(stderr, " \"%s",
-          MagickOptionToMnemonic(MagickKernelOptions, k->type) );
+          CommandOptionToMnemonic(MagickKernelOptions, k->type) );
     if ( fabs(k->angle) > MagickEpsilon )
       fprintf(stderr, "@%lg", k->angle);
     fprintf(stderr, "\" of size %lux%lu%+ld%+ld",(unsigned long) k->width,

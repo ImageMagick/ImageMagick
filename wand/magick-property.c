@@ -496,7 +496,7 @@ WandExport GravityType MagickGetGravity(MagickWand *wand)
   option=GetImageOption(wand->image_info,"gravity");
   if (option == (const char *) NULL)
     return(UndefinedGravity);
-  type=(GravityType) ParseMagickOption(MagickGravityOptions,MagickFalse,option);
+  type=(GravityType) ParseCommandOption(MagickGravityOptions,MagickFalse,option);
   return(type);
 }
 
@@ -1017,7 +1017,7 @@ WandExport InterpolatePixelMethod MagickGetInterpolateMethod(MagickWand *wand)
   option=GetImageOption(wand->image_info,"interpolate");
   if (option == (const char *) NULL)
     return(UndefinedInterpolatePixel);
-  method=(InterpolatePixelMethod) ParseMagickOption(MagickInterpolateOptions,
+  method=(InterpolatePixelMethod) ParseCommandOption(MagickInterpolateOptions,
     MagickFalse,option);
   return(method);
 }
@@ -2211,7 +2211,7 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  status=SetImageOption(wand->image_info,"gravity",MagickOptionToMnemonic(
+  status=SetImageOption(wand->image_info,"gravity",CommandOptionToMnemonic(
     MagickGravityOptions,(ssize_t) type));
   return(status);
 }
@@ -2435,7 +2435,7 @@ WandExport MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   status=SetImageOption(wand->image_info,"interpolate",
-    MagickOptionToMnemonic(MagickInterpolateOptions,(ssize_t) method));
+    CommandOptionToMnemonic(MagickInterpolateOptions,(ssize_t) method));
   return(status);
 }
 

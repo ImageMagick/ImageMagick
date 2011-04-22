@@ -205,7 +205,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
   scene=0;
   do
   {
-    (void) CopyMagickString(colorspace,MagickOptionToMnemonic(
+    (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
