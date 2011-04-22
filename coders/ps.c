@@ -1026,7 +1026,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if ((image->matte != MagickFalse) && \
-      (p->opacity == (Quantum) TransparentOpacity)) \
+      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity)) \
     { \
       q=PopHexPixel(hex_digits,0xff,q); \
       q=PopHexPixel(hex_digits,0xff,q); \
@@ -1890,9 +1890,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((p->red == pixel.red) && (p->green == pixel.green) &&
-                      (p->blue == pixel.blue) &&
-                      (p->opacity == pixel.opacity) && (length < 255) &&
+                  if ((GetRedPixelComponent(p) == pixel.red) && (GetGreenPixelComponent(p) == pixel.green) &&
+                      (GetBluePixelComponent(p) == pixel.blue) &&
+                      (GetOpacityPixelComponent(p) == pixel.opacity) && (length < 255) &&
                       (x < (ssize_t) (image->columns-1)))
                     length++;
                   else
@@ -1950,7 +1950,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (p->opacity == (Quantum) TransparentOpacity))
+                      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
                     {
                       q=PopHexPixel(hex_digits,0xff,q);
                       q=PopHexPixel(hex_digits,0xff,q);

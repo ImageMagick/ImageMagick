@@ -247,15 +247,15 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      grays[ScaleQuantumToMap(p->red)].red=
-        ScaleQuantumToMap(p->red);
-      grays[ScaleQuantumToMap(p->green)].green=
-        ScaleQuantumToMap(p->green);
-      grays[ScaleQuantumToMap(p->blue)].blue=
-        ScaleQuantumToMap(p->blue);
+      grays[ScaleQuantumToMap(GetRedPixelComponent(p))].red=
+        ScaleQuantumToMap(GetRedPixelComponent(p));
+      grays[ScaleQuantumToMap(GetGreenPixelComponent(p))].green=
+        ScaleQuantumToMap(GetGreenPixelComponent(p));
+      grays[ScaleQuantumToMap(GetBluePixelComponent(p))].blue=
+        ScaleQuantumToMap(GetBluePixelComponent(p));
       if (image->matte != MagickFalse)
-        grays[ScaleQuantumToMap(p->opacity)].opacity=
-          ScaleQuantumToMap(p->opacity);
+        grays[ScaleQuantumToMap(GetOpacityPixelComponent(p))].opacity=
+          ScaleQuantumToMap(GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
         grays[ScaleQuantumToMap(indexes[x])].index=
           ScaleQuantumToMap(indexes[x]);
@@ -473,7 +473,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         }
         u=0;
         v=0;
-        while (grays[u].red != ScaleQuantumToMap(p->red))
+        while (grays[u].red != ScaleQuantumToMap(GetRedPixelComponent(p)))
           u++;
         while (grays[v].red != ScaleQuantumToMap((p+offset)->red))
           v++;
@@ -481,7 +481,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         cooccurrence[v][u].direction[i].red++;
         u=0;
         v=0;
-        while (grays[u].green != ScaleQuantumToMap(p->green))
+        while (grays[u].green != ScaleQuantumToMap(GetGreenPixelComponent(p)))
           u++;
         while (grays[v].green != ScaleQuantumToMap((p+offset)->green))
           v++;
@@ -489,7 +489,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         cooccurrence[v][u].direction[i].green++;
         u=0;
         v=0;
-        while (grays[u].blue != ScaleQuantumToMap(p->blue))
+        while (grays[u].blue != ScaleQuantumToMap(GetBluePixelComponent(p)))
           u++;
         while (grays[v].blue != ScaleQuantumToMap((p+offset)->blue))
           v++;
@@ -499,7 +499,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
           {
             u=0;
             v=0;
-            while (grays[u].opacity != ScaleQuantumToMap(p->opacity))
+            while (grays[u].opacity != ScaleQuantumToMap(GetOpacityPixelComponent(p)))
               u++;
             while (grays[v].opacity != ScaleQuantumToMap((p+offset)->opacity))
               v++;

@@ -29,7 +29,7 @@ extern "C" {
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
 {
-  if ((p->red == q->red) && (p->green == q->green) && (p->blue == q->blue))
+  if ((GetRedPixelComponent(p) == q->red) && (GetGreenPixelComponent(p) == q->green) && (GetBluePixelComponent(p) == q->blue))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -55,7 +55,7 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
     {
       if (GetOpacityPixelComponent(p) != q->opacity)
         return(MagickFalse);
-      if (p->opacity == TransparentOpacity)
+      if (GetOpacityPixelComponent(p) == TransparentOpacity)
         return(MagickTrue);
     }
   if (GetRedPixelComponent(p) != q->red)
@@ -68,23 +68,23 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
     return(MagickFalse);
 #else
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (fabs(p->opacity-OpaqueOpacity) > 0.5))
+      (fabs(GetOpacityPixelComponent(p)-OpaqueOpacity) > 0.5))
     return(MagickFalse);
   if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
       (fabs(q->opacity-OpaqueOpacity)) > 0.5)
     return(MagickFalse);
   if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
     {
-      if (fabs(p->opacity-q->opacity) > 0.5)
+      if (fabs(GetOpacityPixelComponent(p)-q->opacity) > 0.5)
         return(MagickFalse);
-      if (fabs(p->opacity-TransparentOpacity) <= 0.5)
+      if (fabs(GetOpacityPixelComponent(p)-TransparentOpacity) <= 0.5)
         return(MagickTrue);
     }
-  if (fabs(p->red-q->red) > 0.5)
+  if (fabs(GetRedPixelComponent(p)-q->red) > 0.5)
     return(MagickFalse);
-  if (fabs(p->green-q->green) > 0.5)
+  if (fabs(GetGreenPixelComponent(p)-q->green) > 0.5)
     return(MagickFalse);
-  if (fabs(p->blue-q->blue) > 0.5)
+  if (fabs(GetBluePixelComponent(p)-q->blue) > 0.5)
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) && (fabs(p->index-q->index) > 0.5))
     return(MagickFalse);

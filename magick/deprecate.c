@@ -1833,15 +1833,15 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       MagickRealType
         pixel;
 
-      pixel=QuantumScale*(p->red-(double) q->red);
+      pixel=QuantumScale*(GetRedPixelComponent(p)-(double) q->red);
       similarity+=pixel*pixel;
-      pixel=QuantumScale*(p->green-(double) q->green);
+      pixel=QuantumScale*(GetGreenPixelComponent(p)-(double) q->green);
       similarity+=pixel*pixel;
-      pixel=QuantumScale*(p->blue-(double) q->blue);
+      pixel=QuantumScale*(GetBluePixelComponent(p)-(double) q->blue);
       similarity+=pixel*pixel;
       if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
         {
-          pixel=QuantumScale*(p->opacity-(double) q->opacity);
+          pixel=QuantumScale*(GetOpacityPixelComponent(p)-(double) q->opacity);
           similarity+=pixel*pixel;
         }
       if ((image->colorspace == CMYKColorspace) &&
@@ -2101,18 +2101,18 @@ MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
   register MagickRealType
     distance;
 
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
+  if ((fuzz == 0.0) && (GetRedPixelComponent(p) == q->red) && (GetGreenPixelComponent(p) == q->green) &&
+      (GetBluePixelComponent(p) == q->blue))
     return(MagickTrue);
-  pixel.red=p->red-(MagickRealType) q->red;
+  pixel.red=GetRedPixelComponent(p)-(MagickRealType) q->red;
   distance=pixel.red*pixel.red;
   if (distance > (fuzz*fuzz))
     return(MagickFalse);
-  pixel.green=p->green-(MagickRealType) q->green;
+  pixel.green=GetGreenPixelComponent(p)-(MagickRealType) q->green;
   distance+=pixel.green*pixel.green;
   if (distance > (fuzz*fuzz))
     return(MagickFalse);
-  pixel.blue=p->blue-(MagickRealType) q->blue;
+  pixel.blue=GetBluePixelComponent(p)-(MagickRealType) q->blue;
   distance+=pixel.blue*pixel.blue;
   if (distance > (fuzz*fuzz))
     return(MagickFalse);

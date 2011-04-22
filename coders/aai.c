@@ -378,7 +378,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
         *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
         *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
         *q=ScaleQuantumToChar((Quantum) (QuantumRange-
-          (image->matte != MagickFalse ? p->opacity : OpaqueOpacity)));
+          (image->matte != MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
         if (*q == 255)
           *q=254;
         p++;

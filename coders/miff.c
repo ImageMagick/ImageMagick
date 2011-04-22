@@ -2414,7 +2414,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             if ((length < 255) && (x < (ssize_t) (image->columns-1)) &&
                 (IsColorEqual(p,&pixel) != MagickFalse) &&
                 ((image->matte == MagickFalse) ||
-                 (p->opacity == pixel.opacity)) &&
+                 (GetOpacityPixelComponent(p) == pixel.opacity)) &&
                 ((indexes == (IndexPacket *) NULL) || (index == indexes[x])))
               length++;
             else

@@ -249,7 +249,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               matte_image[i]=(unsigned char)
-              (p->opacity == (Quantum) TransparentOpacity ? 1 : 0);
+              (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity ? 1 : 0);
               if (matte_image[i] != 0)
                 transparent=MagickTrue;
               i++;

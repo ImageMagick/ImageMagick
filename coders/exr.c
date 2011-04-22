@@ -431,16 +431,16 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ImfFloatToHalf(QuantumScale*p->red,&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetRedPixelComponent(p),&half_quantum);
       scanline[x].r=half_quantum;
-      ImfFloatToHalf(QuantumScale*p->green,&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetGreenPixelComponent(p),&half_quantum);
       scanline[x].g=half_quantum;
-      ImfFloatToHalf(QuantumScale*p->blue,&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetBluePixelComponent(p),&half_quantum);
       scanline[x].b=half_quantum;
       if (image->matte == MagickFalse)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(1.0-QuantumScale*p->opacity,&half_quantum);
+        ImfFloatToHalf(1.0-QuantumScale*GetOpacityPixelComponent(p),&half_quantum);
       scanline[x].a=half_quantum;
       p++;
     }

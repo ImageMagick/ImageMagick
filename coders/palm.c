@@ -863,7 +863,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
               (size_t) QuantumRange) << 11) |
               (((63*(size_t) GetGreenPixelComponent(p))/(size_t) QuantumRange) << 5) |
               ((31*(size_t) GetBluePixelComponent(p))/(size_t) QuantumRange));
-            if (p->opacity == (Quantum) TransparentOpacity)
+            if (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity)
               {
                 transpix.red=GetRedPixelComponent(p);
                 transpix.green=GetGreenPixelComponent(p);

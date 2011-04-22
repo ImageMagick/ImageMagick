@@ -388,16 +388,16 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     {
       if ((channel & RedChannel) != 0)
         q->red=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
-          p->red,noise_type,attenuate));
+          GetRedPixelComponent(p),noise_type,attenuate));
       if ((channel & GreenChannel) != 0)
         q->green=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
-          p->green,noise_type,attenuate));
+          GetGreenPixelComponent(p),noise_type,attenuate));
       if ((channel & BlueChannel) != 0)
         q->blue=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
-          p->blue,noise_type,attenuate));
+          GetBluePixelComponent(p),noise_type,attenuate));
       if ((channel & OpacityChannel) != 0)
         q->opacity=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
-          p->opacity,noise_type,attenuate));
+          GetOpacityPixelComponent(p),noise_type,attenuate));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         noise_indexes[x]=(IndexPacket) ClampToQuantum(GenerateDifferentialNoise(
@@ -541,17 +541,17 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       quantum=GetRedPixelComponent(p);
-      if (p->green < quantum)
+      if (GetGreenPixelComponent(p) < quantum)
         quantum=GetGreenPixelComponent(p);
-      if (p->blue < quantum)
+      if (GetBluePixelComponent(p) < quantum)
         quantum=GetBluePixelComponent(p);
-      pixel.red=0.5*(p->red+factor*quantum);
-      pixel.green=0.5*(p->green+factor*quantum);
-      pixel.blue=0.5*(p->blue+factor*quantum);
+      pixel.red=0.5*(GetRedPixelComponent(p)+factor*quantum);
+      pixel.green=0.5*(GetGreenPixelComponent(p)+factor*quantum);
+      pixel.blue=0.5*(GetBluePixelComponent(p)+factor*quantum);
       quantum=GetRedPixelComponent(p);
-      if (p->green > quantum)
+      if (GetGreenPixelComponent(p) > quantum)
         quantum=GetGreenPixelComponent(p);
-      if (p->blue > quantum)
+      if (GetBluePixelComponent(p) > quantum)
         quantum=GetBluePixelComponent(p);
       pixel.red=0.5*(pixel.red+factor*quantum);
       pixel.green=0.5*(pixel.green+factor*quantum);
@@ -783,13 +783,13 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->red=(Quantum) ((p->red*(100.0-pixel.red)+
+      q->red=(Quantum) ((GetRedPixelComponent(p)*(100.0-pixel.red)+
         colorize.red*pixel.red)/100.0);
-      q->green=(Quantum) ((p->green*(100.0-pixel.green)+
+      q->green=(Quantum) ((GetGreenPixelComponent(p)*(100.0-pixel.green)+
         colorize.green*pixel.green)/100.0);
-      q->blue=(Quantum) ((p->blue*(100.0-pixel.blue)+
+      q->blue=(Quantum) ((GetBluePixelComponent(p)*(100.0-pixel.blue)+
         colorize.blue*pixel.blue)/100.0);
-      q->opacity=(Quantum) ((p->opacity*(100.0-pixel.opacity)+
+      q->opacity=(Quantum) ((GetOpacityPixelComponent(p)*(100.0-pixel.opacity)+
         colorize.opacity*pixel.opacity)/100.0);
       p++;
       q++;
@@ -993,10 +993,10 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       height=color_matrix->height > 6 ? 6UL : color_matrix->height;
       for (v=0; v < (ssize_t) height; v++)
       {
-        pixel=ColorMatrix[v][0]*p->red+ColorMatrix[v][1]*p->green+
-          ColorMatrix[v][2]*p->blue;
+        pixel=ColorMatrix[v][0]*GetRedPixelComponent(p)+ColorMatrix[v][1]*GetGreenPixelComponent(p)+
+          ColorMatrix[v][2]*GetBluePixelComponent(p);
         if (image->matte != MagickFalse)
-          pixel+=ColorMatrix[v][3]*(QuantumRange-p->opacity);
+          pixel+=ColorMatrix[v][3]*(QuantumRange-GetOpacityPixelComponent(p));
         if (image->colorspace == CMYKColorspace)
           pixel+=ColorMatrix[v][4]*indexes[x];
         pixel+=QuantumRange*ColorMatrix[v][5];
@@ -4798,7 +4798,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       r->red=GetRedPixelComponent(p);
       r->green=q->green;
       r->blue=q->blue;
-      r->opacity=(Quantum) ((p->opacity+q->opacity)/2);
+      r->opacity=(Quantum) ((GetOpacityPixelComponent(p)+q->opacity)/2);
       p++;
       q++;
       r++;
@@ -5155,16 +5155,16 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       MagickRealType
         weight;
 
-      weight=QuantumScale*p->red-0.5;
-      pixel.red=(MagickRealType) p->red+color_vector.red*(1.0-(4.0*
+      weight=QuantumScale*GetRedPixelComponent(p)-0.5;
+      pixel.red=(MagickRealType) GetRedPixelComponent(p)+color_vector.red*(1.0-(4.0*
         (weight*weight)));
       SetRedPixelComponent(q,ClampToQuantum(pixel.red));
-      weight=QuantumScale*p->green-0.5;
-      pixel.green=(MagickRealType) p->green+color_vector.green*(1.0-(4.0*
+      weight=QuantumScale*GetGreenPixelComponent(p)-0.5;
+      pixel.green=(MagickRealType) GetGreenPixelComponent(p)+color_vector.green*(1.0-(4.0*
         (weight*weight)));
       SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
-      weight=QuantumScale*p->blue-0.5;
-      pixel.blue=(MagickRealType) p->blue+color_vector.blue*(1.0-(4.0*
+      weight=QuantumScale*GetBluePixelComponent(p)-0.5;
+      pixel.blue=(MagickRealType) GetBluePixelComponent(p)+color_vector.blue*(1.0-(4.0*
         (weight*weight)));
       SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
       SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));

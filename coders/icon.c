@@ -1192,7 +1192,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           {
             byte<<=1;
             if ((next->matte == MagickTrue) &&
-                (p->opacity == (Quantum) TransparentOpacity))
+                (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
               byte|=0x01;
             bit++;
             if (bit == 8)
