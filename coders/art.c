@@ -98,9 +98,6 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y;
-
   QuantumInfo
     *quantum_info;
 
@@ -110,11 +107,12 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -341,7 +339,9 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
     if (count != (ssize_t) length)
       ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
     count=WriteBlob(image,(size_t) (-(ssize_t) length) & 0x01,pixels);
-    if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
       break;
   }
   quantum_info=DestroyQuantumInfo(quantum_info);

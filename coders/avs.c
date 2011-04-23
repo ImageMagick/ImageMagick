@@ -98,11 +98,11 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
+
+  register ssize_t
+    x;
 
   register unsigned char
     *p;
@@ -172,7 +172,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p++));
+        SetOpacityPixelComponent(q,(Quantum) (QuantumRange-ScaleCharToQuantum(*p++)));
         SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
         SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
         SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
@@ -182,9 +182,13 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
-      if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
-        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (EOFBlob(image) != MagickFalse)
@@ -371,8 +375,8 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
-          (image->matte != MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
+        *q++=ScaleQuantumToChar((Quantum) (QuantumRange-(image->matte !=
+          MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
         *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
         *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
         *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
@@ -381,9 +385,13 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
       count=WriteBlob(image,(size_t) (q-pixels),pixels);
       if (count != (ssize_t) (q-pixels))
         break;
-      if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
-        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (GetNextImageInList(image) == (Image *) NULL)
