@@ -884,16 +884,21 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        q->red=ScaleAnyToQuantum(ScaleQuantumToAny(q->red,range),range);
+        SetRedPixelComponent(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          GetRedPixelComponent(q),range),range));
       if ((channel & GreenChannel) != 0)
-        q->green=ScaleAnyToQuantum(ScaleQuantumToAny(q->green,range),range);
+        SetGreenPixelComponent(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          GetGreenPixelComponent(q),range),range));
       if ((channel & BlueChannel) != 0)
-        q->blue=ScaleAnyToQuantum(ScaleQuantumToAny(q->blue,range),range);
+        SetBluePixelComponent(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          GetBluePixelComponent(q),range),range));
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        q->opacity=ScaleAnyToQuantum(ScaleQuantumToAny(q->opacity,range),range);
+        SetOpacityPixelComponent(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          GetOpacityPixelComponent(q),range),range));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        indexes[x]=ScaleAnyToQuantum(ScaleQuantumToAny(GetIndexPixelComponent(indexes+x),range),range);
+        SetIndexPixelComponent(indexes+x,ScaleAnyToQuantum(ScaleQuantumToAny(
+          GetIndexPixelComponent(indexes+x),range),range));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

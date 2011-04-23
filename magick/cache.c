@@ -3796,9 +3796,9 @@ static inline void MagickPixelCompositeMask(const MagickPixelPacket *p,
     }
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
   gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
-  composite->red=gamma*MagickOver_(GetRedPixelComponent(p),alpha,q->red,beta);
-  composite->green=gamma*MagickOver_(GetGreenPixelComponent(p),alpha,q->green,beta);
-  composite->blue=gamma*MagickOver_(GetBluePixelComponent(p),alpha,q->blue,beta);
+  composite->red=gamma*MagickOver_(p->red,alpha,q->red,beta);
+  composite->green=gamma*MagickOver_(p->green,alpha,q->green,beta);
+  composite->blue=gamma*MagickOver_(p->blue,alpha,q->blue,beta);
   if ((p->colorspace == CMYKColorspace) && (q->colorspace == CMYKColorspace))
     composite->index=gamma*MagickOver_(p->index,alpha,q->index,beta);
 }
@@ -3870,12 +3870,12 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     SetMagickPixelPacket(image,q,nexus_indexes+i,&beta);
     MagickPixelCompositeMask(&beta,(MagickRealType) PixelIntensityToQuantum(r),
       &alpha,alpha.opacity,&beta);
-    q->red=ClampToQuantum(beta.red);
-    q->green=ClampToQuantum(beta.green);
-    q->blue=ClampToQuantum(beta.blue);
-    q->opacity=ClampToQuantum(beta.opacity);
+    SetRedPixelComponent(q,ClampToQuantum(beta.red));
+    SetGreenPixelComponent(q,ClampToQuantum(beta.green));
+    SetBluePixelComponent(q,ClampToQuantum(beta.blue));
+    SetOpacityPixelComponent(q,ClampToQuantum(beta.opacity));
     if (cache_info->active_index_channel != MagickFalse)
-      nexus_indexes[i]=indexes[i];
+      SetIndexPixelComponent(nexus_indexes+i,indexes[i]);
     p++;
     q++;
     r++;

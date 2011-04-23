@@ -1584,7 +1584,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-  pixel=(MagickRealType) GetRedPixelComponent(p)-q->red;
+  pixel=(MagickRealType) GetRedPixelComponent(p)-GetRedPixelComponent(q);
   if ((image->colorspace == HSLColorspace) ||
       (image->colorspace == HSBColorspace) ||
       (image->colorspace == HWBColorspace))
@@ -1593,8 +1593,8 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
          angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In
          other words this is a hack - Anthony
       */
-      if (fabs((double) (GetRedPixelComponent(p)-q->red)) > (QuantumRange/2))
-        pixel=(MagickRealType) GetRedPixelComponent(p)-q->red-QuantumRange;
+      if (fabs((double) pixel) > (QuantumRange/2))
+        pixel-=QuantumRange;
       pixel*=2;
     }
   distance+=scale*pixel*pixel;
@@ -1803,19 +1803,20 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
     fuzz=MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(p->fuzz,MagickSQ1_2);
   else
     fuzz=MagickMax(p->fuzz,MagickSQ1_2)*MagickMax(q->fuzz,MagickSQ1_2);
-
   scale=1.0;
   distance=0.0;
   if ((p->matte != MagickFalse) || (q->matte != MagickFalse))
     {
-      /* transparencies are involved - set alpha distance */
-      pixel = ( p->matte != MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity )
-            - ( q->matte != MagickFalse ? q->opacity : OpaqueOpacity );
+      /*
+        Transparencies are involved - set alpha distance.
+      */
+      pixel=(p->matte != MagickFalse ? GetOpacityPixelComponent(p) :
+        OpaqueOpacity)-(q->matte != MagickFalse ? q->opacity : OpaqueOpacity);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
-
-      /* generate a alpha scaling factor to generate a 4D cone on colorspace
+      /*
+        Generate a alpha scaling factor to generate a 4D cone on colorspace.
         Note that if one color is transparent, distance has no color component
       */
       if (p->matte != MagickFalse)
@@ -1825,24 +1826,24 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       if ( scale <= MagickEpsilon )
         return(MagickTrue);
     }
-
-  /* CMYK create a CMY cube with a multi-dimensional cone toward black */
+  /*
+    CMYK create a CMY cube with a multi-dimensional cone toward black.
+  */
   if (p->colorspace == CMYKColorspace)
     {
       pixel=p->index-q->index;
       distance+=pixel*pixel*scale;
       if (distance > fuzz)
         return(MagickFalse);
-
       scale*=(MagickRealType) (QuantumScale*(QuantumRange-p->index));
       scale*=(MagickRealType) (QuantumScale*(QuantumRange-q->index));
     }
-
-  /* RGB or CMY color cube */
+  /*
+    RGB or CMY color cube.
+  */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-
-  pixel=GetRedPixelComponent(p)-q->red;
+  pixel=p->red-q->red;
   if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
       (p->colorspace == HWBColorspace))
     {
@@ -1851,19 +1852,17 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
          with 'L'/'B' forming appropriate cones.
          In other words this is a hack - Anthony
       */
-      if (fabs((double) (GetRedPixelComponent(p)-q->red)) > (QuantumRange/2))
-        pixel=GetRedPixelComponent(p)-q->red-QuantumRange;
+      if (fabs((double) pixel) > (QuantumRange/2))
+        pixel-=QuantumRange;
       pixel*=2;
     }
-  distance += pixel*pixel*scale;
+  distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
-
   pixel=GetGreenPixelComponent(p)-q->green;
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
-
   pixel=GetBluePixelComponent(p)-q->blue;
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
@@ -2383,23 +2382,23 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
     pixel;
 
   status=QueryMagickColorCompliance(name,compliance,&pixel,exception);
-  color->opacity=ClampToQuantum(pixel.opacity);
+  SetOpacityPixelComponent(color,ClampToQuantum(pixel.opacity));
   if (pixel.colorspace == CMYKColorspace)
     {
-      color->red=ClampToQuantum((MagickRealType) (QuantumRange-MagickMin(
-        QuantumRange,(MagickRealType) (QuantumScale*pixel.red*(QuantumRange-
-        pixel.index)+pixel.index))));
-      color->green=ClampToQuantum((MagickRealType) (QuantumRange-MagickMin(
-        QuantumRange,(MagickRealType) (QuantumScale*pixel.green*(QuantumRange-
-        pixel.index)+pixel.index))));
-      color->blue=ClampToQuantum((MagickRealType) (QuantumRange-MagickMin(
-        QuantumRange,(MagickRealType) (QuantumScale*pixel.blue*(QuantumRange-
-        pixel.index)+pixel.index))));
+      SetRedPixelComponent(color,ClampToQuantum((MagickRealType)
+        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
+        pixel.red*(QuantumRange-pixel.index)+pixel.index)))));
+      SetGreenPixelComponent(color,ClampToQuantum((MagickRealType)
+        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
+        pixel.green*(QuantumRange-pixel.index)+pixel.index)))));
+      SetBluePixelComponent(color,ClampToQuantum((MagickRealType)
+        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
+        pixel.blue*(QuantumRange-pixel.index)+pixel.index)))));
       return(status);
     }
-  color->red=ClampToQuantum(pixel.red);
-  color->green=ClampToQuantum(pixel.green);
-  color->blue=ClampToQuantum(pixel.blue);
+  SetRedPixelComponent(color,ClampToQuantum(pixel.red));
+  SetGreenPixelComponent(color,ClampToQuantum(pixel.green));
+  SetBluePixelComponent(color,ClampToQuantum(pixel.blue));
   return(status);
 }
 
