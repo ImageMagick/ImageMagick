@@ -177,17 +177,21 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
         if (*p == 254)
           *p=255;
-        q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p));
+        SetOpacityPixelComponent(q,(Quantum) (QuantumRange-
+          ScaleCharToQuantum(*p++)));
         if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;
-        p++;
         q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
-      if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
-        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (EOFBlob(image) != MagickFalse)
@@ -377,8 +381,8 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
         *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
         *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
         *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-        *q=ScaleQuantumToChar((Quantum) (QuantumRange-
-          (image->matte != MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
+        *q=ScaleQuantumToChar((Quantum) (QuantumRange-(image->matte !=
+          MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
         if (*q == 255)
           *q=254;
         p++;
@@ -387,9 +391,13 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
       count=WriteBlob(image,(size_t) (q-pixels),pixels);
       if (count != (ssize_t) (q-pixels))
         break;
-      if ((image->previous == (Image *) NULL) &&
-          (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse))
-        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     if (GetNextImageInList(image) == (Image *) NULL)

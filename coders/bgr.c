@@ -117,12 +117,12 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     count,
     y;
-
-  size_t
-    length;
 
   unsigned char
     *pixels;
@@ -1047,8 +1047,7 @@ ModuleExport void UnregisterBGRImage(void)
 %    o image:  The image.
 %
 */
-static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,
-  Image *image)
+static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image)
 {
   MagickBooleanType
     status;
@@ -1062,12 +1061,12 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
+  size_t
+    length;
+
   ssize_t
     count,
     y;
-
-  size_t
-    length;
 
   unsigned char
     *pixels;
