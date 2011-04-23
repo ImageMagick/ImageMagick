@@ -447,8 +447,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
         q->red=(Quantum) ClampToQuantum(scale*(fits_info.scale*(pixel-
           fits_info.min_data)+fits_info.zero));
-        q->green=q->red;
-        q->blue=q->red;
+        SetGreenPixelComponent(q,GetRedPixelComponent(q));
+        SetBluePixelComponent(q,GetRedPixelComponent(q));
         q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)

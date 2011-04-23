@@ -537,8 +537,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
           q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
-          q->green=q->red;
-          q->blue=q->red;
+          SetGreenPixelComponent(q,GetRedPixelComponent(q));
+          SetBluePixelComponent(q,GetRedPixelComponent(q));
           q++;
         }
         break;

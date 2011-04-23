@@ -829,11 +829,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->blue=ScaleCharToQuantum(*p++);
-          q->green=ScaleCharToQuantum(*p++);
-          q->red=ScaleCharToQuantum(*p++);
+          SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+          SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
+          SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
           if (image->matte != MagickFalse)
-            q->opacity=ScaleCharToQuantum(*p++);
+            SetOpacityPixelComponent(q,ScaleCharToQuantum(*p++));
           q++;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)

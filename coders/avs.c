@@ -173,9 +173,9 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p++));
-        q->red=ScaleCharToQuantum(*p++);
-        q->green=ScaleCharToQuantum(*p++);
-        q->blue=ScaleCharToQuantum(*p++);
+        SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
+        SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
+        SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
         if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;
         q++;

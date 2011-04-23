@@ -524,15 +524,15 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*p++));
               if (sun_info.type == RT_STANDARD)
                 {
-                  q->blue=ScaleCharToQuantum(*p++);
-                  q->green=ScaleCharToQuantum(*p++);
-                  q->red=ScaleCharToQuantum(*p++);
+                  SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+                  SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
+                  SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
                 }
               else
                 {
-                  q->red=ScaleCharToQuantum(*p++);
-                  q->green=ScaleCharToQuantum(*p++);
-                  q->blue=ScaleCharToQuantum(*p++);
+                  SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
+                  SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
+                  SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
                 }
               if (image->colors != 0)
                 {
