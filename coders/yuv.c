@@ -251,7 +251,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p+=2;
               }
             if (quantum == 1)
-              q->red=ScaleCharToQuantum(*p++);
+              SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
                 q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
@@ -270,7 +270,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p+=2;
               }
             if (quantum == 1)
-              q->red=ScaleCharToQuantum(*p++);
+              SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
                 q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
@@ -291,7 +291,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if (quantum == 1)
-              q->red=ScaleCharToQuantum(*p++);
+              SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
                 q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
@@ -340,7 +340,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             q->red=(Quantum) 0;
             if (quantum == 1)
-              q->green=ScaleCharToQuantum(*p++);
+              SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
                 q->green=ScaleShortToQuantum(((*p) << 8) | *(p+1));
@@ -374,7 +374,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) chroma_image->columns; x++)
         {
           if (quantum == 1)
-            q->blue=ScaleCharToQuantum(*p++);
+            SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
           else
             {
               q->blue=ScaleShortToQuantum(((*p) << 8) | *(p+1));

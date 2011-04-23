@@ -1268,8 +1268,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 q->red=ScaleShortToQuantum(*p);
-                q->green=q->red;
-                q->blue=q->red;
+                SetGreenPixelComponent(q,GetRedPixelComponent(q));
+                SetBluePixelComponent(q,GetRedPixelComponent(q));
                 p++;
                 if (target_channels > 1)
                   {

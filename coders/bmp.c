@@ -1202,9 +1202,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->blue=ScaleCharToQuantum(*p++);
-            q->green=ScaleCharToQuantum(*p++);
-            q->red=ScaleCharToQuantum(*p++);
+            SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+            SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
+            SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             SetOpacityPixelComponent(q,OpaqueOpacity);
             q++;
           }

@@ -690,7 +690,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              q->red=ScaleCharToQuantum(*p);
+              SetRedPixelComponent(q,ScaleCharToQuantum(*p));
               q->green=ScaleCharToQuantum(*(p+number_pixels));
               q->blue=ScaleCharToQuantum(*(p+2*number_pixels));
               if (image->colors != 0)

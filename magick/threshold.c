@@ -419,8 +419,8 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
         {
           q->red=(Quantum) ((MagickRealType) PixelIntensityToQuantum(q) <=
             threshold ? 0 : QuantumRange);
-          q->green=q->red;
-          q->blue=q->red;
+          SetGreenPixelComponent(q,GetRedPixelComponent(q));
+          SetBluePixelComponent(q,GetRedPixelComponent(q));
           q++;
         }
       }

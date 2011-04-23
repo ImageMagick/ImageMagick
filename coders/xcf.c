@@ -374,8 +374,8 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
         for (x=0; x < (ssize_t) tile_image->columns; x++)
         {
           q->red=ScaleCharToQuantum(*graydata);
-          q->green=q->red;
-          q->blue=q->red;
+          SetGreenPixelComponent(q,GetRedPixelComponent(q));
+          SetBluePixelComponent(q,GetRedPixelComponent(q));
           q->opacity=ScaleCharToQuantum((unsigned char) (255-
             inLayerInfo->opacity));
           graydata++;
@@ -546,8 +546,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     }
                   else
                     {
-                      q->green=q->red;
-                      q->blue=q->red;
+                      SetGreenPixelComponent(q,GetRedPixelComponent(q));
+                      SetBluePixelComponent(q,GetRedPixelComponent(q));
                       q->opacity=ScaleCharToQuantum((unsigned char) (255-
                         inLayerInfo->opacity));
                     }

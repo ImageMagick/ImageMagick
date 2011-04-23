@@ -584,7 +584,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              q->red=ScaleCharToQuantum(*p);
+              SetRedPixelComponent(q,ScaleCharToQuantum(*p));
               q->green=ScaleCharToQuantum(*(p+1));
               q->blue=ScaleCharToQuantum(*(p+2));
               SetOpacityPixelComponent(q,OpaqueOpacity);

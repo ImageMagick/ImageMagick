@@ -176,9 +176,9 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        q->red=ScaleCharToQuantum(*p++);
-        q->green=ScaleCharToQuantum(*p++);
-        q->blue=ScaleCharToQuantum(*p++);
+        SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
+        SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
+        SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
         SetOpacityPixelComponent(q,OpaqueOpacity);
         q++;
       }
