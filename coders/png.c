@@ -2641,37 +2641,73 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           case 16:
           {
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
-            {
-#if MAGICKCORE_QUANTUM_DEPTH == 8
-              *r++=*p++;
-              p++; /* skip low byte */
+           {
+#if (MAGICKCORE_QUANTUM_DEPTH == 16)
+              size_t
+                quantum;
+
+              if (image->colors > 256)
+                *r=((*p++) << 8);
+
+              else
+                *r=0;
+
+              quantum=(*r);
+              quantum|=(*p++);
+              *r=(Quantum) quantum;
+              r++;
 
               if (ping_color_type == 4)
                 {
-                  q->opacity=(Quantum) (QuantumRange - *p++);
+                  quantum=((*p++) << 8);
+                  quantum|=(*p++);
+                  q->opacity=(Quantum) (QuantumRange-quantum);
+                  if (q->opacity != OpaqueOpacity)
+                    found_transparent_pixel = MagickTrue;
+                  q++;
+                }
+#else
+#if (MAGICKCORE_QUANTUM_DEPTH == 32)
+              size_t
+                quantum;
+
+              if (image->colors > 256)
+                *r=((*p++) << 8);
+
+              else
+                *r=0;
+
+              quantum=(*r);
+              quantum|=(*p++);
+              *r=quantum;
+              r++;
+
+              if (ping_color_type == 4)
+                {
+                  q->opacity=(*p << 8) | *(p+1);
+                  q->opacity*=65537L;
+                  q->opacity=(Quantum) GetAlphaPixelComponent(q);
+                  if (q->opacity != OpaqueOpacity)
+                    found_transparent_pixel = MagickTrue;
+                  p+=2;
+                  q++;
+                }
+
+#else /* MAGICKCORE_QUANTUM_DEPTH == 8 */
+              *r++=(*p++);
+              p++; /* strip low byte */
+
+              if (ping_color_type == 4)
+                {
+                  q->opacity=(Quantum) (QuantumRange-(*p++));
                   if (q->opacity != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   p++;
                   q++;
                 }
-
-#else /* MAGICKCORE_QUANTUM_DEPTH >= 16 */
-              *r++ = ScaleShortToQuantum(
-                   (unsigned short) (((*p) << 8) | (*(p+1))));
-              p+=2;
-
-              if (ping_color_type == 4)
-                {
-                  q->opacity = QuantumRange - ScaleShortToQuantum(
-                      (unsigned short) (((*p) << 8) | (*(p+1))));
-                  p+=2;
-
-                  if (q->opacity != OpaqueOpacity)
-                    found_transparent_pixel = MagickTrue;
-                  q++;
-                }
 #endif
-            }
+#endif
+            } 
 
             break;
           }
