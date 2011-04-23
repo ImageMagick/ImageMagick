@@ -129,13 +129,13 @@ typedef struct _OptionInfo
 typedef enum
 {
   UndefinedOptionFlag = 0x0000,
-  FireOptionFlag = 0x0001,       /* Option sequence firing point */
+  FireOptionFlag      = 0x0001,  /* Option sequence firing point */
 #if 0
   ImageInfoOptionFlag = 0x0002,  /* Sets ImageInfo only, no image needed */
-  SimpleOptionFlag = 0x0004,     /* Simple image processing option */
+  SimpleOptionFlag    = 0x0004,  /* Simple image processing option */
   ImageListOptionFlag = 0x0010,  /* Multi-Image list processing option */
 #endif
-  DeprecatedOptionFlag = 0x1000  /* Depreciated Option - Give Warning */
+  DeprecateOptionFlag = 0x1000   /* Deprecate option, give warning */
 } CommandOptionFlags;
 
 extern MagickExport char
