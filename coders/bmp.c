@@ -506,35 +506,31 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
 
   register ssize_t
-    i;
+    i,
+    x;
 
   register unsigned char
     *p;
-
-  ssize_t
-    count;
-
-  size_t
-    length;
-
-  unsigned char
-    magick[12],
-    *pixels;
 
   size_t
     bit,
     blue,
     bytes_per_line,
     green,
+    length,
     opacity,
     red;
+
+  ssize_t
+    count;
+
+  unsigned char
+    magick[12],
+    *pixels;
 
   /*
     Open image file.
@@ -1102,8 +1098,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x = (ssize_t)image->columns; x != 0; --x)
           {
             index=ConstrainColormapIndex(image,*p);
-            *indexes++=index;
             *q=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes,index);
+            indexes++;
             p++;
             q++;
           }
@@ -1167,12 +1164,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
             if (quantum_bits.opacity <= 8)
               opacity|=((opacity & 0xff00) >> 8);
-            q->red=ScaleShortToQuantum((unsigned short) red);
-            q->green=ScaleShortToQuantum((unsigned short) green);
-            q->blue=ScaleShortToQuantum((unsigned short) blue);
+            SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short) red));
+            SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+              green));
+            SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short) blue));
             SetOpacityPixelComponent(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
-              q->opacity=ScaleShortToQuantum((unsigned short) (65535-opacity));
+              SetOpacityPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                (65535-opacity)));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1261,9 +1260,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
             if (quantum_bits.opacity == 8)
               opacity|=(opacity >> 8);
-            q->red=ScaleShortToQuantum((unsigned short) red);
-            q->green=ScaleShortToQuantum((unsigned short) green);
-            q->blue=ScaleShortToQuantum((unsigned short) blue);
+            SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short) red));
+            SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short) green));
+            SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short) blue));
             SetOpacityPixelComponent(q,OpaqueOpacity);
             if (image->matte != MagickFalse)
               q->opacity=ScaleShortToQuantum((unsigned short) (65535-opacity));
