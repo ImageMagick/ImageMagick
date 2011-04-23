@@ -3461,7 +3461,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 */
 
 static inline void AlphaBlendMagickPixelPacket(const Image *image,
-  const PixelPacket *color,const IndexPacket *index,MagickPixelPacket *pixel,
+  const PixelPacket *color,const IndexPacket *indexes,MagickPixelPacket *pixel,
   MagickRealType *alpha)
 {
   if (image->matte == MagickFalse)
@@ -3474,20 +3474,20 @@ static inline void AlphaBlendMagickPixelPacket(const Image *image,
       pixel->index=0.0;
       if (((image->colorspace == CMYKColorspace) ||
            (image->storage_class == PseudoClass)) &&
-          (index != (const IndexPacket *) NULL))
-        pixel->index=(MagickRealType) *index;
+          (indexes != (const IndexPacket *) NULL))
+        pixel->index=(MagickRealType) GetIndexPixelComponent(indexes);
       return;
     }
   *alpha=QuantumScale*GetAlphaPixelComponent(color);
-  pixel->red=(MagickRealType) (*alpha*GetRedPixelComponent(color));
-  pixel->green=(MagickRealType) (*alpha*GetGreenPixelComponent(color));
-  pixel->blue=(MagickRealType) (*alpha*GetBluePixelComponent(color));
+  pixel->red=(*alpha*GetRedPixelComponent(color));
+  pixel->green=(*alpha*GetGreenPixelComponent(color));
+  pixel->blue=(*alpha*GetBluePixelComponent(color));
   pixel->opacity=(MagickRealType) GetOpacityPixelComponent(color);
   pixel->index=0.0;
   if (((image->colorspace == CMYKColorspace) ||
        (image->storage_class == PseudoClass)) &&
-      (index != (const IndexPacket *) NULL))
-    pixel->index=(MagickRealType) (*alpha*(*index));
+      (indexes != (const IndexPacket *) NULL))
+    pixel->index=(*alpha*GetIndexPixelComponent(indexes));
 }
 
 static void BicubicInterpolate(const MagickPixelPacket *pixels,const double dx,
