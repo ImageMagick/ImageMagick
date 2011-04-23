@@ -3467,10 +3467,10 @@ static inline void AlphaBlendMagickPixelPacket(const Image *image,
   if (image->matte == MagickFalse)
     {
       *alpha=1.0;
-      pixel->red=(MagickRealType) color->red;
-      pixel->green=(MagickRealType) color->green;
-      pixel->blue=(MagickRealType) color->blue;
-      pixel->opacity=(MagickRealType) color->opacity;
+      pixel->red=(MagickRealType) GetRedPixelComponent(color);
+      pixel->green=(MagickRealType) GetGreenPixelComponent(color);
+      pixel->blue=(MagickRealType) GetBluePixelComponent(color);
+      pixel->opacity=(MagickRealType) GetOpacityPixelComponent(color);
       pixel->index=0.0;
       if (((image->colorspace == CMYKColorspace) ||
            (image->storage_class == PseudoClass)) &&
@@ -3479,10 +3479,10 @@ static inline void AlphaBlendMagickPixelPacket(const Image *image,
       return;
     }
   *alpha=QuantumScale*GetAlphaPixelComponent(color);
-  pixel->red=(MagickRealType) (*alpha*color->red);
-  pixel->green=(MagickRealType) (*alpha*color->green);
-  pixel->blue=(MagickRealType) (*alpha*color->blue);
-  pixel->opacity=(MagickRealType) (*alpha*color->opacity);
+  pixel->red=(MagickRealType) (*alpha*GetRedPixelComponent(color));
+  pixel->green=(MagickRealType) (*alpha*GetGreenPixelComponent(color));
+  pixel->blue=(MagickRealType) (*alpha*GetBluePixelComponent(color));
+  pixel->opacity=(MagickRealType) GetOpacityPixelComponent(color);
   pixel->index=0.0;
   if (((image->colorspace == CMYKColorspace) ||
        (image->storage_class == PseudoClass)) &&

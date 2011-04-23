@@ -331,7 +331,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   assert(resample_filter->signature == MagickSignature);
 
   status=MagickTrue;
-  GetMagickPixelPacket(resample_filter->image,pixel);
+  /* GetMagickPixelPacket(resample_filter->image,pixel); */
   if ( resample_filter->do_interpolate ) {
     status=InterpolateMagickPixelPacket(resample_filter->image,
       resample_filter->view,resample_filter->interpolate,u0,v0,pixel,
