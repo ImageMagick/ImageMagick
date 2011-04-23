@@ -2090,11 +2090,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2112,11 +2115,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q->opacity=(Quantum) QuantumRange-ClampToQuantum((MagickRealType)
                 QuantumRange*(*p));
@@ -2137,11 +2143,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               p++;
               q++;
@@ -2160,7 +2169,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               SetGreenPixelComponent(q,GetRedPixelComponent(q));
               SetBluePixelComponent(q,GetRedPixelComponent(q));
               p++;
@@ -2180,11 +2190,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
               p++;
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2202,11 +2213,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q->opacity=(Quantum) QuantumRange-ClampToQuantum((MagickRealType)
                 QuantumRange*(*p));
@@ -2227,11 +2241,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2255,19 +2272,22 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               case RedQuantum:
               case CyanQuantum:
               {
-                q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 break;
               }
               case GreenQuantum:
               case MagentaQuantum:
               {
-                q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 break;
               }
               case BlueQuantum:
               case YellowQuantum:
               {
-                q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 break;
               }
               case AlphaQuantum:
@@ -2278,7 +2298,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case OpacityQuantum:
               {
-                q->opacity=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetOpacityPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 break;
               }
               case BlackQuantum:
@@ -2288,7 +2309,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case IndexQuantum:
               {
-                q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 SetGreenPixelComponent(q,GetRedPixelComponent(q));
                 SetBluePixelComponent(q,GetRedPixelComponent(q));
                 break;
@@ -2320,11 +2342,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2342,11 +2367,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q->opacity=(Quantum) QuantumRange-ClampToQuantum((MagickRealType)
                 QuantumRange*(*p));
@@ -2367,11 +2395,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               p++;
               q++;
@@ -2390,7 +2421,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               SetGreenPixelComponent(q,GetRedPixelComponent(q));
               SetBluePixelComponent(q,GetRedPixelComponent(q));
               p++;
@@ -2410,11 +2442,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2432,11 +2467,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q->opacity=(Quantum) QuantumRange-ClampToQuantum((MagickRealType)
                 QuantumRange*(*p));
@@ -2457,11 +2495,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               break;
             for (x=0; x < (ssize_t) columns; x++)
             {
-              q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
-              q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+              SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2485,19 +2526,22 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               case RedQuantum:
               case CyanQuantum:
               {
-                q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
                 break;
               }
               case GreenQuantum:
               case MagentaQuantum:
               {
-                q->green=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
                 break;
               }
               case BlueQuantum:
               case YellowQuantum:
               {
-                q->blue=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
                 break;
               }
               case AlphaQuantum:
@@ -2508,7 +2552,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case OpacityQuantum:
               {
-                q->opacity=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetOpacityPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
                 break;
               }
               case BlackQuantum:
@@ -2518,7 +2563,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case IndexQuantum:
               {
-                q->red=ClampToQuantum((MagickRealType) QuantumRange*(*p));
+                SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 SetGreenPixelComponent(q,GetRedPixelComponent(q));
                 SetBluePixelComponent(q,GetRedPixelComponent(q));
                 break;
