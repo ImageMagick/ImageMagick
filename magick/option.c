@@ -103,7 +103,7 @@ static const OptionInfo
     { "Opaque", OpaqueAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Set", SetAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Shape", ShapeAlphaChannel, UndefinedOptionFlag, MagickFalse },
-    { "Reset", SetAlphaChannel, UndefinedOptionFlag, MagickTrue },  /* deprecated */
+    { "Reset", SetAlphaChannel, DeprecateOptionFlag, MagickTrue },
     { "Transparent", TransparentAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedAlphaChannel, UndefinedOptionFlag, MagickFalse }
   },
@@ -130,7 +130,7 @@ static const OptionInfo
     { "Index", IndexChannel, UndefinedOptionFlag, MagickFalse },
     { "Lightness", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Luminance", BlueChannel, UndefinedOptionFlag, MagickFalse },
-    { "Luminosity", BlueChannel, UndefinedOptionFlag, MagickTrue },  /* deprecated */
+    { "Luminosity", BlueChannel, DeprecateOptionFlag, MagickTrue },
     { "Magenta", MagentaChannel, UndefinedOptionFlag, MagickFalse },
     { "Matte", OpacityChannel, UndefinedOptionFlag, MagickFalse },
     { "Opacity", OpacityChannel, UndefinedOptionFlag, MagickFalse },
@@ -183,8 +183,8 @@ static const OptionInfo
     { "-auto-level", 0L, UndefinedOptionFlag, MagickTrue },
     { "+auto-orient", 0L, UndefinedOptionFlag, MagickFalse },
     { "-auto-orient", 0L, UndefinedOptionFlag, MagickFalse },
-    { "+average", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
-    { "-average", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
+    { "+average", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "-average", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+backdrop", 0L, UndefinedOptionFlag, MagickFalse },
     { "-backdrop", 1L, UndefinedOptionFlag, MagickFalse },
     { "+background", 0L, UndefinedOptionFlag, MagickFalse },
@@ -339,8 +339,8 @@ static const OptionInfo
     { "-fill", 1L, UndefinedOptionFlag, MagickFalse },
     { "+filter", 0L, UndefinedOptionFlag, MagickFalse },
     { "-filter", 1L, UndefinedOptionFlag, MagickFalse },
-    { "+flatten", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
-    { "-flatten", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
+    { "+flatten", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "-flatten", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+flip", 0L, UndefinedOptionFlag, MagickFalse },
     { "-flip", 0L, UndefinedOptionFlag, MagickFalse },
     { "+floodfill", 0L, UndefinedOptionFlag, MagickFalse },
@@ -433,12 +433,12 @@ static const OptionInfo
     { "-map", 1L, FireOptionFlag, MagickFalse },
     { "+mask", 0L, UndefinedOptionFlag, MagickFalse },
     { "-mask", 1L, UndefinedOptionFlag, MagickFalse },
-    { "+matte", 0L, DeprecatedOptionFlag, MagickFalse },
-    { "-matte", 0L, DeprecatedOptionFlag, MagickFalse },
+    { "+matte", 0L, DeprecateOptionFlag, MagickFalse },
+    { "-matte", 0L, DeprecateOptionFlag, MagickFalse },
     { "+mattecolor", 0L, UndefinedOptionFlag, MagickFalse },
     { "-mattecolor", 1L, UndefinedOptionFlag, MagickFalse },
-    { "+maximum", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
-    { "-maximum", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
+    { "+maximum", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "-maximum", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+median", 0L, UndefinedOptionFlag, MagickFalse },
     { "-median", 1L, UndefinedOptionFlag, MagickFalse },
     { "+metric", 0L, UndefinedOptionFlag, MagickFalse },
@@ -457,8 +457,8 @@ static const OptionInfo
     { "-morph", 1L, FireOptionFlag, MagickFalse },
     { "+morphology", 0L, UndefinedOptionFlag, MagickFalse },
     { "-morphology", 2L, UndefinedOptionFlag, MagickFalse },
-    { "+mosaic", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
-    { "-mosaic", 0L, FireOptionFlag | DeprecatedOptionFlag, MagickFalse },
+    { "+mosaic", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
+    { "-mosaic", 0L, FireOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+motion-blur", 0L, UndefinedOptionFlag, MagickFalse },
     { "-motion-blur", 1L, UndefinedOptionFlag, MagickFalse },
     { "+name", 0L, UndefinedOptionFlag, MagickFalse },
@@ -489,8 +489,8 @@ static const OptionInfo
     { "-pause", 1L, UndefinedOptionFlag, MagickFalse },
     { "+passphrase", 0L, UndefinedOptionFlag, MagickFalse },
     { "-passphrase", 1L, UndefinedOptionFlag, MagickFalse },
-    { "+pen", 0L, DeprecatedOptionFlag, MagickFalse },
-    { "-pen", 1L, DeprecatedOptionFlag, MagickFalse },
+    { "+pen", 0L, DeprecateOptionFlag, MagickFalse },
+    { "-pen", 1L, DeprecateOptionFlag, MagickFalse },
     { "+ping", 0L, UndefinedOptionFlag, MagickFalse },
     { "-ping", 0L, UndefinedOptionFlag, MagickFalse },
     { "+pointsize", 0L, UndefinedOptionFlag, MagickFalse },
@@ -776,11 +776,11 @@ static const OptionInfo
     { "Src", SrcCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "VividLight", VividLightCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Xor", XorCompositeOp, UndefinedOptionFlag, MagickFalse },
-    { "Add", AddCompositeOp, UndefinedOptionFlag, MagickTrue }, /* deprecate */
-    { "Divide", DivideDstCompositeOp, UndefinedOptionFlag, MagickTrue }, /* deprecate */
-    { "Minus", MinusDstCompositeOp, UndefinedOptionFlag, MagickTrue }, /* deprecate */
-    { "Subtract", SubtractCompositeOp, UndefinedOptionFlag, MagickTrue }, /* deprecate */
-    { "Threshold", ThresholdCompositeOp, UndefinedOptionFlag, MagickTrue }, /* deprecate */
+    { "Add", AddCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "Divide", DivideDstCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "Minus", MinusDstCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "Subtract", SubtractCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "Threshold", ThresholdCompositeOp, DeprecateOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedCompositeOp, UndefinedOptionFlag, MagickFalse }
   },
   CompressOptions[] =
@@ -1077,7 +1077,7 @@ static const OptionInfo
     { "Edges", EdgesKernel, UndefinedOptionFlag, MagickFalse },
     { "Corners", CornersKernel, UndefinedOptionFlag, MagickFalse },
     { "Diagonals", DiagonalsKernel, UndefinedOptionFlag, MagickFalse },
-    { "ThinDiagonals", DiagonalsKernel, UndefinedOptionFlag, MagickTrue }, /* depreciated */
+    { "ThinDiagonals", DiagonalsKernel, DeprecateOptionFlag, MagickTrue },
     { "LineEnds", LineEndsKernel, UndefinedOptionFlag, MagickFalse },
     { "LineJunctions", LineJunctionsKernel, UndefinedOptionFlag, MagickFalse },
     { "Ridges", RidgesKernel, UndefinedOptionFlag, MagickFalse },
@@ -1088,7 +1088,7 @@ static const OptionInfo
     { "Manhattan", ManhattanKernel, UndefinedOptionFlag, MagickFalse },
     { "Octagonal", OctagonalKernel, UndefinedOptionFlag, MagickFalse },
     { "Euclidean", EuclideanKernel, UndefinedOptionFlag, MagickFalse },
-    { "User Defined", UserDefinedKernel, UndefinedOptionFlag, MagickTrue }, /* internal */
+    { "User Defined", UserDefinedKernel, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedKernel, UndefinedOptionFlag, MagickFalse }
   },
   LayerOptions[] =
@@ -1159,7 +1159,6 @@ static const OptionInfo
     { "Format", MagickFormatOptions, UndefinedOptionFlag, MagickFalse },
     { "Function", MagickFunctionOptions, UndefinedOptionFlag, MagickFalse },
     { "Gravity", MagickGravityOptions, UndefinedOptionFlag, MagickFalse },
-/*  { "ImageList", MagickImageListOptions, UndefinedOptionFlag, MagickFalse }, */
     { "Intent", MagickIntentOptions, UndefinedOptionFlag, MagickFalse },
     { "Interlace", MagickInterlaceOptions, UndefinedOptionFlag, MagickFalse },
     { "Interpolate", MagickInterpolateOptions, UndefinedOptionFlag, MagickFalse },
@@ -1509,7 +1508,7 @@ static const OptionInfo
     { "Undefined", UndefinedVirtualPixelMethod, UndefinedOptionFlag, MagickTrue },
     { "Background", BackgroundVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { "Black", BlackVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
-    { "Constant", BackgroundVirtualPixelMethod, UndefinedOptionFlag, MagickTrue }, /* deprecated */
+    { "Constant", BackgroundVirtualPixelMethod, DeprecateOptionFlag, MagickTrue },
     { "CheckerTile", CheckerTileVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { "Dither", DitherVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
     { "Edge", EdgeVirtualPixelMethod, UndefinedOptionFlag, MagickFalse },
