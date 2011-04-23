@@ -1448,6 +1448,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     }
   interpolate_method=image->interpolate == UndefinedInterpolatePixel ?
     NearestNeighborInterpolatePixel : image->interpolate;
+  GetMagickPixelPacket(image,&pixel);
   (void) InterpolateMagickPixelPacket(image,fx_info->view[i],interpolate_method,
     point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) &&
