@@ -2565,16 +2565,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             for (x=(ssize_t) image->columns-7; x > 0; x-=8)
             {
               for (bit=7; bit >= 0; bit--)
-                *r++=ScaleCharToQuantum(
-                     (unsigned char) ((*p) & (0x01 << bit) ? 0xff : 0x00));
+                *r++=(Quantum) ((*p) & (0x01 << bit) ? 0x01 : 0x00);
               p++;
             }
 
             if ((image->columns % 8) != 0)
               {
                 for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
-                  *r++=ScaleCharToQuantum(
-                  (unsigned char) ((*p) & (0x01 << bit) ? 0xff : 0x00));
+                  *r++=(Quantum) ((*p) & (0x01 << bit) ? 0x01 : 0x00);
               }
 
             break;
@@ -2584,17 +2582,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           {
             for (x=(ssize_t) image->columns-3; x > 0; x-=4)
             {
-              *r++=ScaleCharToQuantum((unsigned char) (0x55*(*p >> 6) & 0x03));
-              *r++=ScaleCharToQuantum((unsigned char) (0x55*(*p >> 4) & 0x03));
-              *r++=ScaleCharToQuantum((unsigned char) (0x55*(*p >> 2) & 0x03));
-              *r++=ScaleCharToQuantum((unsigned char) (0x55*(*p++) & 0x03));
+              *r++=(*p >> 6) & 0x03;
+              *r++=(*p >> 4) & 0x03;
+              *r++=(*p >> 2) & 0x03;
+              *r++=(*p++) & 0x03;
             }
 
             if ((image->columns % 4) != 0)
               {
                 for (i=3; i >= (ssize_t) (4-(image->columns % 4)); i--)
-                  *r++=ScaleCharToQuantum((unsigned char)
-                       (0x55*((*p >> (i*2)) & 0x03)));
+                  *r++=(Quantum) ((*p >> (i*2)) & 0x03);
               }
 
             break;
@@ -2604,12 +2601,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           {
             for (x=(ssize_t) image->columns-1; x > 0; x-=2)
             {
-              *r++=ScaleCharToQuantum((unsigned char) (0x11*(*p >> 4) & 0x0f));
-              *r++=ScaleCharToQuantum((unsigned char) (0x11*(*p++) & 0x0f));
+              *r++=(*p >> 4) & 0x0f;
+              *r++=(*p++) & 0x0f;
             }
 
             if ((image->columns % 2) != 0)
-              *r++=ScaleCharToQuantum((unsigned char) (0x11*(*p >> 4) & 0x0f));
+              *r++=(*p++ >> 4) & 0x0f;
 
             break;
           }
@@ -2619,7 +2616,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if (ping_color_type == 4)
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
-                *r++=ScaleCharToQuantum((unsigned char) *p++);
+                *r++=*p++;
                 /* In image.h, OpaqueOpacity is 0
                  * TransparentOpacity is QuantumRange
                  * In a PNG datastream, Opaque is QuantumRange
@@ -2633,7 +2630,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
             else
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
-                *r++=ScaleCharToQuantum((unsigned char) *p++);
+                *r++=*p++;
 
             break;
           }
@@ -2641,7 +2638,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           case 16:
           {
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
-           {
+            {
 #if (MAGICKCORE_QUANTUM_DEPTH == 16)
               size_t
                 quantum;
@@ -2707,7 +2704,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 }
 #endif
 #endif
-            } 
+            }
 
             break;
           }
@@ -7311,10 +7308,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    if (number_transparent == 0)
                      {
                        transparent[0]=*q;
-                       ping_trans_color.red=(unsigned short)(q->red);
-                       ping_trans_color.green=(unsigned short) (q->green);
-                       ping_trans_color.blue=(unsigned short) (q->blue);
-                       ping_trans_color.gray=(unsigned short) (q->blue);
+                       ping_trans_color.red=
+                         (unsigned short) GetRedPixelComponent(q);
+                       ping_trans_color.green=
+                         (unsigned short) GetGreenPixelComponent(q);
+                       ping_trans_color.blue=
+                         (unsigned short) GetBluePixelComponent(q);
+                       ping_trans_color.gray=
+                         (unsigned short) GetRedPixelComponent(q);
                        number_transparent = 1;
                      }
 
@@ -7430,7 +7431,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    s=q;
                    for (x=0; x < (ssize_t) image->columns; x++)
                    {
-                     if (s->red != s->green || s->red != s->blue)
+                     if (GetRedPixelComponent(s) != GetGreenPixelComponent(s)
+                        || GetRedPixelComponent(s) != GetBluePixelComponent(s))
                        {
                           ping_have_color=MagickTrue;
                           ping_have_non_bw=MagickTrue;
@@ -7445,7 +7447,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    s=q;
                    for (x=0; x < (ssize_t) image->columns; x++)
                    {
-                     if (s->red != 0 && s->red != QuantumRange)
+                     if (GetRedPixelComponent(s) != 0 &&
+                         GetRedPixelComponent(s) != QuantumRange)
                        {
                          ping_have_non_bw=MagickTrue;
                        }
@@ -7673,8 +7676,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-              r->opacity = r->opacity > TransparentOpacity/2 ?
-                   TransparentOpacity : OpaqueOpacity;
+              SetOpacityPixelComponent(r,
+              (GetOpacityPixelComponent(r) > TransparentOpacity/2) ?
+                   TransparentOpacity : OpaqueOpacity);
               r++;
           }
   
