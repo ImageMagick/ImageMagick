@@ -483,6 +483,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
+    bytes_per_line,
     length;
 
   ssize_t
@@ -490,9 +491,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     *pixels;
-
-  size_t
-    bytes_per_line;
 
   /*
     Open image file.
@@ -660,7 +658,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=(IndexPacket) ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             SetIndexPixelComponent(indexes+x+bit,index);
-            *q++=image->colormap[(ssize_t) index];
           }
           p++;
         }
@@ -670,7 +667,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=(IndexPacket) ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
               SetIndexPixelComponent(indexes+x+bit,index);
-              *q++=image->colormap[(ssize_t) index];
             }
             p++;
           }
@@ -684,6 +680,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
           }
       }
+      (void) SyncImage(image);
       break;
     }
     case 4:
@@ -701,18 +698,15 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
           index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
-          indexes[x]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x,index);
           index=ConstrainColormapIndex(image,*p & 0xf);
-          indexes[x+1]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x+1,index);
           p++;
         }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
             p++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -725,6 +719,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
           }
       }
+      (void) SyncImage(image);
       break;
     }
     case 8:
@@ -745,8 +740,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           index=ConstrainColormapIndex(image,*p);
-          indexes[x]=index;
-          *q=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x,index);
           p++;
           q++;
         }
@@ -760,6 +754,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
           }
       }
+      (void) SyncImage(image);
       break;
     }
     case 16:
@@ -785,21 +780,21 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           word|=(*p++ << 8);
           if (dib_info.red_mask == 0)
             {
-              q->red=ScaleCharToQuantum(ScaleColor5to8((unsigned char)
-                ((word >> 10) & 0x1f)));
-              q->green=ScaleCharToQuantum(ScaleColor5to8((unsigned char)
-                ((word >> 5) & 0x1f)));
-              q->blue=ScaleCharToQuantum(ScaleColor5to8((unsigned char)
-                (word & 0x1f)));
+              SetRedPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+                (unsigned char) ((word >> 10) & 0x1f))));
+              SetGreenPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+                (unsigned char) ((word >> 5) & 0x1f))));
+              SetBluePixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+                (unsigned char) (word & 0x1f))));
             }
           else
             {
-              q->red=ScaleCharToQuantum(ScaleColor5to8((unsigned char)
-                ((word >> 11) & 0x1f)));
-              q->green=ScaleCharToQuantum(ScaleColor6to8((unsigned char)
-                ((word >> 5) & 0x3f)));
-              q->blue=ScaleCharToQuantum(ScaleColor5to8((unsigned char)
-                (word & 0x1f)));
+              SetRedPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+                (unsigned char) ((word >> 11) & 0x1f))));
+              SetGreenPixelComponent(q,ScaleCharToQuantum(ScaleColor6to8(
+                (unsigned char) ((word >> 5) & 0x3f))));
+              SetBluePixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+                (unsigned char) (word & 0x1f))));
             }
           q++;
         }
@@ -970,9 +965,6 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
   DIBInfo
     dib_info;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -989,12 +981,15 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
+  size_t
+    bytes_per_line;
+
+  ssize_t
+    y;
+
   unsigned char
     *dib_data,
     *pixels;
-
-  size_t
-    bytes_per_line;
 
   /*
     Open output image file.
@@ -1092,7 +1087,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           byte<<=1;
-          byte|=indexes[x] != 0 ? 0x01 : 0x00;
+          byte|=GetIndexPixelComponent(indexes+x) != 0 ? 0x01 : 0x00;
           bit++;
           if (bit == 8)
             {
@@ -1110,7 +1105,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=(ssize_t) (image->columns+7)/8; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1133,7 +1128,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for ( ; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1155,9 +1150,11 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           word=(unsigned short) ((ScaleColor8to5((unsigned char)
-            ScaleQuantumToChar(GetRedPixelComponent(p))) << 11) | (ScaleColor8to6((unsigned char)
-            ScaleQuantumToChar(GetGreenPixelComponent(p))) << 5) | (ScaleColor8to5(
-            (unsigned char) ScaleQuantumToChar((unsigned char) GetBluePixelComponent(p)) << 0)));
+            ScaleQuantumToChar(GetRedPixelComponent(p))) << 11) |
+            (ScaleColor8to6((unsigned char) ScaleQuantumToChar(
+            GetGreenPixelComponent(p))) << 5) | (ScaleColor8to5((unsigned char)
+            ScaleQuantumToChar((unsigned char) GetBluePixelComponent(p)) <<
+            0)));
           *q++=(unsigned char)(word & 0xff);
           *q++=(unsigned char)(word >> 8);
           p++;
@@ -1165,7 +1162,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=(ssize_t) (2*image->columns); x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -1196,7 +1193,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
           for (x=(ssize_t) (3*image->columns); x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
