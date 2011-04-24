@@ -166,7 +166,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
-  size_t
+  unsigned long
     density,
     direction,
     height,
