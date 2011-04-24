@@ -164,31 +164,31 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
+  <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201108010090 alexanian media -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
+  <a title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201107010090 alexanian media -->
+  <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
+  <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+  <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
   <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011070100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -1338,9 +1338,9 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
         <tr><td align="left" valign="middle">Cr=(0.500000*R&minus;0.454153*G&minus;0.045847*B)*(<em class="QR">QuantumRange</em>+1)/2</td></tr>
 
         <tr><th align="left" valign="middle">sRGB</th></tr>
-        <tr><td align="left" valign="middle">if Rs &le; .03928 then Rs=R/12.92 else Rs=((R+.055)/1.055)^2.4</td></tr>
-        <tr><td align="left" valign="middle">if Gs &le; .03928 then Gs=B/12.92 else Gs=((G+.055)/1.055)^2.4</td></tr>
-        <tr><td align="left" valign="middle">if Bs &le; .03928 then Bs=B/12.92 else Bs=((B+.055)/1.055)^2.4</td></tr>
+        <tr><td align="left" valign="middle">if Rs &le; .04045 then Rs=R/12.92 else Rs=((R+.055)/1.055)^2.4</td></tr>
+        <tr><td align="left" valign="middle">if Gs &le; .04045 then Gs=B/12.92 else Gs=((G+.055)/1.055)^2.4</td></tr>
+        <tr><td align="left" valign="middle">if Bs &le; .04045 then Bs=B/12.92 else Bs=((B+.055)/1.055)^2.4</td></tr>
 
         <tr><th align="left" valign="middle">XYZ</th></tr>
         <tr><td align="left" valign="middle">X=0.4124240*R+0.3575790*G+0.1804640*B</td></tr>
@@ -1790,7 +1790,17 @@ available:</p>
     <kbd>oFFs</kbd>, <kbd>pHYs</kbd>, <kbd>sRGB</kbd>, <kbd>tEXt</kbd>,
     <kbd>tRNS</kbd>, <kbd>vpAg</kbd>, and <kbd>zTXt</kbd>.</p>
 
-y</dd>
+    <p>You can also put <kbd>date</kbd> in the list to include or exclude
+    the "Date:create" and "Date:modify" text chunks that ImageMagick normally
+    inserts in the output PNG.</p>
+
+</dd>
+
+<dt>png:preserve-colormap</dt>
+  <dd>Use the existing image->colormap. Normally the PNG encoder will
+      try to optimize the palette, eliminating unused entries and putting
+      the transparent colors first.  If this flag is set, that behavior
+      is suppressed.</dd>
 
 <dt>ps:imagemask</dt>
 <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will create
@@ -5217,7 +5227,7 @@ modify the output filename of an image. For example</p>
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
 <p>If the setting value is prefixed with "<kbd>option:</kbd>" the setting will
 be saved as a global "Artifact" exactly as if it was set using the <a
-href="#define" >-define</a> option. As such settings are globel in scope, they
+href="#define" >-define</a> option. As such settings are global in scope, they
 can be used to pass 'attributes' and 'properities' of one specific image,
 in a way that allows you to use them in a completely different image, even if
 the original image has long since been modified or destroyed. For example: </p>

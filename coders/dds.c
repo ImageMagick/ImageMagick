@@ -498,16 +498,19 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  ssize_t
-    j,
-    y;
-  
   PixelPacket
     *q;
   
   register ssize_t
     i,
     x;
+  
+  size_t
+    bits;
+
+  ssize_t
+    j,
+    y;
   
   unsigned char
     code;
@@ -516,9 +519,6 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
     c0,
     c1;
   
-  size_t
-    bits;
-
   exception=(&image->exception);
   for (y = 0; y < (ssize_t) dds_info->height; y += 4)
   {
@@ -526,7 +526,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
     {
       /* Get 4x4 patch of pixels to write on */
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
-                       Min(4, dds_info->height - y),exception);
+        Min(4, dds_info->height - y),exception);
       
       if (q == (PixelPacket *) NULL)
         return MagickFalse;
@@ -546,10 +546,10 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
           if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
-              q->red     = ScaleCharToQuantum( colors.r[code] );
-              q->green   = ScaleCharToQuantum( colors.g[code] );
-              q->blue    = ScaleCharToQuantum( colors.b[code] );
-              q->opacity = ScaleCharToQuantum( colors.a[code] );
+              SetRedPixelComponent(q,ScaleCharToQuantum(colors.r[code]));
+              SetGreenPixelComponent(q,ScaleCharToQuantum(colors.g[code]));
+              SetBluePixelComponent(q,ScaleCharToQuantum(colors.b[code]));
+              SetOpacityPixelComponent(q,ScaleCharToQuantum(colors.a[code]));
               if (colors.a[code] && image->matte == MagickFalse)
                 /* Correct matte */
                 image->matte = MagickTrue;
@@ -631,10 +631,9 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
           if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
-              q->red   = ScaleCharToQuantum( colors.r[code] );
-              q->green = ScaleCharToQuantum( colors.g[code] );
-              q->blue  = ScaleCharToQuantum( colors.b[code] );
-              
+              SetRedPixelComponent(q,ScaleCharToQuantum(colors.r[code]));
+              SetGreenPixelComponent(q,ScaleCharToQuantum(colors.g[code]));
+              SetBluePixelComponent(q,ScaleCharToQuantum(colors.b[code]));
               /*
                 Extract alpha value: multiply 0..15 by 17 to get range 0..255
               */
@@ -642,9 +641,8 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
                 alpha = 17U * (unsigned char) ((a0 >> (4*(4*j+i))) & 0xf);
               else
                 alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
-              
-              q->opacity = ScaleCharToQuantum( (unsigned char) (255 - alpha) );
-              
+              SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                (255-alpha)));
               q++;
             }
         }
@@ -730,10 +728,9 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
           if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
-              q->red   = ScaleCharToQuantum( colors.r[code] );
-              q->green = ScaleCharToQuantum( colors.g[code] );
-              q->blue  = ScaleCharToQuantum( colors.b[code] );
-              
+              SetRedPixelComponent(q,ScaleCharToQuantum(colors.r[code]));
+              SetGreenPixelComponent(q,ScaleCharToQuantum(colors.g[code]));
+              SetBluePixelComponent(q,ScaleCharToQuantum(colors.b[code]));
               /* Extract alpha value */
               alpha_code = (size_t) (alpha_bits >> (3*(4*j+i))) & 0x7;
               if (alpha_code == 0)
@@ -748,9 +745,8 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
                 alpha = 255;
               else
                 alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
-              
-              q->opacity = ScaleCharToQuantum( (unsigned char) (255 - alpha) );
-              
+              SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                (255-alpha)));
               q++;
             }
         }
@@ -787,9 +783,12 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
     
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      q->blue  = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
-      q->green = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
-      q->red   = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
+      SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
       if (dds_info->pixelformat.rgb_bitcount == 32)
         (void) ReadBlobByte(image);
       q++;
@@ -825,10 +824,14 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
     
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      q->blue    = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
-      q->green   = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
-      q->red     = ScaleCharToQuantum( (unsigned char) ReadBlobByte(image) );
-      q->opacity = ScaleCharToQuantum( (unsigned char) (255 - ReadBlobByte(image)) );
+      SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
+        (255-ReadBlobByte(image))));
       q++;
     }
     
