@@ -165,14 +165,14 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *read_info;
 
-  ssize_t
-    count;
-
   MagickBooleanType
     status;
 
   MagickOffsetType
     offset;
+
+  ssize_t
+    count;
 
   /*
     Open image file.
