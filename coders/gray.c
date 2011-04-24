@@ -102,9 +102,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     *canvas_image,
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -121,7 +118,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     length;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -368,9 +366,6 @@ ModuleExport void UnregisterGRAYImage(void)
 static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
   Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -383,11 +378,12 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count,
+    y;
 
   unsigned char
     *pixels;

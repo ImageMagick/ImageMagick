@@ -462,15 +462,15 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel[2]=pixels[i++];
           pixel[3]=pixels[i++];
         }
-      q->red=0;
-      q->green=0;
-      q->blue=0;
+      SetRedPixelComponent(q,0);
+      SetGreenPixelComponent(q,0);
+      SetBluePixelComponent(q,0);
       if (pixel[3] != 0)
         {
           gamma=pow(2.0,pixel[3]-(128.0+8.0));
-          q->red=ClampToQuantum(QuantumRange*gamma*pixel[0]);
-          q->green=ClampToQuantum(QuantumRange*gamma*pixel[1]);
-          q->blue=ClampToQuantum(QuantumRange*gamma*pixel[2]);
+          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*gamma*pixel[0]));
+          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*gamma*pixel[1]));
+          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*gamma*pixel[2]));
         }
       q++;
     }
@@ -723,8 +723,8 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   /*
     Write HDR pixels.
   */
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-    4*sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,4*
+    sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -764,8 +764,10 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
 
           gamma=frexp(gamma,&exponent)*256.0/gamma;
           pixel[0]=(unsigned char) (gamma*QuantumScale*GetRedPixelComponent(p));
-          pixel[1]=(unsigned char) (gamma*QuantumScale*GetGreenPixelComponent(p));
-          pixel[2]=(unsigned char) (gamma*QuantumScale*GetBluePixelComponent(p));
+          pixel[1]=(unsigned char) (gamma*QuantumScale*
+            GetGreenPixelComponent(p));
+          pixel[2]=(unsigned char) (gamma*QuantumScale*
+            GetBluePixelComponent(p));
           pixel[3]=(unsigned char) (exponent+128);
         }
       if ((image->columns >= 8) && (image->columns <= 0x7ffff))

@@ -95,9 +95,6 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -111,7 +108,8 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   ssize_t
-    count;
+    count,
+    y;
 
   size_t
     length;
@@ -142,8 +140,8 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=256;
   image->rows=240;
   image->depth=8;
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-    3*sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,3*
+    sizeof(*pixels));
   if (pixels == (unsigned char *) NULL) 
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=(size_t) (3*image->columns);
@@ -158,9 +156,9 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->red=4*ScaleCharToQuantum(*p++);
-      q->green=4*ScaleCharToQuantum(*p++);
-      q->blue=4*ScaleCharToQuantum(*p++);
+      SetRedPixelComponent(q,4*ScaleCharToQuantum(*p++));
+      SetGreenPixelComponent(q,4*ScaleCharToQuantum(*p++));
+      SetBluePixelComponent(q,4*ScaleCharToQuantum(*p++));
       SetOpacityPixelComponent(q,OpaqueOpacity);
       q++;
     }

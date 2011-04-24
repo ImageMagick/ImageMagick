@@ -445,12 +445,12 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
       if (c < 0)
         break;
       index=ConstrainColormapIndex(image,(size_t) c);
-      q->red=image->colormap[(ssize_t) index].red;
-      q->green=image->colormap[(ssize_t) index].green;
-      q->blue=image->colormap[(ssize_t) index].blue;
-      q->opacity=(ssize_t) index == opacity ? (Quantum) TransparentOpacity :
-        (Quantum) OpaqueOpacity;
-      indexes[x]=index;
+      SetIndexPixelComponent(indexes+x,index);
+      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+      SetOpacityPixelComponent(q,(ssize_t) index == opacity ?
+        TransparentOpacity : OpaqueOpacity);
       x++;
       q++;
     }
@@ -579,27 +579,13 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   IndexPacket
     index;
 
-  ssize_t
-    displacement,
-    offset,
-    k,
-    y;
-
   register ssize_t
     i;
-
-  size_t
-    length,
-    one;
 
   short
     *hash_code,
     *hash_prefix,
     waiting_code;
-
-  unsigned char
-    *packet,
-    *hash_suffix;
 
   size_t
     bits,
@@ -607,10 +593,22 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     datum,
     end_of_information_code,
     free_code,
+    length,
     max_code,
     next_pixel,
     number_bits,
+    one,
     pass;
+
+  ssize_t
+    displacement,
+    offset,
+    k,
+    y;
+
+  unsigned char
+    *packet,
+    *hash_suffix;
 
   /*
     Allocate encoder tables.
@@ -973,9 +971,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     number_extensionss=0;
 
-  ssize_t
-    opacity;
-
   MagickBooleanType
     status;
 
@@ -988,8 +983,17 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
+  size_t
+    delay,
+    dispose,
+    global_colors,
+    image_count,
+    iterations,
+    one;
+
   ssize_t
-    count;
+    count,
+    opacity;
 
   unsigned char
     background,
@@ -998,14 +1002,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *global_colormap,
     header[MaxTextExtent],
     magick[12];
-
-  size_t
-    delay,
-    dispose,
-    global_colors,
-    image_count,
-    iterations,
-    one;
 
   /*
     Open image file.
@@ -1457,10 +1453,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
   int
     c;
 
-  ssize_t
-    j,
-    opacity;
-
   ImageInfo
     *write_info;
 
@@ -1483,16 +1475,18 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
     *q;
 
   size_t
-    length;
+    bits_per_pixel,
+    delay,
+    length,
+    one;
+
+  ssize_t
+    j,
+    opacity;
 
   unsigned char
     *colormap,
     *global_colormap;
-
-  size_t
-    bits_per_pixel,
-    delay,
-    one;
 
   /*
     Open output image file.

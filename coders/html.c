@@ -351,8 +351,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
             (void) WriteBlobByte(image,(unsigned char) *p);
           else
             {
-              (void) FormatMagickString(buffer,MaxTextExtent,
-                "\" shape=\"rect\" coords=\"%.20g,%.20g,%.20g,%.20g\" alt=\"\" />\n",
+              (void) FormatMagickString(buffer,MaxTextExtent,"\" shape="
+                "\"rect\" coords=\"%.20g,%.20g,%.20g,%.20g\" alt=\"\" />\n",
                 (double) geometry.x,(double) geometry.y,(double) (geometry.x+
                 geometry.width-1),(double) (geometry.y+geometry.height-1));
               (void) WriteBlobString(image,buffer);
@@ -426,8 +426,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         (void) WriteBlobByte(image,(unsigned char) *p);
       else
         {
-          (void) FormatMagickString(buffer,MaxTextExtent,
-            "\" shape=\"rect\" coords=\"%.20g,%.20g,%.20g,%.20g\" alt=\"\" />\n",
+          (void) FormatMagickString(buffer,MaxTextExtent,"\" shape=\"rect\""
+            " coords=\"%.20g,%.20g,%.20g,%.20g\" alt=\"\" />\n",
             (double) geometry.x,(double) geometry.y,geometry.x+(double)
             geometry.width-1,geometry.y+(double) geometry.height-1);
           (void) WriteBlobString(image,buffer);

@@ -180,9 +180,6 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -199,16 +196,17 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
-  ssize_t
-    count,
-    offset;
-
   size_t
     bit,
     byte,
     bytes_per_line,
     one,
     scanline_pad;
+
+  ssize_t
+    count,
+    offset,
+    y;
 
   /*
     Open image file.
@@ -350,12 +348,12 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           register ssize_t
             i;
 
-          unsigned char
-            *icon_colormap;
-
           size_t
             number_colors,
             one;
+
+          unsigned char
+            *icon_colormap;
 
           /*
             Read Icon raster colormap.
@@ -411,15 +409,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
-                  indexes[x+bit]=(IndexPacket)
-                    ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
+                  SetIndexPixelComponent(indexes+x+bit,
+                    ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00));
               }
               if ((image->columns % 8) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
-                    indexes[x+bit]=(IndexPacket)
-                      ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
+                    SetIndexPixelComponent(indexes+x+bit,
+                      ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00));
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -449,13 +447,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               for (x=0; x < ((ssize_t) image->columns-1); x+=2)
               {
                 byte=(size_t) ReadBlobByte(image);
-                indexes[x]=(IndexPacket) ((byte >> 4) & 0xf);
-                indexes[x+1]=(IndexPacket) ((byte) & 0xf);
+                SetIndexPixelComponent(indexes+x,((byte >> 4) & 0xf));
+                SetIndexPixelComponent(indexes+x+1,((byte) & 0xf));
               }
               if ((image->columns % 2) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
-                  indexes[x]=(IndexPacket) ((byte >> 4) & 0xf);
+                  SetIndexPixelComponent(indexes+x,((byte >> 4) & 0xf));
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -485,7 +483,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte=(size_t) ReadBlobByte(image);
-                indexes[x]=(IndexPacket) byte;
+                SetIndexPixelComponent(indexes+x,byte);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -516,7 +514,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 byte|=(size_t) (ReadBlobByte(image) << 8);
-                indexes[x]=(IndexPacket) byte;
+                SetIndexPixelComponent(indexes+x,byte);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -545,13 +543,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                q->blue=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-                q->green=ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image));
-                q->red=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
+                SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  ReadBlobByte(image)));
+                SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  ReadBlobByte(image)));
+                SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  ReadBlobByte(image)));
                 if (icon_info.bits_per_pixel == 32)
-                  q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(
-                    (unsigned char) ReadBlobByte(image)));
+                  SetOpacityPixelComponent(q,(QuantumRange-ScaleCharToQuantum(
+                    (unsigned char) ReadBlobByte(image))));
                 q++;
               }
               if (icon_info.bits_per_pixel == 24)
@@ -589,15 +589,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
-                  q[x+bit].opacity=(Quantum) (((byte & (0x80 >> bit)) != 0) ?
-                    TransparentOpacity : OpaqueOpacity);
+                  SetOpacityPixelComponent(q+x+bit,(((byte & (0x80 >> bit)) !=
+                    0) ? TransparentOpacity : OpaqueOpacity));
               }
               if ((image->columns % 8) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
-                    q[x+bit].opacity=(Quantum) (((byte & (0x80 >> bit)) != 0) ?
-                      TransparentOpacity : OpaqueOpacity);
+                    SetOpacityPixelComponent(q+x+bit,(((byte & (0x80 >> bit)) !=
+                      0) ? TransparentOpacity : OpaqueOpacity));
                 }
               if ((image->columns % 32) != 0)
                 for (x=0; x < (ssize_t) ((32-(image->columns % 32))/8); x++)
@@ -761,9 +761,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   Image
     *next;
   
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -784,14 +781,17 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   register unsigned char
     *q;
 
+  size_t
+    bytes_per_line,
+    scanline_pad;
+
+  ssize_t
+    y;
+
   unsigned char
     bit,
     byte,
     *pixels;
-
-  size_t
-    bytes_per_line,
-    scanline_pad;
 
   /*
     Open output image file.
@@ -1000,7 +1000,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 byte<<=1;
-                byte|=indexes[x] != 0 ? 0x01 : 0x00;
+                byte|=GetIndexPixelComponent(indexes+x) != 0 ? 0x01 : 0x00;
                 bit++;
                 if (bit == 8)
                   {
@@ -1041,7 +1041,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 byte<<=4;
-                byte|=((size_t) indexes[x] & 0x0f);
+                byte|=((size_t) GetIndexPixelComponent(indexes+x) & 0x0f);
                 nibble++;
                 if (nibble == 2)
                   {
