@@ -105,11 +105,11 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
   register size_t
     i;
 
-  ssize_t
-    count;
-
   size_t
     quantum;
+
+  ssize_t
+    count;
 
   unsigned char
     *inline_image;

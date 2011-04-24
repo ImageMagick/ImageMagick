@@ -1,42 +1,42 @@
 /*
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- %                                                                             %
- %                                                                             %
- %                                                                             %
- %                     IIIIIIIIII    PPPPPPPP      LL                          %
- %                         II        PP      PP    LL                          %
- %                         II        PP       PP   LL                          %
- %                         II        PP      PP    LL                          %
- %                         II        PPPPPPPP      LL                          %
- %                         II        PP            LL                          %
- %                         II        PP            LL                          %
- %                     IIIIIIIIII    PP            LLLLLLLL                    %
- %                                                                             %
- %                                                                             %
- %                                                                             %
- %                   Read/Write Scanalytics IPLab Image Format                 %
- %                                  Sean Burke                                 %
- %                                  2008.05.07                                 %
- %                                     v 0.9                                   %
- %                                                                             %
- %  Copyright 1999-2007 ImageMagick Studio LLC, a non-profit organization      %
- %  dedicated to making software imaging solutions freely available.           %
- %                                                                             %
- %  You may not use this file except in compliance with the License.  You may  %
- %  obtain a copy of the License at                                            %
- %                                                                             %
- %    http://www.imagemagick.org/script/license.php                            %
- %                                                                             %
- %  Unless required by applicable law or agreed to in writing, software        %
- %  distributed under the License is distributed on an "AS IS" BASIS,          %
- %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
- %  See the License for the specific language governing permissions and        %
- %  limitations under the License.                                             %
- %                                                                             %
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- %
- %
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                     IIIIIIIIII    PPPPPPPP      LL                          %
+%                         II        PP      PP    LL                          %
+%                         II        PP       PP   LL                          %
+%                         II        PP      PP    LL                          %
+%                         II        PPPPPPPP      LL                          %
+%                         II        PP            LL                          %
+%                         II        PP            LL                          %
+%                     IIIIIIIIII    PP            LLLLLLLL                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                   Read/Write Scanalytics IPLab Image Format                 %
+%                                  Sean Burke                                 %
+%                                  2008.05.07                                 %
+%                                     v 0.9                                   %
+%                                                                             %
+%  Copyright 1999-2011 ImageMagick Studio LLC, a non-profit organization      %
+%  dedicated to making software imaging solutions freely available.           %
+%                                                                             %
+%  You may not use this file except in compliance with the License.  You may  %
+%  obtain a copy of the License at                                            %
+%                                                                             %
+%    http://www.imagemagick.org/script/license.php                            %
+%                                                                             %
+%  Unless required by applicable law or agreed to in writing, software        %
+%  distributed under the License is distributed on an "AS IS" BASIS,          %
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
+%  See the License for the specific language governing permissions and        %
+%  limitations under the License.                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
 
 /*
  Include declarations.
@@ -363,7 +363,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
-                break;
+          break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GreenQuantum,pixels,exception);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -373,7 +373,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
-                break;
+          break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           BlueQuantum,pixels,exception);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -499,6 +499,9 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   ExceptionInfo
     *exception;
 
+  IPLInfo
+    ipl_info;
+
   MagickBooleanType
     status;
   
@@ -508,18 +511,15 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  unsigned char
-  *pixels;
- 
-  ssize_t
-    y;
-  
-  IPLInfo
-    ipl_info;
-
   QuantumInfo
     *quantum_info;
 
+  ssize_t
+    y;
+  
+  unsigned char
+    *pixels;
+ 
    /*
     Open output image file.
   */
@@ -683,5 +683,3 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
 CloseBlob(image);
 return(MagickTrue);
 }
-
-

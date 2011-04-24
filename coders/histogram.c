@@ -308,7 +308,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         r=q+y;
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
-          r->red=(Quantum) QuantumRange;
+          SetRedPixelComponent(r,QuantumRange);
           r++;
         }
       }
@@ -318,7 +318,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         r=q+y;
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
-          r->green=(Quantum) QuantumRange;
+          SetGreenPixelComponent(r,QuantumRange);
           r++;
         }
       }
@@ -328,7 +328,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         r=q+y;
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
-          r->blue=(Quantum) QuantumRange;
+          SetBluePixelComponent(r,QuantumRange);
           r++;
         }
       }

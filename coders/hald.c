@@ -92,15 +92,15 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   size_t
     cube_size,
     level;
+
+  ssize_t
+    y;
 
   /*
     Create HALD color lookup table image.
@@ -146,9 +146,12 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
     {
       for (red=0; red < (ssize_t) cube_size; red++)
       {
-        q->red=ClampToQuantum(QuantumRange*red/(cube_size-1.0));
-        q->green=ClampToQuantum(QuantumRange*green/(cube_size-1.0));
-        q->blue=ClampToQuantum(QuantumRange*blue/(cube_size-1.0));
+        SetRedPixelComponent(q,ClampToQuantum(QuantumRange*red/
+          (cube_size-1.0)));
+        SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*green/
+          (cube_size-1.0)));
+        SetBluePixelComponent(q,ClampToQuantum(QuantumRange*blue/
+          (cube_size-1.0)));
         SetOpacityPixelComponent(q,OpaqueOpacity);
         q++;
       }
