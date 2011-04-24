@@ -1465,9 +1465,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
   exception=(&image->exception);
   status=MagickTrue;
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
-#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const int
