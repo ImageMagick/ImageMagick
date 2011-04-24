@@ -482,7 +482,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
         filename[MaxTextExtent];
 
       size_t
-        *blob_length;
+        blob_length;
 
       unsigned char
         *blob_data;
@@ -505,7 +505,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
           blob_data=ImageToBlob(clone_info,image,&blob_length,
             &image->exception);
           if (blob_data == (unsigned char *) NULL)
-            status=False;
+            status=MagickFalse;
           else
             SafeArrayFifo(image,blob_data,blob_length);
           if (status == MagickFalse)
