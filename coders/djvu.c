@@ -407,7 +407,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                         {
                                                 if (bit == 0) byte= (size_t) q[(y * stride) + (x / 8)];
 
-                                                indexes[x]=(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01);
+                                                SetIndexPixelComponent(indexes+x,(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01));
                                                 bit++;
                                                 if (bit == 8)
                                                         bit=0;

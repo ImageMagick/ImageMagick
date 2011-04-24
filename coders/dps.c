@@ -117,10 +117,6 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sans,
     status;
 
-  ssize_t
-    x,
-    y;
-
   Pixmap
     pixmap;
 
@@ -138,6 +134,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   Screen
     *screen;
+
+  ssize_t
+    x,
+    y;
 
   XColor
     *colors;
@@ -382,11 +382,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
-            q->red=ScaleShortToQuantum(colors[index].red);
+            SetRedPixelComponent(q,ScaleShortToQuantum(colors[index].red));
             index=(pixel >> green_shift) & green_mask;
-            q->green=ScaleShortToQuantum(colors[index].green);
+            SetGreenPixelComponent(q,ScaleShortToQuantum(colors[index].green));
             index=(pixel >> blue_shift) & blue_mask;
-            q->blue=ScaleShortToQuantum(colors[index].blue);
+            SetBluePixelComponent(q,ScaleShortToQuantum(colors[index].blue));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -405,13 +405,15 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
             color=(color*65535L)/red_mask;
-            q->red=ScaleShortToQuantum((unsigned short) color);
+            SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short) color));
             color=(pixel >> green_shift) & green_mask;
             color=(color*65535L)/green_mask;
-            q->green=ScaleShortToQuantum((unsigned short) color);
+            SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+              color));
             color=(pixel >> blue_shift) & blue_mask;
             color=(color*65535L)/blue_mask;
-            q->blue=ScaleShortToQuantum((unsigned short) color);
+            SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short)
+              color));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -453,7 +455,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
+          SetIndexPixelComponent(indexes+x,(unsigned short)
+            XGetPixel(dps_image,x,y));
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
@@ -500,7 +503,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   SetOpacityPixelComponent(q,OpaqueOpacity);
                   if (XGetPixel(matte_image,x,y) == 0)
-                    q->opacity=TransparentOpacity;
+                    SetOpacityPixelComponent(q,TransparentOpacity);
                   q++;
                 }
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)

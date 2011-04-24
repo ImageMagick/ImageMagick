@@ -160,7 +160,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (xml != (char *) NULL)
         {
           XMLTreeInfo
-           *ufraw;
+            *ufraw;
 
           /*
             Inject 

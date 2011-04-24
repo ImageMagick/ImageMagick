@@ -378,6 +378,7 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
     {
       /* Adjust the length of the buffer to fit */
     }
+  }
   return(tlen);
 }
 
