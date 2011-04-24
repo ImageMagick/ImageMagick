@@ -509,6 +509,8 @@ static const OptionInfo
     { "-profile", 1L, UndefinedOptionFlag, MagickFalse },
     { "+quality", 0L, UndefinedOptionFlag, MagickFalse },
     { "-quality", 1L, UndefinedOptionFlag, MagickFalse },
+    { "+quantize", 0L, UndefinedOptionFlag, MagickFalse },
+    { "-quantize", 1L, UndefinedOptionFlag, MagickFalse },
     { "+quiet", 0L, FireOptionFlag, MagickFalse },
     { "-quiet", 0L, FireOptionFlag, MagickFalse },
     { "+radial-blur", 0L, UndefinedOptionFlag, MagickFalse },
