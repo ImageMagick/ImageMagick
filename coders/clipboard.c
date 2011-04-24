@@ -3,6 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%        CCCC  L      IIIII  PPPP   BBBB    OOO    AAA   RRRR   DDDD          %
+%       C      L        I    P   P  B   B  O   O  A   A  R   R  D   D         %
+%       C      L        I    PPP    BBBB   O   O  AAAAA  RRRR   D   D         %
+%       C      L        I    P      B   B  O   O  A   A  R R    D   D         %
+%        CCCC  LLLLL  IIIII  P      BBBB    OOO   A   A  R  R   DDDD          %
 %                                                                             %
 %                                                                             %
 %                        Read/Write Windows Clipboard.                        %
@@ -101,14 +106,14 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   register ssize_t
     x;
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -208,9 +213,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q->red=ScaleCharToQuantum(pBits->rgbRed);
-          q->green=ScaleCharToQuantum(pBits->rgbGreen);
-          q->blue=ScaleCharToQuantum(pBits->rgbBlue);
+          SetRedPixelComponent(q,ScaleCharToQuantum(pBits->rgbRed));
+          SetGreenPixelComponent(q,ScaleCharToQuantum(pBits->rgbGreen));
+          SetBluePixelComponent(q,ScaleCharToQuantum(pBits->rgbBlue));
           SetOpacityPixelComponent(q,OpaqueOpacity);
           pBits++;
           q++;
@@ -334,7 +339,7 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
     HBITMAP
       bitmapH;
 
-    OpenClipboard( NULL );
+    OpenClipboard(NULL);
     EmptyClipboard();
     bitmapH=(HBITMAP) ImageToHBITMAP(image);
     SetClipboardData(CF_BITMAP,bitmapH);

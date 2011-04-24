@@ -166,7 +166,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
-  unsigned long
+  size_t
     density,
     direction,
     height,
@@ -404,14 +404,14 @@ static ssize_t WriteCALSRecord(Image *image,const char *data)
   char
     pad[128];
 
-  ssize_t
-    count;
-
   register const char
     *p;
 
   register ssize_t
     i;
+
+  ssize_t
+    count;
 
   i=0;
   if (data != (const char *) NULL)
@@ -447,19 +447,17 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
+  size_t
+    density,
+    length,
+    orient_x,
+    orient_y;
+
   ssize_t
     count;
 
-  size_t
-    length;
-
   unsigned char
     *group4;
-
-  size_t
-    density,
-    orient_x,
-    orient_y;
 
   /*
     Open output image file.

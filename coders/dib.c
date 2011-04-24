@@ -659,7 +659,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (bit=0; bit < 8; bit++)
           {
             index=(IndexPacket) ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-            indexes[x+bit]=index;
+            SetIndexPixelComponent(indexes+x+bit,index);
             *q++=image->colormap[(ssize_t) index];
           }
           p++;
@@ -669,7 +669,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
             {
               index=(IndexPacket) ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-              indexes[x+bit]=index;
+              SetIndexPixelComponent(indexes+x+bit,index);
               *q++=image->colormap[(ssize_t) index];
             }
             p++;
@@ -1129,7 +1129,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         indexes=GetVirtualIndexQueue(image);
         q=pixels+(image->rows-y-1)*bytes_per_line;
         for (x=0; x < (ssize_t) image->columns; x++)
-          *q++=(unsigned char) indexes[x];
+          *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
         for ( ; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

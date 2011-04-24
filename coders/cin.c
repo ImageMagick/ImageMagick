@@ -375,8 +375,7 @@ static inline MagickBooleanType IsFloatDefined(const float value)
   return(MagickTrue);
 }
 
-static Image *ReadCINImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MonoColorType  1
 #define RGBColorType  3
@@ -389,9 +388,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,
 
   Image
     *image;
-
-  ssize_t
-    y;
 
   MagickBooleanType
     status;
@@ -412,16 +408,15 @@ static Image *ReadCINImage(const ImageInfo *image_info,
     *q;
 
   size_t
-    length;
+    length,
+    lsb_first;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
-
-  size_t
-    lsb_first;
 
   /*
     Open image file.
@@ -488,14 +483,14 @@ static Image *ReadCINImage(const ImageInfo *image_info,
   switch (cin.image.orientation)
   {
     default:
-    case 0:  image->orientation=TopLeftOrientation; break;
-    case 1:  image->orientation=TopRightOrientation; break;
-    case 2:  image->orientation=BottomLeftOrientation; break;
-    case 3:  image->orientation=BottomRightOrientation; break;
-    case 4:  image->orientation=LeftTopOrientation; break;
-    case 5:  image->orientation=RightTopOrientation; break;
-    case 6:  image->orientation=LeftBottomOrientation; break;
-    case 7:  image->orientation=RightBottomOrientation; break;
+    case 0: image->orientation=TopLeftOrientation; break;
+    case 1: image->orientation=TopRightOrientation; break;
+    case 2: image->orientation=BottomLeftOrientation; break;
+    case 3: image->orientation=BottomRightOrientation; break;
+    case 4: image->orientation=LeftTopOrientation; break;
+    case 5: image->orientation=RightTopOrientation; break;
+    case 6: image->orientation=LeftBottomOrientation; break;
+    case 7: image->orientation=RightBottomOrientation; break;
   }
   cin.image.number_channels=(unsigned char) ReadBlobByte(image);
   offset++;
@@ -854,9 +849,6 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
   const StringInfo
     *profile;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -879,7 +871,8 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image)
     length;
 
   ssize_t
-    count;
+    count,
+    y;
 
   struct tm
     local_time;

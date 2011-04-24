@@ -1026,7 +1026,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                  *q++=(unsigned char) indexes[x];
+                  *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
                 progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
                 if (progress == MagickFalse)
                   break;

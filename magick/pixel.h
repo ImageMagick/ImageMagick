@@ -47,20 +47,21 @@ extern "C" {
 #define GetYellowPixelComponent(pixel) ((pixel)->blue)
 #define SetAlphaPixelComponent(pixel,value) \
   ((pixel)->opacity=(Quantum) (QuantumRange-(value)))
-#define SetBlackPixelComponent(index,value) (*(index)=(value))
-#define SetBluePixelComponent(pixel,value) ((pixel)->blue=(value))
-#define SetCbPixelComponent(pixel,value) ((pixel)->green=(value))
-#define SetCrPixelComponent(pixel,value) ((pixel)->blue=(value))
-#define SetCyanPixelComponent(pixel,value) ((pixel)->red=(value))
+#define SetBlackPixelComponent(index,value) (*(index)=(Quantum) (value))
+#define SetBluePixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetCbPixelComponent(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetCrPixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetCyanPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
 #define SetGrayPixelComponent(pixel,value) \
-  ((pixel)->red=(pixel)->green=(pixel)->blue=(value))
-#define SetGreenPixelComponent(pixel,value) ((pixel)->green=(value))
-#define SetIndexPixelComponent(indexes,value) (*(indexes)=(value))
-#define SetMagentaPixelComponent(pixel,value) ((pixel)->green=(value))
-#define SetOpacityPixelComponent(pixel,value) ((pixel)->opacity=(value))
-#define SetRedPixelComponent(pixel,value) ((pixel)->red=(value))
-#define SetYellowPixelComponent(pixel,value) ((pixel)->blue=(value))
-#define SetYPixelComponent(pixel,value) ((pixel)->red=(value))
+  ((pixel)->red=(pixel)->green=(pixel)->blue=(Quantum) (value))
+#define SetGreenPixelComponent(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetIndexPixelComponent(indexes,value) (*(indexes)=(IndexPacket) (value))
+#define SetMagentaPixelComponent(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetOpacityPixelComponent(pixel,value) \
+  ((pixel)->opacity=(Quantum) (value))
+#define SetRedPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetYellowPixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetYPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
 
 typedef enum
 {

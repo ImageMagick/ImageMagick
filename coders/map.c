@@ -433,7 +433,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
     {
       if (image->colors > 256)
         *q++=(unsigned char) ((size_t) indexes[x] >> 8);
-      *q++=(unsigned char) indexes[x];
+      *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
     }
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
   }

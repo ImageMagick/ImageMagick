@@ -788,7 +788,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (targa_info.image_type == TargaColormap)
-        *q++=(unsigned char) indexes[x];
+        *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
       else
         if (targa_info.image_type == TargaMonochrome)
           *q++=(unsigned char) ScaleQuantumToChar(PixelIntensityToQuantum(p));
