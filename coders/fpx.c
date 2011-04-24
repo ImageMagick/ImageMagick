@@ -169,9 +169,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -193,6 +190,9 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     memory_limit;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
@@ -459,21 +459,21 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (fpx_info.numberOfComponents > 2)
         {
-          q->red=ScaleCharToQuantum(*r);
-          q->green=ScaleCharToQuantum(*g);
-          q->blue=ScaleCharToQuantum(*b);
+          SetRedPixelComponent(q,ScaleCharToQuantum(*r));
+          SetGreenPixelComponent(q,ScaleCharToQuantum(*g));
+          SetBluePixelComponent(q,ScaleCharToQuantum(*b));
         }
       else
         {
           index=ScaleCharToQuantum(*r);
-          indexes[x]=index;
-          q->red=index;
-          q->green=index;
-          q->blue=index;
+          SetIndexPixelComponent(indexes+x,index);
+          SetRedPixelComponent(q,index);
+          SetGreenPixelComponent(q,index);
+          SetBluePixelComponent(q,index);
         }
       SetOpacityPixelComponent(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        q->opacity=ScaleCharToQuantum(255-*a);
+        SetOpacityPixelComponent(q,ScaleCharToQuantum(255-*a));
       q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;
@@ -483,7 +483,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -805,9 +805,6 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPXSummaryInformation
     summary_info;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -826,6 +823,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   size_t
     length,
     memory_limit;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
@@ -998,7 +998,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     if (fpx_status != FPX_OK)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

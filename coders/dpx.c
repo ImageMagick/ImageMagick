@@ -549,10 +549,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    row,
-    y;
-
   MagickBooleanType
     status;
 
@@ -568,17 +564,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     i;
 
-  ssize_t
-    count;
-
   size_t
-    extent;
+    extent,
+    samples_per_pixel;
+
+  ssize_t
+    count,
+    row,
+    y;
 
   unsigned char
     component_type;
-
-  size_t
-    samples_per_pixel;
 
   /*
     Open image file.
@@ -681,14 +677,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   switch (dpx.image.orientation)
   {
     default:
-    case 0:  image->orientation=TopLeftOrientation; break;
-    case 1:  image->orientation=TopRightOrientation; break;
-    case 2:  image->orientation=BottomLeftOrientation; break;
-    case 3:  image->orientation=BottomRightOrientation; break;
-    case 4:  image->orientation=LeftTopOrientation; break;
-    case 5:  image->orientation=RightTopOrientation; break;
-    case 6:  image->orientation=LeftBottomOrientation; break;
-    case 7:  image->orientation=RightBottomOrientation; break;
+    case 0: image->orientation=TopLeftOrientation; break;
+    case 1: image->orientation=TopRightOrientation; break;
+    case 2: image->orientation=BottomLeftOrientation; break;
+    case 3: image->orientation=BottomRightOrientation; break;
+    case 4: image->orientation=LeftTopOrientation; break;
+    case 5: image->orientation=RightTopOrientation; break;
+    case 6: image->orientation=LeftBottomOrientation; break;
+    case 7: image->orientation=RightBottomOrientation; break;
   }
   dpx.image.number_elements=ReadBlobShort(image);
   offset+=2;
@@ -1078,20 +1074,18 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickTrue : MagickFalse);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    ssize_t
-      offset;
-
     MagickBooleanType
       sync;
 
     register PixelPacket
       *q;
 
-    ssize_t
-      count;
-
     size_t
       length;
+
+    ssize_t
+      count,
+      offset;
 
     unsigned char
       *pixels;
@@ -1108,7 +1102,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             proceed;
 
           proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) row,
-                image->rows);
+            image->rows);
           if (proceed == MagickFalse)
             status=MagickFalse;
         }
@@ -1288,11 +1282,6 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   DPXInfo
     dpx;
 
-  ssize_t
-    horizontal_factor,
-    vertical_factor,
-    y;
-
   MagickBooleanType
     status;
 
@@ -1317,11 +1306,14 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   register ssize_t
     i;
 
+  ssize_t
+    count,
+    horizontal_factor,
+    vertical_factor,
+    y;
+
   size_t
     extent;
-
-  ssize_t
-    count;
 
   time_t
     seconds;
@@ -1823,7 +1815,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     if (count != (ssize_t) extent)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

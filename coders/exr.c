@@ -151,8 +151,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     min_x,
     min_y;
 
-  ssize_t
-    y;
+  MagickBooleanType
+    status;
 
   register ssize_t
     x;
@@ -160,8 +160,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  MagickBooleanType
-    status;
+  ssize_t
+    y;
 
   /*
     Open image.
@@ -224,14 +224,14 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ImfInputReadPixels(file,min_y+y,min_y+y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->red=ClampToQuantum((MagickRealType) QuantumRange*ImfHalfToFloat(
-        scanline[x].r));
-      q->green=ClampToQuantum((MagickRealType) QuantumRange*ImfHalfToFloat(
-        scanline[x].g));
-      q->blue=ClampToQuantum((MagickRealType) QuantumRange*ImfHalfToFloat(
-        scanline[x].b));
-      q->opacity=ClampToQuantum((MagickRealType) QuantumRange-QuantumRange*
-        ImfHalfToFloat(scanline[x].a));
+      SetRedPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].r)));
+      SetGreenPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].g)));
+      SetBluePixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].b)));
+      SetOpacityPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange-
+        QuantumRange*ImfHalfToFloat(scanline[x].a)));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -359,9 +359,6 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   int
     compression;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -370,6 +367,9 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   /*
     Open output image file.
@@ -440,7 +440,8 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
       if (image->matte == MagickFalse)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(1.0-QuantumScale*GetOpacityPixelComponent(p),&half_quantum);
+        ImfFloatToHalf(1.0-QuantumScale*GetOpacityPixelComponent(p),
+          &half_quantum);
       scanline[x].a=half_quantum;
       p++;
     }

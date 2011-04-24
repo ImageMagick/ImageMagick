@@ -259,10 +259,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   int
     c;
 
-  ssize_t
-    scene,
-    y;
-
   MagickBooleanType
     status;
 
@@ -277,7 +273,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     *q;
 
   ssize_t
-    count;
+    count,
+    scene,
+    y;
 
   /*
     Open image file.
@@ -445,8 +443,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
-        q->red=(Quantum) ClampToQuantum(scale*(fits_info.scale*(pixel-
-          fits_info.min_data)+fits_info.zero));
+        SetRedPixelComponent(q,ClampToQuantum(scale*(fits_info.scale*(pixel-
+          fits_info.min_data)+fits_info.zero)));
         SetGreenPixelComponent(q,GetRedPixelComponent(q));
         SetBluePixelComponent(q,GetRedPixelComponent(q));
         q++;
