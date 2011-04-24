@@ -276,9 +276,6 @@ ModuleExport void UnregisterARTImage(void)
 */
 static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -292,7 +289,8 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
     count;
 
   size_t
-    length;
+    length,
+    y;
 
   unsigned char
     *pixels;

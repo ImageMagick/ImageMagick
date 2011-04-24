@@ -170,9 +170,6 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
   const char
     *value;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -182,6 +179,9 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
   register ssize_t
     i,
     x;
+
+  ssize_t
+    y;
 
   unsigned char
     byte;
@@ -257,7 +257,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

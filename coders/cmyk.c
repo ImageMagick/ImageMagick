@@ -117,12 +117,12 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     count,
     y;
-
-  size_t
-    length;
 
   unsigned char
     *pixels;
@@ -365,7 +365,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                     }
                     case BlackQuantum:
                     {
-                      indexes[x]=canvas_indexes[image->extract_info.x+x];
+                      SetIndexPixelComponent(indexes+x,GetIndexPixelComponent(
+                        canvas_indexes+image->extract_info.x+x));
                       break;
                     }
                     case OpacityQuantum:
@@ -605,7 +606,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                indexes[x]=canvas_indexes[image->extract_info.x+x];
+                SetIndexPixelComponent(indexes+x,GetIndexPixelComponent(
+                  canvas_indexes+image->extract_info.x+x));
                 p++;
                 q++;
               }
@@ -968,7 +970,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                indexes[x]=canvas_indexes[image->extract_info.x+x];
+                SetIndexPixelComponent(indexes+x,GetIndexPixelComponent(
+                  canvas_indexes+image->extract_info.x+x));
                 p++;
                 q++;
               }

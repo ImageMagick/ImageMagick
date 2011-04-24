@@ -175,12 +175,12 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   const char
     *value;
 
+  IndexPacket
+    polarity;
+
   int
     unicode = 0,
     iso_11548_1 = 0;
-
-  ssize_t
-    y;
 
   MagickBooleanType
     status;
@@ -191,14 +191,14 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  IndexPacket
-    polarity;
-
   register ssize_t
     x;
 
   size_t
     cell_height = 4;
+
+  ssize_t
+    y;
 
   /*
     Open output image file.
@@ -222,27 +222,28 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   if (!iso_11548_1)
     {
       value=GetImageProperty(image,"label");
-      if (value != (const char *) NULL) {
-        (void) FormatMagickString(buffer,MaxTextExtent,"Title: %s\n", value);
-        (void) WriteBlobString(image,buffer);
-      }
-      if (image->page.x)
-      {
-        (void) FormatMagickString(buffer,MaxTextExtent,"X: %.20g\n",(double) 
-          image->page.x);
-        (void) WriteBlobString(image,buffer);
-      }
-      if (image->page.y)
-      {
-        (void) FormatMagickString(buffer,MaxTextExtent,"Y: %.20g\n",(double) 
-          image->page.y);
-        (void) WriteBlobString(image,buffer);
-      }
-      (void) FormatMagickString(buffer,MaxTextExtent,"Width: %.20g\n",
-        (double) (image->columns+(image->columns % 2)));
+      if (value != (const char *) NULL)
+        {
+          (void) FormatMagickString(buffer,MaxTextExtent,"Title: %s\n", value);
+          (void) WriteBlobString(image,buffer);
+        }
+      if (image->page.x != 0)
+        {
+          (void) FormatMagickString(buffer,MaxTextExtent,"X: %.20g\n",(double) 
+            image->page.x);
+          (void) WriteBlobString(image,buffer);
+        }
+      if (image->page.y != 0)
+        {
+          (void) FormatMagickString(buffer,MaxTextExtent,"Y: %.20g\n",(double) 
+            image->page.y);
+          (void) WriteBlobString(image,buffer);
+        }
+      (void) FormatMagickString(buffer,MaxTextExtent,"Width: %.20g\n",(double)
+        (image->columns+(image->columns % 2)));
       (void) WriteBlobString(image,buffer);
-      (void) FormatMagickString(buffer,MaxTextExtent,"Height: %.20g\n",
-        (double) image->rows);
+      (void) FormatMagickString(buffer,MaxTextExtent,"Height: %.20g\n",(double)
+        image->rows);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\n");
     }
@@ -252,8 +253,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     polarity=(IndexPacket) (PixelIntensityToQuantum(&image->colormap[0]) >=
       (Quantum) (QuantumRange/2));
     if (image->colors == 2)
-      polarity=(IndexPacket)
-        (PixelIntensityToQuantum(&image->colormap[0]) >=
+      polarity=(IndexPacket) (PixelIntensityToQuantum(&image->colormap[0]) >=
          PixelIntensityToQuantum(&image->colormap[1]));
   }
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) cell_height)
@@ -332,10 +332,10 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
           (void) WriteBlobByte(image,iso_to_brf[cell]);
         }
     }
-    if (!iso_11548_1)
+    if (iso_11548_1 == 0)
       (void) WriteBlobByte(image,'\n');
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

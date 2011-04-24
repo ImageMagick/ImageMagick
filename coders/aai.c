@@ -177,7 +177,7 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
         if (*p == 254)
           *p=255;
-        SetOpacityPixelComponent(q,(Quantum) (QuantumRange-
+        SetOpacityPixelComponent(q,(QuantumRange-
           ScaleCharToQuantum(*p++)));
         if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;

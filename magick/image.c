@@ -2428,9 +2428,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,(Quantum) GetAlphaPixelComponent(q));
-          SetGreenPixelComponent(q,(Quantum) GetAlphaPixelComponent(q));
-          SetBluePixelComponent(q,(Quantum) GetAlphaPixelComponent(q));
+          SetRedPixelComponent(q,GetAlphaPixelComponent(q));
+          SetGreenPixelComponent(q,GetAlphaPixelComponent(q));
+          SetBluePixelComponent(q,GetAlphaPixelComponent(q));
           q++;
         }
         break;
@@ -2439,7 +2439,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetOpacityPixelComponent(q,(Quantum) (QuantumRange-
+          SetOpacityPixelComponent(q,(QuantumRange-
             PixelIntensityToQuantum(q)));
           q++;
         }

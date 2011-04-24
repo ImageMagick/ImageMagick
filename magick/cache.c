@@ -3280,9 +3280,9 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
     }
     case GrayVirtualPixelMethod:
     {
-      SetRedPixelComponent(&virtual_pixel,(Quantum) QuantumRange/2);
-      SetGreenPixelComponent(&virtual_pixel,(Quantum) QuantumRange/2);
-      SetBluePixelComponent(&virtual_pixel,(Quantum) QuantumRange/2);
+      SetRedPixelComponent(&virtual_pixel,QuantumRange/2);
+      SetGreenPixelComponent(&virtual_pixel,QuantumRange/2);
+      SetBluePixelComponent(&virtual_pixel,QuantumRange/2);
       SetOpacityPixelComponent(&virtual_pixel,OpaqueOpacity);
       break;
     }
@@ -3297,9 +3297,9 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
     case MaskVirtualPixelMethod:
     case WhiteVirtualPixelMethod:
     {
-      SetRedPixelComponent(&virtual_pixel,(Quantum) QuantumRange);
-      SetGreenPixelComponent(&virtual_pixel,(Quantum) QuantumRange);
-      SetBluePixelComponent(&virtual_pixel,(Quantum) QuantumRange);
+      SetRedPixelComponent(&virtual_pixel,QuantumRange);
+      SetGreenPixelComponent(&virtual_pixel,QuantumRange);
+      SetBluePixelComponent(&virtual_pixel,QuantumRange);
       SetOpacityPixelComponent(&virtual_pixel,OpaqueOpacity);
       break;
     }

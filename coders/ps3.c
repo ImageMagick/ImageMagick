@@ -414,7 +414,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
       break;
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
-      *q++=(unsigned char) indexes[x];
+      *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

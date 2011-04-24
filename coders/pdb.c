@@ -447,7 +447,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (bit=0; bit < 8; bit++)
           {
             index=(IndexPacket) (*p & (0x80 >> bit) ? 0x00 : 0x01);
-            indexes[x+bit]=index;
+            SetIndexPixelComponent(indexes+x+bit,index);
             *q++=image->colormap[(ssize_t) index];
           }
           p++;

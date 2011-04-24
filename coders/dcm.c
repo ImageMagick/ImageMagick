@@ -2810,13 +2810,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index,
     *redmap;
 
-  ssize_t
-    element,
-    group,
-    scene,
-    window_center,
-    y;
-
   MagickBooleanType
     explicit_file,
     use_explicit,
@@ -2860,7 +2853,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     window_width;
 
   ssize_t
-    count;
+    count,
+    element,
+    group,
+    scene,
+    window_center,
+    y;
+
 
   unsigned char
     *data;
@@ -3599,11 +3598,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (image->compression == RLECompression)
     {
-      unsigned int
-        tag;
-
       size_t
         length;
+
+      unsigned int
+        tag;
 
       /*
         Read RLE offset table.
@@ -3725,26 +3724,27 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case 0:
                 {
-                  q->red=ScaleCharToQuantum((unsigned char)
-                    ReadDCMByte(stream_info,image));
+                  SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    ReadDCMByte(stream_info,image)));
                   break;
                 }
                 case 1:
                 {
-                  q->green=ScaleCharToQuantum((unsigned char)
-                    ReadDCMByte(stream_info,image));
+                  SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    ReadDCMByte(stream_info,image)));
                   break;
                 }
                 case 2:
                 {
-                  q->blue=ScaleCharToQuantum((unsigned char)
-                    ReadDCMByte(stream_info,image));
+                  SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    ReadDCMByte(stream_info,image)));
                   break;
                 }
                 case 3:
                 {
-                  q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(
-                    (unsigned char) ReadDCMByte(stream_info,image)));
+                  SetOpacityPixelComponent(q,(QuantumRange-
+                    ScaleCharToQuantum((unsigned char) ReadDCMByte(stream_info,
+                    image))));
                   break;
                 }
                 default:
@@ -3757,7 +3757,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->previous == (Image *) NULL)
               {
                 status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+                  image->rows);
                 if (status == MagickFalse)
                   break;
               }
@@ -3865,7 +3865,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 index&=mask;
                 index=(int) ConstrainColormapIndex(image,(size_t) index);
-                indexes[x]=(IndexPacket) index;
+                SetIndexPixelComponent(indexes+x,index);
                 pixel.red=1UL*image->colormap[index].red;
                 pixel.green=1UL*image->colormap[index].green;
                 pixel.blue=1UL*image->colormap[index].blue;
@@ -3903,9 +3903,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     pixel.blue=scale[pixel.blue];
                   }
               }
-            q->red=(Quantum) pixel.red;
-            q->green=(Quantum) pixel.green;
-            q->blue=(Quantum) pixel.blue;
+            SetRedPixelComponent(q,pixel.red);
+            SetGreenPixelComponent(q,pixel.green);
+            SetBluePixelComponent(q,pixel.blue);
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3995,7 +3995,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                   index&=mask;
                   index=(int) ConstrainColormapIndex(image,(size_t) index);
-                  indexes[x]=(IndexPacket) index;
+                  SetIndexPixelComponent(indexes+x,index);
                   pixel.red=1UL*image->colormap[index].red;
                   pixel.green=1UL*image->colormap[index].green;
                   pixel.blue=1UL*image->colormap[index].blue;
@@ -4033,12 +4033,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       pixel.blue=scale[pixel.blue];
                     }
                 }
-              q->red=(Quantum) (((size_t) q->red) |
-                (((size_t) pixel.red) << 8));
-              q->green=(Quantum) (((size_t) q->green) |
-                (((size_t) pixel.green) << 8));
-              q->blue=(Quantum) (((size_t) q->green) |
-                (((size_t) pixel.blue) << 8));
+              SetRedPixelComponent(q,(((size_t) q->red) |
+                (((size_t) pixel.red) << 8)));
+              SetGreenPixelComponent(q,(((size_t) q->green) |
+                (((size_t) pixel.green) << 8)));
+              SetBluePixelComponent(q,(((size_t) q->green) |
+                (((size_t) pixel.blue) << 8)));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)

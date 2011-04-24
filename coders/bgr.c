@@ -319,8 +319,8 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
             if (((y-image->extract_info.y) >= 0) && 
                 ((y-image->extract_info.y) < (ssize_t) image->rows))
               {
-                p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,
-                  0,canvas_image->columns,1,exception);
+                p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
+                  canvas_image->columns,1,exception);
                 q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                   image->columns,1,exception);
                 if ((p == (const PixelPacket *) NULL) ||
