@@ -202,7 +202,7 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
         SetRedPixelComponent(q,QuantumRange);
       else
         SetRedPixelComponent(q,GetRedPixelComponent(q)+(int) f);
-      if ((int) f / 2.0 > GetGreenPixelCompoment(q))
+      if ((int) f / 2.0 > GetGreenPixelComponent(q))
         {
           SetGreenPixelComponent(q,0);
           SetBluePixelComponent(q,0);
