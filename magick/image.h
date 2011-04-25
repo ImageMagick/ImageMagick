@@ -336,6 +336,9 @@ struct _Image
 
   MagickBooleanType
     ping;
+
+  size_t
+    channels;
 };
 
 struct _ImageInfo
@@ -528,6 +531,7 @@ extern MagickExport MagickBooleanType
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SetImageMask(Image *,const Image *),
   SetImageOpacity(Image *,const Quantum),
+  SetImageChannels(Image *,const size_t),
   SetImageStorageClass(Image *,const ClassType),
   SetImageType(Image *,const ImageType),
   StripImage(Image *),
@@ -540,6 +544,9 @@ extern MagickExport size_t
 
 extern MagickExport ssize_t
   GetImageReferenceCount(Image *);
+
+extern MagickExport ssize_t
+  GetImageChannels(Image *);
 
 extern MagickExport VirtualPixelMethod
   GetImageVirtualPixelMethod(const Image *),
