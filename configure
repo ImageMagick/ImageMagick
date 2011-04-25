@@ -835,11 +835,17 @@ OPENMP_CXXFLAGS
 MATH_LIBS
 POW_LIB
 LIBOBJS
+UINTPTR_F
 UINTPTR_T
+UINTMAX_F
 UINTMAX_T
+UINT64_F
 UINT64_T
+INT64_F
 INT64_T
+UINT32_F
 UINT32_T
+INT32_F
 INT32_T
 UINT16_T
 INT16_T
@@ -22867,73 +22873,107 @@ $as_echo "$UINT16_T" >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for signed 32-bit type" >&5
 $as_echo_n "checking for signed 32-bit type... " >&6; }
 INT32_T='none'
+INT32_F='none'
 if test $ac_cv_sizeof_signed_int -eq 4; then
   INT32_T='signed int'
+  INT32_F='""'
 elif test $ac_cv_sizeof_signed_long -eq 4; then
   INT32_T='signed long'
+  INT32_F='"l"'
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT32_T" >&5
 $as_echo "$INT32_T" >&6; }
 
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned 32-bit type" >&5
 $as_echo_n "checking for unsigned 32-bit type... " >&6; }
 UINT32_T='none'
+UINT32_F='none'
 if test $ac_cv_sizeof_unsigned_int -eq 4; then
   UINT32_T='unsigned int'
+  UINT32_F='""'
 elif test $ac_cv_sizeof_unsigned_long -eq 4; then
   UINT32_T='unsigned long'
+  UINT32_F='"l"'
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT32_T" >&5
 $as_echo "$UINT32_T" >&6; }
 
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for signed 64-bit type" >&5
 $as_echo_n "checking for signed 64-bit type... " >&6; }
 INT64_T='none'
+INT64_F='none'
 if test $ac_cv_sizeof_signed_long -eq 8; then
   INT64_T='signed long'
+  INT64_F='"l"'
 elif test $ac_cv_sizeof_signed_long_long -eq 8; then
   INT64_T='signed long long'
+  INT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    INT64_F='"I64"'
+    ;;
+esac
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT64_T" >&5
 $as_echo "$INT64_T" >&6; }
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned 64-bit type" >&5
 $as_echo_n "checking for unsigned 64-bit type... " >&6; }
 UINT64_T='none'
+UINT64_F='none'
 if test $ac_cv_sizeof_unsigned_long -eq 8; then
   UINT64_T='unsigned long'
+  UINT64_F='"l"'
 elif test $ac_cv_sizeof_unsigned_long_long -eq 8; then
   UINT64_T='unsigned long long'
+  UINT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    UINT64_F='"I64"'
+    ;;
+esac
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT64_T" >&5
 $as_echo "$UINT64_T" >&6; }
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned maximum type" >&5
 $as_echo_n "checking for unsigned maximum type... " >&6; }
 UINTMAX_T='none'
+UINTMAX_F='none'
 if test "$UINT64_T" != 'none'; then
   UINTMAX_T=$UINT64_T
+  UINTMAX_F=$UINT64_F
 elif test "$UINT32_T" != 'none'; then
   UINTMAX_T=$UINT32_T
+  UINTMAX_F=$UINT32_F
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINTMAX_T" >&5
 $as_echo "$UINTMAX_T" >&6; }
 
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pointer difference type" >&5
 $as_echo_n "checking for pointer difference type... " >&6; }
 UINTPTR_T='none'
+UINTPTR_F='none'
 if test $ac_cv_sizeof_unsigned_long -eq $ac_cv_sizeof_unsigned_intp; then
   UINTPTR_T='unsigned long'
+  UINTPTR_F='"l"'
 elif test $ac_cv_sizeof_unsigned_long_long -eq $ac_cv_sizeof_unsigned_intp; then
   UINTPTR_T='unsigned long long'
+  UINTPTR_F='"ll"'
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINTPTR_T" >&5
 $as_echo "$UINTPTR_T" >&6; }
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether our compiler supports __func__" >&5

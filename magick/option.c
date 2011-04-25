@@ -796,6 +796,8 @@ static const OptionInfo
     { "DXT5", DXT5Compression, UndefinedOptionFlag, MagickFalse },
     { "Fax", FaxCompression, UndefinedOptionFlag, MagickFalse },
     { "Group4", Group4Compression, UndefinedOptionFlag, MagickFalse },
+    { "JBIG1", JBIG1Compression, UndefinedOptionFlag, MagickFalse },
+    { "JBIG2", JBIG2Compression, UndefinedOptionFlag, MagickFalse },
     { "JPEG", JPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "JPEG2000", JPEG2000Compression, UndefinedOptionFlag, MagickFalse },
     { "Lossless", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
