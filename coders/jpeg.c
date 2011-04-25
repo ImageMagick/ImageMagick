@@ -242,8 +242,8 @@ static boolean FillInputBuffer(j_decompress_ptr cinfo)
     *source;
 
   source=(SourceManager *) cinfo->src;
-  source->manager.bytes_in_buffer=(size_t)
-    ReadBlob(source->image,MaxBufferExtent,source->buffer);
+  source->manager.bytes_in_buffer=(size_t) ReadBlob(source->image,
+    MaxBufferExtent,source->buffer);
   if (source->manager.bytes_in_buffer == 0)
     {
       if (source->start_of_blob != 0)
@@ -875,9 +875,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   JSAMPLE
     *jpeg_pixels;
 
@@ -906,6 +903,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   size_t
     precision,
     units;
+
+  ssize_t
+    y;
 
   /*
     Open image file.
@@ -1212,35 +1212,38 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             else
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
             index=ConstrainColormapIndex(image,pixel);
-            indexes[x]=index;
-            *q++=image->colormap[(int) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(int) index].red);
+            SetGreenPixelComponent(q,image->colormap[(int) index].green);
+            SetBluePixelComponent(q,image->colormap[(int) index].blue);
             p++;
+            q++;
           }
         else
           if (image->colorspace != CMYKColorspace)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              q->red=ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4));
-              q->green=ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4));
-              q->blue=ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4));
+              SetRedPixelComponent(q,ScaleShortToQuantum((unsigned char)
+                (GETJSAMPLE(*p++) << 4)));
+              SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned char)
+                (GETJSAMPLE(*p++) << 4)));
+              SetBluePixelComponent(q,ScaleShortToQuantum((unsigned char)
+                (GETJSAMPLE(*p++) << 4)));
               SetOpacityPixelComponent(q,OpaqueOpacity);
               q++;
             }
           else
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              q->red=(Quantum) QuantumRange-ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4));
-              q->green=(Quantum) QuantumRange-ScaleShortToQuantum(
-                (unsigned char) (GETJSAMPLE(*p++) << 4));
-              q->blue=(Quantum) QuantumRange-ScaleShortToQuantum((unsigned char)
-                (GETJSAMPLE(*p++) << 4));
+              SetCyanPixelComponent(q,QuantumRange-ScaleShortToQuantum(
+                (unsigned char) (GETJSAMPLE(*p++) << 4)));
+              SetMagentaPixelComponent(q,QuantumRange-ScaleShortToQuantum(
+                (unsigned char) (GETJSAMPLE(*p++) << 4)));
+              SetYellowPixelComponent(q,QuantumRange-ScaleShortToQuantum(
+                (unsigned char) (GETJSAMPLE(*p++) << 4)));
+              SetBlackPixelComponent(indexes+x,QuantumRange-ScaleShortToQuantum(
+                (unsigned char) (GETJSAMPLE(*p++) << 4)));
               SetOpacityPixelComponent(q,OpaqueOpacity);
-              indexes[x]=(IndexPacket) QuantumRange-ScaleShortToQuantum(
-                (unsigned char) (GETJSAMPLE(*p++) << 4));
               q++;
             }
       }
@@ -1249,37 +1252,45 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p));
-          indexes[x]=(IndexPacket) index;
-          *q++=image->colormap[(int) index];
+          SetIndexPixelComponent(indexes+x,index);
+          SetRedPixelComponent(q,image->colormap[(int) index].red);
+          SetGreenPixelComponent(q,image->colormap[(int) index].green);
+          SetBluePixelComponent(q,image->colormap[(int) index].blue);
           p++;
+          q++;
         }
       else
         if (image->colorspace != CMYKColorspace)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->red=ScaleCharToQuantum((unsigned char) GETJSAMPLE(*p++));
-            q->green=ScaleCharToQuantum((unsigned char) GETJSAMPLE(*p++));
-            q->blue=ScaleCharToQuantum((unsigned char) GETJSAMPLE(*p++));
+            SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              GETJSAMPLE(*p++)));
+            SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              GETJSAMPLE(*p++)));
+            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+              GETJSAMPLE(*p++)));
             SetOpacityPixelComponent(q,OpaqueOpacity);
             q++;
           }
         else
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->red=(Quantum) QuantumRange-ScaleCharToQuantum((unsigned char)
-              GETJSAMPLE(*p++));
-            q->green=(Quantum) QuantumRange-ScaleCharToQuantum((unsigned char)
-              GETJSAMPLE(*p++));
-            q->blue=(Quantum) QuantumRange-ScaleCharToQuantum((unsigned char)
-              GETJSAMPLE(*p++));
+            SetCyanPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+              (unsigned char) GETJSAMPLE(*p++)));
+            SetMagentaPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+              (unsigned char) GETJSAMPLE(*p++)));
+            SetYellowPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+              (unsigned char) GETJSAMPLE(*p++)));
+            SetBlackPixelComponent(indexes+x,QuantumRange-ScaleCharToQuantum(
+              (unsigned char) GETJSAMPLE(*p++)));
             SetOpacityPixelComponent(q,OpaqueOpacity);
-            indexes[x]=(IndexPacket) QuantumRange-ScaleCharToQuantum(
-              (unsigned char) GETJSAMPLE(*p++));
             q++;
           }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    if (SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
       break;
   }
   /*
@@ -1494,13 +1505,11 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
     i;
 
   size_t
-    length;
+    length,
+    tag_length;
 
   StringInfo
     *custom_profile;
-
-  size_t
-    tag_length;
 
   /*
     Save image profile as a APP marker.
@@ -1678,9 +1687,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   JSAMPROW
     scanline[1];
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -1689,6 +1695,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
 
   register ssize_t
     i;
+
+  ssize_t
+    y;
 
   struct jpeg_compress_struct
     jpeg_info;
@@ -2185,7 +2194,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
             break;
         }
       else
@@ -2208,7 +2219,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+            status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+              image->rows);
+            if (status == MagickFalse)
               break;
           }
         else
@@ -2240,11 +2253,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
                 GetBluePixelComponent(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                indexes[x])));
+                GetIndexPixelComponent(indexes+x))));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+            status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+              image->rows);
+            if (status == MagickFalse)
               break;
           }
     }
@@ -2269,7 +2284,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           p++;
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-        if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows) == MagickFalse)
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
           break;
       }
     else
@@ -2299,7 +2316,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -2331,12 +2348,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               GetGreenPixelComponent(p)) >> 4));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
               GetBluePixelComponent(p)) >> 4));
-            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(indexes[x]) >> 4));
+            *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
+              GetIndexPixelComponent(indexes+x)) >> 4));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }

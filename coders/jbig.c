@@ -111,10 +111,6 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   IndexPacket
     index;
 
-  ssize_t
-    length,
-    y;
-
   MagickBooleanType
     status;
 
@@ -131,7 +127,9 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     *p;
 
   ssize_t
-    count;
+    count,
+    length,
+    y;
 
   struct jbg_dec_state
     jbig_info;
@@ -238,13 +236,13 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       byte<<=1;
       if (bit == 8)
         bit=0;
-      indexes[x]=index;
+      SetIndexPixelComponent(indexes+x,index);
       *q++=image->colormap[(ssize_t) index];
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -397,9 +395,6 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   double
     version;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -418,6 +413,12 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   register unsigned char
     *q;
 
+  size_t
+    number_packets;
+
+  ssize_t
+    y;
+
   struct jbg_enc_state
     jbig_info;
 
@@ -425,9 +426,6 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     bit,
     byte,
     *pixels;
-
-  size_t
-    number_packets;
 
   /*
     Open image file.
@@ -487,7 +485,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -502,12 +500,12 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
       jbg_enc_layers(&jbig_info,(int) image_info->scene);
     else
       {
-        ssize_t
-          sans_offset;
-
         size_t
           x_resolution,
           y_resolution;
+
+        ssize_t
+          sans_offset;
 
         x_resolution=640;
         y_resolution=480;

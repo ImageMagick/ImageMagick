@@ -159,9 +159,6 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   Image
     *matte_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -173,6 +170,9 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   if (image->matte == MagickFalse)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAAlphaChannel");
@@ -194,9 +194,9 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->red=GetOpacityPixelComponent(p);
-      q->green=GetOpacityPixelComponent(p);
-      q->blue=GetOpacityPixelComponent(p);
+      SetRedPixelComponent(q,GetOpacityPixelComponent(p));
+      SetGreenPixelComponent(q,GetOpacityPixelComponent(p));
+      SetBluePixelComponent(q,GetOpacityPixelComponent(p));
       SetOpacityPixelComponent(q,OpaqueOpacity);
       p++;
       q++;
@@ -204,7 +204,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
     if (SyncAuthenticPixels(matte_image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
