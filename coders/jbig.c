@@ -197,6 +197,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   image->columns=jbg_dec_getwidth(&jbig_info);
   image->rows=jbg_dec_getheight(&jbig_info);
+  image->compression=JBIG2Compression;
   if (AcquireImageColormap(image,2) == MagickFalse)
     {
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);

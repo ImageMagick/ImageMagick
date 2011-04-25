@@ -338,7 +338,6 @@ struct _Image
     ping;
 };
 
-
 struct _ImageInfo
 {
   CompressionType

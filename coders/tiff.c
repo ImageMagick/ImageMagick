@@ -2550,6 +2550,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         SetQuantumMinIsWhite(quantum_info,MagickTrue);
         break;
       }
+#if defined(COMPRESSION_JBIG)
+      case JBIG1Compression:
+      {
+        compress_tag=COMPRESSION_JBIG;
+        break;
+      }
+#endif
       case JPEGCompression:
       {
         compress_tag=COMPRESSION_JPEG;
