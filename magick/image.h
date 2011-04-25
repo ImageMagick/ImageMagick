@@ -545,7 +545,7 @@ extern MagickExport size_t
 extern MagickExport ssize_t
   GetImageReferenceCount(Image *);
 
-extern MagickExport ssize_t
+extern MagickExport size_t
   GetImageChannels(Image *);
 
 extern MagickExport VirtualPixelMethod
