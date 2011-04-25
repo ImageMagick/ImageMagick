@@ -180,11 +180,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       draw_info->geometry=AcquireString(geometry);
     }
   if (image->rows == 0)
-    image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+
-      0.5);
+    image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
   if (image->rows == 0)
-    image->rows=(size_t) floor(draw_info->pointsize+
-      draw_info->stroke_width+0.5);
+    image->rows=(size_t) floor(draw_info->pointsize+draw_info->stroke_width+
+      0.5);
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
       InheritException(exception,&image->exception);

@@ -347,10 +347,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   jas_stream_t
     *jp2_stream;
 
-  ssize_t
-    components[4],
-    y;
-
   MagickBooleanType
     status;
 
@@ -370,6 +366,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     number_components,
     x_step[4],
     y_step[4];
+
+  ssize_t
+    components[4],
+    y;
 
   /*
     Open image file.
@@ -536,7 +536,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
+          SetRedPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[0]));
           SetGreenPixelComponent(q,GetRedPixelComponent(q));
           SetBluePixelComponent(q,GetRedPixelComponent(q));
           q++;
@@ -551,11 +552,14 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
+          SetRedPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          q->green=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[1]);
+          SetGreenPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          q->blue=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[2]);
+          SetBluePixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[2]));
           q++;
         }
         break;
@@ -568,14 +572,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          q->red=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[0]);
+          SetRedPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          q->green=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[1]);
+          SetGreenPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          q->blue=(Quantum) ScaleAnyToQuantum((QuantumAny) pixel,range[2]);
+          SetBluePixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[2]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          q->opacity=(Quantum) (QuantumRange-
-            ScaleAnyToQuantum((QuantumAny) pixel,range[3]));
+          SetOpacityPixelComponent(q,(QuantumRange-
+            ScaleAnyToQuantum((QuantumAny) pixel,range[3])));
           q++;
         }
         break;
@@ -584,7 +591,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -802,10 +809,6 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   const char
     *option;
 
-  ssize_t
-    format,
-    y;
-
   jas_image_cmptparm_t
     component_info[4];
 
@@ -833,6 +836,10 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
 
   size_t
     number_components;
+
+  ssize_t
+    format,
+    y;
 
   /*
     Open image file.
@@ -944,7 +951,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
         (unsigned int) image->columns,1,pixels[i]);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

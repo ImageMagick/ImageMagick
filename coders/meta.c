@@ -311,13 +311,13 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
   int
     inputlen = BUFFER_SZ;
 
-  ssize_t
-    savedolen = 0L,
-    outputlen = 0L;
-
   MagickOffsetType
     savedpos,
     currentpos;
+
+  ssize_t
+    savedolen = 0L,
+    outputlen = 0L;
 
   TokenInfo
     *token_info;

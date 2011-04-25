@@ -103,9 +103,6 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -125,18 +122,17 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
-    packet_size;
+    depth,
+    packet_size,
+    quantum;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *colormap,
     *pixels;
-
-  size_t
-    depth,
-    quantum;
 
   /*
     Open image file.
@@ -231,8 +227,10 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           index=ConstrainColormapIndex(image,((size_t) index << 8)+(*p));
           p++;
         }
-      indexes[x]=(IndexPacket) index;
-      *q++=image->colormap[(ssize_t) index];
+      SetIndexPixelComponent(indexes+x,index);
+      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -338,9 +336,6 @@ ModuleExport void UnregisterMAPImage(void)
 */
 static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -358,14 +353,15 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
     *q;
 
   size_t
+    depth,
     packet_size;
+
+  ssize_t
+    y;
 
   unsigned char
     *colormap,
     *pixels;
-
-  size_t
-    depth;
 
   /*
     Open output image file.
@@ -432,7 +428,8 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (image->colors > 256)
-        *q++=(unsigned char) ((size_t) indexes[x] >> 8);
+        *q++=(unsigned char) ((size_t) (GetIndexPixelComponent(indexes+x) >>
+          8));
       *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
     }
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
