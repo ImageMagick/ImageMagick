@@ -51,6 +51,8 @@ WAND_SOURCES = \
 	wand/mogrify-private.h \
   wand/montage.c \
 	wand/montage.h \
+	wand/operation.c \
+	wand/operation.h \
 	wand/pixel-iterator.c \
 	wand/pixel-iterator.h \
 	wand/pixel-wand.c \
@@ -76,6 +78,7 @@ WAND_INCLUDE_HDRS = \
 	wand/drawing-wand.h \
 	wand/identify.h \
 	wand/import.h \
+	wand/operation.h \
 	wand/magick-image.h \
 	wand/magick-property.h \
 	wand/magick-wand.h \
