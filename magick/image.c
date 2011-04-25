@@ -1604,8 +1604,8 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannels() returns the number of pixel channels associated
-%  with the specified image.
+%  GetImageChannels() returns the number of pixel channels associated with the
+%  specified image.
 %
 %  The format of the GetChannels method is:
 %
