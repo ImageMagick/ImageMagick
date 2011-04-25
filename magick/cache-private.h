@@ -118,6 +118,9 @@ typedef struct _CacheInfo
   ColorspaceType
     colorspace;
 
+  ssize_t
+    channels;
+
   CacheType
     type;
 
@@ -234,6 +237,9 @@ extern MagickExport PixelPacket
   *GetPixelCacheNexusPixels(const Cache,NexusInfo *),
   *QueueAuthenticNexus(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,NexusInfo *,ExceptionInfo *);
+
+extern MagickExport size_t
+  GetPixelCacheChannels(const Cache);
 
 extern MagickExport void
   ClonePixelCacheMethods(Cache,const Cache),

@@ -1598,6 +1598,38 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e C h a n n e l s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageChannels() returns the number of pixel channels associated
+%  with the specified image.
+%
+%  The format of the GetChannels method is:
+%
+%      size_t GetImageChannels(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport size_t GetImageChannels(Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  return(image->channels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t I m a g e R e f e r e n c e C o u n t                               %
 %                                                                             %
 %                                                                             %
@@ -2840,6 +2872,38 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   }
   image_view=DestroyCacheView(image_view);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e C h a n n e l s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageChannels() sets the number of pixels channels associated with the
+%  image.
+%
+%  The format of the SetImageChannels method is:
+%
+%      MagickBooleanType SetImageChannels(Image *image,const size_t channels)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channels:  The number of pixel channels.
+%
+*/
+MagickExport MagickBooleanType SetImageChannels(Image *image,
+  const size_t channels)
+{
+  image->channels=channels;
+  return(MagickTrue);
 }
 
 /*

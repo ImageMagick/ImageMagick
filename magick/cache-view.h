@@ -49,6 +49,11 @@ typedef enum
 typedef struct _CacheView
   CacheView;
 
+extern MagickExport CacheView
+  *AcquireCacheView(const Image *),
+  *CloneCacheView(const CacheView *),
+  *DestroyCacheView(CacheView *);
+
 extern MagickExport ClassType
   GetCacheViewStorageClass(const CacheView *);
 
@@ -84,17 +89,15 @@ extern MagickExport MagickBooleanType
 extern MagickExport MagickSizeType
   GetCacheViewExtent(const CacheView *);
 
+extern MagickExport size_t
+  GetCacheViewChannels(const CacheView *);
+
 extern MagickExport PixelPacket
   *GetCacheViewAuthenticPixelQueue(CacheView *),
   *GetCacheViewAuthenticPixels(CacheView *,const ssize_t,const ssize_t,
     const size_t,const size_t,ExceptionInfo *),
   *QueueCacheViewAuthenticPixels(CacheView *,const ssize_t,const ssize_t,
     const size_t,const size_t,ExceptionInfo *);
-
-extern MagickExport CacheView
-  *AcquireCacheView(const Image *),
-  *CloneCacheView(const CacheView *),
-  *DestroyCacheView(CacheView *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

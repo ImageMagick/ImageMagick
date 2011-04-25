@@ -216,6 +216,39 @@ MagickExport CacheView *DestroyCacheView(CacheView *cache_view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t C a c h e V i e w C h a n n e l s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheViewChannels() returns the image pixel channels associated with
+%  the specified view.
+%
+%  The format of the GetCacheViewChannels method is:
+%
+%      size_t GetCacheViewChannels(const CacheView *cache_view)
+%
+%  A description of each parameter follows:
+%
+%    o cache_view: the cache view.
+%
+*/
+MagickExport size_t GetCacheViewChannels(const CacheView *cache_view)
+{
+  assert(cache_view != (CacheView *) NULL);
+  assert(cache_view->signature == MagickSignature);
+  if (cache_view->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      cache_view->image->filename);
+  return(GetPixelCacheChannels(cache_view->image->cache));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t C a c h e V i e w C o l o r s p a c e                               %
 %                                                                             %
 %                                                                             %
@@ -241,7 +274,7 @@ MagickExport ColorspaceType GetCacheViewColorspace(const CacheView *cache_view)
   if (cache_view->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
-  return(cache_view->image->colorspace);
+  return(GetPixelCacheColorspace(cache_view->image->cache));
 }
 
 /*
@@ -347,7 +380,7 @@ MagickExport ClassType GetCacheViewStorageClass(const CacheView *cache_view)
   if (cache_view->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
-  return(cache_view->image->storage_class);
+  return(GetPixelCacheStorageClass(cache_view->image->cache));
 }
 
 /*
