@@ -8645,7 +8645,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         if (image_depth > MAGICKCORE_QUANTUM_DEPTH)
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
 
-        if ((image_colors == 0) || ((ssize_t) image_colors-1 > MaxColormapSize))
+        if ((image_colors == 0) || ((ssize_t) (image_colors-1) > MaxColormapSize))
           image_colors=(int) (one << image_depth);
 
         if (image_depth > 8)
