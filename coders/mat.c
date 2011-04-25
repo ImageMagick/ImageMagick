@@ -64,6 +64,7 @@
 #include "magick/monitor-private.h"
 #include "magick/quantum-private.h"
 #include "magick/option.h"
+#include "magick/pixel.h"
 #include "magick/resource_.h"
 #include "magick/shear.h"
 #include "magick/static.h"
