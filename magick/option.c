@@ -1422,6 +1422,7 @@ static const OptionInfo
     { "Undefined", UndefinedDistortion, UndefinedOptionFlag, MagickTrue },
     { "Barycentric", BarycentricColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Bilinear", BilinearColorInterpolate, UndefinedOptionFlag, MagickFalse },
+    { "Inverse", InverseColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Shepards", ShepardsColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Voronoi", VoronoiColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }

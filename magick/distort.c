@@ -410,6 +410,7 @@ static double *GenerateCoefficients(const Image *image,
       break;
     case ShepardsDistortion:
     case VoronoiColorInterpolate:
+    case InverseColorInterpolate:
       number_coeff=1;  /* not used, but provide some type of return */
       break;
     case ArcDistortion:
@@ -1288,6 +1289,7 @@ static double *GenerateCoefficients(const Image *image,
       return(coeff);
     }
     case ShepardsDistortion:
+    case InverseColorInterpolate:
     case VoronoiColorInterpolate:
     {
       /* Shepards Distortion  input arguments are the coefficents!
@@ -2788,6 +2790,7 @@ MagickExport Image *SparseColorImage(const Image *image,
             break;
           }
           case ShepardsColorInterpolate:
+          case InverseColorInterpolate:
           { /* Shepards Method, uses its own input arguments as coefficients.
             */
             size_t
@@ -2806,10 +2809,9 @@ MagickExport Image *SparseColorImage(const Image *image,
               double weight =
                   ((double)i-arguments[ k ])*((double)i-arguments[ k ])
                 + ((double)j-arguments[k+1])*((double)j-arguments[k+1]);
-              if ( weight != 0 )
-                weight = 1/weight;
-              else
-                weight = 1;
+              if ( method == InverseColorInterpolate )
+                weight = sqrt(weight);  /* inverse, not inverse squared */
+              weight = ( weight < 1 ) ? 1 : 1/weight;
               if ( channel & RedChannel )
                 pixel.red     += arguments[x++]*weight;
               if ( channel & GreenChannel )
