@@ -7302,14 +7302,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_opaque == 0)
                      {
-                       opaque[0]=*q;
+                       opaque[0].red=GetRedPixelComponent(q);
+                       opaque[0].green=GetGreenPixelComponent(q);
+                       opaque[0].blue=GetBluePixelComponent(q);
                        opaque[0].opacity=OpaqueOpacity;
                        number_opaque=1;
                      }
 
                    for (i=0; i< (ssize_t) number_opaque; i++)
                      {
-                       if (IsColorEqual(opaque+i, (PixelPacket *) q))
+                       if (IsColorEqual((PixelPacket *) q, opaque+i))
                          break;
                      }
 
@@ -7317,8 +7319,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_opaque < 259)
                      {
                        number_opaque++;
-                       opaque[i] = *q;
-                       opaque[i].opacity = OpaqueOpacity;
+                       opaque[i].red=GetRedPixelComponent(q);
+                       opaque[i].green=GetGreenPixelComponent(q);
+                       opaque[i].blue=GetBluePixelComponent(q);
+                       opaque[i].opacity=OpaqueOpacity;
                      }
                  }
              }
@@ -7328,7 +7332,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_transparent == 0)
                      {
-                       transparent[0]=*q;
+                       transparent[0].red=GetRedPixelComponent(q);
+                       transparent[0].green=GetGreenPixelComponent(q);
+                       transparent[0].blue=GetBluePixelComponent(q);
+                       transparent[0].opacity=GetOpacityPixelComponent(q);
                        ping_trans_color.red=
                          (unsigned short) GetRedPixelComponent(q);
                        ping_trans_color.green=
@@ -7342,7 +7349,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_transparent; i++)
                      {
-                       if (IsColorEqual(transparent+i, (PixelPacket *) q))
+                       if (IsColorEqual((PixelPacket *) q, transparent+i))
                          break;
                      }
 
@@ -7350,7 +7357,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_transparent < 259)
                      {
                        number_transparent++;
-                       transparent[i] = *q;
+                       transparent[i].red=GetRedPixelComponent(q);
+                       transparent[i].green=GetGreenPixelComponent(q);
+                       transparent[i].blue=GetBluePixelComponent(q);
+                       transparent[i].opacity=GetOpacityPixelComponent(q);
                      }
                  }
              }
@@ -7360,15 +7370,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_semitransparent == 0)
                      {
-                       semitransparent[0]=*q;
+                       semitransparent[0].red=GetRedPixelComponent(q);
+                       semitransparent[0].green=GetGreenPixelComponent(q);
+                       semitransparent[0].blue=GetBluePixelComponent(q);
+                       semitransparent[0].opacity=GetOpacityPixelComponent(q);
                        number_semitransparent = 1;
                      }
 
                    for (i=0; i< (ssize_t) number_semitransparent; i++)
                      {
-                       if (IsColorEqual(semitransparent+i,
-                          (PixelPacket *) q) &&
-                          q->opacity == semitransparent[i].opacity)
+                       if (IsColorEqual((PixelPacket *) q, semitransparent+i)
+                           && GetOpacityPixelComponent(q) ==
+                           semitransparent[i].opacity)
                          break;
                      }
 
@@ -7376,7 +7389,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_semitransparent < 259)
                      {
                        number_semitransparent++;
-                       semitransparent[i] = *q;
+                       semitransparent[i].red=GetRedPixelComponent(q);
+                       semitransparent[i].green=GetGreenPixelComponent(q);
+                       semitransparent[i].blue=GetBluePixelComponent(q);
+                       semitransparent[i].opacity=GetOpacityPixelComponent(q);
                      }
                  }
              }
@@ -7391,8 +7407,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           */
           for (i=0; i<number_opaque; i++)
           {
-             if (IsColorEqual(opaque+i, &image->background_color))
-             break;
+             if (opaque[i].red == image->background_color.red &&
+                 opaque[i].green == image->background_color.green &&
+                 opaque[i].blue == image->background_color.blue)
+               break;
           }
 
           if (number_opaque < 259 && i == number_opaque)
@@ -7584,9 +7602,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 for (i=0; i< (ssize_t) image_colors; i++)
                 {
                   if ((image->matte == MagickFalse ||
-                      image->colormap[i].opacity == q->opacity) &&
-                      (IsColorEqual(&image->colormap[i],
-                         (PixelPacket *) q)))
+                      image->colormap[i].opacity == 
+                      GetOpacityPixelComponent(q)) &&
+                      image->colormap[i].red == 
+                      GetRedPixelComponent(q) &&
+                      image->colormap[i].green == 
+                      GetGreenPixelComponent(q) &&
+                      image->colormap[i].blue == 
+                      GetBluePixelComponent(q))
                   {
                     indexes[x]=(IndexPacket) i;
                     break;
