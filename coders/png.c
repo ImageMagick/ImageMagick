@@ -2469,7 +2469,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               {
                 if ((ping_color_type == PNG_COLOR_TYPE_RGBA ||
                     ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) &&
-                   (q->opacity != OpaqueOpacity))
+                   (GetOpacityPixelComponent(q) != OpaqueOpacity))
                   {
                     if (logging != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2480,9 +2480,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   }
                 if ((ping_color_type == PNG_COLOR_TYPE_RGB ||
                     ping_color_type == PNG_COLOR_TYPE_GRAY) &&
-                    (ScaleQuantumToShort(q->red) == transparent_color.red &&
-                    ScaleQuantumToShort(q->green) == transparent_color.green &&
-                    ScaleQuantumToShort(q->blue) == transparent_color.blue))
+                    (ScaleQuantumToShort(GetRedPixelComponent(q))
+                    == transparent_color.red &&
+                    ScaleQuantumToShort(GetGreenPixelComponent(q))
+                    == transparent_color.green &&
+                    ScaleQuantumToShort(GetBluePixelComponent(q))
+                    == transparent_color.blue))
                   {
                     if (logging != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2622,8 +2625,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  * In a PNG datastream, Opaque is QuantumRange
                  * and Transparent is 0.
                  */
-                q->opacity=ScaleCharToQuantum((unsigned char) (255-(*p++)));
-                if (q->opacity != OpaqueOpacity)
+                SetOpacityPixelComponent(q,
+                    ScaleCharToQuantum((unsigned char) (255-(*p++))));
+                if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                   found_transparent_pixel = MagickTrue;
                 q++;
               }
@@ -2658,8 +2662,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   quantum=((*p++) << 8);
                   quantum|=(*p++);
-                  q->opacity=(Quantum) (QuantumRange-quantum);
-                  if (q->opacity != OpaqueOpacity)
+                  SetOpacityPixelComponent(q,(Quantum) (QuantumRange-quantum));
+                  if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   q++;
                 }
@@ -2681,10 +2685,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
               if (ping_color_type == 4)
                 {
-                  q->opacity=(*p << 8) | *(p+1);
-                  q->opacity*=65537L;
-                  q->opacity=(Quantum) GetAlphaPixelComponent(q);
-                  if (q->opacity != OpaqueOpacity)
+                  quantum=(*p << 8) | *(p+1);
+                  quantum*=65537L;
+                  SetOpacityPixelComponent(q,
+                    (Quantum) GetAlphaPixelComponent(q));
+                  if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   p+=2;
                   q++;
@@ -2696,8 +2701,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
               if (ping_color_type == 4)
                 {
-                  q->opacity=(Quantum) (QuantumRange-(*p++));
-                  if (q->opacity != OpaqueOpacity)
+                  SetOpacityPixelComponent(q,(Quantum) (QuantumRange-(*p++)));
+                  if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   p++;
                   q++;
@@ -2852,11 +2857,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              */
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
-              if (ScaleQuantumToShort(q->red) == transparent_color.red &&
-                  ScaleQuantumToShort(q->green) == transparent_color.green &&
-                  ScaleQuantumToShort(q->blue) == transparent_color.blue)
+              if (ScaleQuantumToShort(GetRedPixelComponent(q))
+                  == transparent_color.red &&
+                  ScaleQuantumToShort(GetGreenPixelComponent(q))
+                  == transparent_color.green &&
+                  ScaleQuantumToShort(GetBluePixelComponent(q))
+                  == transparent_color.blue)
                 {
-                  q->opacity=(Quantum) TransparentOpacity;
+                  SetOpacityPixelComponent(q,TransparentOpacity);
                 }
 
 #if 0 /* I have not found a case where this is needed. */
