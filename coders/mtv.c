@@ -98,9 +98,6 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -114,7 +111,8 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -187,7 +185,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -302,8 +300,8 @@ ModuleExport void UnregisterMTVImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMTVImage() writes an image to a file in red, green, and blue
-%  MTV rasterfile format.
+%  WriteMTVImage() writes an image to a file in red, green, and blue MTV
+%  rasterfile format.
 %
 %  The format of the WriteMTVImage method is:
 %
@@ -321,9 +319,6 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent];
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -338,6 +333,9 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
 
   register unsigned char
     *q;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;

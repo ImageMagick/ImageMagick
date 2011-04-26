@@ -99,24 +99,24 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
   register IndexPacket
     *indexes;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
+
+  register ssize_t
+    x;
 
   size_t
     bit,
     byte;
+
+  ssize_t
+    y;
 
   /*
     Open image file.
@@ -167,9 +167,9 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
       if (bit == 0)
         byte=(size_t) ReadBlobByte(image);
       if (image_info->endian == LSBEndian)
-        indexes[x]=(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01);
+        SetIndexPixelComponent(indexes+x,((byte & 0x01) != 0) ? 0x00 : 0x01);
       else
-        indexes[x]=(IndexPacket) (((byte & 0x01) != 0) ? 0x01 : 0x00);
+        SetIndexPixelComponent(indexes+x,((byte & 0x01) != 0) ? 0x01 : 0x00);
       bit++;
       if (bit == 8)
         bit=0;
@@ -282,9 +282,6 @@ ModuleExport void UnregisterMONOImage(void)
 static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -297,6 +294,9 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   size_t
     bit,
     byte;
+
+  ssize_t
+    y;
 
   /*
     Open output image file.
@@ -346,7 +346,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
     if (bit != 0)
       (void) WriteBlobByte(image,(unsigned char) (byte >> (8-bit)));
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

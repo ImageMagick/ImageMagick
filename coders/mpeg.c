@@ -483,14 +483,12 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
     i;
 
   size_t
-    length;
+    count,
+    length,
+    scene;
 
   unsigned char
     *blob;
-
-  size_t
-    count,
-    scene;
 
   /*
     Open output image file.

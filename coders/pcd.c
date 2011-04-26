@@ -144,9 +144,6 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       key;
   } PCDTable;
 
-  ssize_t
-    quantum;
-
   PCDTable
     *pcd_table[3];
 
@@ -162,20 +159,19 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     *q;
 
   size_t
-    length;
-
-  ssize_t
-    count;
-
-  unsigned char
-    *buffer;
-
-  size_t
     bits,
+    length,
     plane,
     pcd_length[3],
     row,
     sum;
+
+  ssize_t
+    count,
+    quantum;
+
+  unsigned char
+    *buffer;
 
   /*
     Initialize Huffman tables.
@@ -450,8 +446,7 @@ static void Upsample(const size_t width,const size_t height,
       p--;
       q-=2;
       *q=(*p);
-      *(q+1)=(unsigned char) ((((size_t) *p)+
-        ((size_t) *(p+1))+1) >> 1);
+      *(q+1)=(unsigned char) ((((size_t) *p)+((size_t) *(p+1))+1) >> 1);
     }
   }
   for (y=0; y < (ssize_t) (height-1); y++)
@@ -468,10 +463,8 @@ static void Upsample(const size_t width,const size_t height,
       p+=2;
       r+=2;
     }
-    *q++=(unsigned char) ((((size_t) *p++)+
-      ((size_t) *r++)+1) >> 1);
-    *q++=(unsigned char) ((((size_t) *p++)+
-      ((size_t) *r++)+1) >> 1);
+    *q++=(unsigned char) ((((size_t) *p++)+((size_t) *r++)+1) >> 1);
+    *q++=(unsigned char) ((((size_t) *p++)+((size_t) *r++)+1) >> 1);
   }
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;
@@ -482,9 +475,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
-
-  ssize_t
-    x;
 
   MagickBooleanType
     status;
@@ -507,8 +497,16 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *c2,
     *yy;
 
+  size_t
+    height,
+    number_images,
+    rotate,
+    scene,
+    width;
+
   ssize_t
-    count;
+    count,
+    x;
 
   unsigned char
     *chroma1,
@@ -518,13 +516,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     overview;
-
-  size_t
-    height,
-    number_images,
-    rotate,
-    scene,
-    width;
 
   /*
     Open image file.
@@ -680,9 +671,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->red=ScaleCharToQuantum(*yy++);
-            q->green=ScaleCharToQuantum(*c1++);
-            q->blue=ScaleCharToQuantum(*c2++);
+            SetRedPixelComponent(q,ScaleCharToQuantum(*yy++));
+            SetGreenPixelComponent(q,ScaleCharToQuantum(*c1++));
+            SetBluePixelComponent(q,ScaleCharToQuantum(*c2++));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -788,9 +779,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->red=ScaleCharToQuantum(*yy++);
-      q->green=ScaleCharToQuantum(*c1++);
-      q->blue=ScaleCharToQuantum(*c2++);
+      SetRedPixelComponent(q,ScaleCharToQuantum(*yy++));
+      SetGreenPixelComponent(q,ScaleCharToQuantum(*c1++));
+      SetBluePixelComponent(q,ScaleCharToQuantum(*c2++));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -956,9 +947,6 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     *downsample_image,
     *tile_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -975,6 +963,9 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   register ssize_t
     i,
     x;
+
+  ssize_t
+    y;
 
   /*
     Scale image to tile size.
@@ -1042,7 +1033,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       break;
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(q->green));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetGreenPixelComponent(q)));
       q++;
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,
@@ -1051,7 +1042,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       break;
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(q->blue));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetBluePixelComponent(q)));
       q++;
     }
     status=SetImageProgress(image,SaveImageTag,y,tile_image->rows);

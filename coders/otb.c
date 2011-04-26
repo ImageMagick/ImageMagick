@@ -102,9 +102,6 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     byte;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -116,6 +113,9 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   unsigned char
     bit,
@@ -184,7 +184,8 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (byte == EOF)
             ThrowReaderException(CorruptImageError,"CorruptImage");
         }
-      indexes[x]=(IndexPacket) ((byte & (0x01 << (7-bit))) ? 0x00 : 0x01);
+      SetIndexPixelComponent(indexes+x,(byte & (0x01 << (7-bit))) ?
+        0x00 : 0x01);
       bit++;
       if (bit == 8)
         bit=0;
@@ -300,9 +301,6 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
 #define SetBit(a,i,set) \
   a=(unsigned char) ((set) ? (a) | (1L << (i)) : (a) & ~(1L << (i)))
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -311,6 +309,9 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   unsigned char
     bit,
@@ -375,7 +376,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }

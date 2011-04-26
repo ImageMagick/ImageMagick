@@ -132,9 +132,6 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   ImageInfo
     *read_info;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -153,6 +150,9 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   size_t
     depth,
     max_depth;
+
+  ssize_t
+    y;
 
   /*
     Recursively apply plasma to the image.
@@ -173,7 +173,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->opacity=(Quantum) (QuantumRange/2);
+      SetOpacityPixelComponent(q,QuantumRange/2);
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

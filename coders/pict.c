@@ -427,10 +427,6 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
 static unsigned char *DecodeImage(Image *blob,Image *image,
   size_t bytes_per_line,const unsigned int bits_per_pixel,size_t *extent)
 {
-  ssize_t
-    j,
-    y;
-
   MagickSizeType
     number_pixels;
 
@@ -442,20 +438,20 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
     *q;
 
   size_t
+    bytes_per_pixel,
     length,
-    row_bytes;
+    row_bytes,
+    scanline_length,
+    width;
 
   ssize_t
-    count;
+    count,
+    j,
+    y;
 
   unsigned char
     *pixels,
     *scanline;
-
-  size_t
-    bytes_per_pixel,
-    scanline_length,
-    width;
 
   /*
     Determine pixel buffer size.
@@ -596,11 +592,6 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 #define MaxCount  128
 #define MaxPackbitsRunlength  128
 
-  ssize_t
-    count,
-    repeat_count,
-    runlength;
-
   register const unsigned char
     *p;
 
@@ -612,6 +603,11 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 
   size_t
     length;
+
+  ssize_t
+    count,
+    repeat_count,
+    runlength;
 
   unsigned char
     index;
@@ -806,12 +802,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     c,
     code;
 
-  ssize_t
-    flags,
-    j,
-    version,
-    y;
-
   MagickBooleanType
     jpeg,
     status;
@@ -839,7 +829,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     length;
 
   ssize_t
-    count;
+    count,
+    flags,
+    j,
+    version,
+    y;
 
   StringInfo
     *profile;
@@ -1180,10 +1174,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (tile_image->storage_class == PseudoClass)
                   {
                     index=ConstrainColormapIndex(tile_image,*p);
-                    indexes[x]=index;
-                    q->red=tile_image->colormap[(ssize_t) index].red;
-                    q->green=tile_image->colormap[(ssize_t) index].green;
-                    q->blue=tile_image->colormap[(ssize_t) index].blue;
+                    SetIndexPixelComponent(indexes+x,index);
+                    SetRedPixelComponent(q,
+                      tile_image->colormap[(ssize_t) index].red);
+                    SetGreenPixelComponent(q,
+                      tile_image->colormap[(ssize_t) index].green);
+                    SetBluePixelComponent(q,
+                      tile_image->colormap[(ssize_t) index].blue);
                   }
                 else
                   {
@@ -1191,12 +1188,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       {
                         i=(*p++);
                         j=(*p);
-                        q->red=ScaleCharToQuantum((unsigned char)
-                          ((i & 0x7c) << 1));
-                        q->green=ScaleCharToQuantum((unsigned char)
-                          (((i & 0x03) << 6) | ((j & 0xe0) >> 2)));
-                        q->blue=ScaleCharToQuantum((unsigned char)
-                          ((j & 0x1f) << 3));
+                        SetRedPixelComponent(q,ScaleCharToQuantum(
+                          (unsigned char) ((i & 0x7c) << 1)));
+                        SetGreenPixelComponent(q,ScaleCharToQuantum(
+                          (unsigned char) (((i & 0x03) << 6) |
+                          ((j & 0xe0) >> 2))));
+                        SetBluePixelComponent(q,ScaleCharToQuantum(
+                          (unsigned char) ((j & 0x1f) << 3)));
                       }
                     else
                       if (tile_image->matte == MagickFalse)
@@ -1205,23 +1203,24 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                             ThrowReaderException(CorruptImageError,
                               "NotEnoughPixelData");
                           SetRedPixelComponent(q,ScaleCharToQuantum(*p));
-                          q->green=ScaleCharToQuantum(
-                            *(p+tile_image->columns));
-                          q->blue=ScaleCharToQuantum(
-                            *(p+2*tile_image->columns));
+                          SetGreenPixelComponent(q,ScaleCharToQuantum(
+                            *(p+tile_image->columns)));
+                          SetBluePixelComponent(q,ScaleCharToQuantum(
+                            *(p+2*tile_image->columns)));
                         }
                       else
                         {
                           if (p > (pixels+extent+3*image->columns))
                             ThrowReaderException(CorruptImageError,
                               "NotEnoughPixelData");
-                          q->opacity=(Quantum) (QuantumRange-
-                            ScaleCharToQuantum(*p));
-                          q->red=ScaleCharToQuantum(*(p+tile_image->columns));
-                          q->green=(Quantum) ScaleCharToQuantum(
-                            *(p+2*tile_image->columns));
-                          q->blue=ScaleCharToQuantum(
-                            *(p+3*tile_image->columns));
+                          SetOpacityPixelComponent(q,(Quantum) (QuantumRange-
+                            ScaleCharToQuantum(*p)));
+                          SetRedPixelComponent(q,ScaleCharToQuantum(
+                            *(p+tile_image->columns)));
+                          SetGreenPixelComponent(q,ScaleCharToQuantum(
+                            *(p+2*tile_image->columns)));
+                          SetBluePixelComponent(q,ScaleCharToQuantum(
+                            *(p+3*tile_image->columns)));
                         }
                   }
                 p++;
@@ -1545,9 +1544,6 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     x_resolution,
     y_resolution;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -1576,16 +1572,18 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     x;
 
   size_t
-    count;
+    bytes_per_line,
+    count,
+    storage_class;
+
+  ssize_t
+    y;
 
   unsigned char
     *buffer,
     *packed_scanline,
     *scanline;
 
-  size_t
-    bytes_per_line,
-    storage_class;
 
   unsigned short
     base_address,
@@ -1888,13 +1886,13 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         break;
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
-        scanline[x]=(unsigned char) indexes[x];
+        scanline[x]=(unsigned char) GetIndexPixelComponent(indexes+x);
       count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
         packed_scanline);
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -1904,8 +1902,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       {
         (void) ResetMagickMemory(scanline,0,row_bytes);
         for (y=0; y < (ssize_t) image->rows; y++)
-          count+=EncodeImage(image,scanline,(size_t)
-            (row_bytes & 0x7FFF),packed_scanline);
+          count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
+            packed_scanline);
       }
     else
       {

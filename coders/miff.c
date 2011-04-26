@@ -1420,7 +1420,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             length--;
             if ((image->storage_class == PseudoClass) ||
                 (image->colorspace == CMYKColorspace))
-              indexes[x]=index;
+              SetIndexPixelComponent(indexes+x,index);
             *q++=pixel;
           }
           break;
@@ -2425,7 +2425,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               }
             pixel=(*p);
             if (indexes != (IndexPacket *) NULL)
-              index=indexes[x];
+              index=GetIndexPixelComponent(indexes+x);
             p++;
           }
           q=PopRunlengthPacket(image,q,length,pixel,index);

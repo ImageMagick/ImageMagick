@@ -228,9 +228,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     id,
     mask;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -257,18 +254,19 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p,
     *r;
 
+  size_t
+    one,
+    pcx_packets;
+
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     packet,
     *pcx_colormap,
     *pcx_pixels,
     *scanline;
-
-  size_t
-    one,
-    pcx_packets;
 
   /*
     Open image file.
@@ -604,14 +602,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (image->storage_class == PseudoClass)
-          indexes[x]=(IndexPacket) (*r++);
+          SetIndexPixelComponent(indexes+x,*r++);
         else
           {
-            q->red=ScaleCharToQuantum(*r++);
-            q->green=ScaleCharToQuantum(*r++);
-            q->blue=ScaleCharToQuantum(*r++);
+            SetRedPixelComponent(q,ScaleCharToQuantum(*r++));
+            SetGreenPixelComponent(q,ScaleCharToQuantum(*r++));
+            SetBluePixelComponent(q,ScaleCharToQuantum(*r++));
             if (image->matte != MagickFalse)
-              q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*r++));
+              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(*r++));
           }
         q++;
       }
@@ -620,7 +618,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -833,9 +831,6 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
 
 static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -862,6 +857,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
 
   size_t
     length;
+
+  ssize_t
+    y;
 
   unsigned char
     *pcx_colormap,
@@ -1113,7 +1111,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                if (indexes[x] == polarity)
+                if (GetIndexPixelComponent(indexes+x) == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
