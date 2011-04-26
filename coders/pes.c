@@ -455,6 +455,11 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     i;
 
+  size_t
+    number_blocks,
+    number_colors,
+    number_stitches;
+
   ssize_t
     count,
     offset;
@@ -462,11 +467,6 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     magick[4],
     version[4];
-
-  size_t
-    number_blocks,
-    number_colors,
-    number_stitches;
 
   /*
     Open image file.

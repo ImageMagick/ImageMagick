@@ -176,17 +176,15 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   size_t
-    length;
+    depth,
+    length,
+    quantum_depth;
 
   ssize_t
     count;
 
   StringInfo
     *profile;
-
-  size_t
-    depth,
-    quantum_depth;
 
   /*
     Open image file.
@@ -512,7 +510,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"maximum-error") == 0)
                   {
-                    image->error.normalized_maximum_error=StringToDouble(options);
+                    image->error.normalized_maximum_error=
+                      StringToDouble(options);
                     break;
                   }
                 if (LocaleCompare(keyword,"mean-error") == 0)
@@ -1152,8 +1151,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
             image->iterations,(double) image->delay,(double)
             image->ticks_per_second);
         else
-          (void) FormatMagickString(buffer,MaxTextExtent,
-            "scene=%.20g  iterations=%.20g  delay=%.20g  ticks-per-second=%.20g\n",
+          (void) FormatMagickString(buffer,MaxTextExtent,"scene=%.20g  "
+            "iterations=%.20g  delay=%.20g  ticks-per-second=%.20g\n",
             (double) image->scene,(double) image->iterations,(double)
             image->delay,(double) image->ticks_per_second);
         (void) WriteBlobString(image,buffer);
@@ -1200,8 +1199,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
     if (image->rendering_intent != UndefinedIntent)
       {
         (void) FormatMagickString(buffer,MaxTextExtent,
-          "rendering-intent=%s\n",
-           CommandOptionToMnemonic(MagickIntentOptions,image->rendering_intent));
+          "rendering-intent=%s\n",CommandOptionToMnemonic(MagickIntentOptions,
+          image->rendering_intent));
         (void) WriteBlobString(image,buffer);
       }
     if (image->gamma != 0.0)

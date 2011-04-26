@@ -271,11 +271,6 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  ssize_t
-    img_offset, /* TS */
-    comment_offset = 0,
-    y;
-
   MagickBooleanType
     status;
 
@@ -297,17 +292,20 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  ssize_t
-    count;
-
-  unsigned char
-    *pixels;
-
   size_t
     bits_per_pixel,
     num_pad_bytes, /* TS */
     one,
     packets;
+
+  ssize_t
+    count,
+    img_offset, /* TS */
+    comment_offset = 0,
+    y;
+
+  unsigned char
+    *pixels;
 
   /*
     Open image file.
@@ -357,7 +355,6 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,3,(unsigned char *) tag);
   if (count != 3  ||  memcmp(tag,"\x6f\x80\x00",3) != 0)
     ThrowReaderException(CorruptImageError,"CorruptImage");
-
   if (pdb_info.number_records > 1)
     {
       comment_offset=(int) ReadBlobMSBLong(image);
@@ -366,7 +363,6 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (count != 3  ||  memcmp(tag,"\x6f\x80\x01",3) != 0)
         ThrowReaderException(CorruptImageError,"CorruptImage");
     }
-
   num_pad_bytes = (size_t) (img_offset - TellBlob( image ));
   while (num_pad_bytes--) ReadBlobByte( image );
   /*
@@ -448,17 +444,17 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=(IndexPacket) (*p & (0x80 >> bit) ? 0x00 : 0x01);
             SetIndexPixelComponent(indexes+x+bit,index);
-            *q++=image->colormap[(ssize_t) index];
           }
           p++;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
+      (void) SyncImage(image);
       break;
     }
     case 2:
@@ -475,26 +471,23 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x+=4)
         {
           index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03));
-          indexes[x]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x,index);
           index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03));
-          indexes[x+1]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x+1,index);
           index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03));
-          indexes[x+2]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x+2,index);
           index=ConstrainColormapIndex(image,3UL-((*p) & 0x03));
-          indexes[x+3]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x+3,index);
           p++;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
+      (void) SyncImage(image);
       break;
     }
     case 4:
@@ -511,20 +504,19 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x+=2)
         {
           index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f));
-          indexes[x]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x,index);
           index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f));
-          indexes[x+1]=index;
-          *q++=image->colormap[(ssize_t) index];
+          SetIndexPixelComponent(indexes+x+1,index);
           p++;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
+      (void) SyncImage(image);
       break;
     }
     default:
@@ -695,9 +687,6 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   int
     bits;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -720,18 +709,19 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
     *q;
 
   size_t
-    packet_size;
+    bits_per_pixel,
+    literal,
+    packets,
+    packet_size,
+    repeat;
+
+  ssize_t
+    y;
 
   unsigned char
     *buffer,
     *runlength,
     *scanline;
-
-  size_t
-    bits_per_pixel,
-    literal,
-    packets,
-    repeat;
 
   /*
     Open output image file.

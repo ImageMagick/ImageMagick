@@ -158,9 +158,7 @@ static size_t PNMInteger(Image *image,const unsigned int base)
     *p;
 
   size_t
-    extent;
-
-  size_t
+    extent,
     value;
 
   /*
@@ -235,10 +233,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    row,
-    y;
-
   MagickBooleanType
     status;
 
@@ -255,15 +249,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   size_t
+    depth,
     extent,
+    max_value,
     packet_size;
 
   ssize_t
-    count;
-
-  size_t
-    depth,
-    max_value;
+    count,
+    row,
+    y;
 
   /*
     Open image file.
@@ -440,7 +434,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->red=(Quantum) (PNMInteger(image,2) == 0 ? QuantumRange : 0);
+            SetRedPixelComponent(q,PNMInteger(image,2) == 0 ? QuantumRange : 0);
             SetGreenPixelComponent(q,GetRedPixelComponent(q));
             SetBluePixelComponent(q,GetRedPixelComponent(q));
             q++;
@@ -493,9 +487,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             intensity=PNMInteger(image,10);
-            q->red=(Quantum) intensity;
+            SetRedPixelComponent(q,intensity);
             if (scale != (Quantum *) NULL)
-              q->red=scale[ConstrainPixel(image,(ssize_t) intensity,max_value)];
+              SetRedPixelComponent(q,scale[ConstrainPixel(image,(ssize_t)
+                intensity,max_value)]);
             SetGreenPixelComponent(q,GetRedPixelComponent(q));
             SetBluePixelComponent(q,GetRedPixelComponent(q));
             q++;
@@ -561,9 +556,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixel.blue=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
                   pixel.blue,max_value)];
               }
-            q->red=(Quantum) pixel.red;
-            q->green=(Quantum) pixel.green;
-            q->blue=(Quantum) pixel.blue;
+            SetRedPixelComponent(q,pixel.red);
+            SetGreenPixelComponent(q,pixel.green);
+            SetBluePixelComponent(q,pixel.blue);
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -595,9 +590,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          ssize_t
-            offset;
-
           MagickBooleanType
             sync;
 
@@ -605,7 +597,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           ssize_t
-            count;
+            count,
+            offset;
 
           size_t
             length;
@@ -669,9 +662,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          ssize_t
-            offset;
-
           MagickBooleanType
             sync;
 
@@ -685,7 +675,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           ssize_t
-            count;
+            count,
+            offset;
 
           unsigned char
             *pixels;
@@ -779,9 +770,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          ssize_t
-            offset;
-
           MagickBooleanType
             sync;
 
@@ -795,7 +783,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           ssize_t
-            count;
+            count,
+            offset;
 
           unsigned char
             *pixels;
@@ -845,12 +834,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  q->red=ScaleShortToQuantum(pixel);
+                  SetRedPixelComponent(q,ScaleShortToQuantum(pixel));
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  q->green=ScaleShortToQuantum(pixel);
+                  SetGreenPixelComponent(q,ScaleShortToQuantum(pixel));
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  q->blue=ScaleShortToQuantum(pixel);
-                  q->opacity=OpaqueOpacity;
+                  SetBluePixelComponent(q,ScaleShortToQuantum(pixel));
+                  SetOpacityPixelComponent(q,OpaqueOpacity);
                   q++;
                 }
               }
@@ -863,12 +852,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
                     p=PushCharPixel(p,&pixel);
-                    q->red=ScaleAnyToQuantum(pixel,range);
+                    SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                     p=PushCharPixel(p,&pixel);
-                    q->green=ScaleAnyToQuantum(pixel,range);
+                    SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                     p=PushCharPixel(p,&pixel);
-                    q->blue=ScaleAnyToQuantum(pixel,range);
-                    q->opacity=OpaqueOpacity;
+                    SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                    SetOpacityPixelComponent(q,OpaqueOpacity);
                     q++;
                   }
                 }
@@ -880,12 +869,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
                     p=PushShortPixel(MSBEndian,p,&pixel);
-                    q->red=ScaleAnyToQuantum(pixel,range);
+                    SetRedPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                     p=PushShortPixel(MSBEndian,p,&pixel);
-                    q->green=ScaleAnyToQuantum(pixel,range);
+                    SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel,range));
                     p=PushShortPixel(MSBEndian,p,&pixel);
-                    q->blue=ScaleAnyToQuantum(pixel,range);
-                    q->opacity=OpaqueOpacity;
+                    SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
+                    SetOpacityPixelComponent(q,OpaqueOpacity);
                     q++;
                   }
                 }
@@ -959,9 +948,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          ssize_t
-            offset;
-
           MagickBooleanType
             sync;
 
@@ -975,7 +961,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           ssize_t
-            count;
+            count,
+            offset;
 
           unsigned char
             *pixels;
@@ -1078,7 +1065,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushCharPixel(p,&pixel);
                       SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
                       p=PushCharPixel(p,&pixel);
-                      indexes[x]=ScaleAnyToQuantum(pixel,range);
+                      SetIndexPixelComponent(indexes+x,ScaleAnyToQuantum(pixel,
+                        range));
                       SetOpacityPixelComponent(q,OpaqueOpacity);
                       if (image->matte != MagickFalse)
                         {
@@ -1103,7 +1091,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushShortPixel(MSBEndian,p,&pixel);
                       SetBluePixelComponent(q,ScaleAnyToQuantum(pixel,range));
                       p=PushShortPixel(MSBEndian,p,&pixel);
-                      indexes[x]=ScaleAnyToQuantum(pixel,range);
+                      SetIndexPixelComponent(indexes+x,ScaleAnyToQuantum(pixel,
+                        range));
                       SetOpacityPixelComponent(q,OpaqueOpacity);
                       if (image->matte != MagickFalse)
                         {
@@ -1200,9 +1189,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          ssize_t
-            offset;
-
           MagickBooleanType
             sync;
 
@@ -1210,7 +1196,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           ssize_t
-            count;
+            count,
+            offset;
 
           size_t
             length;
@@ -1440,9 +1427,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -1467,7 +1451,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
     packet_size;
 
   ssize_t
-    count;
+    count,
+    y;
 
   /*
     Open output image file.
@@ -2045,8 +2030,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                       q=PopCharPixel((unsigned char) pixel,q);
                       if (image->matte != MagickFalse)
                         {
-                          pixel=(unsigned char) ScaleQuantumToAny(GetOpacityPixelComponent(p),
-                            range);
+                          pixel=(unsigned char) ScaleQuantumToAny(
+                            GetOpacityPixelComponent(p),range);
                           q=PopCharPixel((unsigned char) pixel,q);
                         }
                       p++;
@@ -2058,8 +2043,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       if (image->matte != MagickFalse)
                         {
-                          pixel=(unsigned char) ScaleQuantumToAny(GetOpacityPixelComponent(p),
-                            range);
+                          pixel=(unsigned char) ScaleQuantumToAny(
+                            GetOpacityPixelComponent(p),range);
                           q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                         }
                       p++;
@@ -2078,7 +2063,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                       q=PopCharPixel((unsigned char) pixel,q);
                       pixel=ScaleQuantumToAny(GetBluePixelComponent(p),range);
                       q=PopCharPixel((unsigned char) pixel,q);
-                      pixel=ScaleQuantumToAny(GetIndexPixelComponent(indexes+x),range);
+                      pixel=ScaleQuantumToAny(
+                        GetIndexPixelComponent(indexes+x),range);
                       q=PopCharPixel((unsigned char) pixel,q);
                       if (image->matte != MagickFalse)
                         {
@@ -2097,7 +2083,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       pixel=ScaleQuantumToAny(GetBluePixelComponent(p),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      pixel=ScaleQuantumToAny(GetIndexPixelComponent(indexes+x),range);
+                      pixel=ScaleQuantumToAny(
+                        GetIndexPixelComponent(indexes+x),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       if (image->matte != MagickFalse)
                         {

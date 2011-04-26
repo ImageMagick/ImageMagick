@@ -99,9 +99,6 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickPixelPacket
     background;
 
@@ -113,6 +110,9 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   /*
     Initialize Image structure.

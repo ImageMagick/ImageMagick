@@ -93,9 +93,6 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -114,12 +111,13 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   size_t
-    length;
-
-  size_t
     bits_per_pixel,
     height,
+    length,
     width;
+
+  ssize_t
+    y;
 
   /*
     Open image file.
@@ -191,10 +189,10 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
         if (image->storage_class == PseudoClass)
-          indexes[x]=index;
-        q->blue=blue;
-        q->green=green;
-        q->red=red;
+          SetIndexPixelComponent(indexes+x,index);
+        SetBluePixelComponent(q,blue);
+        SetGreenPixelComponent(q,green);
+        SetRedPixelComponent(q,red);
         length--;
         q++;
       }
@@ -203,7 +201,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }

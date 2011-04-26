@@ -184,12 +184,12 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SegmentInfo
     bounds;
 
-  ssize_t
-    count;
-
   size_t
     height,
     width;
+
+  ssize_t
+    count;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -553,14 +553,14 @@ static size_t PCLPackbitsCompressImage(const size_t length,
   int
     count;
 
-  ssize_t
-    j;
-
   register ssize_t
     x;
 
   register unsigned char
     *q;
+
+  ssize_t
+    j;
 
   unsigned char
     packbits[128];
@@ -656,9 +656,6 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   const char
     *option;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -668,29 +665,18 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   register const IndexPacket
     *indexes;
 
-  register const PixelPacket
-    *p;
-
-  register ssize_t
-    i,
-    x;
-
-  register unsigned char
-    *q;
-
-  size_t
-    length,
+  register const PixelPacket *p; register ssize_t i, x; register unsigned char *q; size_t density, length,
+    one,
     packets;
+
+  ssize_t
+    y;
 
   unsigned char
     bits_per_pixel,
     *compress_pixels,
     *pixels,
     *previous_pixels;
-
-  size_t
-    density,
-    one;
 
   /*
     Open output image file.
@@ -775,8 +761,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
               ScaleQuantumToChar(image->colormap[i].blue),(double) i);
             (void) WriteBlobString(image,buffer);
           }
-          one=1;
-          for ( ; i < (ssize_t) (one << bits_per_pixel); i++)
+          for (one=1; i < (ssize_t) (one << bits_per_pixel); i++)
           {
             (void) FormatMagickString(buffer,MaxTextExtent,"\033*v%.20gI",
               (double) i);
@@ -922,8 +907,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
         }
         case RLECompression:
         {
-          packets=PCLPackbitsCompressImage(length,pixels,
-            compress_pixels);
+          packets=PCLPackbitsCompressImage(length,pixels,compress_pixels);
           (void) FormatMagickString(buffer,MaxTextExtent,"\033*b%.20gW",
             (double) packets);
           (void) WriteBlobString(image,buffer);
