@@ -410,7 +410,7 @@ static inline void CompositeDarkenIntensity(const MagickPixelPacket *p,
   /*
     Select the pixel based on the intensity level.
     If 'Sync' flag select whole pixel based on alpha weighted intensity.
-    Otherwise use Intenisty only, but restrict copy according to channel.
+    Otherwise use Intensity only, but restrict copy according to channel.
   */
   if ( (channel & SyncChannels) != 0 ) {
     MagickRealType
