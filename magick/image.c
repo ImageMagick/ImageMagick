@@ -780,6 +780,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   (void) ResetMagickMemory(clone_image,0,sizeof(*clone_image));
   clone_image->signature=MagickSignature;
   clone_image->storage_class=image->storage_class;
+  clone_image->channels=image->channels;
   clone_image->colorspace=image->colorspace;
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
