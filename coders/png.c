@@ -7311,7 +7311,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_opaque; i++)
                      {
-                       if (IsColorEqual((PixelPacket *) q, opaque+i))
+                       if (IsColorEqual(q, opaque+i))
                          break;
                      }
 
@@ -7349,7 +7349,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_transparent; i++)
                      {
-                       if (IsColorEqual((PixelPacket *) q, transparent+i))
+                       if (IsColorEqual(q, transparent+i))
                          break;
                      }
 
@@ -7379,7 +7379,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                    for (i=0; i< (ssize_t) number_semitransparent; i++)
                      {
-                       if (IsColorEqual((PixelPacket *) q, semitransparent+i)
+                       if (IsColorEqual(q, semitransparent+i)
                            && GetOpacityPixelComponent(q) ==
                            semitransparent[i].opacity)
                          break;
