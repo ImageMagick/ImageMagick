@@ -761,7 +761,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   const MagickPixelPacket *target,const MagickPixelPacket *fill,
   const MagickBooleanType invert)
 {
-  return(OpaquePaintImageChannel(image,AllChannels,target,fill,invert));
+  return(OpaquePaintImageChannel(image,CompositeChannels,target,fill,invert));
 }
 
 MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,

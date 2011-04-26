@@ -276,7 +276,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 */
 MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 {
-  return(GetImageChannelDepth(image,AllChannels,exception));
+  return(GetImageChannelDepth(image,CompositeChannels,exception));
 }
 
 MagickExport size_t GetImageChannelDepth(const Image *image,
@@ -819,7 +819,7 @@ MagickExport MagickBooleanType IsOpaqueImage(const Image *image,
 MagickExport MagickBooleanType SetImageDepth(Image *image,
   const size_t depth)
 {
-  return(SetImageChannelDepth(image,AllChannels,depth));
+  return(SetImageChannelDepth(image,CompositeChannels,depth));
 }
 
 MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
