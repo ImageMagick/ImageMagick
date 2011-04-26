@@ -3944,13 +3944,15 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
              if (image->matte != MagickFalse)
                for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
-                  q->opacity=(Quantum) QuantumRange-s->red;
+                  q->opacity=(Quantum) QuantumRange-
+                      GetRedPixelComponent(s);
 
              else
                for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
                {
-                  q->opacity=(Quantum) QuantumRange-s->red;
-                  if (q->opacity != OpaqueOpacity)
+                  SetOpacityPixelComponent(q,(Quantum) QuantumRange-
+                      GetRedPixelComponent(s));
+                  if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     image->matte=MagickTrue;
                }
 
@@ -5773,10 +5775,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                        for (x=(ssize_t) image->columns-1; x >= 0; x--)
                        {
-                          q->red=ScaleQuantumToShort(q->red);
-                          q->green=ScaleQuantumToShort(q->green);
-                          q->blue=ScaleQuantumToShort(q->blue);
-                          q->opacity=ScaleQuantumToShort(q->opacity);
+                          SetRedPixelComponent(q,ScaleQuantumToShort(
+                            GetRedPixelComponent(q));
+                          SetGreenPixelComponent(q,ScaleQuantumToShort(
+                            GetGreenPixelComponent(q));
+                          SetBluePixelComponent(q,ScaleQuantumToShort(
+                            GetBluePixelComponent(q));
+                          SetOpacityPixelComponent(q,ScaleQuantumToShort(
+                            GetOpacityPixelComponent(q));
                           q++;
                        }
 
@@ -5862,6 +5868,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                   for (i=0; i < m; i++, yy++)
                   {
+                    /* To do: Rewrite using Get/Set***PixelComponent() */
                     register PixelPacket
                       *pixels;
 
@@ -5980,6 +5987,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   for (x=(ssize_t) (image->columns-length);
                     x < (ssize_t) image->columns; x++)
                   {
+                    /* To do: Rewrite using Get/Set***PixelComponent() */
+
                     if (x == (ssize_t) (image->columns-length))
                       m=(ssize_t) mng_info->magn_ml;
 
@@ -6074,10 +6083,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                      for (x=(ssize_t) image->columns-1; x >= 0; x--)
                      {
-                        q->red=ScaleShortToQuantum(q->red);
-                        q->green=ScaleShortToQuantum(q->green);
-                        q->blue=ScaleShortToQuantum(q->blue);
-                        q->opacity=ScaleShortToQuantum(q->opacity);
+                        SetRedPixelComponent(q,ScaleShortToQuantum(
+                            GetRedPixelComponent(q));
+                        SetGreenPixelComponent(q,ScaleShortToQuantum(
+                            GetGreenPixelComponent(q));
+                        SetBluePixelComponent(q,ScaleShortToQuantum(
+                            GetBluePixelComponent(q));
+                        SetOpacityPixelComponent(q,ScaleShortToQuantum(
+                            GetOpacityPixelComponent(q));
                         q++;
                      }
 
@@ -8019,9 +8032,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                  if (q->opacity != TransparentOpacity &&
-                     (unsigned short) q->red == ping_trans_color.red &&
-                     (unsigned short) q->green == ping_trans_color.green &&
-                     (unsigned short) q->blue == ping_trans_color.blue)
+                     (unsigned short) GetRedPixelComponent(q) ==
+                     ping_trans_color.red &&
+                     (unsigned short) GetGreenPixelComponent(q) ==
+                     ping_trans_color.green &&
+                     (unsigned short) GetBluePixelComponent(q) ==
+                     ping_trans_color.blue)
                    {
                      ping_have_cheap_transparency = MagickFalse;
                      break;
