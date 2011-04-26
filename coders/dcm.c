@@ -3255,7 +3255,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Visible pixel range: center.
             */
-            window_center=StringToLong((char *) data);
+            if (data != (unsigned char *) NULL)
+              window_center=StringToLong((char *) data);
             break;
           }
           case 0x1051:
@@ -3263,7 +3264,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Visible pixel range: width.
             */
-            window_width=StringToUnsignedLong((char *) data);
+            if (data != (unsigned char *) NULL)
+              window_width=StringToUnsignedLong((char *) data);
             break;
           }
           case 0x1200:
