@@ -148,6 +148,7 @@ typedef enum
   MatteChannel = 0x0008,     /* deprecated */
   BlackChannel = 0x0020,
   IndexChannel = 0x0020,
+  CompositeChannels = 0x002F,
   AllChannels = ~0UL,
   /*
     Special purpose channel types.

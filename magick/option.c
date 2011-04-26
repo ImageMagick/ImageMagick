@@ -118,7 +118,7 @@ static const OptionInfo
   ChannelOptions[] =
   {
     { "Undefined", UndefinedChannel, UndefinedOptionFlag, MagickTrue },
-    { "All", AllChannels, UndefinedOptionFlag, MagickFalse },
+    { "All", CompositeChannels, UndefinedOptionFlag, MagickFalse },
     { "Alpha", OpacityChannel, UndefinedOptionFlag, MagickFalse },
     { "Black", BlackChannel, UndefinedOptionFlag, MagickFalse },
     { "Blue", BlueChannel, UndefinedOptionFlag, MagickFalse },

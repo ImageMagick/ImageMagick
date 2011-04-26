@@ -193,7 +193,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns < (distance+1)) || (image->rows < (distance+1)))
     return((ChannelFeatures *) NULL);
-  length=AllChannels+1UL;
+  length=CompositeChannels+1UL;
   channel_features=(ChannelFeatures *) AcquireQuantumMemory(length,
     sizeof(*channel_features));
   if (channel_features == (ChannelFeatures *) NULL)

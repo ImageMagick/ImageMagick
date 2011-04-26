@@ -1704,7 +1704,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  if (channel == AllChannels)
+  if (channel == CompositeChannels)
     {
       if (AcquireImageColormap(image,2) == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",

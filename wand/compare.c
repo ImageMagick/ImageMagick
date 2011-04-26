@@ -271,7 +271,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     }
   if (argc < 3)
     return(CompareUsage());
-  channels=AllChannels;
+  channels=CompositeChannels;
   difference_image=NewImageList();
   similarity_image=NewImageList();
   dissimilarity_threshold=DefaultDissimilarityThreshold;
@@ -1117,8 +1117,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 }
               }
               (void) fprintf(stderr,"    all: %g (%g)\n",
-                QuantumRange*channel_distortion[AllChannels],
-                channel_distortion[AllChannels]);
+                QuantumRange*channel_distortion[CompositeChannels],
+                channel_distortion[CompositeChannels]);
               break;
             }
             case AbsoluteErrorMetric:
@@ -1167,13 +1167,13 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
                 }
               }
               (void) fprintf(stderr,"    all: %g\n",
-                channel_distortion[AllChannels]);
+                channel_distortion[CompositeChannels]);
               break;
             }
             case MeanErrorPerPixelMetric:
             {
               (void) fprintf(stderr,"    %g (%g, %g)\n",
-                channel_distortion[AllChannels],
+                channel_distortion[CompositeChannels],
                 image->error.normalized_mean_error,
                 image->error.normalized_maximum_error);
               break;

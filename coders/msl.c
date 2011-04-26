@@ -7060,7 +7060,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         */
         {
         BilevelImageChannel(msl_info->image[n],
-          (ChannelType) ((ssize_t) (AllChannels &~ (ssize_t) OpacityChannel)),
+          (ChannelType) ((ssize_t) (CompositeChannels &~ (ssize_t) OpacityChannel)),
           threshold);
         break;
         }
