@@ -625,7 +625,7 @@
   * The webp format requires the webpconv delegate program (experimental).
 
 2010-10-05  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
-  * Replaced "Robidoux" with Cubic 'Keys' filter that is near equivelent to
+  * Replaced "Robidoux" with Cubic 'Keys' filter that is near equivalent to
     the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)
     This also is very similer to a Mitchell filter but specifically designed
     for EWA use and is the new default filter for Distorting Images.
@@ -2441,10 +2441,10 @@
     distorts, just set this, the scale the result back to a normal size.
 
 2008-07-27  6.4.2-5 Anthony <anthony@griffith...>
-  * Rewrite on coefficent handlig for DistortImages so allow for generation
+  * Rewrite on coefficient handlig for DistortImages so allow for generation
     by other operators (SparseColor), and addition of verbose output of
-    equivelent -fx functions for DistortImages to report of the internal
-    coefficents that was calculated, and who they are used.
+    equivalent -fx functions for DistortImages to report of the internal
+    coefficients that was calculated, and who they are used.
   * Initial implementation of SparseColor for interpolated gradients from
     sparsely separated points of color (or posibily other forms of arguments)
   * New distortion Barrel as defined by Helmut Dersch options A,B,C,D
