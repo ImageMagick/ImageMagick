@@ -2032,6 +2032,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       background.blue=(png_uint_16)
                         mng_info->global_plte[background.index].blue;
 
+                      background.gray=(png_uint_16)
+                        mng_info->global_plte[background.index].green;
+
                       png_set_bKGD(ping,ping_info,&background);
                     }
 #endif
@@ -7103,14 +7106,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "    storage_class=PseudoClass");
     }
 
-  if (image->storage_class != PseudoClass && image->colormap != NULL)
+  if (ping_preserve_colormap == MagickFalse)
     {
-      /* Free the bogus colormap; it can cause trouble later */
-       if (logging != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Freeing bogus colormap");
-       (void *) RelinquishMagickMemory(image->colormap);
-       image->colormap=NULL;
+      if (image->storage_class != PseudoClass && image->colormap != NULL)
+        {
+          /* Free the bogus colormap; it can cause trouble later */
+           if (logging != MagickFalse)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Freeing bogus colormap");
+           (void *) RelinquishMagickMemory(image->colormap);
+           image->colormap=NULL;
+        }
     }
    
   if (image->colorspace != RGBColorspace)
@@ -7405,6 +7411,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          /* Add the background color to the palette, if it
           * isn't already there.
           */
+          if (logging != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "      Check colormap for background (%d,%d,%d)",
+                  (int) image->background_color.red,
+                  (int) image->background_color.green,
+                  (int) image->background_color.blue);
+            }
           for (i=0; i<number_opaque; i++)
           {
              if (opaque[i].red == image->background_color.red &&
@@ -7412,12 +7426,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  opaque[i].blue == image->background_color.blue)
                break;
           }
-
           if (number_opaque < 259 && i == number_opaque)
             {
-               opaque[i]=image->background_color;
-               opaque[i].opacity = OpaqueOpacity;
-               number_opaque++;
+               opaque[i].red = image->background_color.red;
+               opaque[i].green = image->background_color.green;
+               opaque[i].blue = image->background_color.blue;
+               ping_background.index = i;
+               if (logging != MagickFalse)
+                 {
+                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "      background_color index is %d",(int) i);
+                 }
+
             }
           else if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7524,6 +7544,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          for (i=0; i<number_opaque; i++)
             colormap[n++] = opaque[i];
 
+         ping_background.index +=
+           (number_transparent + number_semitransparent);
          
          /* image_colors < 257; search the colormap instead of the pixels
           * to get ping_have_color and ping_have_non_bw
@@ -8299,12 +8321,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
        ping_background.blue=(png_uint_16)
          (ScaleQuantumToShort(image->background_color.blue) & mask);
+
+       ping_background.gray=(png_uint_16) ping_background.green;
     }
 
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Setting up bKGD chunk (1)");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "      background_color index is %d",
+          (int) ping_background.index);
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    ping_bit_depth=%d",ping_bit_depth);
@@ -8392,6 +8419,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             break;
 
         ping_background.index=(png_byte) i;
+
+        if (logging != MagickFalse)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "      background_color index is %d",
+                 (int) ping_background.index);
+          }
       }
     } /* end of write_png8 */
 
@@ -8898,6 +8932,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Setting up bKGD chunk (2)");
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      background_color index is %d",
+             (int) ping_background.index);
 
          ping_have_bKGD = MagickTrue;
          }
@@ -9297,7 +9334,23 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (ping_exclude_bKGD == MagickFalse)
     {
       if (ping_have_bKGD != MagickFalse)
+        {
           png_set_bKGD(ping,ping_info,&ping_background);
+          if (logging)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    Setting up bKGD chunk");
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "      background color = (%d,%d,%d)",
+                        (int) ping_background.red,
+                        (int) ping_background.green,
+                        (int) ping_background.blue);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "      index = %d, gray=%d",
+                        (int) ping_background.index,
+                        (int) ping_background.gray);
+            }
+         }
     }
 
   if (ping_exclude_pHYs == MagickFalse)
