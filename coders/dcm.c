@@ -2839,6 +2839,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_allocated,
     bytes_per_pixel,
     colors,
+    depth,
     height,
     length,
     mask,
@@ -2907,6 +2908,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bytes_per_pixel=1;
   polarity=MagickFalse;
   data=(unsigned char *) NULL;
+  depth=8;
   element=0;
   explicit_vr[2]='\0';
   explicit_file=MagickFalse;
@@ -3213,8 +3215,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel=1;
             if (datum > 8)
               bytes_per_pixel=2;
-            image->depth=bits_allocated;
-            if (image->depth > 32)
+            depth=bits_allocated;
+            if (depth > 32)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             max_value=(1UL << bits_allocated)-1;
             break;
@@ -3228,8 +3230,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel=1;
             if (significant_bits > 8)
               bytes_per_pixel=2;
-            image->depth=significant_bits;
-            if (image->depth > 32)
+            depth=significant_bits;
+            if (depth > 32)
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
             max_value=(1UL << significant_bits)-1;
             mask=(size_t) GetQuantumRange(significant_bits);
@@ -3579,7 +3581,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return(GetFirstImageInList(images));
     }
-  if (image->depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
+  if (depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
     {
       QuantumAny
         range;
@@ -3590,12 +3592,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Compute pixel scaling table.
       */
-      length=(size_t) (GetQuantumRange(image->depth)+1);
+      length=(size_t) (GetQuantumRange(depth)+1);
       scale=(Quantum *) AcquireQuantumMemory(length,sizeof(*scale));
       if (scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      range=GetQuantumRange(image->depth);
-      for (i=0; i < (ssize_t) (GetQuantumRange(image->depth)+1); i++)
+      range=GetQuantumRange(depth);
+      for (i=0; i < (ssize_t) (GetQuantumRange(depth)+1); i++)
         scale[i]=ScaleAnyToQuantum((size_t) i,range);
     }
   if (image->compression == RLECompression)
@@ -3635,34 +3637,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if (image_info->ping != MagickFalse)
       break;
-    if (image->compression == RLECompression)
-      {
-        unsigned int
-          tag;
-
-        /*
-          Read RLE segment table.
-        */
-        for (i=0; i < (ssize_t) stream_info->remaining; i++)
-          (void) ReadBlobByte(image);
-        tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
-        stream_info->remaining=(size_t) ReadBlobLSBLong(image);
-        if ((tag != 0xFFFEE000) || (stream_info->remaining <= 64) ||
-            (EOFBlob(image) == MagickTrue))
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        stream_info->count=0;
-        stream_info->segment_count=ReadBlobLSBLong(image);
-        if (stream_info->segment_count > 1)
-          {
-            bytes_per_pixel=1;
-            image->depth=8;
-          }
-        for (i=0; i < 15; i++)
-          stream_info->segments[i]=(int) ReadBlobLSBLong(image);
-        stream_info->remaining-=64;
-      }
     image->columns=(size_t) width;
     image->rows=(size_t) height;
+    image->depth=depth;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       {
         size_t
@@ -3670,7 +3647,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         one=1;
         if (colors == 0)
-          colors=one << image->depth;
+          colors=one << depth;
         if (AcquireImageColormap(image,colors) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)
@@ -3707,6 +3684,32 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colormap[i].green=index;
             image->colormap[i].blue=index;
           }
+      }
+    if (image->compression == RLECompression)
+      {
+        unsigned int
+          tag;
+
+        /*
+          Read RLE segment table.
+        */
+        for (i=0; i < (ssize_t) stream_info->remaining; i++)
+          (void) ReadBlobByte(image);
+        tag=(ReadBlobLSBShort(image) << 16) | ReadBlobLSBShort(image);
+        stream_info->remaining=(size_t) ReadBlobLSBLong(image);
+        if ((tag != 0xFFFEE000) || (stream_info->remaining <= 64) ||
+            (EOFBlob(image) == MagickTrue))
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        stream_info->count=0;
+        stream_info->segment_count=ReadBlobLSBLong(image);
+        if (stream_info->segment_count > 1)
+          {
+            bytes_per_pixel=1;
+            depth=8;
+          }
+        for (i=0; i < 15; i++)
+          stream_info->segments[i]=(int) ReadBlobLSBLong(image);
+        stream_info->remaining-=64;
       }
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
@@ -3997,7 +4000,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                   index&=mask;
                   index=(int) ConstrainColormapIndex(image,(size_t) index);
-                  SetIndexPixelComponent(indexes+x,index);
+                  SetIndexPixelComponent(indexes+x,(((size_t)
+                    GetIndexPixelComponent(indexes+x)) | (((size_t) index) <<
+                    8)));
                   pixel.red=1UL*image->colormap[index].red;
                   pixel.green=1UL*image->colormap[index].green;
                   pixel.blue=1UL*image->colormap[index].blue;
