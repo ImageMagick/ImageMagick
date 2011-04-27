@@ -26,7 +26,7 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedKernel,    /* equivelent to UnityKernel */
+  UndefinedKernel,    /* equivalent to UnityKernel */
   UnityKernel,        /* The no-op or 'original image' kernel */
   GaussianKernel,     /* Convolution Kernels, Gaussian Based */
   DoGKernel,
