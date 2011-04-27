@@ -3794,7 +3794,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
    */
   method_limit = 1;       /* just do method once, unless otherwise set */
   stage_limit = 1;        /* assume method is not a compound */
-  special = MagickFalse;   /* assume it is NOT a direct modify primative */
+  special = MagickFalse;   /* assume it is NOT a direct modify primitive */
   rslt_compose = compose; /* and we are composing multi-kernels as given */
   switch( method ) {
     case SmoothMorphology:  /* 4 primitive compound morphology */
