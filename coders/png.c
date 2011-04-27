@@ -120,10 +120,33 @@
 #endif
 #if !defined(RGBColorMatchExact)
 #define IsPNGColorEqual(color,target) \
-   (((color).red == (target).red) && \
-    ((color).green == (target).green) && \
-    ((color).blue == (target).blue))
+       (((color).red == (target).red) && \
+        ((color).green == (target).green) && \
+        ((color).blue == (target).blue))
 #endif
+
+#define GetRGBOPixelComponents(src, dest) \
+        (dest).red = GetRedPixelComponent((src)); \
+        (dest).green = GetGreenPixelComponent((src)); \
+        (dest).red = GetBluePixelComponent((src)); \
+        (dest).opacity = GetOpacityPixelComponent((src)); \
+
+#define SetRGBOPixelComponents(dest, src) \
+        SetRedPixelComponent((src),(dest).red); \
+        SetGreenPixelComponent((src),(dest).green); \
+        SetBluePixelComponent((src),(dest).blue); \
+        SetOpacityPixelComponent((src),(dest).opacity); \
+
+
+#define GetRGBPixelComponents(src, dest) \
+        (dest).red = GetRedPixelComponent((src)); \
+        (dest).green = GetGreenPixelComponent((src)); \
+        (dest).red = GetBluePixelComponent((src));
+
+#define SetRGBPixelComponents(dest, src) \
+        SetRedPixelComponent((src),(dest).red); \
+        SetGreenPixelComponent((src),(dest).green); \
+        SetBluePixelComponent((src),(dest).blue);
 
 /*
   Establish thread safety.
@@ -7308,9 +7331,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_opaque == 0)
                      {
-                       opaque[0].red=GetRedPixelComponent(q);
-                       opaque[0].green=GetGreenPixelComponent(q);
-                       opaque[0].blue=GetBluePixelComponent(q);
+                       GetRGBPixelComponents(q, opaque[0]);
                        opaque[0].opacity=OpaqueOpacity;
                        number_opaque=1;
                      }
@@ -7325,9 +7346,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_opaque < 259)
                      {
                        number_opaque++;
-                       opaque[i].red=GetRedPixelComponent(q);
-                       opaque[i].green=GetGreenPixelComponent(q);
-                       opaque[i].blue=GetBluePixelComponent(q);
+                       GetRGBPixelComponents(q, opaque[i]);
                        opaque[i].opacity=OpaqueOpacity;
                      }
                  }
@@ -7338,10 +7357,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_transparent == 0)
                      {
-                       transparent[0].red=GetRedPixelComponent(q);
-                       transparent[0].green=GetGreenPixelComponent(q);
-                       transparent[0].blue=GetBluePixelComponent(q);
-                       transparent[0].opacity=GetOpacityPixelComponent(q);
+                       GetRGBOPixelComponents(q, transparent[0]);
                        ping_trans_color.red=
                          (unsigned short) GetRedPixelComponent(q);
                        ping_trans_color.green=
@@ -7363,10 +7379,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_transparent < 259)
                      {
                        number_transparent++;
-                       transparent[i].red=GetRedPixelComponent(q);
-                       transparent[i].green=GetGreenPixelComponent(q);
-                       transparent[i].blue=GetBluePixelComponent(q);
-                       transparent[i].opacity=GetOpacityPixelComponent(q);
+                       GetRGBOPixelComponents(q, transparent[i]);
                      }
                  }
              }
@@ -7376,10 +7389,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_semitransparent == 0)
                      {
-                       semitransparent[0].red=GetRedPixelComponent(q);
-                       semitransparent[0].green=GetGreenPixelComponent(q);
-                       semitransparent[0].blue=GetBluePixelComponent(q);
-                       semitransparent[0].opacity=GetOpacityPixelComponent(q);
+                       GetRGBOPixelComponents(q, semitransparent[0]);
                        number_semitransparent = 1;
                      }
 
@@ -7395,10 +7405,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_semitransparent < 259)
                      {
                        number_semitransparent++;
-                       semitransparent[i].red=GetRedPixelComponent(q);
-                       semitransparent[i].green=GetGreenPixelComponent(q);
-                       semitransparent[i].blue=GetBluePixelComponent(q);
-                       semitransparent[i].opacity=GetOpacityPixelComponent(q);
+                       GetRGBOPixelComponents(q, semitransparent[i]);
                      }
                  }
              }
@@ -7428,9 +7435,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           }
           if (number_opaque < 259 && i == number_opaque)
             {
-               opaque[i].red = image->background_color.red;
-               opaque[i].green = image->background_color.green;
-               opaque[i].blue = image->background_color.blue;
+               opaque[i] = image->background_color;
                ping_background.index = i;
                if (logging != MagickFalse)
                  {
@@ -7805,9 +7810,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               if (r->opacity == TransparentOpacity)
                 {
-                  r->red = image->background_color.red;
-                  r->green = image->background_color.green;
-                  r->blue = image->background_color.blue;
+                  SetRGBPixelComponents(image->background_color, r);
                 }
               else
                 {
@@ -7979,9 +7982,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               if (r->opacity == TransparentOpacity)
                 {
-                  r->red = image->background_color.red;
-                  r->green = image->background_color.green;
-                  r->blue = image->background_color.blue;
+                  SetRGBPixelComponents(image->background_color, r);
                 }
               else
                 {
