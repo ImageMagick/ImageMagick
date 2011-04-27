@@ -1,5 +1,6 @@
 2011-04-26  6.6.9-7 Glenn Randers-Pehrson <glennrp@image...>
-  * Write the proper bKGD chunk value in grayscale PNG images.
+  * Write the proper bKGD chunk value in grayscale PNG images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18624).
 
 2011-04-25  6.6.9-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Separate simple image operations from 'region' wrappers.
