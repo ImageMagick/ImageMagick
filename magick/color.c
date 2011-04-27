@@ -1755,7 +1755,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 %  This method is used by ColorFloodFill() and other algorithms which
 %  compare two colors.
 %
-%  This implements the equivelent of...
+%  This implements the equivalent of...
 %    fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
 %
 %  Which produces a multi-dimentional cone for that colorspace along the

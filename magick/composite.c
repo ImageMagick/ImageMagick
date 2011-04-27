@@ -372,7 +372,7 @@ static inline void CompositeDarken(const MagickPixelPacket *p,
   MagickPixelPacket *composite)
 {
   /*
-    Darken is equivelent to a 'Minimum' method
+    Darken is equivalent to a 'Minimum' method
     OR a greyscale version of a binary 'Or'
     OR the 'Intersection' of pixel sets.
   */
@@ -706,7 +706,7 @@ static inline void CompositeLighten(const MagickPixelPacket *p,
   MagickPixelPacket *composite)
 {
   /*
-    Lighten is also equivelevt to a 'Maximum' method
+    Lighten is also equvalent to a 'Maximum' method
     OR a greyscale version of a binary 'And'
     OR the 'Union' of pixel sets.
   */
@@ -964,7 +964,7 @@ static inline void CompositePlus(const MagickPixelPacket *p,
       NOTE: "Plus" does not use 'over' alpha-blending but uses a
       special 'plus' form of alph-blending. It is the ONLY mathematical
       operator to do this. this is what makes it different to the
-      otherwise equivelent "LinearDodge" composition method.
+      otherwise equivalent "LinearDodge" composition method.
 
       Note however that color channels are still effected by the alpha channel
       as a result of the blending, making it just as useless for independant
