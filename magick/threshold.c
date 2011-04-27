@@ -1324,7 +1324,7 @@ MagickExport MagickBooleanType OrderedDitherImageChannel(Image *image,
 %      map to use, followed by zero or more numbers representing the number
 %      of color levels tho dither between.
 %
-%      Any level number less than 2 will be equivelent to 2, and means only
+%      Any level number less than 2 will be equivalent to 2, and means only
 %      binary dithering will be applied to each color channel.
 %
 %      No numbers also means a 2 level (bitmap) dither will be applied to all
