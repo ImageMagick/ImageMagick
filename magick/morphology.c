@@ -612,7 +612,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       If 'sigma' is zero, you get a single pixel on a field of zeros.
 %
 %       Note that two convolutions with two "Blur" kernels perpendicular to
-%       each other, is equivelent to a far larger "Gaussian" kernel with the
+%       each other, is equivalent to a far larger "Gaussian" kernel with the
 %       same sigma value, However it is much faster to apply. This is how the
 %       "-blur" operator actually works.
 %
@@ -835,7 +835,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Generate a kernel in the shape of a 'plus' or a 'cross' with
 %       a each arm the length of the given radius (default 2).
 %
-%       NOTE: "plus:1" is equivelent to a "Diamond" kernel.
+%       NOTE: "plus:1" is equivalent to a "Diamond" kernel.
 %
 %    Ring:{radius1},{radius2}[,{scale}]
 %       A ring of the values given that falls between the two radii.
@@ -2340,12 +2340,12 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
 
   /* check actual kernel values */
   for (i=0; i < (kernel1->width*kernel1->height); i++) {
-    /* Test for Nan equivelence */
+    /* Test for Nan equivalence */
     if ( IsNan(kernel1->values[i]) && !IsNan(kernel2->values[i]) )
       return MagickFalse;
     if ( IsNan(kernel2->values[i]) && !IsNan(kernel1->values[i]) )
       return MagickFalse;
-    /* Test actual values are equivelent */
+    /* Test actual values are equivalent */
     if ( fabs(kernel1->values[i] - kernel2->values[i]) > MagickEpsilon )
       return MagickFalse;
   }
@@ -2443,7 +2443,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  MorphologyApply() applies a morphological method, multiple times using
 %  a list of multiple kernels.
 %
-%  It is basically equivelent to as MorphologyImageChannel() (see below) but
+%  It is basically equivalent to as MorphologyImageChannel() (see below) but
 %  without any user controls.  This allows internel programs to use this
 %  function, to actually perform a specific task without posible interference
 %  by any API user supplied settings.
@@ -3134,9 +3134,9 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
   However it is still (almost) correct coding for Grayscale Morphology.
   That is...
 
-  GrayErode    is equivelent but with kernel values subtracted from pixels
+  GrayErode    is equivalent but with kernel values subtracted from pixels
                without the kernel rotation
-  GreyDilate   is equivelent but using Maximum() instead of Minimum()
+  GreyDilate   is equivalent but using Maximum() instead of Minimum()
                useing kernel rotation
 
         case DistanceMorphology:

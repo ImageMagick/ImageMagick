@@ -1326,7 +1326,7 @@ static double *GenerateCoefficients(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DistortResizeImage() resize image using the equivelent but slower image
+%  DistortResizeImage() resize image using the equivalent but slower image
 %  distortion operator.  The filter is applied using a EWA cylindrical
 %  resampling. But like resize the final image size is limited to whole pixels
 %  with no effects by virtual-pixels on the result.
@@ -1540,7 +1540,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
 %
 %    o "verbose"
 %        Output to stderr alternatives, internal coefficents, and FX
-%        equivelents for the distortion operation (if feasible).
+%        equivalents for the distortion operation (if feasible).
 %        This forms an extra check of the distortion method, and allows users
 %        access to the internal constants IM calculates for the distortion.
 %

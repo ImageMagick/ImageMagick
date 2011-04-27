@@ -522,7 +522,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  as recommended by many references)
 %
 %  The special a 'cylindrical' filter flag will promote the default 4-lobed
-%  Windowed Sinc filter to a 3-lobed Windowed Jinc equivelent, which is better
+%  Windowed Sinc filter to a 3-lobed Windowed Jinc equivalent, which is better
 %  suited to this style of image resampling. This typically happens when using
 %  such a filter for images distortions.
 %

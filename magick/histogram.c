@@ -953,7 +953,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %  stretch the colors (and histogram) of the image.  The stretch points are
 %  also moved further inward by the adjustment values given.
 %
-%  If the adjustment values are both zero this function is equivelent to a
+%  If the adjustment values are both zero this function is equivalent to a
 %  perfect normalization (or autolevel) of the image.
 %
 %  Each channel is stretched independantally of each other (producing color
