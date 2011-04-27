@@ -125,28 +125,32 @@
         ((color).blue == (target).blue))
 #endif
 
-#define GetRGBOPixelComponents(src, dest) \
-        (dest).red = GetRedPixelComponent((src)); \
-        (dest).green = GetGreenPixelComponent((src)); \
-        (dest).red = GetBluePixelComponent((src)); \
-        (dest).opacity = GetOpacityPixelComponent((src)); \
+/* Convenience macros for copying RGB or RGB+opacity components
+ * between a pixel and a PixelPacket.
+ */
 
-#define SetRGBOPixelComponents(dest, src) \
-        SetRedPixelComponent((src),(dest).red); \
-        SetGreenPixelComponent((src),(dest).green); \
-        SetBluePixelComponent((src),(dest).blue); \
-        SetOpacityPixelComponent((src),(dest).opacity); \
+#define GetRGBOPixelComponents(pixel, packet) \
+        (packet).red = GetRedPixelComponent((pixel)); \
+        (packet).green = GetGreenPixelComponent((pixel)); \
+        (packet).red = GetBluePixelComponent((pixel)); \
+        (packet).opacity = GetOpacityPixelComponent((pixel)); \
+
+#define SetRGBOPixelComponents(pixel, packet) \
+        SetRedPixelComponent((pixel),(packet).red); \
+        SetGreenPixelComponent((pixel),(packet).green); \
+        SetBluePixelComponent((pixel),(packet).blue); \
+        SetOpacityPixelComponent((pixel),(packet).opacity); \
 
 
-#define GetRGBPixelComponents(src, dest) \
-        (dest).red = GetRedPixelComponent((src)); \
-        (dest).green = GetGreenPixelComponent((src)); \
-        (dest).red = GetBluePixelComponent((src));
+#define GetRGBPixelComponents(pixel, packet) \
+        (packet).red = GetRedPixelComponent((pixel)); \
+        (packet).green = GetGreenPixelComponent((pixel)); \
+        (packet).red = GetBluePixelComponent((pixel));
 
-#define SetRGBPixelComponents(dest, src) \
-        SetRedPixelComponent((src),(dest).red); \
-        SetGreenPixelComponent((src),(dest).green); \
-        SetBluePixelComponent((src),(dest).blue);
+#define SetRGBPixelComponents(pixel, packet) \
+        SetRedPixelComponent((pixel),(packet).red); \
+        SetGreenPixelComponent((pixel),(packet).green); \
+        SetBluePixelComponent((pixel),(packet).blue);
 
 /*
   Establish thread safety.
@@ -7810,7 +7814,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               if (r->opacity == TransparentOpacity)
                 {
-                  SetRGBPixelComponents(image->background_color, r);
+                  SetRGBPixelComponents(r,image->background_color);
                 }
               else
                 {
@@ -7982,7 +7986,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               if (r->opacity == TransparentOpacity)
                 {
-                  SetRGBPixelComponents(image->background_color, r);
+                  SetRGBPixelComponents(r,image->background_color);
                 }
               else
                 {
