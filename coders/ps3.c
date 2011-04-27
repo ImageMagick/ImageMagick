@@ -230,13 +230,9 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   return(status);
 }
 
-
 static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   Image *image,unsigned char **pixels,size_t *length)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -252,13 +248,16 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   register unsigned char
     *q;
 
+  ssize_t
+    y;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  *length=(image->colorspace == CMYKColorspace ? 4 : 3)*
-    (size_t) image->columns*image->rows;
+  *length=(image->colorspace == CMYKColorspace ? 4 : 3)*(size_t)
+    image->columns*image->rows;
   *pixels=(unsigned char *) AcquireQuantumMemory(*length,sizeof(**pixels));
   if (*pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -283,13 +282,13 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
         *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
         *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
         *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-        *q++=ScaleQuantumToChar(indexes[x]);
+        *q++=ScaleQuantumToChar(GetIndexPixelComponent(indexes+x));
         p++;
       }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -302,9 +301,6 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
 static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   Image *image,unsigned char **pixels,size_t *length)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -317,13 +313,16 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   register unsigned char
     *q;
 
-  unsigned char
-    code,
-    bit;
-
   size_t
     pack,
     padded_columns;
+
+  ssize_t
+    y;
+
+  unsigned char
+    code,
+    bit;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -355,8 +354,8 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
         {
           bit=(unsigned char) 0x00;
           if (x < (ssize_t) image->columns)
-            bit=(unsigned char) (PixelIntensityToQuantum(p) ==
-              (Quantum) TransparentOpacity ? 0x01 : 0x00);
+            bit=(unsigned char) (PixelIntensityToQuantum(p) == (Quantum)
+              TransparentOpacity ? 0x01 : 0x00);
           code=(code << 1)+bit;
           if (((x+1) % pack) == 0)
             {
@@ -367,7 +366,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
         }
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -379,9 +378,6 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
 static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
   Image *image,unsigned char **pixels,size_t *length)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -396,6 +392,9 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
 
   register unsigned char
     *q;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -418,7 +417,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }
@@ -467,8 +466,8 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   */
   start=TellBlob(image);
   (void) FormatMagickString(buffer,MaxTextExtent,
-    "%%%%BeginData:%13ld %s Bytes\n",0L,
-    compression == NoCompression ? "ASCII" : "BINARY");
+    "%%%%BeginData:%13ld %s Bytes\n",0L,compression == NoCompression ?
+    "ASCII" : "BINARY");
   (void) WriteBlobString(image,buffer);
   stop=TellBlob(image);
   /*
@@ -814,9 +813,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
   GeometryInfo
     geometry_info;
 
-  ssize_t
-    j;
-
   MagickBooleanType
     status;
 
@@ -846,18 +842,19 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     bounds;
 
   size_t
-    length;
+    length,
+    page,
+    pixel,
+    text_size;
+
+  ssize_t
+    j;
 
   time_t
     timer;
 
   unsigned char
     *pixels;
-
-  size_t
-    page,
-    pixel,
-    text_size;
 
   /*
     Open output image file.
@@ -1218,9 +1215,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       Image columns, rows, and color space.
     */
     (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n%s\n",
-      (double) image->columns,(double) image->rows,
-      image->colorspace == CMYKColorspace ? PS3_CMYKColorspace :
-      PS3_RGBColorspace);
+      (double) image->columns,(double) image->rows,image->colorspace ==
+      CMYKColorspace ? PS3_CMYKColorspace : PS3_RGBColorspace);
     (void) WriteBlobString(image,buffer);
     /*
       Masked image?
