@@ -1712,7 +1712,6 @@ am__objects_19 = wand/wand_libMagickWand_la-animate.lo \
 	wand/wand_libMagickWand_la-magick-wand.lo \
 	wand/wand_libMagickWand_la-mogrify.lo \
 	wand/wand_libMagickWand_la-montage.lo \
-	wand/wand_libMagickWand_la-operation.lo \
 	wand/wand_libMagickWand_la-pixel-iterator.lo \
 	wand/wand_libMagickWand_la-pixel-wand.lo \
 	wand/wand_libMagickWand_la-stream.lo \
@@ -2358,7 +2357,9 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INT16_T = @INT16_T@
+INT32_F = @INT32_F@
 INT32_T = @INT32_T@
+INT64_F = @INT64_F@
 INT64_T = @INT64_T@
 INT8_T = @INT8_T@
 JBIG_LIBS = @JBIG_LIBS@
@@ -2515,10 +2516,14 @@ THREAD_LIBS = @THREAD_LIBS@
 TIFF_LIBS = @TIFF_LIBS@
 TXTDelegate = @TXTDelegate@
 UINT16_T = @UINT16_T@
+UINT32_F = @UINT32_F@
 UINT32_T = @UINT32_T@
+UINT64_F = @UINT64_F@
 UINT64_T = @UINT64_T@
 UINT8_T = @UINT8_T@
+UINTMAX_F = @UINTMAX_F@
 UINTMAX_T = @UINTMAX_T@
+UINTPTR_F = @UINTPTR_F@
 UINTPTR_T = @UINTPTR_T@
 UMEM_LIBS = @UMEM_LIBS@
 UniconvertorDelegate = @UniconvertorDelegate@
@@ -4253,8 +4258,6 @@ WAND_SOURCES = \
 	wand/mogrify-private.h \
   wand/montage.c \
 	wand/montage.h \
-	wand/operation.c \
-	wand/operation.h \
 	wand/pixel-iterator.c \
 	wand/pixel-iterator.h \
 	wand/pixel-wand.c \
@@ -4280,7 +4283,6 @@ WAND_INCLUDE_HDRS = \
 	wand/drawing-wand.h \
 	wand/identify.h \
 	wand/import.h \
-	wand/operation.h \
 	wand/magick-image.h \
 	wand/magick-property.h \
 	wand/magick-wand.h \
@@ -6043,8 +6045,6 @@ wand/wand_libMagickWand_la-mogrify.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-montage.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
-wand/wand_libMagickWand_la-operation.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-pixel-iterator.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-pixel-wand.lo: wand/$(am__dirstamp) \
@@ -7135,8 +7135,6 @@ mostlyclean-compile:
 	-rm -f wand/wand_libMagickWand_la-mogrify.lo
 	-rm -f wand/wand_libMagickWand_la-montage.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-montage.lo
-	-rm -f wand/wand_libMagickWand_la-operation.$(OBJEXT)
-	-rm -f wand/wand_libMagickWand_la-operation.lo
 	-rm -f wand/wand_libMagickWand_la-pixel-iterator.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-pixel-iterator.lo
 	-rm -f wand/wand_libMagickWand_la-pixel-wand.$(OBJEXT)
@@ -7561,7 +7559,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-magick-wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-mogrify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-montage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-operation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-pixel-iterator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-pixel-wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-stream.Plo@am__quote@
@@ -10419,14 +10416,6 @@ wand/wand_libMagickWand_la-montage.lo: wand/montage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wand/montage.c' object='wand/wand_libMagickWand_la-montage.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-montage.lo `test -f 'wand/montage.c' || echo '$(srcdir)/'`wand/montage.c
-
-wand/wand_libMagickWand_la-operation.lo: wand/operation.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-operation.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-operation.Tpo -c -o wand/wand_libMagickWand_la-operation.lo `test -f 'wand/operation.c' || echo '$(srcdir)/'`wand/operation.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libMagickWand_la-operation.Tpo wand/$(DEPDIR)/wand_libMagickWand_la-operation.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wand/operation.c' object='wand/wand_libMagickWand_la-operation.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-operation.lo `test -f 'wand/operation.c' || echo '$(srcdir)/'`wand/operation.c
 
 wand/wand_libMagickWand_la-pixel-iterator.lo: wand/pixel-iterator.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-pixel-iterator.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-pixel-iterator.Tpo -c -o wand/wand_libMagickWand_la-pixel-iterator.lo `test -f 'wand/pixel-iterator.c' || echo '$(srcdir)/'`wand/pixel-iterator.c
