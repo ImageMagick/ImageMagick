@@ -59,6 +59,7 @@
 #include "magick/memory_.h"
 #include "magick/module.h"
 #include "magick/monitor-private.h"
+#include "magick/pixel.h"
 #include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
@@ -256,11 +257,11 @@ static ssize_t DecodePSDPixels(const size_t number_compact_pixels,
     i,
     j;
 
-  ssize_t
-    packets;
-
   size_t
     length;
+
+  ssize_t
+    packets;
 
   packets=(ssize_t) number_compact_pixels;
   for (i=0; (packets > 1) && (i < (ssize_t) number_pixels); )
@@ -635,12 +636,12 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
       {
         case -1:
         {
-          q->opacity=(Quantum) (QuantumRange-pixel);
+          SetOpacityPixelComponent(q,QuantumRange-pixel);
           break;
         }
         case 0:
         {
-          q->red=pixel;
+          SetRedPixelComponent(q,pixel);
           if (channels == 1)
             {
               SetGreenPixelComponent(q,GetRedPixelComponent(q));
@@ -649,12 +650,15 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           if (image->storage_class == PseudoClass)
             {
               if (packet_size == 1)
-                indexes[x]=(IndexPacket) ScaleQuantumToChar(pixel);
+                SetIndexPixelComponent(indexes+x,ScaleQuantumToChar(pixel));
               else
-                indexes[x]=(IndexPacket) ScaleQuantumToShort(pixel);
-              q->red=image->colormap[(ssize_t) indexes[x]].red;
-              q->green=image->colormap[(ssize_t) indexes[x]].green;
-              q->blue=image->colormap[(ssize_t) indexes[x]].blue;
+                SetIndexPixelComponent(indexes+x,ScaleQuantumToShort(pixel));
+              SetRedPixelComponent(q,image->colormap[(ssize_t)
+                GetIndexPixelComponent(indexes+x)].red);
+              SetGreenPixelComponent(q,image->colormap[(ssize_t)
+                GetIndexPixelComponent(indexes+x)].green);
+              SetBluePixelComponent(q,image->colormap[(ssize_t)
+                GetIndexPixelComponent(indexes+x)].blue);
               if (image->depth == 1)
                 {
                   ssize_t
@@ -666,11 +670,14 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                     number_bits=8;
                   for (bit=0; bit < number_bits; bit++)
                   {
-                    indexes[x]=((((unsigned char) pixel) & (0x01 << (7-bit)))
-                      != 0 ? 0 : 255);
-                    q->red=image->colormap[(ssize_t) indexes[x]].red;
-                    q->green=image->colormap[(ssize_t) indexes[x]].green;
-                    q->blue=image->colormap[(ssize_t) indexes[x]].blue;
+                    SetIndexPixelComponent(indexes+x,(((unsigned char) pixel) &
+                      (0x01 << (7-bit))) != 0 ? 0 : 255);
+                    SetRedPixelComponent(q,image->colormap[(ssize_t)
+                      GetIndexPixelComponent(indexes+x)].red);
+                    SetGreenPixelComponent(q,image->colormap[(ssize_t)
+                      GetIndexPixelComponent(indexes+x)].green);
+                    SetBluePixelComponent(q,image->colormap[(ssize_t)
+                      GetIndexPixelComponent(indexes+x)].blue);
                     q++;
                     x++;
                   }
@@ -683,32 +690,32 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         case 1:
         {
           if (image->storage_class == PseudoClass)
-            q->opacity=(Quantum) (QuantumRange-pixel);
+            SetOpacityPixelComponent(q,QuantumRange-pixel);
           else
-            q->green=pixel;
+            SetGreenPixelComponent(q,pixel);
           break;
         }
         case 2:
         {
           if (image->storage_class == PseudoClass)
-            q->opacity=(Quantum) (QuantumRange-pixel);
+            SetOpacityPixelComponent(q,QuantumRange-pixel);
           else
-            q->blue=pixel;
+            SetBluePixelComponent(q,pixel);
           break;
         }
         case 3:
         {
           if (image->colorspace == CMYKColorspace)
-            indexes[x]=(IndexPacket) pixel;
+            SetIndexPixelComponent(indexes+x,pixel);
           else
-            q->opacity=(Quantum) (QuantumRange-pixel);
+            SetOpacityPixelComponent(q,QuantumRange-pixel);
           break;
         }
         case 4:
         {
           if ((image->colorspace == RGBColorspace) && (channels > 3))
             break;
-          q->opacity=(Quantum) (QuantumRange-pixel);
+          SetOpacityPixelComponent(q,QuantumRange-pixel);
           break;
         }
         default:
@@ -1144,14 +1151,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Adjustment layers and other stuff...
           */
           {
-            char  alsig[4],
-                alkey[4];
+            char  alsig[4], alkey[4];
 
             count=ReadBlob(image,4,alsig);
             if ((count == 0) || (LocaleNCompare(alsig,"8BIM",4) != 0)) {
               if (debug != MagickFalse)
               {
-      if (image->debug != MagickFalse)
+                if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  adjustment layer type was %.4s instead of 8BIM", alsig);
               }
               ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -1160,7 +1166,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             length=ReadBlobMSBLong(image);
               if (debug != MagickFalse)
               {
-      if (image->debug != MagickFalse)
+                if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "      adjustment layer key: %.4s, data length=%.20g",
                             alkey, (double) length);
@@ -1532,7 +1538,6 @@ ModuleExport void UnregisterPSDImage(void)
 %    o image_info: the image info.
 %
 %    o image:  The image.
-%
 %
 */
 

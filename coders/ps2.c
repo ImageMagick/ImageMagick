@@ -391,10 +391,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
   GeometryInfo
     geometry_info;
 
-  ssize_t
-    j,
-    y;
-
   MagickOffsetType
     scene,
     start,
@@ -439,17 +435,19 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
     bounds;
 
   size_t
-    length;
+    length,
+    page,
+    text_size;
+
+  ssize_t
+    j,
+    y;
 
   time_t
     timer;
 
   unsigned char
     *pixels;
-
-  size_t
-    page,
-    text_size;
 
   /*
     Open output image file.
@@ -790,7 +788,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
                 p++;
               }
-              progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
+              progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
               if (progress == MagickFalse)
                 break;
             }
@@ -821,8 +820,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                Ascii85Encode(image,
-                  ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  PixelIntensityToQuantum(p)));
                 p++;
               }
               progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
@@ -903,11 +902,13 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                         *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
                         *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
                         *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-                        *q++=ScaleQuantumToChar(indexes[x]);
+                        *q++=ScaleQuantumToChar(GetIndexPixelComponent(
+                          indexes+x));
                       }
                   p++;
                 }
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                  y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }
@@ -952,20 +953,27 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   else
                     if (image->colorspace != CMYKColorspace)
                       {
-                        Ascii85Encode(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetGreenPixelComponent(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetBluePixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetRedPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetGreenPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetBluePixelComponent(p)));
                       }
                     else
                       {
-                        Ascii85Encode(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetGreenPixelComponent(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(GetBluePixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetRedPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetGreenPixelComponent(p)));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetBluePixelComponent(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(indexes[x]));
                       }
                   p++;
                 }
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                  y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }
@@ -1027,7 +1035,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                   *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                  y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }
@@ -1058,8 +1067,10 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                  Ascii85Encode(image,(unsigned char) indexes[x]);
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,image->rows);
+                  Ascii85Encode(image,(unsigned char) GetIndexPixelComponent(
+                    indexes+x));
+                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+                  y,image->rows);
                 if (progress == MagickFalse)
                   break;
               }

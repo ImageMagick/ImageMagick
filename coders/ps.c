@@ -1345,10 +1345,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
   IndexPacket
     index;
 
-  ssize_t
-    j,
-    y;
-
   MagickBooleanType
     status;
 
@@ -1388,19 +1384,21 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     bounds;
 
   size_t
-    length;
+    bit,
+    byte,
+    length,
+    page,
+    text_size;
+
+  ssize_t
+    j,
+    y;
 
   time_t
     timer;
 
   unsigned char
     pixels[2048];
-
-  size_t
-    bit,
-    byte,
-    page,
-    text_size;
 
   /*
     Open output image file.
@@ -1589,14 +1587,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             Image
               *preview_image;
 
-            ssize_t
-              y;
-
             Quantum
               pixel;
 
             register ssize_t
               x;
+
+            ssize_t
+              y;
 
             /*
               Create preview image.
@@ -1848,8 +1846,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 };
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) 
+                    y,image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -1890,10 +1888,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((GetRedPixelComponent(p) == pixel.red) && (GetGreenPixelComponent(p) == pixel.green) &&
+                  if ((GetRedPixelComponent(p) == pixel.red) &&
+                      (GetGreenPixelComponent(p) == pixel.green) &&
                       (GetBluePixelComponent(p) == pixel.blue) &&
-                      (GetOpacityPixelComponent(p) == pixel.opacity) && (length < 255) &&
-                      (x < (ssize_t) (image->columns-1)))
+                      (GetOpacityPixelComponent(p) == pixel.opacity) &&
+                      (length < 255) && (x < (ssize_t) (image->columns-1)))
                     length++;
                   else
                     {
@@ -1921,8 +1920,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                   }
                 if (image->previous == (Image *) NULL)
                   {
-                    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                    status=SetImageProgress(image,SaveImageTag,
+                      (MagickOffsetType) y,image->rows);
                     if (status == MagickFalse)
                       break;
                   }
@@ -1958,9 +1957,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                     }
                   else
                     {
-                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(GetRedPixelComponent(p)),q);
-                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(GetGreenPixelComponent(p)),q);
-                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(GetBluePixelComponent(p)),q);
+                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(
+                        GetRedPixelComponent(p)),q);
+                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(
+                        GetGreenPixelComponent(p)),q);
+                      q=PopHexPixel(hex_digits,ScaleQuantumToChar(
+                        GetBluePixelComponent(p)),q);
                     }
                   if ((q-pixels+6) >= 80)
                     {
@@ -1972,8 +1974,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   {
-                    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+                    status=SetImageProgress(image,SaveImageTag,
+                      (MagickOffsetType) y,image->rows);
                     if (status == MagickFalse)
                       break;
                   }
@@ -2027,12 +2029,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetVirtualIndexQueue(image);
-                index=(*indexes);
+                index=GetIndexPixelComponent(indexes);
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((index == indexes[x]) && (length < 255) &&
-                      (x < ((ssize_t) image->columns-1)))
+                  if ((index == GetIndexPixelComponent(indexes+x)) &&
+                      (length < 255) && (x < ((ssize_t) image->columns-1)))
                     length++;
                   else
                     {
@@ -2051,8 +2053,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                         }
                       length=0;
                     }
-                  index=indexes[x];
-                  pixel=(*p);
+                  index=GetIndexPixelComponent(indexes+x);
+                  pixel.red=GetRedPixelComponent(p);
+                  pixel.green=GetGreenPixelComponent(p);
+                  pixel.blue=GetBluePixelComponent(p);
+                  pixel.opacity=GetOpacityPixelComponent(p);
                   p++;
                 }
                 q=PopHexPixel(hex_digits,(size_t) index,q);
@@ -2089,7 +2094,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  q=PopHexPixel(hex_digits,(size_t) indexes[x],q);
+                  q=PopHexPixel(hex_digits,(size_t) GetIndexPixelComponent(
+                    indexes+x),q);
                   if ((q-pixels+4) >= 80)
                     {
                       *q++='\n';
