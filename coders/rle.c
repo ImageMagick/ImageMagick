@@ -529,9 +529,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponenet(q,image->colormap[*p++].red);
-                SetGreenPixelComponenet(q,image->colormap[*p++].green);
-                SetBluePixelComponenet(q,image->colormap[*p++].blue);
+                SetRedPixelComponent(q,image->colormap[*p++].red);
+                SetGreenPixelComponent(q,image->colormap[*p++].green);
+                SetBluePixelComponent(q,image->colormap[*p++].blue);
                 SetOpacityPixelComponent(q,QuantumRange-
                   ScaleCharToQuantum(*p++));
                 q++;

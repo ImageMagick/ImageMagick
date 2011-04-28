@@ -152,7 +152,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          SetIndexPixelComponetn(indexes+x,index);
+          SetIndexPixelComponent(indexes+x,index);
       }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
