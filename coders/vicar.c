@@ -153,9 +153,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   int
     c;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status,
     value_expected;
@@ -173,7 +170,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     length;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -433,11 +431,11 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count;
 
   unsigned char
     *pixels;

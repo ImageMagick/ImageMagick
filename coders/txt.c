@@ -170,9 +170,6 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   Image
     *texture;
 
-  ssize_t
-    offset;
-
   MagickBooleanType
     status;
 
@@ -181,6 +178,9 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
 
   RectangleInfo
     page;
+
+  ssize_t
+    offset;
 
   TypeMetric
     metrics;
@@ -223,10 +223,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize Image structure.
   */
-  image->columns=(size_t) floor((((double) page.width*
-    image->x_resolution)/delta.x)+0.5);
-  image->rows=(size_t) floor((((double) page.height*
-    image->y_resolution)/delta.y)+0.5);
+  image->columns=(size_t) floor((((double) page.width*image->x_resolution)/
+    delta.x)+0.5);
+  image->rows=(size_t) floor((((double) page.height*image->y_resolution)/
+    delta.y)+0.5);
   image->page.x=0;
   image->page.y=0;
   texture=(Image *) NULL;
@@ -476,17 +476,18 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (PixelPacket *) NULL)
           continue;
-        q->red=ScaleAnyToQuantum(pixel.red,range);
-        q->green=ScaleAnyToQuantum(pixel.green,range);
-        q->blue=ScaleAnyToQuantum(pixel.blue,range);
+        SetRedPixelComponent(q,ScaleAnyToQuantum(pixel.red,range));
+        SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel.green,range));
+        SetBluePixelComponent(q,ScaleAnyToQuantum(pixel.blue,range));
         if (image->colorspace == CMYKColorspace)
           {
             indexes=GetAuthenticIndexQueue(image);
-            *indexes=ScaleAnyToQuantum(pixel.index,range);
+            SetIndexPixelComponent(indexes,ScaleAnyToQuantum(pixel.index,
+              range));
           }
         if (image->matte != MagickFalse)
-          q->opacity=(Quantum) (QuantumRange-ScaleAnyToQuantum(pixel.opacity,
-            range));
+          SetOpacityPixelComponent(q,QuantumRange-ScaleAnyToQuantum(
+            pixel.opacity,range));
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
@@ -616,9 +617,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     colorspace[MaxTextExtent],
     tuple[MaxTextExtent];
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -636,6 +634,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   /*
     Open output image file.

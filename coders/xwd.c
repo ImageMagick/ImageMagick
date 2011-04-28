@@ -162,9 +162,6 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     x_status;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     authentic_colormap;
 
@@ -187,13 +184,12 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixel;
 
   size_t
-    length;
+    length,
+    lsb_first;
 
   ssize_t
-    count;
-
-  size_t
-    lsb_first;
+    count,
+    y;
 
   XColor
     *colors;
@@ -409,17 +405,20 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(IndexPacket) ((pixel >> red_shift) & red_mask);
-              q->red=ScaleShortToQuantum(colors[(ssize_t) index].red);
+              SetRedPixelComponent(q,ScaleShortToQuantum(colors[(ssize_t)
+                index].red));
               index=(IndexPacket) ((pixel >> green_shift) & green_mask);
-              q->green=ScaleShortToQuantum(colors[(ssize_t) index].green);
+              SetGreenPixelComponent(q,ScaleShortToQuantum(colors[(ssize_t)
+                index].green));
               index=(IndexPacket) ((pixel >> blue_shift) & blue_mask);
-              q->blue=ScaleShortToQuantum(colors[(ssize_t) index].blue);
+              SetBluePixelComponent(q,ScaleShortToQuantum(colors[(ssize_t)
+                index].blue));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
             status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+              image->rows);
             if (status == MagickFalse)
               break;
           }
@@ -434,19 +433,22 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
               color=(color*65535UL)/red_mask;
-              q->red=ScaleShortToQuantum((unsigned short) color);
+              SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                color));
               color=(pixel >> green_shift) & green_mask;
               color=(color*65535UL)/green_mask;
-              q->green=ScaleShortToQuantum((unsigned short) color);
+              SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                color));
               color=(pixel >> blue_shift) & blue_mask;
               color=(color*65535UL)/blue_mask;
-              q->blue=ScaleShortToQuantum((unsigned short) color);
+              SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short)
+                color));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
             status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+              image->rows);
             if (status == MagickFalse)
               break;
           }
@@ -475,13 +477,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,
               (int) y));
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -599,9 +603,6 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
   const char
     *value;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -621,16 +622,17 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
     *q;
 
   size_t
-    length;
+    bits_per_pixel,
+    bytes_per_line,
+    length,
+    lsb_first,
+    scanline_pad;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
-
-  size_t
-    bits_per_pixel,
-    bytes_per_line,
-    lsb_first,
-    scanline_pad;
 
   XWDFileHeader
     xwd_info;
@@ -782,7 +784,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
       *q++='\0';
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

@@ -169,11 +169,11 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
-  ssize_t
-    offset;
-
   size_t
     length;
+
+  ssize_t
+    offset;
 
   unsigned char
     magick[MaxTextExtent];

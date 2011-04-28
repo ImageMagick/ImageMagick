@@ -167,9 +167,6 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -190,18 +187,19 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hex_digits[256];
 
   size_t
-    length;
-
-  unsigned char
-    *data;
-
-  size_t
     bit,
     byte,
     bytes_per_line,
+    length,
     padding,
     value,
     version;
+
+  ssize_t
+    y;
+
+  unsigned char
+    *data;
 
   unsigned long
     height,
@@ -365,7 +363,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (bit == 0)
         byte=(size_t) (*p++);
-      indexes[x]=(IndexPacket) ((byte & 0x01) != 0 ? 0x01 : 0x00);
+      SetIndexPixelComponent(indexes+x,(byte & 0x01) != 0 ? 0x01 : 0x00);
       bit++;
       byte>>=1;
       if (bit == 8)
@@ -374,7 +372,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -479,9 +477,6 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
     basename[MaxTextExtent],
     buffer[MaxTextExtent];
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -491,12 +486,13 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   register ssize_t
     x;
 
-  ssize_t
-    count;
-
   size_t
     bit,
     byte;
+
+  ssize_t
+    count,
+    y;
 
   /*
     Open output image file.
@@ -589,7 +585,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
         byte=0;
       };
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

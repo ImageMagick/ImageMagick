@@ -162,12 +162,6 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length,
     runlength;
 
-  ssize_t
-    y;
-
-  ssize_t
-    *scanlines;
-
   MagickBooleanType
     status;
 
@@ -182,7 +176,9 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   ssize_t
-    count;
+    count,
+    *scanlines,
+    y;
 
   RLAInfo
     rla_info;
@@ -308,23 +304,24 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case 0:
                 {
-                  q->red=ScaleCharToQuantum(byte);
+                  SetRedPixelComponent(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 1:
                 {
-                  q->green=ScaleCharToQuantum(byte);
+                  SetGreenPixelComponent(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 2:
                 {
-                  q->blue=ScaleCharToQuantum(byte);
+                  SetBluePixelComponent(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 3:
                 default:
                 {
-                  q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(byte));
+                  SetOpacityPixelComponent(q,QuantumRange-
+                    ScaleCharToQuantum(byte));
                   break;
                 }
               }
@@ -348,23 +345,23 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 0:
             {
-              q->red=ScaleCharToQuantum(byte);
+              SetRedPixelComponent(q,ScaleCharToQuantum(byte));
               break;
             }
             case 1:
             {
-              q->green=ScaleCharToQuantum(byte);
+              SetGreenPixelComponent(q,ScaleCharToQuantum(byte));
               break;
             }
             case 2:
             {
-              q->blue=ScaleCharToQuantum(byte);
+              SetBluePixelComponent(q,ScaleCharToQuantum(byte));
               break;
             }
             case 3:
             default:
             {
-              q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(byte));
+              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(byte));
               break;
             }
           }
@@ -377,7 +374,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

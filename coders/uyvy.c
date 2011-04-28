@@ -98,9 +98,6 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -109,6 +106,9 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   unsigned char
     u,
@@ -158,19 +158,19 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       y1=(unsigned char) ReadBlobByte(image);
       v=(unsigned char) ReadBlobByte(image);
       y2=(unsigned char) ReadBlobByte(image);
-      q->red=ScaleCharToQuantum(y1);
-      q->green=ScaleCharToQuantum(u);
-      q->blue=ScaleCharToQuantum(v);
+      SetRedPixelComponent(q,ScaleCharToQuantum(y1));
+      SetGreenPixelComponent(q,ScaleCharToQuantum(u));
+      SetBluePixelComponent(q,ScaleCharToQuantum(v));
       q++;
-      q->red=ScaleCharToQuantum(y2);
-      q->green=ScaleCharToQuantum(u);
-      q->blue=ScaleCharToQuantum(v);
+      SetRedPixelComponent(q,ScaleCharToQuantum(y2));
+      SetGreenPixelComponent(q,ScaleCharToQuantum(u));
+      SetBluePixelComponent(q,ScaleCharToQuantum(v));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -293,9 +293,6 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   Image
     *uyvy_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     full,
     status;
@@ -305,6 +302,9 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   /*
     Open output image file.
@@ -343,7 +343,8 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.green));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.red));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.blue));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(GetRedPixelComponent(p)));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(
+             GetRedPixelComponent(p)));
         }
       pixel.red=(double) GetRedPixelComponent(p);
       pixel.green=(double) GetGreenPixelComponent(p);
@@ -352,7 +353,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
       p++;
     }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

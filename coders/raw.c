@@ -100,9 +100,6 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
     *canvas_image,
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -119,7 +116,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
     length;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -193,11 +191,11 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
       register const PixelPacket
         *restrict p;
 
-      register ssize_t
-        x;
-
       register PixelPacket
         *restrict q;
+
+      register ssize_t
+        x;
 
       if (count != (ssize_t) length)
         {
@@ -235,7 +233,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -434,9 +432,6 @@ ModuleExport void UnregisterRAWImage(void)
 */
 static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
 {
-  ssize_t
-    y;
-
   MagickOffsetType
     scene;
 
@@ -452,11 +447,12 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count,
+    y;
 
   unsigned char
     *pixels;

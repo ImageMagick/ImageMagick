@@ -117,12 +117,12 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     count,
     y;
-
-  size_t
-    length;
 
   unsigned char
     *pixels;
@@ -1078,12 +1078,12 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
+  size_t
+    length;
+
   ssize_t
     count,
     y;
-
-  size_t
-    length;
 
   unsigned char
     *pixels;

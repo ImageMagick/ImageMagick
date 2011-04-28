@@ -373,11 +373,11 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
       {
         for (x=0; x < (ssize_t) tile_image->columns; x++)
         {
-          q->red=ScaleCharToQuantum(*graydata);
+          SetRedPixelComponent(q,ScaleCharToQuantum(*graydata));
           SetGreenPixelComponent(q,GetRedPixelComponent(q));
           SetBluePixelComponent(q,GetRedPixelComponent(q));
-          q->opacity=ScaleCharToQuantum((unsigned char) (255-
-            inLayerInfo->opacity));
+          SetOpacityPixelComponent(q,ScaleCharToQuantum(
+            (unsigned char) (255-inLayerInfo->opacity)));
           graydata++;
           q++;
         }
@@ -387,11 +387,12 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
         {
           for (x=0; x < (ssize_t) tile_image->columns; x++)
           {
-            q->red=ScaleCharToQuantum(xcfdata->red);
-            q->green=ScaleCharToQuantum(xcfdata->green);
-            q->blue=ScaleCharToQuantum(xcfdata->blue);
-            q->opacity=(Quantum) (xcfdata->opacity == 0U ? TransparentOpacity :
-              ScaleCharToQuantum((unsigned char) (255-inLayerInfo->opacity)));
+            SetRedPixelComponent(q,ScaleCharToQuantum(xcfdata->red));
+            SetGreenPixelComponent(q,ScaleCharToQuantum(xcfdata->green));
+            SetBluePixelComponent(q,ScaleCharToQuantum(xcfdata->blue));
+            SetOpacityPixelComponent(q,xcfdata->opacity == 0U ?
+              TransparentOpacity : ScaleCharToQuantum((unsigned char) (255-
+              inLayerInfo->opacity)));
             xcfdata++;
             q++;
           }
@@ -409,22 +410,20 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   ExceptionInfo
     *exception;
 
-  ssize_t
-    i,
-    j;
-
   MagickOffsetType
     size;
 
   register PixelPacket
     *q;
 
-  ssize_t
-    bytes_per_pixel,
-    count;
-
   size_t
     length;
+
+  ssize_t
+    bytes_per_pixel,
+    count,
+    i,
+    j;
 
   unsigned char
     data,
@@ -475,36 +474,36 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  q->red=ScaleCharToQuantum(data);
+                  SetRedPixelComponent(q,ScaleCharToQuantum(data));
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
-                      q->green=ScaleCharToQuantum(data);
-                      q->blue=ScaleCharToQuantum(data);
-                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
-                        inLayerInfo->opacity));
+                      SetGreenPixelComponent(q,ScaleCharToQuantum(data));
+                      SetBluePixelComponent(q,ScaleCharToQuantum(data));
+                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) (255-inLayerInfo->opacity)));
                     }
                   else
                     {
-                      q->green= q->red;
-                      q->blue= q->red;
-                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
-                        inLayerInfo->opacity));
+                      SetGreenPixelComponent(q,GetRedPixelComponent(q));
+                      SetBluePixelComponent(q,GetRedPixelComponent(q));
+                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) (255-inLayerInfo->opacity)));
                     }
                   break;
                 }
                 case 1:
                 {
-                  q->green=ScaleCharToQuantum(data);
+                  SetGreenPixelComponent(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 2:
                 {
-                  q->blue=ScaleCharToQuantum(data);
+                  SetBluePixelComponent(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 3:
                 {
-                  q->opacity=(Quantum) (data == 0 ? TransparentOpacity :
+                  SetOpacityPixelComponent(q,data == 0 ? TransparentOpacity :
                     ScaleCharToQuantum((unsigned char) (255-
                     inLayerInfo->opacity)));
                   break;
@@ -536,36 +535,36 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  q->red=ScaleCharToQuantum(data);
+                  SetReadPixelComponent(q,ScaleCharToQuantum(data));
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
-                      q->green=ScaleCharToQuantum(data);
-                      q->blue=ScaleCharToQuantum(data);
-                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
-                        inLayerInfo->opacity));
+                      SetGreenPixelComponent(q,ScaleCharToQuantum(data));
+                      SetBluePixelComponent(q,ScaleCharToQuantum(data));
+                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) (255-inLayerInfo->opacity)));
                     }
                   else
                     {
                       SetGreenPixelComponent(q,GetRedPixelComponent(q));
                       SetBluePixelComponent(q,GetRedPixelComponent(q));
-                      q->opacity=ScaleCharToQuantum((unsigned char) (255-
-                        inLayerInfo->opacity));
+                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) (255-inLayerInfo->opacity)));
                     }
                   break;
                 }
                 case 1:
                 {
-                  q->green=ScaleCharToQuantum(data);
+                  SetGreenPixelComponent(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 2:
                 {
-                  q->blue=ScaleCharToQuantum(data);
+                  SetBluePixelComponent(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 3:
                 {
-                  q->opacity=(Quantum) (data == 0 ? TransparentOpacity :
+                  SetOpacityPixelComponent(q,data == 0 ? TransparentOpacity :
                     ScaleCharToQuantum((unsigned char) (255-
                     inLayerInfo->opacity)));
                   break;
@@ -993,13 +992,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   size_t
+    image_type,
     length;
 
   ssize_t
     count;
-
-  size_t
-    image_type;
 
   XCFDocInfo
     doc_info;

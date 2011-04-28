@@ -102,9 +102,6 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickPixelPacket
     color;
 
-  ssize_t
-    y;
-
   PixelPacket
     pixel;
 
@@ -113,6 +110,9 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   /*
     Initialize Image structure.
@@ -151,7 +151,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          indexes[x]=index;
+          SetIndexPixelComponetn(indexes+x,index);
       }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

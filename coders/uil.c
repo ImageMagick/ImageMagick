@@ -168,10 +168,6 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
   int
     j;
 
-  ssize_t
-    k,
-    y;
-
   MagickBooleanType
     status,
     transparent;
@@ -192,13 +188,17 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     i,
     x;
 
-  static const char
-    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
-                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
-
   size_t
     characters_per_pixel,
     colors;
+
+  ssize_t
+    k,
+    y;
+
+  static const char
+    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
+                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
   /*
     Open output image file.
@@ -248,8 +248,8 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              matte_image[i]=(unsigned char)
-              (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity ? 1 : 0);
+              matte_image[i]=(unsigned char) (GetOpacityPixelComponent(p) ==
+                (Quantum) TransparentOpacity ? 1 : 0);
               if (matte_image[i] != 0)
                 transparent=MagickTrue;
               i++;
@@ -277,7 +277,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (matte_image[i] != 0)
-                indexes[x]=(IndexPacket) image->colors;
+                SetIndexPixelComponent(indexes+x,image->colors);
               p++;
             }
           }
@@ -359,7 +359,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
-        k=(((int) indexes[x]-k)/MaxCixels) % MaxCixels;
+        k=(((int) GetIndexPixelComponent(indexes+x)-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
@@ -371,7 +371,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       (y == (ssize_t) (image->rows-1) ? ");" : ","));
     (void) WriteBlobString(image,buffer);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

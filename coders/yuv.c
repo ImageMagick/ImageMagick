@@ -105,11 +105,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   InterlaceType
     interlace;
 
-  ssize_t
-    horizontal_factor,
-    vertical_factor,
-    y;
-
   MagickBooleanType
     status;
 
@@ -126,10 +121,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   ssize_t
-    quantum;
-
-  ssize_t
-    count;
+    count,
+    horizontal_factor,
+    quantum,
+    vertical_factor,
+    y;
 
   unsigned char
     *scanline;
@@ -257,11 +253,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
                 p+=2;
               }
-            q->green=(Quantum) 0;
-            q->blue=(Quantum) 0;
+            SetGreenPixelComponent(q,0);
+            SetBluePixelComponent(q,0);
             q++;
-            q->green=0;
-            q->blue=0;
+            SetGreenPixelComponent(q,0);
+            SetBluePixelComponent(q,0);
             if (quantum == 1)
               chroma_pixels->blue=ScaleCharToQuantum(*p++);
             else
@@ -273,7 +269,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
-                q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+                SetRedPixelComponent(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
             chroma_pixels++;
@@ -294,11 +291,12 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
-                q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+                SetRedPixelComponent(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
-            q->green=0;
-            q->blue=0;
+            SetGreenPixelComponent(q,0);
+            SetBluePixelComponent(q,0);
             q++;
           }
         }
@@ -338,15 +336,16 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
-            q->red=(Quantum) 0;
+            SetRedPixelComponent(q,0);
             if (quantum == 1)
               SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
-                q->green=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+                SetGreenPixelComponent(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
-            q->blue=(Quantum) 0;
+            SetBluePixelComponent(q,0);
             q++;
           }
           if (SyncAuthenticPixels(chroma_image,exception) == MagickFalse)
@@ -377,7 +376,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
           else
             {
-              q->blue=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+              SetBluePixelComponent(q,ScaleShortToQuantum(((*p) << 8) |
+                *(p+1)));
               p+=2;
             }
           q++;
@@ -404,8 +404,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        q->green=chroma_pixels->green;
-        q->blue=chroma_pixels->blue;
+        SetGreenPixelComponent(q,chroma_pixels->green);
+        SetBluePixelComponent(q,chroma_pixels->blue);
         chroma_pixels++;
         q++;
       }
@@ -554,11 +554,6 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
   InterlaceType
     interlace;
 
-  ssize_t
-    horizontal_factor,
-    vertical_factor,
-    y;
-
   MagickBooleanType
     status;
 
@@ -576,6 +571,11 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
     height,
     quantum,
     width;
+
+  ssize_t
+    horizontal_factor,
+    vertical_factor,
+    y;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -668,21 +668,25 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
           {
             if (quantum == 1)
               {
-                (void) WriteBlobByte(image,ScaleQuantumToChar(s->green));
+                (void) WriteBlobByte(image,ScaleQuantumToChar(
+                  GetGreenPixelComponent(s)));
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
                   GetRedPixelComponent(p)));
                 p++;
-                (void) WriteBlobByte(image,ScaleQuantumToChar(s->blue));
+                (void) WriteBlobByte(image,ScaleQuantumToChar(
+                  GetBluePixelComponent(s)));
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
                   GetRedPixelComponent(p)));
               }
             else
               {
-                (void) WriteBlobShort(image,ScaleQuantumToShort(s->green));
+                (void) WriteBlobByte(image,ScaleQuantumToChar(
+                  GetGreenPixelComponent(s)));
                 (void) WriteBlobShort(image,ScaleQuantumToShort(
                   GetRedPixelComponent(p)));
                 p++;
-                (void) WriteBlobShort(image,ScaleQuantumToShort(s->blue));
+                (void) WriteBlobByte(image,ScaleQuantumToChar(
+                  GetBluePixelComponent(s)));
                 (void) WriteBlobShort(image,ScaleQuantumToShort(
                   GetRedPixelComponent(p)));
               }

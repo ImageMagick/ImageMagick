@@ -126,9 +126,6 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -150,7 +147,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     buffer[768];
@@ -245,25 +243,25 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           case 0:
           {
-            q->red=pixel;
-            q->green=pixel;
-            q->blue=pixel;
+            SetRedPixelComponent(q,pixel);
+            SetGreenPixelComponent(q,pixel);
+            SetBluePixelComponent(q,pixel);
             break;
           }
           case 1:
           {
-            q->green=pixel;
+            SetGreenPixelComponent(q,pixel);
             break;
           }
           case 2:
           {
-            q->blue=pixel; break;
+            SetBluePixelComponent(q,pixel);
             break;
           }
           case 3: 
           {
             if (image->colorspace == CMYKColorspace)
-              indexes[x]=(IndexPacket) pixel;
+              SetBlackPixelComponent(indexes+x,pixel);
             break;
           }
         }
@@ -275,7 +273,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlobByte(image);  /* pad */
     }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }
