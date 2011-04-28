@@ -121,9 +121,6 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   int
     byte;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -135,6 +132,9 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   unsigned char
     bit;
@@ -201,7 +201,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
           if (byte == EOF)
             ThrowReaderException(CorruptImageError,"CorruptImage");
         }
-      indexes[x]=(IndexPacket) ((byte & (0x01 << (7-bit))) ? 1 : 0);
+      SetIndexPixelComponent(indexes+x,(byte & (0x01 << (7-bit))) ? 1 : 0);
       bit++;
       if (bit == 8)
         bit=0;
@@ -347,9 +347,6 @@ static void WBMPWriteInteger(Image *image,const size_t value)
 static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -358,6 +355,9 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
 
   register ssize_t
     x;
+
+  ssize_t
+    y;
 
   unsigned char
     bit,
@@ -407,7 +407,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
     if (bit != 0)
       (void) WriteBlobByte(image,byte);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+      image->rows);
     if (status == MagickFalse)
       break;
   }

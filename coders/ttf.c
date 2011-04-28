@@ -187,9 +187,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -202,6 +199,9 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register PixelPacket
     *q;
+
+  ssize_t
+    y;
 
   /*
     Open image file.

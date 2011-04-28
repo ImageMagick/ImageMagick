@@ -134,9 +134,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -146,15 +143,23 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
+  register PixelPacket
+    *q;
+
   register ssize_t
     i,
     x;
 
-  register PixelPacket
-    *q;
+  size_t
+    base,
+    flag,
+    offset,
+    real,
+    skip;
 
   ssize_t
-    count;
+    count,
+    y;
 
   TGAInfo
     tga_info;
@@ -163,13 +168,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     j,
     k,
     runlength;
-
-  size_t
-    base,
-    flag,
-    offset,
-    real,
-    skip;
 
   /*
     Open image file.
@@ -443,7 +441,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       if (image->storage_class == PseudoClass)
-        indexes[x]=index;
+        SetIndexPixelComponent(indexes+x,index);
       SetRedPixelComponent(q,pixel.red);
       SetGreenPixelComponent(q,pixel.green);
       SetBluePixelComponent(q,pixel.blue);
@@ -636,9 +634,6 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
   const char
     *value;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -658,7 +653,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
     *q;
 
   ssize_t
-    count;
+    count,
+    y;
 
   TargaInfo
     targa_info;
@@ -798,8 +794,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
             *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
             if (image->matte != MagickFalse)
-              *q++=(unsigned char) ScaleQuantumToChar((Quantum)
-                (GetAlphaPixelComponent(p)));
+              *q++=(unsigned char) ScaleQuantumToChar(
+                GetAlphaPixelComponent(p));
             if (image->colorspace == CMYKColorspace)
               *q++=ScaleQuantumToChar(indexes[x]);
           }
@@ -809,7 +805,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-              image->rows);
+          image->rows);
         if (status == MagickFalse)
           break;
       }

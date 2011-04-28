@@ -140,12 +140,12 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SegmentInfo
     bounds;
 
-  ssize_t
-    count;
-
   size_t
     height,
     width;
+
+  ssize_t
+    count;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);

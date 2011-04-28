@@ -176,11 +176,11 @@ static MagickBooleanType SGIDecode(const size_t bytes_per_pixel,
     *p,
     *q;
 
-  ssize_t
-    count;
-
   size_t
     pixel;
+
+  ssize_t
+    count;
 
   p=packets;
   q=pixels;
@@ -551,15 +551,15 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                q->red=ScaleShortToQuantum((unsigned short)
-                  ((*(p+0) << 8) | (*(p+1))));
-                q->green=ScaleShortToQuantum((unsigned short)
-                  ((*(p+2) << 8) | (*(p+3))));
-                q->blue=ScaleShortToQuantum((unsigned short)
-                  ((*(p+4) << 8) | (*(p+5))));
+                SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                  ((*(p+0) << 8) | (*(p+1)))));
+                SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                  ((*(p+2) << 8) | (*(p+3)))));
+                SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short)
+                  ((*(p+4) << 8) | (*(p+5)))));
                 SetOpacityPixelComponent(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  q->opacity=(Quantum) (QuantumRange-ScaleShortToQuantum(
+                  SetOpacityPixelComponent(q,QuantumRange-ScaleShortToQuantum(
                     (unsigned short) ((*(p+6) << 8) | (*(p+7)))));
                 p+=8;
                 q++;
@@ -589,7 +589,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->blue=ScaleCharToQuantum(*(p+2));
               SetOpacityPixelComponent(q,OpaqueOpacity);
               if (image->matte != MagickFalse)
-                q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(*(p+3)));
+                SetOpacityPixelComponent(q,QuantumRange-
+                  ScaleCharToQuantum(*(p+3)));
               p+=4;
               q++;
             }
@@ -627,7 +628,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 quantum=(*p << 8);
                 quantum|=(*(p+1));
-                indexes[x]=(IndexPacket) quantum;
+                SetIndexPixelComponent(indexes+x,quantum);
                 p+=8;
                 q++;
               }
@@ -652,7 +653,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             indexes=GetAuthenticIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              indexes[x]=(IndexPacket) (*p);
+              SetIndexPixelComponent(indexes+x,*p);
               p+=4;
               q++;
             }
@@ -853,10 +854,6 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
   const char
     *value;
 
-  ssize_t
-    y,
-    z;
-
   MagickBooleanType
     status;
 
@@ -878,6 +875,10 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
 
   register unsigned char
     *q;
+
+  ssize_t
+    y,
+    z;
 
   unsigned char
     *iris_pixels,
@@ -987,7 +988,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
           *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
           *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-          *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
+          *q++=ScaleQuantumToChar(GetAlphaPixelComponent(p));
           p++;
         }
       else
@@ -1001,13 +1002,13 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
           *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
           *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
-          *q++=ScaleQuantumToShort((Quantum) (GetAlphaPixelComponent(p)));
+          *q++=ScaleQuantumToShort(GetAlphaPixelComponent(p));
           p++;
         }
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
+            image->rows);
           if (status == MagickFalse)
             break;
         }
@@ -1049,16 +1050,14 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
       }
       default:
       {
+        size_t
+          length,
+          number_packets,
+          *runlength;
+
         ssize_t
           offset,
           *offsets;
-
-        size_t
-          length,
-          number_packets;
-
-        size_t
-          *runlength;
 
         /*
           Convert SGI uncompressed pixels.

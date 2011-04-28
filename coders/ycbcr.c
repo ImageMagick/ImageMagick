@@ -102,9 +102,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
     *canvas_image,
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -127,11 +124,12 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -957,9 +955,6 @@ ModuleExport void UnregisterYCBCRImage(void)
 static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
   Image *image)
 {
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -975,11 +970,12 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
   register const PixelPacket
     *p;
 
-  ssize_t
-    count;
-
   size_t
     length;
+
+  ssize_t
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -1036,8 +1032,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,quantum_type,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1061,18 +1057,18 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,RedQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,GreenQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,BlueQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1104,8 +1100,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,RedQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1121,8 +1117,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,GreenQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1138,8 +1134,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,BlueQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1191,8 +1187,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,RedQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1214,8 +1210,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,GreenQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1237,8 +1233,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(const CacheView *) NULL,
+            quantum_info,BlueQuantum,pixels,&image->exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;

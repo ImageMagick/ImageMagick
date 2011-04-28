@@ -747,9 +747,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     associated_alpha,
     debug,
@@ -769,7 +766,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   size_t
     length,
+    lsb_first,
     pad;
+
+  ssize_t
+    y;
 
   TIFF
     *tiff;
@@ -805,9 +806,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *pixels;
-
-  size_t
-    lsb_first;
 
   /*
     Open image.
@@ -1404,11 +1402,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           p=(unsigned char *) (((uint32 *) pixels)+image->columns*i);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->red=ScaleCharToQuantum((unsigned char) (TIFFGetR(*p)));
-            q->green=ScaleCharToQuantum((unsigned char) (TIFFGetG(*p)));
-            q->blue=ScaleCharToQuantum((unsigned char) (TIFFGetB(*p)));
+            SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              (TIFFGetR(*p))));
+            SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              (TIFFGetG(*p))));
+            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+              (TIFFGetB(*p))));
             if (image->matte != MagickFalse)
-              q->opacity=ScaleCharToQuantum((unsigned char) (TIFFGetA(*p)));
+              SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                (TIFFGetA(*p))));
             p++;
             q++;
           }
@@ -1495,10 +1497,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->matte != MagickFalse)
                 for (column=columns_remaining; column > 0; column--)
                 {
-                  q->red=ScaleCharToQuantum((unsigned char) TIFFGetR(*p));
-                  q->green=ScaleCharToQuantum((unsigned char) TIFFGetG(*p));
-                  q->blue=ScaleCharToQuantum((unsigned char) TIFFGetB(*p));
-                  q->opacity=(Quantum) (QuantumRange-ScaleCharToQuantum(
+                  SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetR(*p)));
+                  SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetG(*p)));
+                  SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetB(*p)));
+                  SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(
                     (unsigned char) TIFFGetA(*p)));
                   q++;
                   p++;
@@ -1506,9 +1511,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               else
                 for (column=columns_remaining; column > 0; column--)
                 {
-                  q->red=ScaleCharToQuantum((unsigned char) TIFFGetR(*p));
-                  q->green=ScaleCharToQuantum((unsigned char) TIFFGetG(*p));
-                  q->blue=ScaleCharToQuantum((unsigned char) TIFFGetB(*p));
+                  SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetR(*p)));
+                  SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetG(*p)));
+                  SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetB(*p)));
                   q++;
                   p++;
                 }
@@ -1575,12 +1583,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q+=image->columns-1;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            q->red=ScaleCharToQuantum((unsigned char) TIFFGetR(*p));
-            q->green=ScaleCharToQuantum((unsigned char) TIFFGetG(*p));
-            q->blue=ScaleCharToQuantum((unsigned char) TIFFGetB(*p));
+            SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              TIFFGetR(*p)));
+            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+              TIFFGetG(*p)));
+            SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              TIFFGetB(*p)));
             if (image->matte != MagickFalse)
-              q->opacity=(Quantum) (QuantumRange-
-                ScaleCharToQuantum((unsigned char) TIFFGetA(*p)));
+              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+                (unsigned char) TIFFGetA(*p)));
             p--;
             q--;
           }
@@ -2161,12 +2172,6 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   int32
     status;
 
-  ssize_t
-    bytes_per_pixel,
-    j,
-    k,
-    l;
-
   register ssize_t
     i;
 
@@ -2178,6 +2183,12 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     number_tiles,
     tile_width;
 
+  ssize_t
+    bytes_per_pixel,
+    j,
+    k,
+    l;
+
   if (TIFFIsTiled(tiff) == 0)
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
   /*
@@ -2187,7 +2198,8 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   (void) CopyMagickMemory(tiff_info->scanlines+i,(char *) tiff_info->scanline,
     (size_t) TIFFScanlineSize(tiff));
   if (((size_t) (row % tiff_info->tile_geometry.height) !=
-      (tiff_info->tile_geometry.height-1)) && (row != (ssize_t) (image->rows-1)))
+      (tiff_info->tile_geometry.height-1)) &&
+      (row != (ssize_t) (image->rows-1)))
     return(0);
   /*
     Write tile to TIFF image.
@@ -2410,9 +2422,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   EndianType
     endian_type;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     debug,
     status;
@@ -2432,6 +2441,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   size_t
     length,
     lsb_first;
+
+  ssize_t
+    y;
 
   TIFF
     *tiff;

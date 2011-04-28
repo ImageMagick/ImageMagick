@@ -105,9 +105,6 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bits_per_pixel,
     has_clut;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -126,8 +123,16 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
+  size_t
+    bytes_per_line,
+    height,
+    image_size,
+    pixel_mode,
+    width;
+
   ssize_t
-    count;
+    count,
+    y;
 
   unsigned char
     *tim_data,
@@ -135,13 +140,6 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned short
     word;
-
-  size_t
-    bytes_per_line,
-    height,
-    image_size,
-    pixel_mode,
-    width;
 
   /*
     Open image file.
@@ -266,13 +264,13 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
-            indexes[x]=(IndexPacket) ((*p) & 0x0f);
-            indexes[x+1]=(IndexPacket) ((*p >> 4) & 0x0f);
+            SetIndexPixelComponent(indexes+x,(*p) & 0x0f);
+            SetIndexPixelComponent(indexes+x+1,(*p >> 4) & 0x0f);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              indexes[x]=(IndexPacket) ((*p >> 4) & 0x0f);
+              SetIndexPixelComponent(indexes+x,(*p >> 4) & 0x0f);
               p++;
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -300,7 +298,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetAuthenticIndexQueue(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
-            indexes[x]=(*p++);
+            SetIndexPixelComponent(indexes+x,*p++);
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
@@ -328,9 +326,12 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             word=(*p++);
             word|=(*p++ << 8);
-            q->blue=ScaleCharToQuantum(ScaleColor5to8((1UL*word >> 10) & 0x1f));
-            q->green=ScaleCharToQuantum(ScaleColor5to8((1UL*word >> 5) & 0x1f));
-            q->red=ScaleCharToQuantum(ScaleColor5to8(1UL*word & 0x1f));
+            SetBluePixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+              (1UL*word >> 10) & 0x1f)));
+            SetGreenPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+              (1UL*word >> 5) & 0x1f)));
+            SetRedPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+              (1UL*word >> 0) & 0x1f)));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
