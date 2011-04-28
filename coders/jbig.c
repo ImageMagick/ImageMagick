@@ -238,7 +238,10 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       if (bit == 8)
         bit=0;
       SetIndexPixelComponent(indexes+x,index);
-      *q++=image->colormap[(ssize_t) index];
+      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+      q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

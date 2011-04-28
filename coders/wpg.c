@@ -297,7 +297,10 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
               {
                 index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 SetIndexPixelComponent(indexes+x+bit,index);
-                *q++=image->colormap[(int) index];
+                SetRedPixelComponent(q,image->colormap[(int) index].red);
+                SetGreenPixelComponent(q,image->colormap[(int) index].green);
+                SetBluePixelComponent(q,image->colormap[(int) index].blue);
+                q++;
               }
             p++;
           }
@@ -307,7 +310,10 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
               {
                 index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 SetIndexPixelComponent(indexes+x+bit,index);
-                *q++=image->colormap[(int) index];
+                SetRedPixelComponent(q,image->colormap[(int) index].red);
+                SetGreenPixelComponent(q,image->colormap[(int) index].green);
+                SetBluePixelComponent(q,image->colormap[(int) index].blue);
+                q++;
               }
             p++;
           }
@@ -324,36 +330,61 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+            q++;
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+            q++;
             index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+            q++;
             index=ConstrainColormapIndex(image,(*p) & 0x3);
-            indexes[x+1]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x+1,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
             p++;
+            q++;
         }
        if ((image->columns % 4) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+            q++;
             if ((image->columns % 4) >= 1)
 
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
-                indexes[x]=index;
-                *q++=image->colormap[(ssize_t) index];
+                SetIndexPixelComponent(indexes+x,index);
+                SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+                SetGreenPixelComponent(q,image->colormap[(ssize_t)
+                  index].green);
+                SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+                q++;
                 if ((image->columns % 4) >= 2)
 
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
-                    indexes[x]=index;
-                    *q++=image->colormap[(ssize_t) index];
+                    SetIndexPixelComponent(indexes+x,index);
+                    SetRedPixelComponent(q,image->colormap[(ssize_t)
+                      index].red);
+                    SetGreenPixelComponent(q,image->colormap[(ssize_t)
+                      index].green);
+                    SetBluePixelComponent(q,image->colormap[(ssize_t)
+                      index].blue);
+                    q++;
                   }
               }
             p++;
@@ -372,19 +403,28 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           { 
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+            q++;
             index=ConstrainColormapIndex(image,(*p) & 0x0f);
-            indexes[x+1]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x+1,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
             p++;
+            q++;
           }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
             p++;
+            q++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -399,9 +439,12 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         for (x=0; x < (ssize_t) image->columns; x++)
           {
             index=ConstrainColormapIndex(image,*p);
-            indexes[x]=index;
-            *q++=image->colormap[(ssize_t) index];
+            SetIndexPixelComponent(indexes+x,index);
+            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
             p++;
+            q++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -533,6 +576,15 @@ static int UnpackWPGRaster(Image *image,int bpp)
 /* WPG2 raster reader. */
 static int UnpackWPG2Raster(Image *image,int bpp)
 {
+  size_t
+    x,
+    y;
+
+  ssize_t
+    ldblk;
+
+  int XorMe = 0;
+
   unsigned int
     SampleSize=1;
 
@@ -542,17 +594,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     RunCount,
     SampleBuffer[8];
 
-  size_t
-    x,
-    y;
-
   unsigned int
     i;
-
-  ssize_t
-    ldblk;
-
-  int XorMe = 0;
 
   x=0;
   y=0;
