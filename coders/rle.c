@@ -55,6 +55,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/quantum-private.h"
+#include "magick/pixel.h"
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
