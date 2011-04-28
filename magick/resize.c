@@ -1846,6 +1846,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     }
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
   lqr_status=lqr_carver_resize(carver,columns,rows);
+  (void) lqr_status;
   rescale_image=CloneImage(image,lqr_carver_get_width(carver),
     lqr_carver_get_height(carver),MagickTrue,exception);
   if (rescale_image == (Image *) NULL)
