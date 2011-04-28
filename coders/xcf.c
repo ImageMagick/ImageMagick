@@ -52,6 +52,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/pixel.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
@@ -535,7 +536,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetReadPixelComponent(q,ScaleCharToQuantum(data));
+                  SetRedPixelComponent(q,ScaleCharToQuantum(data));
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
                       SetGreenPixelComponent(q,ScaleCharToQuantum(data));
