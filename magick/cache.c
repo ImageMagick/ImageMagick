@@ -465,7 +465,8 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
         SetBluePixelComponent(q,GetBluePixelComponent(p));
         SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
         if (cache_info->active_index_channel != MagickFalse)
-          nexus_indexes[i]=indexes[i];
+          SetIndexPixelComponent(nexus_indexes+i,GetIndexPixelComponent(
+            indexes+i));
       }
     p++;
     q++;
@@ -3916,7 +3917,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     SetBluePixelComponent(q,ClampToQuantum(beta.blue));
     SetOpacityPixelComponent(q,ClampToQuantum(beta.opacity));
     if (cache_info->active_index_channel != MagickFalse)
-      SetIndexPixelComponent(nexus_indexes+i,indexes[i]);
+      SetIndexPixelComponent(nexus_indexes+i,GetIndexPixelComponent(indexes+i));
     p++;
     q++;
     r++;
