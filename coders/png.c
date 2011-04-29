@@ -7822,14 +7822,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               else
                 {
                   SetRedPixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xf0) |
-                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xf0) >> 4));
+                    (ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xf0) |
+                    (ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xf0) >> 4));
                   SetGreenPixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xf0) |
-                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xf0) >> 4));
+                    (ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xf0) |
+                    (ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xf0) >>
+                    4));
                   SetBluePixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xf0) |
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xf0) >> 4));
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xf0) |
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xf0) >>
+                    4));
                 }
               r++;
             }
@@ -7908,17 +7910,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               else
                 {
                   SetRedPixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xe0) |
-                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xe0) >> 3 |
-                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xc0) >> 6));
+                    (ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xe0) |
+                    (ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xe0) >> 3 |
+                    (ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xc0) >>
+                    6));
                   SetGreenPixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xe0) |
-                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xe0) >> 3 |
-                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xc0) >> 6));
+                    (ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xe0) |
+                    (ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xe0) >>
+                    3 |
+                    (ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xc0) >>
+                    6));
                   SetBluePixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xe0) |
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xe0) >> 3 |
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 6));
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xe0) |
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xe0) >> 3 |
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0) >>
+                    6));
                 }
               r++;
             }
@@ -7992,10 +7998,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               else
                 {
                   SetBluePixelComponent(r,ScaleCharToQuantum(
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) |
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 2 |
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 4 |
-                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 6));
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0) |
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0) >> 2 |
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0) >> 4 |
+                    (ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0) >>
+                    6));
                 }
               r++;
             }
