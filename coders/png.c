@@ -8040,7 +8040,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->ping_exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
-      int colortype=mng_info->write_png_colortype;
+      unsigned int colortype=mng_info->write_png_colortype;
 
       if (ping_have_color == MagickFalse)
         mng_info->write_png_colortype = 5;
@@ -8049,7 +8049,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         mng_info->write_png_colortype = 7;
 
       if (colortype != 0 &&
-         mng_info->write_png_colortype != (ssize_t) colortype)
+         mng_info->write_png_colortype != colortype)
         ping_need_colortype_warning=MagickTrue;
 
     }
@@ -8740,7 +8740,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           image_depth=MAGICKCORE_QUANTUM_DEPTH;
 
         if ((image_colors == 0) ||
-             ((ssize_t) (image_colors-1) > MaxColormapSize))
+             ((ssize_t) (image_colors-1) > (ssize_t) MaxColormapSize))
           image_colors=(int) (one << image_depth);
 
         if (image_depth > 8)
@@ -8849,7 +8849,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 ping_bit_depth=1;
                 one=1;
 
-                while ((one << ping_bit_depth) < number_colors)
+                while ((one << ping_bit_depth) < (ssize_t) number_colors)
                   ping_bit_depth <<= 1;
               }
 
