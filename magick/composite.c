@@ -2274,13 +2274,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           if ((x-x_offset) >= (ssize_t) composite_image->columns)
             break;
         }
-      destination.red=(MagickRealType) q->red;
-      destination.green=(MagickRealType) q->green;
-      destination.blue=(MagickRealType) q->blue;
+      destination.red=(MagickRealType) GetRedPixelComponent(q);
+      destination.green=(MagickRealType) GetGreenPixelComponent(q);
+      destination.blue=(MagickRealType) GetBluePixelComponent(q);
       if (image->matte != MagickFalse)
-        destination.opacity=(MagickRealType) q->opacity;
+        destination.opacity=(MagickRealType) GetOpacityPixelComponent(q);
       if (image->colorspace == CMYKColorspace)
-        destination.index=(MagickRealType) indexes[x];
+        destination.index=(MagickRealType) GetIndexPixelComponent(indexes+x);
       if (image->colorspace == CMYKColorspace)
         {
           destination.red=(MagickRealType) QuantumRange-destination.red;
@@ -2336,13 +2336,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               composite.blue=(MagickRealType) QuantumRange-composite.blue;
               composite.index=(MagickRealType) QuantumRange-composite.index;
             }
-          q->red=ClampToQuantum(composite.red);
-          q->green=ClampToQuantum(composite.green);
-          q->blue=ClampToQuantum(composite.blue);
+          SetRedPixelComponent(q,ClampToQuantum(composite.red));
+          SetGreenPixelComponent(q,ClampToQuantum(composite.green));
+          SetBluePixelComponent(q,ClampToQuantum(composite.blue));
           if (image->matte != MagickFalse)
-            q->opacity=ClampToQuantum(composite.opacity);
+            SetOpacityPixelComponent(q,ClampToQuantum(composite.opacity));
           if (image->colorspace == CMYKColorspace)
-            indexes[x]=ClampToQuantum(composite.index);
+            SetIndexPixelComponent(indexes+x,ClampToQuantum(composite.index));
           q++;
           continue;
         }
@@ -2355,7 +2355,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (composite_image->matte != MagickFalse)
         source.opacity=(MagickRealType) GetOpacityPixelComponent(p);
       if (composite_image->colorspace == CMYKColorspace)
-        source.index=(MagickRealType) composite_indexes[x-x_offset];
+        source.index=(MagickRealType) GetIndexPixelComponent(composite_indexes+
+          x-x_offset);
       if (composite_image->colorspace == CMYKColorspace)
         {
           source.red=(MagickRealType) QuantumRange-source.red;
@@ -2754,12 +2755,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           composite.blue=(MagickRealType) QuantumRange-composite.blue;
           composite.index=(MagickRealType) QuantumRange-composite.index;
         }
-      q->red=ClampToQuantum(composite.red);
-      q->green=ClampToQuantum(composite.green);
-      q->blue=ClampToQuantum(composite.blue);
-      q->opacity=ClampToQuantum(composite.opacity);
+      SetRedPixelComponent(q,ClampToQuantum(composite.red));
+      SetGreenPixelComponent(q,ClampToQuantum(composite.green));
+      SetBluePixelComponent(q,ClampToQuantum(composite.blue));
+      SetOpacityPixelComponent(q,ClampToQuantum(composite.opacity));
       if (image->colorspace == CMYKColorspace)
-        indexes[x]=ClampToQuantum(composite.index);
+        SetIndexPixelComponent(indexes+x,ClampToQuantum(composite.index));
       p++;
       if (p >= (pixels+composite_image->columns))
         p=pixels;
