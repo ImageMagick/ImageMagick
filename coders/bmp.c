@@ -1654,7 +1654,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            byte|=indexes[x] != 0 ? 0x01 : 0x00;
+            byte|=GetIndexPixelComponent(indexes+x) != 0 ? 0x01 : 0x00;
             bit++;
             if (bit == 8)
               {
@@ -1701,7 +1701,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=4;
-            byte|=((size_t) indexes[x] & 0x0f);
+            byte|=((size_t) GetIndexPixelComponent(indexes+x) & 0x0f);
             nibble++;
             if (nibble == 2)
               {

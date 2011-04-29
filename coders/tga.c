@@ -797,7 +797,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
               *q++=(unsigned char) ScaleQuantumToChar(
                 GetAlphaPixelComponent(p));
             if (image->colorspace == CMYKColorspace)
-              *q++=ScaleQuantumToChar(indexes[x]);
+              *q++=ScaleQuantumToChar(GetIndexPixelComponent(indexes+x));
           }
       p++;
     }

@@ -245,8 +245,8 @@ static int GetCutColors(Image *image)
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (intensity < q->red)
-        intensity=q->red;
+      if (intensity < GetRedPixelComponent(q))
+        intensity=GetRedPixelComponent(q);
       if (intensity >= scale_intensity)
         return(255);
       q++;
@@ -566,13 +566,14 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if(image->colormap[i].blue!=sample) goto Finish;
                 }
 
-              image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=(Quantum) QuantumRange;
+              image->colormap[1].red=image->colormap[1].green=
+                image->colormap[1].blue=(Quantum) QuantumRange;
               for (i=0; i < (ssize_t)image->rows; i++)
                 {
                   q=QueueAuthenticPixels(image,0,i,image->columns,1,exception);
                   for (j=0; j < (ssize_t)image->columns; j++)
                     {
-                      if (q->red==ScaleCharToQuantum(1))
+                      if (GetRedPixelComponent(q) == ScaleCharToQuantum(1))
                         {
                           SetRedPixelComponent(q,QuantumRange);
                           SetGreenPixelComponent(q,QuantumRange);

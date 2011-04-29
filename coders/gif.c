@@ -676,7 +676,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       /*
         Probe hash table.
       */
-      index=(IndexPacket) ((size_t) indexes[x] & 0xff);
+      index=(IndexPacket) ((size_t) GetIndexPixelComponent(indexes+x) & 0xff);
       p++;
       k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+waiting_code);
       if (k >= MaxHashTable)

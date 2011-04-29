@@ -424,9 +424,9 @@ static void FixSignedValues(PixelPacket *q, int y)
      /* Please note that negative values will overflow
         Q=8; QuantumRange=255: <0;127> + 127+1 = <128; 255> 
            <-1;-128> + 127+1 = <0; 127> */
-    q->red += QuantumRange/2 + 1;
-    q->green += QuantumRange/ + 1;
-    q->blue += QuantumRange/ + 1;
+    SetRedPixelComponent(q,GetRedPixelComponent(q)+QuantumRange/2+1);
+    SetGreenPixelComponent(q,GetGreenPixelComponent(q)+QuantumRange/2+1);
+    SetBluePixelComponent(q,GetBluePixelComponent(q)+QuantumRange/2+1);
     q++;
   }
 }

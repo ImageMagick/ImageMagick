@@ -238,19 +238,21 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x+=2)
           {
-            chroma_pixels->red=(Quantum) 0;
+            SetRedPixelComponent(chroma_pixels,0);
             if (quantum == 1)
-              chroma_pixels->green=ScaleCharToQuantum(*p++);
+              SetGreenPixelComponent(chroma_pixels,ScaleCharToQuantum(*p++));
             else
               {
-                chroma_pixels->green=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+                SetGreenPixelComponent(chroma_pixels,ScaleShortToQuantum(
+                  ((*p) << 8) | *(p+1)));
                 p+=2;
               }
             if (quantum == 1)
               SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
             else
               {
-                q->red=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+                SetRedPixelComponent(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
             SetGreenPixelComponent(q,0);
@@ -259,10 +261,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetGreenPixelComponent(q,0);
             SetBluePixelComponent(q,0);
             if (quantum == 1)
-              chroma_pixels->blue=ScaleCharToQuantum(*p++);
+              SetBluePixelComponent(chroma_pixels,ScaleCharToQuantum(*p++));
             else
               {
-                chroma_pixels->blue=ScaleShortToQuantum(((*p) << 8) | *(p+1));
+                SetBluePixelComponent(chroma_pixels,ScaleShortToQuantum(
+                  ((*p) << 8) | *(p+1)));
                 p+=2;
               }
             if (quantum == 1)
@@ -404,8 +407,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetGreenPixelComponent(q,chroma_pixels->green);
-        SetBluePixelComponent(q,chroma_pixels->blue);
+        SetGreenPixelComponent(q,GetGreenPixelComponent(chroma_pixels));
+        SetBluePixelComponent(q,GetBluePixelComponent(chroma_pixels));
         chroma_pixels++;
         q++;
       }

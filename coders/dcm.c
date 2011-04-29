@@ -4040,11 +4040,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       pixel.blue=scale[pixel.blue];
                     }
                 }
-              SetRedPixelComponent(q,(((size_t) q->red) |
+              SetRedPixelComponent(q,(((size_t) GetRedPixelComponent(q)) |
                 (((size_t) pixel.red) << 8)));
-              SetGreenPixelComponent(q,(((size_t) q->green) |
+              SetGreenPixelComponent(q,(((size_t) GetGreenPixelComponent(q)) |
                 (((size_t) pixel.green) << 8)));
-              SetBluePixelComponent(q,(((size_t) q->green) |
+              SetBluePixelComponent(q,(((size_t) GetBluePixelComponent(q)) |
                 (((size_t) pixel.blue) << 8)));
               q++;
             }

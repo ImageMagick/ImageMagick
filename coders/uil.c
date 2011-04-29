@@ -355,7 +355,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"    \"");
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      k=((ssize_t) indexes[x] % MaxCixels);
+      k=((ssize_t) GetIndexPixelComponent(indexes+x) % MaxCixels);
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
