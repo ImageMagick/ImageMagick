@@ -114,12 +114,12 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
   if (q == (PixelPacket *) NULL)
     return;
   range=GetQuantumRange(16UL);
-  q->red=ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range);
-  q->green=ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range);
-  q->blue=ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range);
+  SetRedPixelComponent(q,ScaleAnyToQuantum((size_t) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5),range));
+  SetGreenPixelComponent(q,ScaleAnyToQuantum((size_t) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5),range));
+  SetBluePixelComponent(q,ScaleAnyToQuantum((size_t) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5),range));
   (void) SyncAuthenticPixels(image,exception);
 }
 

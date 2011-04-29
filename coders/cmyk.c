@@ -257,7 +257,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 SetRedPixelComponent(q,GetRedPixelComponent(p));
                 SetGreenPixelComponent(q,GetGreenPixelComponent(p));
                 SetBluePixelComponent(q,GetBluePixelComponent(p));
-                indexes[x]=canvas_indexes[image->extract_info.x+x];
+                SetBlackPixelComponent(indexes+x,GetBlackPixelComponent(
+                  canvas_indexes+image->extract_info.x+x));
                 SetOpacityPixelComponent(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
                   SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));

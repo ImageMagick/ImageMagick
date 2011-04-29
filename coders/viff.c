@@ -628,7 +628,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             for (bit=0; bit < 8; bit++)
               if (PixelIntensity(q) < ((MagickRealType) QuantumRange/2.0))
                 {
-                  quantum=(size_t) indexes[x+bit];
+                  quantum=(size_t) GetIndexPixelComponent(indexes+x+bit);
                   quantum|=0x01;
                   SetIndexPixelComponent(indexes+x+bit,quantum);
                 }
@@ -639,7 +639,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
                 if (PixelIntensity(q) < ((MagickRealType) QuantumRange/2.0))
                   {
-                    quantum=(size_t) indexes[x+bit];
+                    quantum=(size_t) getIndexPixelComponent(indexes+x+bit);
                     quantum|=0x01;
                     SetIndexPixelComponent(indexes+x+bit,quantum);
                   }
@@ -695,11 +695,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               if (image->colors != 0)
                 {
                   SetRedPixelComponent(q,image->colormap[(ssize_t)
-                    q->red].red);
+                    GetRedPixelComponent(q)].red);
                   SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                    q->green].green);
+                    GetGreenPixelComponent(q)].green);
                   SetBluePixelComponent(q,image->colormap[(ssize_t)
-                    q->blue].blue);
+                    GetBluePixelComponent(q)].blue);
                 }
               SetOpacityPixelComponent(q,image->matte != MagickFalse ?
                 QuantumRange-ScaleCharToQuantum(*(p+number_pixels*3)) :

@@ -2754,7 +2754,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         r=quantum_scanline;
 
         for (x=0; x < (ssize_t) image->columns; x++)
-          indexes[x]=(IndexPacket) (*r++);
+          SetIndexPixelComponent(indexes+x,*r++);
 
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -2762,7 +2762,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         if ((image->previous == (Image *) NULL) && (num_passes == 1))
           {
             status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-                image->rows);
+              image->rows);
 
             if (status == MagickFalse)
               break;
@@ -5906,7 +5906,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     pixels=prev;
                     n=next;
                     q=GetAuthenticPixels(large_image,0,yy,large_image->columns,
-                          1,exception);
+                      1,exception);
                     q+=(large_image->columns-image->columns);
 
                     for (x=(ssize_t) image->columns-1; x >= 0; x--)
@@ -7642,7 +7642,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                       image->colormap[i].blue == 
                       GetBluePixelComponent(q))
                   {
-                    indexes[x]=(IndexPacket) i;
+                    SetIndexPixelComponent(indexes+x,i);
                     break;
                   }
                 }

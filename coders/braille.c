@@ -274,9 +274,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       {
 #define do_cell(dx,dy,bit) do { \
         if (image->storage_class == PseudoClass) \
-          cell |= (indexes[x+dx+dy*image->columns] == polarity) << bit; \
+          cell |= (GetIndexPixelComponent(indexes+x+dx+dy*image->columns) == polarity) << bit; \
         else \
-          cell |= (p[x+dx+dy*image->columns].green == 0) << bit; \
+          cell |= (GetGreenPixelComponent(p+x+dx+dy*image->columns) == 0) << bit; \
 } while (0) 
 
         do_cell(0,0,0);

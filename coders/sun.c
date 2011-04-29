@@ -538,11 +538,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->colors != 0)
                 {
                   SetRedPixelComponent(q,image->colormap[(ssize_t)
-                    q->red].red);
+                    GetRedPixelComponent(q)].red);
                   SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                    q->green].green);
+                    GetGreenPixelComponent(q)].green);
                   SetBluePixelComponent(q,image->colormap[(ssize_t)
-                    q->blue].blue);
+                    GetBluePixelComponent(q)].blue);
                 }
               q++;
             }

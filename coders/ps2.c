@@ -968,7 +968,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                           GetGreenPixelComponent(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(
                           GetBluePixelComponent(p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(indexes[x]));
+                        Ascii85Encode(image,ScaleQuantumToChar(
+                          GetIndexPixelComponent(indexes+x)));
                       }
                   p++;
                 }

@@ -1421,7 +1421,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if ((image->storage_class == PseudoClass) ||
                 (image->colorspace == CMYKColorspace))
               SetIndexPixelComponent(indexes+x,index);
-            *q++=pixel;
+            SetRedPixelComponent(q,pixel.red);
+            SetGreenPixelComponent(q,pixel.green);
+            SetBluePixelComponent(q,pixel.blue);
+            SetOpacityPixelComponent(q,pixel.opacity);
+            q++;
           }
           break;
         }
@@ -2415,7 +2419,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 (IsColorEqual(p,&pixel) != MagickFalse) &&
                 ((image->matte == MagickFalse) ||
                  (GetOpacityPixelComponent(p) == pixel.opacity)) &&
-                ((indexes == (IndexPacket *) NULL) || (index == indexes[x])))
+                ((indexes == (IndexPacket *) NULL) ||
+                 (index == GetIndexPixelComponent(indexes+x))))
               length++;
             else
               {
