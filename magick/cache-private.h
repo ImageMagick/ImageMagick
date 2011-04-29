@@ -118,7 +118,7 @@ typedef struct _CacheInfo
   ColorspaceType
     colorspace;
 
-  ssize_t
+  size_t
     channels;
 
   CacheType
