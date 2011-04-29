@@ -639,7 +639,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
                 if (PixelIntensity(q) < ((MagickRealType) QuantumRange/2.0))
                   {
-                    quantum=(size_t) getIndexPixelComponent(indexes+x+bit);
+                    quantum=(size_t) GetIndexPixelComponent(indexes+x+bit);
                     quantum|=0x01;
                     SetIndexPixelComponent(indexes+x+bit,quantum);
                   }
