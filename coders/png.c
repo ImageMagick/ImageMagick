@@ -2900,7 +2900,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if 0 /* I have not found a case where this is needed. */
               else
                 {
-                  q->opacity=(Quantum) OpaqueOpacity;
+                  SetOpacityPixelComponent(q)=(Quantum) OpaqueOpacity;
                 }
 #endif
 
@@ -3974,8 +3974,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
              if (image->matte != MagickFalse)
                for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
-                  q->opacity=(Quantum) QuantumRange-
-                      GetRedPixelComponent(s);
+                  SetOpacityPixelComponent(q,(Quantum) QuantumRange-
+                      GetRedPixelComponent(s));
 
              else
                for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
@@ -6011,6 +6011,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     *pixels;
 
                   q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+                  /* To do: Rewrite using Get/Set***PixelComponent() */
                   pixels=q+(image->columns-length);
                   n=pixels+1;
 
@@ -6039,6 +6040,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (magn_methx <= 1)
                         {
                           /* replicate previous */
+                          /* To do: Rewrite using Get/Set***PixelComponent() */
                           *q=(*pixels);
                         }
 
@@ -7329,7 +7331,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
        for (x=0; x < (ssize_t) image->columns; x++)
        {
-           if (image->matte == MagickFalse || q->opacity == OpaqueOpacity)
+           if (image->matte == MagickFalse ||
+              GetOpacityPixelComponent(q) == OpaqueOpacity)
              {
                if (number_opaque < 259)
                  {
@@ -7812,21 +7815,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (r->opacity == TransparentOpacity)
+              if (GetOpacityPixelComponent(r) == TransparentOpacity)
                 {
                   SetRGBPixelComponents(r,image->background_color);
                 }
               else
                 {
-                  r->red=ScaleCharToQuantum(
-                       (ScaleQuantumToChar(r->red) & 0xf0) |
-                       (ScaleQuantumToChar(r->red) & 0xf0) >> 4);
-                  r->green=ScaleCharToQuantum(
-                       (ScaleQuantumToChar(r->green) & 0xf0) |
-                       (ScaleQuantumToChar(r->green) & 0xf0) >> 4);
-                  r->blue=ScaleCharToQuantum(
-                       (ScaleQuantumToChar(r->blue) & 0xf0) |
-                       (ScaleQuantumToChar(r->blue) & 0xf0) >> 4);
+                  SetRedPixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xf0) |
+                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xf0) >> 4));
+                  SetGreenPixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xf0) |
+                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xf0) >> 4));
+                  SetBluePixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xf0) |
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xf0) >> 4));
                 }
               r++;
             }
@@ -7898,26 +7901,24 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (r->opacity == TransparentOpacity)
+              if (GetOpacityPixelComponent(r) == TransparentOpacity)
                 {
-                  r->red = image->background_color.red;
-                  r->green = image->background_color.green;
-                  r->blue = image->background_color.blue;
+                  SetRGBPixelComponents(r,image->background_color);
                 }
               else
                 {
-                  r->red=ScaleCharToQuantum(
-                       (ScaleQuantumToChar(r->red) & 0xe0) |
-                       (ScaleQuantumToChar(r->red) & 0xe0) >> 3 |
-                       (ScaleQuantumToChar(r->red) & 0xc0) >> 6);
-                  r->green=ScaleCharToQuantum(
-                       (ScaleQuantumToChar(r->green) & 0xe0) |
-                       (ScaleQuantumToChar(r->green) & 0xe0) >> 3 |
-                       (ScaleQuantumToChar(r->green) & 0xc0) >> 6);
-                  r->blue=ScaleCharToQuantum(
-                       (ScaleQuantumToChar(r->blue) & 0xe0) |
-                       (ScaleQuantumToChar(r->blue) & 0xe0) >> 3 |
-                       (ScaleQuantumToChar(r->blue) & 0xc0) >> 6);
+                  SetRedPixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xe0) |
+                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xe0) >> 3 |
+                    ScaleQuantumToChar(GetRedPixelComponent(r) & 0xc0) >> 6));
+                  SetGreenPixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xe0) |
+                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xe0) >> 3 |
+                    ScaleQuantumToChar(GetGreenPixelComponent(r) & 0xc0) >> 6));
+                  SetBluePixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xe0) |
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xe0) >> 3 |
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 6));
                 }
               r++;
             }
@@ -7984,17 +7985,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (r->opacity == TransparentOpacity)
+              if (GetOpacityPixelComponent(r) == TransparentOpacity)
                 {
                   SetRGBPixelComponents(r,image->background_color);
                 }
               else
                 {
-                  r->blue=ScaleCharToQuantum(
-                      (ScaleQuantumToChar(r->blue) & 0xc0) |
-                      (ScaleQuantumToChar(r->blue) & 0xc0) >> 2 |
-                      (ScaleQuantumToChar(r->blue) & 0xc0) >> 4 |
-                      (ScaleQuantumToChar(r->blue) & 0xc0) >> 6);
+                  SetBluePixelComponent(r,ScaleCharToQuantum(
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) |
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 2 |
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 4 |
+                    ScaleQuantumToChar(GetBluePixelComponent(r) & 0xc0) >> 6));
                 }
               r++;
             }
