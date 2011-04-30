@@ -57,6 +57,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/pixel.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
@@ -612,9 +613,9 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRedComponentPixel(q,ScaleCharToQuantum(pBits->rgbRed));
-      SetGreenComponentPixel(q,ScaleCharToQuantum(pBits->rgbGreen));
-      SetBlueComponentPixel(q,ScaleCharToQuantum(pBits->rgbBlue));
+      SetRedPixelComponent(q,ScaleCharToQuantum(pBits->rgbRed));
+      SetGreenPixelComponent(q,ScaleCharToQuantum(pBits->rgbGreen));
+      SetBluePixelComponent(q,ScaleCharToQuantum(pBits->rgbBlue));
       SetOpacityPixelComponent(q,OpaqueOpacity);
       pBits++;
       q++;
