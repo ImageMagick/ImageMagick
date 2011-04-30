@@ -78,8 +78,7 @@ static inline void SetMagickPixelPacket(const Image *image,
   pixel->green=(MagickRealType) color->green;
   pixel->blue=(MagickRealType) color->blue;
   pixel->opacity=(MagickRealType) color->opacity;
-  if (((image->colorspace == CMYKColorspace) ||
-       (image->storage_class == PseudoClass)) &&
+  if ((image->colorspace == CMYKColorspace) &&
       (index != (const IndexPacket *) NULL))
     pixel->index=(MagickRealType) *index;
 }
