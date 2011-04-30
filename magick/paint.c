@@ -348,16 +348,16 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
           if (image->colorspace == CMYKColorspace)
             ConvertRGBToCMYK(&fill);
           if ((channel & RedChannel) != 0)
-            q->red=ClampToQuantum(fill.red);
+            SetRedPixelComponent(q,ClampToQuantum(fill.red));
           if ((channel & GreenChannel) != 0)
-            q->green=ClampToQuantum(fill.green);
+            SetGreenPixelComponent(q,ClampToQuantum(fill.green));
           if ((channel & BlueChannel) != 0)
-            q->blue=ClampToQuantum(fill.blue);
+            SetBluePixelComponent(q,ClampToQuantum(fill.blue));
           if ((channel & OpacityChannel) != 0)
-            q->opacity=ClampToQuantum(fill.opacity);
+            SetOpacityPixelComponent(q,ClampToQuantum(fill.opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            indexes[x]=ClampToQuantum(fill.index);
+            SetIndexPixelComponent(indexes+x,ClampToQuantum(fill.index));
         }
       p++;
       q++;
@@ -687,7 +687,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       }
       *q=(*(p+j));
       if (image->colorspace == CMYKColorspace)
-        paint_indexes[x]=indexes[x+j];
+        SetIndexPixelComponent(paint_indexes+x,GetIndexPixelComponent(
+          indexes+x+j));
       p++;
       q++;
     }
@@ -837,16 +838,16 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
       if (IsMagickColorSimilar(&pixel,target) != invert)
         {
           if ((channel & RedChannel) != 0)
-            q->red=ClampToQuantum(fill->red);
+            SetRedPixelComponent(q,ClampToQuantum(fill->red));
           if ((channel & GreenChannel) != 0)
-            q->green=ClampToQuantum(fill->green);
+            SetGreenPixelComponent(q,ClampToQuantum(fill->green));
           if ((channel & BlueChannel) != 0)
-            q->blue=ClampToQuantum(fill->blue);
+            SetBluePixelComponent(q,ClampToQuantum(fill->blue));
           if ((channel & OpacityChannel) != 0)
-            q->opacity=ClampToQuantum(fill->opacity);
+            SetOpacityPixelComponent(q,ClampToQuantum(fill->opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            indexes[x]=ClampToQuantum(fill->index);
+            SetIndexPixelComponent(indexes+x,ClampToQuantum(fill->index));
         }
       q++;
     }

@@ -1251,14 +1251,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               p=source_pixels[id];
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *p++=ScaleQuantumToShort(q->red);
+                *p++=ScaleQuantumToShort(GetRedPixelComponent(q));
                 if (source_channels > 1)
                   {
-                    *p++=ScaleQuantumToShort(q->green);
-                    *p++=ScaleQuantumToShort(q->blue);
+                    *p++=ScaleQuantumToShort(GetGreenPixelComponent(q));
+                    *p++=ScaleQuantumToShort(GetBluePixelComponent(q));
                   }
                 if (source_channels > 3)
-                  *p++=ScaleQuantumToShort(indexes[x]);
+                  *p++=ScaleQuantumToShort(GetIndexPixelComponent(indexes+x));
                 q++;
               }
               cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
@@ -1267,20 +1267,20 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               q-=image->columns;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                q->red=ScaleShortToQuantum(*p);
+                SetRedPixelCompinent(q,ScaleShortToQuantum(*p));
                 SetGreenPixelComponent(q,GetRedPixelComponent(q));
                 SetBluePixelComponent(q,GetRedPixelComponent(q));
                 p++;
                 if (target_channels > 1)
                   {
-                    q->green=ScaleShortToQuantum(*p);
+                    SetGreenPixelComponent(q,ScaleShortToQuantum(*p));
                     p++;
-                    q->blue=ScaleShortToQuantum(*p);
+                    SetBluePixelComponent(q,ScaleShortToQuantum(*p));
                     p++;
                   }
                 if (target_channels > 3)
                   {
-                    indexes[x]=ScaleShortToQuantum(*p);
+                    SetIndexPixelComponent(indexes+x,ScaleShortToQuantum(*p));
                     p++;
                   }
                 q++;
