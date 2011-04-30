@@ -409,8 +409,6 @@ static double *GenerateCoefficients(const Image *image,
 #endif
       break;
     case ShepardsDistortion:
-    case VoronoiColorInterpolate:
-    case InverseColorInterpolate:
       number_coeff=1;  /* not used, but provide some type of return */
       break;
     case ArcDistortion:
@@ -1289,8 +1287,6 @@ static double *GenerateCoefficients(const Image *image,
       return(coeff);
     }
     case ShepardsDistortion:
-    case InverseColorInterpolate:
-    case VoronoiColorInterpolate:
     {
       /* Shepards Distortion  input arguments are the coefficents!
          Just check the number of arguments is valid!
@@ -2519,9 +2515,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           if (proceed == MagickFalse)
             status=MagickFalse;
         }
-#if 0
-fprintf(stderr, "\n");
-#endif
     }
     distort_view=DestroyCacheView(distort_view);
     resample_filter=DestroyResampleFilterThreadSet(resample_filter);
@@ -2590,8 +2583,8 @@ MagickExport Image *SparseColorImage(const Image *image,
 {
 #define SparseColorTag  "Distort/SparseColor"
 
-  DistortImageMethod
-    distort_method;
+  SparseColorMethod
+    sparse_method;
 
   double
     *coeff;
@@ -2618,19 +2611,34 @@ MagickExport Image *SparseColorImage(const Image *image,
   if ( channel & OpacityChannel ) number_colors++;
 
   /*
-    Convert input arguments into mapping coefficients to apply the distortion.
-    Note some Methods may fall back to other simpler methods.
+    Convert input arguments into mapping coefficients, this this case
+    we are mapping (distorting) colors, rather than coordinates.
   */
-  distort_method=(DistortImageMethod) method;
-  coeff = GenerateCoefficients(image, &distort_method, number_arguments,
-    arguments, number_colors, exception);
-  if ( coeff == (double *) NULL )
-    return((Image *) NULL);
+  { DistortImageMethod
+      distort_method;
+
+    distort_method=(DistortImageMethod) method;
+    if ( distort_method >= SentinelDistortion )
+      distort_method = ShepardsDistortion; /* Pretend to be Shepards */
+    coeff = GenerateCoefficients(image, &distort_method, number_arguments,
+                arguments, number_colors, exception);
+    if ( coeff == (double *) NULL )
+      return((Image *) NULL);
+    /*
+      Note some Distort Methods may fall back to other simpler methods,
+      Currently the only fallback of concern is Bilinear to Affine
+      (Barycentric), which is alaso sparse_colr method.  This also ensures
+      correct two and one color Barycentric handling.
+    */
+    sparse_method = (SparseColorMethod) distort_method;
+    if ( distort_method == ShepardsDistortion )
+      sparse_method = method;   /* return non-distiort methods to normal */
+  }
 
   /* Verbose output */
   if ( GetImageArtifact(image,"verbose") != (const char *) NULL ) {
 
-    switch (method) {
+    switch (sparse_method) {
       case BarycentricColorInterpolate:
       {
         register ssize_t x=0;
@@ -2679,14 +2687,14 @@ MagickExport Image *SparseColorImage(const Image *image,
         break;
       }
       default:
-        /* unknown, or which are too complex for FX alturnatives */
+        /* sparse color method is too complex for FX emulation */
         break;
     }
   }
 
   /* Generate new image for generated interpolated gradient.
    * ASIDE: Actually we could have just replaced the colors of the original
-   * image, but IM core policy, is if storage class could change then clone
+   * image, but IM Core policy, is if storage class could change then clone
    * the image.
    */
 
@@ -2747,7 +2755,7 @@ MagickExport Image *SparseColorImage(const Image *image,
       for (i=0; i < (ssize_t) image->columns; i++)
       {
         SetMagickPixelPacket(image,q,indexes,&pixel);
-        switch (method)
+        switch (sparse_method)
         {
           case BarycentricColorInterpolate:
           {
@@ -2789,10 +2797,9 @@ MagickExport Image *SparseColorImage(const Image *image,
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
             break;
           }
-          case ShepardsColorInterpolate:
           case InverseColorInterpolate:
-          { /* Shepards Method, uses its own input arguments as coefficients.
-            */
+          case ShepardsColorInterpolate:
+          { /* Inverse (Squared) Distance weights average (IDW) */
             size_t
               k;
             double
