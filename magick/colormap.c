@@ -232,13 +232,14 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(ssize_t) (indexes[x]+displace) % image->colors;
+      index=(ssize_t) (GetIndexPixelComponent(indexes+x)+displace) %
+        image->colors;
       if (index < 0)
         index+=(ssize_t) image->colors;
-      indexes[x]=(IndexPacket) index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
+      SetIndexPixelComponent(indexes+x,index);
+      SetRedPixelComponent(q,image->colormap[index].red);
+      SetGreenPixelComponent(q,image->colormap[index].green);
+      SetBluePixelComponent(q,image->colormap[index].blue);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -377,9 +378,11 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(IndexPacket) pixels[(ssize_t) indexes[x]];
-      indexes[x]=index;
-      *q++=image->colormap[(ssize_t) index];
+      index=(IndexPacket) pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
+      SetIndexPixelComponent(indexes+x,index);
+      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

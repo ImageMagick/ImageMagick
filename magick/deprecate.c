@@ -1833,15 +1833,19 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       MagickRealType
         pixel;
 
-      pixel=QuantumScale*(GetRedPixelComponent(p)-(double) q->red);
+      pixel=QuantumScale*(GetRedPixelComponent(p)-(double)
+        GetRedPixelComponent(q));
       similarity+=pixel*pixel;
-      pixel=QuantumScale*(GetGreenPixelComponent(p)-(double) q->green);
+      pixel=QuantumScale*(GetGreenPixelComponent(p)-(double)
+        GetGreenPixelComponent(q));
       similarity+=pixel*pixel;
-      pixel=QuantumScale*(GetBluePixelComponent(p)-(double) q->blue);
+      pixel=QuantumScale*(GetBluePixelComponent(p)-(double)
+        GetBluePixelComponent(q));
       similarity+=pixel*pixel;
       if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
         {
-          pixel=QuantumScale*(GetOpacityPixelComponent(p)-(double) q->opacity);
+          pixel=QuantumScale*(GetOpacityPixelComponent(p)-(double)
+            GetOpacityPixelComponent(q));
           similarity+=pixel*pixel;
         }
       if ((image->colorspace == CMYKColorspace) &&
@@ -2101,18 +2105,20 @@ MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
   register MagickRealType
     distance;
 
-  if ((fuzz == 0.0) && (GetRedPixelComponent(p) == q->red) && (GetGreenPixelComponent(p) == q->green) &&
-      (GetBluePixelComponent(p) == q->blue))
+  if ((fuzz == 0.0) && (GetRedPixelComponent(p) == GetRedPixelComponent(q)) &&
+      (GetGreenPixelComponent(p) == GetGreenPixelComponent(q)) &&
+      (GetBluePixelComponent(p) == GetBluePixelComponent(q)))
     return(MagickTrue);
-  pixel.red=GetRedPixelComponent(p)-(MagickRealType) q->red;
+  pixel.red=GetRedPixelComponent(p)-(MagickRealType) GetRedPixelComponent(q);
   distance=pixel.red*pixel.red;
   if (distance > (fuzz*fuzz))
     return(MagickFalse);
-  pixel.green=GetGreenPixelComponent(p)-(MagickRealType) q->green;
+  pixel.green=GetGreenPixelComponent(p)-(MagickRealType)
+    GetGreenPixelComponent(q);
   distance+=pixel.green*pixel.green;
   if (distance > (fuzz*fuzz))
     return(MagickFalse);
-  pixel.blue=GetBluePixelComponent(p)-(MagickRealType) q->blue;
+  pixel.blue=GetBluePixelComponent(p)-(MagickRealType) GetBluePixelComponent(q);
   distance+=pixel.blue*pixel.blue;
   if (distance > (fuzz*fuzz))
     return(MagickFalse);
@@ -5479,34 +5485,34 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
       {
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          {
-            MagickRealType
-              intensity;
+        {
+          MagickRealType
+            intensity;
 
-            intensity=(MagickRealType) PixelIntensityToQuantum(q);
-            if (order == 1)
-              {
-                if (intensity < lower_threshold)
-                  threshold=lower_threshold;
-                else if (intensity > upper_threshold)
-                  threshold=upper_threshold;
-                else
-                  threshold=(MagickRealType) (QuantumRange*
-                    GetPseudoRandomValue(random_info));
-              }
-            else if (order == 2)
-              threshold=(MagickRealType) QuantumRange*o2[(x%2)+2*(y%2)];
-            else if (order == 3)
-              threshold=(MagickRealType) QuantumRange*o3[(x%3)+3*(y%3)];
-            else if (order == 4)
-              threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)];
-            q->red=q->green=q->blue=(Quantum) (intensity <=
-               threshold ? 0 : QuantumRange);
-            index=(IndexPacket) (intensity <= threshold ? 0 : 1);
-            *indexes++=index;
-            q->red=q->green=q->blue=image->colormap[(ssize_t) index].red;
-            q++;
-          }
+          intensity=(MagickRealType) PixelIntensityToQuantum(q);
+          if (order == 1)
+            {
+              if (intensity < lower_threshold)
+                threshold=lower_threshold;
+              else if (intensity > upper_threshold)
+                threshold=upper_threshold;
+              else
+                threshold=(MagickRealType) (QuantumRange*
+                  GetPseudoRandomValue(random_info));
+            }
+          else if (order == 2)
+            threshold=(MagickRealType) QuantumRange*o2[(x%2)+2*(y%2)];
+          else if (order == 3)
+            threshold=(MagickRealType) QuantumRange*o3[(x%3)+3*(y%3)];
+          else if (order == 4)
+            threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)];
+          index=(IndexPacket) (intensity <= threshold ? 0 : 1);
+          SetIndexPixelComponent(indexes+x,index);
+          SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+          SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+          SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+          q++;
+        }
       }
     if (LocaleCompare(channel,"opacity") == 0 ||
         LocaleCompare(channel,"all") == 0 ||
@@ -5531,8 +5537,8 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
                 threshold=(MagickRealType) QuantumRange*o3[(x%3)+3*(y%3)];
               else if (order == 4)
                 threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)]/1.7;
-              q->opacity=(Quantum) ((MagickRealType) q->opacity <= threshold ?
-                 0 : QuantumRange);
+              SetOpacityPixelComponent(q,(MagickRealType) q->opacity <=
+                threshold ? 0 : QuantumRange);
               q++;
             }
       }
@@ -6562,12 +6568,12 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetAuthenticIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(IndexPacket) ((MagickRealType)
-        PixelIntensityToQuantum(q) <= threshold ? 0 : 1);
-      indexes[x]=index;
-      q->red=image->colormap[(ssize_t) index].red;
-      q->green=image->colormap[(ssize_t) index].green;
-      q->blue=image->colormap[(ssize_t) index].blue;
+      index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(q) <=
+        threshold ? 0 : 1);
+      SetIndexPixelComponent(indexes+x,index);
+      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
       q++;
     }
     if (!SyncAuthenticPixels(image,&image->exception))
@@ -6681,23 +6687,20 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
       {
         index=(IndexPacket) ((MagickRealType)
           PixelIntensityToQuantum(q) <= pixel.red ? 0 : 1);
-        indexes[x]=index;
-        q->red=image->colormap[(ssize_t) index].red;
-        q->green=image->colormap[(ssize_t) index].green;
-        q->blue=image->colormap[(ssize_t) index].blue;
+        SetIndexPixelComponent(indexes+x,index);
+        SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+        SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+        SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
         q++;
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        q->red=(Quantum) ((MagickRealType)
-          q->red <= pixel.red ? 0 : QuantumRange);
-        q->green=(Quantum) ((MagickRealType)
-          q->green <= pixel.green ? 0 : QuantumRange);
-        q->blue=(Quantum) ((MagickRealType)
-          q->blue <= pixel.blue ? 0 : QuantumRange);
-        q->opacity=(Quantum) ((MagickRealType)
-          q->opacity <= pixel.opacity ? 0 : QuantumRange);
+        SetRedPixelComponent(q,q->red <= pixel.red ? 0 : QuantumRange);
+        SetGreenPixelComponent(q,q->green <= pixel.green ? 0 : QuantumRange);
+        SetBluePixelComponent(q,q->blue <= pixel.blue ? 0 : QuantumRange);
+        SetOpacityPixelComponent(q,q->opacity <= pixel.opacity ? 0 :
+          QuantumRange);
         q++;
       }
     if (!SyncAuthenticPixels(image,&image->exception))

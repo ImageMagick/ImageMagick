@@ -257,8 +257,8 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         grays[ScaleQuantumToMap(GetOpacityPixelComponent(p))].opacity=
           ScaleQuantumToMap(GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
-        grays[ScaleQuantumToMap(indexes[x])].index=
-          ScaleQuantumToMap(indexes[x]);
+        grays[ScaleQuantumToMap(GetIndexPixelComponent(indexes+x))].index=
+          ScaleQuantumToMap(GetIndexPixelComponent(indexes+x));
       p++;
     }
   }
@@ -475,7 +475,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         v=0;
         while (grays[u].red != ScaleQuantumToMap(GetRedPixelComponent(p)))
           u++;
-        while (grays[v].red != ScaleQuantumToMap((p+offset)->red))
+        while (grays[v].red != ScaleQuantumToMap(GetRedPixelComponent(p+offset)))
           v++;
         cooccurrence[u][v].direction[i].red++;
         cooccurrence[v][u].direction[i].red++;
@@ -483,7 +483,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
         v=0;
         while (grays[u].green != ScaleQuantumToMap(GetGreenPixelComponent(p)))
           u++;
-        while (grays[v].green != ScaleQuantumToMap((p+offset)->green))
+        while (grays[v].green != ScaleQuantumToMap(GetGreenPixelComponent(p+offset)))
           v++;
         cooccurrence[u][v].direction[i].green++;
         cooccurrence[v][u].direction[i].green++;
@@ -510,9 +510,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
           {
             u=0;
             v=0;
-            while (grays[u].index != ScaleQuantumToMap(indexes[x]))
+            while (grays[u].index != ScaleQuantumToMap(GetIndexPixelComponent(indexes+x)))
               u++;
-            while (grays[v].index != ScaleQuantumToMap(indexes[x+offset]))
+            while (grays[v].index != ScaleQuantumToMap(GetIndexPixelComponent(indexes+x+offset)))
               v++;
             cooccurrence[u][v].direction[i].index++;
             cooccurrence[v][u].direction[i].index++;

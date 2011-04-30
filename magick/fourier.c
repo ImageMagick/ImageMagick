@@ -305,27 +305,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*
+            magnitude_source[i]));
           break;
         }
         case GreenChannel:
         {
-          q->green=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*
+            magnitude_source[i]));
           break;
         }
         case BlueChannel:
         {
-          q->blue=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*
+            magnitude_source[i]));
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*
+            magnitude_source[i]));
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=ClampToQuantum(QuantumRange*magnitude_source[i]);
+          SetIndexPixelComponent(indexes+x,ClampToQuantum(QuantumRange*
+            magnitude_source[i]));
           break;
         }
         case GrayChannels:
@@ -357,27 +362,32 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=ClampToQuantum(QuantumRange*phase_source[i]);
+          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*
+            phase_source[i]));
           break;
         }
         case GreenChannel:
         {
-          q->green=ClampToQuantum(QuantumRange*phase_source[i]);
+          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*
+            phase_source[i]));
           break;
         }
         case BlueChannel:
         {
-          q->blue=ClampToQuantum(QuantumRange*phase_source[i]);
+          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*
+            phase_source[i]));
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=ClampToQuantum(QuantumRange*phase_source[i]);
+          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*
+            phase_source[i]));
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=ClampToQuantum(QuantumRange*phase_source[i]);
+          SetIndexPixelComponent(indexes+x,ClampToQuantum(QuantumRange*
+            phase_source[i]));
           break;
         }
         case GrayChannels:
@@ -1100,27 +1110,28 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          q->red=ClampToQuantum(QuantumRange*source[i]);
+          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case GreenChannel:
         {
-          q->green=ClampToQuantum(QuantumRange*source[i]);
+          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case BlueChannel:
         {
-          q->blue=ClampToQuantum(QuantumRange*source[i]);
+          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case OpacityChannel:
         {
-          q->opacity=ClampToQuantum(QuantumRange*source[i]);
+          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case IndexChannel:
         {
-          indexes[x]=ClampToQuantum(QuantumRange*source[i]);
+          SetIndexPixelComponent(indexes+x,ClampToQuantum(QuantumRange*
+            source[i]));
           break;
         }
         case GrayChannels:
