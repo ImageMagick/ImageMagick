@@ -637,8 +637,10 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(IndexPacket) (*p++);
-      indexes[x]=index;
-      *q++=image->colormap[(ssize_t) index];
+      SetIndexPixelComponent(indexes+x,index);
+      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
+      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
+      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
