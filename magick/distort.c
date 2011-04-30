@@ -2818,7 +2818,7 @@ MagickExport Image *SparseColorImage(const Image *image,
                 + ((double)j-arguments[k+1])*((double)j-arguments[k+1]);
               if ( method == InverseColorInterpolate )
                 weight = sqrt(weight);  /* inverse, not inverse squared */
-              weight = ( weight < 1 ) ? 1 : 1/weight;
+              weight = ( weight < 1.0 ) ? 1.0 : 1.0/weight;
               if ( channel & RedChannel )
                 pixel.red     += arguments[x++]*weight;
               if ( channel & GreenChannel )
