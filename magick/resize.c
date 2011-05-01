@@ -2491,7 +2491,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             1.0)+0.5);
           j=(ssize_t) ((contribution[i-start].pixel-contribution[0].pixel)*
             image->columns+x);
-          SetIndexPixelComponent(resize_indexes+x,indexes+j);
+          SetIndexPixelComponent(resize_indexes+x,
+            GetIndexPixelComponent(indexes+j));
         }
       q++;
     }
