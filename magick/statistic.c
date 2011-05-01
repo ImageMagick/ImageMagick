@@ -1595,7 +1595,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(channel_statistics,0,length*
     sizeof(*channel_statistics));
-  for (i=0; i <= CompositeChannels; i++)
+  for (i=0; i <= (ssize_t) CompositeChannels; i++)
   {
     channel_statistics[i].depth=1;
     channel_statistics[i].maxima=(-1.0E-37);
@@ -1622,8 +1622,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[RedChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetRedPixelComponent(p) != ScaleAnyToQuantum(ScaleQuantumToAny(GetRedPixelComponent(p),range),
-            range) ? MagickTrue : MagickFalse;
+          status=GetRedPixelComponent(p) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetRedPixelComponent(p),range),range) ?
+            MagickTrue : MagickFalse;
           if (status != MagickFalse)
             {
               channel_statistics[RedChannel].depth++;
@@ -1634,8 +1635,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[GreenChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetGreenPixelComponent(p) != ScaleAnyToQuantum(ScaleQuantumToAny(GetGreenPixelComponent(p),
-            range),range) ? MagickTrue : MagickFalse;
+          status=GetGreenPixelComponent(p) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetGreenPixelComponent(p),range),range) ?
+            MagickTrue : MagickFalse;
           if (status != MagickFalse)
             {
               channel_statistics[GreenChannel].depth++;
@@ -1646,8 +1648,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[BlueChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetBluePixelComponent(p) != ScaleAnyToQuantum(ScaleQuantumToAny(GetBluePixelComponent(p),
-            range),range) ? MagickTrue : MagickFalse;
+          status=GetBluePixelComponent(p) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetBluePixelComponent(p),range),range) ?
+            MagickTrue : MagickFalse;
           if (status != MagickFalse)
             {
               channel_statistics[BlueChannel].depth++;
@@ -1660,8 +1663,9 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[OpacityChannel].depth;
               range=GetQuantumRange(depth);
-              status=GetOpacityPixelComponent(p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-                GetOpacityPixelComponent(p),range),range) ? MagickTrue : MagickFalse;
+              status=GetOpacityPixelComponent(p) != ScaleAnyToQuantum(
+                ScaleQuantumToAny(GetOpacityPixelComponent(p),range),range) ?
+                MagickTrue : MagickFalse;
               if (status != MagickFalse)
                 {
                   channel_statistics[OpacityChannel].depth++;
@@ -1691,9 +1695,11 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[RedChannel].sum+=GetRedPixelComponent(p);
       channel_statistics[RedChannel].sum_squared+=(double) GetRedPixelComponent(p)*
         GetRedPixelComponent(p);
-      channel_statistics[RedChannel].sum_cubed+=(double) GetRedPixelComponent(p)*GetRedPixelComponent(p)*
+      channel_statistics[RedChannel].sum_cubed+=(double)
+        GetRedPixelComponent(p)*GetRedPixelComponent(p)*
         GetRedPixelComponent(p);
-      channel_statistics[RedChannel].sum_fourth_power+=(double) GetRedPixelComponent(p)*GetRedPixelComponent(p)*
+      channel_statistics[RedChannel].sum_fourth_power+=(double)
+        GetRedPixelComponent(p)*GetRedPixelComponent(p)*
         GetRedPixelComponent(p)*GetRedPixelComponent(p);
       if ((double) GetGreenPixelComponent(p) < channel_statistics[GreenChannel].minima)
         channel_statistics[GreenChannel].minima=(double)
@@ -1702,12 +1708,14 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         channel_statistics[GreenChannel].maxima=(double)
           GetGreenPixelComponent(p);
       channel_statistics[GreenChannel].sum+=GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].sum_squared+=(double) GetGreenPixelComponent(p)*
+      channel_statistics[GreenChannel].sum_squared+=(double)
+        GetGreenPixelComponent(p)*GetGreenPixelComponent(p);
+      channel_statistics[GreenChannel].sum_cubed+=(double)
+        GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*
         GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].sum_cubed+=(double) GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*
-        GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].sum_fourth_power+=(double) GetGreenPixelComponent(p)*
-        GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*GetGreenPixelComponent(p);
+      channel_statistics[GreenChannel].sum_fourth_power+=(double)
+        GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*
+        GetGreenPixelComponent(p)*GetGreenPixelComponent(p);
       if ((double) GetBluePixelComponent(p) < channel_statistics[BlueChannel].minima)
         channel_statistics[BlueChannel].minima=(double)
           GetBluePixelComponent(p);
@@ -1715,12 +1723,14 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         channel_statistics[BlueChannel].maxima=(double)
           GetBluePixelComponent(p);
       channel_statistics[BlueChannel].sum+=GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].sum_squared+=(double) GetBluePixelComponent(p)*
+      channel_statistics[BlueChannel].sum_squared+=(double)
+        GetBluePixelComponent(p)*GetBluePixelComponent(p);
+      channel_statistics[BlueChannel].sum_cubed+=(double)
+        GetBluePixelComponent(p)*GetBluePixelComponent(p)*
         GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].sum_cubed+=(double) GetBluePixelComponent(p)*GetBluePixelComponent(p)*
-        GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].sum_fourth_power+=(double) GetBluePixelComponent(p)*
-        GetBluePixelComponent(p)*GetBluePixelComponent(p)*GetBluePixelComponent(p);
+      channel_statistics[BlueChannel].sum_fourth_power+=(double)
+        GetBluePixelComponent(p)*GetBluePixelComponent(p)*
+        GetBluePixelComponent(p)*GetBluePixelComponent(p);
       if (image->matte != MagickFalse)
         {
           if ((double) GetOpacityPixelComponent(p) < channel_statistics[OpacityChannel].minima)
@@ -1732,10 +1742,12 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
           channel_statistics[OpacityChannel].sum+=GetOpacityPixelComponent(p);
           channel_statistics[OpacityChannel].sum_squared+=(double)
             GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
-          channel_statistics[OpacityChannel].sum_cubed+=(double) GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
+          channel_statistics[OpacityChannel].sum_cubed+=(double)
+            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*
+            GetOpacityPixelComponent(p);
           channel_statistics[OpacityChannel].sum_fourth_power+=(double)
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
+            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*
+            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
         }
       if (image->colorspace == CMYKColorspace)
         {
@@ -1756,7 +1768,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     }
   }
   area=(double) image->columns*image->rows;
-  for (i=0; i < CompositeChannels; i++)
+  for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
     channel_statistics[i].sum/=area;
     channel_statistics[i].sum_squared/=area;
@@ -1768,24 +1780,28 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
       channel_statistics[i].variance-(channel_statistics[i].mean*
       channel_statistics[i].mean));
   }
-  for (i=0; i < CompositeChannels; i++)
+  for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
     channel_statistics[CompositeChannels].depth=(size_t) MagickMax((double)
       channel_statistics[CompositeChannels].depth,(double)
       channel_statistics[i].depth);
     channel_statistics[CompositeChannels].minima=MagickMin(
-      channel_statistics[CompositeChannels].minima,channel_statistics[i].minima);
+      channel_statistics[CompositeChannels].minima,
+      channel_statistics[i].minima);
     channel_statistics[CompositeChannels].maxima=MagickMax(
-      channel_statistics[CompositeChannels].maxima,channel_statistics[i].maxima);
+      channel_statistics[CompositeChannels].maxima,
+      channel_statistics[i].maxima);
     channel_statistics[CompositeChannels].sum+=channel_statistics[i].sum;
     channel_statistics[CompositeChannels].sum_squared+=
       channel_statistics[i].sum_squared;
-    channel_statistics[CompositeChannels].sum_cubed+=channel_statistics[i].sum_cubed;
+    channel_statistics[CompositeChannels].sum_cubed+=
+      channel_statistics[i].sum_cubed;
     channel_statistics[CompositeChannels].sum_fourth_power+=
       channel_statistics[i].sum_fourth_power;
     channel_statistics[CompositeChannels].mean+=channel_statistics[i].mean;
-    channel_statistics[CompositeChannels].variance+=channel_statistics[i].variance-
-      channel_statistics[i].mean*channel_statistics[i].mean;
+    channel_statistics[CompositeChannels].variance+=
+      channel_statistics[i].variance-channel_statistics[i].mean*
+      channel_statistics[i].mean;
     channel_statistics[CompositeChannels].standard_deviation+=
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
@@ -1805,7 +1821,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
     sqrt(channel_statistics[CompositeChannels].standard_deviation/channels);
   channel_statistics[CompositeChannels].kurtosis/=channels;
   channel_statistics[CompositeChannels].skewness/=channels;
-  for (i=0; i <= CompositeChannels; i++)
+  for (i=0; i <= (ssize_t) CompositeChannels; i++)
   {
     if (channel_statistics[i].standard_deviation == 0.0)
       continue;
