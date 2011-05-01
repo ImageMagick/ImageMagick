@@ -1267,7 +1267,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               q-=image->columns;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelCompinent(q,ScaleShortToQuantum(*p));
+                SetRedPixelComponent(q,ScaleShortToQuantum(*p));
                 SetGreenPixelComponent(q,GetRedPixelComponent(q));
                 SetBluePixelComponent(q,GetRedPixelComponent(q));
                 p++;
