@@ -1311,9 +1311,6 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
   Image
     *image;
 
-  InterpolatePixelMethod
-    interpolate_method;
-
   MagickPixelPacket
     pixel;
 
@@ -1447,10 +1444,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
         "NoSuchImage","`%s'",expression);
       return(0.0);
     }
-  interpolate_method=image->interpolate == UndefinedInterpolatePixel ?
-      BilinearInterpolatePixel : image->interpolate;
   GetMagickPixelPacket(image,&pixel);
-  (void) InterpolateMagickPixelPacket(image,fx_info->view[i],interpolate_method,
+  (void) InterpolateMagickPixelPacket(image,fx_info->view[i],image->interpolate,
     point.x,point.y,&pixel,exception);
   if ((strlen(p) > 2) &&
       (LocaleCompare(p,"intensity") != 0) &&
