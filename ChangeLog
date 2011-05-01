@@ -1,3 +1,7 @@
+
+2011-05-01  6.6.9-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fix FX default for interpolation to Bilinear
+
 2011-04-30  6.6.9-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-7.
 
