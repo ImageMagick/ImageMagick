@@ -381,11 +381,11 @@ static MagickBooleanType MonitorProgress(const char *text,
 }
 
 /*
-** SparseColorOption() parse the complex -sparse-color argument into an
-** an array of floating point values than call SparseColorImage().
+** SparseColorOption() parses the complex -sparse-color argument into an
+** an array of floating point values then calls SparseColorImage().
 ** Argument is a complex mix of floating-point pixel coodinates, and color
 ** specifications (or direct floating point numbers).  The number of floats
-** needed to represent a color varies depending on teh current channel
+** needed to represent a color varies depending on the current channel
 ** setting.
 */
 static Image *SparseColorOption(const Image *image,const ChannelType channel,
@@ -1581,15 +1581,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mogrify_image=FlipImage(*image,exception);
             break;
           }
-        if (LocaleCompare("flop",option+1) == 0)
-          {
-            /*
-              Flop image scanlines.
-            */
-            (void) SyncImageSettings(mogrify_info,*image);
-            mogrify_image=FlopImage(*image,exception);
-            break;
-          }
         if (LocaleCompare("floodfill",option+1) == 0)
           {
             MagickPixelPacket
@@ -1604,6 +1595,15 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) FloodfillPaintImage(*image,channel,draw_info,&target,
               geometry.x,geometry.y,*option == '-' ? MagickFalse : MagickTrue);
             InheritException(exception,&(*image)->exception);
+            break;
+          }
+        if (LocaleCompare("flop",option+1) == 0)
+          {
+            /*
+              Flop image scanlines.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            mogrify_image=FlopImage(*image,exception);
             break;
           }
         if (LocaleCompare("font",option+1) == 0)
@@ -2229,11 +2229,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            paint_image=OilPaintImage(*image,geometry_info.rho,exception);
-            if (paint_image == (Image *) NULL)
-              break;
-            *image=DestroyImage(*image);
-            *image=paint_image;
+            mogrify_image=OilPaintImage(*image,geometry_info.rho,exception);
             break;
           }
         if (LocaleCompare("pen",option+1) == 0)
