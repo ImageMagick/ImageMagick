@@ -1,3 +1,9 @@
+2011-05-02  6.6.9-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Add various Option Flags, and fix option skip counts for plus forms
+    of simple operators where plus form is the same as minus form.
+    For example the incorrect counts produces a weird error, and posible
+    future segmentation fault in a command like  convert rose: +border show:
+
 2011-04-30  6.6.9-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-7.
 
