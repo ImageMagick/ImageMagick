@@ -488,7 +488,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         }
         case IndexChannel:
         {
-          source[i]=QuantumScale*indexes[x];
+          source[i]=QuantumScale*GetIndexPixelComponent(indexes+x);
           break;
         }
         case GrayChannels:
@@ -913,7 +913,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
         case IndexChannel:
         {
-          magnitude_source[i]=QuantumScale*indexes[x];
+          magnitude_source[i]=QuantumScale*GetIndexPixelComponent(indexes+x);
           break;
         }
         case GrayChannels:
@@ -962,7 +962,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
         case IndexChannel:
         {
-          phase_source[i]=QuantumScale*indexes[x];
+          phase_source[i]=QuantumScale*GetIndexPixelComponent(indexes+x);
           break;
         }
         case GrayChannels:

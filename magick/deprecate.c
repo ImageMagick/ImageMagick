@@ -1851,7 +1851,8 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
       if ((image->colorspace == CMYKColorspace) &&
           (reference->colorspace == CMYKColorspace))
         {
-          pixel=QuantumScale*(indexes[x]-(double) reference_indexes[x]);
+          pixel=QuantumScale*(GetIndexPixelComponent(indexes+x)-(double)
+            GetIndexPixelComponent(reference_indexes+x));
           similarity+=pixel*pixel;
         }
       p++;
@@ -5913,7 +5914,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
           *q++=background_color;
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          indexes[x]=(IndexPacket) 0;
+          SetIndexPixelComponent(indexes+x,0);
         if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
           break;
       }
