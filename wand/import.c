@@ -1198,7 +1198,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("taint",option+1) == 0)
           break;
-        if (LocaleCompare("thumnail",option+1) == 0)
+        if (LocaleCompare("thumbnail",option+1) == 0)
           {
             if (*option == '+')
               break;
