@@ -3860,10 +3860,13 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         goto error_cleanup;
 
       if ( method == VoronoiMorphology ) {
+#if 0
         /* Preserve the alpha channel of input image - but turned off */
         SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
         (void) CompositeImageChannel(rslt_image, DefaultChannels,
                 CopyOpacityCompositeOp, image, 0, 0);
+#endif
+        /* ensure alpha is turned off in resultant image */
         SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
       }
       goto exit_cleanup;
