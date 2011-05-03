@@ -2221,12 +2221,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       {
         if (LocaleCompare("paint",option+1) == 0)
           {
-            Image
-              *paint_image;
-
-            /*
-              Oil paint image.
-            */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
             mogrify_image=OilPaintImage(*image,geometry_info.rho,exception);
@@ -2924,7 +2918,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '+')
-              threshold=(double) QuantumRange/2.5;
+              threshold=(double) QuantumRange/2;
             else
               threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
             (void) BilevelImageChannel(*image,channel,threshold);
@@ -6294,19 +6288,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               }
             image_info->colorspace=(ColorspaceType) ParseCommandOption(
               MagickColorspaceOptions,MagickFalse,argv[i+1]);
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
-            break;
-          }
-        if (LocaleCompare("compress",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                image_info->compression=UndefinedCompression;
-                (void) SetImageOption(image_info,option+1,"undefined");
-                break;
-              }
-            image_info->compression=(CompressionType) ParseCommandOption(
-              MagickCompressOptions,MagickFalse,argv[i+1]);
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
