@@ -567,23 +567,23 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
           /*
             Set this pixel to the background color.
           */
-          q->red=ScaleShortToQuantum(pixel->box_color.red);
-          q->green=ScaleShortToQuantum(pixel->box_color.green);
-          q->blue=ScaleShortToQuantum(pixel->box_color.blue);
+          SetRedPixelComponent(q,ScaleShortToQuantum(pixel->box_color.red));
+          SetGreenPixelComponent(q,ScaleShortToQuantum(pixel->box_color.green));
+          SetBluePixelComponent(q,ScaleShortToQuantum(pixel->box_color.blue));
           if ((annotate_info->stencil == ForegroundStencil) ||
               (annotate_info->stencil == OpaqueStencil))
-            q->opacity=(Quantum) TransparentOpacity;
+            SetOpacityPixelComponent(q,TransparentOpacity);
         }
       else
         {
           /*
             Set this pixel to the pen color.
           */
-          q->red=ScaleShortToQuantum(pixel->pen_color.red);
-          q->green=ScaleShortToQuantum(pixel->pen_color.green);
-          q->blue=ScaleShortToQuantum(pixel->pen_color.blue);
+          SetRedPixelComponent(q,ScaleShortToQuantum(pixel->pen_color.red));
+          SetGreenPixelComponent(q,ScaleShortToQuantum(pixel->pen_color.green));
+          SetBluePixelComponent(q,ScaleShortToQuantum(pixel->pen_color.blue));
           if (annotate_info->stencil == BackgroundStencil)
-            q->opacity=(Quantum) TransparentOpacity;
+            SetOpacityPixelComponent(q,TransparentOpacity);
         }
       q++;
     }
@@ -2481,11 +2481,11 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
           /*
             Set this pixel to the pen color.
           */
-          q->red=ScaleShortToQuantum(pixel->pen_color.red);
-          q->green=ScaleShortToQuantum(pixel->pen_color.green);
-          q->blue=ScaleShortToQuantum(pixel->pen_color.blue);
-          q->opacity=(Quantum) (draw_info->stencil == OpaqueStencil ?
-            OpaqueOpacity : TransparentOpacity);
+          SetRedPixelComponent(q,ScaleShortToQuantum(pixel->pen_color.red));
+          SetGreenPixelComponent(q,ScaleShortToQuantum(pixel->pen_color.green));
+          SetBluePixelComponent(q,ScaleShortToQuantum(pixel->pen_color.blue));
+          SetOpacityPixelComponent(q,(Quantum) (draw_info->stencil ==
+            OpaqueStencil ? OpaqueOpacity : TransparentOpacity));
         }
       q++;
     }
@@ -4380,11 +4380,14 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   index=(pixel >> red_shift) & red_mask;
-                  q->red=ScaleShortToQuantum(colors[index].red);
+                  SetRedPixelComponent(q,ScaleShortToQuantum(
+                    colors[index].red));
                   index=(pixel >> green_shift) & green_mask;
-                  q->green=ScaleShortToQuantum(colors[index].green);
+                  SetGreenPixelComponent(q,ScaleShortToQuantum(
+                    colors[index].green));
                   index=(pixel >> blue_shift) & blue_mask;
-                  q->blue=ScaleShortToQuantum(colors[index].blue);
+                  SetBluePixelComponent(q,ScaleShortToQuantum(
+                    colors[index].blue));
                   q++;
                 }
                 if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
@@ -4402,13 +4405,16 @@ static Image *XGetWindowImage(Display *display,const Window window,
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
                   color=(65535UL*color)/red_mask;
-                  q->red=ScaleShortToQuantum((unsigned short) color);
+                  SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                    color));
                   color=(pixel >> green_shift) & green_mask;
                   color=(65535UL*color)/green_mask;
-                  q->green=ScaleShortToQuantum((unsigned short) color);
+                  SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                    color));
                   color=(pixel >> blue_shift) & blue_mask;
                   color=(65535UL*color)/blue_mask;
-                  q->blue=ScaleShortToQuantum((unsigned short) color);
+                  SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short)
+                    color));
                   q++;
                 }
                 if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
@@ -4449,7 +4455,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               for (x=0; x < (int) composite_image->columns; x++)
               {
                 index=(IndexPacket) XGetPixel(ximage,x,y);
-                indexes[x]=index;
+                SetIndexPixelComponent(indexes+x,index);
                 *q++=composite_image->colormap[(ssize_t) index];
               }
               if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
@@ -5930,7 +5936,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         for (x=0; x < (int) canvas->columns; x++)
         {
           byte>>=1;
-          if (indexes[x] == (IndexPacket) polarity)
+          if (GetIndexPixelComponent(indexes+x) == (IndexPacket) polarity)
             byte|=foreground;
           else
             byte|=background;
@@ -5969,7 +5975,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]] & 0x0f;
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)] & 0x0f;
               switch (nibble)
               {
                 case 0:
@@ -6021,7 +6027,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]] & 0xf;
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6064,7 +6070,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]];
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
               *q++=(unsigned char) pixel;
             }
             q+=scanline_pad;
@@ -6095,7 +6101,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]];
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
               for (k=0; k < (int) bytes_per_pixel; k++)
               {
                 channel[k]=(unsigned char) pixel;
@@ -6557,7 +6563,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         for (x=(int) canvas->columns-1; x >= 0; x--)
         {
           byte<<=1;
-          if (indexes[x] == (IndexPacket) polarity)
+          if (GetIndexPixelComponent(indexes+x) == (IndexPacket) polarity)
             byte|=foreground;
           else
             byte|=background;
@@ -6596,7 +6602,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]] & 0xf;
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6648,7 +6654,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]] & 0xf;
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6691,7 +6697,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]];
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
               *q++=(unsigned char) pixel;
             }
             q+=scanline_pad;
@@ -6722,7 +6728,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             indexes=GetCacheViewVirtualIndexQueue(canvas_view);
             for (x=0; x < (int) canvas->columns; x++)
             {
-              pixel=pixels[(ssize_t) indexes[x]];
+              pixel=pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
               for (k=(int) bytes_per_pixel-1; k >= 0; k--)
               {
                 channel[k]=(unsigned char) pixel;
@@ -7754,20 +7760,20 @@ MagickExport void XMakeStandardColormap(Display *display,
               {
                 for (i=0; i < (ssize_t) number_colors; i++)
                 {
-                  q->red=(Quantum) 0;
+                  SetRedPixelComponent(q,0);
                   if (map_info->red_max != 0)
-                    q->red=ScaleXToQuantum((size_t) (i/
-                      map_info->red_mult),map_info->red_max);
-                  q->green=(Quantum) 0;
+                    SetRedPixelComponent(q,ScaleXToQuantum((size_t) (i/
+                      map_info->red_mult),map_info->red_max));
+                  SetGreenPixelComponent(q,0);
                   if (map_info->green_max != 0)
-                    q->green=ScaleXToQuantum((size_t) ((i/
+                    SetGreenPixelComponent(q,ScaleXToQuantum((size_t) ((i/
                       map_info->green_mult) % (map_info->green_max+1)),
-                      map_info->green_max);
-                  q->blue=(Quantum) 0;
+                      map_info->green_max));
+                  SetBluePixelComponent(q,0);
                   if (map_info->blue_max != 0)
-                    q->blue=ScaleXToQuantum((size_t) (i %
-                      map_info->green_mult),map_info->blue_max);
-                  q->opacity=(Quantum) TransparentOpacity;
+                    SetBluePixelComponent(q,ScaleXToQuantum((size_t) (i %
+                      map_info->green_mult),map_info->blue_max));
+                  SetOpacityPixelComponent(q,TransparentOpacity);
                   q++;
                 }
                 (void) SyncAuthenticPixels(affinity_image,exception);
@@ -7955,7 +7961,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               break;
             indexes=GetCacheViewAuthenticIndexQueue(image_view);
             for (x=(int) image->columns-1; x >= 0; x--)
-              diversity[(ssize_t) indexes[x]].count++;
+              diversity[(ssize_t) GetIndexPixelComponent(indexes+x)].count++;
           }
           image_view=DestroyCacheView(image_view);
           /*

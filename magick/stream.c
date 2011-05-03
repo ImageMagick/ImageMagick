@@ -1525,7 +1525,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=ScaleQuantumToChar(indexes[x]);
+                *q=ScaleQuantumToChar(GetIndexPixelComponent(indexes+x));
               break;
             }
             case IndexQuantum:
@@ -1716,8 +1716,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=(double) ((QuantumScale*indexes[x])*quantum_info->scale+
-                  quantum_info->minimum);
+                *q=(double) ((QuantumScale*GetIndexPixelComponent(indexes+x))*
+                  quantum_info->scale+quantum_info->minimum);
               break;
             }
             case IndexQuantum:
@@ -1909,8 +1909,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=(float) ((QuantumScale*indexes[x])*quantum_info->scale+
-                  quantum_info->minimum);
+                *q=(float) ((QuantumScale*GetIndexPixelComponent(indexes+x))*
+                  quantum_info->scale+quantum_info->minimum);
               break;
             }
             case IndexQuantum:
@@ -2080,7 +2080,8 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=(unsigned int) ScaleQuantumToLong(indexes[x]);
+                *q=(unsigned int) ScaleQuantumToLong(GetIndexPixelComponent(
+                  indexes+x));
               break;
             }
             case IndexQuantum:
@@ -2246,7 +2247,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=ScaleQuantumToLong(indexes[x]);
+                *q=ScaleQuantumToLong(GetIndexPixelComponent(indexes+x));
               break;
             }
             case IndexQuantum:
@@ -2411,7 +2412,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=indexes[x];
+                *q=GetIndexPixelComponent(indexes+x);
               break;
             }
             case IndexQuantum:
@@ -2576,7 +2577,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
             case BlackQuantum:
             {
               if (image->colorspace == CMYKColorspace)
-                *q=ScaleQuantumToShort(indexes[x]);
+                *q=ScaleQuantumToShort(GetIndexPixelComponent(indexes+x));
               break;
             }
             case IndexQuantum:

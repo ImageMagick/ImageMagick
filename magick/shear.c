@@ -1238,7 +1238,8 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         if ((indexes != (IndexPacket *) NULL) &&
             (rotate_indexes != (IndexPacket *) NULL))
           for (x=0; x < (ssize_t) image->columns; x++)
-            rotate_indexes[image->columns-x-1]=indexes[x];
+            SetIndexPixelComponent(rotate_indexes+image->columns-x-1,
+              GetIndexPixelComponent(indexes+x));
         sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
         if (sync == MagickFalse)
           status=MagickFalse;

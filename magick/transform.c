@@ -197,7 +197,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           if (indexes != (IndexPacket *) NULL)
             {
               if (chop_indexes != (IndexPacket *) NULL)
-                *chop_indexes++=indexes[x];
+                *chop_indexes++=GetIndexPixelComponent(indexes+x);
             }
           q++;
         }
@@ -260,7 +260,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           if (indexes != (IndexPacket *) NULL)
             {
               if (chop_indexes != (IndexPacket *) NULL)
-                *chop_indexes++=indexes[x];
+                *chop_indexes++=GetIndexPixelComponent(indexes+x);
             }
           q++;
         }
@@ -368,7 +368,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        q->red=(Quantum) (QuantumRange-PixelIntensityToQuantum(p));
+        SetRedPixelComponent(q,QuantumRange-PixelIntensityToQuantum(p));
         p++;
         q++;
       }
@@ -468,7 +468,8 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       indexes=GetCacheViewAuthenticIndexQueue(cmyk_view);
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        indexes[x]=(IndexPacket) (QuantumRange-PixelIntensityToQuantum(p));
+        SetIndexPixelComponent(indexes+x,QuantumRange-
+          PixelIntensityToQuantum(p));
         p++;
       }
       if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
@@ -1401,7 +1402,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       (*--q)=(*p++);
       if ((indexes != (const IndexPacket *) NULL) &&
           (flop_indexes != (IndexPacket *) NULL))
-        flop_indexes[flop_image->columns-x-1]=indexes[x];
+        SetIndexPixelComponent(flop_indexes+flop_image->columns-x-1,
+         GetIndexPixelComponent( indexes+x));
     }
     if (SyncCacheViewAuthenticPixels(flop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1827,7 +1829,9 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
-        splice_indexes[x]=(*indexes++);
+        SetIndexPixelComponent(splice_indexes+x,
+          GetIndexPixelComponent(indexes));
+      indexes++;
       p++;
       q++;
     }
@@ -1842,7 +1846,9 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
-        splice_indexes[x]=(*indexes++);
+        SetIndexPixelComponent(splice_indexes+x,
+          GetIndexPixelComponent(indexes));
+      indexes++;
       p++;
       q++;
     }
@@ -1905,7 +1911,9 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
-        splice_indexes[x]=(*indexes++);
+        SetIndexPixelComponent(splice_indexes+x,
+           GetIndexPixelComponent(indexes));
+      indexes++;
       p++;
       q++;
     }
@@ -1920,7 +1928,9 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
       if (image->colorspace == CMYKColorspace)
-        splice_indexes[x]=(*indexes++);
+        SetIndexPixelComponent(splice_indexes+x,
+          GetIndexPixelComponent(indexes));
+      indexes++;
       p++;
       q++;
     }
@@ -2349,7 +2359,8 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         transverse_indexes=GetCacheViewAuthenticIndexQueue(transverse_view);
         if (transverse_indexes != (IndexPacket *) NULL)
           for (x=0; x < (ssize_t) image->columns; x++)
-            transverse_indexes[image->columns-x-1]=indexes[x];
+            SetIndexPixelComponent(transverse_indexes+image->columns-x-1,
+              GetIndexPixelComponent(indexes+x));
       }
     sync=SyncCacheViewAuthenticPixels(transverse_view,exception);
     if (sync == MagickFalse)
