@@ -464,15 +464,15 @@ static void AdjustAffine(DrawingWand *wand,const AffineMatrix *affine)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClearDrawingWand() clear resources associated with the drawing wand.
+%  ClearDrawingWand() clears resources associated with the drawing wand.
 %
 %  The format of the ClearDrawingWand method is:
 %
-%      DrawingWand *ClearDrawingWand(DrawingWand *wand)
+%      void ClearDrawingWand(DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the drawing wand. to destroy
+%    o wand: the drawing wand to clear.
 %
 */
 WandExport void ClearDrawingWand(DrawingWand *wand)
@@ -620,7 +620,7 @@ WandExport DrawingWand *CloneDrawingWand(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the drawing wand. to destroy
+%    o wand: the drawing wand to destroy.
 %
 */
 WandExport DrawingWand *DestroyDrawingWand(DrawingWand *wand)
