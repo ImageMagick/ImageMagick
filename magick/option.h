@@ -132,7 +132,7 @@ typedef enum
   FireOptionFlag            = 0x0001,  /* Option sequence firing point */
   ImageInfoOptionFlag       = 0x0002,  /* Sets ImageInfo, no image needed */
   DrawInfoOptionFlag        = 0x0004,  /* Sets DrawInfo, no image needed */
-  QuantizeInfoOptionFlag    = 0x0008,  /* Sets QuantizeeInfo, no image needed */
+  QuantizeInfoOptionFlag    = 0x0008,  /* Sets QuantizeInfo, no image needed */
   GlobalOptionFlag          = 0x0010,  /* Sets Global Option, no image needed */
   SimpleOperatorOptionFlag  = 0x0100,  /* Simple Image processing operator */
   ListOperatorOptionFlag    = 0x0200,  /* Multi-Image List processing operator */
