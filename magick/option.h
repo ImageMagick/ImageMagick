@@ -137,6 +137,7 @@ typedef enum
   SimpleOperatorOptionFlag  = 0x0100,  /* Simple Image processing operator */
   ListOperatorOptionFlag    = 0x0200,  /* Multi-Image List processing operator */
   SpecialOperatorOptionFlag = 0x0400,  /* Specially handled Operator Option */
+  NonConvertOptionFlag      = 0x4000,  /* Option not used by Convert */
   DeprecateOptionFlag       = 0x8000   /* Deprecate option, give warning */
 } CommandOptionFlags;
 
