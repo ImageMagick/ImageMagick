@@ -555,7 +555,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      indexes[x]=(IndexPacket) 0;
+      SetIndexPixelComponent(indexes+x,0);
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
         if (((ssize_t) ScaleQuantumToChar(q->red) >=
@@ -574,7 +574,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             /*
               Classify this pixel.
             */
-            indexes[x]=(IndexPacket) cluster->id;
+            SetIndexPixelComponent(indexes+x,cluster->id);
             break;
           }
       }
@@ -624,7 +624,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
                   Classify this pixel.
                 */
                 local_minima=1.0/sum;
-                indexes[x]=(IndexPacket) j;
+                SetIndexPixelComponent(indexes+x,j);
               }
           }
         }
