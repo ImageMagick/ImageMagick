@@ -54,9 +54,7 @@
 #endif
 
 /* Define if you have DJVU library */
-#ifndef MAGICKCORE_DJVU_DELEGATE
-#define MAGICKCORE_DJVU_DELEGATE 1
-#endif
+/* #undef DJVU_DELEGATE */
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
@@ -78,9 +76,7 @@
 #endif
 
 /* Define if you have FFTW library */
-#ifndef MAGICKCORE_FFTW_DELEGATE
-#define MAGICKCORE_FFTW_DELEGATE 1
-#endif
+/* #undef FFTW_DELEGATE */
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
@@ -409,15 +405,15 @@
 #endif
 
 /* Define if you have the <lcms2.h> header file. */
-/* #undef HAVE_LCMS2_H */
+#ifndef MAGICKCORE_HAVE_LCMS2_H
+#define MAGICKCORE_HAVE_LCMS2_H 1
+#endif
 
 /* Define if you have the <lcms2/lcms2.h> header file. */
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS_H
-#define MAGICKCORE_HAVE_LCMS_H 1
-#endif
+/* #undef HAVE_LCMS_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -1063,9 +1059,7 @@
 #endif
 
 /* accurately represent the wide range of intensity levels in real scenes */
-#ifndef MAGICKCORE_HDRI_SUPPORT
-#define MAGICKCORE_HDRI_SUPPORT 1
-#endif
+/* #undef HDRI_SUPPORT */
 
 /* Define if you have umem memory allocation library */
 /* #undef HasUMEM */
@@ -1117,7 +1111,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib/mesa:/usr/lib32/mesa:/usr/lib32/alsa-lib:/usr/lib/alsa-lib:/usr/local/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
 #endif
 
 /* The archive extension */
@@ -1148,7 +1142,9 @@
 #endif
 
 /* Define if you have lzma compression library */
-/* #undef LZMA_DELEGATE */
+#ifndef MAGICKCORE_LZMA_DELEGATE
+#define MAGICKCORE_LZMA_DELEGATE 1
+#endif
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1166,9 +1162,7 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-#ifndef MAGICKCORE_OPENEXR_DELEGATE
-#define MAGICKCORE_OPENEXR_DELEGATE 1
-#endif
+/* #undef OPENEXR_DELEGATE */
 
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef MAGICKCORE_PACKAGE_BUGREPORT
@@ -1223,9 +1217,7 @@
 #endif
 
 /* Define if you have RSVG library */
-#ifndef MAGICKCORE_RSVG_DELEGATE
-#define MAGICKCORE_RSVG_DELEGATE 1
-#endif
+/* #undef RSVG_DELEGATE */
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
@@ -1371,9 +1363,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-#ifndef MAGICKCORE_WMF_DELEGATE
-#define MAGICKCORE_WMF_DELEGATE 1
-#endif
+/* #undef WMF_DELEGATE */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
