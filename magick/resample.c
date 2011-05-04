@@ -728,7 +728,7 @@ static inline void ClampUpAxes(const double dux,
    * position in input space and [x,y].)
    */
   /*
-   * Outputs:
+   * Output:
    *
    * major_mag is the half-length of the major axis of the "new"
    * ellipse.
@@ -747,8 +747,17 @@ static inline void ClampUpAxes(const double dux,
    *
    * Unit vectors are useful for computing projections, in particular,
    * to compute the distance between a point in output space and the
-   * center (of a disk) from the position of the corresponding point
-   * in input space.
+   * center of a unit disk in output space, using the position of the
+   * corresponding point [s,t] in input space. Following the clamping,
+   * the square of this distance is
+   *
+   * ( ( s * major_unit_x + t * major_unit_y ) / major_mag )^2
+   * +
+   * ( ( s * minor_unit_x + t * minor_unit_y ) / minor_mag )^2
+   *
+   * If such distances will be computed for many [s,t]'s, it makes
+   * sense to actually compute the reciprocal of major_mag and
+   * minor_mag and multiply them by the above unit lengths.
    *
    * Now, if you want to modify the input pair of tangent vectors so
    * that it defines the modified ellipse, all you have to do is set
