@@ -10,7 +10,7 @@
 %        DDDD   EEEEE  P      R  R   EEEEE   CCCC  A   A    T    EEEEE        %
 %                                                                             %
 %                                                                             %
-%                        MagickCore Deprecated Methods                        %
+%                       MagickWand Deprecated Methods                         %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
@@ -40,264 +40,131 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/property.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/cache-view.h"
-#include "magick/client.h"
-#include "magick/color.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colormap-private.h"
-#include "magick/colorspace.h"
-#include "magick/composite.h"
-#include "magick/composite-private.h"
-#include "magick/constitute.h"
-#include "magick/deprecate.h"
-#include "magick/draw.h"
-#include "magick/draw-private.h"
-#include "magick/effect.h"
-#include "magick/enhance.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/fx.h"
-#include "magick/geometry.h"
-#include "magick/identify.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/memory_.h"
-#include "magick/magick.h"
-#include "magick/monitor.h"
+#include "wand/studio.h"
+#include "wand/MagickWand.h"
+#include "wand/magick-wand-private.h"
+#include "wand/wand.h"
 #include "magick/monitor-private.h"
-#include "magick/morphology.h"
-#include "magick/paint.h"
-#include "magick/pixel.h"
-#include "magick/pixel-private.h"
-#include "magick/quantize.h"
-#include "magick/random_.h"
-#include "magick/resource_.h"
-#include "magick/semaphore.h"
-#include "magick/segment.h"
-#include "magick/splay-tree.h"
-#include "magick/statistic.h"
-#include "magick/string_.h"
-#include "magick/threshold.h"
-#include "magick/transform.h"
-#include "magick/utility.h"
+#include "magick/thread-private.h"
+
+/*
+  Define declarations.
+*/
+#define PixelViewId  "PixelView"
+#define ThrowWandException(severity,tag,context) \
+{ \
+  (void) ThrowMagickException(wand->exception,GetMagickModule(),severity, \
+    tag,"`%s'",context); \
+  return(MagickFalse); \
+}
+
+/*
+  Typedef declarations.
+*/
+struct _PixelView
+{
+  size_t
+    id;
+
+  char
+    name[MaxTextExtent];
+
+  ExceptionInfo
+    *exception;
+
+  MagickWand
+    *wand;
+
+  CacheView
+    *view;
+
+  RectangleInfo
+    region;
+
+  size_t
+    number_threads;
+
+  PixelWand
+    ***pixel_wands;
+
+  MagickBooleanType
+    debug;
+
+  size_t
+    signature;
+};
 
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
-/*
-  Global declarations.
-*/
-static MonitorHandler
-  monitor_handler = (MonitorHandler) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e C a c h e V i e w I n d e x e s                             %
+%   M a g i c k A v e r a g e I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireCacheViewIndexes() returns the indexes associated with the specified
-%  view.
+%  MagickAverageImages() average a set of images.
 %
-%  Deprecated, replace with:
+%  The format of the MagickAverageImages method is:
 %
-%    GetCacheViewVirtualIndexQueue(cache_view);
-%
-%  The format of the AcquireCacheViewIndexes method is:
-%
-%      const IndexPacket *AcquireCacheViewIndexes(const CacheView *cache_view)
+%      MagickWand *MagickAverageImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o cache_view: the cache view.
+%    o wand: the magick wand.
 %
 */
-MagickExport const IndexPacket *AcquireCacheViewIndexes(
-  const CacheView *cache_view)
-{
-  return(GetCacheViewVirtualIndexQueue(cache_view));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e C a c h e V i e w P i x e l s                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireCacheViewPixels() gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
-%
-%  Deprecated, replace with:
-%
-%    GetCacheViewVirtualPixels(cache_view,x,y,columns,rows,exception);
-%
-%  The format of the AcquireCacheViewPixels method is:
-%
-%      const PixelPacket *AcquireCacheViewPixels(const CacheView *cache_view,
-%        const ssize_t x,const ssize_t y,const size_t columns,
-%        const size_t rows,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport const PixelPacket *AcquireCacheViewPixels(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,
-  const size_t columns,const size_t rows,ExceptionInfo *exception)
-{
-  return(GetCacheViewVirtualPixels(cache_view,x,y,columns,rows,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e I m a g e P i x e l s                                       %
-%                                                                             % %                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireImagePixels() returns an immutable pixel region. If the
-%  region is successfully accessed, a pointer to it is returned, otherwise
-%  NULL is returned. The returned pointer may point to a temporary working
-%  copy of the pixels or it may point to the original pixels in memory.
-%  Performance is maximized if the selected region is part of one row, or one
-%  or more full rows, since there is opportunity to access the pixels in-place
-%  (without a copy) if the image is in RAM, or in a memory-mapped file.  The
-%  returned pointer should *never* be deallocated by the user.
-%
-%  Pixels accessed via the returned pointer represent a simple array of type
-%  PixelPacket.  If the image type is CMYK or the storage class is PseudoClass,
-%  call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access
-%  the black color component or to obtain the colormap indexes (of type
-%  IndexPacket) corresponding to the region.
-%
-%  If you plan to modify the pixels, use GetAuthenticPixels() instead.
-%
-%  Note, the AcquireImagePixels() and GetAuthenticPixels() methods are not
-%  thread-safe.  In a threaded environment, use GetCacheViewVirtualPixels() or
-%  GetCacheViewAuthenticPixels() instead.
-%
-%  Deprecated, replace with:
-%
-%    GetVirtualPixels(image,x,y,columns,rows,exception);
-%
-%  The format of the AcquireImagePixels() method is:
-%
-%      const PixelPacket *AcquireImagePixels(const Image *image,const ssize_t x,
-%        const ssize_t y,const size_t columns,const size_t rows,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
-  const ssize_t x,const ssize_t y,const size_t columns,
-  const size_t rows,ExceptionInfo *exception)
-{
-  return(GetVirtualPixels(image,x,y,columns,rows,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e I n d e x e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireIndexes() returns the black channel or the colormap indexes
-%  associated with the last call to QueueAuthenticPixels() or
-%  GetVirtualPixels().  NULL is returned if the black channel or colormap
-%  indexes are not available.
-%
-%  Deprecated, replace with:
-%
-%    GetVirtualIndexQueue(image);
-%
-%  The format of the AcquireIndexes() method is:
-%
-%      const IndexPacket *AcquireIndexes(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o indexes: AcquireIndexes() returns the indexes associated with the last
-%      call to QueueAuthenticPixels() or GetVirtualPixels().
-%
-%    o image: the image.
-%
-*/
-MagickExport const IndexPacket *AcquireIndexes(const Image *image)
-{
-  return(GetVirtualIndexQueue(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e M e m o r y                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireMemory() returns a pointer to a block of memory at least size bytes
-%  suitably aligned for any use.
-%
-%  The format of the AcquireMemory method is:
-%
-%      void *AcquireMemory(const size_t size)
-%
-%  A description of each parameter follows:
-%
-%    o size: the size of the memory in bytes to allocate.
-%
-*/
-MagickExport void *AcquireMemory(const size_t size)
-{
-  void
-    *allocation;
 
-  assert(size != 0);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  allocation=malloc(size);
-  return(allocation);
+static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
+  Image *images)
+{
+  MagickWand
+    *clone_wand;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(*clone_wand));
+  if (clone_wand == (MagickWand *) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      images->filename);
+  (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
+  clone_wand->id=AcquireWandId();
+  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+    MagickWandId,(double) clone_wand->id);
+  clone_wand->exception=AcquireExceptionInfo();
+  InheritException(clone_wand->exception,wand->exception);
+  clone_wand->image_info=CloneImageInfo(wand->image_info);
+  clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
+  clone_wand->images=images;
+  clone_wand->debug=IsEventLogging();
+  if (clone_wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_wand->name);
+  clone_wand->signature=WandSignature;
+  return(clone_wand);
+}
+
+WandExport MagickWand *MagickAverageImages(MagickWand *wand)
+{
+  Image
+    *average_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  average_image=EvaluateImages(wand->images,MeanEvaluateOperator,
+    wand->exception);
+  if (average_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,average_image));
 }
 
 /*
@@ -305,41 +172,56 @@ MagickExport void *AcquireMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e O n e C a c h e V i e w P i x e l                           %
+%   C l o n e P i x e l V i e w                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireOneCacheViewPixel() returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.  If
-%  you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.
+%  ClonePixelView() makes a copy of the specified pixel view.
 %
-%  Deprecated, replace with:
+%  The format of the ClonePixelView method is:
 %
-%    GetOneCacheViewVirtualPixel(cache_view,x,y,pixel,exception);
-%
-%  The format of the AcquireOneCacheViewPixel method is:
-%
-%      MagickBooleanType AcquireOneCacheViewPixel(const CacheView *cache_view,
-%        const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%      PixelView *ClonePixelView(const PixelView *pixel_view)
 %
 %  A description of each parameter follows:
 %
-%    o cache_view: the cache view.
-%
-%    o x,y:  These values define the offset of the pixel.
-%
-%    o pixel: return a pixel at the specified (x,y) location.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o pixel_view: the pixel view.
 %
 */
-MagickExport MagickBooleanType AcquireOneCacheViewPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,PixelPacket *pixel,
-  ExceptionInfo *exception)
+WandExport PixelView *ClonePixelView(const PixelView *pixel_view)
 {
-  return(GetOneCacheViewVirtualPixel(cache_view,x,y,pixel,exception));
+  PixelView
+    *clone_view;
+
+  register ssize_t
+    i;
+
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  if (pixel_view->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",pixel_view->name);
+  clone_view=(PixelView *) AcquireMagickMemory(sizeof(*clone_view));
+  if (clone_view == (PixelView *) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      pixel_view->name);
+  (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
+  clone_view->id=AcquireWandId();
+  (void) FormatMagickString(clone_view->name,MaxTextExtent,"%s-%.20g",
+    PixelViewId,(double) clone_view->id);
+  clone_view->exception=AcquireExceptionInfo();
+  InheritException(clone_view->exception,pixel_view->exception);
+  clone_view->view=CloneCacheView(pixel_view->view);
+  clone_view->region=pixel_view->region;
+  clone_view->number_threads=pixel_view->number_threads;
+  for (i=0; i < (ssize_t) pixel_view->number_threads; i++)
+    clone_view->pixel_wands[i]=ClonePixelWands((const PixelWand **)
+      pixel_view->pixel_wands[i],pixel_view->region.width);
+  clone_view->debug=pixel_view->debug;
+  if (clone_view->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_view->name);
+  clone_view->signature=WandSignature;
+  return(clone_view);
 }
 
 /*
@@ -347,50 +229,252 @@ MagickExport MagickBooleanType AcquireOneCacheViewPixel(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e O n e C a c h e V i e w V i r t u a l P i x e l             %
+%   D e s t r o y P i x e l V i e w                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireOneCacheViewVirtualPixel() returns a single pixel at the specified
-%  (x,y) location.  The image background color is returned if an error occurs.
-%  If you plan to modify the pixel, use GetOneCacheViewAuthenticPixel() instead.
+%  DestroyPixelView() deallocates memory associated with a pixel view.
 %
-%  Deprecated, replace with:
+%  The format of the DestroyPixelView method is:
 %
-%    GetOneCacheViewVirtualMethodPixel(cache_view,virtual_pixel_method,
-%      x,y,pixel,exception);
-%
-%  The format of the AcquireOneCacheViewPixel method is:
-%
-%      MagickBooleanType AcquireOneCacheViewVirtualPixel(
-%        const CacheView *cache_view,
-%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%      PixelView *DestroyPixelView(PixelView *pixel_view,
+%        const size_t number_wands,const size_t number_threads)
 %
 %  A description of each parameter follows:
 %
-%    o cache_view: the cache view.
+%    o pixel_view: the pixel view.
 %
-%    o virtual_pixel_method: the virtual pixel method.
+%    o number_wand: the number of pixel wands.
 %
-%    o x,y:  These values define the offset of the pixel.
-%
-%    o pixel: return a pixel at the specified (x,y) location.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o number_threads: number of threads.
 %
 */
-MagickExport MagickBooleanType AcquireOneCacheViewVirtualPixel(
-  const CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method,
-  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+
+static PixelWand ***DestroyPixelsThreadSet(PixelWand ***pixel_wands,
+  const size_t number_wands,const size_t number_threads)
 {
+  register ssize_t
+    i;
+
+  assert(pixel_wands != (PixelWand ***) NULL);
+  for (i=0; i < (ssize_t) number_threads; i++)
+    if (pixel_wands[i] != (PixelWand **) NULL)
+      pixel_wands[i]=DestroyPixelWands(pixel_wands[i],number_wands);
+  pixel_wands=(PixelWand ***) RelinquishMagickMemory(pixel_wands);
+  return(pixel_wands);
+}
+
+WandExport PixelView *DestroyPixelView(PixelView *pixel_view)
+{
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  pixel_view->pixel_wands=DestroyPixelsThreadSet(pixel_view->pixel_wands,
+    pixel_view->region.width,pixel_view->number_threads);
+  pixel_view->view=DestroyCacheView(pixel_view->view);
+  pixel_view->exception=DestroyExceptionInfo(pixel_view->exception);
+  pixel_view->signature=(~WandSignature);
+  RelinquishWandId(pixel_view->id);
+  pixel_view=(PixelView *) RelinquishMagickMemory(pixel_view);
+  return(pixel_view);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D u p l e x T r a n s f e r P i x e l V i e w I t e r a t o r             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DuplexTransferPixelViewIterator() iterates over three pixel views in
+%  parallel and calls your transfer method for each scanline of the view.  The
+%  source and duplex pixel region is not confined to the image canvas-- that is
+%  you can include negative offsets or widths or heights that exceed the image
+%  dimension.  However, the destination pixel view is confined to the image
+%  canvas-- that is no negative offsets or widths or heights that exceed the
+%  image dimension are permitted.
+%
+%  Use this pragma:
+%
+%    #pragma omp critical
+%
+%  to define a section of code in your callback transfer method that must be
+%  executed by a single thread at a time.
+%
+%  The format of the DuplexTransferPixelViewIterator method is:
+%
+%      MagickBooleanType DuplexTransferPixelViewIterator(PixelView *source,
+%        PixelView *duplex,PixelView *destination,
+%        DuplexTransferPixelViewMethod transfer,void *context)
+%
+%  A description of each parameter follows:
+%
+%    o source: the source pixel view.
+%
+%    o duplex: the duplex pixel view.
+%
+%    o destination: the destination pixel view.
+%
+%    o transfer: the transfer callback method.
+%
+%    o context: the user defined context.
+%
+*/
+WandExport MagickBooleanType DuplexTransferPixelViewIterator(
+  PixelView *source,PixelView *duplex,PixelView *destination,
+  DuplexTransferPixelViewMethod transfer,void *context)
+{
+#define DuplexTransferPixelViewTag  "PixelView/DuplexTransfer"
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *destination_image,
+    *duplex_image,
+    *source_image;
+
   MagickBooleanType
     status;
 
-  status=GetOneCacheViewVirtualMethodPixel(cache_view,virtual_pixel_method,
-    x,y,pixel,exception);
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(source != (PixelView *) NULL);
+  assert(source->signature == WandSignature);
+  if (transfer == (DuplexTransferPixelViewMethod) NULL)
+    return(MagickFalse);
+  source_image=source->wand->images;
+  duplex_image=duplex->wand->images;
+  destination_image=destination->wand->images;
+  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+    return(MagickFalse);
+  status=MagickTrue;
+  progress=0;
+  exception=destination->exception;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=source->region.y; y < (ssize_t) source->region.height; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    MagickBooleanType
+      sync;
+
+    register const IndexPacket
+      *restrict duplex_indexes,
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict duplex_pixels,
+      *restrict pixels;
+
+    register IndexPacket
+      *restrict destination_indexes;
+
+    register ssize_t
+      x;
+
+    register PixelPacket
+      *restrict destination_pixels;
+
+    if (status == MagickFalse)
+      continue;
+    pixels=GetCacheViewVirtualPixels(source->view,source->region.x,y,
+      source->region.width,1,source->exception);
+    if (pixels == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(source->view);
+    for (x=0; x < (ssize_t) source->region.width; x++)
+      PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
+    if (source_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (source_image->storage_class == PseudoClass)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetIndex(source->pixel_wands[id][x],
+         GetIndexPixelComponent(indexes+x));
+    duplex_pixels=GetCacheViewVirtualPixels(duplex->view,duplex->region.x,y,
+      duplex->region.width,1,duplex->exception);
+    if (duplex_pixels == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    duplex_indexes=GetCacheViewVirtualIndexQueue(duplex->view);
+    for (x=0; x < (ssize_t) duplex->region.width; x++)
+      PixelSetQuantumColor(duplex->pixel_wands[id][x],duplex_pixels+x);
+    if (duplex_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) duplex->region.width; x++)
+        PixelSetBlackQuantum(duplex->pixel_wands[id][x],
+          GetIndexPixelComponent(duplex_indexes+x));
+    if (duplex_image->storage_class == PseudoClass)
+      for (x=0; x < (ssize_t) duplex->region.width; x++)
+        PixelSetIndex(duplex->pixel_wands[id][x],
+          GetIndexPixelComponent(duplex_indexes+x));
+    destination_pixels=GetCacheViewAuthenticPixels(destination->view,
+      destination->region.x,y,destination->region.width,1,exception);
+    if (destination_pixels == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    destination_indexes=GetCacheViewAuthenticIndexQueue(destination->view);
+    for (x=0; x < (ssize_t) destination->region.width; x++)
+      PixelSetQuantumColor(destination->pixel_wands[id][x],
+        destination_pixels+x);
+    if (destination_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        PixelSetBlackQuantum(destination->pixel_wands[id][x],
+          GetIndexPixelComponent(destination_indexes+x));
+    if (destination_image->storage_class == PseudoClass)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        PixelSetIndex(destination->pixel_wands[id][x],
+          GetIndexPixelComponent(destination_indexes+x));
+    if (transfer(source,duplex,destination,context) == MagickFalse)
+      status=MagickFalse;
+    for (x=0; x < (ssize_t) destination->region.width; x++)
+      PixelGetQuantumColor(destination->pixel_wands[id][x],
+        destination_pixels+x);
+    if (destination_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        SetIndexPixelComponent(destination_indexes+x,PixelGetBlackQuantum(
+          destination->pixel_wands[id][x]));
+    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    if (sync == MagickFalse)
+      {
+        InheritException(destination->exception,GetCacheViewException(
+          source->view));
+        status=MagickFalse;
+      }
+    if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickWand_DuplexTransferPixelViewIterator)
+#endif
+        proceed=SetImageProgress(source_image,DuplexTransferPixelViewTag,
+          progress++,source->region.height);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
   return(status);
 }
 
@@ -399,529 +483,391 @@ MagickExport MagickBooleanType AcquireOneCacheViewVirtualPixel(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e O n e M a g i c k P i x e l                                 %
+%   G e t P i x e l V i e w E x c e p t i o n                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireOneMagickPixel() returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.  If
-%  you plan to modify the pixel, use GetOnePixel() instead.
+%  GetPixelViewException() returns the severity, reason, and description of any
+%  error that occurs when utilizing a pixel view.
 %
-%  Deprecated, replace with:
+%  The format of the GetPixelViewException method is:
 %
-%    MagickPixelPacket pixel;
-%    GetOneVirtualMagickPixel(image,x,y,&pixel,exception);
-%
-%  The format of the AcquireOneMagickPixel() method is:
-%
-%      MagickPixelPacket AcquireOneMagickPixel(const Image image,const ssize_t x,
-%        const ssize_t y,ExceptionInfo exception)
+%      char *GetPixelViewException(const PixelWand *pixel_view,
+%        ExceptionType *severity)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o pixel_view: the pixel pixel_view.
 %
-%    o x,y:  These values define the location of the pixel to return.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o severity: the severity of the error is returned here.
 %
 */
-MagickExport MagickPixelPacket AcquireOneMagickPixel(const Image *image,
-  const ssize_t x,const ssize_t y,ExceptionInfo *exception)
-{
-  MagickPixelPacket
-    pixel;
-
-  (void) GetOneVirtualMagickPixel(image,x,y,&pixel,exception);
-  return(pixel);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e O n e P i x e l                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireOnePixel() returns a single pixel at the specified (x,y) location.
-%  The image background color is returned if an error occurs.  If you plan to
-%  modify the pixel, use GetOnePixel() instead.
-%
-%  Deprecated, replace with:
-%
-%    PixelPacket pixel;
-%    GetOneVirtualPixel(image,x,y,&pixel,exception);
-%
-%  The format of the AcquireOnePixel() method is:
-%
-%      PixelPacket AcquireOnePixel(const Image image,const ssize_t x,
-%        const ssize_t y,ExceptionInfo exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o x,y:  These values define the location of the pixel to return.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport PixelPacket AcquireOnePixel(const Image *image,const ssize_t x,
-  const ssize_t y,ExceptionInfo *exception)
-{
-  PixelPacket
-    pixel;
-
-  (void) GetOneVirtualPixel(image,x,y,&pixel,exception);
-  return(pixel);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e O n e V i r t u a l P i x e l                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireOneVirtualPixel() returns a single pixel at the specified (x,y)
-%  location as defined by specified pixel method.  The image background color
-%  is returned if an error occurs.  If you plan to modify the pixel, use
-%  GetOnePixel() instead.
-%
-%  Deprecated, replace with:
-%
-%    PixelPacket pixel;
-%    GetOneVirtualMethodPixel(image,virtual_pixel_method,x,y,&pixel,exception);
-%
-%  The format of the AcquireOneVirtualPixel() method is:
-%
-%      PixelPacket AcquireOneVirtualPixel(const Image image,
-%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-%        const ssize_t y,ExceptionInfo exception)
-%
-%  A description of each parameter follows:
-%
-%    o virtual_pixel_method: the virtual pixel method.
-%
-%    o image: the image.
-%
-%    o x,y:  These values define the location of the pixel to return.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport PixelPacket AcquireOneVirtualPixel(const Image *image,
-  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
-  ExceptionInfo *exception)
-{
-  PixelPacket
-    pixel;
-
-  (void) GetOneVirtualMethodPixel(image,virtual_pixel_method,x,y,&pixel,
-    exception);
-  return(pixel);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A c q u i r e P i x e l s                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquirePixels() returns the pixels associated with the last call to
-%  QueueAuthenticPixels() or GetVirtualPixels().
-%
-%  Deprecated, replace with:
-%
-%    GetVirtualPixelQueue(image);
-%
-%  The format of the AcquirePixels() method is:
-%
-%      const PixelPacket *AcquirePixels(const Image image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport const PixelPacket *AcquirePixels(const Image *image)
-{
-  return(GetVirtualPixelQueue(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A f f i n i t y I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AffinityImage() replaces the colors of an image with the closest color from
-%  a reference image.
-%
-%  Deprecated, replace with:
-%
-%    RemapImage(quantize_info,image,affinity_image);
-%
-%  The format of the AffinityImage method is:
-%
-%      MagickBooleanType AffinityImage(const QuantizeInfo *quantize_info,
-%        Image *image,const Image *affinity_image)
-%
-%  A description of each parameter follows:
-%
-%    o quantize_info: Specifies a pointer to an QuantizeInfo structure.
-%
-%    o image: the image.
-%
-%    o affinity_image: the reference image.
-%
-*/
-MagickExport MagickBooleanType AffinityImage(const QuantizeInfo *quantize_info,
-  Image *image,const Image *affinity_image)
-{
-  return(RemapImage(quantize_info,image,affinity_image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A f f i n i t y I m a g e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AffinityImages() replaces the colors of a sequence of images with the
-%  closest color from a reference image.
-%
-%  Deprecated, replace with:
-%
-%    RemapImages(quantize_info,images,affinity_image);
-%
-%  The format of the AffinityImage method is:
-%
-%      MagickBooleanType AffinityImages(const QuantizeInfo *quantize_info,
-%        Image *images,Image *affinity_image)
-%
-%  A description of each parameter follows:
-%
-%    o quantize_info: Specifies a pointer to an QuantizeInfo structure.
-%
-%    o images: the image sequence.
-%
-%    o affinity_image: the reference image.
-%
-*/
-MagickExport MagickBooleanType AffinityImages(const QuantizeInfo *quantize_info,
-  Image *images,const Image *affinity_image)
-{
-  return(RemapImages(quantize_info,images,affinity_image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A l l o c a t e I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AllocateImage() returns a pointer to an image structure initialized to
-%  default values.
-%
-%  Deprecated, replace with:
-%
-%    AcquireImage(image_info);
-%
-%  The format of the AllocateImage method is:
-%
-%      Image *AllocateImage(const ImageInfo *image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: Many of the image default values are set from this
-%      structure.  For example, filename, compression, depth, background color,
-%      and others.
-%
-*/
-MagickExport Image *AllocateImage(const ImageInfo *image_info)
-{
-  return(AcquireImage(image_info));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A l l o c a t e I m a g e C o l o r m a p                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AllocateImageColormap() allocates an image colormap and initializes
-%  it to a linear gray colorspace.  If the image already has a colormap,
-%  it is replaced.  AllocateImageColormap() returns MagickTrue if successful,
-%  otherwise MagickFalse if there is not enough memory.
-%
-%  Deprecated, replace with:
-%
-%    AcquireImageColormap(image,colors);
-%
-%  The format of the AllocateImageColormap method is:
-%
-%      MagickBooleanType AllocateImageColormap(Image *image,
-%        const size_t colors)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o colors: the number of colors in the image colormap.
-%
-*/
-MagickExport MagickBooleanType AllocateImageColormap(Image *image,
-  const size_t colors)
-{
-  return(AcquireImageColormap(image,colors));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A l l o c a t e N e x t I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AllocateNextImage() initializes the next image in a sequence to
-%  default values.  The next member of image points to the newly allocated
-%  image.  If there is a memory shortage, next is assigned NULL.
-%
-%  Deprecated, replace with:
-%
-%    AcquireNextImage(image_info,image);
-%
-%  The format of the AllocateNextImage method is:
-%
-%      void AllocateNextImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: Many of the image default values are set from this
-%      structure.  For example, filename, compression, depth, background color,
-%      and others.
-%
-%    o image: the image.
-%
-*/
-MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
-{
-  AcquireNextImage(image_info,image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   A l l o c a t e S t r i n g                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AllocateString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).
-%
-%  The format of the AllocateString method is:
-%
-%      char *AllocateString(const char *source)
-%
-%  A description of each parameter follows:
-%
-%    o source: A character string.
-%
-*/
-MagickExport char *AllocateString(const char *source)
+WandExport char *GetPixelViewException(const PixelView *pixel_view,
+  ExceptionType *severity)
 {
   char
-    *destination;
+    *description;
 
+  assert(pixel_view != (const PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  if (pixel_view->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",pixel_view->name);
+  assert(severity != (ExceptionType *) NULL);
+  *severity=pixel_view->exception->severity;
+  description=(char *) AcquireQuantumMemory(2UL*MaxTextExtent,
+    sizeof(*description));
+  if (description == (char *) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      pixel_view->name);
+  *description='\0';
+  if (pixel_view->exception->reason != (char *) NULL)
+    (void) CopyMagickString(description,GetLocaleExceptionMessage(
+      pixel_view->exception->severity,pixel_view->exception->reason),
+        MaxTextExtent);
+  if (pixel_view->exception->description != (char *) NULL)
+    {
+      (void) ConcatenateMagickString(description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
+        pixel_view->exception->severity,pixel_view->exception->description),
+        MaxTextExtent);
+      (void) ConcatenateMagickString(description,")",MaxTextExtent);
+    }
+  return(description);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w H e i g h t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewHeight() returns the pixel view height.
+%
+%  The format of the GetPixelViewHeight method is:
+%
+%      size_t GetPixelViewHeight(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport size_t GetPixelViewHeight(const PixelView *pixel_view)
+{
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  return(pixel_view->region.height);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w I t e r a t o r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewIterator() iterates over the pixel view in parallel and calls
+%  your get method for each scanline of the view.  The pixel region is
+%  not confined to the image canvas-- that is you can include negative offsets
+%  or widths or heights that exceed the image dimension.  Any updates to
+%  the pixels in your callback are ignored.
+%
+%  Use this pragma:
+%
+%    #pragma omp critical
+%
+%  to define a section of code in your callback get method that must be
+%  executed by a single thread at a time.
+%
+%  The format of the GetPixelViewIterator method is:
+%
+%      MagickBooleanType GetPixelViewIterator(PixelView *source,
+%        GetPixelViewMethod get,void *context)
+%
+%  A description of each parameter follows:
+%
+%    o source: the source pixel view.
+%
+%    o get: the get callback method.
+%
+%    o context: the user defined context.
+%
+*/
+WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
+  GetPixelViewMethod get,void *context)
+{
+#define GetPixelViewTag  "PixelView/Get"
+
+  Image
+    *source_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(source != (PixelView *) NULL);
+  assert(source->signature == WandSignature);
+  if (get == (GetPixelViewMethod) NULL)
+    return(MagickFalse);
+  source_image=source->wand->images;
+  status=MagickTrue;
+  progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=source->region.y; y < (ssize_t) source->region.height; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    register const IndexPacket
+      *indexes;
+
+    register const PixelPacket
+      *pixels;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    pixels=GetCacheViewVirtualPixels(source->view,source->region.x,y,
+      source->region.width,1,source->exception);
+    if (pixels == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(source->view);
+    for (x=0; x < (ssize_t) source->region.width; x++)
+      PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
+    if (source_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (source_image->storage_class == PseudoClass)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetIndex(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (get(source,context) == MagickFalse)
+      status=MagickFalse;
+    if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickWand_GetPixelViewIterator)
+#endif
+        proceed=SetImageProgress(source_image,GetPixelViewTag,progress++,
+          source->region.height);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w P i x e l s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewPixels() returns the pixel view pixel_wands.
+%
+%  The format of the GetPixelViewPixels method is:
+%
+%      PixelWand *GetPixelViewPixels(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport PixelWand **GetPixelViewPixels(const PixelView *pixel_view)
+{
+  const int
+    id = GetOpenMPThreadId();
+
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  return(pixel_view->pixel_wands[id]);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w W a n d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewWand() returns the magick wand associated with the pixel view.
+%
+%  The format of the GetPixelViewWand method is:
+%
+%      MagickWand *GetPixelViewWand(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport MagickWand *GetPixelViewWand(const PixelView *pixel_view)
+{
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  return(pixel_view->wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w W i d t h                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewWidth() returns the pixel view width.
+%
+%  The format of the GetPixelViewWidth method is:
+%
+%      size_t GetPixelViewWidth(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport size_t GetPixelViewWidth(const PixelView *pixel_view)
+{
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  return(pixel_view->region.width);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w X                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewX() returns the pixel view x offset.
+%
+%  The format of the GetPixelViewX method is:
+%
+%      ssize_t GetPixelViewX(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport ssize_t GetPixelViewX(const PixelView *pixel_view)
+{
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  return(pixel_view->region.x);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l V i e w Y                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelViewY() returns the pixel view y offset.
+%
+%  The format of the GetPixelViewY method is:
+%
+%      ssize_t GetPixelViewY(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport ssize_t GetPixelViewY(const PixelView *pixel_view)
+{
+  assert(pixel_view != (PixelView *) NULL);
+  assert(pixel_view->signature == WandSignature);
+  return(pixel_view->region.y);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s P i x e l V i e w                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsPixelView() returns MagickTrue if the the parameter is verified as a pixel
+%  view container.
+%
+%  The format of the IsPixelView method is:
+%
+%      MagickBooleanType IsPixelView(const PixelView *pixel_view)
+%
+%  A description of each parameter follows:
+%
+%    o pixel_view: the pixel view.
+%
+*/
+WandExport MagickBooleanType IsPixelView(const PixelView *pixel_view)
+{
   size_t
     length;
 
-  assert(source != (const char *) NULL);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  length=strlen(source)+MaxTextExtent+1;
-  destination=(char *) AcquireQuantumMemory(length,sizeof(*destination));
-  if (destination == (char *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  *destination='\0';
-  if (source != (char *) NULL)
-    (void) CopyMagickString(destination,source,length);
-  return(destination);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     A v e r a g e I m a g e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AverageImages() takes a set of images and averages them together.  Each
-%  image in the set must have the same width and height.  AverageImages()
-%  returns a single image with each corresponding pixel component of each
-%  image averaged.   On failure, a NULL image is returned and exception
-%  describes the reason for the failure.
-%
-%  Deprecated, replace with:
-%
-%    EvaluateImages(images,MeanEvaluateOperator,exception);
-%
-%  The format of the AverageImages method is:
-%
-%      Image *AverageImages(Image *images,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image sequence.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *AverageImages(const Image *images,ExceptionInfo *exception)
-{
-  return(EvaluateImages(images,MeanEvaluateOperator,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     C h a n n e l I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Extract a channel from the image.  A channel is a particular color component
-%  of each pixel in the image.
-%
-%  Deprecated, replace with:
-%
-%    SeparateImageChannel(image,channel);
-%
-%  The format of the ChannelImage method is:
-%
-%      unsigned int ChannelImage(Image *image,const ChannelType channel)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
-%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      or BlackChannel.
-%
-*/
-MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
-{
-  return(SeparateImageChannel(image,channel));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     C h a n n e l T h r e s h o l d I m a g e                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ChannelThresholdImage() changes the value of individual pixels based on
-%  the intensity of each pixel channel.  The result is a high-contrast image.
-%
-%  The format of the ChannelThresholdImage method is:
-%
-%      unsigned int ChannelThresholdImage(Image *image,const char *level)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o level: define the threshold values.
-%
-*/
-MagickExport unsigned int ChannelThresholdImage(Image *image,const char *level)
-{
-  MagickPixelPacket
-    threshold;
-
-  GeometryInfo
-    geometry_info;
-
-  unsigned int
-    flags,
-    status;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (level == (char *) NULL)
+  if (pixel_view == (const PixelView *) NULL)
     return(MagickFalse);
-  flags=ParseGeometry(level,&geometry_info);
-  threshold.red=geometry_info.rho;
-  threshold.green=geometry_info.sigma;
-  if ((flags & SigmaValue) == 0)
-    threshold.green=threshold.red;
-  threshold.blue=geometry_info.xi;
-  if ((flags & XiValue) == 0)
-    threshold.blue=threshold.red;
-  status=BilevelImageChannel(image,RedChannel,threshold.red);
-  status|=BilevelImageChannel(image,GreenChannel,threshold.green);
-  status|=BilevelImageChannel(image,BlueChannel,threshold.blue);
-  return(status);
+  if (pixel_view->signature != WandSignature)
+    return(MagickFalse);
+  length=strlen(PixelViewId);
+  if (LocaleNCompare(pixel_view->name,PixelViewId,length) != 0)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*
@@ -929,27 +875,25 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,const char *level)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l i p I m a g e P a t h                                                 %
+%   M a g i c k C l i p P a t h I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClipPathImage() sets the image clip mask based any clipping path information
-%  if it exists.
+%  MagickClipPathImage() clips along the named paths from the 8BIM profile, if
+%  present. Later operations take effect inside the path.  Id may be a number
+%  if preceded with #, to work on a numbered path, e.g., "#1" to use the first
+%  path.
 %
-%  Deprecated, replace with:
+%  The format of the MagickClipPathImage method is:
 %
-%    ClipImagePath(image,pathname,inside);
-%
-%  The format of the ClipImage method is:
-%
-%      MagickBooleanType ClipPathImage(Image *image,const char *pathname,
-%        const MagickBooleanType inside)
+%      MagickBooleanType MagickClipPathImage(MagickWand *wand,
+%        const char *pathname,const MagickBooleanType inside)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o pathname: name of clipping path resource. If name is preceded by #, use
 %      clipping path numbered by name.
@@ -958,45 +902,37 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,const char *level)
 %      Otherwise later operations take effect outside clipping path.
 %
 */
-MagickExport MagickBooleanType ClipPathImage(Image *image,const char *pathname,
-  const MagickBooleanType inside)
+WandExport MagickBooleanType MagickClipPathImage(MagickWand *wand,
+  const char *pathname,const MagickBooleanType inside)
 {
-  return(ClipImagePath(image,pathname,inside));
+  return(MagickClipImagePath(wand,pathname,inside));
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o n e I m a g e A t t r i b u t e s                                   %
+%   D r a w G e t F i l l A l p h a                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageAttributes() clones one or more image attributes.
+%  DrawGetFillAlpha() returns the alpha used when drawing using the fill
+%  color or fill texture.  Fully opaque is 1.0.
 %
-%  Deprecated, replace with:
+%  The format of the DrawGetFillAlpha method is:
 %
-%    CloneImageProperties(image,clone_image);
-%
-%  The format of the CloneImageAttributes method is:
-%
-%      MagickBooleanType CloneImageAttributes(Image *image,
-%        const Image *clone_image)
+%      double DrawGetFillAlpha(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
-%
-%    o clone_image: the clone image.
+%    o wand: the drawing wand.
 %
 */
-MagickExport MagickBooleanType CloneImageAttributes(Image *image,
-  const Image *clone_image)
+WandExport double DrawGetFillAlpha(const DrawingWand *wand)
 {
-  return(CloneImageProperties(image,clone_image));
+  return(DrawGetFillOpacity(wand));
 }
 
 /*
@@ -1004,57 +940,25 @@ MagickExport MagickBooleanType CloneImageAttributes(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o n e M e m o r y                                                     %
+%   D r a w G e t S t r o k e A l p h a                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneMemory() copies size bytes from memory area source to the destination.
-%  Copying between objects that overlap will take place correctly.  It returns
-%  destination.
+%  DrawGetStrokeAlpha() returns the alpha of stroked object outlines.
 %
-%  The format of the CloneMemory method is:
+%  The format of the DrawGetStrokeAlpha method is:
 %
-%      void *CloneMemory(void *destination,const void *source,
-%        const size_t size)
+%      double DrawGetStrokeAlpha(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o destination: the destination.
-%
-%    o source: the source.
-%
-%    o size: the size of the memory in bytes to allocate.
-%
+%    o wand: the drawing wand.
 */
-MagickExport void *CloneMemory(void *destination,const void *source,
-  const size_t size)
+WandExport double DrawGetStrokeAlpha(const DrawingWand *wand)
 {
-  register const unsigned char
-    *p;
-
-  register unsigned char
-    *q;
-
-  register ssize_t
-    i;
-
-  assert(destination != (void *) NULL);
-  assert(source != (const void *) NULL);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  p=(const unsigned char *) source;
-  q=(unsigned char *) destination;
-  if ((p <= q) || ((p+size) >= q))
-    return(CopyMagickMemory(destination,source,size));
-  /*
-    Overlap, copy backwards.
-  */
-  p+=size;
-  q+=size;
-  for (i=(ssize_t) (size-1); i >= 0; i--)
-    *--q=(*--p);
-  return(destination);
+  return(DrawGetStrokeOpacity(wand));
 }
 
 /*
@@ -1062,31 +966,26 @@ MagickExport void *CloneMemory(void *destination,const void *source,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e C a c h e V i e w                                               %
+%   D r a w P e e k G r a p h i c W a n d                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloseCacheView() closes the specified view returned by a previous call to
-%  OpenCacheView().
+%  DrawPeekGraphicWand() returns the current drawing wand.
 %
-%  Deprecated, replace with:
+%  The format of the PeekDrawingWand method is:
 %
-%    DestroyCacheView(view_info);
-%
-%  The format of the CloseCacheView method is:
-%
-%      CacheView *CloseCacheView(CacheView *view_info)
+%      DrawInfo *DrawPeekGraphicWand(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o view_info: the address of a structure of type CacheView.
+%    o wand: the drawing wand.
 %
 */
-MagickExport CacheView *CloseCacheView(CacheView *view_info)
+WandExport DrawInfo *DrawPeekGraphicWand(const DrawingWand *wand)
 {
-  return(DestroyCacheView(view_info));
+  return(PeekDrawingWand(wand));
 }
 
 /*
@@ -1094,287 +993,192 @@ MagickExport CacheView *CloseCacheView(CacheView *view_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o l o r F l o o d f i l l I m a g e                                     %
+%   D r a w P o p G r a p h i c C o n t e x t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ColorFloodfill() changes the color value of any pixel that matches
+%  DrawPopGraphicContext() destroys the current drawing wand and returns to the
+%  previously pushed drawing wand. Multiple drawing wands may exist. It is an
+%  error to attempt to pop more drawing wands than have been pushed, and it is
+%  proper form to pop all drawing wands which have been pushed.
+%
+%  The format of the DrawPopGraphicContext method is:
+%
+%      MagickBooleanType DrawPopGraphicContext(DrawingWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+*/
+WandExport void DrawPopGraphicContext(DrawingWand *wand)
+{
+  (void) PopDrawingWand(wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w P u s h G r a p h i c C o n t e x t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawPushGraphicContext() clones the current drawing wand to create a new
+%  drawing wand.  The original drawing wand(s) may be returned to by
+%  invoking PopDrawingWand().  The drawing wands are stored on a drawing wand
+%  stack.  For every Pop there must have already been an equivalent Push.
+%
+%  The format of the DrawPushGraphicContext method is:
+%
+%      MagickBooleanType DrawPushGraphicContext(DrawingWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+*/
+WandExport void DrawPushGraphicContext(DrawingWand *wand)
+{
+  (void) PushDrawingWand(wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w S e t F i l l A l p h a                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawSetFillAlpha() sets the alpha to use when drawing using the fill
+%  color or fill texture.  Fully opaque is 1.0.
+%
+%  The format of the DrawSetFillAlpha method is:
+%
+%      void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o fill_alpha: fill alpha
+%
+*/
+WandExport void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
+{
+  DrawSetFillOpacity(wand,fill_alpha);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w S e t S t r o k e A l p h a                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawSetStrokeAlpha() specifies the alpha of stroked object outlines.
+%
+%  The format of the DrawSetStrokeAlpha method is:
+%
+%      void DrawSetStrokeAlpha(DrawingWand *wand,const double stroke_alpha)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the drawing wand.
+%
+%    o stroke_alpha: stroke alpha.  The value 1.0 is opaque.
+%
+*/
+WandExport void DrawSetStrokeAlpha(DrawingWand *wand,const double stroke_alpha)
+{
+  DrawSetStrokeOpacity(wand,stroke_alpha);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C o l o r F l o o d f i l l I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickColorFloodfillImage() changes the color value of any pixel that matches
 %  target and is an immediate neighbor.  If the method FillToBorderMethod is
 %  specified, the color value is changed for any neighbor pixel that does not
 %  match the bordercolor member of image.
 %
-%  By default target must match a particular pixel color exactly.
-%  However, in many cases two colors may differ by a small amount.  The
-%  fuzz member of image defines how much tolerance is acceptable to
-%  consider two colors as the same.  For example, set fuzz to 10 and the
-%  color red at intensities of 100 and 102 respectively are now
-%  interpreted as the same color for the purposes of the floodfill.
+%  The format of the MagickColorFloodfillImage method is:
 %
-%  The format of the ColorFloodfillImage method is:
-%
-%      MagickBooleanType ColorFloodfillImage(Image *image,
-%        const DrawInfo *draw_info,const PixelPacket target,
-%        const ssize_t x_offset,const ssize_t y_offset,const PaintMethod method)
+%      MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
+%        const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
+%        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o draw_info: the draw info.
+%    o fill: the floodfill color pixel wand.
 %
-%    o target: the RGB value of the target color.
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
+%
+%    o bordercolor: the border color pixel wand.
 %
 %    o x,y: the starting location of the operation.
 %
-%    o method: Choose either FloodfillMethod or FillToBorderMethod.
-%
 */
-
-#define MaxStacksize  (1UL << 15)
-#define PushSegmentStack(up,left,right,delta) \
-{ \
-  if (s >= (segment_stack+MaxStacksize)) \
-    ThrowBinaryException(DrawError,"SegmentStackOverflow",image->filename) \
-  else \
-    { \
-      if ((((up)+(delta)) >= 0) && (((up)+(delta)) < (ssize_t) image->rows)) \
-        { \
-          s->x1=(double) (left); \
-          s->y1=(double) (up); \
-          s->x2=(double) (right); \
-          s->y2=(double) (delta); \
-          s++; \
-        } \
-    } \
-}
-
-MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
-  const DrawInfo *draw_info,const PixelPacket target,const ssize_t x_offset,
-  const ssize_t y_offset,const PaintMethod method)
+WandExport MagickBooleanType MagickColorFloodfillImage(MagickWand *wand,
+  const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
+  const ssize_t x,const ssize_t y)
 {
-  Image
-    *floodplane_image;
+  DrawInfo
+    *draw_info;
 
   MagickBooleanType
-    skip;
+    status;
 
   PixelPacket
-    fill_color;
+    target;
 
-  register SegmentInfo
-    *s;
-
-  SegmentInfo
-    *segment_stack;
-
-  ssize_t
-    offset,
-    start,
-    x,
-    x1,
-    x2,
-    y;
-
-  /*
-    Check boundary conditions.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
-    return(MagickFalse);
-  if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
-    return(MagickFalse);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    return(MagickFalse);
-  if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-  floodplane_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    &image->exception);
-  if (floodplane_image == (Image *) NULL)
-    return(MagickFalse);
-  (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel);
-  /*
-    Set floodfill color.
-  */
-  segment_stack=(SegmentInfo *) AcquireQuantumMemory(MaxStacksize,
-    sizeof(*segment_stack));
-  if (segment_stack == (SegmentInfo *) NULL)
-    {
-      floodplane_image=DestroyImage(floodplane_image);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
-  /*
-    Push initial segment on stack.
-  */
-  x=x_offset;
-  y=y_offset;
-  start=0;
-  s=segment_stack;
-  PushSegmentStack(y,x,x,1);
-  PushSegmentStack(y+1,x,x,-1);
-  while (s > segment_stack)
-  {
-    register const PixelPacket
-      *restrict p;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    /*
-      Pop segment off stack.
-    */
-    s--;
-    x1=(ssize_t) s->x1;
-    x2=(ssize_t) s->x2;
-    offset=(ssize_t) s->y2;
-    y=(ssize_t) s->y1+offset;
-    /*
-      Recolor neighboring pixels.
-    */
-    p=GetVirtualPixels(image,0,y,(size_t) (x1+1),1,&image->exception);
-    q=GetAuthenticPixels(floodplane_image,0,y,(size_t) (x1+1),1,
-      &image->exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    p+=x1;
-    q+=x1;
-    for (x=x1; x >= 0; x--)
-    {
-      if (q->opacity == (Quantum) TransparentOpacity)
-        break;
-      if (method == FloodfillMethod)
-        {
-          if (IsColorSimilar(image,p,&target) == MagickFalse)
-            break;
-        }
-      else
-        if (IsColorSimilar(image,p,&target) != MagickFalse)
-          break;
-      q->opacity=(Quantum) TransparentOpacity;
-      p--;
-      q--;
-    }
-    if (SyncAuthenticPixels(floodplane_image,&image->exception) == MagickFalse)
-      break;
-    skip=x >= x1 ? MagickTrue : MagickFalse;
-    if (skip == MagickFalse)
-      {
-        start=x+1;
-        if (start < x1)
-          PushSegmentStack(y,start,x1-1,-offset);
-        x=x1+1;
-      }
-    do
-    {
-      if (skip == MagickFalse)
-        {
-          if (x < (ssize_t) image->columns)
-            {
-              p=GetVirtualPixels(image,x,y,image->columns-x,1,
-                &image->exception);
-              q=GetAuthenticPixels(floodplane_image,x,y,image->columns-x,1,
-                &image->exception);
-              if ((p == (const PixelPacket *) NULL) ||
-                  (q == (PixelPacket *) NULL))
-                break;
-              for ( ; x < (ssize_t) image->columns; x++)
-              {
-                if (q->opacity == (Quantum) TransparentOpacity)
-                  break;
-                if (method == FloodfillMethod)
-                  {
-                    if (IsColorSimilar(image,p,&target) == MagickFalse)
-                      break;
-                  }
-                else
-                  if (IsColorSimilar(image,p,&target) != MagickFalse)
-                    break;
-                q->opacity=(Quantum) TransparentOpacity;
-                p++;
-                q++;
-              }
-              if (SyncAuthenticPixels(floodplane_image,&image->exception) == MagickFalse)
-                break;
-            }
-          PushSegmentStack(y,start,x-1,offset);
-          if (x > (x2+1))
-            PushSegmentStack(y,x2+1,x-1,-offset);
-        }
-      skip=MagickFalse;
-      x++;
-      if (x <= x2)
-        {
-          p=GetVirtualPixels(image,x,y,(size_t) (x2-x+1),1,
-            &image->exception);
-          q=GetAuthenticPixels(floodplane_image,x,y,(size_t) (x2-x+1),1,
-            &image->exception);
-          if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-            break;
-          for ( ; x <= x2; x++)
-          {
-            if (q->opacity == (Quantum) TransparentOpacity)
-              break;
-            if (method == FloodfillMethod)
-              {
-                if (IsColorSimilar(image,p,&target) != MagickFalse)
-                  break;
-              }
-            else
-              if (IsColorSimilar(image,p,&target) == MagickFalse)
-                break;
-            p++;
-            q++;
-          }
-        }
-      start=x;
-    } while (x <= x2);
-  }
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const PixelPacket
-      *restrict p;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    /*
-      Tile fill color onto floodplane.
-    */
-    p=GetVirtualPixels(floodplane_image,0,y,image->columns,1,
-      &image->exception);
-    q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (GetOpacityPixelComponent(p) != OpaqueOpacity)
-        {
-          (void) GetFillColor(draw_info,x,y,&fill_color);
-          MagickCompositeOver(&fill_color,(MagickRealType) fill_color.opacity,q,
-            (MagickRealType) q->opacity,q);
-        }
-      p++;
-      q++;
-    }
-    if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-      break;
-  }
-  segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
-  floodplane_image=DestroyImage(floodplane_image);
-  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
+  PixelGetQuantumColor(fill,&draw_info->fill);
+  (void) GetOneVirtualPixel(wand->images,x % wand->images->columns,
+    y % wand->images->rows,&target,wand->exception);
+  if (bordercolor != (PixelWand *) NULL)
+    PixelGetQuantumColor(bordercolor,&target);
+  wand->images->fuzz=fuzz;
+  status=ColorFloodfillImage(wand->images,draw_info,target,x,y,
+    bordercolor != (PixelWand *) NULL ? FillToBorderMethod : FloodfillMethod);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
+  draw_info=DestroyDrawInfo(draw_info);
+  return(status);
 }
 
 /*
@@ -1382,33 +1186,27 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e l e t e I m a g e A t t r i b u t e                                   %
+%   M a g i c k D e s c r i b e I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageAttribute() deletes an attribute from the image.
+%  MagickDescribeImage() identifies an image by printing its attributes to the
+%  file.  Attributes include the image width, height, size, and others.
 %
-%  Deprecated, replace with:
+%  The format of the MagickDescribeImage method is:
 %
-%    DeleteImageProperty(image,key);
-%
-%  The format of the DeleteImageAttribute method is:
-%
-%      MagickBooleanType DeleteImageAttribute(Image *image,const char *key)
+%      const char *MagickDescribeImage(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image info.
-%
-%    o key: the image key.
+%    o wand: the magick wand.
 %
 */
-MagickExport MagickBooleanType DeleteImageAttribute(Image *image,
-  const char *key)
+WandExport char *MagickDescribeImage(MagickWand *wand)
 {
-  return(DeleteImageProperty(image,key));
+  return(MagickIdentifyImage(wand));
 }
 
 /*
@@ -1416,42 +1214,39 @@ MagickExport MagickBooleanType DeleteImageAttribute(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e l e t e I m a g e L i s t                                             %
+%   M a g i c k F l a t t e n I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageList() deletes an image at the specified position in the list.
+%  MagickFlattenImages() merges a sequence of images.  This useful for
+%  combining Photoshop layers into a single image.
 %
-%  The format of the DeleteImageList method is:
+%  The format of the MagickFlattenImages method is:
 %
-%      unsigned int DeleteImageList(Image *images,const ssize_t offset)
+%      MagickWand *MagickFlattenImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o images: the image list.
-%
-%    o offset: the position within the list.
+%    o wand: the magick wand.
 %
 */
-MagickExport unsigned int DeleteImageList(Image *images,const ssize_t offset)
+WandExport MagickWand *MagickFlattenImages(MagickWand *wand)
 {
-  register ssize_t
-    i;
+  Image
+    *flatten_image;
 
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  while (GetPreviousImageInList(images) != (Image *) NULL)
-    images=GetPreviousImageInList(images);
-  for (i=0; i < offset; i++)
-  {
-    if (GetNextImageInList(images) == (Image *) NULL)
-      return(MagickFalse);
-    images=GetNextImageInList(images);
-  }
-  DeleteImageFromList(&images);
-  return(MagickTrue);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  flatten_image=FlattenImages(wand->images,wand->exception);
+  if (flatten_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,flatten_image));
 }
 
 /*
@@ -1459,38 +1254,104 @@ MagickExport unsigned int DeleteImageList(Image *images,const ssize_t offset)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e l e t e M a g i c k R e g i s t r y                                   %
+%   M a g i c k G e t I m a g e A t t r i b u t e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteMagickRegistry() deletes an entry in the registry as defined by the id.
-%  It returns MagickTrue if the entry is deleted otherwise MagickFalse if no
-%  entry is found in the registry that matches the id.
+%  MagickGetImageAttribute() returns a value associated with the specified
+%  property.  Use MagickRelinquishMemory() to free the value when you are
+%  finished with it.
 %
-%  Deprecated, replace with:
+%  The format of the MagickGetImageAttribute method is:
 %
-%    char key[MaxTextExtent];
-%    FormatMagickString(key,MaxTextExtent,"%ld\n",id);
-%    DeleteImageRegistry(key);
-%
-%  The format of the DeleteMagickRegistry method is:
-%
-%      MagickBooleanType DeleteMagickRegistry(const ssize_t id)
+%      char *MagickGetImageAttribute(MagickWand *wand,const char *property)
 %
 %  A description of each parameter follows:
 %
-%    o id: the registry id.
+%    o wand: the magick wand.
+%
+%    o property: the property.
 %
 */
-MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
+WandExport char *MagickGetImageAttribute(MagickWand *wand,const char *property)
 {
-  char
-    key[MaxTextExtent];
+  return(MagickGetImageProperty(wand,property));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k G e t I m a g e I n d e x                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageIndex() returns the index of the current image.
+%
+%  The format of the MagickGetImageIndex method is:
+%
+%      ssize_t MagickGetImageIndex(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport ssize_t MagickGetImageIndex(MagickWand *wand)
+{
+  return(MagickGetIteratorIndex(wand));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k G e t I m a g e C h a n n e l E x t r e m a                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageChannelExtrema() gets the extrema for one or more image
+%  channels.
+%
+%  The format of the MagickGetImageChannelExtrema method is:
+%
+%      MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
+%        const ChannelType channel,size_t *minima,size_t *maxima)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
+%
+%    o minima:  The minimum pixel value for the specified channel(s).
+%
+%    o maxima:  The maximum pixel value for the specified channel(s).
+%
+*/
+WandExport MagickBooleanType MagickGetImageChannelExtrema(MagickWand *wand,
+  const ChannelType channel,size_t *minima,size_t *maxima)
+{
+  MagickBooleanType
+    status;
 
-  (void) FormatMagickString(key,MaxTextExtent,"%.20g\n",(double) id);
-  return(DeleteImageRegistry(key));
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=GetImageChannelExtrema(wand->images,channel,minima,maxima,
+    wand->exception);
+  return(status);
 }
 
 /*
@@ -1498,88 +1359,42 @@ MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y C o n s t i t u t e                                         %
++   M a g i c k G e t I m a g e E x t r e m a                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyConstitute() destroys the constitute component.
+%  MagickGetImageExtrema() gets the extrema for the image.
 %
-%  The format of the DestroyConstitute method is:
+%  The format of the MagickGetImageExtrema method is:
 %
-%      DestroyConstitute(void)
-%
-*/
-MagickExport void DestroyConstitute(void)
-{
-  ConstituteComponentTerminus();
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y M a g i c k R e g i s t r y                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyMagickRegistry() deallocates memory associated the magick registry.
-%
-%  Deprecated, replace with:
-%
-%    RegistryComponentTerminus();
-%
-%  The format of the DestroyMagickRegistry method is:
-%
-%       void DestroyMagickRegistry(void)
-%
-*/
-MagickExport void DestroyMagickRegistry(void)
-{
-  RegistryComponentTerminus();
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e s c r i b e I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DescribeImage() describes an image by printing its attributes to the file.
-%  Attributes include the image width, height, size, and others.
-%
-%  Deprecated, replace with:
-%
-%    IdentifyImage(image,file,verbose);
-%
-%  The format of the DescribeImage method is:
-%
-%      MagickBooleanType DescribeImage(Image *image,FILE *file,
-%        const MagickBooleanType verbose)
+%      MagickBooleanType MagickGetImageExtrema(MagickWand *wand,
+%        size_t *minima,size_t *maxima)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o file: the file, typically stdout.
+%    o minima:  The minimum pixel value for the specified channel(s).
 %
-%    o verbose: A value other than zero prints more detailed information
-%      about the image.
+%    o maxima:  The maximum pixel value for the specified channel(s).
 %
 */
-MagickExport MagickBooleanType DescribeImage(Image *image,FILE *file,
-  const MagickBooleanType verbose)
+WandExport MagickBooleanType MagickGetImageExtrema(MagickWand *wand,
+  size_t *minima,size_t *maxima)
 {
-  return(IdentifyImage(image,file,verbose));
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=GetImageExtrema(wand->images,minima,maxima,wand->exception);
+  return(status);
 }
 
 /*
@@ -1587,33 +1402,33 @@ MagickExport MagickBooleanType DescribeImage(Image *image,FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y I m a g e A t t r i b u t e s                               %
+%   M a g i c k G e t I m a g e M a t t e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageAttributes() deallocates memory associated with the image
-%  attribute list.
+%  MagickGetImageMatte() returns MagickTrue if the image has a matte channel
+%  otherwise MagickFalse.
 %
-%  The format of the DestroyImageAttributes method is:
+%  The format of the MagickGetImageMatte method is:
 %
-%      DestroyImageAttributes(Image *image)
+%      size_t MagickGetImageMatte(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 */
-MagickExport void DestroyImageAttributes(Image *image)
+WandExport MagickBooleanType MagickGetImageMatte(MagickWand *wand)
 {
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->attributes != (void *) NULL)
-    image->attributes=(void *) DestroySplayTree((SplayTreeInfo *)
-      image->attributes);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  return(wand->images->matte);
 }
 
 /*
@@ -1621,132 +1436,58 @@ MagickExport void DestroyImageAttributes(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y I m a g e s                                                 %
+%   M a g i c k G e t I m a g e P i x e l s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImages() destroys an image list.
-%
-%  Deprecated, replace with:
-%
-%    DestroyImageList(image);
-%
-%  The format of the DestroyImages method is:
-%
-%      void DestroyImages(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image sequence.
-%
-*/
-MagickExport void DestroyImages(Image *image)
-{
-  if (image == (Image *) NULL)
-    return;
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.4.3");
-  image=DestroyImageList(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e s t r o y M a g i c k                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyMagick() destroys the ImageMagick environment.
-%
-%  Deprecated, replace with:
-%
-%    MagickCoreTerminus();
-%
-%  The format of the DestroyMagick function is:
-%
-%      DestroyMagick(void)
-%
-*/
-MagickExport void DestroyMagick(void)
-{
-  MagickCoreTerminus();
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D i s p a t c h I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DispatchImage() extracts pixel data from an image and returns it to you.
-%  The method returns MagickFalse on success otherwise MagickTrue if an error is
-%  encountered.  The data is returned as char, short int, int, ssize_t, float,
-%  or double in the order specified by map.
+%  MagickGetImagePixels() extracts pixel data from an image and returns it to
+%  you.  The method returns MagickTrue on success otherwise MagickFalse if an
+%  error is encountered.  The data is returned as char, short int, int, ssize_t,
+%  float, or double in the order specified by map.
 %
 %  Suppose you want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
 %
-%      DispatchImage(image,0,0,640,1,"RGB",CharPixel,pixels,exception);
+%      MagickGetImagePixels(wand,0,0,640,1,"RGB",CharPixel,pixels);
 %
-%  Deprecated, replace with:
+%  The format of the MagickGetImagePixels method is:
 %
-%    ExportImagePixels(image,x_offset,y_offset,columns,rows,map,type,pixels,
-%      exception);
-%
-%  The format of the DispatchImage method is:
-%
-%      unsigned int DispatchImage(const Image *image,const ssize_t x_offset,
-%        const ssize_t y_offset,const size_t columns,
-%        const size_t rows,const char *map,const StorageType type,
-%        void *pixels,ExceptionInfo *exception)
+%      MagickBooleanType MagickGetImagePixels(MagickWand *wand,
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,const char *map,const StorageType storage,
+%        void *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o x_offset, y_offset, columns, rows:  These values define the perimeter
+%    o x, y, columns, rows:  These values define the perimeter
 %      of a region of pixels you want to extract.
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale).
+%      A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan,
+%      Y = yellow, M = magenta, K = black, I = intensity (for grayscale),
+%      P = pad.
 %
-%    o type: Define the data type of the pixels.  Float and double types are
-%      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
-%      types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or
-%      DoublePixel.
+%    o storage: Define the data type of the pixels.  Float and double types are
+%      expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from
+%      these types: CharPixel, DoublePixel, FloatPixel, IntegerPixel,
+%      LongPixel, QuantumPixel, or ShortPixel.
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
 %      length varies depending on the values of width, height, map, and type.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
-MagickExport unsigned int DispatchImage(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
+WandExport MagickBooleanType MagickGetImagePixels(MagickWand *wand,
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,const char *map,const StorageType storage,
+  void *pixels)
 {
-  unsigned int
-    status;
-
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.6");
-  status=ExportImagePixels(image,x_offset,y_offset,columns,rows,map,type,pixels,
-    exception);
-  return(status);
+  return(MagickExportImagePixels(wand,x,y,columns,rows,map,storage,pixels));
 }
 
 /*
@@ -1754,168 +1495,35 @@ MagickExport unsigned int DispatchImage(const Image *image,const ssize_t x_offse
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x t r a c t S u b i m a g e F r o m I m a g e                           %
+%   M a g i c k G e t I m a g e S i z e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExtractSubimageFromImageImage() extracts a region of the image that most
-%  closely resembles the reference.
+%  MagickGetImageSize() returns the image length in bytes.
 %
-%  The format of the ExtractSubimageFromImageImage method is:
+%  The format of the MagickGetImageSize method is:
 %
-%      Image *ExtractSubimageFromImage(const Image *image,
-%        const Image *reference,ExceptionInfo *exception)
+%      MagickBooleanType MagickGetImageSize(MagickWand *wand,
+%        MagickSizeType *length)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o reference: find an area of the image that closely resembles this image.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o length: the image length in bytes.
 %
 */
-
-static double GetSimilarityMetric(const Image *image,const Image *reference,
-  const ssize_t x_offset,const ssize_t y_offset,
-  const double similarity_threshold,ExceptionInfo *exception)
+WandExport MagickSizeType MagickGetImageSize(MagickWand *wand)
 {
-  CacheView
-    *image_view,
-    *reference_view;
-
-  double
-    channels,
-    normalized_similarity,
-    similarity;
-
-  ssize_t
-    y;
-
-  /*
-    Compute the similarity in pixels between two images.
-  */
-  normalized_similarity=1.0;
-  similarity=0.0;
-  channels=3;
-  if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
-    channels++;
-  if ((image->colorspace == CMYKColorspace) &&
-      (reference->colorspace == CMYKColorspace))
-    channels++;
-  image_view=AcquireCacheView(image);
-  reference_view=AcquireCacheView(reference);
-  for (y=0; y < (ssize_t) reference->rows; y++)
-  {
-    register const IndexPacket
-      *indexes,
-      *reference_indexes;
-
-    register const PixelPacket
-      *p,
-      *q;
-
-    register ssize_t
-      x;
-
-    p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset+y,
-      reference->columns,1,exception);
-    q=GetCacheViewVirtualPixels(reference_view,0,y,reference->columns,1,
-      exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
-      continue;
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    reference_indexes=GetCacheViewVirtualIndexQueue(reference_view);
-    for (x=0; x < (ssize_t) reference->columns; x++)
-    {
-      MagickRealType
-        pixel;
-
-      pixel=QuantumScale*(GetRedPixelComponent(p)-(double)
-        GetRedPixelComponent(q));
-      similarity+=pixel*pixel;
-      pixel=QuantumScale*(GetGreenPixelComponent(p)-(double)
-        GetGreenPixelComponent(q));
-      similarity+=pixel*pixel;
-      pixel=QuantumScale*(GetBluePixelComponent(p)-(double)
-        GetBluePixelComponent(q));
-      similarity+=pixel*pixel;
-      if ((image->matte != MagickFalse) && (reference->matte != MagickFalse))
-        {
-          pixel=QuantumScale*(GetOpacityPixelComponent(p)-(double)
-            GetOpacityPixelComponent(q));
-          similarity+=pixel*pixel;
-        }
-      if ((image->colorspace == CMYKColorspace) &&
-          (reference->colorspace == CMYKColorspace))
-        {
-          pixel=QuantumScale*(GetIndexPixelComponent(indexes+x)-(double)
-            GetIndexPixelComponent(reference_indexes+x));
-          similarity+=pixel*pixel;
-        }
-      p++;
-      q++;
-    }
-    normalized_similarity=sqrt(similarity)/reference->columns/reference->rows/
-      channels;
-    if (normalized_similarity > similarity_threshold)
-      break;
-  }
-  reference_view=DestroyCacheView(reference_view);
-  image_view=DestroyCacheView(image_view);
-  return(normalized_similarity);
-}
-
-MagickExport Image *ExtractSubimageFromImage(Image *image,
-  const Image *reference,ExceptionInfo *exception)
-{
-  double
-    similarity_threshold;
-
-  RectangleInfo
-    offset;
-
-  ssize_t
-    y;
-
-  /*
-    Extract reference from image.
-  */
-  if ((reference->columns > image->columns) || (reference->rows > image->rows))
-    return((Image *) NULL);
-  similarity_threshold=(double) image->columns*image->rows;
-  SetGeometry(reference,&offset);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4)
-#endif
-  for (y=0; y < (ssize_t) (image->rows-reference->rows); y++)
-  {
-    double
-      similarity;
-
-    register ssize_t
-      x;
-
-    for (x=0; x < (ssize_t) (image->columns-reference->columns); x++)
-    {
-      similarity=GetSimilarityMetric(image,reference,x,y,similarity_threshold,
-        exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ExtractSubimageFromImage)
-#endif
-      if (similarity < similarity_threshold)
-        {
-          similarity_threshold=similarity;
-          offset.x=x;
-          offset.y=y;
-        }
-    }
-  }
-  if (similarity_threshold > (QuantumScale*reference->fuzz/100.0))
-    return((Image *) NULL);
-  return(CropImage(image,&offset,exception));
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  return(GetBlobSize(wand->images));
 }
 
 /*
@@ -1923,95 +1531,45 @@ MagickExport Image *ExtractSubimageFromImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     F l a t t e n I m a g e                                                 %
+%   M a g i c k M a p I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FlattenImages() Obsolete Function: Use MergeImageLayers() instead.
+%  MagickMapImage() replaces the colors of an image with the closest color
+%  from a reference image.
 %
-%  Deprecated, replace with:
+%  The format of the MagickMapImage method is:
 %
-%    MergeImageLayers(image,FlattenLayer,exception);
-%
-%  The format of the FlattenImage method is:
-%
-%      Image *FlattenImage(Image *image,ExceptionInfo *exception)
+%      MagickBooleanType MagickMapImage(MagickWand *wand,
+%        const MagickWand *map_wand,const MagickBooleanType dither)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image sequence.
+%    o wand: the magick wand.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o map: the map wand.
 %
-*/
-MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
-{
-  return(MergeImageLayers(image,FlattenLayer,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  F o r m a t I m a g e A t t r i b u t e                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FormatImageAttribute() permits formatted key/value pairs to be saved as an
-%  image attribute.
-%
-%  The format of the FormatImageAttribute method is:
-%
-%      MagickBooleanType FormatImageAttribute(Image *image,const char *key,
-%        const char *format,...)
-%
-%  A description of each parameter follows.
-%
-%   o  image:  The image.
-%
-%   o  key:  The attribute key.
-%
-%   o  format:  A string describing the format to use to write the remaining
-%      arguments.
+%    o dither: Set this integer value to something other than zero to dither
+%      the mapped image.
 %
 */
-
-MagickExport MagickBooleanType FormatImageAttributeList(Image *image,
-  const char *key,const char *format,va_list operands)
-{
-  char
-    value[MaxTextExtent];
-
-  int
-    n;
-
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  n=vsnprintf(value,MaxTextExtent,format,operands);
-#else
-  n=vsprintf(value,format,operands);
-#endif
-  if (n < 0)
-    value[MaxTextExtent-1]='\0';
-  return(SetImageProperty(image,key,value));
-}
-
-MagickExport MagickBooleanType FormatImageAttribute(Image *image,
-  const char *key,const char *format,...)
+WandExport MagickBooleanType MagickMapImage(MagickWand *wand,
+  const MagickWand *map_wand,const MagickBooleanType dither)
 {
   MagickBooleanType
     status;
 
-  va_list
-    operands;
-
-  va_start(operands,format);
-  status=FormatImagePropertyList(image,key,format,operands);
-  va_end(operands);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if ((wand->images == (Image *) NULL) || (map_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  status=MapImage(wand->images,map_wand->images,dither);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
   return(status);
 }
 
@@ -2020,2487 +1578,74 @@ MagickExport MagickBooleanType FormatImageAttribute(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  F o r m a t S t r i n g                                                    %
+%   M a g i c k M a t t e F l o o d f i l l I m a g e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FormatString() prints formatted output of a variable argument list.
+%  MagickMatteFloodfillImage() changes the transparency value of any pixel that
+%  matches target and is an immediate neighbor.  If the method
+%  FillToBorderMethod is specified, the transparency value is changed for any
+%  neighbor pixel that does not match the bordercolor member of image.
 %
-%  The format of the FormatString method is:
+%  The format of the MagickMatteFloodfillImage method is:
 %
-%      void FormatString(char *string,const char *format,...)
-%
-%  A description of each parameter follows.
-%
-%   o  string:  Method FormatString returns the formatted string in this
-%      character buffer.
-%
-%   o  format:  A string describing the format to use to write the remaining
-%      arguments.
-%
-*/
-
-MagickExport void FormatStringList(char *string,const char *format,
-  va_list operands)
-{
-  int
-    n;
-
- (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  n=vsnprintf(string,MaxTextExtent,format,operands);
-#else
-  n=vsprintf(string,format,operands);
-#endif
-  if (n < 0)
-    string[MaxTextExtent-1]='\0';
-}
-
-MagickExport void FormatString(char *string,const char *format,...)
-{
-  va_list
-    operands;
-
-  va_start(operands,format);
-  (void) FormatMagickStringList(string,MaxTextExtent,format,operands);
-  va_end(operands);
-  return;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   F u z z y C o l o r M a t c h                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FuzzyColorMatch() returns true if two pixels are identical in color.
-%
-%  The format of the ColorMatch method is:
-%
-%      void FuzzyColorMatch(const PixelPacket *p,const PixelPacket *q,
-%        const double fuzz)
+%      MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
+%        const double alpha,const double fuzz,const PixelWand *bordercolor,
+%        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
-%    o p: Pixel p.
-%
-%    o q: Pixel q.
-%
-%    o distance:  Define how much tolerance is acceptable to consider
-%      two colors as the same.
-%
-*/
-MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
-  const PixelPacket *q,const double fuzz)
-{
-  MagickPixelPacket
-    pixel;
-
-  register MagickRealType
-    distance;
-
-  if ((fuzz == 0.0) && (GetRedPixelComponent(p) == GetRedPixelComponent(q)) &&
-      (GetGreenPixelComponent(p) == GetGreenPixelComponent(q)) &&
-      (GetBluePixelComponent(p) == GetBluePixelComponent(q)))
-    return(MagickTrue);
-  pixel.red=GetRedPixelComponent(p)-(MagickRealType) GetRedPixelComponent(q);
-  distance=pixel.red*pixel.red;
-  if (distance > (fuzz*fuzz))
-    return(MagickFalse);
-  pixel.green=GetGreenPixelComponent(p)-(MagickRealType)
-    GetGreenPixelComponent(q);
-  distance+=pixel.green*pixel.green;
-  if (distance > (fuzz*fuzz))
-    return(MagickFalse);
-  pixel.blue=GetBluePixelComponent(p)-(MagickRealType) GetBluePixelComponent(q);
-  distance+=pixel.blue*pixel.blue;
-  if (distance > (fuzz*fuzz))
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   F u z z y C o l o r C o m p a r e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FuzzyColorCompare() returns MagickTrue if the distance between two colors is
-%  less than the specified distance in a linear three dimensional color space.
-%  This method is used by ColorFloodFill() and other algorithms which
-%  compare two colors.
-%
-%  The format of the FuzzyColorCompare method is:
-%
-%      void FuzzyColorCompare(const Image *image,const PixelPacket *p,
-%        const PixelPacket *q)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o p: Pixel p.
-%
-%    o q: Pixel q.
-%
-*/
-MagickExport MagickBooleanType FuzzyColorCompare(const Image *image,
-  const PixelPacket *p,const PixelPacket *q)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.2.5");
-  return(IsColorSimilar(image,p,q));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   F u z z y O p a c i t y C o m p a r e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FuzzyOpacityCompare() returns true if the distance between two opacity
-%  values is less than the specified distance in a linear color space.  This
-%  method is used by MatteFloodFill() and other algorithms which compare
-%  two opacity values.
-%
-%  Deprecated, replace with:
-%
-%    IsOpacitySimilar(image,p,q);
-%
-%  The format of the FuzzyOpacityCompare method is:
-%
-%      void FuzzyOpacityCompare(const Image *image,const PixelPacket *p,
-%        const PixelPacket *q)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o p: Pixel p.
-%
-%    o q: Pixel q.
-%
-*/
-MagickExport MagickBooleanType FuzzyOpacityCompare(const Image *image,
-  const PixelPacket *p,const PixelPacket *q)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.2.5");
-  return(IsOpacitySimilar(image,p,q));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  G e t C o n f i g u r e B l o b                                            %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetConfigureBlob() returns the specified configure file as a blob.
-%
-%  The format of the GetConfigureBlob method is:
-%
-%      void *GetConfigureBlob(const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the configure file name.
-%
-%    o path: return the full path information of the configure file.
-%
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport void *GetConfigureBlob(const char *filename,char *path,
-  size_t *length,ExceptionInfo *exception)
-{
-  void
-    *blob;
-
-  assert(filename != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  assert(path != (char *) NULL);
-  assert(length != (size_t *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  blob=(void *) NULL;
-  (void) CopyMagickString(path,filename,MaxTextExtent);
-#if defined(MAGICKCORE_INSTALLED_SUPPORT)
-#if defined(MAGICKCORE_LIBRARY_PATH)
-  if (blob == (void *) NULL)
-    {
-      /*
-        Search hard coded paths.
-      */
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s",
-        MAGICKCORE_LIBRARY_PATH,filename);
-      if (IsPathAccessible(path) != MagickFalse)
-        blob=FileToBlob(path,~0,length,exception);
-    }
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
-  if (blob == (void *) NULL)
-    {
-      char
-        *key_value;
-
-      /*
-        Locate file via registry key.
-      */
-      key_value=NTRegistryKeyLookup("ConfigurePath");
-      if (key_value != (char *) NULL)
-        {
-          (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",key_value,
-            DirectorySeparator,filename);
-          if (IsPathAccessible(path) != MagickFalse)
-            blob=FileToBlob(path,~0,length,exception);
-        }
-    }
-#endif
-#else
-  if (blob == (void *) NULL)
-    {
-      char
-        *home;
-
-      home=GetEnvironmentValue("MAGICK_HOME");
-      if (home != (char *) NULL)
-        {
-          /*
-            Search MAGICK_HOME.
-          */
-#if !defined(MAGICKCORE_POSIX_SUPPORT)
-          (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",home,
-            DirectorySeparator,filename);
-#else
-          (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/%s",home,
-            MAGICKCORE_LIBRARY_RELATIVE_PATH,filename);
-#endif
-          if (IsPathAccessible(path) != MagickFalse)
-            blob=FileToBlob(path,~0,length,exception);
-          home=DestroyString(home);
-        }
-      home=GetEnvironmentValue("HOME");
-      if (home == (char *) NULL)
-        home=GetEnvironmentValue("USERPROFILE");
-      if (home != (char *) NULL)
-        {
-          /*
-            Search $HOME/.magick.
-          */
-          (void) FormatMagickString(path,MaxTextExtent,"%s%s.magick%s%s",home,
-            DirectorySeparator,DirectorySeparator,filename);
-          if ((IsPathAccessible(path) != MagickFalse) && (blob == (void *) NULL))
-            blob=FileToBlob(path,~0,length,exception);
-          home=DestroyString(home);
-        }
-    }
-  if ((blob == (void *) NULL) && (*GetClientPath() != '\0'))
-    {
-#if !defined(MAGICKCORE_POSIX_SUPPORT)
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
-        DirectorySeparator,filename);
-#else
-      char
-        prefix[MaxTextExtent];
-
-      /*
-        Search based on executable directory if directory is known.
-      */
-      (void) CopyMagickString(prefix,GetClientPath(),
-        MaxTextExtent);
-      ChopPathComponents(prefix,1);
-      (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/%s",prefix,
-        MAGICKCORE_LIBRARY_RELATIVE_PATH,filename);
-#endif
-      if (IsPathAccessible(path) != MagickFalse)
-        blob=FileToBlob(path,~0,length,exception);
-    }
-  /*
-    Search current directory.
-  */
-  if ((blob == (void *) NULL) && (IsPathAccessible(path) != MagickFalse))
-    blob=FileToBlob(path,~0,length,exception);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  /*
-    Search Windows registry.
-  */
-  if (blob == (void *) NULL)
-    blob=NTResourceToBlob(filename);
-#endif
-#endif
-  if (blob == (void *) NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
-      "UnableToOpenConfigureFile","`%s'",path);
-  return(blob);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheView() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
-%
-%  Deprecated, replace with:
-%
-%    GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
-%      GetCacheViewException(cache_view));
-%
-%  The format of the GetCacheView method is:
-%
-%      PixelPacket *GetCacheView(CacheView *cache_view,const ssize_t x,
-%        const ssize_t y,const size_t columns,const size_t rows)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the address of a structure of type CacheView.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-*/
-MagickExport PixelPacket *GetCacheView(CacheView *cache_view,const ssize_t x,
-  const ssize_t y,const size_t columns,const size_t rows)
-{
-  PixelPacket
-    *pixels;
-
-  pixels=GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
-    GetCacheViewException(cache_view));
-  return(pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w I n d e x e s                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewIndexes() returns the indexes associated with the specified
-%  view.
-%
-%  Deprecated, replace with:
-%
-%    GetCacheViewAuthenticIndexQueue(cache_view);
-%
-%  The format of the GetCacheViewIndexes method is:
-%
-%      IndexPacket *GetCacheViewIndexes(CacheView *cache_view)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-*/
-MagickExport IndexPacket *GetCacheViewIndexes(CacheView *cache_view)
-{
-  return(GetCacheViewAuthenticIndexQueue(cache_view));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w P i x e l s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
-%
-%  Deprecated, replace with:
-%
-%    GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
-%      GetCacheViewException(cache_view));
-%
-%  The format of the GetCacheViewPixels method is:
-%
-%      PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t x,
-%        const ssize_t y,const size_t columns,const size_t rows)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-*/
-MagickExport PixelPacket *GetCacheViewPixels(CacheView *cache_view,const ssize_t x,
-  const ssize_t y,const size_t columns,const size_t rows)
-{
-  PixelPacket
-    *pixels;
-
-  pixels=GetCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
-    GetCacheViewException(cache_view));
-  return(pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e A t t r i b u t e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageAttribute() searches the list of image attributes and returns
-%  a pointer to the attribute if it exists otherwise NULL.
-%
-%  The format of the GetImageAttribute method is:
-%
-%      const ImageAttribute *GetImageAttribute(const Image *image,
-%        const char *key)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o key:  These character strings are the name of an image attribute to
-%      return.
-%
-*/
-
-static void *DestroyAttribute(void *attribute)
-{
-  register ImageAttribute
-    *p;
-
-  p=(ImageAttribute *) attribute;
-  if (p->value != (char *) NULL)
-    p->value=DestroyString(p->value);
-  return(RelinquishMagickMemory(p));
-}
-
-MagickExport const ImageAttribute *GetImageAttribute(const Image *image,
-  const char *key)
-{
-  const char
-    *value;
-
-  ImageAttribute
-    *attribute;
-
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.3.1");
-  value=GetImageProperty(image,key);
-  if (value == (const char *) NULL)
-    return((const ImageAttribute *) NULL);
-  if (image->attributes == (void *) NULL)
-    ((Image *) image)->attributes=NewSplayTree(CompareSplayTreeString,
-      RelinquishMagickMemory,DestroyAttribute);
-  else
-    {
-      const ImageAttribute
-        *attribute;
-
-      attribute=(const ImageAttribute *) GetValueFromSplayTree((SplayTreeInfo *)
-        image->attributes,key);
-      if (attribute != (const ImageAttribute *) NULL)
-        return(attribute);
-    }
-  attribute=(ImageAttribute *) AcquireMagickMemory(sizeof(*attribute));
-  if (attribute == (ImageAttribute *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(attribute,0,sizeof(*attribute));
-  attribute->key=ConstantString(key);
-  attribute->value=ConstantString(value);
-  (void) AddValueToSplayTree((SplayTreeInfo *) ((Image *) image)->attributes,
-    attribute->key,attribute);
-  return((const ImageAttribute *) attribute);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e C l i p p i n g P a t h A t t r i b u t e                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageClippingPathAttribute() searches the list of image attributes and
-%  returns a pointer to a clipping path if it exists otherwise NULL.
-%
-%  Deprecated, replace with:
-%
-%    GetImageAttribute(image,"8BIM:1999,2998");
-%
-%  The format of the GetImageClippingPathAttribute method is:
-%
-%      const ImageAttribute *GetImageClippingPathAttribute(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o attribute:  Method GetImageClippingPathAttribute returns the clipping
-%      path if it exists otherwise NULL.
-%
-%    o image: the image.
-%
-*/
-MagickExport const ImageAttribute *GetImageClippingPathAttribute(Image *image)
-{
-  return(GetImageAttribute(image,"8BIM:1999,2998"));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e F r o m M a g i c k R e g i s t r y                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageFromMagickRegistry() gets an image from the registry as defined by
-%  its name.  If the image is not found, a NULL image is returned.
-%
-%  Deprecated, replace with:
-%
-%    GetImageRegistry(ImageRegistryType,name,exception);
-%
-%  The format of the GetImageFromMagickRegistry method is:
-%
-%      Image *GetImageFromMagickRegistry(const char *name,ssize_t *id,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o name: the name of the image to retrieve from the registry.
-%
-%    o id: the registry id.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *GetImageFromMagickRegistry(const char *name,ssize_t *id,
-  ExceptionInfo *exception)
-{
-  *id=0L;
-  return((Image *) GetImageRegistry(ImageRegistryType,name,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t M a g i c k R e g i s t r y                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetMagickRegistry() gets a blob from the registry as defined by the id.  If
-%  the blob that matches the id is not found, NULL is returned.
-%
-%  The format of the GetMagickRegistry method is:
-%
-%      const void *GetMagickRegistry(const ssize_t id,RegistryType *type,
-%        size_t *length,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o id: the registry id.
-%
-%    o type: the registry type.
-%
-%    o length: the blob length in number of bytes.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport void *GetMagickRegistry(const ssize_t id,RegistryType *type,
-  size_t *length,ExceptionInfo *exception)
-{
-  char
-    key[MaxTextExtent];
-
-  void
-    *blob;
-
-  *type=UndefinedRegistryType;
-  *length=0;
-  (void) FormatMagickString(key,MaxTextExtent,"%.20g\n",(double) id);
-  blob=(void *) GetImageRegistry(ImageRegistryType,key,exception);
-  if (blob != (void *) NULL)
-    return(blob);
-  blob=(void *) GetImageRegistry(ImageInfoRegistryType,key,exception);
-  if (blob != (void *) NULL)
-    return(blob);
-  return((void *) GetImageRegistry(UndefinedRegistryType,key,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e G e o m e t r y                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageGeometry() returns a region as defined by the geometry string with
-%  respect to the image and its gravity.
-%
-%  Deprecated, replace with:
-%
-%    if (size_to_fit != MagickFalse)
-%      ParseRegionGeometry(image,geometry,region_info,&image->exception); else
-%      ParsePageGeometry(image,geometry,region_info,&image->exception);
-%
-%  The format of the GetImageGeometry method is:
-%
-%      int GetImageGeometry(Image *image,const char *geometry,
-%        const unsigned int size_to_fit,RectangeInfo *region_info)
-%
-%  A description of each parameter follows:
-%
-%    o flags:  Method GetImageGeometry returns a bitmask that indicates
-%      which of the four values were located in the geometry string.
-%
-%    o geometry:  The geometry (e.g. 100x100+10+10).
-%
-%    o size_to_fit:  A value other than 0 means to scale the region so it
-%      fits within the specified width and height.
-%
-%    o region_info: the region as defined by the geometry string with
-%      respect to the image and its gravity.
-%
-*/
-MagickExport int GetImageGeometry(Image *image,const char *geometry,
-  const unsigned int size_to_fit,RectangleInfo *region_info)
-{
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.4");
-  if (size_to_fit != MagickFalse)
-    return((int) ParseRegionGeometry(image,geometry,region_info,&image->exception));
-  return((int) ParsePageGeometry(image,geometry,region_info,&image->exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e L i s t                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageList() returns an image at the specified position in the list.
-%
-%  Deprecated, replace with:
-%
-%    CloneImage(GetImageFromList(images,(ssize_t) offset),0,0,MagickTrue,
-%      exception);
-%
-%  The format of the GetImageList method is:
-%
-%      Image *GetImageList(const Image *images,const ssize_t offset,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-%    o offset: the position within the list.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *GetImageList(const Image *images,const ssize_t offset,
-  ExceptionInfo *exception)
-{
-  Image
-    *image;
-
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  image=CloneImage(GetImageFromList(images,(ssize_t) offset),0,0,MagickTrue,
-    exception);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e L i s t I n d e x                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageListIndex() returns the position in the list of the specified
-%  image.
-%
-%  Deprecated, replace with:
-%
-%    GetImageIndexInList(images);
-%
-%  The format of the GetImageListIndex method is:
-%
-%      ssize_t GetImageListIndex(const Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport ssize_t GetImageListIndex(const Image *images)
-{
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return(GetImageIndexInList(images));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e L i s t S i z e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageListSize() returns the number of images in the list.
-%
-%  Deprecated, replace with:
-%
-%    GetImageListLength(images);
-%
-%  The format of the GetImageListSize method is:
-%
-%      size_t GetImageListSize(const Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport size_t GetImageListSize(const Image *images)
-{
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return(GetImageListLength(images));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e P i x e l s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImagePixels() obtains a pixel region for read/write access. If the
-%  region is successfully accessed, a pointer to a PixelPacket array
-%  representing the region is returned, otherwise NULL is returned.
-%
-%  The returned pointer may point to a temporary working copy of the pixels
-%  or it may point to the original pixels in memory. Performance is maximized
-%  if the selected region is part of one row, or one or more full rows, since
-%  then there is opportunity to access the pixels in-place (without a copy)
-%  if the image is in RAM, or in a memory-mapped file. The returned pointer
-%  should *never* be deallocated by the user.
-%
-%  Pixels accessed via the returned pointer represent a simple array of type
-%  PixelPacket. If the image type is CMYK or if the storage class is
-%  PseduoClass, call GetAuthenticIndexQueue() after invoking GetImagePixels()
-%  to obtain the black color component or colormap indexes (of type IndexPacket)
-%  corresponding to the region.  Once the PixelPacket (and/or IndexPacket)
-%  array has been updated, the changes must be saved back to the underlying
-%  image using SyncAuthenticPixels() or they may be lost.
-%
-%  Deprecated, replace with:
-%
-%    GetAuthenticPixels(image,x,y,columns,rows,&image->exception);
-%
-%  The format of the GetImagePixels() method is:
-%
-%      PixelPacket *GetImagePixels(Image *image,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-*/
-MagickExport PixelPacket *GetImagePixels(Image *image,const ssize_t x,const ssize_t y,
-  const size_t columns,const size_t rows)
-{
-  return(GetAuthenticPixels(image,x,y,columns,rows,&image->exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I n d e x e s                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetIndexes() returns the black channel or the colormap indexes associated
-%  with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is
-%  returned if the black channel or colormap indexes are not available.
-%
-%  Deprecated, replace with:
-%
-%    GetAuthenticIndexQueue(image);
-%
-%  The format of the GetIndexes() method is:
-%
-%      IndexPacket *GetIndexes(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o indexes: GetIndexes() returns the indexes associated with the last
-%      call to QueueAuthenticPixels() or GetAuthenticPixels().
-%
-%    o image: the image.
-%
-*/
-MagickExport IndexPacket *GetIndexes(const Image *image)
-{
-  return(GetAuthenticIndexQueue(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t M a g i c k G e o m e t r y                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetMagickGeometry() is similar to GetGeometry() except the returned
-%  geometry is modified as determined by the meta characters:  %, !, <, >,
-%  and ~.
-%
-%  Deprecated, replace with:
-%
-%    ParseMetaGeometry(geometry,x,y,width,height);
-%
-%  The format of the GetMagickGeometry method is:
-%
-%      unsigned int GetMagickGeometry(const char *geometry,ssize_t *x,ssize_t *y,
-%        size_t *width,size_t *height)
-%
-%  A description of each parameter follows:
-%
-%    o geometry:  Specifies a character string representing the geometry
-%      specification.
-%
-%    o x,y:  A pointer to an integer.  The x and y offset as determined by
-%      the geometry specification is returned here.
-%
-%    o width,height:  A pointer to an unsigned integer.  The width and height
-%      as determined by the geometry specification is returned here.
-%
-*/
-MagickExport unsigned int GetMagickGeometry(const char *geometry,ssize_t *x,
-  ssize_t *y,size_t *width,size_t *height)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.3");
-  return(ParseMetaGeometry(geometry,x,y,width,height));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t N e x t I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNextImage() returns the next image in a list.
-%
-%  Deprecated, replace with:
-%
-%    GetNextImageInList(images);
-%
-%  The format of the GetNextImage method is:
-%
-%      Image *GetNextImage(const Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport Image *GetNextImage(const Image *images)
-{
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return(GetNextImageInList(images));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t N e x t I m a g e A t t r i b u t e                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNextImageAttribute() gets the next image attribute.
-%
-%  Deprecated, replace with:
-%
-%    const char *property;
-%    property=GetNextImageProperty(image);
-%    if (property != (const char *) NULL) 
-%      GetImageAttribute(image,property);
-%
-%  The format of the GetNextImageAttribute method is:
-%
-%      const ImageAttribute *GetNextImageAttribute(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport const ImageAttribute *GetNextImageAttribute(const Image *image)
-{
-  const char
-    *property;
-
-  property=GetNextImageProperty(image);
-  if (property == (const char *) NULL)
-    return((const ImageAttribute *) NULL);
-  return(GetImageAttribute(image,property));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t N u m b e r S c e n e s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNumberScenes() returns the number of images in the list.
-%
-%  Deprecated, replace with:
-%
-%    GetImageListLength(image);
-%
-%  The format of the GetNumberScenes method is:
-%
-%      unsigned int GetNumberScenes(const Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport unsigned int GetNumberScenes(const Image *image)
-{
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return((unsigned int) GetImageListLength(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t O n e P i x e l                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetOnePixel() returns a single pixel at the specified (x,y) location.
-%  The image background color is returned if an error occurs.
-%
-%  Deprecated, replace with:
-%
-%    GetOneAuthenticPixel(image,x,y,&pixel,&image->exception);
-%
-%  The format of the GetOnePixel() method is:
-%
-%      PixelPacket GetOnePixel(const Image image,const ssize_t x,const ssize_t y)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o x,y:  These values define the location of the pixel to return.
-%
-*/
-MagickExport PixelPacket GetOnePixel(Image *image,const ssize_t x,const ssize_t y)
-{
-  PixelPacket
-    pixel;
-
-  (void) GetOneAuthenticPixel(image,x,y,&pixel,&image->exception);
-  return(pixel);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t P i x e l s                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixels() returns the pixels associated with the last call to
-%  QueueAuthenticPixels() or GetAuthenticPixels().
-%
-%  Deprecated, replace with:
-%
-%    GetAuthenticPixelQueue(image);
-%
-%  The format of the GetPixels() method is:
-%
-%      PixelPacket *GetPixels(const Image image)
-%
-%  A description of each parameter follows:
-%
-%    o pixels: GetPixels() returns the pixels associated with the last call
-%      to QueueAuthenticPixels() or GetAuthenticPixels().
-%
-%    o image: the image.
-%
-*/
-MagickExport PixelPacket *GetPixels(const Image *image)
-{
-  return(GetAuthenticPixelQueue(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t P r e v i o u s I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPreviousImage() returns the previous image in a list.
-%
-%  Deprecated, replace with:
-%
-%    GetPreviousImageInList(images));
-%
-%  The format of the GetPreviousImage method is:
-%
-%      Image *GetPreviousImage(const Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport Image *GetPreviousImage(const Image *images)
-{
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return(GetPreviousImageInList(images));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H S L T r a n s f o r m                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  HSLTransform() converts a (hue, saturation, lightness) to a (red, green,
-%  blue) triple.
-%
-%  The format of the HSLTransformImage method is:
-%
-%      void HSLTransform(const double hue,const double saturation,
-%        const double lightness,Quantum *red,Quantum *green,Quantum *blue)
-%
-%  A description of each parameter follows:
-%
-%    o hue, saturation, lightness: A double value representing a
-%      component of the HSL color space.
-%
-%    o red, green, blue: A pointer to a pixel component of type Quantum.
-%
-*/
-
-static inline MagickRealType HueToRGB(MagickRealType m1,MagickRealType m2,
-  MagickRealType hue)
-{
-  if (hue < 0.0)
-    hue+=1.0;
-  if (hue > 1.0)
-    hue-=1.0;
-  if ((6.0*hue) < 1.0)
-    return(m1+6.0*(m2-m1)*hue);
-  if ((2.0*hue) < 1.0)
-    return(m2);
-  if ((3.0*hue) < 2.0)
-    return(m1+6.0*(m2-m1)*(2.0/3.0-hue));
-  return(m1);
-}
-
-MagickExport void HSLTransform(const double hue,const double saturation,
-  const double lightness,Quantum *red,Quantum *green,Quantum *blue)
-{
-  MagickRealType
-    b,
-    g,
-    r,
-    m1,
-    m2;
-
-  /*
-    Convert HSL to RGB colorspace.
-  */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
-  if (lightness <= 0.5)
-    m2=lightness*(saturation+1.0);
-  else
-    m2=lightness+saturation-lightness*saturation;
-  m1=2.0*lightness-m2;
-  r=HueToRGB(m1,m2,hue+1.0/3.0);
-  g=HueToRGB(m1,m2,hue);
-  b=HueToRGB(m1,m2,hue-1.0/3.0);
-  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
-  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
-  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I d e n t i t y A f f i n e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IdentityAffine() initializes the affine transform to the identity matrix.
-%
-%  The format of the IdentityAffine method is:
-%
-%      IdentityAffine(AffineMatrix *affine)
-%
-%  A description of each parameter follows:
-%
-%    o affine: A pointer the affine transform of type AffineMatrix.
-%
-*/
-MagickExport void IdentityAffine(AffineMatrix *affine)
-{
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  assert(affine != (AffineMatrix *) NULL);
-  (void) ResetMagickMemory(affine,0,sizeof(AffineMatrix));
-  affine->sx=1.0;
-  affine->sy=1.0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n i t i a l i z e M a g i c k                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InitializeMagick() initializes the ImageMagick environment.
-%
-%  Deprecated, replace with:
-%
-%    MagickCoreGenesis(path,MagickFalse);
-%
-%  The format of the InitializeMagick function is:
-%
-%      InitializeMagick(const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o path: the execution path of the current ImageMagick client.
-%
-*/
-MagickExport void InitializeMagick(const char *path)
-{
-  MagickCoreGenesis(path,MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n t e r p o l a t e P i x e l C o l o r                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InterpolatePixelColor() applies bi-linear or tri-linear interpolation
-%  between a pixel and it's neighbors.
-%
-%  The format of the InterpolatePixelColor method is:
-%
-%      MagickPixelPacket InterpolatePixelColor(const Image *image,
-%        CacheView *view_info,InterpolatePixelMethod method,const double x,
-%        const double y,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o image_view: the image cache view.
-%
-%    o type:  the type of pixel color interpolation.
-%
-%    o x,y: A double representing the current (x,y) position of the pixel.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static void BicubicInterpolate(const MagickPixelPacket *pixels,const double dx,
-  MagickPixelPacket *pixel)
-{
-  MagickRealType
-    dx2,
-    p,
-    q,
-    r,
-    s;
-
-  dx2=dx*dx;
-  p=(pixels[3].red-pixels[2].red)-(pixels[0].red-pixels[1].red);
-  q=(pixels[0].red-pixels[1].red)-p;
-  r=pixels[2].red-pixels[0].red;
-  s=pixels[1].red;
-  pixel->red=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  p=(pixels[3].green-pixels[2].green)-(pixels[0].green-pixels[1].green);
-  q=(pixels[0].green-pixels[1].green)-p;
-  r=pixels[2].green-pixels[0].green;
-  s=pixels[1].green;
-  pixel->green=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  p=(pixels[3].blue-pixels[2].blue)-(pixels[0].blue-pixels[1].blue);
-  q=(pixels[0].blue-pixels[1].blue)-p;
-  r=pixels[2].blue-pixels[0].blue;
-  s=pixels[1].blue;
-  pixel->blue=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  p=(pixels[3].opacity-pixels[2].opacity)-(pixels[0].opacity-pixels[1].opacity);
-  q=(pixels[0].opacity-pixels[1].opacity)-p;
-  r=pixels[2].opacity-pixels[0].opacity;
-  s=pixels[1].opacity;
-  pixel->opacity=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  if (pixel->colorspace == CMYKColorspace)
-    {
-      p=(pixels[3].index-pixels[2].index)-(pixels[0].index-pixels[1].index);
-      q=(pixels[0].index-pixels[1].index)-p;
-      r=pixels[2].index-pixels[0].index;
-      s=pixels[1].index;
-      pixel->index=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-    }
-}
-
-static inline MagickRealType CubicWeightingFunction(const MagickRealType x)
-{
-  MagickRealType
-    alpha,
-    gamma;
-
-  alpha=MagickMax(x+2.0,0.0);
-  gamma=1.0*alpha*alpha*alpha;
-  alpha=MagickMax(x+1.0,0.0);
-  gamma-=4.0*alpha*alpha*alpha;
-  alpha=MagickMax(x+0.0,0.0);
-  gamma+=6.0*alpha*alpha*alpha;
-  alpha=MagickMax(x-1.0,0.0);
-  gamma-=4.0*alpha*alpha*alpha;
-  return(gamma/6.0);
-}
-
-static inline double MeshInterpolate(const PointInfo *delta,const double p,
-  const double x,const double y)
-{
-  return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
-}
-
-static inline ssize_t NearestNeighbor(MagickRealType x)
-{
-  if (x >= 0.0)
-    return((ssize_t) (x+0.5));
-  return((ssize_t) (x-0.5));
-}
-
-MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
-  CacheView *image_view,const InterpolatePixelMethod method,const double x,
-  const double y,ExceptionInfo *exception)
-{
-  MagickPixelPacket
-    pixel;
-
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
-    *p;
-
-  register ssize_t
-    i;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image_view != (CacheView *) NULL);
-  GetMagickPixelPacket(image,&pixel);
-  switch (method)
-  {
-    case AverageInterpolatePixel:
-    {
-      MagickPixelPacket
-        pixels[16];
-
-      MagickRealType
-        alpha[16],
-        gamma;
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 16L; i++)
-      {
-        GetMagickPixelPacket(image,pixels+i);
-        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
-        alpha[i]=1.0;
-        if (image->matte != MagickFalse)
-          {
-            alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
-            pixels[i].red*=alpha[i];
-            pixels[i].green*=alpha[i];
-            pixels[i].blue*=alpha[i];
-            if (image->colorspace == CMYKColorspace)
-              pixels[i].index*=alpha[i];
-          }
-        gamma=alpha[i];
-        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        pixel.red+=gamma*0.0625*pixels[i].red;
-        pixel.green+=gamma*0.0625*pixels[i].green;
-        pixel.blue+=gamma*0.0625*pixels[i].blue;
-        pixel.opacity+=0.0625*pixels[i].opacity;
-        if (image->colorspace == CMYKColorspace)
-          pixel.index+=gamma*0.0625*pixels[i].index;
-        p++;
-      }
-      break;
-    }
-    case BicubicInterpolatePixel:
-    {
-      MagickPixelPacket
-        pixels[16],
-        u[4];
-
-      MagickRealType
-        alpha[16];
-
-      PointInfo
-        delta;
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 16L; i++)
-      {
-        GetMagickPixelPacket(image,pixels+i);
-        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
-        alpha[i]=1.0;
-        if (image->matte != MagickFalse)
-          {
-            alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
-            pixels[i].red*=alpha[i];
-            pixels[i].green*=alpha[i];
-            pixels[i].blue*=alpha[i];
-            if (image->colorspace == CMYKColorspace)
-              pixels[i].index*=alpha[i];
-          }
-        p++;
-      }
-      delta.x=x-floor(x);
-      for (i=0; i < 4L; i++)
-        BicubicInterpolate(pixels+4*i,delta.x,u+i);
-      delta.y=y-floor(y);
-      BicubicInterpolate(u,delta.y,&pixel);
-      break;
-    }
-    case BilinearInterpolatePixel:
-    default:
-    {
-      MagickPixelPacket
-        pixels[16];
-
-      MagickRealType
-        alpha[16],
-        gamma;
-
-      PointInfo
-        delta;
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
-        floor(y),2,2,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 4L; i++)
-      {
-        GetMagickPixelPacket(image,pixels+i);
-        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
-        alpha[i]=1.0;
-        if (image->matte != MagickFalse)
-          {
-            alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
-            pixels[i].red*=alpha[i];
-            pixels[i].green*=alpha[i];
-            pixels[i].blue*=alpha[i];
-            if (image->colorspace == CMYKColorspace)
-              pixels[i].index*=alpha[i];
-          }
-        p++;
-      }
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
-      gamma=(((1.0-delta.y)*((1.0-delta.x)*alpha[0]+delta.x*alpha[1])+delta.y*
-        ((1.0-delta.x)*alpha[2]+delta.x*alpha[3])));
-      gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-      pixel.red=gamma*((1.0-delta.y)*((1.0-delta.x)*pixels[0].red+delta.x*
-        pixels[1].red)+delta.y*((1.0-delta.x)*pixels[2].red+delta.x*
-        pixels[3].red));
-      pixel.green=gamma*((1.0-delta.y)*((1.0-delta.x)*pixels[0].green+delta.x*
-        pixels[1].green)+delta.y*((1.0-delta.x)*pixels[2].green+
-        delta.x*pixels[3].green));
-      pixel.blue=gamma*((1.0-delta.y)*((1.0-delta.x)*pixels[0].blue+delta.x*
-        pixels[1].blue)+delta.y*((1.0-delta.x)*pixels[2].blue+delta.x*
-        pixels[3].blue));
-      pixel.opacity=((1.0-delta.y)*((1.0-delta.x)*pixels[0].opacity+delta.x*
-        pixels[1].opacity)+delta.y*((1.0-delta.x)*pixels[2].opacity+delta.x*
-        pixels[3].opacity));
-      if (image->colorspace == CMYKColorspace)
-        pixel.index=gamma*((1.0-delta.y)*((1.0-delta.x)*pixels[0].index+delta.x*
-          pixels[1].index)+delta.y*((1.0-delta.x)*pixels[2].index+delta.x*
-          pixels[3].index));
-      break;
-    }
-    case FilterInterpolatePixel:
-    {
-      Image
-        *excerpt_image,
-        *filter_image;
-
-      MagickPixelPacket
-        pixels[1];
-
-      RectangleInfo
-        geometry;
-
-      geometry.width=4L;
-      geometry.height=4L;
-      geometry.x=(ssize_t) floor(x)-1L;
-      geometry.y=(ssize_t) floor(y)-1L;
-      excerpt_image=ExcerptImage(image,&geometry,exception);
-      if (excerpt_image == (Image *) NULL)
-        break;
-      filter_image=ResizeImage(excerpt_image,1,1,image->filter,image->blur,
-        exception);
-      excerpt_image=DestroyImage(excerpt_image);
-      if (filter_image == (Image *) NULL)
-        break;
-      p=GetVirtualPixels(filter_image,0,0,1,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        {
-          filter_image=DestroyImage(filter_image);
-          break;
-        }
-      indexes=GetVirtualIndexQueue(filter_image);
-      GetMagickPixelPacket(image,pixels);
-      SetMagickPixelPacket(image,p,indexes,&pixel);
-      filter_image=DestroyImage(filter_image);
-      break;
-    }
-    case IntegerInterpolatePixel:
-    {
-      MagickPixelPacket
-        pixels[1];
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
-        floor(y),1,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      GetMagickPixelPacket(image,pixels);
-      SetMagickPixelPacket(image,p,indexes,&pixel);
-      break;
-    }
-    case MeshInterpolatePixel:
-    {
-      MagickPixelPacket
-        pixels[4];
-
-      MagickRealType
-        alpha[4],
-        gamma;
-
-      PointInfo
-        delta,
-        luminance;
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x),(ssize_t)
-        floor(y),2,2,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 4L; i++)
-      {
-        GetMagickPixelPacket(image,pixels+i);
-        SetMagickPixelPacket(image,p,indexes+i,pixels+i);
-        alpha[i]=1.0;
-        if (image->matte != MagickFalse)
-          {
-            alpha[i]=QuantumScale*((MagickRealType) GetAlphaPixelComponent(p));
-            pixels[i].red*=alpha[i];
-            pixels[i].green*=alpha[i];
-            pixels[i].blue*=alpha[i];
-            if (image->colorspace == CMYKColorspace)
-              pixels[i].index*=alpha[i];
-          }
-        p++;
-      }
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
-      luminance.x=MagickPixelLuminance(pixels+0)-MagickPixelLuminance(pixels+3);
-      luminance.y=MagickPixelLuminance(pixels+1)-MagickPixelLuminance(pixels+2);
-      if (fabs(luminance.x) < fabs(luminance.y))
-        {
-          /*
-            Diagonal 0-3 NW-SE.
-          */
-          if (delta.x <= delta.y)
-            {
-              /*
-                Bottom-left triangle  (pixel:2, diagonal: 0-3).
-              */
-              delta.y=1.0-delta.y;
-              gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-              pixel.red=gamma*MeshInterpolate(&delta,pixels[2].red,
-                pixels[3].red,pixels[0].red);
-              pixel.green=gamma*MeshInterpolate(&delta,pixels[2].green,
-                pixels[3].green,pixels[0].green);
-              pixel.blue=gamma*MeshInterpolate(&delta,pixels[2].blue,
-                pixels[3].blue,pixels[0].blue);
-              pixel.opacity=gamma*MeshInterpolate(&delta,pixels[2].opacity,
-                pixels[3].opacity,pixels[0].opacity);
-              if (image->colorspace == CMYKColorspace)
-                pixel.index=gamma*MeshInterpolate(&delta,pixels[2].index,
-                  pixels[3].index,pixels[0].index);
-            }
-          else
-            {
-              /*
-                Top-right triangle (pixel:1, diagonal: 0-3).
-              */
-              delta.x=1.0-delta.x;
-              gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-              pixel.red=gamma*MeshInterpolate(&delta,pixels[1].red,
-                pixels[0].red,pixels[3].red);
-              pixel.green=gamma*MeshInterpolate(&delta,pixels[1].green,
-                pixels[0].green,pixels[3].green);
-              pixel.blue=gamma*MeshInterpolate(&delta,pixels[1].blue,
-                pixels[0].blue,pixels[3].blue);
-              pixel.opacity=gamma*MeshInterpolate(&delta,pixels[1].opacity,
-                pixels[0].opacity,pixels[3].opacity);
-              if (image->colorspace == CMYKColorspace)
-                pixel.index=gamma*MeshInterpolate(&delta,pixels[1].index,
-                  pixels[0].index,pixels[3].index);
-            }
-        }
-      else
-        {
-          /*
-            Diagonal 1-2 NE-SW.
-          */
-          if (delta.x <= (1.0-delta.y))
-            {
-              /*
-                Top-left triangle (pixel 0, diagonal: 1-2).
-              */
-              gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-              pixel.red=gamma*MeshInterpolate(&delta,pixels[0].red,
-                pixels[1].red,pixels[2].red);
-              pixel.green=gamma*MeshInterpolate(&delta,pixels[0].green,
-                pixels[1].green,pixels[2].green);
-              pixel.blue=gamma*MeshInterpolate(&delta,pixels[0].blue,
-                pixels[1].blue,pixels[2].blue);
-              pixel.opacity=gamma*MeshInterpolate(&delta,pixels[0].opacity,
-                pixels[1].opacity,pixels[2].opacity);
-              if (image->colorspace == CMYKColorspace)
-                pixel.index=gamma*MeshInterpolate(&delta,pixels[0].index,
-                  pixels[1].index,pixels[2].index);
-            }
-          else
-            {
-              /*
-                Bottom-right triangle (pixel: 3, diagonal: 1-2).
-              */
-              delta.x=1.0-delta.x;
-              delta.y=1.0-delta.y;
-              gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-              pixel.red=gamma*MeshInterpolate(&delta,pixels[3].red,
-                pixels[2].red,pixels[1].red);
-              pixel.green=gamma*MeshInterpolate(&delta,pixels[3].green,
-                pixels[2].green,pixels[1].green);
-              pixel.blue=gamma*MeshInterpolate(&delta,pixels[3].blue,
-                pixels[2].blue,pixels[1].blue);
-              pixel.opacity=gamma*MeshInterpolate(&delta,pixels[3].opacity,
-                pixels[2].opacity,pixels[1].opacity);
-              if (image->colorspace == CMYKColorspace)
-                pixel.index=gamma*MeshInterpolate(&delta,pixels[3].index,
-                  pixels[2].index,pixels[1].index);
-            }
-        }
-      break;
-    }
-    case NearestNeighborInterpolatePixel:
-    {
-      MagickPixelPacket
-        pixels[1];
-
-      p=GetCacheViewVirtualPixels(image_view,NearestNeighbor(x),
-        NearestNeighbor(y),1,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      GetMagickPixelPacket(image,pixels);
-      SetMagickPixelPacket(image,p,indexes,&pixel);
-      break;
-    }
-    case SplineInterpolatePixel:
-    {
-      MagickPixelPacket
-        pixels[16];
-
-      MagickRealType
-        alpha[16],
-        dx,
-        dy,
-        gamma;
-
-      PointInfo
-        delta;
-
-      ssize_t
-        j,
-        n;
-
-      p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
-        floor(y)-1,4,4,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      n=0;
-      delta.x=x-floor(x);
-      delta.y=y-floor(y);
-      for (i=(-1); i < 3L; i++)
-      {
-        dy=CubicWeightingFunction((MagickRealType) i-delta.y);
-        for (j=(-1); j < 3L; j++)
-        {
-          GetMagickPixelPacket(image,pixels+n);
-          SetMagickPixelPacket(image,p,indexes+n,pixels+n);
-          alpha[n]=1.0;
-          if (image->matte != MagickFalse)
-            {
-              alpha[n]=QuantumScale*((MagickRealType)
-                GetAlphaPixelComponent(p));
-              pixels[n].red*=alpha[n];
-              pixels[n].green*=alpha[n];
-              pixels[n].blue*=alpha[n];
-              if (image->colorspace == CMYKColorspace)
-                pixels[n].index*=alpha[n];
-            }
-          dx=CubicWeightingFunction(delta.x-(MagickRealType) j);
-          gamma=alpha[n];
-          gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          pixel.red+=gamma*dx*dy*pixels[n].red;
-          pixel.green+=gamma*dx*dy*pixels[n].green;
-          pixel.blue+=gamma*dx*dy*pixels[n].blue;
-          if (image->matte != MagickFalse)
-            pixel.opacity+=dx*dy*pixels[n].opacity;
-          if (image->colorspace == CMYKColorspace)
-            pixel.index+=gamma*dx*dy*pixels[n].index;
-          n++;
-          p++;
-        }
-      }
-      break;
-    }
-  }
-  return(pixel);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n t e r p r e t I m a g e A t t r i b u t e s                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InterpretImageAttributes() replaces any embedded formatting characters with
-%  the appropriate image attribute and returns the translated text.
-%
-%  Deprecated, replace with:
-%
-%    InterpretImageProperties(image_info,image,embed_text);
-%
-%  The format of the InterpretImageAttributes method is:
-%
-%      char *InterpretImageAttributes(const ImageInfo *image_info,Image *image,
-%        const char *embed_text)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: the image info.
-%
-%    o image: the image.
-%
-%    o embed_text: the address of a character string containing the embedded
-%      formatting characters.
-%
-*/
-MagickExport char *InterpretImageAttributes(const ImageInfo *image_info,
-  Image *image,const char *embed_text)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.3.1");
-  return(InterpretImageProperties(image_info,image,embed_text));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+     I s S u b i m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsSubimage() returns MagickTrue if the geometry is a valid subimage
-%  specification (e.g. [1], [1-9], [1,7,4]).
-%
-%  The format of the IsSubimage method is:
-%
-%      unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
-%
-%  A description of each parameter follows:
-%
-%    o geometry: This string is the geometry specification.
-%
-%    o pedantic: A value other than 0 invokes a more restrictive set of
-%      conditions for a valid specification (e.g. [1], [1-4], [4-1]).
-%
-*/
-MagickExport unsigned int IsSubimage(const char *geometry,
-  const unsigned int pedantic)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (geometry == (const char *) NULL)
-    return(MagickFalse);
-  if ((strchr(geometry,'x') != (char *) NULL) ||
-      (strchr(geometry,'X') != (char *) NULL))
-    return(MagickFalse);
-  if ((pedantic != MagickFalse) && (strchr(geometry,',') != (char *) NULL))
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     L e v e l I m a g e C o l o r s                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LevelImageColor() will map the given color to "black" and "white"
-%  values, limearly spreading out the colors, and level values on a channel by
-%  channel bases, as per LevelImage().  The given colors allows you to specify
-%  different level ranges for each of the color channels separately.
-%
-%  If the boolean 'invert' is set true the image values will modifyed in the
-%  reverse direction. That is any existing "black" and "white" colors in the
-%  image will become the color values given, with all other values compressed
-%  appropriatally.  This effectivally maps a greyscale gradient into the given
-%  color gradient.
-%
-%  Deprecated, replace with:
-%
-%    LevelColorsImageChannel(image,channel,black_color,white_color,invert);
-%
-%  The format of the LevelImageColors method is:
-%
-%  MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
-%    const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
-%    const MagickBooleanType invert)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel: the channel.
-%
-%    o black_color: The color to map black to/from
-%
-%    o white_point: The color to map white to/from
-%
-%    o invert: if true map the colors (levelize), rather than from (level)
-%
-*/
-MagickBooleanType LevelImageColors(Image *image,const ChannelType channel,
-  const MagickPixelPacket *black_color,const MagickPixelPacket *white_color,
-  const MagickBooleanType invert)
-{
-  return(LevelColorsImageChannel(image,channel,black_color,white_color,invert));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L i b e r a t e M e m o r y                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LiberateMemory() frees memory that has already been allocated, and NULL's
-%  the pointer to it.
-%
-%  The format of the LiberateMemory method is:
-%
-%      void LiberateMemory(void **memory)
-%
-%  A description of each parameter follows:
-%
-%    o memory: A pointer to a block of memory to free for reuse.
-%
-*/
-MagickExport void LiberateMemory(void **memory)
-{
-  assert(memory != (void **) NULL);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (*memory == (void *) NULL)
-    return;
-  free(*memory);
-  *memory=(void *) NULL;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L i b e r a t e S e m a p h o r e I n f o                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LiberateSemaphoreInfo() relinquishes a semaphore.
-%
-%  Deprecated, replace with:
-%
-%    UnlockSemaphoreInfo(*semaphore_info);
-%
-%  The format of the LiberateSemaphoreInfo method is:
-%
-%      LiberateSemaphoreInfo(void **semaphore_info)
-%
-%  A description of each parameter follows:
-%
-%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
-%
-*/
-MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  UnlockSemaphoreInfo(*semaphore_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k I n c a r n a t e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickIncarnate() initializes the ImageMagick environment.
-%
-%  Deprecated, replace with:
-%
-%    MagickCoreGenesis(path,MagickFalse);
-%
-%  The format of the MagickIncarnate function is:
-%
-%      MagickIncarnate(const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o path: the execution path of the current ImageMagick client.
-%
-*/
-
-MagickExport void MagickIncarnate(const char *path)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
-  MagickCoreGenesis(path,MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k M o n i t o r                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickMonitor() calls the monitor handler method with a text string that
-%  describes the task and a measure of completion.  The method returns
-%  MagickTrue on success otherwise MagickFalse if an error is encountered, e.g.
-%  if there was a user interrupt.
-%
-%  The format of the MagickMonitor method is:
-%
-%      MagickBooleanType MagickMonitor(const char *text,
-%        const MagickOffsetType offset,const MagickSizeType span,
-%        void *client_data)
-%
-%  A description of each parameter follows:
-%
-%    o offset: the position relative to the span parameter which represents
-%      how much progress has been made toward completing a task.
-%
-%    o span: the span relative to completing a task.
-%
-%    o client_data: the client data.
-%
-*/
-MagickExport MagickBooleanType MagickMonitor(const char *text,
-  const MagickOffsetType offset,const MagickSizeType span,
-  void *magick_unused(client_data))
-{
-  ExceptionInfo
-    *exception;
-
-  MagickBooleanType
-    status;
-
-  assert(text != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",text);
-  ProcessPendingEvents(text);
-  status=MagickTrue;
-  exception=AcquireExceptionInfo();
-  if (monitor_handler != (MonitorHandler) NULL)
-    status=(*monitor_handler)(text,offset,span,exception);
-  exception=DestroyExceptionInfo(exception);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a p I m a g e                                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MapImage() replaces the colors of an image with the closest color from a
-%  reference image.
-%
-%  Deprecated, replace with:
-%
-%     QuantizeInfo quantize_info;
-%     GetQuantizeInfo(&quantize_info);
-%     quantize_info.dither=dither;
-%     RemapImage(&quantize_info,image,map_image);
-%
-%  The format of the MapImage method is:
-%
-%      MagickBooleanType MapImage(Image *image,const Image *map_image,
-%        const MagickBooleanType dither)
-%
-%  A description of each parameter follows:
-%
-%    o image: Specifies a pointer to an Image structure.
-%
-%    o map_image: the image.  Reduce image to a set of colors represented by
-%      this image.
-%
-%    o dither: Set this integer value to something other than zero to
-%      dither the mapped image.
-%
-*/
-MagickExport MagickBooleanType MapImage(Image *image,const Image *map_image,
-  const MagickBooleanType dither)
-{
-  QuantizeInfo
-    quantize_info;
-
-  /*
-    Initialize color cube.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(map_image != (Image *) NULL);
-  assert(map_image->signature == MagickSignature);
-  GetQuantizeInfo(&quantize_info);
-  quantize_info.dither=dither;
-  return(RemapImage(&quantize_info,image,map_image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a p I m a g e s                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MapImages() replaces the colors of a sequence of images with the closest
-%  color from a reference image.
-%
-%  Deprecated, replace with:
-%
-%     QuantizeInfo quantize_info;
-%     GetQuantizeInfo(&quantize_info);
-%     quantize_info.dither=dither;
-%     RemapImages(&quantize_info,images,map_image);
-%
-%  The format of the MapImage method is:
-%
-%      MagickBooleanType MapImages(Image *images,Image *map_image,
-%        const MagickBooleanType dither)
-%
-%  A description of each parameter follows:
-%
-%    o image: Specifies a pointer to a set of Image structures.
-%
-%    o map_image: the image.  Reduce image to a set of colors represented by
-%      this image.
-%
-%    o dither: Set this integer value to something other than zero to
-%      dither the quantized image.
-%
-*/
-MagickExport MagickBooleanType MapImages(Image *images,const Image *map_image,
-  const MagickBooleanType dither)
-{
-  QuantizeInfo
-    quantize_info;
-
-  assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  GetQuantizeInfo(&quantize_info);
-  quantize_info.dither=dither;
-  return(RemapImages(&quantize_info,images,map_image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a t t e F l o o d f i l l I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MatteFloodfill() changes the transparency value of any pixel that matches
-%  target and is an immediate neighbor.  If the method FillToBorderMethod
-%  is specified, the transparency value is changed for any neighbor pixel
-%  that does not match the bordercolor member of image.
-%
-%  By default target must match a particular pixel transparency exactly.
-%  However, in many cases two transparency values may differ by a
-%  small amount.  The fuzz member of image defines how much tolerance is
-%  acceptable to consider two transparency values as the same.  For example,
-%  set fuzz to 10 and the opacity values of 100 and 102 respectively are
-%  now interpreted as the same value for the purposes of the floodfill.
-%
-%  The format of the MatteFloodfillImage method is:
-%
-%      MagickBooleanType MatteFloodfillImage(Image *image,
-%        const PixelPacket target,const Quantum opacity,const ssize_t x_offset,
-%        const ssize_t y_offset,const PaintMethod method)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o target: the RGB value of the target color.
-%
-%    o opacity: the level of transparency: 0 is fully opaque and QuantumRange is
-%      fully transparent.
+%    o wand: the magick wand.
+%
+%    o alpha: the level of transparency: 1.0 is fully opaque and 0.0 is fully
+%      transparent.
+%
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
+%
+%    o bordercolor: the border color pixel wand.
 %
 %    o x,y: the starting location of the operation.
 %
-%    o method:  Choose either FloodfillMethod or FillToBorderMethod.
-%
 */
-MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
-  const PixelPacket target,const Quantum opacity,const ssize_t x_offset,
-  const ssize_t y_offset,const PaintMethod method)
+WandExport MagickBooleanType MagickMatteFloodfillImage(MagickWand *wand,
+  const double alpha,const double fuzz,const PixelWand *bordercolor,
+  const ssize_t x,const ssize_t y)
 {
-  Image
-    *floodplane_image;
+  DrawInfo
+    *draw_info;
 
   MagickBooleanType
-    skip;
+    status;
 
-  register SegmentInfo
-    *s;
+  PixelPacket
+    target;
 
-  SegmentInfo
-    *segment_stack;
-
-  ssize_t
-    offset,
-    start,
-    x,
-    x1,
-    x2,
-    y;
-
-  /*
-    Check boundary conditions.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
-    return(MagickFalse);
-  if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
-    return(MagickFalse);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    return(MagickFalse);
-  if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-  floodplane_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    &image->exception);
-  if (floodplane_image == (Image *) NULL)
-    return(MagickFalse);
-  (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel);
-  /*
-    Set floodfill color.
-  */
-  segment_stack=(SegmentInfo *) AcquireQuantumMemory(MaxStacksize,
-    sizeof(*segment_stack));
-  if (segment_stack == (SegmentInfo *) NULL)
-    {
-      floodplane_image=DestroyImage(floodplane_image);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
-  /*
-    Push initial segment on stack.
-  */
-  x=x_offset;
-  y=y_offset;
-  start=0;
-  s=segment_stack;
-  PushSegmentStack(y,x,x,1);
-  PushSegmentStack(y+1,x,x,-1);
-  while (s > segment_stack)
-  {
-    register const PixelPacket
-      *restrict p;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    /*
-      Pop segment off stack.
-    */
-    s--;
-    x1=(ssize_t) s->x1;
-    x2=(ssize_t) s->x2;
-    offset=(ssize_t) s->y2;
-    y=(ssize_t) s->y1+offset;
-    /*
-      Recolor neighboring pixels.
-    */
-    p=GetVirtualPixels(image,0,y,(size_t) (x1+1),1,&image->exception);
-    q=GetAuthenticPixels(floodplane_image,0,y,(size_t) (x1+1),1,
-      &image->exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    p+=x1;
-    q+=x1;
-    for (x=x1; x >= 0; x--)
-    {
-      if (q->opacity == (Quantum) TransparentOpacity)
-        break;
-      if (method == FloodfillMethod)
-        {
-          if (IsColorSimilar(image,p,&target) == MagickFalse)
-            break;
-        }
-      else
-        if (IsColorSimilar(image,p,&target) != MagickFalse)
-          break;
-      q->opacity=(Quantum) TransparentOpacity;
-      q--;
-      p--;
-    }
-    if (SyncAuthenticPixels(floodplane_image,&image->exception) == MagickFalse)
-      break;
-    skip=x >= x1 ? MagickTrue : MagickFalse;
-    if (skip == MagickFalse)
-      {
-        start=x+1;
-        if (start < x1)
-          PushSegmentStack(y,start,x1-1,-offset);
-        x=x1+1;
-      }
-    do
-    {
-      if (skip == MagickFalse)
-        {
-          if (x < (ssize_t) image->columns)
-            {
-              p=GetVirtualPixels(image,x,y,image->columns-x,1,
-                &image->exception);
-              q=GetAuthenticPixels(floodplane_image,x,y,image->columns-x,1,
-                &image->exception);
-              if ((p == (const PixelPacket *) NULL) ||
-                  (q == (PixelPacket *) NULL))
-                break;
-              for ( ; x < (ssize_t) image->columns; x++)
-              {
-                if (q->opacity == (Quantum) TransparentOpacity)
-                  break;
-                if (method == FloodfillMethod)
-                  {
-                    if (IsColorSimilar(image,p,&target) == MagickFalse)
-                      break;
-                  }
-                else
-                  if (IsColorSimilar(image,p,&target) != MagickFalse)
-                    break;
-                q->opacity=(Quantum) TransparentOpacity;
-                q++;
-                p++;
-              }
-              if (SyncAuthenticPixels(floodplane_image,&image->exception) == MagickFalse)
-                break;
-            }
-          PushSegmentStack(y,start,x-1,offset);
-          if (x > (x2+1))
-            PushSegmentStack(y,x2+1,x-1,-offset);
-        }
-      skip=MagickFalse;
-      x++;
-      if (x <= x2)
-        {
-          p=GetVirtualPixels(image,x,y,(size_t) (x2-x+1),1,
-            &image->exception);
-          q=GetAuthenticPixels(floodplane_image,x,y,(size_t) (x2-x+1),1,
-            &image->exception);
-          if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-            break;
-          for ( ; x <= x2; x++)
-          {
-            if (q->opacity == (Quantum) TransparentOpacity)
-              break;
-            if (method == FloodfillMethod)
-              {
-                if (IsColorSimilar(image,p,&target) != MagickFalse)
-                  break;
-              }
-            else
-              if (IsColorSimilar(image,p,&target) == MagickFalse)
-                break;
-            p++;
-            q++;
-          }
-        }
-      start=x;
-    } while (x <= x2);
-  }
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const PixelPacket
-      *restrict p;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    /*
-      Tile fill color onto floodplane.
-    */
-    p=GetVirtualPixels(floodplane_image,0,y,image->columns,1,
-      &image->exception);
-    q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (GetOpacityPixelComponent(p) != OpaqueOpacity)
-        q->opacity=opacity;
-      p++;
-      q++;
-    }
-    if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-      break;
-  }
-  segment_stack=(SegmentInfo *) RelinquishMagickMemory(segment_stack);
-  floodplane_image=DestroyImage(floodplane_image);
-  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
+  (void) GetOneVirtualPixel(wand->images,x % wand->images->columns,
+    y % wand->images->rows,&target,wand->exception);
+  if (bordercolor != (PixelWand *) NULL)
+    PixelGetQuantumColor(bordercolor,&target);
+  wand->images->fuzz=fuzz;
+  status=MatteFloodfillImage(wand->images,target,ClampToQuantum(
+    (MagickRealType) QuantumRange-QuantumRange*alpha),x,y,bordercolor !=
+    (PixelWand *) NULL ? FillToBorderMethod : FloodfillMethod);
+  if (status == MagickFalse)
+    InheritException(wand->exception,&wand->images->exception);
+  draw_info=DestroyDrawInfo(draw_info);
+  return(status);
 }
 
 /*
@@ -4508,110 +1653,45 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M a x i m u m I m a g e s                                               %
+%   M a g i c k M e d i a n F i l t e r I m a g e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MaximumImages() returns the maximum intensity of an image sequence.
-%
-%  Deprecated, replace with:
-%
-%    EvaluateImages(images,MinEvaluateOperator,exception);
-%
-%  The format of the MaxImages method is:
-%
-%      Image *MaximumImages(Image *images,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image sequence.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MaximumImages(const Image *images,ExceptionInfo *exception)
-{
-  return(EvaluateImages(images,MinEvaluateOperator,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     M i n i m u m I m a g e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MinimumImages() returns the minimum intensity of an image sequence.
-%
-%  Deprecated, replace with:
-%
-%    EvaluateImages(images,MinEvaluateOperator,exception);
-%
-%  The format of the MinimumImages method is:
-%
-%      Image *MinimumImages(Image *images,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image sequence.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MinimumImages(const Image *images,ExceptionInfo *exception)
-{
-  return(EvaluateImages(images,MinEvaluateOperator,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     M e d i a n F i l t e r I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MedianFilterImage() applies a digital filter that improves the quality
+%  MagickMedianFilterImage() applies a digital filter that improves the quality
 %  of a noisy image.  Each pixel is replaced by the median in a set of
 %  neighboring pixels as defined by radius.
 %
-%  The algorithm was contributed by Mike Edmonds and implements an insertion
-%  sort for selecting median color-channel values.  For more on this algorithm
-%  see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William
-%  Pugh in the June 1990 of Communications of the ACM.
+%  The format of the MagickMedianFilterImage method is:
 %
-%  The format of the MedianFilterImage method is:
-%
-%      Image *MedianFilterImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
+%      MagickBooleanType MagickMedianFilterImage(MagickWand *wand,
+%        const double radius)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o radius: the radius of the pixel neighborhood.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
-MagickExport Image *MedianFilterImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+WandExport MagickBooleanType MagickMedianFilterImage(MagickWand *wand,
+  const double radius)
 {
   Image
     *median_image;
 
-  median_image=StatisticImage(image,MedianStatistic,(size_t) radius,(size_t)
-    radius,exception);
-  return(median_image);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  median_image=MedianFilterImage(wand->images,radius,wand->exception);
+  if (median_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,median_image);
+  return(MagickTrue);
 }
 
 /*
@@ -4619,202 +1699,83 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M o d e I m a g e                                                       %
+%   M a g i c k M i n i m u m I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ModeImage() makes each pixel the 'predominate color' of the neighborhood
-%  of the specified radius.
+%  MagickMinimumImages() returns the minimum intensity of an image sequence.
 %
-%  The format of the ModeImage method is:
+%  The format of the MagickMinimumImages method is:
 %
-%      Image *ModeImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
+%      MagickWand *MagickMinimumImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickWand *MagickMinimumImages(MagickWand *wand)
+{
+  Image
+    *minimum_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  minimum_image=EvaluateImages(wand->images,MinEvaluateOperator,
+    wand->exception);
+  if (minimum_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,minimum_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k M o d e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickModeImage() makes each pixel the 'predominate color' of the
+%  neighborhood of the specified radius.
+%
+%  The format of the MagickModeImage method is:
+%
+%      MagickBooleanType MagickModeImage(MagickWand *wand,
+%        const double radius)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
 %
 %    o radius: the radius of the pixel neighborhood.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
-MagickExport Image *ModeImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+WandExport MagickBooleanType MagickModeImage(MagickWand *wand,
+  const double radius)
 {
   Image
     *mode_image;
 
-  mode_image=StatisticImage(image,ModeStatistic,(size_t) radius,(size_t) radius,
-    exception);
-  return(mode_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     M o s a i c I m a g e s                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MosaicImages() Obsolete Function: Use MergeImageLayers() instead.
-%
-%  Deprecated, replace with:
-%
-%    MergeImageLayers(image,MosaicLayer,exception);
-%
-%  The format of the MosaicImage method is:
-%
-%      Image *MosaicImages(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image list to be composited together
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
-{
-  return(MergeImageLayers(image,MosaicLayer,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     O p a q u e I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  OpaqueImage() changes any pixel that matches color with the color
-%  defined by fill.
-%
-%  By default color must match a particular pixel color exactly.  However,
-%  in many cases two colors may differ by a small amount.  Fuzz defines
-%  how much tolerance is acceptable to consider two colors as the same.
-%  For example, set fuzz to 10 and the color red at intensities of 100 and
-%  102 respectively are now interpreted as the same color.
-%
-%  The format of the OpaqueImage method is:
-%
-%      MagickBooleanType OpaqueImage(Image *image,
-%        const PixelPacket *target,const PixelPacket fill)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o target: the RGB value of the target color.
-%
-%    o fill: the replacement color.
-%
-*/
-MagickExport MagickBooleanType OpaqueImage(Image *image,
-  const PixelPacket target,const PixelPacket fill)
-{
-#define OpaqueImageTag  "Opaque/Image"
-
-  MagickBooleanType
-    proceed;
-
-  register ssize_t
-    i;
-
-  ssize_t
-    y;
-
-  /*
-    Make image color opaque.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.1.0");
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  switch (image->storage_class)
-  {
-    case DirectClass:
-    default:
-    {
-      /*
-        Make DirectClass image opaque.
-      */
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        register ssize_t
-          x;
-
-        register PixelPacket
-          *restrict q;
-
-        q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          if (IsColorSimilar(image,q,&target) != MagickFalse)
-            *q=fill;
-          q++;
-        }
-        if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-          break;
-        proceed=SetImageProgress(image,OpaqueImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (proceed == MagickFalse)
-          break;
-      }
-      break;
-    }
-    case PseudoClass:
-    {
-      /*
-        Make PseudoClass image opaque.
-      */
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        if (IsColorSimilar(image,&image->colormap[i],&target) != MagickFalse)
-          image->colormap[i]=fill;
-      }
-      if (fill.opacity != OpaqueOpacity)
-        {
-          for (y=0; y < (ssize_t) image->rows; y++)
-          {
-            register ssize_t
-              x;
-
-            register PixelPacket
-              *restrict q;
-
-            q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              if (IsColorSimilar(image,q,&target) != MagickFalse)
-                q->opacity=fill.opacity;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-              break;
-          }
-        }
-      (void) SyncImage(image);
-      break;
-    }
-  }
-  if (fill.opacity != OpaqueOpacity)
-    image->matte=MagickTrue;
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  mode_image=ModeImage(wand->images,radius,wand->exception);
+  if (mode_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,mode_image);
   return(MagickTrue);
 }
 
@@ -4823,31 +1784,40 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n C a c h e V i e w                                                 %
+%   M a g i c k M o s a i c I m a g e s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  OpenCacheView() opens a view into the pixel cache, using the
-%  VirtualPixelMethod that is defined within the given image itself.
+%  MagickMosaicImages() inlays an image sequence to form a single coherent
+%  picture.  It returns a wand with each image in the sequence composited at
+%  the location defined by the page offset of the image.
 %
-%  Deprecated, replace with:
+%  The format of the MagickMosaicImages method is:
 %
-%    AcquireCacheView(image);
-%
-%  The format of the OpenCacheView method is:
-%
-%      CacheView *OpenCacheView(const Image *image)
+%      MagickWand *MagickMosaicImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 */
-MagickExport CacheView *OpenCacheView(const Image *image)
+WandExport MagickWand *MagickMosaicImages(MagickWand *wand)
 {
-  return(AcquireCacheView(image));
+  Image
+    *mosaic_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  mosaic_image=MosaicImages(wand->images,wand->exception);
+  if (mosaic_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,mosaic_image));
 }
 
 /*
@@ -4855,59 +1825,95 @@ MagickExport CacheView *OpenCacheView(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P a i n t F l o o d f i l l I m a g e                                     %
+%   M a g i c k O p a q u e I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PaintFloodfill() changes the color value of any pixel that matches
+%  MagickOpaqueImage() changes any pixel that matches color with the color
+%  defined by fill.
+%
+%  The format of the MagickOpaqueImage method is:
+%
+%      MagickBooleanType MagickOpaqueImage(MagickWand *wand,
+%        const PixelWand *target,const PixelWand *fill,const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o channel: the channel(s).
+%
+%    o target: Change this target color to the fill color within the image.
+%
+%    o fill: the fill pixel wand.
+%
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
+%
+*/
+WandExport MagickBooleanType MagickOpaqueImage(MagickWand *wand,
+  const PixelWand *target,const PixelWand *fill,const double fuzz)
+{
+  return(MagickPaintOpaqueImage(wand,target,fill,fuzz));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k P a i n t F l o o d f i l l I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickPaintFloodfillImage() changes the color value of any pixel that matches
 %  target and is an immediate neighbor.  If the method FillToBorderMethod is
 %  specified, the color value is changed for any neighbor pixel that does not
 %  match the bordercolor member of image.
 %
-%  By default target must match a particular pixel color exactly.
-%  However, in many cases two colors may differ by a small amount.  The
-%  fuzz member of image defines how much tolerance is acceptable to
-%  consider two colors as the same.  For example, set fuzz to 10 and the
-%  color red at intensities of 100 and 102 respectively are now
-%  interpreted as the same color for the purposes of the floodfill.
+%  The format of the MagickPaintFloodfillImage method is:
 %
-%  Deprecated, replace with:
-%
-%    FloodfillPaintImage(image,channel,draw_info,target,x,y,
-%      method == FloodfillMethod ? MagickFalse : MagickTrue);
-%
-%  The format of the PaintFloodfillImage method is:
-%
-%      MagickBooleanType PaintFloodfillImage(Image *image,
-%        const ChannelType channel,const MagickPixelPacket target,const ssize_t x,
-%        const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
+%      MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
+%        const ChannelType channel,const PixelWand *fill,const double fuzz,
+%        const PixelWand *bordercolor,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o channel: the channel(s).
 %
-%    o target: the RGB value of the target color.
+%    o fill: the floodfill color pixel wand.
+%
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
+%
+%    o bordercolor: the border color pixel wand.
 %
 %    o x,y: the starting location of the operation.
 %
-%    o draw_info: the draw info.
-%
-%    o method: Choose either FloodfillMethod or FillToBorderMethod.
-%
 */
-MagickExport MagickBooleanType PaintFloodfillImage(Image *image,
-  const ChannelType channel,const MagickPixelPacket *target,const ssize_t x,
-  const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
+WandExport MagickBooleanType MagickPaintFloodfillImage(MagickWand *wand,
+  const ChannelType channel,const PixelWand *fill,const double fuzz,
+  const PixelWand *bordercolor,const ssize_t x,const ssize_t y)
 {
   MagickBooleanType
     status;
 
-  status=FloodfillPaintImage(image,channel,draw_info,target,x,y,
-    method == FloodfillMethod ? MagickFalse : MagickTrue);
+  status=MagickFloodfillPaintImage(wand,channel,fill,fuzz,bordercolor,x,y,
+    MagickFalse);
   return(status);
 }
 
@@ -4915,104 +1921,102 @@ MagickExport MagickBooleanType PaintFloodfillImage(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     P a i n t O p a q u e I m a g e                                         %
+%                                                                             %
+%   M a g i c k P a i n t O p a q u e I m a g e                               %
+%                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PaintOpaqueImage() changes any pixel that matches color with the color
+%  MagickPaintOpaqueImage() changes any pixel that matches color with the color
 %  defined by fill.
 %
-%  By default color must match a particular pixel color exactly.  However,
-%  in many cases two colors may differ by a small amount.  Fuzz defines
-%  how much tolerance is acceptable to consider two colors as the same.
-%  For example, set fuzz to 10 and the color red at intensities of 100 and
-%  102 respectively are now interpreted as the same color.
+%  The format of the MagickPaintOpaqueImage method is:
 %
-%  Deprecated, replace with:
-%
-%    OpaquePaintImageChannel(image,DefaultChannels,target,fill,MagickFalse);
-%    OpaquePaintImageChannel(image,channel,target,fill,MagickFalse);
-%
-%  The format of the PaintOpaqueImage method is:
-%
-%      MagickBooleanType PaintOpaqueImage(Image *image,
-%        const PixelPacket *target,const PixelPacket *fill)
-%      MagickBooleanType PaintOpaqueImageChannel(Image *image,
-%        const ChannelType channel,const PixelPacket *target,
-%        const PixelPacket *fill)
+%      MagickBooleanType MagickPaintOpaqueImage(MagickWand *wand,
+%        const PixelWand *target,const PixelWand *fill,const double fuzz)
+%      MagickBooleanType MagickPaintOpaqueImageChannel(MagickWand *wand,
+%        const ChannelType channel,const PixelWand *target,
+%        const PixelWand *fill,const double fuzz)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o channel: the channel(s).
 %
-%    o target: the RGB value of the target color.
+%    o target: Change this target color to the fill color within the image.
 %
-%    o fill: the replacement color.
+%    o fill: the fill pixel wand.
+%
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
 %
 */
 
-MagickExport MagickBooleanType PaintOpaqueImage(Image *image,
-  const MagickPixelPacket *target,const MagickPixelPacket *fill)
+WandExport MagickBooleanType MagickPaintOpaqueImage(MagickWand *wand,
+  const PixelWand *target,const PixelWand *fill,const double fuzz)
+{
+  return(MagickPaintOpaqueImageChannel(wand,DefaultChannels,target,fill,fuzz));
+}
+
+WandExport MagickBooleanType MagickPaintOpaqueImageChannel(MagickWand *wand,
+  const ChannelType channel,const PixelWand *target,const PixelWand *fill,
+  const double fuzz)
 {
   MagickBooleanType
     status;
 
-  status=OpaquePaintImageChannel(image,DefaultChannels,target,fill,MagickFalse);
+  status=MagickOpaquePaintImageChannel(wand,channel,target,fill,fuzz,
+    MagickFalse);
   return(status);
 }
-
-MagickExport MagickBooleanType PaintOpaqueImageChannel(Image *image,
-  const ChannelType channel,const MagickPixelPacket *target,
-  const MagickPixelPacket *fill)
-{
-  return(OpaquePaintImageChannel(image,channel,target,fill,MagickFalse));
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     P a i n t T r a n s p a r e n t I m a g e                               %
+%   M a g i c k P a i n t T r a n s p a r e n t I m a g e                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PaintTransparentImage() changes the opacity value associated with any pixel
-%  that matches color to the value defined by opacity.
+%  MagickPaintTransparentImage() changes any pixel that matches color with the
+%  color defined by fill.
 %
-%  By default color must match a particular pixel color exactly.  However,
-%  in many cases two colors may differ by a small amount.  Fuzz defines
-%  how much tolerance is acceptable to consider two colors as the same.
-%  For example, set fuzz to 10 and the color red at intensities of 100 and
-%  102 respectively are now interpreted as the same color.
+%  The format of the MagickPaintTransparentImage method is:
 %
-%  Deprecated, replace with:
-%
-%    TransparentPaintImage(image,target,opacity,MagickFalse);
-%
-%  The format of the PaintTransparentImage method is:
-%
-%      MagickBooleanType PaintTransparentImage(Image *image,
-%        const MagickPixelPacket *target,const Quantum opacity)
+%      MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
+%        const PixelWand *target,const double alpha,const double fuzz)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o target: the RGB value of the target color.
+%    o target: Change this target color to specified opacity value within
+%      the image.
 %
-%    o opacity: the replacement opacity value.
+%    o alpha: the level of transparency: 1.0 is fully opaque and 0.0 is fully
+%      transparent.
+%
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
 %
 */
-MagickExport MagickBooleanType PaintTransparentImage(Image *image,
-  const MagickPixelPacket *target,const Quantum opacity)
+WandExport MagickBooleanType MagickPaintTransparentImage(MagickWand *wand,
+  const PixelWand *target,const double alpha,const double fuzz)
 {
-  return(TransparentPaintImage(image,target,opacity,MagickFalse));
+  return(MagickTransparentPaintImage(wand,target,alpha,fuzz,MagickFalse));
 }
 
 /*
@@ -5020,825 +2024,53 @@ MagickExport MagickBooleanType PaintTransparentImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   P a r s e I m a g e G e o m e t r y                                       %
+%   M a g i c k R e c o l o r I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ParseImageGeometry() is similar to GetGeometry() except the returned
-%  geometry is modified as determined by the meta characters:  %, !, <,
-%  and >.
-%
-%  Deprecated, replace with:
-%
-%    ParseMetaGeometry(geometry,x,y,width,height);
-%
-%  The format of the ParseImageGeometry method is:
-%
-%      int ParseImageGeometry(char *geometry,ssize_t *x,ssize_t *y,
-%        size_t *width,size_t *height)
-%
-%  A description of each parameter follows:
-%
-%    o flags:  Method ParseImageGeometry returns a bitmask that indicates
-%      which of the four values were located in the geometry string.
-%
-%    o image_geometry:  Specifies a character string representing the geometry
-%      specification.
-%
-%    o x,y:  A pointer to an integer.  The x and y offset as determined by
-%      the geometry specification is returned here.
-%
-%    o width,height:  A pointer to an unsigned integer.  The width and height
-%      as determined by the geometry specification is returned here.
-%
-*/
-MagickExport int ParseImageGeometry(const char *geometry,ssize_t *x,ssize_t *y,
-  size_t *width,size_t *height)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
-  return((int) ParseMetaGeometry(geometry,x,y,width,height));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P a r s e S i z e G e o m e t r y                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ParseSizeGeometry() returns a region as defined by the geometry string with
-%  respect to the image dimensions and aspect ratio.
-%
-%  Deprecated, replace with:
-%
-%    ParseMetaGeometry(geometry,&region_info->x,&region_info->y,
-%      &region_info->width,&region_info->height);
-%
-%  The format of the ParseSizeGeometry method is:
-%
-%      MagickStatusType ParseSizeGeometry(const Image *image,
-%        const char *geometry,RectangeInfo *region_info)
-%
-%  A description of each parameter follows:
-%
-%    o geometry:  The geometry (e.g. 100x100+10+10).
-%
-%    o region_info: the region as defined by the geometry string.
-%
-*/
-MagickExport MagickStatusType ParseSizeGeometry(const Image *image,
-  const char *geometry,RectangleInfo *region_info)
-{
-  MagickStatusType
-    flags;
-
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.4.7");
-  SetGeometry(image,region_info);
-  flags=ParseMetaGeometry(geometry,&region_info->x,&region_info->y,
-    &region_info->width,&region_info->height);
-  return(flags);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P o p I m a g e L i s t                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PopImageList() removes the last image in the list.
-%
-%  Deprecated, replace with:
-%
-%    RemoveLastImageFromList(images);
-%
-%  The format of the PopImageList method is:
-%
-%      Image *PopImageList(Image **images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport Image *PopImageList(Image **images)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return(RemoveLastImageFromList(images));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P o p I m a g e P i x e l s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PopImagePixels() transfers one or more pixel components from the image pixel
-%  cache to a user supplied buffer.  The pixels are returned in network byte
-%  order.  MagickTrue is returned if the pixels are successfully transferred,
-%  otherwise MagickFalse.
-%
-%  The format of the PopImagePixels method is:
-%
-%      size_t PopImagePixels(Image *,const QuantumType quantum,
-%        unsigned char *destination)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o quantum: Declare which pixel components to transfer (RGB, RGBA, etc).
-%
-%    o destination:  The components are transferred to this buffer.
-%
-*/
-MagickExport size_t PopImagePixels(Image *image,const QuantumType quantum,
-  unsigned char *destination)
-{
-  QuantumInfo
-    *quantum_info;
-
-  size_t
-    length;
-
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    return(0);
-  length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
-    quantum,destination,&image->exception);
-  quantum_info=DestroyQuantumInfo(quantum_info);
-  return(length);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  P o s t s c r i p t G e o m e t r y                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PostscriptGeometry() replaces any page mneumonic with the equivalent size in
-%  picas.
-%
-%  Deprecated, replace with:
-%
-%    GetPageGeometry(page);
-%
-%  The format of the PostscriptGeometry method is:
-%
-%      char *PostscriptGeometry(const char *page)
-%
-%  A description of each parameter follows.
-%
-%   o  page:  Specifies a pointer to an array of characters.
-%      The string is either a Postscript page name (e.g. A4) or a postscript
-%      page geometry (e.g. 612x792+36+36).
-%
-*/
-MagickExport char *PostscriptGeometry(const char *page)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
-  return(GetPageGeometry(page));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P u s h I m a g e L i s t                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PushImageList() adds an image to the end of the list.
-%
-%  Deprecated, replace with:
-%
-%    AppendImageToList(images,CloneImageList(image,exception));
-%
-%  The format of the PushImageList method is:
-%
-%      unsigned int PushImageList(Image *images,const Image *image,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport unsigned int PushImageList(Image **images,const Image *image,
-  ExceptionInfo *exception)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  AppendImageToList(images,CloneImageList(image,exception));
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P u s h I m a g e P i x e l s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PushImagePixels() transfers one or more pixel components from a user
-%  supplied buffer into the image pixel cache of an image.  The pixels are
-%  expected in network byte order.  It returns MagickTrue if the pixels are
-%  successfully transferred, otherwise MagickFalse.
-%
-%  The format of the PushImagePixels method is:
-%
-%      size_t PushImagePixels(Image *image,const QuantumType quantum,
-%        const unsigned char *source)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
-%
-%    o source:  The pixel components are transferred from this buffer.
-%
-*/
-MagickExport size_t PushImagePixels(Image *image,const QuantumType quantum,
-  const unsigned char *source)
-{
-  QuantumInfo
-    *quantum_info;
-
-  size_t
-    length;
-
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    return(0);
-  length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,quantum,
-    source,&image->exception);
-  quantum_info=DestroyQuantumInfo(quantum_info);
-  return(length);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  Q u a n t i z a t i o n E r r o r                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  QuantizationError() measures the difference between the original and
-%  quantized images.  This difference is the total quantization error.  The
-%  error is computed by summing over all pixels in an image the distance
-%  squared in RGB space between each reference pixel value and its quantized
-%  value.  These values are computed:
-%
-%    o mean_error_per_pixel:  This value is the mean error for any single
-%      pixel in the image.
-%
-%    o normalized_mean_square_error:  This value is the normalized mean
-%      quantization error for any single pixel in the image.  This distance
-%      measure is normalized to a range between 0 and 1.  It is independent
-%      of the range of red, green, and blue values in the image.
-%
-%    o normalized_maximum_square_error:  Thsi value is the normalized
-%      maximum quantization error for any single pixel in the image.  This
-%      distance measure is normalized to a range between 0 and 1.  It is
-%      independent of the range of red, green, and blue values in your image.
-%
-%  Deprecated, replace with:
-%
-%    GetImageQuantizeError(image);
-%
-%  The format of the QuantizationError method is:
-%
-%      unsigned int QuantizationError(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o image: Specifies a pointer to an Image structure;  returned from
-%      ReadImage.
-%
-*/
-MagickExport unsigned int QuantizationError(Image *image)
-{
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.3");
-  return(GetImageQuantizeError(image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%     R a n d o m C h a n n e l T h r e s h o l d I m a g e                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RandomChannelThresholdImage() changes the value of individual pixels based
-%  on the intensity of each pixel compared to a random threshold.  The result
-%  is a low-contrast, two color image.
-%
-%  The format of the RandomChannelThresholdImage method is:
-%
-%      unsigned int RandomChannelThresholdImage(Image *image,
-%         const char *channel, const char *thresholds,
-%         ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel: the channel or channels to be thresholded.
-%
-%    o thresholds: a geometry string containing LOWxHIGH thresholds.
-%      If the string contains 2x2, 3x3, or 4x4, then an ordered
-%      dither of order 2, 3, or 4 will be performed instead.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
-    *channel,const char *thresholds,ExceptionInfo *exception)
-{
-#define RandomChannelThresholdImageText  "  RandomChannelThreshold image...  "
-
-  double
-    lower_threshold,
-    upper_threshold;
-
-  RandomInfo
-    *random_info;
-
-  ssize_t
-    count,
-    y;
-
-  static MagickRealType
-    o2[4]={0.2f, 0.6f, 0.8f, 0.4f},
-    o3[9]={0.1f, 0.6f, 0.3f, 0.7f, 0.5f, 0.8f, 0.4f, 0.9f, 0.2f},
-    o4[16]={0.1f, 0.7f, 1.1f, 0.3f, 1.0f, 0.5f, 1.5f, 0.8f, 1.4f, 1.6f, 0.6f,
-      1.2f, 0.4f, 0.9f, 1.3f, 0.2f},
-    threshold=128;
-
-  size_t
-    order;
-
-  /*
-    Threshold image.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (thresholds == (const char *) NULL)
-    return(MagickTrue);
-  if (LocaleCompare(thresholds,"2x2") == 0)
-    order=2;
-  else
-    if (LocaleCompare(thresholds,"3x3") == 0)
-      order=3;
-    else
-      if (LocaleCompare(thresholds,"4x4") == 0)
-        order=4;
-      else
-        {
-          order=1;
-          lower_threshold=0;
-          upper_threshold=0;
-          count=(ssize_t) sscanf(thresholds,"%lf[/x%%]%lf",&lower_threshold,
-            &upper_threshold);
-          if (strchr(thresholds,'%') != (char *) NULL)
-            {
-              upper_threshold*=(.01*QuantumRange);
-              lower_threshold*=(.01*QuantumRange);
-            }
-          if (count == 1)
-            upper_threshold=(MagickRealType) QuantumRange-lower_threshold;
-        }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-      "  RandomChannelThresholdImage: channel type=%s",channel);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-      "    Thresholds: %s (%fx%f)",thresholds,lower_threshold,upper_threshold);
-  if (LocaleCompare(channel,"all") == 0 ||
-      LocaleCompare(channel,"intensity") == 0)
-    if (AcquireImageColormap(image,2) == MagickFalse)
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-  random_info=AcquireRandomInfo();
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register ssize_t
-      x;
-
-    register IndexPacket
-      index,
-      *restrict indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
-      break;
-    if (LocaleCompare(channel,"all") == 0 ||
-        LocaleCompare(channel,"intensity") == 0)
-      {
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          MagickRealType
-            intensity;
-
-          intensity=(MagickRealType) PixelIntensityToQuantum(q);
-          if (order == 1)
-            {
-              if (intensity < lower_threshold)
-                threshold=lower_threshold;
-              else if (intensity > upper_threshold)
-                threshold=upper_threshold;
-              else
-                threshold=(MagickRealType) (QuantumRange*
-                  GetPseudoRandomValue(random_info));
-            }
-          else if (order == 2)
-            threshold=(MagickRealType) QuantumRange*o2[(x%2)+2*(y%2)];
-          else if (order == 3)
-            threshold=(MagickRealType) QuantumRange*o3[(x%3)+3*(y%3)];
-          else if (order == 4)
-            threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)];
-          index=(IndexPacket) (intensity <= threshold ? 0 : 1);
-          SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-          SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-          SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
-          q++;
-        }
-      }
-    if (LocaleCompare(channel,"opacity") == 0 ||
-        LocaleCompare(channel,"all") == 0 ||
-        LocaleCompare(channel,"matte") == 0)
-      {
-        if (image->matte != MagickFalse)
-          for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              if (order == 1)
-                {
-                  if ((MagickRealType) q->opacity < lower_threshold)
-                    threshold=lower_threshold;
-                  else if ((MagickRealType) q->opacity > upper_threshold)
-                    threshold=upper_threshold;
-                  else
-                    threshold=(MagickRealType) (QuantumRange*
-                      GetPseudoRandomValue(random_info));
-                }
-              else if (order == 2)
-                threshold=(MagickRealType) QuantumRange*o2[(x%2)+2*(y%2)];
-              else if (order == 3)
-                threshold=(MagickRealType) QuantumRange*o3[(x%3)+3*(y%3)];
-              else if (order == 4)
-                threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)]/1.7;
-              SetOpacityPixelComponent(q,(MagickRealType) q->opacity <=
-                threshold ? 0 : QuantumRange);
-              q++;
-            }
-      }
-    else
-      {
-        /* To Do: red, green, blue, cyan, magenta, yellow, black */
-        if (LocaleCompare(channel,"intensity") != 0)
-          ThrowBinaryException(OptionError,"UnrecognizedChannelType",
-            image->filename);
-      }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      break;
-  }
-  random_info=DestroyRandomInfo(random_info);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a c q u i r e M e m o r y                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReacquireMemory() changes the size of the memory and returns a pointer to
-%  the (possibly moved) block.  The contents will be unchanged up to the
-%  lesser of the new and old sizes.
-%
-%  The format of the ReacquireMemory method is:
-%
-%      void ReacquireMemory(void **memory,const size_t size)
-%
-%  A description of each parameter follows:
-%
-%    o memory: A pointer to a memory allocation.  On return the pointer
-%      may change but the contents of the original allocation will not.
-%
-%    o size: the new size of the allocated memory.
-%
-*/
-MagickExport void ReacquireMemory(void **memory,const size_t size)
-{
-  void
-    *allocation;
-
-  assert(memory != (void **) NULL);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (*memory == (void *) NULL)
-    {
-      *memory=AcquireMagickMemory(size);
-      return;
-    }
-  allocation=realloc(*memory,size);
-  if (allocation == (void *) NULL)
-    *memory=RelinquishMagickMemory(*memory);
-  *memory=allocation;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     R e c o l o r I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RecolorImage() apply color transformation to an image. The method permits
-%  saturation changes, hue rotation, luminance to alpha, and various other
-%  effects.  Although variable-sized transformation matrices can be used,
+%  MagickRecolorImage() apply color transformation to an image. The method
+%  permits saturation changes, hue rotation, luminance to alpha, and various
+%  other effects.  Although variable-sized transformation matrices can be used,
 %  typically one uses a 5x5 matrix for an RGBA image and a 6x6 for CMYKA
 %  (or RGBA with offsets).  The matrix is similar to those used by Adobe Flash
 %  except offsets are in column 6 rather than 5 (in support of CMYKA images)
 %  and offsets are normalized (divide Flash offset by 255).
 %
-%  The format of the RecolorImage method is:
+%  The format of the MagickRecolorImage method is:
 %
-%      Image *RecolorImage(const Image *image,const size_t order,
-%        const double *color_matrix,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o order: the number of columns and rows in the recolor matrix.
-%
-%    o color_matrix: An array of double representing the recolor matrix.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *RecolorImage(const Image *image,const size_t order,
-  const double *color_matrix,ExceptionInfo *exception)
-{
-  KernelInfo
-    *kernel_info;
-
-  Image
-    *recolor_image;
-
-  kernel_info=AcquireKernelInfo("1");
-  if (kernel_info == (KernelInfo *) NULL)
-    return((Image *) NULL);
-  kernel_info->width=order;
-  kernel_info->height=order;
-  kernel_info->values=(double *) color_matrix;
-  recolor_image=ColorMatrixImage(image,kernel_info,exception);
-  kernel_info->values=(double *) NULL;
-  kernel_info=DestroyKernelInfo(kernel_info);
-  return(recolor_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     R e d u c e N o i s e I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReduceNoiseImage() smooths the contours of an image while still preserving
-%  edge information.  The algorithm works by replacing each pixel with its
-%  neighbor closest in value.  A neighbor is defined by radius.  Use a radius
-%  of 0 and ReduceNoise() selects a suitable radius for you.
-%
-%  The format of the ReduceNoiseImage method is:
-%
-%      Image *ReduceNoiseImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
+%      MagickBooleanType MagickRecolorImage(MagickWand *wand,
+%        const size_t order,const double *color_matrix)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o radius: the radius of the pixel neighborhood.
+%    o order: the number of columns and rows in the color matrix.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o color_matrix: An array of doubles representing the color matrix.
 %
 */
-MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+WandExport MagickBooleanType MagickRecolorImage(MagickWand *wand,
+  const size_t order,const double *color_matrix)
 {
   Image
-    *reduce_image;
+    *transform_image;
 
-  reduce_image=StatisticImage(image,NonpeakStatistic,(size_t) radius,(size_t)
-    radius,exception);
-  return(reduce_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e s e t I m a g e A t t r i b u t e I t e r a t o r                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResetImageAttributeIterator() resets the image attributes iterator.  Use it
-%  in conjunction with GetNextImageAttribute() to iterate over all the values
-%  associated with an image.
-%
-%  Deprecated, replace with:
-%
-%    ResetImagePropertyIterator(image);
-%
-%  The format of the ResetImageAttributeIterator method is:
-%
-%      ResetImageAttributeIterator(const ImageInfo *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport void ResetImageAttributeIterator(const Image *image)
-{
-  ResetImagePropertyIterator(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t C a c h e V i e w P i x e l s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
-%
-%  Deprecated, replace with:
-%
-%    QueueCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
-%      GetCacheViewException(cache_view));
-%
-%  The format of the SetCacheViewPixels method is:
-%
-%      PixelPacket *SetCacheViewPixels(CacheView *cache_view,const ssize_t x,
-%        const ssize_t y,const size_t columns,const size_t rows)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-*/
-MagickExport PixelPacket *SetCacheViewPixels(CacheView *cache_view,const ssize_t x,
-  const ssize_t y,const size_t columns,const size_t rows)
-{
-  PixelPacket
-    *pixels;
-
-  pixels=QueueCacheViewAuthenticPixels(cache_view,x,y,columns,rows,
-    GetCacheViewException(cache_view));
-  return(pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   S e t C a c h e T h e s h o l d                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetCacheThreshold() sets the amount of free memory allocated for the pixel
-%  cache.  Once this threshold is exceeded, all subsequent pixels cache
-%  operations are to/from disk.
-%
-%  The format of the SetCacheThreshold() method is:
-%
-%      void SetCacheThreshold(const size_t threshold)
-%
-%  A description of each parameter follows:
-%
-%    o threshold: the number of megabytes of memory available to the pixel
-%      cache.
-%
-*/
-MagickExport void SetCacheThreshold(const size_t size)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.1");
-  (void) SetMagickResourceLimit(MemoryResource,size*1024*1024);
-  (void) SetMagickResourceLimit(MapResource,2*size*1024*1024);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t E x c e p t i o n I n f o                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetExceptionInfo() sets the exception severity.
-%
-%  The format of the SetExceptionInfo method is:
-%
-%      MagickBooleanType SetExceptionInfo(ExceptionInfo *exception,
-%        ExceptionType severity)
-%
-%  A description of each parameter follows:
-%
-%    o exception: the exception info.
-%
-%    o severity: the exception severity.
-%
-*/
-MagickExport MagickBooleanType SetExceptionInfo(ExceptionInfo *exception,
-  ExceptionType severity)
-{
-  assert(exception != (ExceptionInfo *) NULL);
-  ClearMagickException(exception);
-  exception->severity=severity;
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (color_matrix == (const double *) NULL)
+    return(MagickFalse);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  transform_image=RecolorImage(wand->images,order,color_matrix,
+    wand->exception);
+  if (transform_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,transform_image);
   return(MagickTrue);
 }
 
@@ -5847,98 +2079,46 @@ MagickExport MagickBooleanType SetExceptionInfo(ExceptionInfo *exception,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e                                                           %
+%     M a g i c k R e d u c e N o i s e I m a g e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImage() sets the red, green, and blue components of each pixel to
-%  the image background color and the opacity component to the specified
-%  level of transparency.  The background color is defined by the
-%  background_color member of the image.
+%  MagickReduceNoiseImage() smooths the contours of an image while still
+%  preserving edge information.  The algorithm works by replacing each pixel
+%  with its neighbor closest in value.  A neighbor is defined by radius.  Use
+%  a radius of 0 and ReduceNoise() selects a suitable radius for you.
 %
-%  The format of the SetImage method is:
+%  The format of the MagickReduceNoiseImage method is:
 %
-%      void SetImage(Image *image,const Quantum opacity)
+%      MagickBooleanType MagickReduceNoiseImage(MagickWand *wand,
+%        const double radius)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o opacity: Set each pixel to this level of transparency.
+%    o radius: the radius of the pixel neighborhood.
 %
 */
-MagickExport void SetImage(Image *image,const Quantum opacity)
+WandExport MagickBooleanType MagickReduceNoiseImage(MagickWand *wand,
+  const double radius)
 {
-  PixelPacket
-    background_color;
+  Image
+    *noise_image;
 
-  ssize_t
-    y;
-
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.2.0");
-  assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
-  background_color=image->background_color;
-  if (opacity != OpaqueOpacity)
-    background_color.opacity=opacity;
-  if (background_color.opacity != OpaqueOpacity)
-    {
-      (void) SetImageStorageClass(image,DirectClass);
-      image->matte=MagickTrue;
-    }
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
-    {
-      /*
-        Set colormapped or CMYK image.
-      */
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        register IndexPacket
-          *restrict indexes;
-
-        register ssize_t
-          x;
-
-        register PixelPacket
-          *restrict q;
-
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (ssize_t) image->columns; x++)
-          *q++=background_color;
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) image->columns; x++)
-          SetIndexPixelComponent(indexes+x,0);
-        if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-          break;
-      }
-      return;
-    }
-  /*
-    Set DirectClass image.
-  */
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    q=QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-      *q++=background_color;
-    if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-      break;
-  }
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  noise_image=ReduceNoiseImage(wand->images,radius,wand->exception);
+  if (noise_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,noise_image);
+  return(MagickTrue);
 }
 
 /*
@@ -5946,39 +2126,72 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e A t t r i b u t e                                         %
+%   M a g i c k M a x i m u m I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageAttribute() searches the list of image attributes and replaces the
-%  attribute value.  If it is not found in the list, the attribute name
-%  and value is added to the list.
+%  MagickMaximumImages() returns the maximum intensity of an image sequence.
 %
-%  Deprecated, replace with:
+%  The format of the MagickMaximumImages method is:
 %
-%    SetImageProperty(image,key,value);
-%
-%  The format of the SetImageAttribute method is:
-%
-%       MagickBooleanType SetImageAttribute(Image *image,const char *key,
-%         const char *value)
+%      MagickWand *MagickMaximumImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
-%    o key: the key.
+*/
+WandExport MagickWand *MagickMaximumImages(MagickWand *wand)
+{
+  Image
+    *maximum_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  maximum_image=EvaluateImages(wand->images,MaxEvaluateOperator,
+    wand->exception);
+  if (maximum_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,maximum_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e A t t r i b u t e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageAttribute() associates a property with an image.
+%
+%  The format of the MagickSetImageAttribute method is:
+%
+%      MagickBooleanType MagickSetImageAttribute(MagickWand *wand,
+%        const char *property,const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o property: the property.
 %
 %    o value: the value.
 %
 */
-MagickExport MagickBooleanType SetImageAttribute(Image *image,const char *key,
-  const char *value)
+WandExport MagickBooleanType MagickSetImageAttribute(MagickWand *wand,
+  const char *property,const char *value)
 {
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.3.1");
-  return(SetImageProperty(image,key,value));
+  return(SetImageProperty(wand->images,property,value));
 }
 
 /*
@@ -5986,51 +2199,31 @@ MagickExport MagickBooleanType SetImageAttribute(Image *image,const char *key,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e L i s t                                                   %
+%   M a g i c k S e t I m a g e I n d e x                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageList() inserts an image into the list at the specified position.
+%  MagickSetImageIndex() set the current image to the position of the list
+%  specified with the index parameter.
 %
-%  The format of the SetImageList method is:
+%  The format of the MagickSetImageIndex method is:
 %
-%      unsigned int SetImageList(Image *images,const Image *image,
-%        const ssize_t offset,ExceptionInfo *exception)
+%      MagickBooleanType MagickSetImageIndex(MagickWand *wand,
+%        const ssize_t index)
 %
 %  A description of each parameter follows:
 %
-%    o images: the image list.
+%    o wand: the magick wand.
 %
-%    o image: the image.
-%
-%    o offset: the position within the list.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o index: the scene number.
 %
 */
-MagickExport unsigned int SetImageList(Image **images,const Image *image,
-  const ssize_t offset,ExceptionInfo *exception)
+WandExport MagickBooleanType MagickSetImageIndex(MagickWand *wand,
+  const ssize_t index)
 {
-  Image
-    *clone;
-
-  register ssize_t
-    i;
-
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  clone=CloneImageList(image,exception);
-  while (GetPreviousImageInList(*images) != (Image *) NULL)
-    (*images)=GetPreviousImageInList(*images);
-  for (i=0; i < offset; i++)
-  {
-    if (GetNextImageInList(*images) == (Image *) NULL)
-      return(MagickFalse);
-    (*images)=GetNextImageInList(*images);
-  }
-  InsertImageInList(images,clone);
-  return(MagickTrue);
+  return(MagickSetIteratorIndex(wand,index));
 }
 
 /*
@@ -6038,115 +2231,43 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e P i x e l s                                               %
++   M a g i c k S e t I m a g e O p t i o n                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImagePixels() queues a mutable pixel region.
-%  If the region is successfully intialized a pointer to a PixelPacket
-%  array representing the region is returned, otherwise NULL is returned.
-%  The returned pointer may point to a temporary working buffer for the
-%  pixels or it may point to the final location of the pixels in memory.
+%  MagickSetImageOption() associates one or options with a particular image
+%  format (.e.g MagickSetImageOption(wand,"jpeg","perserve","yes").
 %
-%  Write-only access means that any existing pixel values corresponding to
-%  the region are ignored.  This useful while the initial image is being
-%  created from scratch, or if the existing pixel values are to be
-%  completely replaced without need to refer to their pre-existing values.
-%  The application is free to read and write the pixel buffer returned by
-%  SetImagePixels() any way it pleases. SetImagePixels() does not initialize
-%  the pixel array values. Initializing pixel array values is the
-%  application's responsibility.
+%  The format of the MagickSetImageOption method is:
 %
-%  Performance is maximized if the selected region is part of one row, or
-%  one or more full rows, since then there is opportunity to access the
-%  pixels in-place (without a copy) if the image is in RAM, or in a
-%  memory-mapped file. The returned pointer should *never* be deallocated
-%  by the user.
-%
-%  Pixels accessed via the returned pointer represent a simple array of type
-%  PixelPacket. If the image type is CMYK or the storage class is PseudoClass,
-%  call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain
-%  the black color component or the colormap indexes (of type IndexPacket)
-%  corresponding to the region.  Once the PixelPacket (and/or IndexPacket)
-%  array has been updated, the changes must be saved back to the underlying
-%  image using SyncAuthenticPixels() or they may be lost.
-%
-%  Deprecated, replace with:
-%
-%    QueueAuthenticPixels(image,x,y,columns,rows,&image->exception);
-%
-%  The format of the SetImagePixels() method is:
-%
-%      PixelPacket *SetImagePixels(Image *image,const ssize_t x,const ssize_t y,
-%        const size_t columns,const size_t rows)
+%      MagickBooleanType MagickSetImageOption(MagickWand *wand,
+%        const char *format,const char *key,const char *value)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: SetImagePixels returns a pointer to the pixels if they are
-%      transferred, otherwise a NULL is returned.
+%    o wand: the magick wand.
 %
-%    o image: the image.
+%    o format: the image format.
 %
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
+%    o key:  The key.
 %
-*/
-MagickExport PixelPacket *SetImagePixels(Image *image,const ssize_t x,const ssize_t y,
-  const size_t columns,const size_t rows)
-{
-  return(QueueAuthenticPixels(image,x,y,columns,rows,&image->exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t M a g i c k R e g i s t r y                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetMagickRegistry() sets a blob into the registry and returns a unique ID.
-%  If an error occurs, -1 is returned.
-%
-%  The format of the SetMagickRegistry method is:
-%
-%      ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
-%        const size_t length,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o type: the registry type.
-%
-%    o blob: the address of a Binary Large OBject.
-%
-%    o length: For a registry type of ImageRegistryType use sizeof(Image)
-%      otherise the blob length in number of bytes.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o value:  The value.
 %
 */
-MagickExport ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
-  const size_t magick_unused(length),ExceptionInfo *exception)
+WandExport MagickBooleanType MagickSetImageOption(MagickWand *wand,
+  const char *format,const char *key,const char *value)
 {
   char
-    key[MaxTextExtent];
+    option[MaxTextExtent];
 
-  MagickBooleanType
-    status;
-
-  static ssize_t
-    id = 0;
-
-  (void) FormatMagickString(key,MaxTextExtent,"%.20g\n",(double) id);
-  status=SetImageRegistry(type,key,blob,exception);
-  if (status == MagickFalse)
-    return(-1);
-  return(id++);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  (void) FormatMagickString(option,MaxTextExtent,"%s:%s=%s",format,key,value);
+  return(DefineImageOption(wand->image_info,option));
 }
 
 /*
@@ -6154,70 +2275,42 @@ MagickExport ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t M o n i t o r H a n d l e r                                         %
+%   M a g i c k T r a n s p a r e n t I m a g e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMonitorHandler() sets the monitor handler to the specified method
-%  and returns the previous monitor handler.
+%  MagickTransparentImage() changes any pixel that matches color with the
+%  color defined by fill.
 %
-%  The format of the SetMonitorHandler method is:
+%  The format of the MagickTransparentImage method is:
 %
-%      MonitorHandler SetMonitorHandler(MonitorHandler handler)
+%      MagickBooleanType MagickTransparentImage(MagickWand *wand,
+%        const PixelWand *target,const double alpha,const double fuzz)
 %
 %  A description of each parameter follows:
 %
-%    o handler: Specifies a pointer to a method to handle monitors.
+%    o wand: the magick wand.
+%
+%    o target: Change this target color to specified opacity value within
+%      the image.
+%
+%    o alpha: the level of transparency: 1.0 is fully opaque and 0.0 is fully
+%      transparent.
+%
+%    o fuzz: By default target must match a particular pixel color
+%      exactly.  However, in many cases two colors may differ by a small amount.
+%      The fuzz member of image defines how much tolerance is acceptable to
+%      consider two colors as the same.  For example, set fuzz to 10 and the
+%      color red at intensities of 100 and 102 respectively are now interpreted
+%      as the same color for the purposes of the floodfill.
 %
 */
-
-MagickExport MonitorHandler GetMonitorHandler(void)
+WandExport MagickBooleanType MagickTransparentImage(MagickWand *wand,
+  const PixelWand *target,const double alpha,const double fuzz)
 {
-  return(monitor_handler);
-}
-
-MagickExport MonitorHandler SetMonitorHandler(MonitorHandler handler)
-{
-  MonitorHandler
-    previous_handler;
-
-  previous_handler=monitor_handler;
-  monitor_handler=handler;
-  return(previous_handler);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S h i f t I m a g e L i s t                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ShiftImageList() removes an image from the beginning of the list.
-%
-%  Deprecated, replace with:
-%
-%    RemoveFirstImageFromList(images);
-%
-%  The format of the ShiftImageList method is:
-%
-%      Image *ShiftImageList(Image **images)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-*/
-MagickExport Image *ShiftImageList(Image **images)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  return(RemoveFirstImageFromList(images));
+  return(MagickPaintTransparentImage(wand,target,alpha,fuzz));
 }
 
 /*
@@ -6225,35 +2318,39 @@ MagickExport Image *ShiftImageList(Image **images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  S i z e B l o b                                                            %
+%   M a g i c k R e g i o n O f I n t e r e s t I m a g e                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SizeBlob() returns the current length of the image file or blob.
+%  MagickRegionOfInterestImage() extracts a region of the image and returns it
+%  as a new wand.
 %
-%  Deprecated, replace with:
+%  The format of the MagickRegionOfInterestImage method is:
 %
-%    GetBlobSize(image);
-%
-%  The format of the SizeBlob method is:
-%
-%      off_t SizeBlob(Image *image)
+%      MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
+%        const size_t width,const size_t height,const ssize_t x,
+%        const ssize_t y)
 %
 %  A description of each parameter follows:
 %
-%    o size:  Method SizeBlob returns the current length of the image file
-%      or blob.
+%    o wand: the magick wand.
 %
-%    o image: the image.
+%    o width: the region width.
+%
+%    o height: the region height.
+%
+%    o x: the region x offset.
+%
+%    o y: the region y offset.
 %
 */
-MagickExport MagickOffsetType SizeBlob(Image *image)
+WandExport MagickWand *MagickRegionOfInterestImage(MagickWand *wand,
+  const size_t width,const size_t height,const ssize_t x,
+  const ssize_t y)
 {
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.4.3");
-  return((MagickOffsetType) GetBlobSize(image));
+  return(MagickGetImageRegion(wand,width,height,x,y));
 }
 
 /*
@@ -6261,56 +2358,169 @@ MagickExport MagickOffsetType SizeBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S p l i c e I m a g e L i s t                                             %
+%   M a g i c k S e t I m a g e P i x e l s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SpliceImageList() removes the images designated by offset and length from
-%  the list and replaces them with the specified list.
+%  MagickSetImagePixels() accepts pixel datand stores it in the image at the
+%  location you specify.  The method returns MagickFalse on success otherwise
+%  MagickTrue if an error is encountered.  The pixel data can be either char,
+%  short int, int, ssize_t, float, or double in the order specified by map.
 %
-%  The format of the SpliceImageList method is:
+%  Suppose your want to upload the first scanline of a 640x480 image from
+%  character data in red-green-blue order:
 %
-%      Image *SpliceImageList(Image *images,const ssize_t offset,
-%        const size_t length,const Image *splices,
-%        ExceptionInfo *exception)
+%      MagickSetImagePixels(wand,0,0,640,1,"RGB",CharPixel,pixels);
+%
+%  The format of the MagickSetImagePixels method is:
+%
+%      MagickBooleanType MagickSetImagePixels(MagickWand *wand,
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,const char *map,const StorageType storage,
+%        const void *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o images: the image list.
+%    o wand: the magick wand.
 %
-%    o offset: the position within the list.
+%    o x, y, columns, rows:  These values define the perimeter of a region
+%      of pixels you want to define.
 %
-%    o length: the length of the image list to remove.
+%    o map:  This string reflects the expected ordering of the pixel array.
+%      It can be any combination or order of R = red, G = green, B = blue,
+%      A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan,
+%      Y = yellow, M = magenta, K = black, I = intensity (for grayscale),
+%      P = pad.
 %
-%    o splice: Replace the removed image list with this list.
+%    o storage: Define the data type of the pixels.  Float and double types are
+%      expected to be normalized [0..1] otherwise [0..QuantumRange].  Choose from
+%      these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel,
+%      or DoublePixel.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o pixels: This array of values contain the pixel components as defined by
+%      map and type.  You must preallocate this array where the expected
+%      length varies depending on the values of width, height, map, and type.
 %
 */
-MagickExport Image *SpliceImageList(Image *images,const ssize_t offset,
-  const size_t length,const Image *splices,ExceptionInfo *exception)
+WandExport MagickBooleanType MagickSetImagePixels(MagickWand *wand,
+  const ssize_t x,const ssize_t y,const size_t columns,
+  const size_t rows,const char *map,const StorageType storage,
+  const void *pixels)
 {
-  Image
-    *clone;
+  return(MagickImportImagePixels(wand,x,y,columns,rows,map,storage,pixels));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k W r i t e I m a g e B l o b                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickWriteImageBlob() implements direct to memory image formats.  It
+%  returns the image as a blob and its length.   Use MagickSetFormat() to
+%  set the format of the returned blob (GIF, JPEG,  PNG, etc.).
+%
+%  Use MagickRelinquishMemory() to free the blob when you are done with it.
+%
+%  The format of the MagickWriteImageBlob method is:
+%
+%      unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o length: the length of the blob.
+%
+*/
+WandExport unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
+{
+  return(MagickGetImageBlob(wand,length));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N e w P i x e l V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NewPixelView() returns a pixel view required for all other methods in the
+%  Pixel View API.
+%
+%  The format of the NewPixelView method is:
+%
+%      PixelView *NewPixelView(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the wand.
+%
+*/
+
+static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands,
+  const size_t number_threads)
+{
+  PixelWand
+    ***pixel_wands;
 
   register ssize_t
     i;
 
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  clone=CloneImageList(splices,exception);
-  while (GetPreviousImageInList(images) != (Image *) NULL)
-    images=GetPreviousImageInList(images);
-  for (i=0; i < offset; i++)
+  pixel_wands=(PixelWand ***) AcquireQuantumMemory(number_threads,
+    sizeof(*pixel_wands));
+  if (pixel_wands == (PixelWand ***) NULL)
+    return((PixelWand ***) NULL);
+  (void) ResetMagickMemory(pixel_wands,0,number_threads*sizeof(*pixel_wands));
+  for (i=0; i < (ssize_t) number_threads; i++)
   {
-    if (GetNextImageInList(images) == (Image *) NULL)
-      return((Image *) NULL);
-    images=GetNextImageInList(images);
+    pixel_wands[i]=NewPixelWands(number_wands);
+    if (pixel_wands[i] == (PixelWand **) NULL)
+      return(DestroyPixelsThreadSet(pixel_wands,number_wands,number_threads));
   }
-  (void) SpliceImageIntoList(&images,length,clone);
-  return(images);
+  return(pixel_wands);
+}
+
+WandExport PixelView *NewPixelView(MagickWand *wand)
+{
+  PixelView
+    *pixel_view;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  pixel_view=(PixelView *) AcquireMagickMemory(sizeof(*pixel_view));
+  if (pixel_view == (PixelView *) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
+  (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
+  pixel_view->id=AcquireWandId();
+  (void) FormatMagickString(pixel_view->name,MaxTextExtent,"%s-%.20g",
+    PixelViewId,(double) pixel_view->id);
+  pixel_view->exception=AcquireExceptionInfo();
+  pixel_view->wand=wand;
+  pixel_view->view=AcquireCacheView(pixel_view->wand->images);
+  pixel_view->region.width=wand->images->columns;
+  pixel_view->region.height=wand->images->rows;
+  pixel_view->number_threads=GetOpenMPMaximumThreads();
+  pixel_view->pixel_wands=AcquirePixelsThreadSet(pixel_view->region.width,
+    pixel_view->number_threads);
+  if (pixel_view->pixel_wands == (PixelWand ***) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
+  pixel_view->debug=IsEventLogging();
+  pixel_view->signature=WandSignature;
+  return(pixel_view);
 }
 
 /*
@@ -6318,49 +2528,60 @@ MagickExport Image *SpliceImageList(Image *images,const ssize_t offset,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r i p                                                                 %
+%   N e w P i x e l V i e w R e g i o n                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Strip() strips any whitespace or quotes from the beginning and end of a
-%  string of characters.
+%  NewPixelViewRegion() returns a pixel view required for all other methods
+%  in the Pixel View API.
 %
-%  The format of the Strip method is:
+%  The format of the NewPixelViewRegion method is:
 %
-%      void Strip(char *message)
+%      PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
+%        const ssize_t y,const size_t width,const size_t height)
 %
 %  A description of each parameter follows:
 %
-%    o message: Specifies an array of characters.
+%    o wand: the magick wand.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixel_wands view.
 %
 */
-MagickExport void Strip(char *message)
+WandExport PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
+  const ssize_t y,const size_t width,const size_t height)
 {
-  register char
-    *p,
-    *q;
+  PixelView
+    *pixel_view;
 
-  assert(message != (char *) NULL);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (*message == '\0')
-    return;
-  if (strlen(message) == 1)
-    return;
-  p=message;
-  while (isspace((int) ((unsigned char) *p)) != 0)
-    p++;
-  if ((*p == '\'') || (*p == '"'))
-    p++;
-  q=message+strlen(message)-1;
-  while ((isspace((int) ((unsigned char) *q)) != 0) && (q > p))
-    q--;
-  if (q > p)
-    if ((*q == '\'') || (*q == '"'))
-      q--;
-  (void) CopyMagickMemory(message,p,(size_t) (q-p+1));
-  message[q-p+1]='\0';
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  pixel_view=(PixelView *) AcquireMagickMemory(sizeof(*pixel_view));
+  if (pixel_view == (PixelView *) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
+  (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
+  pixel_view->id=AcquireWandId();
+  (void) FormatMagickString(pixel_view->name,MaxTextExtent,"%s-%.20g",
+    PixelViewId,(double) pixel_view->id);
+  pixel_view->exception=AcquireExceptionInfo();
+  pixel_view->view=AcquireCacheView(pixel_view->wand->images);
+  pixel_view->wand=wand;
+  pixel_view->region.width=width;
+  pixel_view->region.height=height;
+  pixel_view->region.x=x;
+  pixel_view->region.y=y;
+  pixel_view->number_threads=GetOpenMPMaximumThreads();
+  pixel_view->pixel_wands=AcquirePixelsThreadSet(pixel_view->region.width,
+    pixel_view->number_threads);
+  if (pixel_view->pixel_wands == (PixelWand ***) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
+  pixel_view->debug=IsEventLogging();
+  pixel_view->signature=WandSignature;
+  return(pixel_view);
 }
 
 /*
@@ -6368,37 +2589,33 @@ MagickExport void Strip(char *message)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c C a c h e V i e w                                                 %
+%   P i x e l G e t N e x t R o w                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncCacheView() saves the cache view pixels to the in-memory or disk
-%  cache.  It returns MagickTrue if the pixel region is synced, otherwise
-%  MagickFalse.
+%  PixelGetNextRow() returns the next row as an array of pixel wands from the
+%  pixel iterator.
 %
-%  Deprecated, replace with:
+%  The format of the PixelGetNextRow method is:
 %
-%    SyncCacheViewAuthenticPixels(cache_view,GetCacheViewException(cache_view));
-%
-%  The format of the SyncCacheView method is:
-%
-%      MagickBooleanType SyncCacheView(CacheView *cache_view)
+%      PixelWand **PixelGetNextRow(PixelIterator *iterator,
+%        size_t *number_wands)
 %
 %  A description of each parameter follows:
 %
-%    o cache_view: the cache view.
+%    o iterator: the pixel iterator.
+%
+%    o number_wands: the number of pixel wands.
 %
 */
-MagickExport MagickBooleanType SyncCacheView(CacheView *cache_view)
+WandExport PixelWand **PixelGetNextRow(PixelIterator *iterator)
 {
-  MagickBooleanType
-    status;
+  size_t
+    number_wands;
 
-  status=SyncCacheViewAuthenticPixels(cache_view,
-    GetCacheViewException(cache_view));
-  return(status);
+  return(PixelGetNextIteratorRow(iterator,&number_wands));
 }
 
 /*
@@ -6406,39 +2623,31 @@ MagickExport MagickBooleanType SyncCacheView(CacheView *cache_view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c C a c h e V i e w P i x e l s                                     %
+%   P i x e l I t e r a t o r G e t E x c e p t i o n                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncCacheViewPixels() saves the cache view pixels to the in-memory
-%  or disk cache.  It returns MagickTrue if the pixel region is flushed,
-%  otherwise MagickFalse.
+%  PixelIteratorGetException() returns the severity, reason, and description of
+%  any error that occurs when using other methods in this API.
 %
-%  Deprecated, replace with:
+%  The format of the PixelIteratorGetException method is:
 %
-%    SyncCacheViewAuthenticPixels(cache_view,GetCacheViewException(cache_view));
-%
-%  The format of the SyncCacheViewPixels method is:
-%
-%      MagickBooleanType SyncCacheViewPixels(CacheView *cache_view)
+%      char *PixelIteratorGetException(const Pixeliterator *iterator,
+%        ExceptionType *severity)
 %
 %  A description of each parameter follows:
 %
-%    o cache_view: the cache view.
+%    o iterator: the pixel iterator.
 %
-%    o exception: return any errors or warnings in this structure.
+%    o severity: the severity of the error is returned here.
 %
 */
-MagickExport MagickBooleanType SyncCacheViewPixels(CacheView *cache_view)
+WandExport char *PixelIteratorGetException(const PixelIterator *iterator,
+  ExceptionType *severity)
 {
-  MagickBooleanType
-    status;
-
-  status=SyncCacheViewAuthenticPixels(cache_view,
-    GetCacheViewException(cache_view));
-  return(status);
+  return(PixelGetIteratorException(iterator,severity));
 }
 
 /*
@@ -6446,648 +2655,435 @@ MagickExport MagickBooleanType SyncCacheViewPixels(CacheView *cache_view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c I m a g e P i x e l s                                             %
+%   S e t P i x e l V i e w I t e r a t o r                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncImagePixels() saves the image pixels to the in-memory or disk cache.
-%  The method returns MagickTrue if the pixel region is synced, otherwise
-%  MagickFalse.
+%  SetPixelViewIterator() iterates over the pixel view in parallel and calls
+%  your set method for each scanline of the view.  The pixel region is
+%  confined to the image canvas-- that is no negative offsets or widths or
+%  heights that exceed the image dimension.  The pixels are initiallly
+%  undefined and any settings you make in the callback method are automagically
+%  synced back to your image.
 %
-%  Deprecated, replace with:
+%  Use this pragma:
 %
-%    SyncAuthenticPixels(image,&image->exception);
+%    #pragma omp critical
 %
-%  The format of the SyncImagePixels() method is:
+%  to define a section of code in your callback set method that must be
+%  executed by a single thread at a time.
 %
-%      MagickBooleanType SyncImagePixels(Image *image)
+%  The format of the SetPixelViewIterator method is:
+%
+%      MagickBooleanType SetPixelViewIterator(PixelView *destination,
+%        SetPixelViewMethod set,void *context)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o destination: the pixel view.
+%
+%    o set: the set callback method.
+%
+%    o context: the user defined context.
 %
 */
-MagickExport MagickBooleanType SyncImagePixels(Image *image)
+WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
+  SetPixelViewMethod set,void *context)
 {
-  return(SyncAuthenticPixels(image,&image->exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  T e m p o r a r y F i l e n a m e                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TemporaryFilename() replaces the contents of path by a unique path name.
-%
-%  The format of the TemporaryFilename method is:
-%
-%      void TemporaryFilename(char *path)
-%
-%  A description of each parameter follows.
-%
-%   o  path:  Specifies a pointer to an array of characters.  The unique path
-%      name is returned in this array.
-%
-*/
-MagickExport void TemporaryFilename(char *path)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.6");
-  (void) AcquireUniqueFilename(path);
-  (void) RelinquishUniqueFileResource(path);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     T h r e s h o l d I m a g e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ThresholdImage() changes the value of individual pixels based on
-%  the intensity of each pixel compared to threshold.  The result is a
-%  high-contrast, two color image.
-%
-%  The format of the ThresholdImage method is:
-%
-%      unsigned int ThresholdImage(Image *image,const double threshold)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o threshold: Define the threshold value
-%
-*/
-MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
-{
-#define ThresholdImageTag  "Threshold/Image"
+#define SetPixelViewTag  "PixelView/Set"
 
-  IndexPacket
-    index;
+  ExceptionInfo
+    *exception;
 
-  ssize_t
-    y;
-
-  /*
-    Threshold image.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.7");
-  if (!AcquireImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToThresholdImage");
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register IndexPacket
-      *restrict indexes;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(q) <=
-        threshold ? 0 : 1);
-      SetIndexPixelComponent(indexes+x,index);
-      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
-      q++;
-    }
-    if (!SyncAuthenticPixels(image,&image->exception))
-      break;
-  }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     T h r e s h o l d I m a g e C h a n n e l                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ThresholdImageChannel() changes the value of individual pixels based on
-%  the intensity of each pixel channel.  The result is a high-contrast image.
-%
-%  The format of the ThresholdImageChannel method is:
-%
-%      unsigned int ThresholdImageChannel(Image *image,const char *threshold)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o threshold: define the threshold values.
-%
-*/
-MagickExport unsigned int ThresholdImageChannel(Image *image,
-  const char *threshold)
-{
-#define ThresholdImageTag  "Threshold/Image"
-
-  MagickPixelPacket
-    pixel;
-
-  GeometryInfo
-    geometry_info;
-
-  IndexPacket
-    index;
-
-  ssize_t
-    y;
-
-  unsigned int
-    flags;
-
-  /*
-    Threshold image.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (threshold == (const char *) NULL)
-    return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    return(MagickFalse);
-  flags=ParseGeometry(threshold,&geometry_info);
-  pixel.red=geometry_info.rho;
-  if (flags & SigmaValue)
-    pixel.green=geometry_info.sigma;
-  else
-    pixel.green=pixel.red;
-  if (flags & XiValue)
-    pixel.blue=geometry_info.xi;
-  else
-    pixel.blue=pixel.red;
-  if (flags & PsiValue)
-    pixel.opacity=geometry_info.psi;
-  else
-    pixel.opacity=(MagickRealType) OpaqueOpacity;
-  if (flags & PercentValue)
-    {
-      pixel.red*=QuantumRange/100.0f;
-      pixel.green*=QuantumRange/100.0f;
-      pixel.blue*=QuantumRange/100.0f;
-      pixel.opacity*=QuantumRange/100.0f;
-    }
-  if (!(flags & SigmaValue))
-    {
-      if (!AcquireImageColormap(image,2))
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToThresholdImage");
-      if (pixel.red == 0)
-        (void) GetImageDynamicThreshold(image,2.0,2.0,&pixel,&image->exception);
-    }
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register IndexPacket
-      *restrict indexes;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetAuthenticIndexQueue(image);
-    if (IsMagickGray(&pixel) != MagickFalse)
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        index=(IndexPacket) ((MagickRealType)
-          PixelIntensityToQuantum(q) <= pixel.red ? 0 : 1);
-        SetIndexPixelComponent(indexes+x,index);
-        SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-        SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-        SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
-        q++;
-      }
-    else
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        SetRedPixelComponent(q,q->red <= pixel.red ? 0 : QuantumRange);
-        SetGreenPixelComponent(q,q->green <= pixel.green ? 0 : QuantumRange);
-        SetBluePixelComponent(q,q->blue <= pixel.blue ? 0 : QuantumRange);
-        SetOpacityPixelComponent(q,q->opacity <= pixel.opacity ? 0 :
-          QuantumRange);
-        q++;
-      }
-    if (!SyncAuthenticPixels(image,&image->exception))
-      break;
-  }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                              %
-%                                                                              %
-%                                                                              %
-+     T r a n s f o r m C o l o r s p a c e                                    %
-%                                                                              %
-%                                                                              %
-%                                                                              %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TransformColorspace() converts the image to a specified colorspace.
-%  If the image is already in the requested colorspace, no work is performed.
-%  Note that the current colorspace is stored in the image colorspace member.
-%  The transformation matrices are not necessarily the standard ones: the
-%  weights are rescaled to normalize the range of the transformed values to
-%  be [0..QuantumRange].
-%
-%  Deprecated, replace with:
-%
-%    TransformImageColorspace(image,colorspace);
-%
-%  The format of the TransformColorspace method is:
-%
-%      unsigned int (void) TransformColorspace(Image *image,
-%        const ColorspaceType colorspace)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image to transform
-%
-%    o colorspace: the desired colorspace.
-%
-*/
-MagickExport unsigned int TransformColorspace(Image *image,
-  const ColorspaceType colorspace)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.6");
-  return(TransformImageColorspace(image,colorspace));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   T r a n s f o r m H S L                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TransformHSL() converts a (red, green, blue) to a (hue, saturation,
-%  lightness) triple.
-%
-%  The format of the TransformHSL method is:
-%
-%      void TransformHSL(const Quantum red,const Quantum green,
-%        const Quantum blue,double *hue,double *saturation,double *lightness)
-%
-%  A description of each parameter follows:
-%
-%    o red, green, blue: A Quantum value representing the red, green, and
-%      blue component of a pixel..
-%
-%    o hue, saturation, lightness: A pointer to a double value representing a
-%      component of the HSL color space.
-%
-*/
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
-MagickExport void TransformHSL(const Quantum red,const Quantum green,
-  const Quantum blue,double *hue,double *saturation,double *lightness)
-{
-  MagickRealType
-    b,
-    delta,
-    g,
-    max,
-    min,
-    r;
-
-  /*
-    Convert RGB to HSL colorspace.
-  */
-  assert(hue != (double *) NULL);
-  assert(saturation != (double *) NULL);
-  assert(lightness != (double *) NULL);
-  r=QuantumScale*red;
-  g=QuantumScale*green;
-  b=QuantumScale*blue;
-  max=MagickMax(r,MagickMax(g,b));
-  min=MagickMin(r,MagickMin(g,b));
-  *hue=0.0;
-  *saturation=0.0;
-  *lightness=(double) ((min+max)/2.0);
-  delta=max-min;
-  if (delta == 0.0)
-    return;
-  *saturation=(double) (delta/((*lightness < 0.5) ? (min+max) :
-    (2.0-max-min)));
-  if (r == max)
-    *hue=(double) (g == min ? 5.0+(max-b)/delta : 1.0-(max-g)/delta);
-  else
-    if (g == max)
-      *hue=(double) (b == min ? 1.0+(max-r)/delta : 3.0-(max-b)/delta);
-    else
-      *hue=(double) (r == min ? 3.0+(max-g)/delta : 5.0-(max-r)/delta);
-  *hue/=6.0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   T r a n s l a t e T e x t                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TranslateText() replaces any embedded formatting characters with the
-%  appropriate image attribute and returns the translated text.
-%
-%  Deprecated, replace with:
-%
-%    InterpretImageProperties(image_info,image,embed_text);
-%
-%  The format of the TranslateText method is:
-%
-%      char *TranslateText(const ImageInfo *image_info,Image *image,
-%        const char *embed_text)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: the image info.
-%
-%    o image: the image.
-%
-%    o embed_text: the address of a character string containing the embedded
-%      formatting characters.
-%
-*/
-MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
-  const char *embed_text)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.2.6");
-  return(InterpretImageProperties(image_info,image,embed_text));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     T r a n s p a r e n t I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TransparentImage() changes the opacity value associated with any pixel
-%  that matches color to the value defined by opacity.
-%
-%  By default color must match a particular pixel color exactly.  However,
-%  in many cases two colors may differ by a small amount.  Fuzz defines
-%  how much tolerance is acceptable to consider two colors as the same.
-%  For example, set fuzz to 10 and the color red at intensities of 100 and
-%  102 respectively are now interpreted as the same color.
-%
-%  The format of the TransparentImage method is:
-%
-%      MagickBooleanType TransparentImage(Image *image,
-%        const PixelPacket target,const Quantum opacity)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o target: the RGB value of the target color.
-%
-%    o opacity: the replacement opacity value.
-%
-*/
-MagickExport MagickBooleanType TransparentImage(Image *image,
-  const PixelPacket target,const Quantum opacity)
-{
-#define TransparentImageTag  "Transparent/Image"
-
-  MagickBooleanType
-    proceed;
-
-  ssize_t
-    y;
-
-  /*
-    Make image color transparent.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v6.1.0");
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    q=GetAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if (IsColorSimilar(image,q,&target) != MagickFalse)
-        q->opacity=opacity;
-      q++;
-    }
-    if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
-      break;
-    proceed=SetImageProgress(image,TransparentImageTag,(MagickOffsetType) y,
-      image->rows);
-    if (proceed == MagickFalse)
-      break;
-  }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n s h i f t I m a g e L i s t                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  UnshiftImageList() adds the image to the beginning of the list.
-%
-%  Deprecated, replace with:
-%
-%    PrependImageToList(images,CloneImageList(image,exception));
-%
-%  The format of the UnshiftImageList method is:
-%
-%      unsigned int UnshiftImageList(Image *images,const Image *image,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image list.
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
-  ExceptionInfo *exception)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.5.2");
-  PrependImageToList(images,CloneImageList(image,exception));
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   V a l i d a t e C o l o r m a p I n d e x                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ValidateColormapIndex() validates the colormap index.  If the index does
-%  not range from 0 to the number of colors in the colormap an exception
-%  issued and 0 is returned.
-%
-%  Deprecated, replace with:
-%
-%    ConstrainColormapIndex(image,index);
-%
-%  The format of the ValidateColormapIndex method is:
-%
-%      IndexPacket ValidateColormapIndex(Image *image,const unsigned int index)
-%
-%  A description of each parameter follows:
-%
-%    o index: Method ValidateColormapIndex returns colormap index if it is
-%      valid other an exception issued and 0 is returned.
-%
-%    o image: the image.
-%
-%    o index: This integer is the colormap index.
-%
-*/
-MagickExport IndexPacket ValidateColormapIndex(Image *image,
-  const size_t index)
-{
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),"last use: v5.4.4");
-  return(ConstrainColormapIndex(image,index));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   Z o o m I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ZoomImage() creates a new image that is a scaled size of an existing one.
-%  It allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.  The Point filter gives fast pixel replication,
-%  Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower,
-%  very high-quality results.  See Graphic Gems III for details on this
-%  algorithm.
-%
-%  The filter member of the Image structure specifies which image filter to
-%  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
-%
-%  The format of the ZoomImage method is:
-%
-%      Image *ZoomImage(const Image *image,const size_t columns,
-%        const size_t rows,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o columns: An integer that specifies the number of columns in the zoom
-%      image.
-%
-%    o rows: An integer that specifies the number of rows in the scaled
-%      image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *ZoomImage(const Image *image,const size_t columns,
-  const size_t rows,ExceptionInfo *exception)
-{
   Image
-    *zoom_image;
+    *destination_image;
 
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  zoom_image=ResizeImage(image,columns,rows,image->filter,image->blur,
-    exception);
-  return(zoom_image);
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(destination != (PixelView *) NULL);
+  assert(destination->signature == WandSignature);
+  if (set == (SetPixelViewMethod) NULL)
+    return(MagickFalse);
+  destination_image=destination->wand->images;
+  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+    return(MagickFalse);
+  status=MagickTrue;
+  progress=0;
+  exception=destination->exception;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=destination->region.y; y < (ssize_t) destination->region.height; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    MagickBooleanType
+      sync;
+
+    register IndexPacket
+      *restrict indexes;
+
+    register ssize_t
+      x;
+
+    register PixelPacket
+      *restrict pixels;
+
+    if (status == MagickFalse)
+      continue;
+    pixels=GetCacheViewAuthenticPixels(destination->view,destination->region.x,
+      y,destination->region.width,1,exception);
+    if (pixels == (PixelPacket *) NULL)
+      {
+        InheritException(destination->exception,GetCacheViewException(
+          destination->view));
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewAuthenticIndexQueue(destination->view);
+    if (set(destination,context) == MagickFalse)
+      status=MagickFalse;
+    for (x=0; x < (ssize_t) destination->region.width; x++)
+      PixelGetQuantumColor(destination->pixel_wands[id][x],pixels+x);
+    if (destination_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        SetIndexPixelComponent(indexes+x,PixelGetBlackQuantum(
+          destination->pixel_wands[id][x]));
+    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    if (sync == MagickFalse)
+      {
+        InheritException(destination->exception,GetCacheViewException(
+          destination->view));
+        status=MagickFalse;
+      }
+    if (destination_image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickWand_SetPixelViewIterator)
+#endif
+        proceed=SetImageProgress(destination_image,SetPixelViewTag,progress++,
+          destination->region.height);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T r a n s f e r P i x e l V i e w I t e r a t o r                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TransferPixelViewIterator() iterates over two pixel views in parallel and
+%  calls your transfer method for each scanline of the view.  The source pixel
+%  region is not confined to the image canvas-- that is you can include
+%  negative offsets or widths or heights that exceed the image dimension.
+%  However, the destination pixel view is confined to the image canvas-- that
+%  is no negative offsets or widths or heights that exceed the image dimension
+%  are permitted.
+%
+%  Use this pragma:
+%
+%    #pragma omp critical
+%
+%  to define a section of code in your callback transfer method that must be
+%  executed by a single thread at a time.
+%
+%  The format of the TransferPixelViewIterator method is:
+%
+%      MagickBooleanType TransferPixelViewIterator(PixelView *source,
+%        PixelView *destination,TransferPixelViewMethod transfer,void *context)
+%
+%  A description of each parameter follows:
+%
+%    o source: the source pixel view.
+%
+%    o destination: the destination pixel view.
+%
+%    o transfer: the transfer callback method.
+%
+%    o context: the user defined context.
+%
+*/
+WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
+  PixelView *destination,TransferPixelViewMethod transfer,void *context)
+{
+#define TransferPixelViewTag  "PixelView/Transfer"
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *destination_image,
+    *source_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(source != (PixelView *) NULL);
+  assert(source->signature == WandSignature);
+  if (transfer == (TransferPixelViewMethod) NULL)
+    return(MagickFalse);
+  source_image=source->wand->images;
+  destination_image=destination->wand->images;
+  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+    return(MagickFalse);
+  status=MagickTrue;
+  progress=0;
+  exception=destination->exception;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=source->region.y; y < (ssize_t) source->region.height; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    MagickBooleanType
+      sync;
+
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
+      *restrict pixels;
+
+    register IndexPacket
+      *restrict destination_indexes;
+
+    register ssize_t
+      x;
+
+    register PixelPacket
+      *restrict destination_pixels;
+
+    if (status == MagickFalse)
+      continue;
+    pixels=GetCacheViewVirtualPixels(source->view,source->region.x,y,
+      source->region.width,1,source->exception);
+    if (pixels == (const PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewVirtualIndexQueue(source->view);
+    for (x=0; x < (ssize_t) source->region.width; x++)
+      PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
+    if (source_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (source_image->storage_class == PseudoClass)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetIndex(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    destination_pixels=GetCacheViewAuthenticPixels(destination->view,
+      destination->region.x,y,destination->region.width,1,exception);
+    if (destination_pixels == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    destination_indexes=GetCacheViewAuthenticIndexQueue(destination->view);
+    for (x=0; x < (ssize_t) destination->region.width; x++)
+      PixelSetQuantumColor(destination->pixel_wands[id][x],pixels+x);
+    if (destination_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        PixelSetBlackQuantum(destination->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (destination_image->storage_class == PseudoClass)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        PixelSetIndex(destination->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (transfer(source,destination,context) == MagickFalse)
+      status=MagickFalse;
+    for (x=0; x < (ssize_t) destination->region.width; x++)
+      PixelGetQuantumColor(destination->pixel_wands[id][x],
+        destination_pixels+x);
+    if (destination_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) destination->region.width; x++)
+        SetIndexPixelComponent(destination_indexes+x,PixelGetBlackQuantum(
+          destination->pixel_wands[id][x]));
+    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    if (sync == MagickFalse)
+      {
+        InheritException(destination->exception,GetCacheViewException(
+          source->view));
+        status=MagickFalse;
+      }
+    if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickWand_TransferPixelViewIterator)
+#endif
+        proceed=SetImageProgress(source_image,TransferPixelViewTag,progress++,
+          source->region.height);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U p d a t e P i x e l V i e w I t e r a t o r                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UpdatePixelViewIterator() iterates over the pixel view in parallel and calls
+%  your update method for each scanline of the view.  The pixel region is
+%  confined to the image canvas-- that is no negative offsets or widths or
+%  heights that exceed the image dimension are permitted.  Updates to pixels
+%  in your callback are automagically synced back to the image.
+%
+%  Use this pragma:
+%
+%    #pragma omp critical
+%
+%  to define a section of code in your callback update method that must be
+%  executed by a single thread at a time.
+%
+%  The format of the UpdatePixelViewIterator method is:
+%
+%      MagickBooleanType UpdatePixelViewIterator(PixelView *source,
+%        UpdatePixelViewMethod update,void *context)
+%
+%  A description of each parameter follows:
+%
+%    o source: the source pixel view.
+%
+%    o update: the update callback method.
+%
+%    o context: the user defined context.
+%
+*/
+WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
+  UpdatePixelViewMethod update,void *context)
+{
+#define UpdatePixelViewTag  "PixelView/Update"
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *source_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(source != (PixelView *) NULL);
+  assert(source->signature == WandSignature);
+  if (update == (UpdatePixelViewMethod) NULL)
+    return(MagickFalse);
+  source_image=source->wand->images;
+  if (SetImageStorageClass(source_image,DirectClass) == MagickFalse)
+    return(MagickFalse);
+  status=MagickTrue;
+  progress=0;
+  exception=source->exception;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=source->region.y; y < (ssize_t) source->region.height; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    register IndexPacket
+      *restrict indexes;
+
+    register ssize_t
+      x;
+
+    register PixelPacket
+      *restrict pixels;
+
+    if (status == MagickFalse)
+      continue;
+    pixels=GetCacheViewAuthenticPixels(source->view,source->region.x,y,
+      source->region.width,1,exception);
+    if (pixels == (PixelPacket *) NULL)
+      {
+        InheritException(source->exception,GetCacheViewException(
+          source->view));
+        status=MagickFalse;
+        continue;
+      }
+    indexes=GetCacheViewAuthenticIndexQueue(source->view);
+    for (x=0; x < (ssize_t) source->region.width; x++)
+      PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
+    if (source_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
+    if (update(source,context) == MagickFalse)
+      status=MagickFalse;
+    for (x=0; x < (ssize_t) source->region.width; x++)
+      PixelGetQuantumColor(source->pixel_wands[id][x],pixels+x);
+    if (source_image->colorspace == CMYKColorspace)
+      for (x=0; x < (ssize_t) source->region.width; x++)
+        SetIndexPixelComponent(indexes+x,PixelGetBlackQuantum(
+          source->pixel_wands[id][x]));
+    if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
+      {
+        InheritException(source->exception,GetCacheViewException(source->view));
+        status=MagickFalse;
+      }
+    if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickWand_UpdatePixelViewIterator)
+#endif
+        proceed=SetImageProgress(source_image,UpdatePixelViewTag,progress++,
+          source->region.height);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  return(status);
 }
 #endif

@@ -188,7 +188,7 @@
   <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011080100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -1041,15 +1041,15 @@ a <a href="#gravity">-gravity</a> setting, if present.</p>
 <p>The <a href="#chop">-chop</a> option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.</p>
 
-<p>While it can remove internal rows and columns of pixels, it is more typically
-used with as <a href="#gravity">-gravity</a> setting and a '<kbd>+0+0</kbd>' offset
-so as to remove a single edge from an image.  Compare this to <a href="#shave"
->-shave</a> whcih removes equal numbers of pixels from oppisite sides of the image.
-</p>
+<p>While it can remove internal rows and columns of pixels, it is more
+typically used with as <a href="#gravity">-gravity</a> setting and zero
+offsets so as to remove a single edge from an image.  Compare this to <a
+href="#shave" >-shave</a> which removes equal numbers of pixels from oppisite
+sides of the image.  </p>
 
-<p>Using <a href="#chop">-chop</a> will effectivally undo the results of a
-<a href="#splice">-splice</a> that was given the same <em class="arg">geometry</em>
-and <a href="#gravity">-gravity</a> settings. </p>
+<p>Using <a href="#chop">-chop</a> will effectivally undo the results of a <a
+href="#splice">-splice</a> that was given the same <em
+class="arg">geometry</em> and <a href="#gravity">-gravity</a> settings. </p>
 
 
 <div style="margin: auto;">
@@ -4227,9 +4227,16 @@ bgr).  The components can repeat as well (e.g. rgbr).</p>
 <em class="arg">filename</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Composite the image pixels as defined by the mask.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Prevent updates to image pixels specified by the mask.</td><td style='text-align:right;'></td></tr></table>
 
-<p>Use <a href="#mask">+mask</a> to remove the image mask.</p>
+<p>This the same as using a mask used for composite masking operations, with
+grayscale values causing blended updates of the image the mask is attached to.
+</P>
+
+<p>Use <a href="#mask">+mask</a> to remove the mask from images.</p>
+
+<p>Also see <a href="#clip-mask">-clip-mask</a> which work in the same way,
+but with strict boolean masking. </p>
 
 <div style="margin: auto;">
   <h4><a id="mattecolor"></a>-mattecolor <em class="arg">color</em></h4>
@@ -4248,11 +4255,21 @@ style="background-color: #bdbdbd;">this shade of gray</span>.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>return the maximum intensity of an image sequence.</td><td style='text-align:right;'></td></tr></table>
 
+<p>Select the 'maximum' value from all the surrounding pixels. </p>
+
+<p>This is legacy option from the <a href="#statistic" >method</A> of the same
+name. </p>
+
 <div style="margin: auto;">
   <h4><a id="median"></a>-median <em class="arg">geometry</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>apply a median filter to the image.</td><td style='text-align:right;'></td></tr></table>
+
+<p>Select the 'middle' value from all the surrounding pixels. </p>
+
+<p>This is legacy option from the <a href="#statistic" >method</A> of the same
+name. </p>
 
 <div style="margin: auto;">
   <h4><a id="metric"></a>-metric <em class="arg">type</em></h4>
@@ -4294,6 +4311,12 @@ metrics</a> option.</p>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>return the minimum intensity of an image sequence.</td><td style='text-align:right;'></td></tr></table>
+
+<p>Select the 'minimal' value from all the surrounding pixels. </p>
+
+<p>This is legacy option from the <a href="#statistic" >method</A> of the same
+name. </p>
+
 
 
 <div style="margin: auto;">
@@ -5381,6 +5404,19 @@ id="shared-memory"></a>-shared-memory</h4>
   </tr>
 
   <tr valign="top">
+    <td valign="top">barycentric</td>
+    <td valign="top">three point triangle of color given 3 points.
+        Giving only 2 points will form a linear gradient between those points.
+        The gradient generated extends beyond the triangle created by those
+        3 points. </td>
+  </tr>
+
+  <tr valign="top">
+    <td valign="top">bilinear</td>
+    <td valign="top">Like barycentric but for 4 points. Less than 4 points
+        fall back to barycentric. </td>
+  </tr>
+  <tr valign="top">
     <td valign="top">voronoi</td>
     <td valign="top">Simply map each pixel to the to nearest color point
         given. The result are polygonal 'cells' of solid color. </td>
@@ -5391,19 +5427,14 @@ id="shared-memory"></a>-shared-memory</h4>
     <td valign="top">Colors points biased on the ratio of inverse distance
         squared. Generating spots of color in a sea of the average of
         colors. </td>
-    </tr>
-
-  <tr valign="top">
-    <td valign="top">barycentric</td>
-    <td valign="top">three point triangle of color given 3 points.
-        Giving only 2 points will form a linear gradient between those points.
-        Gradient is however not restricted to just the triangle or line. </td>
   </tr>
 
   <tr valign="top">
-    <td valign="top">bilinear</td>
-    <td valign="top">Like barycentric but for 4 points. Less than 4 points
-        fall back to barycentric. </td>
+    <td valign="top">inverse</td>
+    <td valign="top">Colors points biased on the ratio of inverse distance.
+        This generates sharper points of color rather than rounded spots of
+        '<kbd>shepards</kbd>'  Generating spots of color in a sea of the
+        average of colors. </td>
   </tr>
 
   </tbody>
@@ -5416,10 +5447,13 @@ some point beyond the edge of the image. All points are floating point values.
 </p>
 
 <p>Only the color channels defined by the <a href="#channel" >-channel</a> are
-modified, whcih means the matte/alpha transparency channel is not effected by
-default. If enabled, the image also needs a the matte/alpha channel to be
-enabled for this operator to effect an images transparency. This is typical
-transparency handling for images. </p>
+modified, which means that by default matte/alpha transparency channel is not
+effected. Typically transparency channel is turned off either before or after
+the operation. </P>
+
+Of course if some color points are transparent to generate a transparent
+gradient, then the image also requires transparency enabled to store the
+values. </p>
 
 <p>All the above methods when given a single point of color will replace all
 the colors in the image with the color given, regardless of the point. This is
@@ -5433,7 +5467,21 @@ default value. </p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Splice the current background color into the image.</td><td style='text-align:right;'></td></tr></table>
 
-<p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. See <a href="#background">-background</a> to reset the background color.</p>
+<p>This will add rows and columns of the current <a
+href="#background">-background</a> color into the given image according to the
+given  <a href="#gravity">-gravity</a> effectd geometry setting.  >See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Essentually <a href="#splice">-splice</a> will divide the
+image into four quadrants, separating them by the inserted rows and columns.
+</P>
+
+If a dimension of geometry is zero no rows or columns will be added for that
+dimension.  Similarly using a zero offset with the appropriate <a
+href="#gravity">-gravity</a> setting will add rows and columns to the edges of
+the image, padding the image only along that one edge. Edge padding is what <a
+href="#splice">-splice</a> is most commonly used for. </p>
+
+<p>If the exact same  <em class="arg">geometry</em> and <a
+href="#gravity">-gravity</a> is later used with <a href="#chop">-chop</a> the
+added added all splices removed. </p>
 
 <div style="margin: auto;">
   <h4><a id="spread"></a>-spread <em class="arg">amount</em></h4>
