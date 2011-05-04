@@ -72,7 +72,7 @@ static inline void MagickCompositeOver(const PixelPacket *p,
     GetBluePixelComponent(p),alpha,(MagickRealType)
     GetBluePixelComponent(q),beta)+0.5);
 #else
-  SetOpacityPixelCompoment(composite,QuantumRange*(1.0-gamma));
+  SetOpacityPixelComponent(composite,QuantumRange*(1.0-gamma));
   gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
   SetRedPixelComponent(composite,gamma*MagickOver_((MagickRealType)
     GetRedPixelComponent(p),alpha,(MagickRealType)
