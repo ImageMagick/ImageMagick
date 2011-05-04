@@ -328,10 +328,12 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
       PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetBlackQuantum(source->pixel_wands[id][x],indexes[x]);
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetBlackPixelComponent(indexes+x));
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetIndex(source->pixel_wands[id][x],indexes[x]);
+        PixelSetIndex(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
     duplex_pixels=GetCacheViewVirtualPixels(duplex->view,duplex->extent.x,y,
       duplex->extent.width,1,duplex->exception);
     if (duplex_pixels == (const PixelPacket *) NULL)
@@ -344,10 +346,12 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
       PixelSetQuantumColor(duplex->pixel_wands[id][x],duplex_pixels+x);
     if (duplex_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) duplex->extent.width; x++)
-        PixelSetBlackQuantum(duplex->pixel_wands[id][x],duplex_indexes[x]);
+        PixelSetBlackQuantum(duplex->pixel_wands[id][x],
+          GetBlackPixelComponent(duplex_indexes+x));
     if (duplex_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) duplex->extent.width; x++)
-        PixelSetIndex(duplex->pixel_wands[id][x],duplex_indexes[x]);
+        PixelSetIndex(duplex->pixel_wands[id][x],
+          GetIndexPixelComponent(duplex_indexes+x));
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->extent.x,y,destination->extent.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -362,10 +366,11 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
         PixelSetBlackQuantum(destination->pixel_wands[id][x],
-          destination_indexes[x]);
+          GetBlackPixelComponent(destination_indexes+x));
     if (destination_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
-        PixelSetIndex(destination->pixel_wands[id][x],destination_indexes[x]);
+        PixelSetIndex(destination->pixel_wands[id][x],
+          GetIndexPixelComponent(destination_indexes+x));
     if (transfer(source,duplex,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) destination->extent.width; x++)
@@ -373,8 +378,8 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
         destination_pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
-        destination_indexes[x]=PixelGetBlackQuantum(
-          destination->pixel_wands[id][x]);
+        SetBlackPixelComponent(destination_indexes+x,PixelGetBlackQuantum(
+          destination->pixel_wands[id][x]));
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
       {
@@ -583,10 +588,12 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
       PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetBlackQuantum(source->pixel_wands[id][x],indexes[x]);
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetBlackPixelComponent(indexes+x));
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetIndex(source->pixel_wands[id][x],indexes[x]);
+        PixelSetIndex(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
     if (get(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -988,7 +995,8 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
       PixelGetQuantumColor(destination->pixel_wands[id][x],pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
-        indexes[x]=PixelGetBlackQuantum(destination->pixel_wands[id][x]);
+        SetBlackPixelComponent(indexes+x,PixelGetBlackQuantum(
+          destination->pixel_wands[id][x]));
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
       {
@@ -1166,10 +1174,12 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
       PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetBlackQuantum(source->pixel_wands[id][x],indexes[x]);
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetBlackPixelComponent(indexes+x));
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetIndex(source->pixel_wands[id][x],indexes[x]);
+        PixelSetIndex(source->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->extent.x,y,destination->extent.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -1182,10 +1192,12 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
       PixelSetQuantumColor(destination->pixel_wands[id][x],pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
-        PixelSetBlackQuantum(destination->pixel_wands[id][x],indexes[x]);
+        PixelSetBlackQuantum(destination->pixel_wands[id][x],
+          GetBlackPixelComponent(indexes+x));
     if (destination_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
-        PixelSetIndex(destination->pixel_wands[id][x],indexes[x]);
+        PixelSetIndex(destination->pixel_wands[id][x],
+          GetIndexPixelComponent(indexes+x));
     if (transfer(source,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) destination->extent.width; x++)
@@ -1193,8 +1205,8 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
         destination_pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->extent.width; x++)
-        destination_indexes[x]=PixelGetBlackQuantum(
-          destination->pixel_wands[id][x]);
+        SetBlackPixelComponent(destination_indexes+x,PixelGetBlackQuantum(
+          destination->pixel_wands[id][x]));
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
       {
@@ -1323,14 +1335,16 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
       PixelSetQuantumColor(source->pixel_wands[id][x],pixels+x);
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        PixelSetBlackQuantum(source->pixel_wands[id][x],indexes[x]);
+        PixelSetBlackQuantum(source->pixel_wands[id][x],
+          GetBlackPixelComponent(indexes+x));
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) source->extent.width; x++)
       PixelGetQuantumColor(source->pixel_wands[id][x],pixels+x);
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->extent.width; x++)
-        indexes[x]=PixelGetBlackQuantum(source->pixel_wands[id][x]);
+        SetBlackPixelComponent(indexes+x,PixelGetBlackQuantum(
+          source->pixel_wands[id][x]));
     if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
       {
         InheritException(source->exception,GetCacheViewException(source->view));
