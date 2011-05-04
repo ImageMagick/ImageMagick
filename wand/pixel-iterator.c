@@ -510,10 +510,12 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
     PixelSetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-      PixelSetBlackQuantum(iterator->pixel_wands[x],indexes[x]);
+      PixelSetBlackQuantum(iterator->pixel_wands[x],
+        GetBlackPixelComponent(indexes+x));
   if (GetCacheViewStorageClass(iterator->view) == PseudoClass)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-      PixelSetIndex(iterator->pixel_wands[x],indexes[x]);
+      PixelSetIndex(iterator->pixel_wands[x],
+        GetBlackPixelComponent(indexes+x));
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
 }
@@ -701,10 +703,12 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
     PixelSetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-      PixelSetBlackQuantum(iterator->pixel_wands[x],indexes[x]);
+      PixelSetBlackQuantum(iterator->pixel_wands[x],
+        GetBlackPixelComponent(indexes+x));
   if (GetCacheViewStorageClass(iterator->view) == PseudoClass)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-        PixelSetIndex(iterator->pixel_wands[x],indexes[x]);
+      PixelSetIndex(iterator->pixel_wands[x],
+        GetIndexPixelComponent(indexes+x));
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
 }
@@ -779,10 +783,12 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
     PixelSetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-      PixelSetBlackQuantum(iterator->pixel_wands[x],indexes[x]);
+      PixelSetBlackQuantum(iterator->pixel_wands[x],
+        GetBlackPixelComponent(indexes+x));
   if (GetCacheViewStorageClass(iterator->view) == PseudoClass)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-      PixelSetIndex(iterator->pixel_wands[x],indexes[x]);
+      PixelSetIndex(iterator->pixel_wands[x],
+        GetIndexPixelComponent(indexes+x));
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
 }
@@ -978,7 +984,8 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
     PixelGetQuantumColor(iterator->pixel_wands[x],pixels+x);
   if (GetCacheViewColorspace(iterator->view) == CMYKColorspace)
     for (x=0; x < (ssize_t) iterator->region.width; x++)
-      indexes[x]=PixelGetBlackQuantum(iterator->pixel_wands[x]);
+      SetBlackPixelComponent(indexes+x,PixelGetBlackQuantum(
+        iterator->pixel_wands[x]));
   if (SyncCacheViewAuthenticPixels(iterator->view,exception) == MagickFalse)
     {
       InheritException(iterator->exception,GetCacheViewException(
