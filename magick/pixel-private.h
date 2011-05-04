@@ -45,12 +45,20 @@ static inline MagickPixelPacket *CloneMagickPixelPacket(
 static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((pixel->red == pixel->green) && (pixel->green == pixel->blue))
+  if ((GetRedPixelComponent(pixel) == GetGreenPixelComponent(pixel)) && 
+      (GetGreenPixelComponent(pixel) == GetBluePixelComponent(pixel)))
     return(MagickTrue);
 #else
-  if ((fabs(pixel->red-pixel->green) <= MagickEpsilon) &&
-      (fabs(pixel->green-pixel->blue) <= MagickEpsilon))
-    return(MagickTrue);
+  {
+    double
+      alpha,
+      beta;
+
+    alpha=GetRedPixelComponent(pixel)-GetGreenPixelComponent(pixel);
+    beta=GetGreenPixelComponent(pixel)-GetBluePixelComponent(pixel);
+    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+      return(MagickTrue);
+  }
 #endif
   return(MagickFalse);
 }
@@ -58,15 +66,24 @@ static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
 static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if (((pixel->red == 0) || (pixel->red == (Quantum) QuantumRange)) &&
-      (pixel->red == pixel->green) && (pixel->green == pixel->blue))
+  if (((GetRedPixelComponent(pixel) == 0) ||
+       (GetRedPixelComponent(pixel) == (Quantum) QuantumRange)) &&
+      (GetRedPixelComponent(pixel) == GetGreenPixelComponent(pixel)) &&
+      (GetGreenPixelComponent(pixel) == GetBluePixelComponent(pixel)))
     return(MagickTrue);
 #else
-  if (((fabs(pixel->red) <= MagickEpsilon) ||
-       (fabs(pixel->red-QuantumRange) <= MagickEpsilon)) &&
-      (fabs(pixel->red-pixel->green) <= MagickEpsilon) &&
-      (fabs(pixel->green-pixel->blue) <= MagickEpsilon))
-    return(MagickTrue);
+  {
+    double
+      alpha,
+      beta;
+
+    alpha=GetRedPixelComponent(pixel)-GetGreenPixelComponent(pixel);
+    beta=GetGreenPixelComponent(pixel)-GetBluePixelComponent(pixel);
+    if (((fabs(GetRedPixelComponent(pixel)) <= MagickEpsilon) ||
+         (fabs(GetRedPixelComponent(pixel)-QuantumRange) <= MagickEpsilon)) &&
+        (fabs(alpha) <= MagickEpsilon) && (fabs(beta)) <= MagickEpsilon))
+      return(MagickTrue);
+    }
 #endif
   return(MagickFalse);
 }
@@ -74,19 +91,21 @@ static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
 static inline void SetMagickPixelPacket(const Image *image,
   const PixelPacket *color,const IndexPacket *index,MagickPixelPacket *pixel)
 {
-  pixel->red=(MagickRealType) color->red;
-  pixel->green=(MagickRealType) color->green;
-  pixel->blue=(MagickRealType) color->blue;
-  pixel->opacity=(MagickRealType) color->opacity;
+  pixel->red=(MagickRealType) GetRedPixelComponent(color);
+  pixel->green=(MagickRealType) GetGreenPixelComponent(color);
+  pixel->blue=(MagickRealType) GetBluePixelComponent(color);
+  pixel->opacity=(MagickRealType) GetOpacityPixelComponent(color);
   if ((image->colorspace == CMYKColorspace) &&
       (index != (const IndexPacket *) NULL))
-    pixel->index=(MagickRealType) *index;
+    pixel->index=(MagickRealType) GetIndexPixelComponent(index);
 }
 
-/* This function is obsoleted by MorphologyApply() -- Anthony Thyssen */
 static inline void SetMagickPixelPacketBias(const Image *image,
   MagickPixelPacket *pixel)
 {
+  /*
+    Obsoleted by MorphologyApply().
+  */
   pixel->red=image->bias;
   pixel->green=image->bias;
   pixel->blue=image->bias;
@@ -97,14 +116,13 @@ static inline void SetMagickPixelPacketBias(const Image *image,
 static inline void SetPixelPacket(const Image *image,
   const MagickPixelPacket *pixel,PixelPacket *color,IndexPacket *index)
 {
-  color->red=ClampToQuantum(pixel->red);
-  color->green=ClampToQuantum(pixel->green);
-  color->blue=ClampToQuantum(pixel->blue);
-  color->opacity=ClampToQuantum(pixel->opacity);
-  if (((image->colorspace == CMYKColorspace) ||
-       (image->storage_class == PseudoClass)) &&
-      (index != (const IndexPacket *) NULL))
-    *index=ClampToQuantum(pixel->index);
+  SetRedPixelComponent(color,ClampToQuantum(pixel->red));
+  SetGreenPixelComponent(color,ClampToQuantum(pixel->green));
+  SetBluePixelComponent(color,ClampToQuantum(pixel->blue));
+  SetOpacityPixelComponent(color,ClampToQuantum(pixel->opacity));
+  if ((image->colorspace == CMYKColorspace) ||
+      (image->storage_class == PseudoClass))
+    SetIndexPixelComponent(index,ClampToQuantum(pixel->index));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
