@@ -192,9 +192,9 @@ static int FindColor(PixelPacket *pixel)
     i;
 
   for (i=0; i < 256; i++)
-    if (ScaleQuantumToChar(GetRedPixelComponent(pixel) == PalmPalette[i][0] &&
-        ScaleQuantumToChar(GetGreenPixelComponent(pixel) == PalmPalette[i][1] &&
-        ScaleQuantumToChar(GetBluePixelComponent(pixel) == PalmPalette[i][2])
+    if (ScaleQuantumToChar(GetRedPixelComponent(pixel)) == PalmPalette[i][0] &&
+        ScaleQuantumToChar(GetGreenPixelComponent(pixel)) == PalmPalette[i][1] &&
+        ScaleQuantumToChar(GetBluePixelComponent(pixel)) == PalmPalette[i][2])
       return(i);
   return(-1);
 }
