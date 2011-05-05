@@ -288,20 +288,20 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushCharPixel(p,&quantum);
-      pixel->red=ScaleCharToQuantum(quantum);
+      SetRedPixelComponent(pixel,ScaleCharToQuantum(quantum));
       p=PushCharPixel(p,&quantum);
-      pixel->green=ScaleCharToQuantum(quantum);
+      SetGreenPixelComponent(pixel,ScaleCharToQuantum(quantum));
       p=PushCharPixel(p,&quantum);
-      pixel->blue=ScaleCharToQuantum(quantum);
+      SetBluePixelComponent(pixel,ScaleCharToQuantum(quantum));
       if (image->matte != MagickFalse)
         {
           p=PushCharPixel(p,&quantum);
-          pixel->opacity=ScaleCharToQuantum(quantum);
+          SetOpacityPixelComponent(pixel,ScaleCharToQuantum(quantum));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushCharPixel(p,&quantum);
-          *index=ScaleCharToQuantum(quantum);
+          SetBlackPixelComponent(index,ScaleCharToQuantum(quantum));
         }
       break;
     }
@@ -311,23 +311,24 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushShortPixel(MSBEndian,p,&quantum);
-      pixel->red=(Quantum) (quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
-      p=PushShortPixel(MSBEndian,p,&quantum);
-      pixel->green=(Quantum) (quantum >> (image->depth-
+      SetRedPixelComponent(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       p=PushShortPixel(MSBEndian,p,&quantum);
-      pixel->blue=(Quantum) (quantum >> (image->depth-
+      SetGreenPixelComponent(pixel,quantum >> (image->depth-
+        MAGICKCORE_QUANTUM_DEPTH));
+      p=PushShortPixel(MSBEndian,p,&quantum);
+      SetBluePixelComponent(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       if (image->matte != MagickFalse)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          pixel->opacity=(Quantum) (quantum >> (image->depth-
+          SetOpacityPixelComponent(pixel,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          *index=(IndexPacket) (quantum >> (image->depth-
+          SetBlackPixelComponent(index,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
@@ -338,23 +339,24 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushLongPixel(MSBEndian,p,&quantum);
-      pixel->red=(Quantum) (quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
-      p=PushLongPixel(MSBEndian,p,&quantum);
-      pixel->green=(Quantum) (quantum >> (image->depth-
+      SetRedPixelComponent(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       p=PushLongPixel(MSBEndian,p,&quantum);
-      pixel->blue=(Quantum) (quantum >> (image->depth-
+      SetGreenPixelComponent(pixel,quantum >> (image->depth-
+        MAGICKCORE_QUANTUM_DEPTH));
+      p=PushLongPixel(MSBEndian,p,&quantum);
+      SetBluePixelComponent(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       if (image->matte != MagickFalse)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          pixel->opacity=(Quantum) (quantum >> (image->depth-
+          SetOpacityPixelComponent(pixel,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          *index=(IndexPacket) (quantum >> (image->depth-
+          SetIndexPixelComponent(index,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
@@ -997,8 +999,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ssize_t
                       units;
 
-                    units=ParseCommandOption(MagickResolutionOptions,MagickFalse,
-                      options);
+                    units=ParseCommandOption(MagickResolutionOptions,
+                      MagickFalse,options);
                     if (units < 0)
                       break;
                     image->units=(ResolutionType) units;
