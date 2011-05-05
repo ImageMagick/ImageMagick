@@ -1,3 +1,6 @@
+2011-05-04  6.6.9-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.9-8.
+
 2011-05-02  6.6.9-8 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed some cut-and-paste errors in new png.c code that caused PNG8
     reductions to fail.
