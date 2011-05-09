@@ -1158,8 +1158,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   F *= resample_filter->support;
 
   /* Orthogonal bounds of the ellipse */
-  resample_filter->Ulimit = sqrt(4*C*F/(4*A*C-B*B));
-  resample_filter->Vlimit = sqrt(4*A*F/(4*A*C-B*B));
+  resample_filter->Ulimit = sqrt(C*F/(A*C-.25*B*B));
+  resample_filter->Vlimit = sqrt(A*F/(A*C-.25*B*B));
 
   /* Horizontally aligned parallelogram fitted to Ellipse */
   resample_filter->Uwidth = sqrt(F/A); /* Half of the parallelogram width */
