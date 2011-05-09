@@ -40,7 +40,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '6.6.9 Q16 '
+      echo '6.6.9 Q16 HDRI'
       ;;
     --cflags)
       echo "-I${includedir} -fopenmp"
@@ -55,7 +55,7 @@ while test $# -gt 0; do
       echo '-L/usr/local/lib '
       ;;
     --libs)
-      echo "-L${libdir} -lMagick++ -lMagickWand -lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"
+      echo "-L${libdir} -lMagick++ -lMagickWand -lMagickCore -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -ldjvulibre -lfftw3 -lfontconfig -lwmf -lwmflite -lXext -lXt -lSM -lICE -lX11 -lbz2 -pthread -lIlmImf -lz -lImath -lHalf -lIex -lIlmThread -pthread -lrsvg-2 -lgdk_pixbuf-2.0 -lm -lcairo -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"
       ;;
     *)
       echo "${usage}" 1>&2

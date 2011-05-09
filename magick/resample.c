@@ -815,7 +815,7 @@ static inline void ClampUpAxes(const double dux,
    * pulling pixel locations in the output image back to locations in
    * the input image. Jinv is
    *
-   *   Jinb = [ a, b ] = [ dx/dX, dx/dY ]
+   *   Jinv = [ a, b ] = [ dx/dX, dx/dY ]
    *          [ c, d ]   [ dy/dX, dy/dY ]
    *
    * Note: Jinv can be computed from J with the following matrix
