@@ -1158,12 +1158,12 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   F *= resample_filter->support;
 
   /* Orthogonal bounds of the ellipse */
-  resample_filter->Ulimit = sqrt(C*F/(A*C-.25*B*B));
-  resample_filter->Vlimit = sqrt(A*F/(A*C-.25*B*B));
+  resample_filter->Ulimit = sqrt(C*F/(A*C-0.25*B*B));
+  resample_filter->Vlimit = sqrt(A*F/(A*C-0.25*B*B));
 
   /* Horizontally aligned parallelogram fitted to Ellipse */
   resample_filter->Uwidth = sqrt(F/A); /* Half of the parallelogram width */
-  resample_filter->slope = -B/(2*A); /* Reciprocal slope of the parallelogram */
+  resample_filter->slope = -B/(2.0*A); /* Reciprocal slope of the parallelogram */
 
 #if DEBUG_ELLIPSE
   fprintf(stderr, "Ulimit=%lf; Vlimit=%lf; UWidth=%lf; Slope=%lf;\n",
