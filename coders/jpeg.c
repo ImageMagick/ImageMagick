@@ -209,7 +209,7 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
 %
 */
 
-static MagickBooleanType EmitMessage(j_common_ptr jpeg_info,int level)
+static MagickBooleanType JPEGMessageHandler(j_common_ptr jpeg_info,int level)
 {
   char
     message[JMSG_LENGTH_MAX];
@@ -301,7 +301,7 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
   ErrorManager
     *error_manager;
 
-  (void) EmitMessage(jpeg_info,0);
+  (void) JPEGMessageHandler(jpeg_info,0);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   longjmp(error_manager->error_recovery,1);
 }
@@ -934,7 +934,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
   error_manager.image=image;
@@ -1726,7 +1726,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   error_manager.image=image;
   jpeg_pixels=(JSAMPLE *) NULL;
