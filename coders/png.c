@@ -7013,6 +7013,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     ping_need_colortype_warning,
 
     status,
+    tried_332,
     tried_333,
     tried_444;
 
@@ -7202,15 +7203,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* Normally we run this just once, but in the case of writing PNG8
    * we reduce the transparency to binary and run again, then if there
    * are still too many colors we reduce to a simple 4-4-4-1, then 3-3-3-1
-   * RGBA palette and run again, and finally to a simple 3-3-2-1 RGBA
-   * palette.  The final reduction can only fail if there are still 256
-   * colors present and one of them has both transparent and opaque instances.
+   * RGBA palette and run again, and then to a simple 3-3-2-1 RGBA
+   * palette.  Then (To do) we take care of a final reduction that is only
+   * needed if there are still 256 colors present and one of them has both
+   * transparent and opaque instances.
    */
 
+  tried_332 = MagickFalse;
   tried_333 = MagickFalse;
   tried_444 = MagickFalse;
 
-  for (j=0; j<5; j++)
+  for (j=0; j<6; j++)
   {
     /* BUILD_PALETTE
      *
@@ -7759,9 +7762,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-              SetOpacityPixelComponent(r,
-              ((GetOpacityPixelComponent(r) > TransparentOpacity/2) ?
-                   TransparentOpacity : OpaqueOpacity));
+              if (GetOpacityPixelComponent(r) > TransparentOpacity/2)
+                {
+                  SetOpacityPixelComponent(r,TransparentOpacity);
+                  SetRGBPixelComponents(r,image->background_color);
+                }
+              else
+                  SetOpacityPixelComponent(r,OpaqueOpacity);
               r++;
           }
   
@@ -7814,11 +7821,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetOpacityPixelComponent(r) == TransparentOpacity)
-                {
-                  SetRGBPixelComponents(r,image->background_color);
-                }
-              else
+              if (GetOpacityPixelComponent(r) == OpaqueOpacity)
                 {
                   hi4=ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xf0;
                   SetRedPixelComponent(r,ScaleCharToQuantum((hi4 | (hi4 >>
@@ -7895,11 +7898,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetOpacityPixelComponent(r) == TransparentOpacity)
-                {
-                  SetRGBPixelComponents(r,image->background_color);
-                }
-              else
+              if (GetOpacityPixelComponent(r) == OpaqueOpacity)
                 {
                   hi3=ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xe0;
                   hi2=hi3 & 0xc0;
@@ -7947,11 +7946,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         continue;
       }
 
-    if (image_colors == 0 || image_colors > 256)
+    if (tried_332 == MagickFalse && (image_colors == 0 || image_colors > 256))
       {
         if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    Quantizing the background color to 3-3-2");
+
+        tried_332 = MagickTrue;
 
         /* Red and green were already done so we only quantize the blue
          * channel
@@ -7977,11 +7978,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetOpacityPixelComponent(r) == TransparentOpacity)
-                {
-                  SetRGBPixelComponents(r,image->background_color);
-                }
-              else
+              if (GetOpacityPixelComponent(r) == OpaqueOpacity)
                 {
                   hi2=ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0;
                   SetBluePixelComponent(r,ScaleCharToQuantum(
@@ -8011,6 +8008,62 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       continue;
     }
     break;
+
+    if (image_colors == 0 || image_colors > 256)
+    {
+      /* Take care of special case with 256 colors + 1 transparent
+       * color.  We don't need to quantize to 2-3-2-1; we only need to
+       * eliminate one color, so we'll merge the two darkest red
+       * colors (0x49, 0, 0) -> (0x24, 0, 0).
+       */
+      if (ScaleQuantumToChar(image->background_color.red) == 0x49 &&
+          ScaleQuantumToChar(image->background_color.green) == 0x00 &&
+          ScaleQuantumToChar(image->background_color.blue) == 0x00)
+      {
+         image->background_color.red=ScaleCharToQuantum(0x24);
+      }
+  
+      if (image->colormap == NULL)
+      {
+        for (y=0; y < (ssize_t) image->rows; y++)
+        {
+          r=GetAuthenticPixels(image,0,y,image->columns,1,
+              exception);
+  
+          if (r == (PixelPacket *) NULL)
+            break;
+  
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            if (ScaleQuantumToChar(GetRedPixelComponent(r)) == 0x49 &&
+                ScaleQuantumToChar(GetGreenPixelComponent(r)) == 0x00 &&
+                ScaleQuantumToChar(GetBluePixelComponent(r)) == 0x00 &&
+                GetOpacityPixelComponent(r) == OpaqueOpacity)
+              {
+                SetRedPixelComponent(r,ScaleCharToQuantum(0x24));
+              }
+            r++;
+          }
+      
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+             break;
+  
+        }
+      }
+
+      else
+      {
+         for (i=0; i<image_colors; i++)
+         {
+            if (ScaleQuantumToChar(image->colormap[i].red) == 0x49 &&
+                ScaleQuantumToChar(image->colormap[i].green) == 0x00 &&
+                ScaleQuantumToChar(image->colormap[i].blue) == 0x00)
+            {
+               image->colormap[i].red=ScaleCharToQuantum(0x24);
+            }
+         }
+      }
+    }
   }
   /* END OF BUILD_PALETTE */
 
