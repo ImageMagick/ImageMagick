@@ -523,7 +523,7 @@ static struct
     { "AutoGamma", { {"channel", MagickChannelOptions} } },
     { "AutoLevel", { {"channel", MagickChannelOptions} } },
     { "LevelColors", { {"invert", MagickBooleanOptions},
-      {"black-point", RealReference}, {"white-point", RealReference},
+      {"black-point", StringReference}, {"white-point", StringReference},
       {"channel", MagickChannelOptions}, {"invert", MagickBooleanOptions} } },
     { "Clamp", { {"channel", MagickChannelOptions} } },
     { "Filter", { {"kernel", StringReference},
@@ -10500,7 +10500,7 @@ Mogrify(ref,...)
             white_point;
 
           (void) QueryMagickColor("#000000",&black_point,exception);
-          (void) QueryMagickColor("#ffffff",&black_point,exception);
+          (void) QueryMagickColor("#ffffff",&white_point,exception);
           if (attribute_flag[1] != 0)
              (void) QueryMagickColor(argument_list[1].string_reference,
                &black_point,exception);
