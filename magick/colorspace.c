@@ -451,7 +451,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           ConvertRGBToHSL(GetRedPixelComponent(q),GetGreenPixelComponent(q),
-            GetRedPixelComponent(q),&hue,&saturation,&lightness);
+            GetBluePixelComponent(q),&hue,&saturation,&lightness);
           SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
             QuantumRange*hue));
           SetGreenPixelComponent(q,ClampToQuantum((MagickRealType)
