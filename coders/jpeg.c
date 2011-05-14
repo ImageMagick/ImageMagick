@@ -118,6 +118,9 @@ typedef struct _ErrorManager
   Image
     *image;
 
+  MagickBooleanType
+    finished;
+
   jmp_buf
     error_recovery;
 } ErrorManager;
@@ -209,34 +212,6 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
 %
 */
 
-static MagickBooleanType JPEGMessageHandler(j_common_ptr jpeg_info,int level)
-{
-  char
-    message[JMSG_LENGTH_MAX];
-
-  ErrorManager
-    *error_manager;
-
-  Image
-    *image;
-
-  (jpeg_info->err->format_message)(jpeg_info,message);
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
-  if (level < 0)
-    {
-      if ((jpeg_info->err->num_warnings == 0) ||
-          (jpeg_info->err->trace_level >= 3))
-        ThrowBinaryException(CorruptImageWarning,(char *) message,
-          image->filename);
-      jpeg_info->err->num_warnings++;
-    }
-  else
-    if (jpeg_info->err->trace_level >= level)
-      ThrowBinaryException(CoderError,(char *) message,image->filename);
-  return(MagickTrue);
-}
-
 static boolean FillInputBuffer(j_decompress_ptr cinfo)
 {
   SourceManager
@@ -296,14 +271,74 @@ static MagickBooleanType IsITUFaxImage(const Image *image)
   return(MagickFalse);
 }
 
-static void JPEGErrorHandler(j_common_ptr jpeg_info)
+static MagickBooleanType JPEGErrorHandler(j_common_ptr jpeg_info)
 {
+  char
+    message[JMSG_LENGTH_MAX];
+
   ErrorManager
     *error_manager;
 
-  (void) JPEGMessageHandler(jpeg_info,0);
+  Image
+    *image;
+
+  *message='\0';
   error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
+  if (image->debug != MagickFalse)
+    {
+      /*
+        Log trace message.
+      */
+      (jpeg_info->err->format_message)(jpeg_info,message);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "[%s] JPEG Trace: \"%s\"",image->filename,message);
+    }
+  if (error_manager->finished != MagickFalse)
+    ThrowBinaryException(CorruptImageWarning,(char *) message,image->filename)
+  else
+    ThrowBinaryException(CorruptImageError,(char *) message,image->filename);
   longjmp(error_manager->error_recovery,1);
+}
+
+static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
+{
+  char
+    message[JMSG_LENGTH_MAX];
+
+  ErrorManager
+    *error_manager;
+
+  Image
+    *image;
+
+  *message='\0';
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
+  if (level < 0)
+    {
+      /*
+        Process warning message.
+      */
+      (jpeg_info->err->format_message)(jpeg_info,message);
+      if ((jpeg_info->err->num_warnings == 0) ||
+          (jpeg_info->err->trace_level >= 3))
+        ThrowBinaryException(CorruptImageWarning,(char *) message,
+          image->filename);
+      jpeg_info->err->num_warnings++;
+    }
+  else
+    if ((image->debug != MagickFalse) &&
+        (level >= jpeg_info->err->trace_level))
+      {
+        /*
+          Process trace message.
+        */
+        (jpeg_info->err->format_message)(jpeg_info,message);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "[%s] JPEG Trace: \"%s\"",image->filename,message);
+      }
+  return(MagickTrue);
 }
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
@@ -934,7 +969,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&jpeg_info,0,sizeof(jpeg_info));
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
   error_manager.image=image;
@@ -1292,12 +1327,20 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
-      break;
+      {
+        jpeg_abort_decompress(&jpeg_info);
+        break;
+      }
   }
+  if (status != MagickFalse)
+    {
+      error_manager.finished=MagickTrue;
+      if (setjmp(error_manager.error_recovery) == 0)
+        (void) jpeg_finish_decompress(&jpeg_info);
+    }
   /*
     Free jpeg resources.
   */
-  (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
   jpeg_pixels=(unsigned char *) RelinquishMagickMemory(jpeg_pixels);
   (void) CloseBlob(image);
@@ -1726,7 +1769,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   error_manager.image=image;
   jpeg_pixels=(JSAMPLE *) NULL;
