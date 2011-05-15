@@ -303,7 +303,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         q=(PixelPacket *) GetCacheViewVirtualPixelQueue(image_view);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        alpha=QuantumScale*((double) QuantumRange-GetOpacityPixelComponent(q));
+        alpha=QuantumScale*GetAlphaPixelComponent(q);
         SetRedPixelComponent(q,ClampToQuantum(alpha*GetRedPixelComponent(q)));
         SetGreenPixelComponent(q,ClampToQuantum(alpha*
           GetGreenPixelComponent(q)));
