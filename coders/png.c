@@ -3290,18 +3290,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"CorruptImage");
     }
 
-#if 0 /* This is probably redundant now */
-  if (LocaleCompare(image_info->magick,"PNG8") == 0)
-    {
-      (void) SetImageType(image,PaletteType);
-
-      if (image->matte != MagickFalse)
-        {
-          /* To do: Reduce to binary transparency */
-        }
-    }
-#endif
-
   if (LocaleCompare(image_info->magick,"PNG24") == 0)
     {
       (void) SetImageType(image,TrueColorType);
@@ -7167,12 +7155,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "    Reducing PNG bit depth to 8 since this is a Q8 build.");
 
       image->depth=8;
-    }
-#endif
-
-#if 0 /* To do: Option to use the original colormap */
-  if (ping_preserve_colormap != MagickFalse)
-    {
     }
 #endif
 
