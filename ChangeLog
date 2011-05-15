@@ -1,3 +1,12 @@
+2011-05-15  6.6.9-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.6.9-9.
+
+2011-05-14  6.6.9-9 Cristy  <quetzlzacatenango@image...>
+  * The -scale option nows considers the alpha channel when scaling.
+  * Don't use comma as a separator for stroked text (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18742).
+  * Fix transient bug for HSL to RGB and back.
+
 2011-05-12  6.6.9-9 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed PNG8 reduction to work with an image that reduces to 256 colors
     plus transparency, by merging the two darkest red colors.

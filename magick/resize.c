@@ -2833,6 +2833,9 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     *y_vector,
     zero;
 
+  MagickRealType
+    alpha;
+
   PointInfo
     scale,
     span;
@@ -2926,6 +2929,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       exception);
     if (q == (PixelPacket *) NULL)
       break;
+    alpha=1.0;
     scale_indexes=GetCacheViewAuthenticIndexQueue(scale_view);
     if (scale_image->rows == image->rows)
       {
@@ -2939,14 +2943,16 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         indexes=GetCacheViewVirtualIndexQueue(image_view);
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
-          x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
-          x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
+          if (image->matte != MagickFalse)
+            alpha=QuantumScale*GetAlphaPixelComponent(p);
+          x_vector[x].red=(MagickRealType) (alpha*GetRedPixelComponent(p));
+          x_vector[x].green=(MagickRealType) (alpha*GetGreenPixelComponent(p));
+          x_vector[x].blue=(MagickRealType) (alpha*GetBluePixelComponent(p));
           if (image->matte != MagickFalse)
             x_vector[x].opacity=(MagickRealType) GetOpacityPixelComponent(p);
           if (indexes != (IndexPacket *) NULL)
-            x_vector[x].index=(MagickRealType) GetIndexPixelComponent(
-              indexes+x);
+            x_vector[x].index=(MagickRealType) (alpha*
+              GetIndexPixelComponent(indexes+x));
           p++;
         }
       }
@@ -2970,15 +2976,20 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               indexes=GetCacheViewVirtualIndexQueue(image_view);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
-                x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
-                x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
+                if (image->matte != MagickFalse)
+                  alpha=QuantumScale*GetAlphaPixelComponent(p);
+                x_vector[x].red=(MagickRealType) (alpha*
+                  GetRedPixelComponent(p));
+                x_vector[x].green=(MagickRealType) (alpha*
+                  GetGreenPixelComponent(p));
+                x_vector[x].blue=(MagickRealType) (alpha*
+                  GetBluePixelComponent(p));
                 if (image->matte != MagickFalse)
                   x_vector[x].opacity=(MagickRealType)
                     GetOpacityPixelComponent(p);
                 if (indexes != (IndexPacket *) NULL)
-                  x_vector[x].index=(MagickRealType) GetIndexPixelComponent(
-                    indexes+x);
+                  x_vector[x].index=(MagickRealType) (alpha*
+                    GetIndexPixelComponent(indexes+x));
                 p++;
               }
               number_rows++;
@@ -3009,15 +3020,20 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             indexes=GetCacheViewVirtualIndexQueue(image_view);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              x_vector[x].red=(MagickRealType) GetRedPixelComponent(p);
-              x_vector[x].green=(MagickRealType) GetGreenPixelComponent(p);
-              x_vector[x].blue=(MagickRealType) GetBluePixelComponent(p);
+              if (image->matte != MagickFalse)
+                alpha=QuantumScale*GetAlphaPixelComponent(p);
+              x_vector[x].red=(MagickRealType) (alpha*
+                GetRedPixelComponent(p));
+              x_vector[x].green=(MagickRealType) (alpha*
+                GetGreenPixelComponent(p));
+              x_vector[x].blue=(MagickRealType) (alpha*
+                GetBluePixelComponent(p));
               if (image->matte != MagickFalse)
                 x_vector[x].opacity=(MagickRealType)
                   GetOpacityPixelComponent(p);
               if (indexes != (IndexPacket *) NULL)
-                x_vector[x].index=(MagickRealType) GetIndexPixelComponent(
-                  indexes+x);
+                x_vector[x].index=(MagickRealType) (alpha*
+                  GetIndexPixelComponent(indexes+x));
               p++;
             }
             number_rows++;
@@ -3059,13 +3075,17 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         s=scanline;
         for (x=0; x < (ssize_t) scale_image->columns; x++)
         {
-          SetRedPixelComponent(q,ClampToQuantum(s->red));
-          SetGreenPixelComponent(q,ClampToQuantum(s->green));
-          SetBluePixelComponent(q,ClampToQuantum(s->blue));
+          if (scale_image->matte != MagickFalse)
+            alpha=QuantumScale*(QuantumRange-s->opacity);
+          alpha=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
+          SetRedPixelComponent(q,ClampToQuantum(alpha*s->red));
+          SetGreenPixelComponent(q,ClampToQuantum(alpha*s->green));
+          SetBluePixelComponent(q,ClampToQuantum(alpha*s->blue));
           if (scale_image->matte != MagickFalse)
             SetOpacityPixelComponent(q,ClampToQuantum(s->opacity));
           if (scale_indexes != (IndexPacket *) NULL)
-            SetIndexPixelComponent(scale_indexes+x,ClampToQuantum(s->index));
+            SetIndexPixelComponent(scale_indexes+x,ClampToQuantum(alpha*
+              s->index));
           q++;
           s++;
         }
@@ -3155,13 +3175,17 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       t=scale_scanline;
       for (x=0; x < (ssize_t) scale_image->columns; x++)
       {
-        SetRedPixelComponent(q,ClampToQuantum(t->red));
-        SetGreenPixelComponent(q,ClampToQuantum(t->green));
-        SetBluePixelComponent(q,ClampToQuantum(t->blue));
+        if (scale_image->matte != MagickFalse)
+          alpha=QuantumScale*(QuantumRange-s->opacity);
+        alpha=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
+        SetRedPixelComponent(q,ClampToQuantum(alpha*t->red));
+        SetGreenPixelComponent(q,ClampToQuantum(alpha*t->green));
+        SetBluePixelComponent(q,ClampToQuantum(alpha*t->blue));
         if (scale_image->matte != MagickFalse)
           SetOpacityPixelComponent(q,ClampToQuantum(t->opacity));
         if (scale_indexes != (IndexPacket *) NULL)
-          SetIndexPixelComponent(scale_indexes+x,ClampToQuantum(t->index));
+          SetIndexPixelComponent(scale_indexes+x,ClampToQuantum(alpha*
+            t->index));
         t++;
         q++;
       }
