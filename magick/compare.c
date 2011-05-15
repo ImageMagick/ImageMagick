@@ -1076,19 +1076,23 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   }
   distortion[CompositeChannels]=0.0;
   if ((channel & RedChannel) != 0)
-    distortion[CompositeChannels]+=distortion[RedChannel]*distortion[RedChannel];
+    distortion[CompositeChannels]+=distortion[RedChannel]*
+      distortion[RedChannel];
   if ((channel & GreenChannel) != 0)
-    distortion[CompositeChannels]+=distortion[GreenChannel]*distortion[GreenChannel];
+    distortion[CompositeChannels]+=distortion[GreenChannel]*
+      distortion[GreenChannel];
   if ((channel & BlueChannel) != 0)
-    distortion[CompositeChannels]+=distortion[BlueChannel]*distortion[BlueChannel];
+    distortion[CompositeChannels]+=distortion[BlueChannel]*
+      distortion[BlueChannel];
   if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
     distortion[CompositeChannels]+=distortion[OpacityChannel]*
       distortion[OpacityChannel];
   if (((channel & IndexChannel) != 0) &&
       (image->colorspace == CMYKColorspace))
-    distortion[CompositeChannels]+=distortion[BlackChannel]*distortion[BlackChannel];
-  distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]/GetNumberChannels(image,
-    channel));
+    distortion[CompositeChannels]+=distortion[BlackChannel]*
+      distortion[BlackChannel];
+  distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]/
+    GetNumberChannels(image,channel));
   /*
     Free resources.
   */
