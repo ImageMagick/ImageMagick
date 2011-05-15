@@ -157,38 +157,38 @@
 </div>
 <div class="sep"></div>
 <div  class="menu">
-  <a title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
+  <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
 <a href="http://www.networkredux.com">
   <img src="../images/networkredux.png" alt="[sponsor]"
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201109010090 alexanian media -->
+  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201109010090 alexanian media -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
+  <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
+  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
+  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
+  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-  <a title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
+  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011070100030 autoteile-Carparts-->
+   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
 </div>
 </div>
 </div>
@@ -3796,30 +3796,41 @@ animation, or a fully-'coalesced' animation sequence. </p>
   <tr valign="top">
     <td valign="top">merge</td>
     <td valign="top">As 'flatten' method but merging all the given image
-        layers into a new layer image just large enough to hold all the image
-        without clipping or extra space. The new images virtual offset will
-        prevere the position of the new layer, even if this offset is
-        negative.  the virtual canvas size of the first image is preserved.
+        layers to create a new layer image just large enough to hold all the
+        image without clipping or extra space. The new images virtual offset
+        will preserve the position of the new layer, even if this offset is
+        negative.  The virtual canvas size of the first image is preserved.
         </td>
-    </tr>
+  </tr>
 
-     <tr><td></td><td>Caution is advised when handling image layers with negative offsets
-        as few image file formats handle them correctly. </td>
+  <tr><td></td><td>Caution is advised when handling image layers with
+        negative offsets as few image file formats handle them correctly.
+        Following this operation methd with <a href="#repage" >+repage</a>
+        will remove the layer offset, and create a image in which all the
+        overlaid image positions relative to each other is preserved, though
+        not nessaraily exactly where you specified them.
+        </td>
+  </tr>
+
+  <tr><td></td><td>See also 'trim-bounds' below whcih is closely related but
+        without  doing the'flatten' to merge the images together. </td>
   </tr>
 
   <tr valign="top">
     <td valign="top">mosaic</td>
     <td valign="top">As 'flatten' method but expanding the initial canvas size
-        of the first image so as to hold all the image layers.  However as a
-        virtual canvas is 'locked' to the origin, by definition, image layers
-        with a negative offsets will still be clipped by the top and left
-        edges.</td>
+        of the first image in a positive direction only so as to hold all the
+        image layers.  However as a virtual canvas is 'locked' to the origin,
+        by its own definition, image layers with a negative offsets will still
+        become clipped by the top and left edges. See 'merge' or 'trim-bounds'
+        if this could be a problem. </td>
+
   </tr>
 
-  <tr><td></td><td>This method is commonly used to layout individual image using various
-        offset but without knowing the final canvas size. The resulting image
-        will, like 'flatten' not have any virtual offset, so can be saved to
-        any image file format. </td>
+  <tr><td></td><td>This method is commonly used to layout individual image
+        using various offset but without knowing the final canvas size. The
+        resulting image will, like 'flatten' not have any virtual offset, so
+        can be saved to any image file format. </td>
   </tr>
 
 
@@ -3840,8 +3851,8 @@ animation, or a fully-'coalesced' animation sequence. </p>
         the result will continue to animate properly. </td>
   </tr>
 
-  <tr><td></td><td> There is no guarantee that the best optimization is found. But
-        then no reasonably fast GIF optimization algorithm can do this.
+  <tr><td></td><td> There is no guarantee that the best optimization is found.
+        But then no reasonably fast GIF optimization algorithm can do this.
         However this does seem to do better than most other GIF frame
         optimizers seen. </td>
   </tr>
@@ -3858,11 +3869,12 @@ animation, or a fully-'coalesced' animation sequence. </p>
         '<kbd>optimize-frame</kbd>' technique. </td>
   </tr>
 
-  <tr><td></td><td>There is the possibility that the change in the disposal style will
-        result in a worsening in the optimization of later frames, though this
-        is unlikely. In other words there no guarantee that it is better than
-        the normal '<kbd>optimize-frame</kbd>' technique. For some animations
-        however you can get a vast improvement in the final animation size. </td>
+  <tr><td></td><td>There is the possibility that the change in the disposal
+        style will result in a worsening in the optimization of later frames,
+        though this is unlikely. In other words there no guarantee that it is
+        better than the normal '<kbd>optimize-frame</kbd>' technique. For some
+        animations however you can get a vast improvement in the final
+        animation size. </td>
   </tr>
 
   <tr valign="top">
@@ -3873,10 +3885,10 @@ animation, or a fully-'coalesced' animation sequence. </p>
         </td>
   </tr>
 
-  <tr><td></td><td>This should allow a existing frame optimized GIF animation to compress
-        into a smaller file size due to larger areas of one (transparent)
-        color rather than a pattern of multiple colors repeating the current
-        disposed image of the last frame. </td>
+  <tr><td></td><td>This should allow a existing frame optimized GIF animation
+        to compress into a smaller file size due to larger areas of one
+        (transparent) color rather than a pattern of multiple colors repeating
+        the current disposed image of the last frame. </td>
   </tr>
 
   <tr valign="top">
@@ -3886,10 +3898,10 @@ animation, or a fully-'coalesced' animation sequence. </p>
         </td>
   </tr>
 
-   <tr><td></td><td>Usually this a result of using a constant time delay across the
-        whole animation, or after a larger animation was split into smaller
-        sub-animations.  The duplicate frames could also have been used as
-        part of some frame optimization methods. </td>
+   <tr><td></td><td>Usually this a result of using a constant time delay
+        across the whole animation, or after a larger animation was split into
+        smaller sub-animations.  The duplicate frames could also have been
+        used as part of some frame optimization methods. </td>
   </tr>
 
   <tr valign="top">
@@ -3899,23 +3911,29 @@ animation, or a fully-'coalesced' animation sequence. </p>
         warning is then issued). </td>
   </tr>
 
-  <tr><td></td><td>In a GIF animation, such images are usually frames which provide
-        partial intermediary updates between the frames that are actually
-        displayed to users.  These frames are usally added for improved frame
-        optimization in GIF animations. </td>
+  <tr><td></td><td>In a GIF animation, such images are usually frames which
+        provide partial intermediary updates between the frames that are
+        actually displayed to users.  These frames are usally added for
+        improved frame optimization in GIF animations. </td>
   </tr>
 
   <tr valign="top">
     <td valign="top">trim-bounds</td>
     <td valign="top">Find the bounds of all the images in the current
         image sequence, then adjust the offsets so all images are contained on
-        a minimal positive canvas. None of the image data is modified, only
-        there virtual canvas size and offset.  The all the image is given
-        the same canvas size, and and will have a positive offset, but will
-        remain in the same position relative to each other. As a result of the
-        minimal canvas size at least one image will touch every edge of that
-        canvas.  The image data however may be transparent.
-        </td>
+        a minimal positive canvas. None of the image data is modified or
+        merged, only the individual image virtual canvas size and offset.
+        All the images is given the same canvas size, and and will have
+        a positive offset, but will remain in the same position relative to
+        each other. As a result of the minimal canvas size at least one image
+        will touch every edge of that canvas.  The image data touching those
+        edges however may be transparent.  </td>
+  </tr>
+
+  <tr><td></td><td>The result is much like if you used 'merge' followed by a
+        <a href="#repage" >+repage</a> option, except that all the images
+        have been kept separate.  If 'flatten' is used after using
+        'trim-bounds' you will get the same result.  </td>
   </tr>
 
   </tbody>
@@ -3925,10 +3943,11 @@ animation, or a fully-'coalesced' animation sequence. </p>
 
 <p>The operators <a href="#coalesce" >-coalesce</a>, <a href="#deconstruct"
 >-deconstruct</a>, <a href="#flatten" >-flatten</a>, and <a href="#mosaic"
->-mosaic</a> are only aliases for the above methods.  Also see  <a
-href="#page" >-page</a>,  <a href="#repage" >-repage</a> operators, the <a
-href="#compose" >-compose</a> setting, and the GIF <a href="#dispose"
->-dispose</a> and  <a href="#delay" >-delay</a> settings. </p>
+>-mosaic</a> are only aliases for the above methods and may be depreciated in
+the future.  Also see  <a href="#page" >-page</a>,  <a href="#repage"
+>-repage</a> operators, the <a href="#compose" >-compose</a> setting, and the
+GIF <a href="#dispose" >-dispose</a> and  <a href="#delay" >-delay</a>
+settings. </p>
 
 
 <div style="margin: auto;">
