@@ -6697,11 +6697,14 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetRedPixelComponent(q,q->red <= pixel.red ? 0 : QuantumRange);
-        SetGreenPixelComponent(q,q->green <= pixel.green ? 0 : QuantumRange);
-        SetBluePixelComponent(q,q->blue <= pixel.blue ? 0 : QuantumRange);
-        SetOpacityPixelComponent(q,q->opacity <= pixel.opacity ? 0 :
-          QuantumRange);
+        SetRedPixelComponent(q,(MagickRealType) q->red <= pixel.red
+          ? 0 : QuantumRange);
+        SetGreenPixelComponent(q,(MagickRealType) q->green <= pixel.green
+          ? 0 : QuantumRange);
+        SetBluePixelComponent(q,(MagickRealType) q->blue <= pixel.blue
+          ?  0 : QuantumRange);
+        SetOpacityPixelComponent(q,(MagickRealType) q->opacity <= pixel.opacity
+          ? 0 : QuantumRange);
         q++;
       }
     if (!SyncAuthenticPixels(image,&image->exception))

@@ -191,7 +191,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   value=strtod(p,&q);
   (void) value;
   if (LocaleNCompare(p,"0x",2) == 0)
-    value=strtol(p,&q,10);
+    value=(double) strtol(p,&q,10);
   if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == '\0'))
     {
       /*

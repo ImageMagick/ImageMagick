@@ -49,16 +49,16 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (GetOpacityPixelComponent(p) != OpaqueOpacity))
+      (p->opacity != OpaqueOpacity))
     return(MagickFalse);
   if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
       (q->opacity != OpaqueOpacity))
     return(MagickFalse);
   if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
     {
-      if (GetOpacityPixelComponent(p) != q->opacity)
+      if (p->opacity != q->opacity)
         return(MagickFalse);
-      if (GetOpacityPixelComponent(p) == TransparentOpacity)
+      if (p->opacity == TransparentOpacity)
         return(MagickTrue);
     }
   if (p->red != q->red)
@@ -71,16 +71,16 @@ static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
     return(MagickFalse);
 #else
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (fabs(GetOpacityPixelComponent(p)-OpaqueOpacity) > 0.5))
+      (fabs(p->opacity-OpaqueOpacity) > 0.5))
     return(MagickFalse);
   if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
       (fabs(q->opacity-OpaqueOpacity)) > 0.5)
     return(MagickFalse);
   if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
     {
-      if (fabs(GetOpacityPixelComponent(p)-q->opacity) > 0.5)
+      if (fabs(p->opacity-q->opacity) > 0.5)
         return(MagickFalse);
-      if (fabs(GetOpacityPixelComponent(p)-TransparentOpacity) <= 0.5)
+      if (fabs(p->opacity-TransparentOpacity) <= 0.5)
         return(MagickTrue);
     }
   if (fabs(p->red-q->red) > 0.5)

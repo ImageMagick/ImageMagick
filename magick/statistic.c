@@ -806,8 +806,8 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
               random_info[id],GetOpacityPixelComponent(q),op,value)));
           else
             SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-
-              ApplyEvaluateOperator(random_info[id],GetAlphaPixelComponent(q),
-              op,value)));
+              ApplyEvaluateOperator(random_info[id],(Quantum)
+              GetAlphaPixelComponent(q),op,value)));
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
         SetIndexPixelComponent(indexes+x,ClampToQuantum(ApplyEvaluateOperator(
