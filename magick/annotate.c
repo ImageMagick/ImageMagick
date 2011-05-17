@@ -1308,13 +1308,18 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if ((draw_info->stroke.opacity != TransparentOpacity) ||
           (draw_info->stroke_pattern != (Image *) NULL))
         {
+          const char
+            *locale;
+
           /*
             Trace the glyph.
           */
           annotate_info->affine.tx=glyph.origin.x/64.0;
           annotate_info->affine.ty=glyph.origin.y/64.0;
+          locale=setlocale(LC_NUMERIC,"C");
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->
             outline,&OutlineMethods,annotate_info);
+          (void) setlocale(LC_NUMERIC,locale);
         }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
