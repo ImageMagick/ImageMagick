@@ -2980,14 +2980,19 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   n=ReadBlob(image,MaxTextExtent,message);
   if (n > 0)
     {
+      const char
+        *locale;
+
       svg_info->parser=xmlCreatePushParserCtxt(sax_handler,svg_info,(char *)
         message,n,image->filename);
+      locale=setlocale(LC_NUMERIC,"C");
       while ((n=ReadBlob(image,MaxTextExtent,message)) != 0)
       {
         status=xmlParseChunk(svg_info->parser,(char *) message,(int) n,0);
         if (status != 0)
           break;
       }
+      (void) setlocale(LC_NUMERIC,locale);
     }
   (void) xmlParseChunk(svg_info->parser,(char *) message,0,1);
   xmlFreeParserCtxt(svg_info->parser);
