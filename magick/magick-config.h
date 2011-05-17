@@ -800,6 +800,16 @@
 #define MAGICKCORE_HAVE_STRSTR 1
 #endif
 
+/* Define to 1 if you have the `strtod' function. */
+#ifndef MAGICKCORE_HAVE_STRTOD
+#define MAGICKCORE_HAVE_STRTOD 1
+#endif
+
+/* Define to 1 if you have the `strtod_l' function. */
+#ifndef MAGICKCORE_HAVE_STRTOD_L
+#define MAGICKCORE_HAVE_STRTOD_L 1
+#endif
+
 /* Define to 1 if you have the `strtol' function. */
 #ifndef MAGICKCORE_HAVE_STRTOL
 #define MAGICKCORE_HAVE_STRTOL 1
