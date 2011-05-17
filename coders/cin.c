@@ -408,8 +408,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   size_t
-    length,
-    lsb_first;
+    length;
 
   ssize_t
     count,
@@ -444,10 +443,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((count != 4) ||
       ((LocaleNCompare((char *) magick,"\200\052\137\327",4) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  image->endian=LSBEndian;
-  lsb_first=1;
-  if ((int) (*(char *) &lsb_first) != 0)
-    image->endian=MSBEndian;
+  image->endian=(magick[0]==0x80) && (magick[1]==0x2a) && (magick[2]==0x5f) &&
+    (magick[3]==0xd7) ? MSBEndian : LSBEndian;
   cin.file.image_offset=ReadBlobLong(image);
   offset+=4;
   cin.file.generic_length=ReadBlobLong(image);
