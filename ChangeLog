@@ -1,10 +1,12 @@
+2011-05-16  6.6.9-10 Cristy  <quetzlzacatenango@image...>
+  * Don't use comma as a separator for stroked text (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18742).
+
 2011-05-15  6.6.9-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-9.
 
 2011-05-14  6.6.9-9 Cristy  <quetzlzacatenango@image...>
   * The -scale option now considers the alpha channel when scaling.
-  * Don't use comma as a separator for stroked text (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18742).
   * Fix transient bug for HSL to RGB and back.
 
 2011-05-12  6.6.9-9 Glenn Randers-Pehrson <glennrp@image...>
