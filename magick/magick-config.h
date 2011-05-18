@@ -529,6 +529,11 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
 
+/* Define to 1 if you have the `newlocale' function. */
+#ifndef MAGICKCORE_HAVE_NEWLOCALE
+#define MAGICKCORE_HAVE_NEWLOCALE 1
+#endif
+
 /* Define to 1 if you have the <OpenCL/cl.h> header file. */
 /* #undef HAVE_OPENCL_CL_H */
 
@@ -1036,6 +1041,11 @@
 /* Define to 1 if `vfork' works. */
 #ifndef MAGICKCORE_HAVE_WORKING_VFORK
 #define MAGICKCORE_HAVE_WORKING_VFORK 1
+#endif
+
+/* Define to 1 if you have the <xlocale.h> header file. */
+#ifndef MAGICKCORE_HAVE_XLOCALE_H
+#define MAGICKCORE_HAVE_XLOCALE_H 1
 #endif
 
 /* Define to 1 if the system has the type `_Bool'. */

@@ -451,7 +451,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         undercolor_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         undercolor_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         (void) FormatMagickString(primitive,MaxTextExtent,
-          "rectangle 0.0 0.0 %g %.20g",metrics.origin.x,(double) height);
+          "rectangle 0,0 %g,%.20g",metrics.origin.x,(double) height);
         (void) CloneString(&undercolor_info->primitive,primitive);
         (void) DrawImage(image,undercolor_info);
         (void) DestroyDrawInfo(undercolor_info);
@@ -459,7 +459,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
     (void) FormatMagickString(primitive,MaxTextExtent,"stroke-width %g "
-      "line 0.0 0.0 %g 0.0",metrics.underline_thickness,metrics.width);
+      "line 0,0 %g,0",metrics.underline_thickness,metrics.width);
     if (annotate->decorate == OverlineDecoration)
       {
         annotate_info->affine.ty-=(draw_info->affine.sy*(metrics.ascent+
@@ -791,7 +791,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),"Metrics: text: %s; "
       "width: %g; height: %g; ascent: %g; descent: %g; max advance: %g; "
-      "bounds: %g %g  %g %g; origin: %g %g; pixels per em: %g %g; "
+      "bounds: %g,%g  %g,%g; origin: %g,%g; pixels per em: %g,%g; "
       "underline position: %g; underline thickness: %g",annotate_info->text,
       metrics->width,metrics->height,metrics->ascent,metrics->descent,
       metrics->max_advance,metrics->bounds.x1,metrics->bounds.y1,
@@ -951,7 +951,7 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
 
   affine=draw_info->affine;
   (void) FormatMagickString(path,MaxTextExtent,
-    "C%g %g %g %g %g %g",affine.tx+p->x/64.0,affine.ty-
+    "C%g,%g %g,%g %g,%g",affine.tx+p->x/64.0,affine.ty-
     p->y/64.0,affine.tx+q->x/64.0,affine.ty-q->y/64.0,affine.tx+to->x/64.0,
     affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
@@ -967,7 +967,7 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"L%g %g",affine.tx+
+  (void) FormatMagickString(path,MaxTextExtent,"L%g,%g",affine.tx+
     to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
@@ -982,7 +982,7 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"M%g %g",affine.tx+
+  (void) FormatMagickString(path,MaxTextExtent,"M%g,%g",affine.tx+
     to->x/64.0,affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
@@ -998,7 +998,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  (void) FormatMagickString(path,MaxTextExtent,"Q%g %g %g %g",
+  (void) FormatMagickString(path,MaxTextExtent,"Q%g,%g %g,%g",
     affine.tx+control->x/64.0,affine.ty-control->y/64.0,affine.tx+to->x/64.0,
     affine.ty-to->y/64.0);
   (void) ConcatenateString(&draw_info->primitive,path);
