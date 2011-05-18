@@ -8748,7 +8748,7 @@ Mogrify(ref,...)
             (void) GammaImage(image,argument_list[0].string_reference);
           else
             (void) GammaImageChannel(image,channel,
-              StringToDouble(argument_list[0].string_reference));
+              StringToDouble(argument_list[0].string_reference,(char **) NULL));
           break;
         }
         case 41:  /* Map */
