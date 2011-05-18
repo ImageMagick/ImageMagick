@@ -1977,6 +1977,37 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S t r i n g T o D o u b l e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StringToDouble() returns the contents of a file as a string.
+%
+%  The format of the StringToDouble method is:
+%
+%      double StringToDouble(const char *value,char **sentinal)
+%
+%  A description of each parameter follows:
+%
+%    o value:  the string value.
+%
+%    o sentinal:  if sentinal is not NULL, a pointer to the character after the
+%      last character used in the conversion is stored in the location
+%      referenced by sentinal.
+%
+*/
+MagickExport double StringToDouble(const char *value,char **sentinal)
+{
+  return(strtod(value,sentinal));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S t r i n g I n f o T o H e x S t r i n g                                 %
 %                                                                             %
 %                                                                             %

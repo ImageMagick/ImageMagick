@@ -57,6 +57,9 @@ extern MagickExport char
 extern MagickExport const char
   *GetStringInfoPath(const StringInfo *);
 
+extern MagickExport double
+  StringToDouble(const char *,char **);
+
 extern MagickExport int
   CompareStringInfo(const StringInfo *,const StringInfo *),
   LocaleCompare(const char *,const char *),

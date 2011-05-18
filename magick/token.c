@@ -46,6 +46,7 @@
 #include "magick/image.h"
 #include "magick/memory_.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/token-private.h"
 #include "magick/utility.h"
@@ -228,7 +229,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
         char
           *q;
 
-        value=strtod(p,&q);
+        value=StringToDouble(p,&q);
         (void) value;
         if ((p != q) && (*p != ','))
           {
