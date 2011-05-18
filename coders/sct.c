@@ -204,9 +204,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   separations_mask=ReadBlobMSBShort(image);
   count=ReadBlob(image,14,buffer);
   buffer[14]='\0';
-  height=StringToDouble((char *) buffer);
+  height=StringToDouble((char *) buffer,(char **) NULL);
   count=ReadBlob(image,14,buffer);
-  width=StringToDouble((char *) buffer);
+  width=StringToDouble((char *) buffer,(char **) NULL);
   count=ReadBlob(image,12,buffer);
   buffer[12]='\0';
   image->rows=StringToUnsignedLong((char *) buffer);

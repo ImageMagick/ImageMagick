@@ -2105,14 +2105,14 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
               break;
             if (entry != 8)
               {
-                degrees=StringToDouble(RotateMenu[entry]);
+                degrees=StringToDouble(RotateMenu[entry],(char **) NULL);
                 break;
               }
             (void) XDialogWidget(display,windows,"OK","Enter rotation angle:",
               angle);
             if (*angle == '\0')
               break;
-            degrees=StringToDouble(angle);
+            degrees=StringToDouble(angle,(char **) NULL);
             break;
           }
           case AnnotateHelpCommand:
@@ -4042,7 +4042,7 @@ static MagickBooleanType XCompositeImage(Display *display,
               GXinvert);
             if (*factor == '\0')
               break;
-            blend=StringToDouble(factor);
+            blend=StringToDouble(factor,(char **) NULL);
             compose=DissolveCompositeOp;
             break;
           }
@@ -10055,7 +10055,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
               (DrawInfo *) NULL);
-            draw_info->fill.opacity=ClampToQuantum(StringToDouble(matte));
+            draw_info->fill.opacity=ClampToQuantum(StringToDouble(matte,
+              (char **) NULL));
             (void) FloodfillPaintImage(*image,OpacityChannel,draw_info,&target,
               (ssize_t) x_offset,(ssize_t) y_offset,
               method == FloodfillMethod ? MagickFalse : MagickTrue);

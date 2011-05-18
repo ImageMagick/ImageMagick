@@ -188,7 +188,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   if (*p == '\0')
     return(flags);
   q=p;
-  value=strtod(p,&q);
+  value=StringToDouble(p,&q);
   (void) value;
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
@@ -201,7 +201,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       if (LocaleNCompare(p,"0x",2) == 0)
         *width=(size_t) strtol(p,&p,10);
       else
-        *width=(size_t) floor(strtod(p,&p)+0.5);
+        *width=(size_t) floor(StringToDouble(p,&p)+0.5);
       if (p != q)
         flags|=WidthValue;
     }
@@ -214,7 +214,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
             Parse height.
           */
           q=p;
-          *height=(size_t) floor(strtod(p,&p)+0.5);
+          *height=(size_t) floor(StringToDouble(p,&p)+0.5);
           if (p != q)
             flags|=HeightValue;
         }
@@ -227,7 +227,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       if (*p == '-')
         flags|=XNegative;
       q=p;
-      *x=(ssize_t) ceil(strtod(p,&p)-0.5);
+      *x=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
       if (p != q)
         flags|=XValue;
       if ((*p == '+') || (*p == '-'))
@@ -238,7 +238,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
           if (*p == '-')
             flags|=YNegative;
           q=p;
-          *y=(ssize_t) ceil(strtod(p,&p)-0.5);
+          *y=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
           if (p != q)
             flags|=YValue;
         }
@@ -553,7 +553,7 @@ MagickExport MagickBooleanType IsSceneGeometry(const char *geometry,
   if (geometry == (const char *) NULL)
     return(MagickFalse);
   p=(char *) geometry;
-  value=strtod(geometry,&p);
+  value=StringToDouble(geometry,&p);
   (void) value;
   if (p == geometry)
     return(MagickFalse);
@@ -662,12 +662,12 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
       GetMagickToken(p,&p,token);
     switch (i)
     {
-      case 0: affine_matrix->sx=StringToDouble(token); break;
-      case 1: affine_matrix->rx=StringToDouble(token); break;
-      case 2: affine_matrix->ry=StringToDouble(token); break;
-      case 3: affine_matrix->sy=StringToDouble(token); break;
-      case 4: affine_matrix->tx=StringToDouble(token); flags|=XValue; break;
-      case 5: affine_matrix->ty=StringToDouble(token); flags|=YValue; break;
+      case 0: affine_matrix->sx=StringToDouble(token,(char **) NULL); break;
+      case 1: affine_matrix->rx=StringToDouble(token,(char **) NULL); break;
+      case 2: affine_matrix->ry=StringToDouble(token,(char **) NULL); break;
+      case 3: affine_matrix->sy=StringToDouble(token,(char **) NULL); break;
+      case 4: affine_matrix->tx=StringToDouble(token,(char **) NULL); flags|=XValue; break;
+      case 5: affine_matrix->ty=StringToDouble(token,(char **) NULL); flags|=YValue; break;
     }
   }
   determinant=(affine_matrix->sx*affine_matrix->sy-affine_matrix->rx*
@@ -824,7 +824,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   if (*p == '\0')
     return(flags);
   q=p;
-  value=strtod(p,&q);
+  value=StringToDouble(p,&q);
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
   if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
@@ -837,7 +837,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       if (LocaleNCompare(p,"0x",2) == 0)
         value=(double) strtol(p,&p,10);
       else
-        value=strtod(p,&p);
+        value=StringToDouble(p,&p);
       if (p != q)
         {
           flags|=RhoValue;
@@ -858,7 +858,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           ((*p != '+') && (*p != '-')))
         {
           q=p;
-          value=strtod(p,&p);
+          value=StringToDouble(p,&p);
           if (p != q)
             {
               flags|=SigmaValue;
@@ -876,7 +876,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       if ((*p == ',') || (*p == '/') || (*p == ':'))
         p++;
       q=p;
-      value=strtod(p,&p);
+      value=StringToDouble(p,&p);
       if (p != q)
         {
           flags|=XiValue;
@@ -895,7 +895,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           if ((*p == ',') || (*p == '/') || (*p == ':'))
             p++;
           q=p;
-          value=strtod(p,&p);
+          value=StringToDouble(p,&p);
           if (p != q)
             {
               flags|=PsiValue;
@@ -915,7 +915,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           if ((*p == ',') || (*p == '/') || (*p == ':'))
             p++;
           q=p;
-          value=strtod(p,&p);
+          value=StringToDouble(p,&p);
           if (p != q)
             {
               flags|=ChiValue;

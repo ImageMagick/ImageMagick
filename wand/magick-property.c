@@ -1538,7 +1538,7 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
     while (((int) *p != 0) && ((isspace((int) ((unsigned char) *p)) != 0) ||
            (*p == ',')))
       p++;
-    sampling_factors[i]=StringToDouble(p);
+    sampling_factors[i]=StringToDouble(p,(char **) NULL);
     i++;
   }
   *number_factors=(size_t) i;

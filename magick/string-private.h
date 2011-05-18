@@ -31,7 +31,7 @@ static inline double SiPrefixToDouble(const char *string,const double interval)
     scale,
     value;
 
-  value=strtod(string,&q);
+  value=StringToDouble(string,&q);
   scale=1000.0;
   if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
     scale=1024.0;
@@ -49,11 +49,6 @@ static inline double SiPrefixToDouble(const char *string,const double interval)
     default:  break;
   }
   return(value);
-}
-
-static inline double StringToDouble(const char *value)
-{
-  return(strtod(value,(char **) NULL));
 }
 
 static inline int StringToInteger(const char *value)
