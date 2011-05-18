@@ -380,9 +380,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define MonoColorType  1
 #define RGBColorType  3
 
-  char
-    magick[4];
-
   CINInfo
     cin;
 
@@ -415,6 +412,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   unsigned char
+    magick[4],
     *pixels;
 
   /*
@@ -438,13 +436,13 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     File information.
   */
   offset=0;
-  count=ReadBlob(image,4,(unsigned char *) magick);
+  count=ReadBlob(image,4,magick);
   offset+=count;
   if ((count != 4) ||
       ((LocaleNCompare((char *) magick,"\200\052\137\327",4) != 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  image->endian=(magick[0]==0x80) && (magick[1]==0x2a) && (magick[2]==0x5f) &&
-    (magick[3]==0xd7) ? MSBEndian : LSBEndian;
+  image->endian=(magick[0] == 0x80) && (magick[1] == 0x2a) &&
+    (magick[2] == 0x5f) && (magick[3] == 0xd7) ? MSBEndian : LSBEndian;
   cin.file.image_offset=ReadBlobLong(image);
   offset+=4;
   cin.file.generic_length=ReadBlobLong(image);
