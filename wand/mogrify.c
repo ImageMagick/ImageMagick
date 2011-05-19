@@ -149,7 +149,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     if (LocaleCompare("debug",option+1) == 0)
       (void) SetLogEventMask(argv[++i]);
     if (LocaleCompare("duration",option+1) == 0)
-      duration=LocaleToDouble(argv[++i],(char **) NULL);
+      duration=InterpretLocaleValue(argv[++i],(char **) NULL);
     if (LocaleCompare("regard-warnings",option+1) == 0)
       regard_warnings=MagickTrue;
   }
@@ -512,7 +512,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
       error = MagickTrue;
       break;
     }
-    sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+    sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
     /* Y coordinate */
     token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,token);
     if ( token[0] == '\0' ) break;
@@ -523,7 +523,7 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
       error = MagickTrue;
       break;
     }
-    sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+    sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
     /* color values for this control point */
 #if 0
     if ( (color_from_image ) {
@@ -557,35 +557,35 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & GreenChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & BlueChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & IndexChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ( channels & OpacityChannel ) {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=LocaleToDouble(token,(char **) NULL);
+          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
       }
@@ -1393,7 +1393,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               GetMagickToken(p,&p,token);
               if (*token == ',')
                 GetMagickToken(p,&p,token);
-              arguments[x]=LocaleToDouble(token,(char **) NULL);
+              arguments[x]=InterpretLocaleValue(token,(char **) NULL);
             }
             args=DestroyString(args);
             mogrify_image=DistortImage(*image,method,number_arguments,arguments,
@@ -1698,7 +1698,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               GetMagickToken(p,&p,token);
               if (*token == ',')
                 GetMagickToken(p,&p,token);
-              parameters[x]=LocaleToDouble(token,(char **) NULL);
+              parameters[x]=InterpretLocaleValue(token,(char **) NULL);
             }
             arguments=DestroyString(arguments);
             (void) FunctionImageChannel(*image,channel,function,
@@ -1717,14 +1717,14 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '+')
-              (*image)->gamma=LocaleToDouble(argv[i+1],(char **) NULL);
+              (*image)->gamma=InterpretLocaleValue(argv[i+1],(char **) NULL);
             else
               {
                 if (strchr(argv[i+1],',') != (char *) NULL)
                   (void) GammaImage(*image,argv[i+1]);
                 else
                   (void) GammaImageChannel(*image,channel,
-                    LocaleToDouble(argv[i+1],(char **) NULL));
+                    InterpretLocaleValue(argv[i+1],(char **) NULL));
                 InheritException(exception,&(*image)->exception);
               }
             break;
@@ -1969,7 +1969,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("linewidth",option+1) == 0)
           {
-            draw_info->stroke_width=LocaleToDouble(argv[i+1],(char **) NULL);
+            draw_info->stroke_width=InterpretLocaleValue(argv[i+1],
+              (char **) NULL);
             break;
           }
         if (LocaleCompare("liquid-rescale",option+1) == 0)
@@ -2390,7 +2391,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             mogrify_image=RadialBlurImageChannel(*image,channel,
-              LocaleToDouble(argv[i+1],(char **) NULL),exception);
+              InterpretLocaleValue(argv[i+1],(char **) NULL),exception);
             break;
           }
         if (LocaleCompare("raise",option+1) == 0)
@@ -2881,7 +2882,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("strokewidth",option+1) == 0)
           {
-            draw_info->stroke_width=LocaleToDouble(argv[i+1],(char **) NULL);
+            draw_info->stroke_width=InterpretLocaleValue(argv[i+1],
+              (char **) NULL);
             break;
           }
         if (LocaleCompare("style",option+1) == 0)
@@ -4925,7 +4927,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            value=LocaleToDouble(argv[i],&p);
+            value=InterpretLocaleValue(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowMogrifyInvalidArgumentException(option,argv[i]);

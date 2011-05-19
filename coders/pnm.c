@@ -304,7 +304,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               scale[MaxTextExtent];
 
             (void) ReadBlobString(image,scale);
-            quantum_scale=LocaleToDouble(scale,(char **) NULL);
+            quantum_scale=InterpretLocaleValue(scale,(char **) NULL);
           }
         else
           {

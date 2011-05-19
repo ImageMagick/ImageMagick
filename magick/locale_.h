@@ -53,7 +53,7 @@ extern MagickExport const LocaleInfo
   **GetLocaleInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport double
-  LocaleToDouble(const char *,char **);
+  InterpretLocaleValue(const char *,char **);
 
 extern MagickExport LinkedListInfo
   *DestroyLocaleOptions(LinkedListInfo *),

@@ -6222,7 +6222,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
         CurrentContext->fill.opacity=ClampToQuantum((MagickRealType)
-          QuantumRange*(1.0-LocaleToDouble(value,(char **) NULL)));
+          QuantumRange*(1.0-InterpretLocaleValue(value,(char **) NULL)));
     }
   child=GetXMLTreeChild(xml_info,"fill-rule");
   if (child != (XMLTreeInfo *) NULL)
@@ -6243,7 +6243,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->pointsize=LocaleToDouble(value,(char **) NULL);
+        CurrentContext->pointsize=InterpretLocaleValue(value,(char **) NULL);
     }
   child=GetXMLTreeChild(xml_info,"font-stretch");
   if (child != (XMLTreeInfo *) NULL)
@@ -6339,7 +6339,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                CurrentContext->dash_pattern[j]=LocaleToDouble(token,(char **) NULL);
+                CurrentContext->dash_pattern[j]=InterpretLocaleValue(token,
+                  (char **) NULL);
               }
               if ((x & 0x01) != 0)
                 for ( ; j < (2*x); j++)
@@ -6354,7 +6355,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->dash_offset=LocaleToDouble(value,(char **) NULL);
+        CurrentContext->dash_offset=InterpretLocaleValue(value,(char **) NULL);
     }
   child=GetXMLTreeChild(xml_info,"stroke-linecap");
   if (child != (XMLTreeInfo *) NULL)
@@ -6385,14 +6386,14 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
         CurrentContext->stroke.opacity=ClampToQuantum((MagickRealType)
-          QuantumRange*(1.0-LocaleToDouble(value,(char **) NULL)));
+          QuantumRange*(1.0-InterpretLocaleValue(value,(char **) NULL)));
     }
   child=GetXMLTreeChild(xml_info,"stroke-width");
   if (child != (XMLTreeInfo *) NULL)
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke_width=LocaleToDouble(value,(char **) NULL);
+        CurrentContext->stroke_width=InterpretLocaleValue(value,(char **) NULL);
     }
   child=GetXMLTreeChild(xml_info,"text-align");
   if (child != (XMLTreeInfo *) NULL)

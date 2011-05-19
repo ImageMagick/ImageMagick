@@ -454,9 +454,24 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
               GetMagickToken(p,&p,token);
             switch (i)
             {
-              case 0: color_correction.red.slope=LocaleToDouble(token,(char **) NULL); break;
-              case 1: color_correction.green.slope=LocaleToDouble(token,(char **) NULL); break;
-              case 2: color_correction.blue.slope=LocaleToDouble(token,(char **) NULL); break;
+              case 0:
+              {
+                color_correction.red.slope=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
+              case 1:
+              {
+                color_correction.green.slope=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
+              case 2:
+              {
+                color_correction.blue.slope=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
             }
           }
         }
@@ -472,9 +487,24 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
               GetMagickToken(p,&p,token);
             switch (i)
             {
-              case 0: color_correction.red.offset=LocaleToDouble(token,(char **) NULL); break;
-              case 1: color_correction.green.offset=LocaleToDouble(token,(char **) NULL); break;
-              case 2: color_correction.blue.offset=LocaleToDouble(token,(char **) NULL); break;
+              case 0:
+              {
+                color_correction.red.offset=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
+              case 1:
+              {
+                color_correction.green.offset=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
+              case 2:
+              {
+                color_correction.blue.offset=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
             }
           }
         }
@@ -490,9 +520,24 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
               GetMagickToken(p,&p,token);
             switch (i)
             {
-              case 0: color_correction.red.power=LocaleToDouble(token,(char **) NULL); break;
-              case 1: color_correction.green.power=LocaleToDouble(token,(char **) NULL); break;
-              case 2: color_correction.blue.power=LocaleToDouble(token,(char **) NULL); break;
+              case 0:
+              {
+                color_correction.red.power=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
+              case 1:
+              {
+                color_correction.green.power=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
+              case 2:
+              {
+                color_correction.blue.power=InterpretLocaleValue(token,
+                  (char **) NULL);
+                break;
+              }
             }
           }
         }
@@ -509,7 +554,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
           content=GetXMLTreeContent(saturation);
           p=(const char *) content;
           GetMagickToken(p,&p,token);
-          color_correction.saturation=LocaleToDouble(token,(char **) NULL);
+          color_correction.saturation=InterpretLocaleValue(token,
+            (char **) NULL);
         }
     }
   ccc=DestroyXMLTree(ccc);
