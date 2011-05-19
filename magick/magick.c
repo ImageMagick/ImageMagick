@@ -958,14 +958,15 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
 #else
   (void) FormatLocaleFile(file,"   Format  Module    Mode  Description\n");
 #endif
-  (void) FormatLocaleFile(file,"--------------------------------------------------------"
+  (void) FormatLocaleFile(file,
+    "--------------------------------------------------------"
     "-----------------------\n");
   for (i=0; i < (ssize_t) number_formats; i++)
   {
     if (magick_info[i]->stealth != MagickFalse)
       continue;
-    (void) FormatLocaleFile(file,"%9s%c ",magick_info[i]->name != (char *) NULL ?
-      magick_info[i]->name : "",
+    (void) FormatLocaleFile(file,"%9s%c ",
+      magick_info[i]->name != (char *) NULL ? magick_info[i]->name : "",
       magick_info[i]->blob_support != MagickFalse ? '*' : ' ');
 #if defined(MAGICKCORE_MODULES_SUPPORT)
     {

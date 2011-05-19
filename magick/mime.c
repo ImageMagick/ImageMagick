@@ -676,7 +676,8 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
         if (mime_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",mime_info[i]->path);
         (void) FormatLocaleFile(file,"Type                   Description\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=mime_info[i]->path;

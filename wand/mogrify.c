@@ -368,8 +368,9 @@ static MagickBooleanType MonitorProgress(const char *text,
   if (locale_message == message)
     locale_message=tag;
   if (p == (char *) NULL)
-    (void) FormatLocaleFile(stderr,"%s: %ld of %lu, %02ld%% complete\r",locale_message,
-      (long) offset,(unsigned long) extent,(long) (100L*offset/(extent-1)));
+    (void) FormatLocaleFile(stderr,"%s: %ld of %lu, %02ld%% complete\r",
+      locale_message,(long) offset,(unsigned long) extent,(long)
+      (100L*offset/(extent-1)));
   else
     (void) FormatLocaleFile(stderr,"%s[%s]: %ld of %lu, %02ld%% complete\r",
       locale_message,p+1,(long) offset,(unsigned long) extent,(long)
@@ -3632,8 +3633,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"Version: %s\n",
             GetMagickVersion((size_t *) NULL));
-          (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
-          (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
+          (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+            GetMagickCopyright());
+          (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+            GetMagickFeatures());
           return(MagickFalse);
         }
     }
@@ -5952,8 +5955,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           {
             (void) FormatLocaleFile(stdout,"Version: %s\n",
               GetMagickVersion((size_t *) NULL));
-            (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
-            (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
+            (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+              GetMagickCopyright());
+            (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+              GetMagickFeatures());
             break;
           }
         if (LocaleCompare("view",option+1) == 0)
@@ -8265,7 +8270,8 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
   status=0;
 
 #if 0
-FormatLocaleFile(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,post?"post":"pre");
+  (void) FormatLocaleFile(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,
+    post?"post":"pre");
 #endif
 
   /*
@@ -8273,7 +8279,6 @@ FormatLocaleFile(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,post?"post":"
   */
   if (post == MagickFalse)
     status&=MogrifyImageList(image_info,argc,argv,images,exception);
-
   /*
     For each image, process simple single image operators
   */
@@ -8282,8 +8287,8 @@ FormatLocaleFile(stderr, "mogrify start %s %d (%s)\n",argv[0],argc,post?"post":"
   for (;;)
   {
 #if 0
-FormatLocaleFile(stderr, "mogrify %ld of %ld\n",
-  (long)GetImageIndexInList(*images),(long)GetImageListLength(*images));
+  (void) FormatLocaleFile(stderr,"mogrify %ld of %ld\n",(long)
+    GetImageIndexInList(*images),(long)GetImageListLength(*images));
 #endif
     status&=MogrifyImage(image_info,argc,argv,images,exception);
     proceed=SetImageProgress(*images,MogrifyImageTag,(MagickOffsetType) i, n);
@@ -8296,8 +8301,8 @@ FormatLocaleFile(stderr, "mogrify %ld of %ld\n",
   }
   assert( *images != (Image *) NULL );
 #if 0
-FormatLocaleFile(stderr, "mogrify end %ld of %ld\n",
-  (long)GetImageIndexInList(*images),(long)GetImageListLength(*images));
+  (void) FormatLocaleFile(stderr,"mogrify end %ld of %ld\n",(long)
+    GetImageIndexInList(*images),(long)GetImageListLength(*images));
 #endif
 
   /*

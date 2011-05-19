@@ -67,7 +67,8 @@ int main(int argc,char **argv)
 #define ThrowAPIException(wand) \
 { \
   description=MagickGetException(wand,&severity); \
-  (void) FormatLocaleFile(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  (void) FormatLocaleFile(stderr,"%s %s %lu %s\n",GetMagickModule(), \
+    description); \
   description=(char *) MagickRelinquishMemory(description); \
   exit(-1); \
 }
@@ -559,7 +560,8 @@ int main(int argc,char **argv)
     for (i=0; i < 9; i++)
       if (pixels[i] != primary_colors[i])
         {
-          (void) FormatLocaleFile(stderr,"Get pixels does not match set pixels\n");
+          (void) FormatLocaleFile(stderr,
+            "Get pixels does not match set pixels\n");
           exit(1);
         }
   }
@@ -575,7 +577,8 @@ int main(int argc,char **argv)
   }
   MagickResetIterator(magick_wand);
   (void) MagickSetIteratorIndex(magick_wand,4);
-  (void) FormatLocaleFile(stdout,"Utilitize pixel iterator to draw diagonal...\n");
+  (void) FormatLocaleFile(stdout,
+    "Utilitize pixel iterator to draw diagonal...\n");
   iterator=NewPixelIterator(magick_wand);
   if (iterator == (PixelIterator *) NULL)
     ThrowAPIException(magick_wand);
@@ -592,7 +595,8 @@ int main(int argc,char **argv)
   status=MagickWriteImages(magick_wand,"wandtest_out.miff",MagickTrue);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) FormatLocaleFile(stdout,"Change image format from \"MIFF\" to \"GIF\"...\n");
+  (void) FormatLocaleFile(stdout,
+    "Change image format from \"MIFF\" to \"GIF\"...\n");
   status=MagickSetImageFormat(magick_wand,"GIF");
   if (status == MagickFalse)
      ThrowAPIException(magick_wand);
@@ -636,7 +640,8 @@ int main(int argc,char **argv)
   status=MagickDeleteOption(magick_wand,"wand:custom-option");
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) FormatLocaleFile(stdout,"Set, list, get, and delete wand property...\n");
+  (void) FormatLocaleFile(stdout,
+    "Set, list, get, and delete wand property...\n");
   status=MagickSetImageProperty(magick_wand,"wand:custom-property",
     CustomProperty);
   if (status == MagickFalse)
@@ -662,7 +667,8 @@ int main(int argc,char **argv)
   status=MagickDeleteImageProperty(magick_wand,"wand:custom-property");
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) FormatLocaleFile(stdout,"Set, list, get, and remove sRGB color profile...\n");
+  (void) FormatLocaleFile(stdout,
+    "Set, list, get, and remove sRGB color profile...\n");
   status=MagickSetImageProfile(magick_wand,"sRGB",sRGBProfile,
     sizeof(sRGBProfile));
   if (status == MagickFalse)

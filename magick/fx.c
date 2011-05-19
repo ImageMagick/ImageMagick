@@ -2451,9 +2451,10 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
-            (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: %s=%.*g\n",
-              fx_info->images->filename,(double) x,(double) y,type,
-              subexpression,GetMagickPrecision(),(double) alpha);
+            (void) FormatLocaleFile(fx_info->file,
+              "%s[%.20g,%.20g].%s: %s=%.*g\n",fx_info->images->filename,
+               (double) x,(double) y,type,subexpression,GetMagickPrecision(),
+               (double) alpha);
           return(0.0);
         }
       break;

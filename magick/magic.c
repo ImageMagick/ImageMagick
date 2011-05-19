@@ -599,7 +599,8 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
         if (magic_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",magic_info[i]->path);
         (void) FormatLocaleFile(file,"Name      Offset Target\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=magic_info[i]->path;

@@ -5531,7 +5531,8 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
       default:
       {
         if (isalpha((int) ((unsigned char) attribute)) != 0)
-          (void) FormatLocaleFile(stderr,"attribute not recognized: %c\n",attribute);
+          (void) FormatLocaleFile(stderr,"attribute not recognized: %c\n",
+            attribute);
         break;
       }
     }

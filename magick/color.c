@@ -1984,9 +1984,11 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
       {
         if (color_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",color_info[i]->path);
-        (void) FormatLocaleFile(file,"Name                  Color                  "
+        (void) FormatLocaleFile(file,
+          "Name                  Color                  "
           "                       Compliance\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=color_info[i]->path;

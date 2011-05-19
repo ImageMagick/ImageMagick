@@ -1090,7 +1090,8 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
   GetPathComponent(module_path,HeadPath,path);
   (void) FormatLocaleFile(file,"\nPath: %s\n\n",path);
   (void) FormatLocaleFile(file,"Image Coder\n");
-  (void) FormatLocaleFile(file,"-------------------------------------------------"
+  (void) FormatLocaleFile(file,
+    "-------------------------------------------------"
     "------------------------------\n");
   for (i=0; i < (ssize_t) number_modules; i++)
   {
@@ -1116,7 +1117,8 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
   GetPathComponent(module_path,HeadPath,path);
   (void) FormatLocaleFile(file,"\nPath: %s\n\n",path);
   (void) FormatLocaleFile(file,"Image Filter\n");
-  (void) FormatLocaleFile(file,"-------------------------------------------------"
+  (void) FormatLocaleFile(file,
+    "-------------------------------------------------"
     "------------------------------\n");
   for (i=0; i < (ssize_t) number_modules; i++)
   {

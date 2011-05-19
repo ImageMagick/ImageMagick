@@ -691,11 +691,12 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
       resource_info.time_limit);
   (void) FormatLocaleFile(file,"File         Area       Memory          Map"
     "         Disk    Thread         Time\n");
-  (void) FormatLocaleFile(file,"--------------------------------------------------------"
+  (void) FormatLocaleFile(file,
+    "--------------------------------------------------------"
     "-----------------------\n");
-  (void) FormatLocaleFile(file,"%4g   %10s   %10s   %10s   %10s    %6g  %11s\n",(double)
-    resource_info.file_limit,area_limit,memory_limit,map_limit,disk_limit,
-    (double) resource_info.thread_limit,time_limit);
+  (void) FormatLocaleFile(file,"%4g   %10s   %10s   %10s   %10s    %6g  %11s\n",
+    (double) resource_info.file_limit,area_limit,memory_limit,map_limit,
+    disk_limit,(double) resource_info.thread_limit,time_limit);
   (void) fflush(file);
   UnlockSemaphoreInfo(resource_semaphore);
   return(MagickTrue);

@@ -394,7 +394,8 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(IsMagickThreadEqual(semaphore_info->id) != MagickFalse);
   if (semaphore_info->reference_count == 0)
     {
-      (void) FormatLocaleFile(stderr,"Warning: semaphore lock already unlocked!\n");
+      (void) FormatLocaleFile(stderr,
+        "Warning: semaphore lock already unlocked!\n");
       (void) fflush(stderr);
       return;
     }

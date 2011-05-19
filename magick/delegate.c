@@ -1136,7 +1136,8 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
         if (delegate_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",delegate_info[i]->path);
         (void) FormatLocaleFile(file,"Delegate                Command\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=delegate_info[i]->path;

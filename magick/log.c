@@ -642,8 +642,10 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
       {
         if (log_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",log_info[i]->path);
-        (void) FormatLocaleFile(file,"Filename       Generations     Limit  Format\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "Filename       Generations     Limit  Format\n");
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=log_info[i]->path;
