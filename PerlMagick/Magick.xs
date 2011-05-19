@@ -1034,7 +1034,7 @@ static double SiPrefixToDouble(const char *string,const double interval)
     scale,
     value;
 
-  value=LocaleToDouble(string,&q);
+  value=InterpretLocaleValue(string,&q);
   scale=1000.0;
   if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
     scale=1024.0;
@@ -8747,8 +8747,8 @@ Mogrify(ref,...)
           if (strchr(argument_list[0].string_reference,',') != (char *) NULL)
             (void) GammaImage(image,argument_list[0].string_reference);
           else
-            (void) GammaImageChannel(image,channel,
-              LocaleToDouble(argument_list[0].string_reference,(char **) NULL));
+            (void) GammaImageChannel(image,channel,InterpretLocaleValue(
+              argument_list[0].string_reference,(char **) NULL));
           break;
         }
         case 41:  /* Map */
