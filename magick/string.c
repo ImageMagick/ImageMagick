@@ -45,6 +45,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/list.h"
+#include "magick/locale-private.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/property.h"
@@ -1093,8 +1094,37 @@ MagickExport ssize_t FormatMagickStringList(char *string,const size_t length,
   int
     n;
 
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
+#if defined(MAGICKCORE_HAVE_VSNPRINTF_L)
+  {
+    locale_t
+      locale;
+
+    locale=AcquireMagickLocale();
+    if (locale == (locale_t) NULL)
+      n=vsnprintf(string,length,format,operands);
+    else
+      n=vsnprintf_l(string,length,format,operands);
+  }
+#elif defined(MAGICKCORE_HAVE_VSNPRINTF)
+#if defined(MAGICKCORE_HAVE_USELOCALE)
+  {
+    locale_t
+      locale,
+      previous_locale;
+
+    locale=AcquireMagickLocale();
+    if (locale == (locale_t) NULL)
+      n=vsnprintf(string,length,format,operands);
+    else
+      {
+        previous_locale=uselocale(locale);
+        n=vsnprintf(string,length,format,operands);
+        uselocale(previous_locale);
+      }
+  }
+#else
   n=vsnprintf(string,length,format,operands);
+#endif
 #else
   n=vsprintf(string,format,operands);
 #endif
@@ -1914,7 +1944,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   {
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
-    if (*p == '\0') 
+    if (*p == '\0')
       break;
     (*argc)++;
     if (*p == '"')
@@ -1983,7 +2013,10 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringToDouble() returns the contents of a file as a string.
+%  StringToDouble() interprets the string as a floating point number and
+%  returns its value as a double. If sentinal is not a null pointer, the
+%  method also sets the value pointed by sentinal to point to the first
+%  character after the number.
 %
 %  The format of the StringToDouble method is:
 %
@@ -1991,7 +2024,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  A description of each parameter follows:
 %
-%    o value:  the string value.
+%    o value: the string value.
 %
 %    o sentinal:  if sentinal is not NULL, a pointer to the character after the
 %      last character used in the conversion is stored in the location
@@ -2000,6 +2033,16 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 */
 MagickExport double StringToDouble(const char *value,char **sentinal)
 {
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
+  {
+    locale_t
+      locale;
+
+    locale=AcquireMagickLocale();
+    if (locale != (locale_t) NULL)
+      return(strtod_l(value,sentinal,locale));
+  }
+#endif
   return(strtod(value,sentinal));
 }
 

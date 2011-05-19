@@ -85,6 +85,9 @@ static SplayTreeInfo
 
 static volatile MagickBooleanType
   instantiate_locale = MagickFalse;
+
+static volatile locale_t
+  locale_cache = (locale_t) NULL;
 
 /*
   Forward declarations.
@@ -92,6 +95,37 @@ static volatile MagickBooleanType
 static MagickBooleanType
   InitializeLocaleList(ExceptionInfo *),
   LoadLocaleLists(const char *,const char *,ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A c q u i r e M a g i c k L o c a l e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireMagickLocale() allocates the C locale object, or (locale_t) 0 with
+%  errno set if it cannot be acquired.
+%
+%  The format of the AcquireMagickLocale method is:
+%
+%      locale_t AcquireMagickLocale(void)
+%
+*/
+MagickExport locale_t AcquireMagickLocale(void)
+{
+#if defined(MAGICKCORE_HAVE_NEWLOCALE)
+  if (locale_cache == (locale_t) NULL)
+    locale_cache=newlocale(LC_ALL_MASK,"C",(locale_t) 0);
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (locale_cache == (locale_t) NULL)
+    locale_cache=_create_locale(LC_ALL,"C");
+#endif
+  return(locale_cache);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,6 +161,37 @@ MagickExport LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
   assert(messages != (LinkedListInfo *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(DestroyLinkedList(messages,DestroyOptions));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e s t r o y M a g i c k L o c a l e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyMagickLocale() releases the resources allocated for a locale object
+%  returned by a call to the AcquireMagickLocale() method.
+%
+%  The format of the DestroyMagickLocale method is:
+%
+%      void DestroyMagickLocale(void)
+%
+*/
+MagickExport void DestroyMagickLocale(void)
+{
+#if defined(MAGICKCORE_HAVE_NEWLOCALE)
+  if (locale_cache != (locale_t) NULL)
+    freelocale(locale_cache);
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (locale_cache != (locale_t) NULL)
+    _free_locale(locale_cache);
+#endif
+  locale_cache=(locale_t) NULL;
 }
 
 /*
@@ -1091,8 +1156,7 @@ MagickExport void LocaleComponentTerminus(void)
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&locale_semaphore);
   LockSemaphoreInfo(locale_semaphore);
-  if (locale_list != (SplayTreeInfo *) NULL)
-    locale_list=DestroySplayTree(locale_list);
+  DestroyMagickLocale();
   instantiate_locale=MagickFalse;
   UnlockSemaphoreInfo(locale_semaphore);
   DestroySemaphoreInfo(&locale_semaphore);

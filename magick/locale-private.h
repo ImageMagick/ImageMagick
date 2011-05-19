@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore localre private methods.
+  MagickCore locale private methods.
 */
 #ifndef _MAGICKCORE_LOCALE_PRIVATE_H
 #define _MAGICKCORE_LOCALE_PRIVATE_H
@@ -21,6 +21,12 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+extern MagickExport locale_t
+  AcquireMagickLocale(void);
+
+extern MagickExport void
+  DestroyMagickLocale(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
