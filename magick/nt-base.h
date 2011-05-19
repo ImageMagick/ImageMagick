@@ -245,6 +245,16 @@ extern "C" {
 #if !defined(tempnam)
 #  define tempnam  _tempnam_s
 #endif
+#if !defined(vfprintf)
+#if !defined(_MSC_VER) || (defined(_MSC_VER) && (_MSC_VER < 1500))
+#define vfprintf  _vfprintf_s
+#endif
+#endif
+#if !defined(vfprintf_l)
+#if !defined(_MSC_VER) || (defined(_MSC_VER) && (_MSC_VER < 1500))
+#define vfprintf_l  _vfprintf_s_l
+#endif
+#endif
 #if !defined(vsnprintf)
 #if !defined(_MSC_VER) || (defined(_MSC_VER) && (_MSC_VER < 1500))
 #define vsnprintf  _vsnprintf_s
