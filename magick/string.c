@@ -1103,7 +1103,7 @@ MagickExport ssize_t FormatMagickStringList(char *string,const size_t length,
     if (locale == (locale_t) NULL)
       n=vsnprintf(string,length,format,operands);
     else
-      n=vsnprintf_l(string,length,format,operands);
+      n=vsnprintf_l(string,length,locale,format,operands);
   }
 #elif defined(MAGICKCORE_HAVE_VSNPRINTF)
 #if defined(MAGICKCORE_HAVE_USELOCALE)
