@@ -75,7 +75,7 @@ extern "C" {
 #endif
 
 #if !defined(access)
-#  define access(path,mode)  _access(path,mode)
+#  define access(path,mode)  _access_s(path,mode)
 #endif
 #if !defined(chdir)
 #  define chdir  _chdir
@@ -233,11 +233,16 @@ extern "C" {
 #  define telldir(directory)  NTTellDirectory(directory)
 #endif
 #if !defined(tempnam)
-#  define tempnam  _tempnam
+#  define tempnam  _tempnam_s
 #endif
 #if !defined(vsnprintf)
 #if !defined(_MSC_VER) || (defined(_MSC_VER) && (_MSC_VER < 1500))
-#define vsnprintf  _vsnprintf
+#define vsnprintf  _vsnprintf_s
+#endif
+#endif
+#if !defined(vsnprintf_l)
+#if !defined(_MSC_VER) || (defined(_MSC_VER) && (_MSC_VER < 1500))
+#define vsnprintf_l  _vsnprintf_s_l
 #endif
 #endif
 #if !defined(write)
