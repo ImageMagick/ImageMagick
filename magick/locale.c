@@ -83,11 +83,11 @@ static SemaphoreInfo
 static SplayTreeInfo
   *locale_list = (SplayTreeInfo *) NULL;
 
-static volatile MagickBooleanType
-  instantiate_locale = MagickFalse;
-
 static volatile locale_t
   c_locale = (locale_t) NULL;
+
+static volatile MagickBooleanType
+  instantiate_locale = MagickFalse;
 
 /*
   Forward declarations.
