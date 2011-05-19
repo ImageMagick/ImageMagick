@@ -1095,16 +1095,7 @@ MagickExport ssize_t FormatMagickStringList(char *string,const size_t length,
     n;
 
 #if defined(MAGICKCORE_HAVE_VSNPRINTF_L)
-  {
-    locale_t
-      locale;
-
-    locale=AcquireMagickLocale();
-    if (locale == (locale_t) NULL)
-      n=vsnprintf(string,length,format,operands);
-    else
-      n=vsnprintf_l(string,length,locale,format,operands);
-  }
+  n=vsnprintf_l(string,length,(locale_t) NULL,format,operands);
 #elif defined(MAGICKCORE_HAVE_VSNPRINTF)
 #if defined(MAGICKCORE_HAVE_USELOCALE)
   {
@@ -2034,14 +2025,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 MagickExport double StringToDouble(const char *value,char **sentinal)
 {
 #if defined(MAGICKCORE_HAVE_STRTOD_L)
-  {
-    locale_t
-      locale;
-
-    locale=AcquireMagickLocale();
-    if (locale != (locale_t) NULL)
-      return(strtod_l(value,sentinal,locale));
-  }
+  return(strtod_l(value,sentinal,(locale_t) NULL));
 #endif
   return(strtod(value,sentinal));
 }
