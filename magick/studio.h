@@ -180,6 +180,9 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
+#if defined(MAGICKCORE_HAVE_XLOCALE_H)
+# include <xlocale.h>
+#endif
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
