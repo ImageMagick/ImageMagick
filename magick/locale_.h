@@ -52,6 +52,9 @@ extern MagickExport const LocaleInfo
   *GetLocaleInfo_(const char *,ExceptionInfo *),
   **GetLocaleInfoList(const char *,size_t *,ExceptionInfo *);
 
+extern MagickExport double
+  LocaleToDouble(const char *,char **);
+
 extern MagickExport LinkedListInfo
   *DestroyLocaleOptions(LinkedListInfo *),
   *GetLocaleOptions(const char *,ExceptionInfo *);
@@ -59,6 +62,16 @@ extern MagickExport LinkedListInfo
 extern MagickExport MagickBooleanType
   ListLocaleInfo(FILE *,ExceptionInfo *),
   LocaleComponentGenesis(void);
+
+extern MagickExport ssize_t
+  FormatLocaleFile(FILE *,const char *,...)
+    magick_attribute((format (printf,2,3))),
+  FormatLocaleFileList(FILE *,const char *,va_list)
+    magick_attribute((format (printf,2,0))),
+  FormatLocaleString(char *,const size_t,const char *,...)
+    magick_attribute((format (printf,3,4))),
+  FormatLocaleStringList(char *,const size_t,const char *,va_list)
+    magick_attribute((format (printf,3,0)));
 
 extern MagickExport void
   LocaleComponentTerminus(void);

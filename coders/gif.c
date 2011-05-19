@@ -1181,7 +1181,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 else if (iptc == MagickTrue)
                   (void) CopyMagickString(name,"iptc",sizeof(name));
                 else
-                  (void) FormatMagickString(name,sizeof(name),"gif:%.11s",
+                  (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
                     header);
                 (void) SetImageProfile(image,name,profile);
                 info=(unsigned char *) RelinquishMagickMemory(info);

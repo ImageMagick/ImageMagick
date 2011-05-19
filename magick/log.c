@@ -230,7 +230,7 @@ MagickExport void CloseMagickLog(void)
   if (log_info->file != (FILE *) NULL)
     {
       if (log_info->append == MagickFalse)
-        (void) fprintf(log_info->file,"</log>\n");
+        (void) FormatLocaleFile(log_info->file,"</log>\n");
       (void) fclose(log_info->file);
       log_info->file=(FILE *) NULL;
     }
@@ -641,25 +641,25 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
         (LocaleCompare(path,log_info[i]->path) != 0))
       {
         if (log_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",log_info[i]->path);
-        (void) fprintf(file,"Filename       Generations     Limit  Format\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",log_info[i]->path);
+        (void) FormatLocaleFile(file,"Filename       Generations     Limit  Format\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=log_info[i]->path;
     if (log_info[i]->filename != (char *) NULL)
       {
-        (void) fprintf(file,"%s",log_info[i]->filename);
+        (void) FormatLocaleFile(file,"%s",log_info[i]->filename);
         for (j=(ssize_t) strlen(log_info[i]->filename); j <= 16; j++)
-          (void) fprintf(file," ");
+          (void) FormatLocaleFile(file," ");
       }
-    (void) fprintf(file,"%9g  ",(double) log_info[i]->generations);
+    (void) FormatLocaleFile(file,"%9g  ",(double) log_info[i]->generations);
     (void) FormatMagickSize(MegabytesToBytes(log_info[i]->limit),MagickFalse,
       limit);
-    (void) fprintf(file,"%8sB  ",limit);
+    (void) FormatLocaleFile(file,"%8sB  ",limit);
     if (log_info[i]->format != (char *) NULL)
-      (void) fprintf(file,"%s",log_info[i]->format);
-    (void) fprintf(file,"\n");
+      (void) FormatLocaleFile(file,"%s",log_info[i]->format);
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   log_info=(const LogInfo **) RelinquishMagickMemory((void *) log_info);
@@ -718,7 +718,7 @@ static void *DestroyLogElement(void *log_info)
   if (p->file != (FILE *) NULL)
     {
       if (p->append == MagickFalse)
-        (void) fprintf(p->file,"</log>\n");
+        (void) FormatLocaleFile(p->file,"</log>\n");
       (void) fclose(p->file);
       p->file=(FILE *) NULL;
     }
@@ -828,7 +828,7 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
         Translate event in "XML" format.
       */
       (void) FormatMagickTime(seconds,extent,timestamp);
-      (void) FormatMagickString(text,extent,
+      (void) FormatLocaleString(text,extent,
         "<entry>\n"
         "  <timestamp>%s</timestamp>\n"
         "  <elapsed-time>%lu:%02lu.%03lu</elapsed-time>\n"
@@ -931,13 +931,13 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
             q++;
             break;
           }
-        q+=FormatMagickString(q,extent,"%.20g",(double) (log_info->generation %
+        q+=FormatLocaleString(q,extent,"%.20g",(double) (log_info->generation %
           log_info->generations));
         break;
       }
       case 'l':
       {
-        q+=FormatMagickString(q,extent,"%.20g",(double) line);
+        q+=FormatLocaleString(q,extent,"%.20g",(double) line);
         break;
       }
       case 'm':
@@ -961,12 +961,12 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
       }
       case 'p':
       {
-        q+=FormatMagickString(q,extent,"%.20g",(double) getpid());
+        q+=FormatLocaleString(q,extent,"%.20g",(double) getpid());
         break;
       }
       case 'r':
       {
-        q+=FormatMagickString(q,extent,"%lu:%02lu.%03lu",(unsigned long)
+        q+=FormatLocaleString(q,extent,"%lu:%02lu.%03lu",(unsigned long)
           (elapsed_time/60.0),(unsigned long) floor(fmod(elapsed_time,60.0)),
           (unsigned long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
         break;
@@ -978,7 +978,7 @@ static char *TranslateEvent(const LogEventType magick_unused(type),
       }
       case 'u':
       {
-        q+=FormatMagickString(q,extent,"%0.3fu",user_time);
+        q+=FormatLocaleString(q,extent,"%0.3fu",user_time);
         break;
       }
       case 'v':
@@ -1068,7 +1068,7 @@ static char *TranslateFilename(const LogInfo *log_info)
             q++;
             break;
           }
-        q+=FormatMagickString(q,extent,"%.20g",(double) (log_info->generation %
+        q+=FormatLocaleString(q,extent,"%.20g",(double) (log_info->generation %
           log_info->generations));
         break;
       }
@@ -1079,7 +1079,7 @@ static char *TranslateFilename(const LogInfo *log_info)
       }
       case 'p':
       {
-        q+=FormatMagickString(q,extent,"%.20g",(double) getpid());
+        q+=FormatLocaleString(q,extent,"%.20g",(double) getpid());
         break;
       }
       case 'v':
@@ -1152,7 +1152,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
     }
   if ((log_info->handler_mask & ConsoleHandler) != 0)
     {
-      (void) fprintf(stderr,"%s\n",text);
+      (void) FormatLocaleFile(stderr,"%s\n",text);
       (void) fflush(stderr);
     }
   if ((log_info->handler_mask & DebugHandler) != 0)
@@ -1177,7 +1177,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
         (void) fstat(fileno(log_info->file),&file_info);
       if (file_info.st_size > (1024*1024*log_info->limit))
         {
-          (void) fprintf(log_info->file,"</log>\n");
+          (void) FormatLocaleFile(log_info->file,"</log>\n");
           (void) fclose(log_info->file);
           log_info->file=(FILE *) NULL;
         }
@@ -1204,22 +1204,22 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
           log_info->generation++;
           if (log_info->append == MagickFalse)
             {
-              (void) fprintf(log_info->file,"<?xml version=\"1.0\" "
+              (void) FormatLocaleFile(log_info->file,"<?xml version=\"1.0\" "
                 "encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-              (void) fprintf(log_info->file,"<log>\n");
+              (void) FormatLocaleFile(log_info->file,"<log>\n");
             }
         }
-      (void) fprintf(log_info->file,"%s\n",text);
+      (void) FormatLocaleFile(log_info->file,"%s\n",text);
       (void) fflush(log_info->file);
     }
   if ((log_info->handler_mask & StdoutHandler) != 0)
     {
-      (void) fprintf(stdout,"%s\n",text);
+      (void) FormatLocaleFile(stdout,"%s\n",text);
       (void) fflush(stdout);
     }
   if ((log_info->handler_mask & StderrHandler) != 0)
     {
-      (void) fprintf(stderr,"%s\n",text);
+      (void) FormatLocaleFile(stderr,"%s\n",text);
       (void) fflush(stderr);
     }
   text=(char  *) RelinquishMagickMemory(text);

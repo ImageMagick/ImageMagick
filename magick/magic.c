@@ -597,16 +597,16 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
         (LocaleCompare(path,magic_info[i]->path) != 0))
       {
         if (magic_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",magic_info[i]->path);
-        (void) fprintf(file,"Name      Offset Target\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",magic_info[i]->path);
+        (void) FormatLocaleFile(file,"Name      Offset Target\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=magic_info[i]->path;
-    (void) fprintf(file,"%s",magic_info[i]->name);
+    (void) FormatLocaleFile(file,"%s",magic_info[i]->name);
     for (j=(ssize_t) strlen(magic_info[i]->name); j <= 9; j++)
-      (void) fprintf(file," ");
-    (void) fprintf(file,"%6ld ",(long) magic_info[i]->offset);
+      (void) FormatLocaleFile(file," ");
+    (void) FormatLocaleFile(file,"%6ld ",(long) magic_info[i]->offset);
     if (magic_info[i]->target != (char *) NULL)
       {
         register ssize_t
@@ -614,12 +614,12 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
 
         for (j=0; magic_info[i]->target[j] != '\0'; j++)
           if (isprint((int) ((unsigned char) magic_info[i]->target[j])) != 0)
-            (void) fprintf(file,"%c",magic_info[i]->target[j]);
+            (void) FormatLocaleFile(file,"%c",magic_info[i]->target[j]);
           else
-            (void) fprintf(file,"\\%03o",(unsigned int)
+            (void) FormatLocaleFile(file,"\\%03o",(unsigned int)
               ((unsigned char) magic_info[i]->target[j]));
       }
-    (void) fprintf(file,"\n");
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   magic_info=(const MagicInfo **) RelinquishMagickMemory((void *) magic_info);

@@ -683,7 +683,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(pathname != NULL);
   property=AcquireString(pathname);
-  (void) FormatMagickString(property,MaxTextExtent,"8BIM:1999,2998:%s",
+  (void) FormatLocaleString(property,MaxTextExtent,"8BIM:1999,2998:%s",
     pathname);
   value=GetImageProperty(image,property);
   property=DestroyString(property);
@@ -708,7 +708,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     }
   if (inside == MagickFalse)
     (void) NegateImage(clip_mask,MagickFalse);
-  (void) FormatMagickString(clip_mask->magick_filename,MaxTextExtent,
+  (void) FormatLocaleString(clip_mask->magick_filename,MaxTextExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
   (void) SetImageClipMask(image,clip_mask);
   clip_mask=DestroyImage(clip_mask);
@@ -1772,7 +1772,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         q++;
         c=(*q);
         *q='\0';
-        (void) FormatMagickString(filename+(p-format),(size_t) (MaxTextExtent-
+        (void) FormatLocaleString(filename+(p-format),(size_t) (MaxTextExtent-
           (p-format)),p,value);
         *q=c;
         (void) ConcatenateMagickString(filename,q,MaxTextExtent);
@@ -4596,7 +4596,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     value=GetImageOption(image_info,option);
     if (value != (const char *) NULL)
       {
-        (void) FormatMagickString(property,MaxTextExtent,"%s",option);
+        (void) FormatLocaleString(property,MaxTextExtent,"%s",option);
         (void) SetImageArtifact(image,property,value);
       }
     option=GetNextImageOption(image_info);

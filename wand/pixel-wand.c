@@ -154,7 +154,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
       wand->name);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
     PixelWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -406,7 +406,7 @@ WandExport PixelWand *NewPixelWand(void)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatMagickString(wand->name,MaxTextExtent,"%s-%.20g",PixelWandId,
+  (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",PixelWandId,
     (double) wand->id);
   wand->exception=AcquireExceptionInfo();
   GetMagickPixelPacket((Image *) NULL,&wand->pixel);
@@ -747,15 +747,15 @@ WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(color,MaxTextExtent,"%g,%g,%g",
+  (void) FormatLocaleString(color,MaxTextExtent,"%g,%g,%g",
     (double) (QuantumScale*wand->pixel.red),
     (double) (QuantumScale*wand->pixel.green),
     (double) (QuantumScale*wand->pixel.blue));
   if (wand->pixel.colorspace == CMYKColorspace)
-    (void) FormatMagickString(color+strlen(color),MaxTextExtent,",%g",
+    (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.index));
   if (wand->pixel.matte != MagickFalse)
-    (void) FormatMagickString(color+strlen(color),MaxTextExtent,",%g",
+    (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.opacity));
   return(ConstantString(color));
 }

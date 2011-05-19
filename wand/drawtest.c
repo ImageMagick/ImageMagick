@@ -57,7 +57,7 @@
     severity; \
  \
   description=MagickGetException(wand,&severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  (void) FormatLocaleFile(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
   description=(char *) MagickRelinquishMemory(description); \
   exit(-1); \
 }

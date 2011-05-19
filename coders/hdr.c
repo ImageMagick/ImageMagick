@@ -292,7 +292,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) CopyMagickString(format,value,MaxTextExtent);
                   break;
                 }
-              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
               (void) SetImageProperty(image,tag,value);
               break;
             }
@@ -301,10 +301,10 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"gamma") == 0)
                 {
-                  image->gamma=StringToDouble(value,(char **) NULL);
+                  image->gamma=LocaleToDouble(value,(char **) NULL);
                   break;
                 }
-              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
               (void) SetImageProperty(image,tag,value);
               break;
             }
@@ -331,7 +331,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->chromaticity.white_point.y=white_point[1];
                   break;
                 }
-              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
               (void) SetImageProperty(image,tag,value);
               break;
             }
@@ -349,13 +349,13 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->rows=(size_t) height;
                   break;
                 }
-              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
               (void) SetImageProperty(image,tag,value);
               break;
             }
             default:
             {
-              (void) FormatMagickString(tag,MaxTextExtent,"hdr:%s",keyword);
+              (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
               (void) SetImageProperty(image,tag,value);
               break;
             }
@@ -693,22 +693,22 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   if ((property != (const char *) NULL) &&
       (strchr(property,'\n') == (char *) NULL))
     {
-      count=FormatMagickString(header,MaxTextExtent,"#%s\n",property);
+      count=FormatLocaleString(header,MaxTextExtent,"#%s\n",property);
       (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
     }
   property=GetImageProperty(image,"hdr:exposure");
   if (property != (const char *) NULL)
     {
-      count=FormatMagickString(header,MaxTextExtent,"EXPOSURE=%g\n",
+      count=FormatLocaleString(header,MaxTextExtent,"EXPOSURE=%g\n",
         atof(property));
       (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
     }
   if (image->gamma != 0.0)
     {
-      count=FormatMagickString(header,MaxTextExtent,"GAMMA=%g\n",image->gamma);
+      count=FormatLocaleString(header,MaxTextExtent,"GAMMA=%g\n",image->gamma);
       (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
     }
-  count=FormatMagickString(header,MaxTextExtent,
+  count=FormatLocaleString(header,MaxTextExtent,
     "PRIMARIES=%g %g %g %g %g %g %g %g\n",
     image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
     image->chromaticity.green_primary.x,image->chromaticity.green_primary.y,
@@ -717,7 +717,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
   length=CopyMagickString(header,"FORMAT=32-bit_rle_rgbe\n\n",MaxTextExtent);
   (void) WriteBlob(image,length,(unsigned char *) header);
-  count=FormatMagickString(header,MaxTextExtent,"-Y %.20g +X %.20g\n",
+  count=FormatLocaleString(header,MaxTextExtent,"-Y %.20g +X %.20g\n",
     (double) image->rows,(double) image->columns);
   (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
   /*

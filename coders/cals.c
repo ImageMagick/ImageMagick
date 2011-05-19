@@ -262,11 +262,11 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"group4:%s",
+  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"group4:%s",
     filename);
-  (void) FormatMagickString(message,MaxTextExtent,"%lux%lu",width,height);
+  (void) FormatLocaleString(message,MaxTextExtent,"%lux%lu",width,height);
   read_info->size=ConstantString(message);
-  (void) FormatMagickString(message,MaxTextExtent,"%lu",density);
+  (void) FormatLocaleString(message,MaxTextExtent,"%lu",density);
   read_info->density=ConstantString(message);
   read_info->orientation=(OrientationType) orientation;
   image=ReadImage(read_info,exception);
@@ -530,10 +530,10 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       orient_y=270;
     }
   }
-  (void) FormatMagickString(header,MaxTextExtent,"rorient: %03ld,%03ld",
+  (void) FormatLocaleString(header,MaxTextExtent,"rorient: %03ld,%03ld",
     (long) orient_x,(long) orient_y);
   count=WriteCALSRecord(image,header);
-  (void) FormatMagickString(header,MaxTextExtent,"rpelcnt: %06lu,%06lu",
+  (void) FormatLocaleString(header,MaxTextExtent,"rpelcnt: %06lu,%06lu",
     (unsigned long) image->columns,(unsigned long) image->rows);
   count=WriteCALSRecord(image,header);  
   density=200;
@@ -545,7 +545,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
       (void) ParseGeometry(image_info->density,&geometry_info);
       density=(size_t) floor(geometry_info.rho+0.5);
     }
-  (void) FormatMagickString(header,MaxTextExtent,"rdensty: %04lu",
+  (void) FormatLocaleString(header,MaxTextExtent,"rdensty: %04lu",
     (unsigned long) density);
   count=WriteCALSRecord(image,header);
   count=WriteCALSRecord(image,"notes: NONE");

@@ -1688,7 +1688,7 @@ MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
   /*
     Inject profile into image properties.
   */
-  (void) FormatMagickString(property,MaxTextExtent,"%s:sans",name);
+  (void) FormatLocaleString(property,MaxTextExtent,"%s:sans",name);
   (void) GetImageProperty(image,property);
   return(status);
 }

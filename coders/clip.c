@@ -170,7 +170,7 @@ static MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,&image->exception);
   if (LocaleCompare(write_info->magick,"CLIP") == 0)
-    (void) FormatMagickString(clip_image->filename,MaxTextExtent,"miff:%s",
+    (void) FormatLocaleString(clip_image->filename,MaxTextExtent,"miff:%s",
       write_info->filename);
   status=WriteImage(write_info,clip_image);
   clip_image=DestroyImage(clip_image);

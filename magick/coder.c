@@ -600,18 +600,18 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
         (LocaleCompare(path,coder_info[i]->path) != 0))
       {
         if (coder_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",coder_info[i]->path);
-        (void) fprintf(file,"Magick      Coder\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",coder_info[i]->path);
+        (void) FormatLocaleFile(file,"Magick      Coder\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=coder_info[i]->path;
-    (void) fprintf(file,"%s",coder_info[i]->magick);
+    (void) FormatLocaleFile(file,"%s",coder_info[i]->magick);
     for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 11; j++)
-      (void) fprintf(file," ");
+      (void) FormatLocaleFile(file," ");
     if (coder_info[i]->name != (char *) NULL)
-      (void) fprintf(file,"%s",coder_info[i]->name);
-    (void) fprintf(file,"\n");
+      (void) FormatLocaleFile(file,"%s",coder_info[i]->name);
+    (void) FormatLocaleFile(file,"\n");
   }
   coder_info=(const CoderInfo **) RelinquishMagickMemory((void *) coder_info);
   (void) fflush(file);

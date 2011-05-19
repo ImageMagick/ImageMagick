@@ -1390,14 +1390,14 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/image.h magick/image-private.h magick/image-view.c \
 	magick/image-view.h magick/layer.c magick/layer.h \
 	magick/list.c magick/list.h magick/locale.c magick/locale_.h \
-	magick/locale-private.h magick/log.c magick/log.h magick/mac.h \
-	magick/magic.c magick/magic.h magick/magick.c \
-	magick/magick-config.h magick/magick-type.h magick/magick.h \
-	magick/matrix.c magick/matrix.h magick/memory.c \
-	magick/memory_.h magick/methods.h magick/mime.c magick/mime.h \
-	magick/module.c magick/module.h magick/monitor.c \
-	magick/monitor.h magick/monitor-private.h magick/montage.c \
-	magick/montage.h magick/morphology.c magick/morphology.h \
+	magick/log.c magick/log.h magick/mac.h magick/magic.c \
+	magick/magic.h magick/magick.c magick/magick-config.h \
+	magick/magick-type.h magick/magick.h magick/matrix.c \
+	magick/matrix.h magick/memory.c magick/memory_.h \
+	magick/methods.h magick/mime.c magick/mime.h magick/module.c \
+	magick/module.h magick/monitor.c magick/monitor.h \
+	magick/monitor-private.h magick/montage.c magick/montage.h \
+	magick/morphology.c magick/morphology.h \
 	magick/morphology-private.h magick/nt-base.h \
 	magick/nt-feature.h magick/option.c magick/option.h \
 	magick/paint.c magick/paint.h magick/pixel.c magick/pixel.h \
@@ -3933,7 +3933,6 @@ MAGICK_BASE_SRCS = \
 	magick/list.h \
 	magick/locale.c \
 	magick/locale_.h \
-	magick/locale-private.h \
 	magick/log.c \
 	magick/log.h \
 	magick/mac.h \
@@ -4165,7 +4164,6 @@ MAGICK_NOINST_HDRS = \
 	magick/exception-private.h \
 	magick/fx-private.h \
 	magick/image-private.h \
-	magick/locale-private.h \
 	magick/mac.h \
 	magick/mime-private.h \
 	magick/monitor-private.h \

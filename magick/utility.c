@@ -279,7 +279,7 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
       char
         message[MaxTextExtent];
 
-      (void) FormatMagickString(message,MaxTextExtent,"%s:%s",format,filename);
+      (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",format,filename);
       (void) CopyMagickString(filename,message,MaxTextExtent);
       return;
     }
@@ -293,12 +293,12 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
       GetPathComponent(filename,RootPath,root);
       (void) CopyMagickString(filename,root,MaxTextExtent);
       GetPathComponent(filename,RootPath,root);
-      (void) FormatMagickString(filename,MaxTextExtent,"%s.%s.%s",root,format,
+      (void) FormatLocaleString(filename,MaxTextExtent,"%s.%s.%s",root,format,
         extension);
       return;
     }
   GetPathComponent(filename,RootPath,root);
-  (void) FormatMagickString(filename,MaxTextExtent,"%s.%s",root,format);
+  (void) FormatLocaleString(filename,MaxTextExtent,"%s.%s",root,format);
 }
 
 /*
@@ -954,12 +954,12 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
     ssize_t
       count;
 
-    (void) FormatMagickString(link_path,MaxTextExtent,"/proc/%.20g/exe",
+    (void) FormatLocaleString(link_path,MaxTextExtent,"/proc/%.20g/exe",
       (double) getpid());
     count=readlink(link_path,execution_path,PATH_MAX);
     if (count == -1)
       {
-        (void) FormatMagickString(link_path,MaxTextExtent,"/proc/%.20g/file",
+        (void) FormatLocaleString(link_path,MaxTextExtent,"/proc/%.20g/file",
           (double) getpid());
         count=readlink(link_path,execution_path,PATH_MAX);
       }
@@ -1024,7 +1024,7 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
         if (program_name == (char *) NULL)
           program_name=program_invocation_name;
         else
-          count=FormatMagickString(program_name,extent,"%s/%s",cwd,
+          count=FormatLocaleString(program_name,extent,"%s/%s",cwd,
             program_invocation_name);
       }
     if (count != -1)
@@ -2018,7 +2018,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
     }
   if (verbose != MagickFalse)
     {
-      (void) fprintf(stderr,"%s\n",command);
+      (void) FormatLocaleFile(stderr,"%s\n",command);
       (void) fflush(stderr);
     }
   shell_command=(char *) command;

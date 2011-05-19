@@ -280,7 +280,7 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   if ((semaphore_info->reference_count > 0) &&
       (IsMagickThreadEqual(semaphore_info->id) != MagickFalse))
     {
-      (void) fprintf(stderr,"Warning: unexpected recursive lock!\n");
+      (void) FormatLocaleFile(stderr,"Warning: unexpected recursive lock!\n");
       (void) fflush(stderr);
     }
 #endif
@@ -394,7 +394,7 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(IsMagickThreadEqual(semaphore_info->id) != MagickFalse);
   if (semaphore_info->reference_count == 0)
     {
-      (void) fprintf(stderr,"Warning: semaphore lock already unlocked!\n");
+      (void) FormatLocaleFile(stderr,"Warning: semaphore lock already unlocked!\n");
       (void) fflush(stderr);
       return;
     }

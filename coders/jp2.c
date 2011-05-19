@@ -1004,7 +1004,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         (GetImageQuantumDepth(image,MagickTrue)/8);
       target_size=(number_pixels*rate)+header_size;
       rate=target_size/number_pixels;
-      (void) FormatMagickString(option,MaxTextExtent,"rate=%g",rate);
+      (void) FormatLocaleString(option,MaxTextExtent,"rate=%g",rate);
       (void) ConcatenateString(&options,option);
     }
   status=jas_image_encode(jp2_image,jp2_stream,format,options) != 0 ?

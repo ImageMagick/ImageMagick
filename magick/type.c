@@ -853,7 +853,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     if (((path == (const char *) NULL) ||
          (LocaleCompare(path,type_info[i]->path) != 0)) &&
          (type_info[i]->path != (char *) NULL))
-      (void) fprintf(file,"\nPath: %s\n",type_info[i]->path);
+      (void) FormatLocaleFile(file,"\nPath: %s\n",type_info[i]->path);
     path=type_info[i]->path;
     name="unknown";
     if (type_info[i]->name != (char *) NULL)
@@ -866,14 +866,14 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     glyphs="unknown";
     if (type_info[i]->glyphs != (char *) NULL)
       glyphs=type_info[i]->glyphs;
-    (void) FormatMagickString(weight,MaxTextExtent,"%.20g",(double)
+    (void) FormatLocaleString(weight,MaxTextExtent,"%.20g",(double)
       type_info[i]->weight);
-    (void) fprintf(file,"  Font: %s\n",name);
-    (void) fprintf(file,"    family: %s\n",family);
-    (void) fprintf(file,"    style: %s\n",style);
-    (void) fprintf(file,"    stretch: %s\n",stretch);
-    (void) fprintf(file,"    weight: %s\n",weight);
-    (void) fprintf(file,"    glyphs: %s\n",glyphs);
+    (void) FormatLocaleFile(file,"  Font: %s\n",name);
+    (void) FormatLocaleFile(file,"    family: %s\n",family);
+    (void) FormatLocaleFile(file,"    style: %s\n",style);
+    (void) FormatLocaleFile(file,"    stretch: %s\n",stretch);
+    (void) FormatLocaleFile(file,"    weight: %s\n",weight);
+    (void) FormatLocaleFile(file,"    glyphs: %s\n",glyphs);
   }
   (void) fflush(file);
   type_info=(const TypeInfo **) RelinquishMagickMemory((void *) type_info);
@@ -1314,7 +1314,7 @@ static MagickBooleanType LoadTypeLists(const char *filename,
       /*
         Search MAGICK_FONT_PATH.
       */
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",font_path,
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",font_path,
         DirectorySeparator,filename);
       option=FileToString(path,~0,exception);
       if (option != (void *) NULL)

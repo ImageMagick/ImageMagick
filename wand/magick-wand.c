@@ -135,7 +135,7 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
       wand->name);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
     MagickWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -1037,7 +1037,7 @@ WandExport MagickWand *NewMagickWand(void)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatMagickString(wand->name,MaxTextExtent,"%s-%.20g",MagickWandId,
+  (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",MagickWandId,
     (double) wand->id);
   wand->exception=AcquireExceptionInfo();
   wand->image_info=AcquireImageInfo();

@@ -626,8 +626,8 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
-  (void) fprintf(file,"<?xml version=\"1.0\"?>\n");
-  (void) fprintf(file,"<svg xmlns=\"http://www.w3.org/2000/svg\" "
+  (void) FormatLocaleFile(file,"<?xml version=\"1.0\"?>\n");
+  (void) FormatLocaleFile(file,"<svg xmlns=\"http://www.w3.org/2000/svg\" "
     "xlink=\"http://www.w3.org/1999/xlink\" "
     "ev=\"http://www.w3.org/2001/xml-events\" version=\"1.1\" "
     "baseProfile=\"full\" width=\"%g\" height=\"%g\">\n",bounds.x2-bounds.x1,
@@ -635,16 +635,16 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < (ssize_t) number_blocks; i++)
   {
     offset=blocks[i].offset;
-    (void) fprintf(file,"  <path stroke=\"#%02x%02x%02x\" fill=\"none\" "
+    (void) FormatLocaleFile(file,"  <path stroke=\"#%02x%02x%02x\" fill=\"none\" "
       "d=\"M %g %g",blocks[i].color->red,blocks[i].color->green,
       blocks[i].color->blue,stitches[offset].x-bounds.x1,
       stitches[offset].y-bounds.y1);
     for (j=1; j < (ssize_t) (blocks[i+1].offset-offset); j++)
-      (void) fprintf(file," L %g %g",stitches[offset+j].x-bounds.x1,
+      (void) FormatLocaleFile(file," L %g %g",stitches[offset+j].x-bounds.x1,
         stitches[offset+j].y-bounds.y1);
-    (void) fprintf(file,"\"/>\n");
+    (void) FormatLocaleFile(file,"\"/>\n");
   }
-  (void) fprintf(file,"</svg>\n");
+  (void) FormatLocaleFile(file,"</svg>\n");
   (void) fclose(file);
   (void) CloseBlob(image);
   image=DestroyImage(image);
@@ -653,7 +653,7 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"svg:%s",
+  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"svg:%s",
     filename);
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)

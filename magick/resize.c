@@ -922,7 +922,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* User Sigma Override - no support change */
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
-    sigma=StringToDouble(artifact,(char **) NULL);
+    sigma=LocaleToDouble(artifact,(char **) NULL);
   /* Define coefficents for Gaussian */
   if ( GaussianFilter ) {
     resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
@@ -933,7 +933,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Blur Override */
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur *= StringToDouble(artifact,(char **) NULL);
+    resize_filter->blur *= LocaleToDouble(artifact,(char **) NULL);
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
 
@@ -960,7 +960,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL));
+    resize_filter->support=fabs(LocaleToDouble(artifact,(char **) NULL));
   /*
     Scale windowing function separatally to the support 'clipping'
     window that calling operator is planning to actually use. (Expert
@@ -969,7 +969,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
-    resize_filter->window_support=fabs(StringToDouble(artifact,(char **) NULL));
+    resize_filter->window_support=fabs(LocaleToDouble(artifact,(char **) NULL));
   /*
     Adjust window function scaling to match windowing support for
     weighting function.  This avoids a division on every filter call.
@@ -994,18 +994,18 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       artifact=GetImageArtifact(image,"filter:b");
       if (artifact != (const char *) NULL)
         {
-          B=StringToDouble(artifact,(char **) NULL);
+          B=LocaleToDouble(artifact,(char **) NULL);
           C=(1.0-B)/2.0; /* Calculate C to get a Keys cubic filter. */
           artifact=GetImageArtifact(image,"filter:c"); /* user C override */
           if (artifact != (const char *) NULL)
-            C=StringToDouble(artifact,(char **) NULL);
+            C=LocaleToDouble(artifact,(char **) NULL);
         }
       else
         {
           artifact=GetImageArtifact(image,"filter:c");
           if (artifact != (const char *) NULL)
             {
-              C=StringToDouble(artifact,(char **) NULL);
+              C=LocaleToDouble(artifact,(char **) NULL);
               B=1.0-2.0*C; /* Calculate B to get a Keys cubic filter. */
             }
         }
@@ -1056,35 +1056,35 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           Report Filter Details.
         */
         support=GetResizeFilterSupport(resize_filter); /* practical_support */
-        (void) fprintf(stdout,"# Resize Filter (for graphing)\n#\n");
-        (void) fprintf(stdout,"# filter = %s\n",
+        (void) FormatLocaleFile(stdout,"# Resize Filter (for graphing)\n#\n");
+        (void) FormatLocaleFile(stdout,"# filter = %s\n",
              CommandOptionToMnemonic(MagickFilterOptions,filter_type));
-        (void) fprintf(stdout,"# window = %s\n",
+        (void) FormatLocaleFile(stdout,"# window = %s\n",
              CommandOptionToMnemonic(MagickFilterOptions, window_type));
-        (void) fprintf(stdout,"# support = %.*g\n",
+        (void) FormatLocaleFile(stdout,"# support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->support);
-        (void) fprintf(stdout,"# win-support = %.*g\n",
+        (void) FormatLocaleFile(stdout,"# win-support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->window_support);
-        (void) fprintf(stdout,"# scale_blur = %.*g\n",
+        (void) FormatLocaleFile(stdout,"# scale_blur = %.*g\n",
              GetMagickPrecision(), (double)resize_filter->blur);
         if ( filter_type == GaussianFilter )
-          (void) fprintf(stdout,"# gaussian_sigma = %.*g\n",
+          (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
                GetMagickPrecision(), (double)sigma);
-        (void) fprintf(stdout,"# practical_support = %.*g\n",
+        (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
              GetMagickPrecision(), (double)support);
         if ( filter_type == CubicFilter || window_type == CubicFilter )
-          (void) fprintf(stdout,"# B,C = %.*g,%.*g\n",
+          (void) FormatLocaleFile(stdout,"# B,C = %.*g,%.*g\n",
                GetMagickPrecision(),(double)B, GetMagickPrecision(),(double)C);
-        (void) fprintf(stdout,"\n");
+        (void) FormatLocaleFile(stdout,"\n");
         /*
           Output values of resulting filter graph -- for graphing
           filter result.
         */
         for (x=0.0; x <= support; x+=0.01f)
-          (void) fprintf(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
+          (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
             (double) GetResizeFilterWeight(resize_filter,x));
         /* A final value so gnuplot can graph the 'stop' properly. */
-        (void) fprintf(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
+        (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
           0.0);
       }
       /* Output the above once only for each image - remove setting */
@@ -3317,33 +3317,33 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   (void) DeleteImageProperty(thumbnail_image,"comment");
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
   if (strstr(image->magick_filename,"//") == (char *) NULL)
-    (void) FormatMagickString(value,MaxTextExtent,"file://%s",
+    (void) FormatLocaleString(value,MaxTextExtent,"file://%s",
       image->magick_filename);
   (void) SetImageProperty(thumbnail_image,"Thumb::URI",value);
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse)
     {
-      (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
         attributes.st_mtime);
       (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value);
     }
-  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
   (void) ConcatenateMagickString(value,"B",MaxTextExtent);
   (void) SetImageProperty(thumbnail_image,"Thumb::Size",value);
-  (void) FormatMagickString(value,MaxTextExtent,"image/%s",image->magick);
+  (void) FormatLocaleString(value,MaxTextExtent,"image/%s",image->magick);
   LocaleLower(value);
   (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value);
   (void) SetImageProperty(thumbnail_image,"software",
     GetMagickVersion(&version));
-  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     image->magick_columns);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value);
-  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     image->magick_rows);
   (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value);
-  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     GetImageListLength(image));
   (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
   return(thumbnail_image);

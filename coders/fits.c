@@ -358,13 +358,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (LocaleCompare(keyword,"naxis3") == 0)
         fits_info.number_planes=StringToLong(p);
       if (LocaleCompare(keyword,"datamax") == 0)
-        fits_info.max_data=StringToDouble(p,(char **) NULL);
+        fits_info.max_data=LocaleToDouble(p,(char **) NULL);
       if (LocaleCompare(keyword,"datamin") == 0)
-        fits_info.min_data=StringToDouble(p,(char **) NULL);
+        fits_info.min_data=LocaleToDouble(p,(char **) NULL);
       if (LocaleCompare(keyword,"bzero") == 0)
-        fits_info.zero=StringToDouble(p,(char **) NULL);
+        fits_info.zero=LocaleToDouble(p,(char **) NULL);
       if (LocaleCompare(keyword,"bscale") == 0)
-        fits_info.scale=StringToDouble(p,(char **) NULL);
+        fits_info.scale=LocaleToDouble(p,(char **) NULL);
       if (LocaleCompare(keyword,"comment") == 0)
         {
           if (comment == (char *) NULL)
@@ -379,7 +379,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           else
             fits_info.endian=LSBEndian;
         }
-      (void) FormatMagickString(property,MaxTextExtent,"fits:%s",keyword);
+      (void) FormatLocaleString(property,MaxTextExtent,"fits:%s",keyword);
       (void) SetImageProperty(image,property,p);
     }
     c=0;
@@ -649,55 +649,55 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   offset=0;
-  (void) FormatMagickString(header,FITSBlocksize,
+  (void) FormatLocaleString(header,FITSBlocksize,
     "SIMPLE  =                    T");
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"BITPIX  =           %10ld",
+  (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
     (long) (quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
     image->depth);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"NAXIS   =           %10lu",
+  (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
     IsGrayImage(image,&image->exception) != MagickFalse ? 2UL : 3UL);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"NAXIS1  =           %10lu",
+  (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
     (unsigned long) image->columns);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"NAXIS2  =           %10lu",
+  (void) FormatLocaleString(header,FITSBlocksize,"NAXIS2  =           %10lu",
     (unsigned long) image->rows);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   if (IsGrayImage(image,&image->exception) == MagickFalse)
     {
-      (void) FormatMagickString(header,FITSBlocksize,
+      (void) FormatLocaleString(header,FITSBlocksize,
         "NAXIS3  =           %10lu",3UL);
       (void) strncpy(fits_info+offset,header,strlen(header));
       offset+=80;
     }
-  (void) FormatMagickString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
+  (void) FormatLocaleString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"BZERO   =         %E",
+  (void) FormatLocaleString(header,FITSBlocksize,"BZERO   =         %E",
     image->depth > 8 ? GetFITSPixelRange(image->depth) : 0.0);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"DATAMAX =         %E",
+  (void) FormatLocaleString(header,FITSBlocksize,"DATAMAX =         %E",
     1.0*((MagickOffsetType) GetQuantumRange(image->depth)));
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
-  (void) FormatMagickString(header,FITSBlocksize,"DATAMIN =         %E",0.0);
+  (void) FormatLocaleString(header,FITSBlocksize,"DATAMIN =         %E",0.0);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   if (image->endian == LSBEndian)
     {
-      (void) FormatMagickString(header,FITSBlocksize,"XENDIAN = 'SMALL'");
+      (void) FormatLocaleString(header,FITSBlocksize,"XENDIAN = 'SMALL'");
       (void) strncpy(fits_info+offset,header,strlen(header));
       offset+=80;
     }
-  (void) FormatMagickString(header,FITSBlocksize,"HISTORY %.72s",
+  (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
     GetMagickVersion((size_t *) NULL));
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;

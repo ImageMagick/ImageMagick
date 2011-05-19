@@ -1060,26 +1060,26 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
     {
       if (pixel->depth > 16)
         {
-          (void) FormatMagickString(component,MaxTextExtent,"%10lu",
+          (void) FormatLocaleString(component,MaxTextExtent,"%10lu",
             (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
           return;
         }
       if (pixel->depth > 8)
         {
-          (void) FormatMagickString(component,MaxTextExtent,"%5d",
+          (void) FormatLocaleString(component,MaxTextExtent,"%5d",
             ScaleQuantumToShort(ClampToQuantum(color)));
           (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
           return;
         }
-      (void) FormatMagickString(component,MaxTextExtent,"%3d",
+      (void) FormatLocaleString(component,MaxTextExtent,"%3d",
         ScaleQuantumToChar(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   if (channel == OpacityChannel)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%g",
+      (void) FormatLocaleString(component,MaxTextExtent,"%g",
         (double) (QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
@@ -1087,19 +1087,19 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
   if ((pixel->colorspace == HSLColorspace) ||
       (pixel->colorspace == HSBColorspace))
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%g%%",
+      (void) FormatLocaleString(component,MaxTextExtent,"%g%%",
         (double) (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   if (pixel->depth > 8)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%g%%",
+      (void) FormatLocaleString(component,MaxTextExtent,"%g%%",
         (double) (100.0*QuantumScale*color));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
-  (void) FormatMagickString(component,MaxTextExtent,"%d",
+  (void) FormatLocaleString(component,MaxTextExtent,"%d",
     ScaleQuantumToChar(ClampToQuantum(color)));
   (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
 }
@@ -1363,7 +1363,7 @@ static void ConcatentateHexColorComponent(const MagickPixelPacket *pixel,
   }
   if (pixel->depth > 32)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%08lX%08lX",
+      (void) FormatLocaleString(component,MaxTextExtent,"%08lX%08lX",
         (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)),
         (unsigned long) ScaleQuantumToLong(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
@@ -1371,19 +1371,19 @@ static void ConcatentateHexColorComponent(const MagickPixelPacket *pixel,
     }
   if (pixel->depth > 16)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%08X",
+      (void) FormatLocaleString(component,MaxTextExtent,"%08X",
         (unsigned int) ScaleQuantumToLong(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
   if (pixel->depth > 8)
     {
-      (void) FormatMagickString(component,MaxTextExtent,"%04X",
+      (void) FormatLocaleString(component,MaxTextExtent,"%04X",
         ScaleQuantumToShort(ClampToQuantum(color)));
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
-  (void) FormatMagickString(component,MaxTextExtent,"%02X",
+  (void) FormatLocaleString(component,MaxTextExtent,"%02X",
     ScaleQuantumToChar(ClampToQuantum(color)));
   (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
   return;
@@ -1983,23 +1983,23 @@ MagickExport MagickBooleanType ListColorInfo(FILE *file,
         (LocaleCompare(path,color_info[i]->path) != 0))
       {
         if (color_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",color_info[i]->path);
-        (void) fprintf(file,"Name                  Color                  "
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",color_info[i]->path);
+        (void) FormatLocaleFile(file,"Name                  Color                  "
           "                       Compliance\n");
-        (void) fprintf(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=color_info[i]->path;
-    (void) fprintf(file,"%-21.21s ",color_info[i]->name);
+    (void) FormatLocaleFile(file,"%-21.21s ",color_info[i]->name);
     GetColorTuple(&color_info[i]->color,MagickFalse,tuple);
-    (void) fprintf(file,"%-45.45s ",tuple);
+    (void) FormatLocaleFile(file,"%-45.45s ",tuple);
     if ((color_info[i]->compliance & SVGCompliance) != 0)
-      (void) fprintf(file,"SVG ");
+      (void) FormatLocaleFile(file,"SVG ");
     if ((color_info[i]->compliance & X11Compliance) != 0)
-      (void) fprintf(file,"X11 ");
+      (void) FormatLocaleFile(file,"X11 ");
     if ((color_info[i]->compliance & XPMCompliance) != 0)
-      (void) fprintf(file,"XPM ");
-    (void) fprintf(file,"\n");
+      (void) FormatLocaleFile(file,"XPM ");
+    (void) FormatLocaleFile(file,"\n");
   }
   color_info=(const ColorInfo **) RelinquishMagickMemory((void *) color_info);
   (void) fflush(file);

@@ -443,7 +443,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  version=StringToDouble(JBG_VERSION,(char **) NULL);
+  version=LocaleToDouble(JBG_VERSION,(char **) NULL);
   scene=0;
   do
   {

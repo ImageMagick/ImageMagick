@@ -1499,7 +1499,7 @@ MagickExport Cache DestroyPixelCache(Cache cache)
       char
         message[MaxTextExtent];
 
-      (void) FormatMagickString(message,MaxTextExtent,"destroy %s",
+      (void) FormatLocaleString(message,MaxTextExtent,"destroy %s",
         cache_info->filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
@@ -3991,7 +3991,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
         message[MaxTextExtent];
 
       (void) FormatMagickSize(length,MagickFalse,format);
-      (void) FormatMagickString(message,MaxTextExtent,
+      (void) FormatLocaleString(message,MaxTextExtent,
         "extend %s (%s[%d], disk, %sB)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
@@ -4041,7 +4041,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   assert(cache_info->signature == MagickSignature);
   source_info=(*cache_info);
   source_info.file=(-1);
-  (void) FormatMagickString(cache_info->filename,MaxTextExtent,"%s[%.20g]",
+  (void) FormatLocaleString(cache_info->filename,MaxTextExtent,"%s[%.20g]",
     image->filename,(double) GetImageIndexInList(image));
   cache_info->mode=mode;
   cache_info->rows=image->rows;
@@ -4089,7 +4089,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,
                     format);
-                  (void) FormatMagickString(message,MaxTextExtent,
+                  (void) FormatLocaleString(message,MaxTextExtent,
                     "open %s (%s memory, %.20gx%.20g %sB)",cache_info->filename,
                     cache_info->mapped != MagickFalse ? "anonymous" : "heap",
                     (double) cache_info->columns,(double) cache_info->rows,
@@ -4183,7 +4183,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,
                     format);
-                  (void) FormatMagickString(message,MaxTextExtent,
+                  (void) FormatLocaleString(message,MaxTextExtent,
                     "open %s (%s[%d], memory-mapped, %.20gx%.20g %sB)",
                     cache_info->filename,cache_info->cache_filename,
                     cache_info->file,(double) cache_info->columns,(double)
@@ -4204,7 +4204,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (image->debug != MagickFalse)
     {
       (void) FormatMagickSize(cache_info->length,MagickFalse,format);
-      (void) FormatMagickString(message,MaxTextExtent,
+      (void) FormatLocaleString(message,MaxTextExtent,
         "open %s (%s[%d], disk, %.20gx%.20g %sB)",cache_info->filename,
         cache_info->cache_filename,cache_info->file,(double)
         cache_info->columns,(double) cache_info->rows,format);

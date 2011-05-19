@@ -458,7 +458,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note spot names.
         */
-        (void) FormatMagickString(property,MaxTextExtent,"pdf:SpotColor-%.20g",
+        (void) FormatLocaleString(property,MaxTextExtent,"pdf:SpotColor-%.20g",
           (double) spotcolor++);
         i=0;
         for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
@@ -526,7 +526,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Set PDF render geometry.
         */
-        (void) FormatMagickString(geometry,MaxTextExtent,
+        (void) FormatLocaleString(geometry,MaxTextExtent,
           "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
            bounds.x1,bounds.y1);
         (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry);
@@ -586,7 +586,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->y_resolution=image->x_resolution;
     }
-  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",image->x_resolution,
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->x_resolution,
     image->y_resolution);
   if (image_info->page != (char *) NULL)
     {
@@ -595,7 +595,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         delta.x)+0.5);
       page.height=(size_t) floor((double) (page.height*image->y_resolution/
         delta.y)+0.5);
-      (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+      (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
         page.width,(double) page.height);
     }
   if (cmyk != MagickFalse)
@@ -611,7 +611,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         pages[MaxTextExtent];
 
-      (void) FormatMagickString(pages,MaxTextExtent,"-dFirstPage=%.20g "
+      (void) FormatLocaleString(pages,MaxTextExtent,"-dFirstPage=%.20g "
         "-dLastPage=%.20g",(double) read_info->scene+1,(double)
         (read_info->scene+read_info->number_scenes));
       (void) ConcatenateMagickString(options,pages,MaxTextExtent);
@@ -620,12 +620,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *read_info->scenes='\0';
     }
   if (read_info->authenticate != (char *) NULL)
-    (void) FormatMagickString(options+strlen(options),MaxTextExtent,
+    (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
       " -sPDFPassword=%s",read_info->authenticate);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
   (void) ConcatenateMagickString(filename,"-%08d",MaxTextExtent);
-  (void) FormatMagickString(command,MaxTextExtent,
+  (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
@@ -1073,7 +1073,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       version=(size_t) MagickMax(version,4);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     version=(size_t) MagickMax(version,6);
-  (void) FormatMagickString(buffer,MaxTextExtent,"%%PDF-1.%.20g \n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"%%PDF-1.%.20g \n",
     (double) version);
   (void) WriteBlobString(image,buffer);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
@@ -1083,19 +1083,19 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref[object++]=TellBlob(image);
   root_id=object;
-  (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   if (LocaleCompare(image_info->magick,"PDFA") != 0)
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Pages %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Pages %.20g 0 R\n",
       (double) object+1);
   else
     {
-      (void) FormatMagickString(buffer,MaxTextExtent,"/Metadata %.20g 0 R\n",
+      (void) FormatLocaleString(buffer,MaxTextExtent,"/Metadata %.20g 0 R\n",
         (double) object+1);
       (void) WriteBlobString(image,buffer);
-      (void) FormatMagickString(buffer,MaxTextExtent,"/Pages %.20g 0 R\n",
+      (void) FormatLocaleString(buffer,MaxTextExtent,"/Pages %.20g 0 R\n",
         (double) object+2);
     }
   (void) WriteBlobString(image,buffer);
@@ -1117,7 +1117,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         Write XMP object.
       */
       xref[object++]=TellBlob(image);
-      (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",
+      (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",
         (double) object);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"<<\n");
@@ -1131,10 +1131,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,MaxTextExtent);
       (void) FormatMagickTime(time((time_t *) NULL),MaxTextExtent,timestamp);
-      i=FormatMagickString(xmp_profile,MaxTextExtent,XMPProfile,
+      i=FormatLocaleString(xmp_profile,MaxTextExtent,XMPProfile,
         XMPProfileMagick,modify_date,create_date,timestamp,
         GetMagickVersion(&version),GetMagickVersion(&version));
-      (void) FormatMagickString(buffer,MaxTextExtent,"/Length %.20g\n",
+      (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g\n",
         (double) i);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"/Type /Metadata\n");
@@ -1148,12 +1148,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref[object++]=TellBlob(image);
   pages_id=object;
-  (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   (void) WriteBlobString(image,"/Type /Pages\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Kids [ %.20g 0 R ",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Kids [ %.20g 0 R ",
     (double) object+1);
   (void) WriteBlobString(image,buffer);
   count=(ssize_t) (pages_id+ObjectsPerImage+1);
@@ -1168,7 +1168,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       kid_image=image;
       for ( ; GetNextImageInList(kid_image) != (Image *) NULL; count+=ObjectsPerImage)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 R ",(double)
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 R ",(double)
           count);
         (void) WriteBlobString(image,buffer);
         kid_image=GetNextImageInList(kid_image);
@@ -1179,7 +1179,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) WriteBlobString(image,"]\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Count %.20g\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Count %.20g\n",
     (double) ((count-pages_id)/ObjectsPerImage));
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
@@ -1279,13 +1279,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         resolution.y=(double) ((size_t) (100.0*2.54*resolution.y+0.5)/100.0);
       }
     SetGeometry(image,&geometry);
-    (void) FormatMagickString(page_geometry,MaxTextExtent,"%.20gx%.20g",
+    (void) FormatLocaleString(page_geometry,MaxTextExtent,"%.20gx%.20g",
       (double) image->columns,(double) image->rows);
     if (image_info->page != (char *) NULL)
       (void) CopyMagickString(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatMagickString(page_geometry,MaxTextExtent,
+        (void) FormatLocaleString(page_geometry,MaxTextExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,
           (double) image->page.height,(double) image->page.x,(double)
           image->page.y);
@@ -1320,12 +1320,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Page object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     (void) WriteBlobString(image,"/Type /Page\n");
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Parent %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Parent %.20g 0 R\n",
       (double) pages_id);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/Resources <<\n");
@@ -1335,30 +1335,30 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       labels=StringToList(value);
     if (labels != (char **) NULL)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "/Font << /F%.20g %.20g 0 R >>\n",(double) image->scene,(double)
           object+4);
         (void) WriteBlobString(image,buffer);
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "/XObject << /Im%.20g %.20g 0 R >>\n",(double) image->scene,(double)
       object+5);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/ProcSet %.20g 0 R >>\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/ProcSet %.20g 0 R >>\n",
       (double) object+3);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "/MediaBox [0 0 %g %g]\n",72.0*media_info.width/resolution.x,
       72.0*media_info.height/resolution.y);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "/CropBox [0 0 %g %g]\n",72.0*media_info.width/resolution.x,
       72.0*media_info.height/resolution.y);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Contents %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Contents %.20g 0 R\n",
       (double) object+1);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Thumb %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Thumb %.20g 0 R\n",
       (double) object+8);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
@@ -1367,11 +1367,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Contents object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
       (double) object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
@@ -1382,22 +1382,22 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       for (i=0; labels[i] != (char *) NULL; i++)
       {
         (void) WriteBlobString(image,"BT\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"/F%.20g %g Tf\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/F%.20g %g Tf\n",
           (double) image->scene,pointsize);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g Td\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g Td\n",
           (double) geometry.x,(double) (geometry.y+geometry.height+i*pointsize+
           12));
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"(%s) Tj\n",labels[i]);
+        (void) FormatLocaleString(buffer,MaxTextExtent,"(%s) Tj\n",labels[i]);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"ET\n");
         labels[i]=DestroyString(labels[i]);
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,"%g 0 0 %g %.20g %.20g cm\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%g 0 0 %g %.20g %.20g cm\n",
       scale.x,scale.y,(double) geometry.x,(double) geometry.y);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Im%.20g Do\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Im%.20g Do\n",
       (double) image->scene);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"Q\n");
@@ -1408,17 +1408,17 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
       Write Procset object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",
       (double) object);
     (void) WriteBlobString(image,buffer);
     if ((image->storage_class == DirectClass) || (image->colors > 256))
@@ -1435,7 +1435,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Font object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",
       (double) object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
@@ -1443,7 +1443,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       {
         (void) WriteBlobString(image,"/Type /Font\n");
         (void) WriteBlobString(image,"/Subtype /Type1\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"/Name /F%.20g\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/Name /F%.20g\n",
           (double) image->scene);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"/BaseFont /Helvetica\n");
@@ -1456,25 +1456,25 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write XObject object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     (void) WriteBlobString(image,"/Type /XObject\n");
     (void) WriteBlobString(image,"/Subtype /Image\n");
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Name /Im%.20g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Name /Im%.20g\n",
       (double) image->scene);
     (void) WriteBlobString(image,buffer);
     switch (compression)
     {
       case NoCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"ASCII85Decode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"ASCII85Decode");
         break;
       }
       case JPEGCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"DCTDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"DCTDecode");
         if (image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
@@ -1484,7 +1484,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       case JPEG2000Compression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"JPXDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"JPXDecode");
         if (image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
@@ -1494,12 +1494,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       case LZWCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"LZWDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"LZWDecode");
         break;
       }
       case ZipCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"FlateDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"FlateDecode");
         break;
       }
       case FaxCompression:
@@ -1508,39 +1508,39 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) CopyMagickString(buffer,"/Filter [ /CCITTFaxDecode ]\n",
           MaxTextExtent);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"/DecodeParms [ << "
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/DecodeParms [ << "
           "/K %s /BlackIs1 false /Columns %.20g /Rows %.20g >> ]\n",CCITTParam,
           (double) image->columns,(double) image->rows);
         break;
       }
       default:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,
           "RunLengthDecode");
         break;
       }
     }
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Width %.20g\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Width %.20g\n",(double)
       image->columns);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Height %.20g\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Height %.20g\n",(double)
       image->rows);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/ColorSpace %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/ColorSpace %.20g 0 R\n",
       (double) object+2);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
       (compression == FaxCompression) || (compression == Group4Compression) ?
       1 : 8);
     (void) WriteBlobString(image,buffer);
     if (image->matte != MagickFalse)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"/SMask %.20g 0 R\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/SMask %.20g 0 R\n",
           (double) object+7);
         (void) WriteBlobString(image,buffer);
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
       (double) object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
@@ -1870,10 +1870,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",
       (double) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
@@ -1881,7 +1881,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Colorspace object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     if (image->colorspace == CMYKColorspace)
@@ -1898,7 +1898,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             (compression == JPEG2000Compression))
           (void) CopyMagickString(buffer,"/DeviceRGB\n",MaxTextExtent);
         else
-          (void) FormatMagickString(buffer,MaxTextExtent,
+          (void) FormatLocaleString(buffer,MaxTextExtent,
             "[ /Indexed /DeviceRGB %.20g %.20g 0 R ]\n",(double) image->colors-
             1,(double) object+3);
     (void) WriteBlobString(image,buffer);
@@ -1914,7 +1914,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     if (tile_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitError,image->exception.reason);
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
@@ -1922,12 +1922,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     {
       case NoCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"ASCII85Decode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"ASCII85Decode");
         break;
       }
       case JPEGCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"DCTDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"DCTDecode");
         if (image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
@@ -1937,7 +1937,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       case JPEG2000Compression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"JPXDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"JPXDecode");
         if (image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
@@ -1947,12 +1947,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       case LZWCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"LZWDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"LZWDecode");
         break;
       }
       case ZipCompression:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"FlateDecode");
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"FlateDecode");
         break;
       }
       case FaxCompression:
@@ -1961,33 +1961,33 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) CopyMagickString(buffer,"/Filter [ /CCITTFaxDecode ]\n",
           MaxTextExtent);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"/DecodeParms [ << "
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/DecodeParms [ << "
           "/K %s /BlackIs1 false /Columns %.20g /Rows %.20g >> ]\n",CCITTParam,
           (double) tile_image->columns,(double) tile_image->rows);
         break;
       }
       default:
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,CFormat,
+        (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,
           "RunLengthDecode");
         break;
       }
     }
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Width %.20g\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Width %.20g\n",(double)
       tile_image->columns);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Height %.20g\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Height %.20g\n",(double)
       tile_image->rows);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/ColorSpace %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/ColorSpace %.20g 0 R\n",
       (double) object-1);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
       (compression == FaxCompression) || (compression == Group4Compression) ?
       1 : 8);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
       (double) object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
@@ -2290,14 +2290,14 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     if ((image->storage_class != DirectClass) && (image->colors <= 256) &&
@@ -2309,7 +2309,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"<<\n");
         if (compression == NoCompression)
           (void) WriteBlobString(image,"/Filter [ /ASCII85Decode ]\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
           (double) object+1);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,">>\n");
@@ -2343,10 +2343,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
       offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
@@ -2354,7 +2354,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write softmask object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
@@ -2364,48 +2364,48 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       {
         (void) WriteBlobString(image,"/Type /XObject\n");
         (void) WriteBlobString(image,"/Subtype /Image\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"/Name /Ma%.20g\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/Name /Ma%.20g\n",
           (double) image->scene);
         (void) WriteBlobString(image,buffer);
         switch (compression)
         {
           case NoCompression:
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,CFormat,
+            (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,
               "ASCII85Decode");
             break;
           }
           case LZWCompression:
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,CFormat,"LZWDecode");
+            (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,"LZWDecode");
             break;
           }
           case ZipCompression:
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,CFormat,
+            (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,
               "FlateDecode");
             break;
           }
           default:
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,CFormat,
+            (void) FormatLocaleString(buffer,MaxTextExtent,CFormat,
               "RunLengthDecode");
             break;
           }
         }
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"/Width %.20g\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/Width %.20g\n",
           (double) image->columns);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"/Height %.20g\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/Height %.20g\n",
           (double) image->rows);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"/ColorSpace /DeviceGray\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/BitsPerComponent %d\n",
           (compression == FaxCompression) || (compression == Group4Compression)
           ? 1 : 8);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
           (double) object+1);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,">>\n");
@@ -2491,10 +2491,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     if (GetNextImageInList(image) == (Image *) NULL)
@@ -2510,12 +2510,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref[object++]=TellBlob(image);
   info_id=object;
-  (void) FormatMagickString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Title (%s)\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (%s)\n",
     EscapeParenthesis(basename));
   (void) WriteBlobString(image,buffer);
   seconds=time((time_t *) NULL);
@@ -2524,14 +2524,14 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
 #else
   (void) memcpy(&local_time,localtime(&seconds),sizeof(local_time));
 #endif
-  (void) FormatMagickString(date,MaxTextExtent,"D:%04d%02d%02d%02d%02d%02d",
+  (void) FormatLocaleString(date,MaxTextExtent,"D:%04d%02d%02d%02d%02d%02d",
     local_time.tm_year+1900,local_time.tm_mon+1,local_time.tm_mday,
     local_time.tm_hour,local_time.tm_min,local_time.tm_sec);
-  (void) FormatMagickString(buffer,MaxTextExtent,"/CreationDate (%s)\n",date);
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/CreationDate (%s)\n",date);
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"/ModDate (%s)\n",date);
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/ModDate (%s)\n",date);
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Producer (%s)\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Producer (%s)\n",
     EscapeParenthesis(GetMagickVersion((size_t *) NULL)));
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
@@ -2541,30 +2541,30 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   offset=TellBlob(image)-xref[0]+10;
   (void) WriteBlobString(image,"xref\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,"0 %.20g\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"0 %.20g\n",(double)
     object+1);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"0000000000 65535 f \n");
   for (i=0; i < (ssize_t) object; i++)
   {
-    (void) FormatMagickString(buffer,MaxTextExtent,"%010lu 00000 n \n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%010lu 00000 n \n",
       (unsigned long) xref[i]);
     (void) WriteBlobString(image,buffer);
   }
   (void) WriteBlobString(image,"trailer\n");
   (void) WriteBlobString(image,"<<\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Size %.20g\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Size %.20g\n",(double)
     object+1);
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Info %.20g 0 R\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Info %.20g 0 R\n",(double)
     info_id);
   (void) WriteBlobString(image,buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"/Root %.20g 0 R\n",(double)
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/Root %.20g 0 R\n",(double)
     root_id);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
+  (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double) offset);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"%%EOF\n");
   xref=(MagickOffsetType *) RelinquishMagickMemory(xref);

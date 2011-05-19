@@ -367,7 +367,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n",(double)
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",(double)
       image->columns,(double) image->rows);
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (ssize_t) image->rows; y++)

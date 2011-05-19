@@ -712,7 +712,7 @@ namespace Magick
   using MagickCore::FlipImage;
   using MagickCore::FloodfillPaintImage;
   using MagickCore::FlopImage;
-  using MagickCore::FormatMagickString;
+  using MagickCore::FormatLocaleString;
   using MagickCore::ForwardFourierTransformImage;
   using MagickCore::FrameImage;
   using MagickCore::FrameInfo;

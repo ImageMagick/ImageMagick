@@ -394,9 +394,9 @@ static MagickBooleanType GetPathTemplate(char *path)
       return(MagickTrue);
     }
   if (directory[strlen(directory)-1] == *DirectorySeparator)
-    (void) FormatMagickString(path,MaxTextExtent,"%smagick-XXXXXXXX",directory);
+    (void) FormatLocaleString(path,MaxTextExtent,"%smagick-XXXXXXXX",directory);
   else
-    (void) FormatMagickString(path,MaxTextExtent,"%s%smagick-XXXXXXXX",
+    (void) FormatLocaleString(path,MaxTextExtent,"%s%smagick-XXXXXXXX",
       directory,DirectorySeparator);
   directory=DestroyString(directory);
   if (*DirectorySeparator != '/')
@@ -687,13 +687,13 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MaxTextExtent);
   if (resource_info.time_limit != MagickResourceInfinity)
-    (void) FormatMagickString(time_limit,MaxTextExtent,"%.20g",(double)
+    (void) FormatLocaleString(time_limit,MaxTextExtent,"%.20g",(double)
       resource_info.time_limit);
-  (void) fprintf(file,"File         Area       Memory          Map"
+  (void) FormatLocaleFile(file,"File         Area       Memory          Map"
     "         Disk    Thread         Time\n");
-  (void) fprintf(file,"--------------------------------------------------------"
+  (void) FormatLocaleFile(file,"--------------------------------------------------------"
     "-----------------------\n");
-  (void) fprintf(file,"%4g   %10s   %10s   %10s   %10s    %6g  %11s\n",(double)
+  (void) FormatLocaleFile(file,"%4g   %10s   %10s   %10s   %10s    %6g  %11s\n",(double)
     resource_info.file_limit,area_limit,memory_limit,map_limit,disk_limit,
     (double) resource_info.thread_limit,time_limit);
   (void) fflush(file);

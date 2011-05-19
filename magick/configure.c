@@ -560,7 +560,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
       element=(const char *) GetNextValueInLinkedList(paths);
       while (element != (const char *) NULL)
       {
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",element,filename);
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",element,filename);
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
           "Searching for configure file: \"%s\"",path);
         xml=ConfigureFileToStringInfo(path);
@@ -690,7 +690,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     key_value=NTRegistryKeyLookup(registry_key);
     if (key_value != (unsigned char *) NULL)
       {
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",(char *) key_value,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",(char *) key_value,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
         key_value=(unsigned char *) RelinquishMagickMemory(key_value);
@@ -709,14 +709,14 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     if (home != (char *) NULL)
       {
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",home,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
 #else
-        (void) FormatMagickString(path,MaxTextExtent,"%s/etc/%s/",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s/etc/%s/",home,
           MAGICKCORE_CONFIGURE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
-        (void) FormatMagickString(path,MaxTextExtent,"%s/share/%s/",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s/share/%s/",home,
           MAGICKCORE_SHARE_RELATIVE_PATH);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
@@ -726,7 +726,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   if (*GetClientPath() != '\0')
     {
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s",GetClientPath(),
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s",GetClientPath(),
         DirectorySeparator);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #else
@@ -738,10 +738,10 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       */
       (void) CopyMagickString(prefix,GetClientPath(),MaxTextExtent);
       ChopPathComponents(prefix,1);
-      (void) FormatMagickString(path,MaxTextExtent,"%s/etc/%s/",prefix,
+      (void) FormatLocaleString(path,MaxTextExtent,"%s/etc/%s/",prefix,
         MAGICKCORE_CONFIGURE_RELATIVE_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
-      (void) FormatMagickString(path,MaxTextExtent,"%s/share/%s/",prefix,
+      (void) FormatLocaleString(path,MaxTextExtent,"%s/share/%s/",prefix,
         MAGICKCORE_SHARE_RELATIVE_PATH);
       (void) AppendValueToLinkedList(paths,ConstantString(path));
 #endif
@@ -763,7 +763,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search $HOME/.magick.
         */
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s.magick%s",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.magick%s",home,
           DirectorySeparator,DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
         home=DestroyString(home);
@@ -783,7 +783,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search module path.
         */
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",module_path,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
           DirectorySeparator);
         element=(char *) RemoveElementByValueFromLinkedList(paths,path);
         if (element != (char *) NULL)
@@ -795,10 +795,10 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         /*
           Search PerlMagick module path.
         */
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",module_path,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
           DirectorySeparator);
         (void) AppendValueToLinkedList(paths,ConstantString(path));
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",module_path,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
           "\\inc\\lib\\auto\\Image\\Magick\\");
         (void) AppendValueToLinkedList(paths,ConstantString(path));
       }
@@ -936,24 +936,24 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
         (LocaleCompare(path,configure_info[i]->path) != 0))
       {
         if (configure_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",configure_info[i]->path);
-        (void) fprintf(file,"Name          Value\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",configure_info[i]->path);
+        (void) FormatLocaleFile(file,"Name          Value\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=configure_info[i]->path;
     name="unknown";
     if (configure_info[i]->name != (char *) NULL)
       name=configure_info[i]->name;
-    (void) fprintf(file,"%s",name);
+    (void) FormatLocaleFile(file,"%s",name);
     for (j=(ssize_t) strlen(name); j <= 12; j++)
-      (void) fprintf(file," ");
-    (void) fprintf(file," ");
+      (void) FormatLocaleFile(file," ");
+    (void) FormatLocaleFile(file," ");
     value="unknown";
     if (configure_info[i]->value != (char *) NULL)
       value=configure_info[i]->value;
-    (void) fprintf(file,"%s",value);
-    (void) fprintf(file,"\n");
+    (void) FormatLocaleFile(file,"%s",value);
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   configure_info=(const ConfigureInfo **)

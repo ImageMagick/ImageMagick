@@ -1184,8 +1184,8 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
     (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
     (void) QueryMagickColorname(image,&pixel,SVGCompliance,color,exception);
     GetColorTuple(&pixel,MagickTrue,hex);
-    (void) fprintf(file,"%10" MagickSizeFormat,p->count);
-    (void) fprintf(file,": %s %s %s\n",tuple,hex,color);
+    (void) FormatLocaleFile(file,"%10" MagickSizeFormat,p->count);
+    (void) FormatLocaleFile(file,": %s %s %s\n",tuple,hex,color);
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType

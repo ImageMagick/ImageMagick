@@ -31,7 +31,7 @@ static inline double SiPrefixToDouble(const char *string,const double interval)
     scale,
     value;
 
-  value=StringToDouble(string,&q);
+  value=LocaleToDouble(string,&q);
   scale=1000.0;
   if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
     scale=1024.0;

@@ -3025,17 +3025,17 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((group == (ssize_t) dicom_info[i].group) &&
               (element == (ssize_t) dicom_info[i].element))
             break;
-        (void) fprintf(stdout,"0x%04lX %4ld %s-%s (0x%04lx,0x%04lx)",
+        (void) FormatLocaleFile(stdout,"0x%04lX %4ld %s-%s (0x%04lx,0x%04lx)",
           (unsigned long) image->offset,(long) length,implicit_vr,
           explicit_vr,(unsigned long) group,(unsigned long) element);
         if (dicom_info[i].description != (char *) NULL)
-          (void) fprintf(stdout," %s",dicom_info[i].description);
-        (void) fprintf(stdout,": ");
+          (void) FormatLocaleFile(stdout," %s",dicom_info[i].description);
+        (void) FormatLocaleFile(stdout,": ");
       }
     if ((group == 0x7FE0) && (element == 0x0010))
       {
         if (image_info->verbose != MagickFalse)
-          (void) fprintf(stdout,"\n");
+          (void) FormatLocaleFile(stdout,"\n");
         break;
       }
     /*
@@ -3063,7 +3063,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               count=ReadBlob(image,(size_t) quantum*length,data);
               if (count != (ssize_t) (quantum*length))
                 {
-                  (void) fprintf(stdout,"count=%d quantum=%d length=%d "
+                  (void) FormatLocaleFile(stdout,"count=%d quantum=%d length=%d "
                     "group=%d\n",(int) count,(int) quantum,(int) length,(int)
                     group);
                    ThrowReaderException(CorruptImageError,
@@ -3092,7 +3092,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 group=0;
                 element=0;
                 if (image_info->verbose != MagickFalse)
-                  (void) fprintf(stdout,
+                  (void) FormatLocaleFile(stdout,
                     "Corrupted image - trying explicit format\n");
                 break;
               }
@@ -3101,7 +3101,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) CopyMagickString(transfer_syntax,(char *) data,
                 MaxTextExtent);
             if (image_info->verbose != MagickFalse)
-              (void) fprintf(stdout,"transfer_syntax=%s\n",(const char*)
+              (void) FormatLocaleFile(stdout,"transfer_syntax=%s\n",(const char*)
                 transfer_syntax);
             if (strncmp(transfer_syntax,"1.2.840.10008.1.2",17) == 0)
               {
@@ -3421,7 +3421,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->verbose != MagickFalse)
       {
         if (data == (unsigned char *) NULL)
-          (void) fprintf(stdout,"%d\n",datum);
+          (void) FormatLocaleFile(stdout,"%d\n",datum);
         else
           {
             /*
@@ -3438,15 +3438,15 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 datum=0;
                 for (j=(ssize_t) length-1; j >= 0; j--)
                   datum=(256*datum+data[j]);
-                (void) fprintf(stdout,"%d",datum);
+                (void) FormatLocaleFile(stdout,"%d",datum);
               }
             else
               for (i=0; i < (ssize_t) length; i++)
                 if (isprint((int) data[i]) != MagickFalse)
-                  (void) fprintf(stdout,"%c",data[i]);
+                  (void) FormatLocaleFile(stdout,"%c",data[i]);
                 else
-                  (void) fprintf(stdout,"%c",'.');
-            (void) fprintf(stdout,"\n");
+                  (void) FormatLocaleFile(stdout,"%c",'.');
+            (void) FormatLocaleFile(stdout,"\n");
           }
       }
     if (data != (unsigned char *) NULL)
@@ -3557,10 +3557,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) fputc(c,file);
         }
         (void) fclose(file);
-        (void) FormatMagickString(read_info->filename,MaxTextExtent,
+        (void) FormatLocaleString(read_info->filename,MaxTextExtent,
           "jpeg:%s",filename);
         if (image->compression == JPEG2000Compression)
-          (void) FormatMagickString(read_info->filename,MaxTextExtent,
+          (void) FormatLocaleString(read_info->filename,MaxTextExtent,
             "jp2:%s",filename);
         jpeg_image=ReadImage(read_info,exception);
         if (jpeg_image != (Image *) NULL)

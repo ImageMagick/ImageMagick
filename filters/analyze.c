@@ -184,11 +184,11 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     if (area <= 0.0)
       break;
     brightness_mean=brightness_sum_x/area;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",brightness_mean);
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",brightness_mean);
     (void) SetImageProperty(image,"filter:brightness:mean",text);
     brightness_standard_deviation=sqrt(brightness_sum_x2/area-(brightness_sum_x/
       area*brightness_sum_x/area));
-    (void) FormatMagickString(text,MaxTextExtent,"%g",
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",
       brightness_standard_deviation);
     (void) SetImageProperty(image,"filter:brightness:standard-deviation",text);
     if (brightness_standard_deviation != 0)
@@ -198,21 +198,21 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         brightness_mean*brightness_mean)/(brightness_standard_deviation*
         brightness_standard_deviation*brightness_standard_deviation*
         brightness_standard_deviation)-3.0;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",brightness_kurtosis);
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",brightness_kurtosis);
     (void) SetImageProperty(image,"filter:brightness:kurtosis",text);
     if (brightness_standard_deviation != 0)
       brightness_skewness=(brightness_sum_x3/area-3.0*brightness_mean*
         brightness_sum_x2/area+2.0*brightness_mean*brightness_mean*
         brightness_mean)/(brightness_standard_deviation*
         brightness_standard_deviation*brightness_standard_deviation);
-    (void) FormatMagickString(text,MaxTextExtent,"%g",brightness_skewness);
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",brightness_skewness);
     (void) SetImageProperty(image,"filter:brightness:skewness",text);
     saturation_mean=saturation_sum_x/area;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",saturation_mean);
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_mean);
     (void) SetImageProperty(image,"filter:saturation:mean",text);
     saturation_standard_deviation=sqrt(saturation_sum_x2/area-(saturation_sum_x/
       area*saturation_sum_x/area));
-    (void) FormatMagickString(text,MaxTextExtent,"%g",
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",
       saturation_standard_deviation);
     (void) SetImageProperty(image,"filter:saturation:standard-deviation",text);
     if (saturation_standard_deviation != 0)
@@ -222,14 +222,14 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         saturation_mean*saturation_mean)/(saturation_standard_deviation*
         saturation_standard_deviation*saturation_standard_deviation*
         saturation_standard_deviation)-3.0;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",saturation_kurtosis);
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_kurtosis);
     (void) SetImageProperty(image,"filter:saturation:kurtosis",text);
     if (saturation_standard_deviation != 0)
       saturation_skewness=(saturation_sum_x3/area-3.0*saturation_mean*
         saturation_sum_x2/area+2.0*saturation_mean*saturation_mean*
         saturation_mean)/(saturation_standard_deviation*
         saturation_standard_deviation*saturation_standard_deviation);
-    (void) FormatMagickString(text,MaxTextExtent,"%g",saturation_skewness);
+    (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_skewness);
     (void) SetImageProperty(image,"filter:saturation:skewness",text);
   }
   return(MagickImageFilterSignature);

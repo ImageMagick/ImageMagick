@@ -1826,7 +1826,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
     /* Set destination image size and virtual offset */
     if ( bestfit || viewport_given ) {
-      (void) FormatMagickString(image_gen, MaxTextExtent,"  -size %.20gx%.20g "
+      (void) FormatLocaleString(image_gen, MaxTextExtent,"  -size %.20gx%.20g "
         "-page %+.20g%+.20g xc: +insert \\\n",(double) geometry.width,
         (double) geometry.height,(double) geometry.x,(double) geometry.y);
       lookup="v.p{ xx-v.page.x-.5, yy-v.page.x-.5 }";
@@ -1851,21 +1851,21 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         }
         InvertAffineCoefficients(coeff, inverse);
         CoefficientsToAffineArgs(inverse);
-        fprintf(stderr, "Affine Projection:\n");
-        fprintf(stderr, "  -distort AffineProjection \\\n      '");
+        FormatLocaleFile(stderr, "Affine Projection:\n");
+        FormatLocaleFile(stderr, "  -distort AffineProjection \\\n      '");
         for (i=0; i<5; i++)
-          fprintf(stderr, "%lf,", inverse[i]);
-        fprintf(stderr, "%lf'\n", inverse[5]);
+          FormatLocaleFile(stderr, "%lf,", inverse[i]);
+        FormatLocaleFile(stderr, "%lf'\n", inverse[5]);
         inverse = (double *) RelinquishMagickMemory(inverse);
 
-        fprintf(stderr, "Affine Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        fprintf(stderr, "       xx=%+lf*ii %+lf*jj %+lf;\n",
+        FormatLocaleFile(stderr, "Affine Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        FormatLocaleFile(stderr, "       xx=%+lf*ii %+lf*jj %+lf;\n",
             coeff[0], coeff[1], coeff[2]);
-        fprintf(stderr, "       yy=%+lf*ii %+lf*jj %+lf;\n",
+        FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf;\n",
             coeff[3], coeff[4], coeff[5]);
-        fprintf(stderr, "       %s'\n", lookup);
+        FormatLocaleFile(stderr, "       %s'\n", lookup);
 
         break;
       }
@@ -1883,155 +1883,155 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           return((Image *) NULL);
         }
         InvertPerspectiveCoefficients(coeff, inverse);
-        fprintf(stderr, "Perspective Projection:\n");
-        fprintf(stderr, "  -distort PerspectiveProjection \\\n      '");
+        FormatLocaleFile(stderr, "Perspective Projection:\n");
+        FormatLocaleFile(stderr, "  -distort PerspectiveProjection \\\n      '");
         for (i=0; i<4; i++)
-          fprintf(stderr, "%lf, ", inverse[i]);
-        fprintf(stderr, "\n       ");
+          FormatLocaleFile(stderr, "%lf, ", inverse[i]);
+        FormatLocaleFile(stderr, "\n       ");
         for (; i<7; i++)
-          fprintf(stderr, "%lf, ", inverse[i]);
-        fprintf(stderr, "%lf'\n", inverse[7]);
+          FormatLocaleFile(stderr, "%lf, ", inverse[i]);
+        FormatLocaleFile(stderr, "%lf'\n", inverse[7]);
         inverse = (double *) RelinquishMagickMemory(inverse);
 
-        fprintf(stderr, "Perspective Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        fprintf(stderr, "       rr=%+lf*ii %+lf*jj + 1;\n",
+        FormatLocaleFile(stderr, "Perspective Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        FormatLocaleFile(stderr, "       rr=%+lf*ii %+lf*jj + 1;\n",
             coeff[6], coeff[7]);
-        fprintf(stderr, "       xx=(%+lf*ii %+lf*jj %+lf)/rr;\n",
+        FormatLocaleFile(stderr, "       xx=(%+lf*ii %+lf*jj %+lf)/rr;\n",
             coeff[0], coeff[1], coeff[2]);
-        fprintf(stderr, "       yy=(%+lf*ii %+lf*jj %+lf)/rr;\n",
+        FormatLocaleFile(stderr, "       yy=(%+lf*ii %+lf*jj %+lf)/rr;\n",
             coeff[3], coeff[4], coeff[5]);
-        fprintf(stderr, "       rr%s0 ? %s : blue'\n",
+        FormatLocaleFile(stderr, "       rr%s0 ? %s : blue'\n",
             coeff[8] < 0 ? "<" : ">", lookup);
         break;
       }
 
       case BilinearForwardDistortion:
-        fprintf(stderr, "BilinearForward Mapping Equations:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "    i = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
+        FormatLocaleFile(stderr, "BilinearForward Mapping Equations:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "    i = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
             coeff[0], coeff[1], coeff[2], coeff[3]);
-        fprintf(stderr, "    j = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
+        FormatLocaleFile(stderr, "    j = %+lf*x %+lf*y %+lf*x*y %+lf;\n",
             coeff[4], coeff[5], coeff[6], coeff[7]);
 #if 0
         /* for debugging */
-        fprintf(stderr, "   c8 = %+lf  c9 = 2*a = %+lf;\n",
+        FormatLocaleFile(stderr, "   c8 = %+lf  c9 = 2*a = %+lf;\n",
             coeff[8], coeff[9]);
 #endif
-        fprintf(stderr, "BilinearForward Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
+        FormatLocaleFile(stderr, "BilinearForward Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
             0.5-coeff[3], 0.5-coeff[7]);
-        fprintf(stderr, "       bb=%lf*ii %+lf*jj %+lf;\n",
+        FormatLocaleFile(stderr, "       bb=%lf*ii %+lf*jj %+lf;\n",
             coeff[6], -coeff[2], coeff[8]);
         /* Handle Special degenerate (non-quadratic) or trapezoidal case */
         if ( coeff[9] != 0 ) {
-          fprintf(stderr, "       rt=bb*bb %+lf*(%lf*ii%+lf*jj);\n",
+          FormatLocaleFile(stderr, "       rt=bb*bb %+lf*(%lf*ii%+lf*jj);\n",
               -2*coeff[9],  coeff[4], -coeff[0]);
-          fprintf(stderr, "       yy=( -bb + sqrt(rt) ) / %lf;\n",
+          FormatLocaleFile(stderr, "       yy=( -bb + sqrt(rt) ) / %lf;\n",
                coeff[9]);
         } else
-          fprintf(stderr, "       yy=(%lf*ii%+lf*jj)/bb;\n",
+          FormatLocaleFile(stderr, "       yy=(%lf*ii%+lf*jj)/bb;\n",
                 -coeff[4], coeff[0]);
-        fprintf(stderr, "       xx=(ii %+lf*yy)/(%lf %+lf*yy);\n",
+        FormatLocaleFile(stderr, "       xx=(ii %+lf*yy)/(%lf %+lf*yy);\n",
              -coeff[1], coeff[0], coeff[2]);
         if ( coeff[9] != 0 )
-          fprintf(stderr, "       (rt < 0 ) ? red : %s'\n", lookup);
+          FormatLocaleFile(stderr, "       (rt < 0 ) ? red : %s'\n", lookup);
         else
-          fprintf(stderr, "       %s'\n", lookup);
+          FormatLocaleFile(stderr, "       %s'\n", lookup);
         break;
 
       case BilinearReverseDistortion:
 #if 0
-        fprintf(stderr, "Polynomial Projection Distort:\n");
-        fprintf(stderr, "  -distort PolynomialProjection \\\n");
-        fprintf(stderr, "      '1.5, %lf, %lf, %lf, %lf,\n",
+        FormatLocaleFile(stderr, "Polynomial Projection Distort:\n");
+        FormatLocaleFile(stderr, "  -distort PolynomialProjection \\\n");
+        FormatLocaleFile(stderr, "      '1.5, %lf, %lf, %lf, %lf,\n",
             coeff[3], coeff[0], coeff[1], coeff[2]);
-        fprintf(stderr, "            %lf, %lf, %lf, %lf'\n",
+        FormatLocaleFile(stderr, "            %lf, %lf, %lf, %lf'\n",
             coeff[7], coeff[4], coeff[5], coeff[6]);
 #endif
-        fprintf(stderr, "BilinearReverse Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        fprintf(stderr, "       xx=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
+        FormatLocaleFile(stderr, "BilinearReverse Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        FormatLocaleFile(stderr, "       xx=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
             coeff[0], coeff[1], coeff[2], coeff[3]);
-        fprintf(stderr, "       yy=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
+        FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
             coeff[4], coeff[5], coeff[6], coeff[7]);
-        fprintf(stderr, "       %s'\n", lookup);
+        FormatLocaleFile(stderr, "       %s'\n", lookup);
         break;
 
       case PolynomialDistortion:
       {
         size_t nterms = (size_t) coeff[1];
-        fprintf(stderr, "Polynomial (order %lg, terms %lu), FX Equivelent\n",
+        FormatLocaleFile(stderr, "Polynomial (order %lg, terms %lu), FX Equivelent\n",
           coeff[0],(unsigned long) nterms);
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
-        fprintf(stderr, "       xx =");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
+        FormatLocaleFile(stderr, "       xx =");
         for (i=0; i<(ssize_t) nterms; i++) {
-          if ( i != 0 && i%4 == 0 ) fprintf(stderr, "\n         ");
-          fprintf(stderr, " %+lf%s", coeff[2+i],
+          if ( i != 0 && i%4 == 0 ) FormatLocaleFile(stderr, "\n         ");
+          FormatLocaleFile(stderr, " %+lf%s", coeff[2+i],
                poly_basis_str(i));
         }
-        fprintf(stderr, ";\n       yy =");
+        FormatLocaleFile(stderr, ";\n       yy =");
         for (i=0; i<(ssize_t) nterms; i++) {
-          if ( i != 0 && i%4 == 0 ) fprintf(stderr, "\n         ");
-          fprintf(stderr, " %+lf%s", coeff[2+i+nterms],
+          if ( i != 0 && i%4 == 0 ) FormatLocaleFile(stderr, "\n         ");
+          FormatLocaleFile(stderr, " %+lf%s", coeff[2+i+nterms],
                poly_basis_str(i));
         }
-        fprintf(stderr, ";\n       %s'\n", lookup);
+        FormatLocaleFile(stderr, ";\n       %s'\n", lookup);
         break;
       }
       case ArcDistortion:
       {
-        fprintf(stderr, "Arc Distort, Internal Coefficients:\n");
+        FormatLocaleFile(stderr, "Arc Distort, Internal Coefficients:\n");
         for ( i=0; i<5; i++ )
-          fprintf(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
-        fprintf(stderr, "Arc Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x; jj=j+page.y;\n");
-        fprintf(stderr, "       xx=(atan2(jj,ii)%+lf)/(2*pi);\n",
+          FormatLocaleFile(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
+        FormatLocaleFile(stderr, "Arc Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x; jj=j+page.y;\n");
+        FormatLocaleFile(stderr, "       xx=(atan2(jj,ii)%+lf)/(2*pi);\n",
                                   -coeff[0]);
-        fprintf(stderr, "       xx=xx-round(xx);\n");
-        fprintf(stderr, "       xx=xx*%lf %+lf;\n",
+        FormatLocaleFile(stderr, "       xx=xx-round(xx);\n");
+        FormatLocaleFile(stderr, "       xx=xx*%lf %+lf;\n",
                             coeff[1], coeff[4]);
-        fprintf(stderr, "       yy=(%lf - hypot(ii,jj)) * %lf;\n",
+        FormatLocaleFile(stderr, "       yy=(%lf - hypot(ii,jj)) * %lf;\n",
                             coeff[2], coeff[3]);
-        fprintf(stderr, "       v.p{xx-.5,yy-.5}'\n");
+        FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}'\n");
         break;
       }
       case PolarDistortion:
       {
-        fprintf(stderr, "Polar Distort, Internal Coefficents\n");
+        FormatLocaleFile(stderr, "Polar Distort, Internal Coefficents\n");
         for ( i=0; i<8; i++ )
-          fprintf(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
-        fprintf(stderr, "Polar Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
+          FormatLocaleFile(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
+        FormatLocaleFile(stderr, "Polar Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",
                          -coeff[2], -coeff[3]);
-        fprintf(stderr, "       xx=(atan2(ii,jj)%+lf)/(2*pi);\n",
+        FormatLocaleFile(stderr, "       xx=(atan2(ii,jj)%+lf)/(2*pi);\n",
                          -(coeff[4]+coeff[5])/2 );
-        fprintf(stderr, "       xx=xx-round(xx);\n");
-        fprintf(stderr, "       xx=xx*2*pi*%lf + v.w/2;\n",
+        FormatLocaleFile(stderr, "       xx=xx-round(xx);\n");
+        FormatLocaleFile(stderr, "       xx=xx*2*pi*%lf + v.w/2;\n",
                          coeff[6] );
-        fprintf(stderr, "       yy=(hypot(ii,jj)%+lf)*%lf;\n",
+        FormatLocaleFile(stderr, "       yy=(hypot(ii,jj)%+lf)*%lf;\n",
                          -coeff[1], coeff[7] );
-        fprintf(stderr, "       v.p{xx-.5,yy-.5}'\n");
+        FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}'\n");
         break;
       }
       case DePolarDistortion:
       {
-        fprintf(stderr, "DePolar Distort, Internal Coefficents\n");
+        FormatLocaleFile(stderr, "DePolar Distort, Internal Coefficents\n");
         for ( i=0; i<8; i++ )
-          fprintf(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
-        fprintf(stderr, "DePolar Distort, FX Equivelent:\n");
-        fprintf(stderr, "%s", image_gen);
-        fprintf(stderr, "  -fx 'aa=(i+.5)*%lf %+lf;\n", coeff[6], -coeff[4] );
-        fprintf(stderr, "       rr=(j+.5)*%lf %+lf;\n", coeff[7], +coeff[1] );
-        fprintf(stderr, "       xx=rr*sin(aa) %+lf;\n", coeff[2] );
-        fprintf(stderr, "       yy=rr*cos(aa) %+lf;\n", coeff[3] );
-        fprintf(stderr, "       v.p{xx-.5,yy-.5}'\n");
+          FormatLocaleFile(stderr, "  c%.20g = %+lf\n", (double) i, coeff[i]);
+        FormatLocaleFile(stderr, "DePolar Distort, FX Equivelent:\n");
+        FormatLocaleFile(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "  -fx 'aa=(i+.5)*%lf %+lf;\n", coeff[6], -coeff[4] );
+        FormatLocaleFile(stderr, "       rr=(j+.5)*%lf %+lf;\n", coeff[7], +coeff[1] );
+        FormatLocaleFile(stderr, "       xx=rr*sin(aa) %+lf;\n", coeff[2] );
+        FormatLocaleFile(stderr, "       yy=rr*cos(aa) %+lf;\n", coeff[3] );
+        FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}'\n");
         break;
       }
       case BarrelDistortion:
@@ -2043,23 +2043,23 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         */
         xc = ((double)image->columns-1.0)/2.0 + image->page.x;
         yc = ((double)image->rows-1.0)/2.0    + image->page.y;
-        fprintf(stderr, "Barrel%s Distort, FX Equivelent:\n",
+        FormatLocaleFile(stderr, "Barrel%s Distort, FX Equivelent:\n",
              method == BarrelDistortion ? "" : "Inv");
-        fprintf(stderr, "%s", image_gen);
+        FormatLocaleFile(stderr, "%s", image_gen);
         if ( fabs(coeff[8]-xc-0.5) < 0.1 && fabs(coeff[9]-yc-0.5) < 0.1 )
-          fprintf(stderr, "  -fx 'xc=(w-1)/2;  yc=(h-1)/2;\n");
+          FormatLocaleFile(stderr, "  -fx 'xc=(w-1)/2;  yc=(h-1)/2;\n");
         else
-          fprintf(stderr, "  -fx 'xc=%lf;  yc=%lf;\n",
+          FormatLocaleFile(stderr, "  -fx 'xc=%lf;  yc=%lf;\n",
                coeff[8]-0.5, coeff[9]-0.5);
-        fprintf(stderr,
+        FormatLocaleFile(stderr,
              "       ii=i-xc;  jj=j-yc;  rr=hypot(ii,jj);\n");
-        fprintf(stderr, "       ii=ii%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
+        FormatLocaleFile(stderr, "       ii=ii%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
              method == BarrelDistortion ? "*" : "/",
              coeff[0],coeff[1],coeff[2],coeff[3]);
-        fprintf(stderr, "       jj=jj%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
+        FormatLocaleFile(stderr, "       jj=jj%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
              method == BarrelDistortion ? "*" : "/",
              coeff[4],coeff[5],coeff[6],coeff[7]);
-        fprintf(stderr, "       v.p{fx*ii+xc,fy*jj+yc}'\n");
+        FormatLocaleFile(stderr, "       v.p{fx*ii+xc,fy*jj+yc}'\n");
       }
       default:
         break;
@@ -2075,7 +2075,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     artifact=GetImageArtifact(image,"distort:scale");
     output_scaling = 1.0;
     if (artifact != (const char *) NULL) {
-      output_scaling = fabs(StringToDouble(artifact,(char **) NULL));
+      output_scaling = fabs(LocaleToDouble(artifact,(char **) NULL));
       geometry.width  *= output_scaling;
       geometry.height *= output_scaling;
       geometry.x      *= output_scaling;
@@ -2642,46 +2642,46 @@ MagickExport Image *SparseColorImage(const Image *image,
       case BarycentricColorInterpolate:
       {
         register ssize_t x=0;
-        fprintf(stderr, "Barycentric Sparse Color:\n");
+        FormatLocaleFile(stderr, "Barycentric Sparse Color:\n");
         if ( channel & RedChannel )
-          fprintf(stderr, "  -channel R -fx '%+lf*i %+lf*j %+lf' \\\n",
+          FormatLocaleFile(stderr, "  -channel R -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         if ( channel & GreenChannel )
-          fprintf(stderr, "  -channel G -fx '%+lf*i %+lf*j %+lf' \\\n",
+          FormatLocaleFile(stderr, "  -channel G -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         if ( channel & BlueChannel )
-          fprintf(stderr, "  -channel B -fx '%+lf*i %+lf*j %+lf' \\\n",
+          FormatLocaleFile(stderr, "  -channel B -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         if ( channel & IndexChannel )
-          fprintf(stderr, "  -channel K -fx '%+lf*i %+lf*j %+lf' \\\n",
+          FormatLocaleFile(stderr, "  -channel K -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         if ( channel & OpacityChannel )
-          fprintf(stderr, "  -channel A -fx '%+lf*i %+lf*j %+lf' \\\n",
+          FormatLocaleFile(stderr, "  -channel A -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         break;
       }
       case BilinearColorInterpolate:
       {
         register ssize_t x=0;
-        fprintf(stderr, "Bilinear Sparse Color\n");
+        FormatLocaleFile(stderr, "Bilinear Sparse Color\n");
         if ( channel & RedChannel )
-          fprintf(stderr, "   -channel R -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
+          FormatLocaleFile(stderr, "   -channel R -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
         if ( channel & GreenChannel )
-          fprintf(stderr, "   -channel G -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
+          FormatLocaleFile(stderr, "   -channel G -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
         if ( channel & BlueChannel )
-          fprintf(stderr, "   -channel B -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
+          FormatLocaleFile(stderr, "   -channel B -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
         if ( channel & IndexChannel )
-          fprintf(stderr, "   -channel K -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
+          FormatLocaleFile(stderr, "   -channel K -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
         if ( channel & OpacityChannel )
-          fprintf(stderr, "   -channel A -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
+          FormatLocaleFile(stderr, "   -channel A -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
         break;

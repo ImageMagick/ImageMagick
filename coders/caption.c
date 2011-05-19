@@ -157,7 +157,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
-        (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
+        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
@@ -176,7 +176,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
-        (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
+        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
@@ -211,7 +211,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
   else
     {
-      (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
+      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
         -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
         draw_info->stroke_width/2.0);
       (void) CloneString(&draw_info->geometry,geometry);

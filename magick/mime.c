@@ -674,27 +674,27 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
         (strcasecmp(path,mime_info[i]->path) != 0))
       {
         if (mime_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",mime_info[i]->path);
-        (void) fprintf(file,"Type                   Description\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",mime_info[i]->path);
+        (void) FormatLocaleFile(file,"Type                   Description\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=mime_info[i]->path;
-    (void) fprintf(file,"%s",mime_info[i]->type);
+    (void) FormatLocaleFile(file,"%s",mime_info[i]->type);
     if (strlen(mime_info[i]->type) <= 25)
       {
         for (j=(ssize_t) strlen(mime_info[i]->type); j <= 27; j++)
-          (void) fprintf(file," ");
+          (void) FormatLocaleFile(file," ");
       }
     else
       {
-        (void) fprintf(file,"\n");
+        (void) FormatLocaleFile(file,"\n");
         for (j=0; j <= 27; j++)
-          (void) fprintf(file," ");
+          (void) FormatLocaleFile(file," ");
       }
     if (mime_info[i]->description != (char *) NULL)
-      (void) fprintf(file,"%s",mime_info[i]->description);
-    (void) fprintf(file,"\n");
+      (void) FormatLocaleFile(file,"%s",mime_info[i]->description);
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   mime_info=(const MimeInfo **) RelinquishMagickMemory((void *) mime_info);
@@ -1021,14 +1021,14 @@ MagickExport char *MagickToMime(const char *magick)
   ExceptionInfo
     *exception;
 
-  (void) FormatMagickString(filename,MaxTextExtent,"file.%s",magick);
+  (void) FormatLocaleString(filename,MaxTextExtent,"file.%s",magick);
   LocaleLower(filename);
   exception=AcquireExceptionInfo();
   mime_info=GetMimeInfo(filename,(unsigned char *) " ",1,exception);
   exception=DestroyExceptionInfo(exception);
   if (mime_info != (const MimeInfo *) NULL)
     return(ConstantString(GetMimeType(mime_info)));
-  (void) FormatMagickString(media,MaxTextExtent,"image/x-%s",magick);
+  (void) FormatLocaleString(media,MaxTextExtent,"image/x-%s",magick);
   LocaleLower(media+8);
   return(ConstantString(media));
 }

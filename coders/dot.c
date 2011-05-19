@@ -133,7 +133,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetImageInfoBlob(read_info,(void *) NULL,0);
   (void) CopyMagickString(read_info->magick,"SVG",MaxTextExtent);
   (void) AcquireUniqueFilename(read_info->filename);
-  (void) FormatMagickString(command,MaxTextExtent,"-Tsvg -o%s %s",
+  (void) FormatLocaleString(command,MaxTextExtent,"-Tsvg -o%s %s",
     read_info->filename,image_info->filename);
   graph=agread(GetBlobFileHandle(image));
   if (graph == (graph_t *) NULL)

@@ -509,7 +509,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
       frame_info.width=extract_info.width;
       frame_info.height=extract_info.height;
-      (void) FormatMagickString(absolute_geometry,MaxTextExtent,"%s!",
+      (void) FormatLocaleString(absolute_geometry,MaxTextExtent,"%s!",
         montage_info->frame);
       flags=ParseMetaGeometry(absolute_geometry,&frame_info.outer_bevel,
         &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
@@ -660,7 +660,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y_offset,
         &sans,&sans);
     y_offset+=(ssize_t) title_offset;
-    (void) FormatMagickString(montage->montage,MaxTextExtent,
+    (void) FormatLocaleString(montage->montage,MaxTextExtent,
       "%.20gx%.20g%+.20g%+.20g",(double) (extract_info.width+
       (extract_info.x+border_width)*2),(double) (extract_info.height+
       (extract_info.y+border_width)*2+(double) ((metrics.ascent-
@@ -697,7 +697,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         clone_info->gravity=CenterGravity;
         clone_info->pointsize*=2.0;
         (void) GetTypeMetrics(image_list[0],clone_info,&metrics);
-        (void) FormatMagickString(geometry,MaxTextExtent,
+        (void) FormatLocaleString(geometry,MaxTextExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) montage->columns,(double)
           (metrics.ascent-metrics.descent),0.0,(double) extract_info.y+4);
         (void) CloneString(&clone_info->geometry,geometry);
@@ -767,7 +767,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       tile_image->gravity=montage_info->gravity;
       if (image->gravity != UndefinedGravity)
         tile_image->gravity=image->gravity;
-      (void) FormatMagickString(tile_geometry,MaxTextExtent,"%.20gx%.20g+0+0",
+      (void) FormatLocaleString(tile_geometry,MaxTextExtent,"%.20gx%.20g+0+0",
         (double) image->columns,(double) image->rows);
       flags=ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
       x=(ssize_t) (geometry.x+border_width);
@@ -834,7 +834,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               /*
                 Annotate composite tile with label.
               */
-              (void) FormatMagickString(geometry,MaxTextExtent,
+              (void) FormatLocaleString(geometry,MaxTextExtent,
                 "%.20gx%.20g%+.20g%+.20g",(double) ((montage_info->frame ?
                 image->columns : width)-2*border_width),(double)
                 (metrics.ascent-metrics.descent+4)*MultilineCensus(value),

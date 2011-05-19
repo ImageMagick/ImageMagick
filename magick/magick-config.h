@@ -321,6 +321,9 @@
 #define MAGICKCORE_HAVE_FORK 1
 #endif
 
+/* Define to 1 if you have the `fprintf_l' function. */
+/* #undef HAVE_FPRINTF_L */
+
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #ifndef MAGICKCORE_HAVE_FSEEKO
 #define MAGICKCORE_HAVE_FSEEKO 1
@@ -1014,6 +1017,9 @@
 #ifndef MAGICKCORE_HAVE_VSNPRINTF
 #define MAGICKCORE_HAVE_VSNPRINTF 1
 #endif
+
+/* Define to 1 if you have the `vsnprintf_l' function. */
+/* #undef HAVE_VSNPRINTF_L */
 
 /* Define to 1 if you have the `vsprintf' function. */
 #ifndef MAGICKCORE_HAVE_VSPRINTF

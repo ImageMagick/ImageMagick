@@ -551,7 +551,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
       convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
-  (void) FormatMagickString(options,MaxTextExtent,CLOptions,(double)
+  (void) FormatLocaleString(options,MaxTextExtent,CLOptions,(double)
     QuantumRange,MagickEpsilon);
   status=clBuildProgram(convolve_info->program,1,convolve_info->devices,options,
     NULL,NULL);

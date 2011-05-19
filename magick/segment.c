@@ -445,32 +445,32 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       /*
         Print cluster statistics.
       */
-      (void) fprintf(stdout,"Fuzzy C-means Statistics\n");
-      (void) fprintf(stdout,"===================\n\n");
-      (void) fprintf(stdout,"\tCluster Threshold = %g\n",(double)
+      (void) FormatLocaleFile(stdout,"Fuzzy C-means Statistics\n");
+      (void) FormatLocaleFile(stdout,"===================\n\n");
+      (void) FormatLocaleFile(stdout,"\tCluster Threshold = %g\n",(double)
         cluster_threshold);
-      (void) fprintf(stdout,"\tWeighting Exponent = %g\n",(double)
+      (void) FormatLocaleFile(stdout,"\tWeighting Exponent = %g\n",(double)
         weighting_exponent);
-      (void) fprintf(stdout,"\tTotal Number of Clusters = %.20g\n\n",(double)
+      (void) FormatLocaleFile(stdout,"\tTotal Number of Clusters = %.20g\n\n",(double)
         number_clusters);
       /*
         Print the total number of points per cluster.
       */
-      (void) fprintf(stdout,"\n\nNumber of Vectors Per Cluster\n");
-      (void) fprintf(stdout,"=============================\n\n");
+      (void) FormatLocaleFile(stdout,"\n\nNumber of Vectors Per Cluster\n");
+      (void) FormatLocaleFile(stdout,"=============================\n\n");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        (void) fprintf(stdout,"Cluster #%.20g = %.20g\n",(double) cluster->id,
+        (void) FormatLocaleFile(stdout,"Cluster #%.20g = %.20g\n",(double) cluster->id,
           (double) cluster->count);
       /*
         Print the cluster extents.
       */
-      (void) fprintf(stdout,
+      (void) FormatLocaleFile(stdout,
         "\n\n\nCluster Extents:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stdout,"================");
+      (void) FormatLocaleFile(stdout,"================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stdout,"\n\nCluster #%.20g\n\n",(double) cluster->id);
-        (void) fprintf(stdout,"%.20g-%.20g  %.20g-%.20g  %.20g-%.20g\n",(double)
+        (void) FormatLocaleFile(stdout,"\n\nCluster #%.20g\n\n",(double) cluster->id);
+        (void) FormatLocaleFile(stdout,"%.20g-%.20g  %.20g-%.20g  %.20g-%.20g\n",(double)
           cluster->red.left,(double) cluster->red.right,(double)
           cluster->green.left,(double) cluster->green.right,(double)
           cluster->blue.left,(double) cluster->blue.right);
@@ -478,17 +478,17 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       /*
         Print the cluster center values.
       */
-      (void) fprintf(stdout,
+      (void) FormatLocaleFile(stdout,
         "\n\n\nCluster Center Values:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stdout,"=====================");
+      (void) FormatLocaleFile(stdout,"=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stdout,"\n\nCluster #%.20g\n\n",(double) cluster->id);
-        (void) fprintf(stdout,"%g  %g  %g\n",(double)
+        (void) FormatLocaleFile(stdout,"\n\nCluster #%.20g\n\n",(double) cluster->id);
+        (void) FormatLocaleFile(stdout,"%g  %g  %g\n",(double)
           cluster->red.center,(double) cluster->green.center,(double)
           cluster->blue.center);
       }
-      (void) fprintf(stdout,"\n");
+      (void) FormatLocaleFile(stdout,"\n");
     }
   if (number_clusters > 256)
     ThrowBinaryException(ImageError,"TooManyClusters",image->filename);

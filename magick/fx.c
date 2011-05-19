@@ -340,7 +340,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   attenuate=1.0;
   option=GetImageArtifact(image,"attenuate");
   if (option != (char *) NULL)
-    attenuate=StringToDouble(option,(char **) NULL);
+    attenuate=LocaleToDouble(option,(char **) NULL);
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
@@ -929,11 +929,11 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       for (v=0; v < 6; v++)
       {
         *message='\0';
-        (void) FormatMagickString(format,MaxTextExtent,"%.20g: ",(double) v);
+        (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < 6; u++)
         {
-          (void) FormatMagickString(format,MaxTextExtent,"%+f ",
+          (void) FormatLocaleString(format,MaxTextExtent,"%+f ",
             ColorMatrix[v][u]);
           (void) ConcatenateString(&message,format);
         }
@@ -1161,11 +1161,11 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
       case 'k': channel=BlackChannel; break;
       default: break;
     }
-  (void) FormatMagickString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
+  (void) FormatLocaleString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
     (double) channel,symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
-    return(QuantumScale*StringToDouble(value,(char **) NULL));
+    return(QuantumScale*LocaleToDouble(value,(char **) NULL));
   (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
   if (LocaleNCompare(symbol,"depth",5) == 0)
     {
@@ -1173,7 +1173,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         depth;
 
       depth=GetImageChannelDepth(image,channel,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%.20g",(double)
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%.20g",(double)
         depth);
     }
   if (LocaleNCompare(symbol,"kurtosis",8) == 0)
@@ -1184,7 +1184,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelKurtosis(image,channel,&kurtosis,&skewness,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",kurtosis);
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%g",kurtosis);
     }
   if (LocaleNCompare(symbol,"maxima",6) == 0)
     {
@@ -1193,7 +1193,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",maxima);
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%g",maxima);
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
     {
@@ -1203,7 +1203,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",mean);
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%g",mean);
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
     {
@@ -1212,7 +1212,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         minima;
 
       (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",minima);
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%g",minima);
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
     {
@@ -1222,7 +1222,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelKurtosis(image,channel,&kurtosis,&skewness,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",skewness);
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%g",skewness);
     }
   if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
     {
@@ -1232,12 +1232,12 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
       (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
         exception);
-      (void) FormatMagickString(statistic,MaxTextExtent,"%g",
+      (void) FormatLocaleString(statistic,MaxTextExtent,"%g",
         standard_deviation);
     }
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
     ConstantString(statistic));
-  return(QuantumScale*StringToDouble(statistic,(char **) NULL));
+  return(QuantumScale*LocaleToDouble(statistic,(char **) NULL));
 }
 
 static MagickRealType
@@ -1849,7 +1849,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
   }
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,symbol);
   if (value != (const char *) NULL)
-    return((MagickRealType) StringToDouble(value,(char **) NULL));
+    return((MagickRealType) LocaleToDouble(value,(char **) NULL));
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
     "UnableToParseExpression","`%s'",symbol);
   return(0.0);
@@ -2279,7 +2279,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             }
           ClearMagickException(exception);
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          (void) FormatMagickString(numeric,MaxTextExtent,"%g",(double)
+          (void) FormatLocaleString(numeric,MaxTextExtent,"%g",(double)
             *beta);
           (void) DeleteNodeFromSplayTree(fx_info->symbols,subexpression);
           (void) AddValueToSplayTree(fx_info->symbols,ConstantString(
@@ -2451,7 +2451,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
-            (void) fprintf(fx_info->file,"%s[%.20g,%.20g].%s: %s=%.*g\n",
+            (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: %s=%.*g\n",
               fx_info->images->filename,(double) x,(double) y,type,
               subexpression,GetMagickPrecision(),(double) alpha);
           return(0.0);
@@ -2777,7 +2777,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
       break;
   }
   q=(char *) expression;
-  alpha=StringToDouble(expression,&q);
+  alpha=LocaleToDouble(expression,&q);
   if (q == expression)
     return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
   return(alpha);
@@ -3852,7 +3852,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
           caption_image->background_color=image->border_color;
           (void) SetImageBackgroundColor(caption_image);
           (void) CloneString(&annotate_info->text,caption);
-          (void) FormatMagickString(geometry,MaxTextExtent,"+0+%g",
+          (void) FormatLocaleString(geometry,MaxTextExtent,"+0+%g",
             metrics.ascent);
           if (annotate_info->gravity == UndefinedGravity)
             (void) CloneString(&annotate_info->geometry,AcquireString(
@@ -5273,7 +5273,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   draw_info=CloneDrawInfo((const ImageInfo *) NULL,(const DrawInfo *) NULL);
   (void) QueryColorDatabase("#ffffff",&draw_info->fill,exception);
   (void) QueryColorDatabase("#ffffff",&draw_info->stroke,exception);
-  (void) FormatMagickString(ellipse,MaxTextExtent,
+  (void) FormatLocaleString(ellipse,MaxTextExtent,
     "ellipse %g,%g,%g,%g,0.0,360.0",image->columns/2.0,
     image->rows/2.0,image->columns/2.0-x,image->rows/2.0-y);
   draw_info->primitive=AcquireString(ellipse);

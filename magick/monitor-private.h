@@ -32,7 +32,7 @@ static inline MagickBooleanType SetImageProgress(const Image *image,
 
   if (image->progress_monitor == (MagickProgressMonitor) NULL)
     return(MagickTrue);
-  (void) FormatMagickString(message,MaxTextExtent,"%s/%s",tag,image->filename);
+  (void) FormatLocaleString(message,MaxTextExtent,"%s/%s",tag,image->filename);
   return(image->progress_monitor(message,offset,extent,image->client_data));
 }
 

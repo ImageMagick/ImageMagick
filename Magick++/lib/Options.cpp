@@ -357,7 +357,7 @@ void Magick::Options::magick ( const std::string &magick_ )
 {
   ExceptionInfo exception;
 
-  FormatMagickString( _imageInfo->filename, MaxTextExtent, "%.1024s:", magick_.c_str() );
+  FormatLocaleString( _imageInfo->filename, MaxTextExtent, "%.1024s:", magick_.c_str() );
   GetExceptionInfo(&exception);
   SetImageInfo( _imageInfo, 1, &exception);
   if ( *_imageInfo->magick == '\0' )

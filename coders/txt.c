@@ -248,14 +248,14 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   (void) SetImageBackgroundColor(image);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->text,image_info->filename);
-  (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
+  (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
     (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
-  (void) FormatMagickString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
+  (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
     (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   (void) CopyMagickString(filename,image_info->filename,MaxTextExtent);
@@ -659,7 +659,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->matte != MagickFalse)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
       image->columns,(double) image->rows,(double)
       GetQuantumRange(image->depth),colorspace);
@@ -673,7 +673,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
@@ -697,7 +697,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"  ");
         GetColorTuple(&pixel,MagickTrue,tuple);
-        (void) FormatMagickString(buffer,MaxTextExtent,"%s",tuple);
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%s",tuple);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"  ");
         (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,

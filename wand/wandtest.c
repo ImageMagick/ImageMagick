@@ -67,7 +67,7 @@ int main(int argc,char **argv)
 #define ThrowAPIException(wand) \
 { \
   description=MagickGetException(wand,&severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  (void) FormatLocaleFile(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
   description=(char *) MagickRelinquishMemory(description); \
   exit(-1); \
 }
@@ -424,10 +424,10 @@ int main(int argc,char **argv)
   (void) MagickGetSize(magick_wand,&columns,&rows);
   if ((columns != 640) || (rows != 480))
     {
-      (void) fprintf(stderr,"Unexpected magick wand size\n");
+      (void) FormatLocaleFile(stderr,"Unexpected magick wand size\n");
       exit(1);
     }
-  (void) fprintf(stdout,"Reading images...\n");
+  (void) FormatLocaleFile(stdout,"Reading images...\n");
   {
     char
       *p,
@@ -447,20 +447,20 @@ int main(int argc,char **argv)
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   if (MagickGetNumberImages(magick_wand) != 5)
-    (void) fprintf(stderr,"read %.20g images; expected 5\n",
+    (void) FormatLocaleFile(stderr,"read %.20g images; expected 5\n",
       (double) MagickGetNumberImages(magick_wand));
-  (void) fprintf(stdout,"Iterate forward...\n");
+  (void) FormatLocaleFile(stdout,"Iterate forward...\n");
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+    (void) FormatLocaleFile(stdout,"index %.20g scene %.20g\n",(double)
       MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
-  (void) fprintf(stdout,"Iterate reverse...\n");
+  (void) FormatLocaleFile(stdout,"Iterate reverse...\n");
   while (MagickPreviousImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+    (void) FormatLocaleFile(stdout,"index %.20g scene %.20g\n",(double)
       MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
-  (void) fprintf(stdout,"Remove scene 1...\n");
+  (void) FormatLocaleFile(stdout,"Remove scene 1...\n");
   (void) MagickSetIteratorIndex(magick_wand,1);
   clone_wand=MagickGetImage(magick_wand);
   status=MagickRemoveImage(magick_wand);
@@ -468,20 +468,20 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+    (void) FormatLocaleFile(stdout,"index %.20g scene %.20g\n",(double)
       MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
-  (void) fprintf(stdout,"Insert scene 1 back in sequence...\n");
+  (void) FormatLocaleFile(stdout,"Insert scene 1 back in sequence...\n");
   (void) MagickSetIteratorIndex(magick_wand,0);
   status=MagickAddImage(magick_wand,clone_wand);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+    (void) FormatLocaleFile(stdout,"index %.20g scene %.20g\n",(double)
       MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
-  (void) fprintf(stdout,"Set scene 2 to scene 1...\n");
+  (void) FormatLocaleFile(stdout,"Set scene 2 to scene 1...\n");
   (void) MagickSetIteratorIndex(magick_wand,2);
   status=MagickSetImage(magick_wand,clone_wand);
   clone_wand=DestroyMagickWand(clone_wand);
@@ -489,10 +489,10 @@ int main(int argc,char **argv)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
   while (MagickNextImage(magick_wand) != MagickFalse)
-    (void) fprintf(stdout,"index %.20g scene %.20g\n",(double)
+    (void) FormatLocaleFile(stdout,"index %.20g scene %.20g\n",(double)
       MagickGetIteratorIndex(magick_wand),(double)
       MagickGetImageScene(magick_wand));
-  (void) fprintf(stdout,"Apply image processing options...\n");
+  (void) FormatLocaleFile(stdout,"Apply image processing options...\n");
   status=MagickCropImage(magick_wand,60,60,10,10);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
@@ -559,7 +559,7 @@ int main(int argc,char **argv)
     for (i=0; i < 9; i++)
       if (pixels[i] != primary_colors[i])
         {
-          (void) fprintf(stderr,"Get pixels does not match set pixels\n");
+          (void) FormatLocaleFile(stderr,"Get pixels does not match set pixels\n");
           exit(1);
         }
   }
@@ -575,7 +575,7 @@ int main(int argc,char **argv)
   }
   MagickResetIterator(magick_wand);
   (void) MagickSetIteratorIndex(magick_wand,4);
-  (void) fprintf(stdout,"Utilitize pixel iterator to draw diagonal...\n");
+  (void) FormatLocaleFile(stdout,"Utilitize pixel iterator to draw diagonal...\n");
   iterator=NewPixelIterator(magick_wand);
   if (iterator == (PixelIterator *) NULL)
     ThrowAPIException(magick_wand);
@@ -588,15 +588,15 @@ int main(int argc,char **argv)
   }
   (void) PixelSyncIterator(iterator);
   iterator=DestroyPixelIterator(iterator);
-  (void) fprintf(stdout,"Write to wandtest_out.miff...\n");
+  (void) FormatLocaleFile(stdout,"Write to wandtest_out.miff...\n");
   status=MagickWriteImages(magick_wand,"wandtest_out.miff",MagickTrue);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) fprintf(stdout,"Change image format from \"MIFF\" to \"GIF\"...\n");
+  (void) FormatLocaleFile(stdout,"Change image format from \"MIFF\" to \"GIF\"...\n");
   status=MagickSetImageFormat(magick_wand,"GIF");
   if (status == MagickFalse)
      ThrowAPIException(magick_wand);
-  (void) fprintf(stdout,"Set delay between frames to %d seconds...\n",
+  (void) FormatLocaleFile(stdout,"Set delay between frames to %d seconds...\n",
     WandDelay);
   status=MagickSetImageDelay(magick_wand,100*WandDelay);
   if (status == MagickFalse)
@@ -604,14 +604,14 @@ int main(int argc,char **argv)
   delay=MagickGetImageDelay(magick_wand);
   if (delay != (100*WandDelay))
     {
-      (void) fprintf( stderr,"Get delay does not match set delay\n");
+      (void) FormatLocaleFile(stderr,"Get delay does not match set delay\n");
       exit(1);
     }
-  (void) fprintf(stdout,"Write to wandtest_out_0.gif...\n");
+  (void) FormatLocaleFile(stdout,"Write to wandtest_out_0.gif...\n");
   status=MagickWriteImages(magick_wand,"wandtest_out.gif",MagickTrue);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) fprintf(stdout,"Set, list, get, and delete wand option...\n");
+  (void) FormatLocaleFile(stdout,"Set, list, get, and delete wand option...\n");
   status=MagickSetOption(magick_wand,"wand:custom-option",CustomOption);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
@@ -620,7 +620,7 @@ int main(int argc,char **argv)
       (strlen(option) != strlen(CustomOption)) ||
       (memcmp(option,CustomOption,strlen(option)) != 0))
     {
-      (void) fprintf( stderr,"Option does not match\n");
+      (void) FormatLocaleFile(stderr,"Option does not match\n");
       exit(1);
     }
   options=MagickGetOptions(magick_wand,"*",&number_options);
@@ -628,7 +628,7 @@ int main(int argc,char **argv)
     {
       for (i=0; i < (ssize_t) number_options; i++)
       {
-        (void) fprintf(stdout,"  %s\n",options[i]);
+        (void) FormatLocaleFile(stdout,"  %s\n",options[i]);
         options[i]=(char *) MagickRelinquishMemory(options[i]);
       }
       options=(char **) MagickRelinquishMemory(options);
@@ -636,7 +636,7 @@ int main(int argc,char **argv)
   status=MagickDeleteOption(magick_wand,"wand:custom-option");
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) fprintf(stdout,"Set, list, get, and delete wand property...\n");
+  (void) FormatLocaleFile(stdout,"Set, list, get, and delete wand property...\n");
   status=MagickSetImageProperty(magick_wand,"wand:custom-property",
     CustomProperty);
   if (status == MagickFalse)
@@ -646,7 +646,7 @@ int main(int argc,char **argv)
       (strlen(property) != strlen(CustomProperty)) ||
       (memcmp(property,CustomProperty,strlen(property)) != 0))
     {
-      (void) fprintf( stderr,"Property does not match\n");
+      (void) FormatLocaleFile(stderr,"Property does not match\n");
       exit(1);
     }
   properties=MagickGetImageProperties(magick_wand,"*",&number_properties);
@@ -654,7 +654,7 @@ int main(int argc,char **argv)
     {
       for (i=0; i < (ssize_t) number_properties; i++)
       {
-        (void) fprintf(stdout,"  %s\n",properties[i]);
+        (void) FormatLocaleFile(stdout,"  %s\n",properties[i]);
         properties[i]=(char *) MagickRelinquishMemory(properties[i]);
       }
       properties=(char **) MagickRelinquishMemory(properties);
@@ -662,7 +662,7 @@ int main(int argc,char **argv)
   status=MagickDeleteImageProperty(magick_wand,"wand:custom-property");
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  (void) fprintf(stdout,"Set, list, get, and remove sRGB color profile...\n");
+  (void) FormatLocaleFile(stdout,"Set, list, get, and remove sRGB color profile...\n");
   status=MagickSetImageProfile(magick_wand,"sRGB",sRGBProfile,
     sizeof(sRGBProfile));
   if (status == MagickFalse)
@@ -671,7 +671,7 @@ int main(int argc,char **argv)
   if ((profile == (unsigned char *) NULL) || (length != sizeof(sRGBProfile)) ||
       (memcmp(profile,sRGBProfile,length) != 0))
     {
-      (void) fprintf( stderr,"Profile does not match\n");
+      (void) FormatLocaleFile(stderr,"Profile does not match\n");
       exit(1);
     }
   profile=(unsigned char *) MagickRelinquishMemory(profile);
@@ -680,7 +680,7 @@ int main(int argc,char **argv)
     {
       for (i=0; i < (ssize_t) number_profiles; i++)
       {
-        (void) fprintf(stdout,"  %s\n",profiles[i]);
+        (void) FormatLocaleFile(stdout,"  %s\n",profiles[i]);
         profiles[i]=(char *) MagickRelinquishMemory(profiles[i]);
       }
       profiles=(char **) MagickRelinquishMemory(profiles);
@@ -690,11 +690,11 @@ int main(int argc,char **argv)
   if ((profile == (unsigned char *) NULL) || (length != sizeof(sRGBProfile)) ||
       (memcmp(profile,sRGBProfile,length) != 0))
     {
-      (void) fprintf( stderr,"Profile does not match\n");
+      (void) FormatLocaleFile(stderr,"Profile does not match\n");
       exit(1);
     }
   profile=(unsigned char *) MagickRelinquishMemory(profile);
   magick_wand=DestroyMagickWand(magick_wand);
-  (void) fprintf(stdout,"Wand tests pass.\n");
+  (void) FormatLocaleFile(stdout,"Wand tests pass.\n");
   return(0);
 }

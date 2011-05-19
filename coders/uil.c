@@ -297,7 +297,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
   symbol=AcquireString("");
   (void) WriteBlobString(image,"/* UIL */\n");
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "value\n  %s_ct : color_table(\n",basename);
   (void) WriteBlobString(image,buffer);
   GetMagickPixelPacket(image,&pixel);
@@ -327,15 +327,15 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     symbol[j]='\0';
     (void) SubstituteString(&symbol,"'","''");
     if (LocaleCompare(name,"None") == 0)
-      (void) FormatMagickString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MaxTextExtent,
         "    background color = '%s'",symbol);
     else
-      (void) FormatMagickString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MaxTextExtent,
         "    color('%s',%s) = '%s'",name,
         PixelIntensityToQuantum(image->colormap+i) <
         ((Quantum) QuantumRange/2) ? "background" : "foreground",symbol);
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s",
       (i == (ssize_t) (colors-1) ? ");\n" : ",\n"));
     (void) WriteBlobString(image,buffer);
   }
@@ -343,7 +343,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     Define UIL pixels.
   */
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "  %s_icon : icon(color_table = %s_ct,\n",basename,basename);
   (void) WriteBlobString(image,buffer);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -367,7 +367,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       p++;
     }
-    (void) FormatMagickString(buffer,MaxTextExtent,"\"%s\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? ");" : ","));
     (void) WriteBlobString(image,buffer);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

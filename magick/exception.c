@@ -258,10 +258,10 @@ static void DefaultErrorHandler(const ExceptionType magick_unused(severity),
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%s: %s",GetClientName(),reason);
+  (void) FormatLocaleFile(stderr,"%s: %s",GetClientName(),reason);
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%s)",description);
-  (void) fprintf(stderr,".\n");
+    (void) FormatLocaleFile(stderr," (%s)",description);
+  (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
 }
 
@@ -300,10 +300,10 @@ static void DefaultFatalErrorHandler(
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%s: %s",GetClientName(),reason);
+  (void) FormatLocaleFile(stderr,"%s: %s",GetClientName(),reason);
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%s)",description);
-  (void) fprintf(stderr,".\n");
+    (void) FormatLocaleFile(stderr," (%s)",description);
+  (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
   MagickCoreTerminus();
   exit(1);
@@ -342,10 +342,10 @@ static void DefaultWarningHandler(const ExceptionType magick_unused(severity),
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%s: %s",GetClientName(),reason);
+  (void) FormatLocaleFile(stderr,"%s: %s",GetClientName(),reason);
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%s)",description);
-  (void) fprintf(stderr,".\n");
+    (void) FormatLocaleFile(stderr," (%s)",description);
+  (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
 }
 
@@ -573,7 +573,7 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
     *locale_message;
 
   assert(tag != (const char *) NULL);
-  (void) FormatMagickString(message,MaxTextExtent,"Exception/%s%s",
+  (void) FormatLocaleString(message,MaxTextExtent,"Exception/%s%s",
     ExceptionSeverityToTag(severity),tag);
   locale_message=GetLocaleMessage(message);
   if (locale_message == (const char *) NULL)
@@ -981,7 +981,7 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     type="error";
   if (severity >= FatalErrorException)
     type="fatal";
-  (void) FormatMagickString(message,MaxTextExtent,"%s @ %s/%s/%s/%.20g",reason,
+  (void) FormatLocaleString(message,MaxTextExtent,"%s @ %s/%s/%s/%.20g",reason,
     type,path,function,(double) line);
   (void) ThrowException(exception,severity,message,(char *) NULL);
   return(status);

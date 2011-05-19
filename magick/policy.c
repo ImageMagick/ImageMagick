@@ -572,33 +572,33 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
     if (((path == (const char *) NULL) ||
          (LocaleCompare(path,policy_info[i]->path) != 0)) &&
          (policy_info[i]->path != (char *) NULL))
-      (void) fprintf(file,"\nPath: %s\n",policy_info[i]->path);
+      (void) FormatLocaleFile(file,"\nPath: %s\n",policy_info[i]->path);
     path=policy_info[i]->path;
     domain=CommandOptionToMnemonic(MagickPolicyDomainOptions,
       policy_info[i]->domain);
-    (void) fprintf(file,"  Policy: %s\n",domain);
+    (void) FormatLocaleFile(file,"  Policy: %s\n",domain);
     if ((policy_info[i]->domain == ResourcePolicyDomain) ||
         (policy_info[i]->domain == SystemPolicyDomain))
       {
         if (policy_info[i]->name != (char *) NULL)
-          (void) fprintf(file,"    name: %s\n",policy_info[i]->name);
+          (void) FormatLocaleFile(file,"    name: %s\n",policy_info[i]->name);
         if (policy_info[i]->value != (char *) NULL)
-          (void) fprintf(file,"    value: %s\n",policy_info[i]->value);
+          (void) FormatLocaleFile(file,"    value: %s\n",policy_info[i]->value);
       }
     else
       {
-        (void) fprintf(file,"    rights: ");
+        (void) FormatLocaleFile(file,"    rights: ");
         if (policy_info[i]->rights == NoPolicyRights)
-          (void) fprintf(file,"None ");
+          (void) FormatLocaleFile(file,"None ");
         if ((policy_info[i]->rights & ReadPolicyRights) != 0)
-          (void) fprintf(file,"Read ");
+          (void) FormatLocaleFile(file,"Read ");
         if ((policy_info[i]->rights & WritePolicyRights) != 0)
-          (void) fprintf(file,"Write ");
+          (void) FormatLocaleFile(file,"Write ");
         if ((policy_info[i]->rights & ExecutePolicyRights) != 0)
-          (void) fprintf(file,"Execute ");
-        (void) fprintf(file,"\n");
+          (void) FormatLocaleFile(file,"Execute ");
+        (void) FormatLocaleFile(file,"\n");
         if (policy_info[i]->pattern != (char *) NULL)
-          (void) fprintf(file,"    pattern: %s\n",policy_info[i]->pattern);
+          (void) FormatLocaleFile(file,"    pattern: %s\n",policy_info[i]->pattern);
       }
   }
   policy_info=(const PolicyInfo **) RelinquishMagickMemory((void *)

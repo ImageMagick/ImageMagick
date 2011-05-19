@@ -41,6 +41,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/hashmap.h"
+#include "magick/locale_.h"
 #include "magick/option.h"
 #include "magick/string_.h"
 #include "magick/utility.h"
@@ -139,7 +140,7 @@ MagickExport char *GetMagickHomeURL(void)
   element=(const char *) GetNextValueInLinkedList(paths);
   while (element != (const char *) NULL)
   {
-    (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",element,
+    (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",element,
       DirectorySeparator,MagickURLFilename);
     if (IsPathAccessible(path) != MagickFalse)
       return(ConstantString(path));

@@ -527,7 +527,7 @@ static void TimeCodeToString(const size_t timestamp,char *code)
   shift=4*TimeFields;
   for (i=0; i <= TimeFields; i++)
   {
-    (void) FormatMagickString(code,MaxTextExtent-strlen(code),"%x",
+    (void) FormatLocaleString(code,MaxTextExtent-strlen(code),"%x",
       (unsigned int) ((timestamp >> shift) & 0x0fU));
     code++;
     if (((i % 2) != 0) && (i < TimeFields))
@@ -1532,12 +1532,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx.orientation.x_center=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:orientation.x_center");
   if (value != (const char *) NULL)
-    dpx.orientation.x_center=StringToDouble(value,(char **) NULL);
+    dpx.orientation.x_center=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.orientation.x_center);
   dpx.orientation.y_center=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:orientation.y_center");
   if (value != (const char *) NULL)
-    dpx.orientation.y_center=StringToDouble(value,(char **) NULL);
+    dpx.orientation.y_center=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.orientation.y_center);
   dpx.orientation.x_size=0U;
   value=GetDPXProperty(image_info,image,"dpx:orientation.x_size");
@@ -1653,12 +1653,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx.film.frame_rate=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:film.frame_rate");
   if (value != (const char *) NULL)
-    dpx.film.frame_rate=StringToDouble(value,(char **) NULL);
+    dpx.film.frame_rate=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.frame_rate);
   dpx.film.shutter_angle=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:film.shutter_angle");
   if (value != (const char *) NULL)
-    dpx.film.shutter_angle=StringToDouble(value,(char **) NULL);
+    dpx.film.shutter_angle=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.shutter_angle);
   *dpx.film.frame_id='\0';
   value=GetDPXProperty(image_info,image,"dpx:film.frame_id");
@@ -1706,52 +1706,52 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   value=GetDPXProperty(image_info,image,
     "dpx:television.horizontal_sample_rate");
   if (value != (const char *) NULL)
-    dpx.television.horizontal_sample_rate=StringToDouble(value,(char **) NULL);
+    dpx.television.horizontal_sample_rate=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.horizontal_sample_rate);
   dpx.television.vertical_sample_rate=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.vertical_sample_rate");
   if (value != (const char *) NULL)
-    dpx.television.vertical_sample_rate=StringToDouble(value,(char **) NULL);
+    dpx.television.vertical_sample_rate=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.vertical_sample_rate);
   dpx.television.frame_rate=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.frame_rate");
   if (value != (const char *) NULL)
-    dpx.television.frame_rate=StringToDouble(value,(char **) NULL);
+    dpx.television.frame_rate=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.frame_rate);
   dpx.television.time_offset=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.time_offset");
   if (value != (const char *) NULL)
-    dpx.television.time_offset=StringToDouble(value,(char **) NULL);
+    dpx.television.time_offset=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.time_offset);
   dpx.television.gamma=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.gamma");
   if (value != (const char *) NULL)
-    dpx.television.gamma=StringToDouble(value,(char **) NULL);
+    dpx.television.gamma=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.gamma);
   dpx.television.black_level=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.black_level");
   if (value != (const char *) NULL)
-    dpx.television.black_level=StringToDouble(value,(char **) NULL);
+    dpx.television.black_level=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.black_level);
   dpx.television.black_gain=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.black_gain");
   if (value != (const char *) NULL)
-    dpx.television.black_gain=StringToDouble(value,(char **) NULL);
+    dpx.television.black_gain=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.black_gain);
   dpx.television.break_point=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.break_point");
   if (value != (const char *) NULL)
-    dpx.television.break_point=StringToDouble(value,(char **) NULL);
+    dpx.television.break_point=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.break_point);
   dpx.television.white_level=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.white_level");
   if (value != (const char *) NULL)
-    dpx.television.white_level=StringToDouble(value,(char **) NULL);
+    dpx.television.white_level=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.white_level);
   dpx.television.integration_times=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.integration_times");
   if (value != (const char *) NULL)
-    dpx.television.integration_times=StringToDouble(value,(char **) NULL);
+    dpx.television.integration_times=LocaleToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.integration_times);
   offset+=WriteBlob(image,sizeof(dpx.television.reserve),(unsigned char *)
     dpx.television.reserve);

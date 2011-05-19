@@ -133,7 +133,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
       wand_view->name);
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
   clone_view->id=AcquireWandId();
-  (void) FormatMagickString(clone_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_view->name,MaxTextExtent,"%s-%.20g",
     WandViewId,(double) clone_view->id);
   clone_view->description=ConstantString(wand_view->description);
   clone_view->view=CloneCacheView(wand_view->view);
@@ -772,7 +772,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
-  (void) FormatMagickString(wand_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(wand_view->name,MaxTextExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   wand_view->wand=wand;
@@ -832,7 +832,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
-  (void) FormatMagickString(wand_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(wand_view->name,MaxTextExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   wand_view->view=AcquireCacheView(wand_view->wand->images);

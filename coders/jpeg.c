@@ -606,7 +606,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     return(MagickTrue);
   length-=2;
   marker=jpeg_info->unread_marker-JPEG_APP0;
-  (void) FormatMagickString(name,MaxTextExtent,"APP%d",marker);
+  (void) FormatLocaleString(name,MaxTextExtent,"APP%d",marker);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
   profile=AcquireStringInfo(length);
@@ -840,7 +840,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     case JCS_CMYK:
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: CMYK");
-      (void) FormatMagickString(sampling_factor,MaxTextExtent,
+      (void) FormatLocaleString(sampling_factor,MaxTextExtent,
         "%dx%d,%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor,
         jpeg_info->comp_info[1].h_samp_factor,
@@ -855,7 +855,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Colorspace: GRAYSCALE");
-      (void) FormatMagickString(sampling_factor,MaxTextExtent,"%dx%d",
+      (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
         jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor);
       break;
@@ -863,7 +863,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     case JCS_RGB:
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: RGB");
-      (void) FormatMagickString(sampling_factor,MaxTextExtent,
+      (void) FormatLocaleString(sampling_factor,MaxTextExtent,
         "%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor,
         jpeg_info->comp_info[1].h_samp_factor,
@@ -876,7 +876,7 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
         jpeg_info->out_color_space);
-      (void) FormatMagickString(sampling_factor,MaxTextExtent,
+      (void) FormatLocaleString(sampling_factor,MaxTextExtent,
         "%dx%d,%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
         jpeg_info->comp_info[0].v_samp_factor,
         jpeg_info->comp_info[1].h_samp_factor,
@@ -1165,7 +1165,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   JPEGSetImageQuality(&jpeg_info,image);
   JPEGSetImageSamplingFactor(&jpeg_info,image);
-  (void) FormatMagickString(value,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     jpeg_info.out_color_space);
   (void) SetImageProperty(image,"jpeg:colorspace",value);
   if (image_info->ping != MagickFalse)
@@ -1384,7 +1384,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 
   *version='\0';
 #if defined(JPEG_LIB_VERSION)
-  (void) FormatMagickString(version,MaxTextExtent,"%d",JPEG_LIB_VERSION);
+  (void) FormatLocaleString(version,MaxTextExtent,"%d",JPEG_LIB_VERSION);
 #endif
   entry=SetMagickInfo("JPEG");
   entry->thread_support=NoThreadSupport;

@@ -87,7 +87,7 @@ static volatile MagickBooleanType
   instantiate_locale = MagickFalse;
 
 static volatile locale_t
-  locale_cache = (locale_t) NULL;
+  c_locale = (locale_t) NULL;
 
 /*
   Forward declarations.
@@ -101,30 +101,61 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A c q u i r e M a g i c k L o c a l e                                     %
++   A c q u i r e C L o c a l e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMagickLocale() allocates the C locale object, or (locale_t) 0 with
+%  AcquireCLocale() allocates the C locale object, or (locale_t) 0 with
 %  errno set if it cannot be acquired.
 %
-%  The format of the AcquireMagickLocale method is:
+%  The format of the AcquireCLocale method is:
 %
-%      locale_t AcquireMagickLocale(void)
+%      locale_t AcquireCLocale(void)
 %
 */
-MagickExport locale_t AcquireMagickLocale(void)
+static locale_t AcquireCLocale(void)
 {
 #if defined(MAGICKCORE_HAVE_NEWLOCALE)
-  if (locale_cache == (locale_t) NULL)
-    locale_cache=newlocale(LC_ALL_MASK,"C",(locale_t) 0);
+  if (c_locale == (locale_t) NULL)
+    c_locale=newlocale(LC_ALL_MASK,"C",(locale_t) 0);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  if (locale_cache == (locale_t) NULL)
-    locale_cache=_create_locale(LC_ALL,"C");
+  if (c_locale == (locale_t) NULL)
+    c_locale=_create_locale(LC_ALL,"C");
 #endif
-  return(locale_cache);
+  return(c_locale);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e s t r o y C L o c a l e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyCLocale() releases the resources allocated for a locale object
+%  returned by a call to the AcquireCLocale() method.
+%
+%  The format of the DestroyCLocale method is:
+%
+%      void DestroyCLocale(void)
+%
+*/
+static void DestroyCLocale(void)
+{
+#if defined(MAGICKCORE_HAVE_NEWLOCALE)
+  if (c_locale != (locale_t) NULL)
+    freelocale(c_locale);
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (c_locale != (locale_t) NULL)
+    _free_locale(c_locale);
+#endif
+  c_locale=(locale_t) NULL;
 }
 
 /*
@@ -168,30 +199,163 @@ MagickExport LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e s t r o y M a g i c k L o c a l e                                     %
++  F o r m a t L o c a l e F i l e                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagickLocale() releases the resources allocated for a locale object
-%  returned by a call to the AcquireMagickLocale() method.
+%  FormatLocaleFile() prints formatted output of a variable argument list to a
+%  file in the "C" locale.
 %
-%  The format of the DestroyMagickLocale method is:
+%  The format of the FormatLocaleFile method is:
 %
-%      void DestroyMagickLocale(void)
+%      ssize_t FormatLocaleFile(FILE *file,const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o file:  the file.
+%
+%   o format:  A file describing the format to use to write the remaining
+%     arguments.
 %
 */
-MagickExport void DestroyMagickLocale(void)
+
+MagickExport ssize_t FormatLocaleFileList(FILE *file,const char *format,
+  va_list operands)
 {
-#if defined(MAGICKCORE_HAVE_NEWLOCALE)
-  if (locale_cache != (locale_t) NULL)
-    freelocale(locale_cache);
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  if (locale_cache != (locale_t) NULL)
-    _free_locale(locale_cache);
+  int
+    n;
+
+#if defined(MAGICKCORE_HAVE_FPRINTF_L)
+  {
+    locale_t
+      locale;
+
+    locale=AcquireCLocale();
+    if (locale == (locale_t) NULL)
+      n=fprintf(file,format,operands);
+    else
+      n=fprintf_l(file,format,locale,operands);
+  }
+#else
+#if defined(MAGICKCORE_HAVE_USELOCALE)
+  {
+    locale_t
+      locale,
+      previous_locale;
+
+    locale=AcquireCLocale();
+    if (locale == (locale_t) NULL)
+      n=fprintf(file,format,operands);
+    else
+      {
+        previous_locale=uselocale(locale);
+        n=fprintf(file,format,operands);
+        uselocale(previous_locale);
+      }
+  }
+#else
+  n=fprintf(file,format,operands);
 #endif
-  locale_cache=(locale_t) NULL;
+#endif
+  return((ssize_t) n);
+}
+
+MagickExport ssize_t FormatLocaleFile(FILE *file,const char *format,...)
+{
+  ssize_t
+    n;
+
+  va_list
+    operands;
+
+  va_start(operands,format);
+  n=(ssize_t) FormatLocaleFileList(file,format,operands);
+  va_end(operands);
+  return(n);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  F o r m a t L o c a l e S t r i n g                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FormatLocaleString() prints formatted output of a variable argument list to
+%  a string buffer in the "C" locale.
+%
+%  The format of the FormatLocaleString method is:
+%
+%      ssize_t FormatLocaleString(char *string,const size_t length,
+%        const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o string:  FormatLocaleString() returns the formatted string in this
+%     character buffer.
+%
+%   o length: the maximum length of the string.
+%
+%   o format:  A string describing the format to use to write the remaining
+%     arguments.
+%
+*/
+
+MagickExport ssize_t FormatLocaleStringList(char *string,const size_t length,
+  const char *format,va_list operands)
+{
+  int
+    n;
+
+#if defined(MAGICKCORE_HAVE_VSNPRINTF_L)
+  n=vsnprintf_l(string,length,format,(locale_t) NULL,operands);
+#elif defined(MAGICKCORE_HAVE_VSNPRINTF)
+#if defined(MAGICKCORE_HAVE_USELOCALE)
+  {
+    locale_t
+      locale,
+      previous_locale;
+
+    locale=AcquireCLocale();
+    if (locale == (locale_t) NULL)
+      n=vsnprintf(string,length,format,operands);
+    else
+      {
+        previous_locale=uselocale(locale);
+        n=vsnprintf(string,length,format,operands);
+        uselocale(previous_locale);
+      }
+  }
+#else
+  n=vsnprintf(string,length,format,operands);
+#endif
+#else
+  n=vsprintf(string,format,operands);
+#endif
+  if (n < 0)
+    string[length-1]='\0';
+  return((ssize_t) n);
+}
+
+MagickExport ssize_t FormatLocaleString(char *string,const size_t length,
+  const char *format,...)
+{
+  ssize_t
+    n;
+
+  va_list
+    operands;
+
+  va_start(operands,format);
+  n=(ssize_t) FormatLocaleStringList(string,length,format,operands);
+  va_end(operands);
+  return(n);
 }
 
 /*
@@ -464,7 +628,7 @@ MagickExport const char *GetLocaleMessage(const char *tag)
   if ((tag == (const char *) NULL) || (*tag == '\0'))
     return(tag);
   exception=AcquireExceptionInfo();
-  (void) FormatMagickString(name,MaxTextExtent,"%s/",tag);
+  (void) FormatLocaleString(name,MaxTextExtent,"%s/",tag);
   locale_info=GetLocaleInfo_(name,exception);
   exception=DestroyExceptionInfo(exception);
   if (locale_info != (const LocaleInfo *) NULL)
@@ -529,7 +693,7 @@ MagickExport LinkedListInfo *GetLocaleOptions(const char *filename,
       element=(const char *) GetNextValueInLinkedList(paths);
       while (element != (const char *) NULL)
       {
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s",element,filename);
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s",element,filename);
         (void) LogMagickEvent(LocaleEvent,GetMagickModule(),
           "Searching for locale file: \"%s\"",path);
         xml=ConfigureFileToStringInfo(path);
@@ -703,16 +867,16 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
         (LocaleCompare(path,locale_info[i]->path) != 0))
       {
         if (locale_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",locale_info[i]->path);
-        (void) fprintf(file,"Tag/Message\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",locale_info[i]->path);
+        (void) FormatLocaleFile(file,"Tag/Message\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=locale_info[i]->path;
-    (void) fprintf(file,"%s\n",locale_info[i]->tag);
+    (void) FormatLocaleFile(file,"%s\n",locale_info[i]->tag);
     if (locale_info[i]->message != (char *) NULL)
-      (void) fprintf(file,"  %s",locale_info[i]->message);
-    (void) fprintf(file,"\n");
+      (void) FormatLocaleFile(file,"  %s",locale_info[i]->message);
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   locale_info=(const LocaleInfo **)
@@ -795,10 +959,10 @@ static void LocaleFatalErrorHandler(
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%s: %s",GetClientName(),reason);
+  (void) FormatLocaleFile(stderr,"%s: %s",GetClientName(),reason);
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%s)",description);
-  (void) fprintf(stderr,".\n");
+    (void) FormatLocaleFile(stderr," (%s)",description);
+  (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
   exit(1);
 }
@@ -1156,8 +1320,59 @@ MagickExport void LocaleComponentTerminus(void)
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&locale_semaphore);
   LockSemaphoreInfo(locale_semaphore);
-  DestroyMagickLocale();
+  DestroyCLocale();
   instantiate_locale=MagickFalse;
   UnlockSemaphoreInfo(locale_semaphore);
   DestroySemaphoreInfo(&locale_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L o c a l e T o D o u b l e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LocaleToDouble() interprets the string as a floating point number in the
+%  "C" locale and returns its value as a double. If sentinal is not a null
+%  pointer, the method also sets the value pointed by sentinal to point to the
+%  first character after the number.
+%
+%  The format of the LocaleToDouble method is:
+%
+%      double LocaleToDouble(const char *value,char **sentinal)
+%
+%  A description of each parameter follows:
+%
+%    o value: the string value.
+%
+%    o sentinal:  if sentinal is not NULL, a pointer to the character after the
+%      last character used in the conversion is stored in the location
+%      referenced by sentinal.
+%
+*/
+MagickExport double LocaleToDouble(const char *string,char **sentinal)
+{
+  double
+    value;
+
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
+  {
+    locale_t
+      locale;
+
+    locale=AcquireCLocale();
+    if (locale == (locale_t) NULL)
+      value=strtod(string,sentinal);
+    else
+      value=strtod_l(string,sentinal,locale);
+  }
+#else
+  value=strtod(string,sentinal);
+#endif
+  return(value);
 }

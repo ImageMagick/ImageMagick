@@ -191,7 +191,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->y_resolution=image->x_resolution;
     }
-  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
   /*
     Determine page geometry from the XPS media box.
@@ -263,7 +263,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%.20gx%.20g",(double)
+  (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g",(double)
     page.width,(double) page.height);
   if (image_info->monochrome != MagickFalse)
     delegate_info=GetDelegateInfo("xps:mono",(char *) NULL,exception);
@@ -282,7 +282,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.width=(size_t) floor(page.width*image->y_resolution/delta.x+0.5);
   page.height=(size_t) floor(page.height*image->y_resolution/delta.y+
     0.5);
-  (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+  (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   image=DestroyImage(image);
   read_info=CloneImageInfo(image_info);
@@ -290,10 +290,10 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (read_info->number_scenes != 0)
     {
       if (read_info->number_scenes != 1)
-        (void) FormatMagickString(options,MaxTextExtent,"-dLastPage=%.20g",
+        (void) FormatLocaleString(options,MaxTextExtent,"-dLastPage=%.20g",
           (double) (read_info->scene+read_info->number_scenes));
       else
-        (void) FormatMagickString(options,MaxTextExtent,
+        (void) FormatLocaleString(options,MaxTextExtent,
           "-dFirstPage=%.20g -dLastPage=%.20g",(double) read_info->scene+1,
           (double) (read_info->scene+read_info->number_scenes));
       read_info->number_scenes=0;
@@ -301,11 +301,11 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *read_info->scenes='\0';
     }
   if (read_info->authenticate != (char *) NULL)
-    (void) FormatMagickString(options+strlen(options),MaxTextExtent,
+    (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
       " -sXPSPassword=%s",read_info->authenticate);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(read_info->filename);
-  (void) FormatMagickString(command,MaxTextExtent,
+  (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,
