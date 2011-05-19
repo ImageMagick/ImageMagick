@@ -982,6 +982,11 @@
 #define MAGICKCORE_HAVE_UNISTD_H 1
 #endif
 
+/* Define to 1 if you have the `uselocale' function. */
+#ifndef MAGICKCORE_HAVE_USELOCALE
+#define MAGICKCORE_HAVE_USELOCALE 1
+#endif
+
 /* Define to 1 if you have the `usleep' function. */
 #ifndef MAGICKCORE_HAVE_USLEEP
 #define MAGICKCORE_HAVE_USLEEP 1
