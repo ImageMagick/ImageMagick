@@ -339,7 +339,7 @@ MagickExport void closedir(DIR *entry)
 MagickExport int Exit(int status)
 {
 #if !defined(DISABLE_SIOUX)
-  (void) fprintf(stdout,"Select File->Quit to exit.\n");
+  (void) FormatLocaleFile(stdout,"Select File->Quit to exit.\n");
 #endif
   exit(status);
   return(0);
@@ -505,10 +505,10 @@ MagickExport void MACErrorHandler(const ExceptionType error,const char *reason,
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
 #if defined(DISABLE_SIOUX)
   if(exception.hook != (MACErrorHookPtr) NULL)
@@ -564,10 +564,10 @@ static void MACFatalErrorHandler(const ExceptionType severity,
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
   if(exception.hook != (MACErrorHookPtr) NULL)
     exception.hook(severity, buffer);
@@ -958,10 +958,10 @@ MagickExport void MACWarningHandler(const ExceptionType warning,
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
 #if defined(DISABLE_SIOUX)
   if(exception.hook != (MACErrorHookPtr) NULL)

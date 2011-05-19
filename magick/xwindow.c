@@ -605,7 +605,7 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
       /*
         Scale image.
       */
-      (void) FormatMagickString(image_geometry,MaxTextExtent,"%ux%u",
+      (void) FormatLocaleString(image_geometry,MaxTextExtent,"%ux%u",
         width,height);
       (void) TransformImage(&annotate_image,(char *) NULL,image_geometry);
     }
@@ -1301,7 +1301,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
           /*
             User specified Standard Colormap.
           */
-          (void) FormatMagickString((char *) map_name,MaxTextExtent,
+          (void) FormatLocaleString((char *) map_name,MaxTextExtent,
             "RGB_%s_MAP",map_type);
           LocaleUpper(map_name);
           map_property=XInternAtom(display,(char *) map_name,MagickTrue);
@@ -1977,42 +1977,42 @@ MagickExport void XDisplayImageInfo(Display *display,
     }
   if (resource_info->gamma_correct != MagickFalse)
     if (resource_info->display_gamma != (char *) NULL)
-      (void) fprintf(file,"Display\n  gamma: %s\n\n",
+      (void) FormatLocaleFile(file,"Display\n  gamma: %s\n\n",
         resource_info->display_gamma);
   /*
     Write info about the X image to a file.
   */
-  (void) fprintf(file,"X\n  visual: %s\n",
+  (void) FormatLocaleFile(file,"X\n  visual: %s\n",
     XVisualClassName((int) windows->image.storage_class));
-  (void) fprintf(file,"  depth: %d\n",windows->image.ximage->depth);
+  (void) FormatLocaleFile(file,"  depth: %d\n",windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
-    (void) fprintf(file,"  colormap size: %d\n",
+    (void) FormatLocaleFile(file,"  colormap size: %d\n",
       windows->visual_info->colormap_size);
   if (resource_info->colormap== SharedColormap)
-    (void) fprintf(file,"  colormap type: Shared\n");
+    (void) FormatLocaleFile(file,"  colormap type: Shared\n");
   else
-    (void) fprintf(file,"  colormap type: Private\n");
-  (void) fprintf(file,"  geometry: %dx%d\n",windows->image.ximage->width,
+    (void) FormatLocaleFile(file,"  colormap type: Private\n");
+  (void) FormatLocaleFile(file,"  geometry: %dx%d\n",windows->image.ximage->width,
     windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    (void) fprintf(file,"  crop geometry: %s\n",windows->image.crop_geometry);
+    (void) FormatLocaleFile(file,"  crop geometry: %s\n",windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
-    (void) fprintf(file,"  type: X Image\n");
+    (void) FormatLocaleFile(file,"  type: X Image\n");
   else
-    (void) fprintf(file,"  type: Pixmap\n");
+    (void) FormatLocaleFile(file,"  type: Pixmap\n");
   if (windows->image.shape != MagickFalse)
-    (void) fprintf(file,"  non-rectangular shape: True\n");
+    (void) FormatLocaleFile(file,"  non-rectangular shape: True\n");
   else
-    (void) fprintf(file,"  non-rectangular shape: False\n");
+    (void) FormatLocaleFile(file,"  non-rectangular shape: False\n");
   if (windows->image.shared_memory != MagickFalse)
-    (void) fprintf(file,"  shared memory: True\n");
+    (void) FormatLocaleFile(file,"  shared memory: True\n");
   else
-    (void) fprintf(file,"  shared memory: False\n");
-  (void) fprintf(file,"\n");
+    (void) FormatLocaleFile(file,"  shared memory: False\n");
+  (void) FormatLocaleFile(file,"\n");
   if (resource_info->font != (char *) NULL)
-    (void) fprintf(file,"Font: %s\n\n",resource_info->font);
+    (void) FormatLocaleFile(file,"Font: %s\n\n",resource_info->font);
   if (resource_info->text_font != (char *) NULL)
-    (void) fprintf(file,"Text font: %s\n\n",resource_info->text_font);
+    (void) FormatLocaleFile(file,"Text font: %s\n\n",resource_info->text_font);
   /*
     Write info about the undo cache to a file.
   */
@@ -2023,9 +2023,9 @@ MagickExport void XDisplayImageInfo(Display *display,
     bytes+=number_pixels*sizeof(PixelPacket);
     undo_image=GetPreviousImageInList(undo_image);
   }
-  (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) fprintf(file,"  bytes: %.20gmb\n",(double) ((bytes+(1 << 19)) >> 20));
-  (void) fprintf(file,"  limit: %.20gmb\n\n",(double)
+  (void) FormatLocaleFile(file,"Undo Edit Cache\n  levels: %u\n",levels);
+  (void) FormatLocaleFile(file,"  bytes: %.20gmb\n",(double) ((bytes+(1 << 19)) >> 20));
+  (void) FormatLocaleFile(file,"  limit: %.20gmb\n\n",(double)
     resource_info->undo_cache);
   /*
     Write info about the image to a file.
@@ -2050,7 +2050,7 @@ MagickExport void XDisplayImageInfo(Display *display,
         Display information about the image in the Text View widget.
       */
       (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
-      (void) FormatMagickString(title,MaxTextExtent,"Image Info: %s",
+      (void) FormatLocaleString(title,MaxTextExtent,"Image Info: %s",
         image->filename);
       XTextViewWidget(display,resource_info,windows,MagickTrue,title,
         (char const **) textlist);
@@ -2507,7 +2507,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
       /*
         Scale image.
       */
-      (void) FormatMagickString(image_geometry,MaxTextExtent,"%ux%u",
+      (void) FormatLocaleString(image_geometry,MaxTextExtent,"%ux%u",
         width,height);
       (void) TransformImage(&draw_image,(char *) NULL,image_geometry);
     }
@@ -3271,7 +3271,7 @@ MagickExport char *XGetResourceClass(XrmDatabase database,
       /*
         Initialize resource keyword and class.
       */
-      (void) FormatMagickString(resource_name,MaxTextExtent,"%s.%s",
+      (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.%s",
         client_name,keyword);
       c=(int) (*client_name);
       if ((c >= XK_a) && (c <= XK_z))
@@ -3291,7 +3291,7 @@ MagickExport char *XGetResourceClass(XrmDatabase database,
         else
           if ((k >= XK_oslash) && (k <= XK_thorn))
             k-=(XK_oslash-XK_Ooblique);
-      (void) FormatMagickString(resource_class,MaxTextExtent,"%c%s.%c%s",c,
+      (void) FormatLocaleString(resource_class,MaxTextExtent,"%c%s.%c%s",c,
         client_name+1,k,keyword+1);
     }
   status=XrmGetResource(database,resource_name,resource_class,&resource_type,
@@ -3380,7 +3380,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
       if ((c >= XK_oslash) && (c <= XK_thorn))
         c-=(XK_oslash-XK_Ooblique);
 #if defined(X11_APPLICATION_PATH)
-  (void) FormatMagickString(filename,MaxTextExtent,"%s%c%s",
+  (void) FormatLocaleString(filename,MaxTextExtent,"%s%c%s",
     X11_APPLICATION_PATH,c,client_name+1);
   (void) XrmCombineFileDatabase(filename,&resource_database,MagickFalse);
 #endif
@@ -3396,7 +3396,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
     Merge user preferences database.
   */
 #if defined(X11_PREFERENCES_PATH)
-  (void) FormatMagickString(filename,MaxTextExtent,"%s%src",
+  (void) FormatLocaleString(filename,MaxTextExtent,"%s%src",
     X11_PREFERENCES_PATH,client_name);
   ExpandFilename(filename);
   (void) XrmCombineFileDatabase(filename,&resource_database,MagickFalse);
@@ -3654,7 +3654,7 @@ MagickExport char *XGetResourceInstance(XrmDatabase database,
     return((char *) resource_default);
   *resource_name='\0';
   if (keyword != (char *) NULL)
-    (void) FormatMagickString(resource_name,MaxTextExtent,"%s.%s",client_name,
+    (void) FormatLocaleString(resource_name,MaxTextExtent,"%s.%s",client_name,
       keyword);
   status=XrmGetResource(database,resource_name,"ImageMagick",&resource_type,
     &resource_value);
@@ -3706,7 +3706,7 @@ MagickExport char *XGetScreenDensity(Display *display)
     ((double) DisplayWidthMM(display,XDefaultScreen(display))));
   y_density=((((double) DisplayHeight(display,XDefaultScreen(display)))*25.4)/
     ((double) DisplayHeightMM(display,XDefaultScreen(display))));
-  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",x_density,
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",x_density,
     y_density);
   return(GetPageGeometry(density));
 }
@@ -5881,7 +5881,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         resource_info->image_info->texture != (char *) NULL ?
         resource_info->image_info->texture : "pattern:checkerboard",
         MaxTextExtent);
-      (void) FormatMagickString(size,MaxTextExtent,"%.20gx%.20g",(double)
+      (void) FormatLocaleString(size,MaxTextExtent,"%.20gx%.20g",(double)
         image->columns,(double) image->rows);
       image_info->size=ConstantString(size);
       pattern=ReadImage(image_info,&image->exception);
@@ -6508,7 +6508,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         resource_info->image_info->texture != (char *) NULL ?
         resource_info->image_info->texture : "pattern:checkerboard",
         MaxTextExtent);
-      (void) FormatMagickString(size,MaxTextExtent,"%.20gx%.20g",(double)
+      (void) FormatLocaleString(size,MaxTextExtent,"%.20gx%.20g",(double)
         image->columns,(double) image->rows);
       image_info->size=ConstantString(size);
       pattern=ReadImage(image_info,&image->exception);
@@ -7136,7 +7136,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
       i=0;
       while ((1 << i) <= (int) magnify)
         i++;
-      (void) FormatMagickString(windows->magnify.name,MaxTextExtent,
+      (void) FormatLocaleString(windows->magnify.name,MaxTextExtent,
         "Magnify %.20gX",(double) i);
       status=XStringListToTextProperty(&windows->magnify.name,1,&window_name);
       if (status != False)
@@ -7457,7 +7457,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   (void) GetOneVirtualMagickPixel(windows->image.image,(ssize_t)
     windows->magnify.x,(ssize_t) windows->magnify.y,&pixel,
     &windows->image.image->exception);
-  (void) FormatMagickString(tuple,MaxTextExtent,"%d,%d: ",
+  (void) FormatLocaleString(tuple,MaxTextExtent,"%d,%d: ",
     windows->magnify.x,windows->magnify.y);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
   ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
@@ -8377,7 +8377,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       /*
         User specified geometry.
       */
-      (void) FormatMagickString(default_geometry,MaxTextExtent,"%dx%d",
+      (void) FormatLocaleString(default_geometry,MaxTextExtent,"%dx%d",
         size_hints->width,size_hints->height);
       (void) CopyMagickString(geometry,window_info->geometry,MaxTextExtent);
       p=geometry;
@@ -8567,7 +8567,7 @@ static const char *GetLocaleMonitorMessage(const char *text)
   p=strrchr(tag,'/');
   if (p != (char *) NULL)
     *p='\0';
-  (void) FormatMagickString(message,MaxTextExtent,"Monitor/%s",tag);
+  (void) FormatLocaleString(message,MaxTextExtent,"Monitor/%s",tag);
   locale_message=GetLocaleMessage(message);
   if (locale_message == message)
     return(text);
@@ -9289,39 +9289,39 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   assert(resource_info != (XResourceInfo *) NULL);
   client_name=GetClientName();
   preferences_database=XrmGetStringDatabase("");
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.backdrop",client_name);
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.colormap",client_name);
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.colormap",client_name);
   value=resource_info->colormap == SharedColormap ? "Shared" : "Private";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.confirmExit",
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.confirmExit",
     client_name);
   value=resource_info->confirm_exit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.confirmEdit",
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.confirmEdit",
     client_name);
   value=resource_info->confirm_edit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.displayWarnings",
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.displayWarnings",
     client_name);
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.dither",client_name);
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.dither",client_name);
   value=resource_info->quantize_info->dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.gammaCorrect",
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.gammaCorrect",
     client_name);
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.undoCache",client_name);
-  (void) FormatMagickString(cache,MaxTextExtent,"%.20g",(double)
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.undoCache",client_name);
+  (void) FormatLocaleString(cache,MaxTextExtent,"%.20g",(double)
     resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
-  (void) FormatMagickString(specifier,MaxTextExtent,"%s.usePixmap",client_name);
+  (void) FormatLocaleString(specifier,MaxTextExtent,"%s.usePixmap",client_name);
   value=resource_info->use_pixmap ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
-  (void) FormatMagickString(filename,MaxTextExtent,"%s%src",
+  (void) FormatLocaleString(filename,MaxTextExtent,"%s%src",
     X11_PREFERENCES_PATH,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);

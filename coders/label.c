@@ -174,7 +174,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       draw_info->stroke_width+1.5);
   if (draw_info->gravity == UndefinedGravity)
     {
-      (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",
+      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
         -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
         draw_info->stroke_width/2.0);
       draw_info->geometry=AcquireString(geometry);
@@ -196,7 +196,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       char
         pointsize[MaxTextExtent];
 
-      (void) FormatMagickString(pointsize,MaxTextExtent,"%.20g",
+      (void) FormatLocaleString(pointsize,MaxTextExtent,"%.20g",
         draw_info->pointsize);
       (void) SetImageProperty(image,"label:pointsize",pointsize);
     }

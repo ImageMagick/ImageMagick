@@ -953,7 +953,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       if (LocaleCompare(magick,"NULL") != 0)
         (void) CopyMagickString(image->magick,magick,MaxTextExtent);
       magick=DestroyString(magick);
-      (void) FormatMagickString(clone_info->filename,MaxTextExtent,"%s:",
+      (void) FormatLocaleString(clone_info->filename,MaxTextExtent,"%s:",
         delegate_info->decode);
       (void) SetImageInfo(clone_info,(unsigned int) GetImageListLength(image),
         exception);
@@ -963,7 +963,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         MaxTextExtent);
       for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
       {
-        (void) FormatMagickString(p->filename,MaxTextExtent,"%s:%s",
+        (void) FormatLocaleString(p->filename,MaxTextExtent,"%s:%s",
           delegate_info->decode,clone_info->filename);
         status=WriteImage(clone_info,p);
         if (status == MagickFalse)
@@ -1134,9 +1134,9 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
         (LocaleCompare(path,delegate_info[i]->path) != 0))
       {
         if (delegate_info[i]->path != (char *) NULL)
-          (void) fprintf(file,"\nPath: %s\n\n",delegate_info[i]->path);
-        (void) fprintf(file,"Delegate                Command\n");
-        (void) fprintf(file,"-------------------------------------------------"
+          (void) FormatLocaleFile(file,"\nPath: %s\n\n",delegate_info[i]->path);
+        (void) FormatLocaleFile(file,"Delegate                Command\n");
+        (void) FormatLocaleFile(file,"-------------------------------------------------"
           "------------------------------\n");
       }
     path=delegate_info[i]->path;
@@ -1148,15 +1148,15 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
     commands=StringToList(delegate_info[i]->commands);
     if (commands == (char **) NULL)
       continue;
-    (void) fprintf(file,"%11s%c=%c%s  ",delegate_info[i]->decode ?
+    (void) FormatLocaleFile(file,"%11s%c=%c%s  ",delegate_info[i]->decode ?
       delegate_info[i]->decode : "",delegate_info[i]->mode <= 0 ? '<' : ' ',
       delegate_info[i]->mode >= 0 ? '>' : ' ',delegate);
     StripString(commands[0]);
-    (void) fprintf(file,"\"%s\"\n",commands[0]);
+    (void) FormatLocaleFile(file,"\"%s\"\n",commands[0]);
     for (j=1; commands[j] != (char *) NULL; j++)
     {
       StripString(commands[j]);
-      (void) fprintf(file,"                     \"%s\"\n",commands[j]);
+      (void) FormatLocaleFile(file,"                     \"%s\"\n",commands[j]);
     }
     for (j=0; commands[j] != (char *) NULL; j++)
       commands[j]=DestroyString(commands[j]);

@@ -211,7 +211,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
     image->depth=GetImageQuantumDepth(image,MagickTrue);
     if (image->matte != MagickFalse)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "# ImageMagick pixel debugging: %.20g,%.20g,%.20g,%s\n",(double)
       image->columns,(double) image->rows,(double)
       GetQuantumRange(image->depth),colorspace);
@@ -225,18 +225,18 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
       indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
-        (void) FormatMagickString(tuple,MaxTextExtent,"%.20g,%.20g,%.20g ",
+        (void) FormatLocaleString(tuple,MaxTextExtent,"%.20g,%.20g,%.20g ",
           (double) pixel.red,(double) pixel.green,(double) pixel.blue);
         if (pixel.colorspace == CMYKColorspace)
           {
             char
               black[MaxTextExtent];
 
-            (void) FormatMagickString(black,MaxTextExtent,",%.20g ",
+            (void) FormatLocaleString(black,MaxTextExtent,",%.20g ",
               (double) pixel.index);
             (void) ConcatenateMagickString(tuple,black,MaxTextExtent);
           }
@@ -245,7 +245,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
             char
               alpha[MaxTextExtent];
 
-            (void) FormatMagickString(alpha,MaxTextExtent,",%.20g ",
+            (void) FormatLocaleString(alpha,MaxTextExtent,",%.20g ",
               (double) (QuantumRange-pixel.opacity));
             (void) ConcatenateMagickString(tuple,alpha,MaxTextExtent);
           }

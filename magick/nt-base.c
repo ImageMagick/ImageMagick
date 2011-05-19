@@ -182,7 +182,7 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
                       module_path=DestroyString(module_path);
                       return(FALSE);
                     }
-                  (void) FormatMagickString(variable,16*MaxTextExtent,
+                  (void) FormatLocaleString(variable,16*MaxTextExtent,
                     "%s;%s",module_path,path);
                   SetEnvironmentVariable("PATH",variable);
                   variable=DestroyString(variable);
@@ -507,18 +507,18 @@ MagickExport void NTErrorHandler(const ExceptionType severity,
     }
   message=GetExceptionMessage(errno);
   if ((description != (char *) NULL) && errno)
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s (%s) [%s].\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s) [%s].\n",
       GetClientName(),reason,description,message);
   else
     if (description != (char *) NULL)
-      (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+      (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
         GetClientName(),reason,description);
     else
       if (errno != 0)
-        (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s [%s].\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s [%s].\n",
           GetClientName(),reason,message);
       else
-        (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s.\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",
           GetClientName(),reason);
   message=DestroyString(message);
   (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
@@ -904,7 +904,7 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
     REGSAM
       mode;
 
-    (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
+    (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
     root=HKEY_LOCAL_MACHINE;
     mode=KEY_READ;
 #if defined(KEY_WOW64_32KEY)
@@ -993,7 +993,7 @@ static int NTGhostscriptGetString(const char *name,char *value,
     (void) NTLocateGhostscript(&product_family,&major_version,&minor_version);
   if (product_family == NULL)
     return(FALSE);
-  (void) FormatMagickString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
+  (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
     product_family,major_version,minor_version);
   for (i=0; i < (ssize_t) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
   {
@@ -1144,7 +1144,7 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
     q=strchr(path,DirectoryListSeparator);
     if (q != (char *) NULL)
       *q='\0';
-    (void) FormatMagickString(filename,MaxTextExtent,"%s%sfonts.dir",path,
+    (void) FormatLocaleString(filename,MaxTextExtent,"%s%sfonts.dir",path,
       DirectorySeparator);
     if (IsPathAccessible(filename) != MagickFalse)
       return(TRUE);
@@ -1595,7 +1595,7 @@ MagickExport unsigned char *NTRegistryKeyLookup(const char *subkey)
   /*
     Look-up base key.
   */
-  (void) FormatMagickString(package_key,MaxTextExtent,"SOFTWARE\\%s\\%s\\Q:%d",
+  (void) FormatLocaleString(package_key,MaxTextExtent,"SOFTWARE\\%s\\%s\\Q:%d",
     MagickPackageName,MagickLibVersionText,MAGICKCORE_QUANTUM_DEPTH);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",package_key);
   registry_key=(HKEY) INVALID_HANDLE_VALUE;
@@ -1728,7 +1728,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
 
   assert(id != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",id);
-  (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
+  (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
     DirectorySeparator,GetClientName());
   if (IsPathAccessible(path) != MagickFalse)
     handle=GetModuleHandle(path);
@@ -2222,10 +2222,10 @@ MagickExport void NTWarningHandler(const ExceptionType severity,
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatMagickString(buffer,MaxTextExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%s: %s (%s).\n",
       GetClientName(),reason,description);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);

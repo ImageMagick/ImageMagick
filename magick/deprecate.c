@@ -1472,7 +1472,7 @@ MagickExport unsigned int DeleteImageList(Image *images,const ssize_t offset)
 %  Deprecated, replace with:
 %
 %    char key[MaxTextExtent];
-%    FormatMagickString(key,MaxTextExtent,"%ld\n",id);
+%    FormatLocaleString(key,MaxTextExtent,"%ld\n",id);
 %    DeleteImageRegistry(key);
 %
 %  The format of the DeleteMagickRegistry method is:
@@ -1489,7 +1489,7 @@ MagickExport MagickBooleanType DeleteMagickRegistry(const ssize_t id)
   char
     key[MaxTextExtent];
 
-  (void) FormatMagickString(key,MaxTextExtent,"%.20g\n",(double) id);
+  (void) FormatLocaleString(key,MaxTextExtent,"%.20g\n",(double) id);
   return(DeleteImageRegistry(key));
 }
 
@@ -2020,6 +2020,67 @@ MagickExport MagickBooleanType FormatImageAttribute(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  F o r m a t M a g i c k S t r i n g                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FormatMagickString() prints formatted output of a variable argument list.
+%
+%  The format of the FormatMagickString method is:
+%
+%      ssize_t FormatMagickString(char *string,const size_t length,
+%        const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o string:  FormatMagickString() returns the formatted string in this
+%     character buffer.
+%
+%   o length: the maximum length of the string.
+%
+%   o format:  A string describing the format to use to write the remaining
+%     arguments.
+%
+*/
+
+MagickExport ssize_t FormatMagickStringList(char *string,const size_t length,
+  const char *format,va_list operands)
+{
+  int
+    n;
+
+#if defined(MAGICKCORE_HAVE_VSNPRINTF)
+  n=vsnprintf(string,length,format,operands);
+#else
+  n=vsprintf(string,format,operands);
+#endif
+  if (n < 0)
+    string[length-1]='\0';
+  return((ssize_t) n);
+}
+
+MagickExport ssize_t FormatMagickString(char *string,const size_t length,
+  const char *format,...)
+{
+  ssize_t
+    n;
+
+  va_list
+    operands;
+
+  va_start(operands,format);
+  n=(ssize_t) FormatMagickStringList(string,length,format,operands);
+  va_end(operands);
+  return(n);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  F o r m a t S t r i n g                                                    %
 %                                                                             %
 %                                                                             %
@@ -2064,7 +2125,7 @@ MagickExport void FormatString(char *string,const char *format,...)
     operands;
 
   va_start(operands,format);
-  (void) FormatMagickStringList(string,MaxTextExtent,format,operands);
+  (void) FormatLocaleStringList(string,MaxTextExtent,format,operands);
   va_end(operands);
   return;
 }
@@ -2254,7 +2315,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       /*
         Search hard coded paths.
       */
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s",
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s",
         MAGICKCORE_LIBRARY_PATH,filename);
       if (IsPathAccessible(path) != MagickFalse)
         blob=FileToBlob(path,~0,length,exception);
@@ -2272,7 +2333,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       key_value=NTRegistryKeyLookup("ConfigurePath");
       if (key_value != (char *) NULL)
         {
-          (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",key_value,
+          (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",key_value,
             DirectorySeparator,filename);
           if (IsPathAccessible(path) != MagickFalse)
             blob=FileToBlob(path,~0,length,exception);
@@ -2292,10 +2353,10 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
             Search MAGICK_HOME.
           */
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-          (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",home,
+          (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",home,
             DirectorySeparator,filename);
 #else
-          (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/%s",home,
+          (void) FormatLocaleString(path,MaxTextExtent,"%s/lib/%s/%s",home,
             MAGICKCORE_LIBRARY_RELATIVE_PATH,filename);
 #endif
           if (IsPathAccessible(path) != MagickFalse)
@@ -2310,7 +2371,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           /*
             Search $HOME/.magick.
           */
-          (void) FormatMagickString(path,MaxTextExtent,"%s%s.magick%s%s",home,
+          (void) FormatLocaleString(path,MaxTextExtent,"%s%s.magick%s%s",home,
             DirectorySeparator,DirectorySeparator,filename);
           if ((IsPathAccessible(path) != MagickFalse) && (blob == (void *) NULL))
             blob=FileToBlob(path,~0,length,exception);
@@ -2320,7 +2381,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if ((blob == (void *) NULL) && (*GetClientPath() != '\0'))
     {
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
         DirectorySeparator,filename);
 #else
       char
@@ -2332,7 +2393,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       (void) CopyMagickString(prefix,GetClientPath(),
         MaxTextExtent);
       ChopPathComponents(prefix,1);
-      (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/%s",prefix,
+      (void) FormatLocaleString(path,MaxTextExtent,"%s/lib/%s/%s",prefix,
         MAGICKCORE_LIBRARY_RELATIVE_PATH,filename);
 #endif
       if (IsPathAccessible(path) != MagickFalse)
@@ -2668,7 +2729,7 @@ MagickExport void *GetMagickRegistry(const ssize_t id,RegistryType *type,
 
   *type=UndefinedRegistryType;
   *length=0;
-  (void) FormatMagickString(key,MaxTextExtent,"%.20g\n",(double) id);
+  (void) FormatLocaleString(key,MaxTextExtent,"%.20g\n",(double) id);
   blob=(void *) GetImageRegistry(ImageRegistryType,key,exception);
   if (blob != (void *) NULL)
     return(blob);
@@ -6142,7 +6203,7 @@ MagickExport ssize_t SetMagickRegistry(const RegistryType type,const void *blob,
   static ssize_t
     id = 0;
 
-  (void) FormatMagickString(key,MaxTextExtent,"%.20g\n",(double) id);
+  (void) FormatLocaleString(key,MaxTextExtent,"%.20g\n",(double) id);
   status=SetImageRegistry(type,key,blob,exception);
   if (status == MagickFalse)
     return(-1);

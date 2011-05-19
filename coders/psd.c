@@ -448,14 +448,14 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
         */
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->x_resolution=(double) resolution;
-        (void) FormatMagickString(value,MaxTextExtent,"%g",image->x_resolution);
+        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->x_resolution);
         (void) SetImageProperty(image,"tiff:XResolution",value);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->y_resolution=(double) resolution;
-        (void) FormatMagickString(value,MaxTextExtent,"%g",image->y_resolution);
+        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->y_resolution);
         (void) SetImageProperty(image,"tiff:YResolution",value);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
@@ -1229,13 +1229,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Set up some hidden attributes for folks that need them.
             */
-            (void) FormatMagickString(message,MaxTextExtent,"%.20gld",
+            (void) FormatLocaleString(message,MaxTextExtent,"%.20gld",
               (double) layer_info[i].page.x);
             (void) SetImageArtifact(layer_info[i].image,"psd:layer.x",message);
-            (void) FormatMagickString(message,MaxTextExtent,"%.20g",
+            (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
               (double) layer_info[i].page.y);
             (void) SetImageArtifact(layer_info[i].image,"psd:layer.y",message);
-            (void) FormatMagickString(message,MaxTextExtent,"%.20g",
+            (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
               (double) layer_info[i].opacity);
             (void) SetImageArtifact(layer_info[i].image,"psd:layer.opacity",
               message);
@@ -2340,7 +2340,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobMSBLong(image,16);
             (void) WriteBlobMSBLong(image,0);
             (void) WriteBlobMSBLong(image,0);
-            (void) FormatMagickString((char *) layer_name,MaxTextExtent,
+            (void) FormatLocaleString((char *) layer_name,MaxTextExtent,
               "L%06ld",(long) layer_count++);
             WritePascalString( image, (char*)layer_name, 4 );
           }

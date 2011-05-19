@@ -632,7 +632,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
           break;
         }
       }
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s",directory,filename);
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s",directory,filename);
       if (IsPathAccessible(path) == MagickFalse)
         {
           ThrowFileException(exception,ConfigureWarning,
@@ -674,7 +674,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
             "RegistryKeyLookupFailed","`%s'",registery_key);
           return(MagickFalse);
         }
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",(char *) key_value,
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",(char *) key_value,
         DirectorySeparator,filename);
       key_value=(unsigned char *) RelinquishMagickMemory(key_value);
       if (IsPathAccessible(path) == MagickFalse)
@@ -702,7 +702,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
           Search MAGICK_HOME.
         */
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",home,
           DirectorySeparator,filename);
 #else
         const char
@@ -722,7 +722,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
             break;
           }
         }
-        (void) FormatMagickString(path,MaxTextExtent,"%s/lib/%s/%s",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s/lib/%s/%s",home,
           directory,filename);
 #endif
         home=DestroyString(home);
@@ -736,7 +736,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
         Search based on executable directory.
       */
 #if !defined(MAGICKCORE_POSIX_SUPPORT)
-      (void) FormatMagickString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
+      (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",GetClientPath(),
         DirectorySeparator,filename);
 #else
       char
@@ -761,7 +761,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       }
       (void) CopyMagickString(prefix,GetClientPath(),MaxTextExtent);
       ChopPathComponents(prefix,1);
-      (void) FormatMagickString(path,MaxTextExtent,
+      (void) FormatLocaleString(path,MaxTextExtent,
         "%s/lib/%s/modules-Q%d/%s/%s",prefix,MAGICKCORE_LIBRARY_RELATIVE_PATH,
         MAGICKCORE_QUANTUM_DEPTH,directory,filename);
 #endif
@@ -796,7 +796,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
         /*
           Search $HOME/.magick.
         */
-        (void) FormatMagickString(path,MaxTextExtent,"%s%s.magick%s%s",home,
+        (void) FormatLocaleString(path,MaxTextExtent,"%s%s.magick%s%s",home,
           DirectorySeparator,DirectorySeparator,filename);
         home=DestroyString(home);
         if (IsPathAccessible(path) != MagickFalse)
@@ -998,9 +998,9 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     Locate the module.
   */
 #if !defined(MAGICKCORE_NAMESPACE_PREFIX)
-  (void) FormatMagickString(name,MaxTextExtent,"%sImage",tag);
+  (void) FormatLocaleString(name,MaxTextExtent,"%sImage",tag);
 #else
-  (void) FormatMagickString(name,MaxTextExtent,"%s%sImage",
+  (void) FormatLocaleString(name,MaxTextExtent,"%s%sImage",
     MAGICKCORE_NAMESPACE_PREFIX,tag);
 #endif
   /*
@@ -1088,14 +1088,14 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
   (void) GetMagickModulePath(filename,MagickImageCoderModule,module_path,
     exception);
   GetPathComponent(module_path,HeadPath,path);
-  (void) fprintf(file,"\nPath: %s\n\n",path);
-  (void) fprintf(file,"Image Coder\n");
-  (void) fprintf(file,"-------------------------------------------------"
+  (void) FormatLocaleFile(file,"\nPath: %s\n\n",path);
+  (void) FormatLocaleFile(file,"Image Coder\n");
+  (void) FormatLocaleFile(file,"-------------------------------------------------"
     "------------------------------\n");
   for (i=0; i < (ssize_t) number_modules; i++)
   {
-    (void) fprintf(file,"%s",modules[i]);
-    (void) fprintf(file,"\n");
+    (void) FormatLocaleFile(file,"%s",modules[i]);
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   /*
@@ -1114,14 +1114,14 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
   (void) GetMagickModulePath(filename,MagickImageFilterModule,module_path,
     exception);
   GetPathComponent(module_path,HeadPath,path);
-  (void) fprintf(file,"\nPath: %s\n\n",path);
-  (void) fprintf(file,"Image Filter\n");
-  (void) fprintf(file,"-------------------------------------------------"
+  (void) FormatLocaleFile(file,"\nPath: %s\n\n",path);
+  (void) FormatLocaleFile(file,"Image Filter\n");
+  (void) FormatLocaleFile(file,"-------------------------------------------------"
     "------------------------------\n");
   for (i=0; i < (ssize_t) number_modules; i++)
   {
-    (void) fprintf(file,"%s",modules[i]);
-    (void) fprintf(file,"\n");
+    (void) FormatLocaleFile(file,"%s",modules[i]);
+    (void) FormatLocaleFile(file,"\n");
   }
   (void) fflush(file);
   /*
@@ -1452,7 +1452,7 @@ static void TagToCoderModuleName(const char *tag,char *name)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   assert(name != (char *) NULL);
 #if defined(MAGICKCORE_LTDL_DELEGATE)
-  (void) FormatMagickString(name,MaxTextExtent,"%s.la",tag);
+  (void) FormatLocaleString(name,MaxTextExtent,"%s.la",tag);
   (void) LocaleLower(name);
 #else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -1461,9 +1461,9 @@ static void TagToCoderModuleName(const char *tag,char *name)
   else
     {
 #if defined(_DEBUG)
-      (void) FormatMagickString(name,MaxTextExtent,"IM_MOD_DB_%s_.dll",tag);
+      (void) FormatLocaleString(name,MaxTextExtent,"IM_MOD_DB_%s_.dll",tag);
 #else
-      (void) FormatMagickString(name,MaxTextExtent,"IM_MOD_RL_%s_.dll",tag);
+      (void) FormatLocaleString(name,MaxTextExtent,"IM_MOD_RL_%s_.dll",tag);
 #endif
     }
 #endif
@@ -1501,9 +1501,9 @@ static void TagToFilterModuleName(const char *tag,char *name)
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   assert(name != (char *) NULL);
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
-  (void) FormatMagickString(name,MaxTextExtent,"%s.dll",tag);
+  (void) FormatLocaleString(name,MaxTextExtent,"%s.dll",tag);
 #else
-  (void) FormatMagickString(name,MaxTextExtent,"%s.la",tag);
+  (void) FormatLocaleString(name,MaxTextExtent,"%s.la",tag);
 #endif
 }
 
@@ -1547,15 +1547,15 @@ static void TagToModuleName(const char *tag,const char *format,char *module)
   (void) CopyMagickString(name,tag,MaxTextExtent);
   LocaleUpper(name);
 #if !defined(MAGICKCORE_NAMESPACE_PREFIX)
-  (void) FormatMagickString(module,MaxTextExtent,format,name);
+  (void) FormatLocaleString(module,MaxTextExtent,format,name);
 #else
   {
     char
       prefix_format[MaxTextExtent];
 
-    (void) FormatMagickString(prefix_format,MaxTextExtent,"%s%s",
+    (void) FormatLocaleString(prefix_format,MaxTextExtent,"%s%s",
       MAGICKCORE_NAMESPACE_PREFIX,format);
-    (void) FormatMagickString(module,MaxTextExtent,prefix_format,name);
+    (void) FormatLocaleString(module,MaxTextExtent,prefix_format,name);
   }
 #endif
 }

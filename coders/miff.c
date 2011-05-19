@@ -747,7 +747,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"gamma") == 0)
                   {
-                    image->gamma=StringToDouble(options,(char **) NULL);
+                    image->gamma=LocaleToDouble(options,(char **) NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"gravity") == 0)
@@ -1014,7 +1014,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"version") == 0)
                   {
-                    version=StringToDouble(options,(char **) NULL);
+                    version=LocaleToDouble(options,(char **) NULL);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -1952,49 +1952,49 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       Write MIFF header.
     */
     (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "class=%s  colors=%.20g  matte=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
       CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,"columns=%.20g  rows=%.20g  "
+    (void) FormatLocaleString(buffer,MaxTextExtent,"columns=%.20g  rows=%.20g  "
       "depth=%.20g\n",(double) image->columns,(double) image->rows,(double)
       image->depth);
     (void) WriteBlobString(image,buffer);
     if (image->type != UndefinedType)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"type=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"type=%s\n",
           CommandOptionToMnemonic(MagickTypeOptions,image->type));
         (void) WriteBlobString(image,buffer);
       }
     if (image->colorspace != UndefinedColorspace)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"colorspace=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"colorspace=%s\n",
           CommandOptionToMnemonic(MagickColorspaceOptions,image->colorspace));
         (void) WriteBlobString(image,buffer);
       }
     if (compression != UndefinedCompression)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"compression=%s  "
+        (void) FormatLocaleString(buffer,MaxTextExtent,"compression=%s  "
           "quality=%.20g\n",CommandOptionToMnemonic(MagickCompressOptions,
           compression),(double) image->quality);
         (void) WriteBlobString(image,buffer);
       }
     if (image->units != UndefinedResolution)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"units=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"units=%s\n",
           CommandOptionToMnemonic(MagickResolutionOptions,image->units));
         (void) WriteBlobString(image,buffer);
       }
     if ((image->x_resolution != 0) || (image->y_resolution != 0))
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "resolution=%gx%g\n",image->x_resolution,image->y_resolution);
         (void) WriteBlobString(image,buffer);
       }
     if ((image->page.width != 0) || (image->page.height != 0))
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "page=%.20gx%.20g%+.20g%+.20g\n",(double) image->page.width,(double)
           image->page.height,(double) image->page.x,(double) image->page.y);
         (void) WriteBlobString(image,buffer);
@@ -2002,13 +2002,13 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     else
       if ((image->page.x != 0) || (image->page.y != 0))
         {
-          (void) FormatMagickString(buffer,MaxTextExtent,"page=%+ld%+ld\n",
+          (void) FormatLocaleString(buffer,MaxTextExtent,"page=%+ld%+ld\n",
             (long) image->page.x,(long) image->page.y);
           (void) WriteBlobString(image,buffer);
         }
     if ((image->tile_offset.x != 0) || (image->tile_offset.y != 0))
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"tile-offset=%+ld%+ld\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"tile-offset=%+ld%+ld\n",
           (long) image->tile_offset.x,(long) image->tile_offset.y);
         (void) WriteBlobString(image,buffer);
       }
@@ -2016,11 +2016,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         (GetPreviousImageInList(image) != (Image *) NULL))
       {
         if (image->scene == 0)
-          (void) FormatMagickString(buffer,MaxTextExtent,"iterations=%.20g  "
+          (void) FormatLocaleString(buffer,MaxTextExtent,"iterations=%.20g  "
             "delay=%.20g  ticks-per-second=%.20g\n",(double) image->iterations,
             (double) image->delay,(double) image->ticks_per_second);
         else
-          (void) FormatMagickString(buffer,MaxTextExtent,"scene=%.20g  "
+          (void) FormatLocaleString(buffer,MaxTextExtent,"scene=%.20g  "
             "iterations=%.20g  delay=%.20g  ticks-per-second=%.20g\n",(double)
             image->scene,(double) image->iterations,(double) image->delay,
             (double) image->ticks_per_second);
@@ -2030,51 +2030,51 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       {
         if (image->scene != 0)
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,"scene=%.20g\n",
+            (void) FormatLocaleString(buffer,MaxTextExtent,"scene=%.20g\n",
               (double) image->scene);
             (void) WriteBlobString(image,buffer);
           }
         if (image->iterations != 0)
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,"iterations=%.20g\n",
+            (void) FormatLocaleString(buffer,MaxTextExtent,"iterations=%.20g\n",
               (double) image->iterations);
             (void) WriteBlobString(image,buffer);
           }
         if (image->delay != 0)
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,"delay=%.20g\n",
+            (void) FormatLocaleString(buffer,MaxTextExtent,"delay=%.20g\n",
               (double) image->delay);
             (void) WriteBlobString(image,buffer);
           }
         if (image->ticks_per_second != UndefinedTicksPerSecond)
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "ticks-per-second=%.20g\n",(double) image->ticks_per_second);
             (void) WriteBlobString(image,buffer);
           }
       }
     if (image->gravity != UndefinedGravity)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"gravity=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"gravity=%s\n",
           CommandOptionToMnemonic(MagickGravityOptions,image->gravity));
         (void) WriteBlobString(image,buffer);
       }
     if (image->dispose != UndefinedDispose)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"dispose=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"dispose=%s\n",
           CommandOptionToMnemonic(MagickDisposeOptions,image->dispose));
         (void) WriteBlobString(image,buffer);
       }
     if (image->rendering_intent != UndefinedIntent)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "rendering-intent=%s\n",
            CommandOptionToMnemonic(MagickIntentOptions,image->rendering_intent));
         (void) WriteBlobString(image,buffer);
       }
     if (image->gamma != 0.0)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"gamma=%g\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"gamma=%g\n",
           image->gamma);
         (void) WriteBlobString(image,buffer);
       }
@@ -2083,7 +2083,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         /*
           Note chomaticity points.
         */
-        (void) FormatMagickString(buffer,MaxTextExtent,"red-primary=%g,"
+        (void) FormatLocaleString(buffer,MaxTextExtent,"red-primary=%g,"
           "%g  green-primary=%g,%g  blue-primary=%g,%g\n",
           image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
           image->chromaticity.green_primary.x,
@@ -2091,14 +2091,14 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           image->chromaticity.blue_primary.x,
           image->chromaticity.blue_primary.y);
         (void) WriteBlobString(image,buffer);
-        (void) FormatMagickString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "white-point=%g,%g\n",image->chromaticity.white_point.x,
           image->chromaticity.white_point.y);
         (void) WriteBlobString(image,buffer);
       }
     if (image->orientation != UndefinedOrientation)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"orientation=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"orientation=%s\n",
           CommandOptionToMnemonic(MagickOrientationOptions,image->orientation));
         (void) WriteBlobString(image,buffer);
       }
@@ -2120,7 +2120,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           profile=GetImageProfile(image,name);
           if (profile != (StringInfo *) NULL)
             {
-              (void) FormatMagickString(buffer,MaxTextExtent,
+              (void) FormatLocaleString(buffer,MaxTextExtent,
                 "profile:%s=%.20g\n",name,(double)
                 GetStringInfoLength(profile));
               (void) WriteBlobString(image,buffer);
@@ -2130,7 +2130,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if (image->montage != (char *) NULL)
       {
-        (void) FormatMagickString(buffer,MaxTextExtent,"montage=%s\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"montage=%s\n",
           image->montage);
         (void) WriteBlobString(image,buffer);
       }
@@ -2140,7 +2140,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     property=GetNextImageProperty(image);
     while (property != (const char *) NULL)
     {
-      (void) FormatMagickString(buffer,MaxTextExtent,"%s=",property);
+      (void) FormatLocaleString(buffer,MaxTextExtent,"%s=",property);
       (void) WriteBlobString(image,buffer);
       value=GetImageProperty(image,property);
       if (value != (const char *) NULL)

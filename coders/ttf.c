@@ -249,29 +249,29 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->font=AcquireString(image->filename);
   ConcatenateString(&draw_info->primitive,"push graphic-context\n");
-  (void) FormatMagickString(buffer,MaxTextExtent," viewbox 0 0 %.20g %.20g\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent," viewbox 0 0 %.20g %.20g\n",
     (double) image->columns,(double) image->rows);
   ConcatenateString(&draw_info->primitive,buffer);
   ConcatenateString(&draw_info->primitive," font-size 18\n");
-  (void) FormatMagickString(buffer,MaxTextExtent," text 10,%.20g '",(double) y);
+  (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%.20g '",(double) y);
   ConcatenateString(&draw_info->primitive,buffer);
   text=EscapeString(Text,'"');
   ConcatenateString(&draw_info->primitive,text);
   text=DestroyString(text);
-  (void) FormatMagickString(buffer,MaxTextExtent,"'\n");
+  (void) FormatLocaleString(buffer,MaxTextExtent,"'\n");
   ConcatenateString(&draw_info->primitive,buffer);
   y+=20*(ssize_t) MultilineCensus((char *) Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
     ConcatenateString(&draw_info->primitive," font-size 18\n");
-    (void) FormatMagickString(buffer,MaxTextExtent," text 10,%.20g '%.20g'\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%.20g '%.20g'\n",
       (double) y,(double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent," font-size %.20g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent," font-size %.20g\n",
       (double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent," text 50,%.20g "
+    (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%.20g "
       "'That which does not destroy me, only makes me stronger.'\n",(double) y);
     ConcatenateString(&draw_info->primitive,buffer);
     if (i >= 24)
@@ -321,7 +321,7 @@ ModuleExport size_t RegisterTTFImage(void)
 
   *version='\0';
 #if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR) && defined(FREETYPE_PATCH)
-  (void) FormatMagickString(version,MaxTextExtent,"Freetype %d.%d.%d",
+  (void) FormatLocaleString(version,MaxTextExtent,"Freetype %d.%d.%d",
     FREETYPE_MAJOR,FREETYPE_MINOR,FREETYPE_PATCH);
 #endif
   entry=SetMagickInfo("DFONT");

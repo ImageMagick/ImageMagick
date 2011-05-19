@@ -2103,7 +2103,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           (unsigned int) windows->widget.visual_info->colormap_size,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
-        (void) FormatMagickString(mode_info.text,MaxTextExtent,"#%02x%02x%02x",
+        (void) FormatLocaleString(mode_info.text,MaxTextExtent,"#%02x%02x%02x",
           windows->widget.pixel_info->matte_color.red,
           windows->widget.pixel_info->matte_color.green,
           windows->widget.pixel_info->matte_color.blue);
@@ -8585,7 +8585,7 @@ MagickExport MagickBooleanType XPreferencesWidget(Display *display,
           SharedColormap ? MagickTrue : MagickFalse;
         preferences_info[7].raised=resource_info->use_pixmap ==
           MagickFalse ? MagickTrue : MagickFalse;
-        (void) FormatMagickString(cache,MaxTextExtent,CacheButtonText,
+        (void) FormatLocaleString(cache,MaxTextExtent,CacheButtonText,
           (unsigned long) resource_info->undo_cache);
         XGetWidgetInfo(cache,&cache_info);
         cache_info.bevel_width--;
@@ -8659,7 +8659,7 @@ MagickExport MagickBooleanType XPreferencesWidget(Display *display,
             resource_info->undo_cache<<=1;
             if (resource_info->undo_cache > 256)
               resource_info->undo_cache=1;
-            (void) FormatMagickString(cache,MaxTextExtent,CacheButtonText,
+            (void) FormatLocaleString(cache,MaxTextExtent,CacheButtonText,
               (unsigned long) resource_info->undo_cache);
             cache_info.raised=MagickFalse;
             XDrawTriangleEast(display,&windows->widget,&cache_info);

@@ -212,7 +212,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"eps:%s",
+  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"eps:%s",
     filename);
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);

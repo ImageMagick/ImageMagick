@@ -1161,7 +1161,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       char
         name[MaxTextExtent];
 
-      (void) FormatMagickString(name,MaxTextExtent,"APP%d",1);
+      (void) FormatLocaleString(name,MaxTextExtent,"APP%d",1);
       buff=AcquireImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1768,7 +1768,7 @@ static void formatString(Image *ofile, const char *s, int len)
         (void) WriteBlobByte(ofile,(unsigned char) *s);
       else
         {
-          (void) FormatMagickString(temp,MaxTextExtent,"&#%d;", c & 255);
+          (void) FormatLocaleString(temp,MaxTextExtent,"&#%d;", c & 255);
           (void) WriteBlobString(ofile,temp);
         }
       break;
@@ -1946,10 +1946,10 @@ static int formatIPTC(Image *ifile, Image *ofile)
 
     /* now finish up by formatting this binary data into ASCII equivalent */
     if (strlen((char *)readable) > 0)
-      (void) FormatMagickString(temp,MaxTextExtent,"%d#%d#%s=",
+      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d#%s=",
         (unsigned int) dataset, (unsigned int) recnum, readable);
     else
-      (void) FormatMagickString(temp,MaxTextExtent,"%d#%d=",
+      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d=",
         (unsigned int) dataset,(unsigned int) recnum);
     (void) WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
@@ -2077,10 +2077,10 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, ssize_t len)
 
     /* now finish up by formatting this binary data into ASCII equivalent */
     if (strlen((char *)readable) > 0)
-      (void) FormatMagickString(temp,MaxTextExtent,"%d#%d#%s=",
+      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d#%s=",
         (unsigned int) dataset,(unsigned int) recnum, readable);
     else
-      (void) FormatMagickString(temp,MaxTextExtent,"%d#%d=",
+      (void) FormatLocaleString(temp,MaxTextExtent,"%d#%d=",
         (unsigned int) dataset,(unsigned int) recnum);
     (void) WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
@@ -2203,10 +2203,10 @@ static int format8BIM(Image *ifile, Image *ofile)
          * ASCII equivalent
          */
         if (strlen((const char *)PString) > 0)
-          (void) FormatMagickString(temp,MaxTextExtent,"8BIM#%d#%s=",ID,
+          (void) FormatLocaleString(temp,MaxTextExtent,"8BIM#%d#%s=",ID,
             PString);
         else
-          (void) FormatMagickString(temp,MaxTextExtent,"8BIM#%d=",ID);
+          (void) FormatLocaleString(temp,MaxTextExtent,"8BIM#%d=",ID);
         (void) WriteBlobString(ofile,temp);
         if (ID == IPTC_ID)
           {

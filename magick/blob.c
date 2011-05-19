@@ -51,6 +51,7 @@
 #include "magick/exception-private.h"
 #include "magick/image-private.h"
 #include "magick/list.h"
+#include "magick/locale_.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
@@ -377,7 +378,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       return((Image *) NULL);
     }
   clone_info=CloneImageInfo(blob_info);
-  (void) FormatMagickString(clone_info->filename,MaxTextExtent,"%s:%s",
+  (void) FormatLocaleString(clone_info->filename,MaxTextExtent,"%s:%s",
     blob_info->magick,blob_info->filename);
   image=ReadImage(clone_info,exception);
   clone_info=DestroyImageInfo(clone_info);
@@ -1537,7 +1538,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           blob_info->file=fdopen(file,"wb");
           if (blob_info->file != (FILE *) NULL)
             {
-              (void) FormatMagickString(image->filename,MaxTextExtent,"%s:%s",
+              (void) FormatLocaleString(image->filename,MaxTextExtent,"%s:%s",
                 image->magick,unique);
               status=WriteImage(blob_info,image);
               (void) fclose(blob_info->file);
@@ -1796,7 +1797,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
           blob_info->file=fdopen(file,"wb");
           if (blob_info->file != (FILE *) NULL)
             {
-              (void) FormatMagickString(filename,MaxTextExtent,"%s:%s",
+              (void) FormatLocaleString(filename,MaxTextExtent,"%s:%s",
                 images->magick,unique);
               status=WriteImages(blob_info,images,filename,exception);
               (void) fclose(blob_info->file);
@@ -1910,7 +1911,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
       (void) RelinquishUniqueFileResource(filename);
       return(MagickFalse);
     }
-  (void) FormatMagickString(byte_image->filename,MaxTextExtent,"%s:%s",format,
+  (void) FormatLocaleString(byte_image->filename,MaxTextExtent,"%s:%s",format,
     filename);
   DestroyBlob(byte_image);
   byte_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -2440,10 +2441,10 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
               GetPathComponent(image->filename,RootPath,path);
               if (*extension == '\0')
-                (void) FormatMagickString(filename,MaxTextExtent,"%s-%.20g",
+                (void) FormatLocaleString(filename,MaxTextExtent,"%s-%.20g",
                   path,(double) image->scene);
               else
-                (void) FormatMagickString(filename,MaxTextExtent,"%s-%.20g.%s",
+                (void) FormatLocaleString(filename,MaxTextExtent,"%s-%.20g.%s",
                   path,(double) image->scene,extension);
             }
           (void) CopyMagickString(image->filename,filename,MaxTextExtent);

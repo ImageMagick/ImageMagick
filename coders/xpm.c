@@ -734,11 +734,11 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   */
   (void) WriteBlobString(image,"/* XPM */\n");
   GetPathComponent(picon->filename,BasePath,basename);
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "static char *%s[] = {\n",basename);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "\"%.20g %.20g %.20g %.20g\",\n",(double) picon->columns,(double)
     picon->rows,(double) colors,(double) characters_per_pixel);
   (void) WriteBlobString(image,buffer);
@@ -770,7 +770,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
-    (void) FormatMagickString(buffer,MaxTextExtent,"\"%s c %s\",\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s c %s\",\n",
        symbol,name);
     (void) WriteBlobString(image,buffer);
   }
@@ -798,7 +798,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       (void) CopyMagickString(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
     }
-    (void) FormatMagickString(buffer,MaxTextExtent,"\"%s\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
       y == (ssize_t) (picon->rows-1) ? "" : ",");
     (void) WriteBlobString(image,buffer);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -960,7 +960,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
   GetPathComponent(image->filename,BasePath,basename);
   if (isalnum((int) ((unsigned char) *basename)) == 0)
     {
-      (void) FormatMagickString(buffer,MaxTextExtent,"xpm_%s",basename);
+      (void) FormatLocaleString(buffer,MaxTextExtent,"xpm_%s",basename);
       (void) CopyMagickString(basename,buffer,MaxTextExtent);
     }
   if (isalpha((int) ((unsigned char) basename[0])) == 0)
@@ -968,11 +968,11 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
   for (i=1; basename[i] != '\0'; i++)
     if (isalnum((int) ((unsigned char) basename[i])) == 0)
       basename[i]='_';
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "static char *%s[] = {\n",basename);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "\"%.20g %.20g %.20g %.20g \",\n",(double) image->columns,(double)
     image->rows,(double) image->colors,(double) characters_per_pixel);
   (void) WriteBlobString(image,buffer);
@@ -1001,7 +1001,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
-    (void) FormatMagickString(buffer,MaxTextExtent,"\"%s c %s\",\n",symbol,
+    (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s c %s\",\n",symbol,
       name);
     (void) WriteBlobString(image,buffer);
   }
@@ -1029,7 +1029,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
       (void) CopyMagickString(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
     }
-    (void) FormatMagickString(buffer,MaxTextExtent,"\"%s\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? "" : ","));
     (void) WriteBlobString(image,buffer);
     if (image->previous == (Image *) NULL)

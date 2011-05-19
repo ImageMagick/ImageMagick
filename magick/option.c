@@ -2134,7 +2134,7 @@ MagickExport MagickBooleanType ListCommandOptions(FILE *file,
   {
     if (option_info[i].stealth != MagickFalse)
       continue;
-    (void) fprintf(file,"%s\n",option_info[i].mnemonic);
+    (void) FormatLocaleFile(file,"%s\n",option_info[i].mnemonic);
   }
   return(MagickTrue);
 }

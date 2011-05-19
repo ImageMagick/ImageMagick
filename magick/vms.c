@@ -130,7 +130,7 @@ DIR *opendir(char *name)
   /*
     Initialize descriptor.
   */
-  (void) FormatMagickString(directory->pattern,MaxTextExtent,"%s*.*",name);
+  (void) FormatLocaleString(directory->pattern,MaxTextExtent,"%s*.*",name);
   directory->context=0;
   directory->pat.dsc$a_pointer=directory->pattern;
   directory->pat.dsc$w_length=strlen(directory->pattern);

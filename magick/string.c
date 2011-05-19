@@ -45,7 +45,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/list.h"
-#include "magick/locale-private.h"
+#include "magick/locale_.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/property.h"
@@ -1050,93 +1050,12 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
     length/=bytes;
   for (j=2; j < 12; j++)
   {
-    count=FormatMagickString(format,MaxTextExtent,"%.*g%sB",(int) (i+j),length,
+    count=FormatLocaleString(format,MaxTextExtent,"%.*g%sB",(int) (i+j),length,
       units[i]);
     if (strchr(format,'+') == (char *) NULL)
       break;
   }
   return(count);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  F o r m a t M a g i c k S t r i n g                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FormatMagickString() prints formatted output of a variable argument list.
-%
-%  The format of the FormatMagickString method is:
-%
-%      ssize_t FormatMagickString(char *string,const size_t length,
-%        const char *format,...)
-%
-%  A description of each parameter follows.
-%
-%   o string:  FormatMagickString() returns the formatted string in this
-%     character buffer.
-%
-%   o length: the maximum length of the string.
-%
-%   o format:  A string describing the format to use to write the remaining
-%     arguments.
-%
-*/
-
-MagickExport ssize_t FormatMagickStringList(char *string,const size_t length,
-  const char *format,va_list operands)
-{
-  int
-    n;
-
-#if defined(MAGICKCORE_HAVE_VSNPRINTF_L)
-  n=vsnprintf_l(string,length,(locale_t) NULL,format,operands);
-#elif defined(MAGICKCORE_HAVE_VSNPRINTF)
-#if defined(MAGICKCORE_HAVE_USELOCALE)
-  {
-    locale_t
-      locale,
-      previous_locale;
-
-    locale=AcquireMagickLocale();
-    if (locale == (locale_t) NULL)
-      n=vsnprintf(string,length,format,operands);
-    else
-      {
-        previous_locale=uselocale(locale);
-        n=vsnprintf(string,length,format,operands);
-        uselocale(previous_locale);
-      }
-  }
-#else
-  n=vsnprintf(string,length,format,operands);
-#endif
-#else
-  n=vsprintf(string,format,operands);
-#endif
-  if (n < 0)
-    string[length-1]='\0';
-  return((ssize_t) n);
-}
-
-MagickExport ssize_t FormatMagickString(char *string,const size_t length,
-  const char *format,...)
-{
-  ssize_t
-    n;
-
-  va_list
-    operands;
-
-  va_start(operands,format);
-  n=(ssize_t) FormatMagickStringList(string,length,format,operands);
-  va_end(operands);
-  return(n);
 }
 
 /*
@@ -1212,7 +1131,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     local_time.tm_hour-gm_time.tm_hour+24*((local_time.tm_year-
     gm_time.tm_year) != 0 ? (local_time.tm_year-gm_time.tm_year) :
     (local_time.tm_yday-gm_time.tm_yday)));
-  count=FormatMagickString(timestamp,length,
+  count=FormatLocaleString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03ld:00",local_time.tm_year+1900,
     local_time.tm_mon+1,local_time.tm_mday,local_time.tm_hour,
     local_time.tm_min,local_time.tm_sec,(long) timezone);
@@ -1595,10 +1514,10 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
   p=(char *) string_info->datum;
   for (i=0; i < string_info->length; i+=0x14)
   {
-    (void) fprintf(file,"0x%08lx: ",(unsigned long) (0x14*i));
+    (void) FormatLocaleFile(file,"0x%08lx: ",(unsigned long) (0x14*i));
     for (j=1; j <= MagickMin(string_info->length-i,0x14); j++)
     {
-      (void) fprintf(file,"%02lx",(unsigned long) (*(p+j)) & 0xff);
+      (void) FormatLocaleFile(file,"%02lx",(unsigned long) (*(p+j)) & 0xff);
       if ((j % 0x04) == 0)
         (void) fputc(' ',file);
     }
@@ -1998,43 +1917,6 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r i n g T o D o u b l e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  StringToDouble() interprets the string as a floating point number and
-%  returns its value as a double. If sentinal is not a null pointer, the
-%  method also sets the value pointed by sentinal to point to the first
-%  character after the number.
-%
-%  The format of the StringToDouble method is:
-%
-%      double StringToDouble(const char *value,char **sentinal)
-%
-%  A description of each parameter follows:
-%
-%    o value: the string value.
-%
-%    o sentinal:  if sentinal is not NULL, a pointer to the character after the
-%      last character used in the conversion is stored in the location
-%      referenced by sentinal.
-%
-*/
-MagickExport double StringToDouble(const char *value,char **sentinal)
-{
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
-  return(strtod_l(value,sentinal,(locale_t) NULL));
-#endif
-  return(strtod(value,sentinal));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S t r i n g I n f o T o H e x S t r i n g                                 %
 %                                                                             %
 %                                                                             %
@@ -2272,12 +2154,12 @@ MagickExport char **StringToList(const char *text)
           sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
           ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
-        (void) FormatMagickString(textlist[i],MaxTextExtent,"0x%08lx: ",
+        (void) FormatLocaleString(textlist[i],MaxTextExtent,"0x%08lx: ",
           (long) (0x14*i));
         q=textlist[i]+strlen(textlist[i]);
         for (j=1; j <= (ssize_t) MagickMin(strlen(p),0x14); j++)
         {
-          (void) FormatMagickString(hex_string,MaxTextExtent,"%02x",*(p+j));
+          (void) FormatLocaleString(hex_string,MaxTextExtent,"%02x",*(p+j));
           (void) CopyMagickString(q,hex_string,MaxTextExtent);
           q+=2;
           if ((j % 0x04) == 0)

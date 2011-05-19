@@ -622,7 +622,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note spot names.
         */
-        (void) FormatMagickString(property,MaxTextExtent,"ps:SpotColor-%.20g",
+        (void) FormatLocaleString(property,MaxTextExtent,"ps:SpotColor-%.20g",
           (double) (spotcolor++));
         for (p=command; *p != '\0'; p++)
           if (isspace((int) (unsigned char) *p) != 0)
@@ -662,7 +662,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Set Postscript render geometry.
         */
-        (void) FormatMagickString(geometry,MaxTextExtent,
+        (void) FormatLocaleString(geometry,MaxTextExtent,
           "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
           bounds.x1,bounds.y1);
         (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry);
@@ -694,7 +694,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         translate_geometry[MaxTextExtent];
 
-      (void) FormatMagickString(translate_geometry,MaxTextExtent,
+      (void) FormatLocaleString(translate_geometry,MaxTextExtent,
         "%g %g translate\n",-bounds.x1,-bounds.y1);
       count=write(file,translate_geometry,(unsigned int)
         strlen(translate_geometry));
@@ -727,7 +727,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->y_resolution=image->x_resolution;
     }
-  (void) FormatMagickString(density,MaxTextExtent,"%gx%g",
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
     image->x_resolution,image->y_resolution);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
@@ -735,7 +735,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     0.5);
   page.height=(size_t) floor((double) (page.height*image->y_resolution/delta.y)+
     0.5);
-  (void) FormatMagickString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+  (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
@@ -744,7 +744,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         pages[MaxTextExtent];
 
-      (void) FormatMagickString(pages,MaxTextExtent,"-dFirstPage=%.20g "
+      (void) FormatLocaleString(pages,MaxTextExtent,"-dFirstPage=%.20g "
         "-dLastPage=%.20g",(double) read_info->scene+1,(double)
         (read_info->scene+read_info->number_scenes));
       (void) ConcatenateMagickString(options,pages,MaxTextExtent);
@@ -758,7 +758,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
   (void) ConcatenateMagickString(filename,"-%08d",MaxTextExtent);
-  (void) FormatMagickString(command,MaxTextExtent,
+  (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
@@ -1449,13 +1449,13 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
         resolution.y=(double) ((size_t) (100.0*2.54*resolution.y+0.5)/100.0);
       }
     SetGeometry(image,&geometry);
-    (void) FormatMagickString(page_geometry,MaxTextExtent,"%.20gx%.20g",
+    (void) FormatLocaleString(page_geometry,MaxTextExtent,"%.20gx%.20g",
       (double) image->columns,(double) image->rows);
     if (image_info->page != (char *) NULL)
       (void) CopyMagickString(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatMagickString(page_geometry,MaxTextExtent,
+        (void) FormatLocaleString(page_geometry,MaxTextExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,(double)
           image->page.height,(double) image->page.x,(double) image->page.y);
       else
@@ -1496,12 +1496,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             MaxTextExtent);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
-        (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Title: (%s)\n",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"%%%%Title: (%s)\n",
           image->filename);
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);
         (void) FormatMagickTime(timer,MaxTextExtent,date);
-        (void) FormatMagickString(buffer,MaxTextExtent,
+        (void) FormatLocaleString(buffer,MaxTextExtent,
           "%%%%CreationDate: (%s)\n",date);
         (void) WriteBlobString(image,buffer);
         bounds.x1=(double) geometry.x;
@@ -1514,11 +1514,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             MaxTextExtent);
         else
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%BoundingBox: %.20g %.20g %.20g %.20g\n",ceil(bounds.x1-0.5),
               ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
               bounds.y1,bounds.x2,bounds.y2);
           }
@@ -1529,14 +1529,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Embed Photoshop profile.
             */
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%BeginPhotoshop: %.20g",(double) GetStringInfoLength(profile));
             (void) WriteBlobString(image,buffer);
             for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
             {
               if ((i % 32) == 0)
                 (void) WriteBlobString(image,"\n% ");
-              (void) FormatMagickString(buffer,MaxTextExtent,"%02X",
+              (void) FormatLocaleString(buffer,MaxTextExtent,"%02X",
                 (unsigned int) (GetStringInfoDatum(profile)[i] & 0xff));
               (void) WriteBlobString(image,buffer);
             }
@@ -1549,7 +1549,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               Embed XML profile.
             */
             (void) WriteBlobString(image,"\n%begin_xml_code\n");
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
                "\n%%begin_xml_packet: %.20g\n",(double)
                GetStringInfoLength(profile));
             (void) WriteBlobString(image,buffer);
@@ -1572,7 +1572,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             */
             (void) WriteBlobString(image,"%%Orientation: Portrait\n");
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
-            (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Pages: %.20g\n",
+            (void) FormatLocaleString(buffer,MaxTextExtent,"%%%%Pages: %.20g\n",
               image_info->adjoin != MagickFalse ? (double)
               GetImageListLength(image) : 1.0);
             (void) WriteBlobString(image,buffer);
@@ -1605,7 +1605,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%BeginPreview: %.20g %.20g %.20g %.20g\n%%  ",(double)
               preview_image->columns,(double) preview_image->rows,1.0,
               (double) ((((preview_image->columns+7) >> 3)*preview_image->rows+
@@ -1668,7 +1668,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
         */
         for (s=PostscriptProlog; *s != (char *) NULL; s++)
         {
-          (void) FormatMagickString(buffer,MaxTextExtent,"%s\n",*s);
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%s\n",*s);
           (void) WriteBlobString(image,buffer);
         }
         value=GetImageProperty(image,"label");
@@ -1677,13 +1677,13 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "  0 y %g add moveto label show pop\n",j*pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
         for (s=PostscriptEpilog; *s != (char *) NULL; s++)
         {
-          (void) FormatMagickString(buffer,MaxTextExtent,"%s\n",*s);
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%s\n",*s);
           (void) WriteBlobString(image,buffer);
         }
         if (LocaleCompare(image_info->magick,"PS") == 0)
@@ -1691,10 +1691,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"} bind def\n");
         (void) WriteBlobString(image,"%%EndProlog\n");
       }
-    (void) FormatMagickString(buffer,MaxTextExtent,"%%%%Page:  1 %.20g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%%%%Page:  1 %.20g\n",
       (double) (page++));
     (void) WriteBlobString(image,buffer);
-    (void) FormatMagickString(buffer,MaxTextExtent,
+    (void) FormatLocaleString(buffer,MaxTextExtent,
       "%%%%PageBoundingBox: %.20g %.20g %.20g %.20g\n",(double) geometry.x,
       (double) geometry.y,geometry.x+(double) geometry.width,geometry.y+(double)
       (geometry.height+text_size));
@@ -1716,7 +1716,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n%g %g\n%g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n%g %g\n%g\n",
       (double) geometry.x,(double) geometry.y,scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
@@ -1727,7 +1727,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) FormatMagickString(buffer,MaxTextExtent,"%s \n",
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%s \n",
             labels[i]);
           (void) WriteBlobString(image,buffer);
           labels[i]=DestroyString(labels[i]);
@@ -1749,7 +1749,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as grayscale.
             */
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "%.20g %.20g\n1\n1\n1\n8\n",(double) image->columns,(double)
               image->rows);
             (void) WriteBlobString(image,buffer);
@@ -1798,7 +1798,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
-            (void) FormatMagickString(buffer,MaxTextExtent,
+            (void) FormatLocaleString(buffer,MaxTextExtent,
               "%.20g %.20g\n1\n1\n1\n1\n",(double) image->columns,(double)
               image->rows);
             (void) WriteBlobString(image,buffer);
@@ -1866,7 +1866,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
           /*
             Dump DirectClass image.
           */
-          (void) FormatMagickString(buffer,MaxTextExtent,"%.20g %.20g\n0\n%d\n",
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n0\n%d\n",
             (double) image->columns,(double) image->rows,
             image_info->compression == RLECompression ? 1 : 0);
           (void) WriteBlobString(image,buffer);
@@ -1995,7 +1995,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
           /*
             Dump PseudoClass image.
           */
-          (void) FormatMagickString(buffer,MaxTextExtent,
+          (void) FormatLocaleString(buffer,MaxTextExtent,
             "%.20g %.20g\n%d\n%d\n0\n",(double) image->columns,(double)
             image->rows,image->storage_class == PseudoClass ? 1 : 0,
             image_info->compression == RLECompression ? 1 : 0);
@@ -2003,12 +2003,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
           /*
             Dump number of colors and colormap.
           */
-          (void) FormatMagickString(buffer,MaxTextExtent,"%.20g\n",(double)
+          (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
             image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (ssize_t) image->colors; i++)
           {
-            (void) FormatMagickString(buffer,MaxTextExtent,"%02X%02X%02X\n",
+            (void) FormatLocaleString(buffer,MaxTextExtent,"%02X%02X%02X\n",
               ScaleQuantumToChar(image->colormap[i].red),
               ScaleQuantumToChar(image->colormap[i].green),
               ScaleQuantumToChar(image->colormap[i].blue));
@@ -2136,11 +2136,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%%Trailer\n");
   if (page > 2)
     {
-      (void) FormatMagickString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MaxTextExtent,
         "%%%%BoundingBox: %.20g %.20g %.20g %.20g\n",ceil(bounds.x1-0.5),
         ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
       (void) WriteBlobString(image,buffer);
-      (void) FormatMagickString(buffer,MaxTextExtent,
+      (void) FormatLocaleString(buffer,MaxTextExtent,
         "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
         bounds.x2,bounds.y2);
       (void) WriteBlobString(image,buffer);

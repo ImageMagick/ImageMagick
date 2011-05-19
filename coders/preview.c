@@ -189,7 +189,7 @@ static MagickBooleanType WritePreviewImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,&image->exception);
   if (LocaleCompare(write_info->magick,"PREVIEW") == 0)
-    (void) FormatMagickString(preview_image->filename,MaxTextExtent,
+    (void) FormatLocaleString(preview_image->filename,MaxTextExtent,
       "miff:%s",image_info->filename);
   status=WriteImage(write_info,preview_image);
   preview_image=DestroyImage(preview_image);

@@ -410,7 +410,7 @@ void Magick::Image::annotate ( const std::string &text_,
   if ( boundingArea_.isValid() ){
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
-        FormatMagickString( boundingArea, MaxTextExtent, "%+.20g%+.20g",
+        FormatLocaleString( boundingArea, MaxTextExtent, "%+.20g%+.20g",
           (double) boundingArea_.xOff(), (double) boundingArea_.yOff() );
       }
     else
@@ -593,7 +593,7 @@ void Magick::Image::colorize ( const unsigned int opacityRed_,
   }
 
   char opacity[MaxTextExtent];
-  FormatMagickString(opacity,MaxTextExtent,"%u/%u/%u",opacityRed_,opacityGreen_,opacityBlue_);
+  FormatLocaleString(opacity,MaxTextExtent,"%u/%u/%u",opacityRed_,opacityGreen_,opacityBlue_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1137,7 +1137,7 @@ void Magick::Image::fx ( const std::string expression,
 void Magick::Image::gamma ( const double gamma_ )
 {
   char gamma[MaxTextExtent + 1];
-  FormatMagickString( gamma, MaxTextExtent, "%3.6f", gamma_);
+  FormatLocaleString( gamma, MaxTextExtent, "%3.6f", gamma_);
 
   modifyImage();
   GammaImage ( image(), gamma );
@@ -1148,7 +1148,7 @@ void Magick::Image::gamma ( const double gammaRed_,
 			    const double gammaBlue_ )
 {
   char gamma[MaxTextExtent + 1];
-  FormatMagickString( gamma, MaxTextExtent, "%3.6f/%3.6f/%3.6f/",
+  FormatLocaleString( gamma, MaxTextExtent, "%3.6f/%3.6f/%3.6f/",
 		gammaRed_, gammaGreen_, gammaBlue_);
 
   modifyImage();
@@ -1245,7 +1245,7 @@ void Magick::Image::level ( const double black_point,
 {
   modifyImage();
   char levels[MaxTextExtent];
-  FormatMagickString( levels, MaxTextExtent, "%g,%g,%g",black_point,white_point,gamma);
+  FormatLocaleString( levels, MaxTextExtent, "%g,%g,%g",black_point,white_point,gamma);
   (void) LevelImage( image(), levels );
   throwImageException();
 }
@@ -1343,7 +1343,7 @@ void Magick::Image::modulate ( const double brightness_,
 			       const double hue_ )
 {
   char modulate[MaxTextExtent + 1];
-  FormatMagickString( modulate, MaxTextExtent, "%3.6f,%3.6f,%3.6f",
+  FormatLocaleString( modulate, MaxTextExtent, "%3.6f,%3.6f,%3.6f",
 		brightness_, saturation_, hue_);
 
   modifyImage();

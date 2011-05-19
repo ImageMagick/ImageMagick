@@ -135,7 +135,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
       images->filename);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
     MagickWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -207,7 +207,7 @@ WandExport PixelView *ClonePixelView(const PixelView *pixel_view)
       pixel_view->name);
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
   clone_view->id=AcquireWandId();
-  (void) FormatMagickString(clone_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_view->name,MaxTextExtent,"%s-%.20g",
     PixelViewId,(double) clone_view->id);
   clone_view->exception=AcquireExceptionInfo();
   InheritException(clone_view->exception,pixel_view->exception);
@@ -2266,7 +2266,7 @@ WandExport MagickBooleanType MagickSetImageOption(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatMagickString(option,MaxTextExtent,"%s:%s=%s",format,key,value);
+  (void) FormatLocaleString(option,MaxTextExtent,"%s:%s=%s",format,key,value);
   return(DefineImageOption(wand->image_info,option));
 }
 
@@ -2505,7 +2505,7 @@ WandExport PixelView *NewPixelView(MagickWand *wand)
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
   pixel_view->id=AcquireWandId();
-  (void) FormatMagickString(pixel_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(pixel_view->name,MaxTextExtent,"%s-%.20g",
     PixelViewId,(double) pixel_view->id);
   pixel_view->exception=AcquireExceptionInfo();
   pixel_view->wand=wand;
@@ -2564,7 +2564,7 @@ WandExport PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
       GetExceptionMessage(errno));
   (void) ResetMagickMemory(pixel_view,0,sizeof(*pixel_view));
   pixel_view->id=AcquireWandId();
-  (void) FormatMagickString(pixel_view->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(pixel_view->name,MaxTextExtent,"%s-%.20g",
     PixelViewId,(double) pixel_view->id);
   pixel_view->exception=AcquireExceptionInfo();
   pixel_view->view=AcquireCacheView(pixel_view->wand->images);

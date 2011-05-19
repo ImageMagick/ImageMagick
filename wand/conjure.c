@@ -268,10 +268,10 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
         if ((LocaleCompare("version",option+1) == 0) ||
             (LocaleCompare("-version",option+1) == 0))
           {
-            (void) fprintf(stdout,"Version: %s\n",
+            (void) FormatLocaleFile(stdout,"Version: %s\n",
               GetMagickVersion((size_t *) NULL));
-            (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
-            (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
+            (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
+            (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
             return(MagickFalse);
           }
         /*
@@ -291,7 +291,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     status=SetImageOption(image_info,"filename",argv[i]);
     if (status == MagickFalse)
       ThrowConjureException(ImageError,"UnableToPersistKey",argv[i]);
-    (void) FormatMagickString(image_info->filename,MaxTextExtent,"msl:%s",
+    (void) FormatLocaleString(image_info->filename,MaxTextExtent,"msl:%s",
       argv[i]);
     image=ReadImages(image_info,exception);
     CatchException(exception);

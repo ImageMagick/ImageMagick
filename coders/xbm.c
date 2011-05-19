@@ -512,13 +512,13 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
     Write X bitmap header.
   */
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_width %.20g\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"#define %s_width %.20g\n",
     basename,(double) image->columns);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,"#define %s_height %.20g\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"#define %s_height %.20g\n",
     basename,(double) image->rows);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
-  (void) FormatMagickString(buffer,MaxTextExtent,
+  (void) FormatLocaleString(buffer,MaxTextExtent,
     "static char %s_bits[] = {\n",basename);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
   (void) CopyMagickString(buffer," ",MaxTextExtent);
@@ -550,7 +550,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
           /*
             Write a bitmap byte to the image file.
           */
-          (void) FormatMagickString(buffer,MaxTextExtent,"0x%02X, ",
+          (void) FormatLocaleString(buffer,MaxTextExtent,"0x%02X, ",
             (unsigned int) (byte & 0xff));
           (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
           count++;
@@ -571,7 +571,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
           Write a bitmap byte to the image file.
         */
         byte>>=(8-bit);
-        (void) FormatMagickString(buffer,MaxTextExtent,"0x%02X, ",
+        (void) FormatLocaleString(buffer,MaxTextExtent,"0x%02X, ",
           (unsigned int) (byte & 0xff));
         (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
         count++;

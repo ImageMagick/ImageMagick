@@ -1156,8 +1156,8 @@ MagickBooleanType ListThresholdMapFile(FILE *file,const char *xml,
   if ( thresholds == (XMLTreeInfo *)NULL )
     return(MagickFalse);
 
-  (void) fprintf(file,"%-16s %-12s %s\n", "Map", "Alias", "Description");
-  (void) fprintf(file,"----------------------------------------------------\n");
+  (void) FormatLocaleFile(file,"%-16s %-12s %s\n", "Map", "Alias", "Description");
+  (void) FormatLocaleFile(file,"----------------------------------------------------\n");
 
   for( threshold = GetXMLTreeChild(thresholds,"threshold");
        threshold != (XMLTreeInfo *)NULL;
@@ -1186,7 +1186,7 @@ MagickBooleanType ListThresholdMapFile(FILE *file,const char *xml,
       thresholds=DestroyXMLTree(thresholds);
       return(MagickFalse);
     }
-    (void) fprintf(file,"%-16s %-12s %s\n",map,alias ? alias : "", content);
+    (void) FormatLocaleFile(file,"%-16s %-12s %s\n",map,alias ? alias : "", content);
   }
   thresholds=DestroyXMLTree(thresholds);
   return(MagickTrue);
@@ -1234,12 +1234,12 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
     file = stdout;
   options=GetConfigureOptions(ThresholdsFilename,exception);
 
-  (void) fprintf(file, "\n   Threshold Maps for Ordered Dither Operations\n");
+  (void) FormatLocaleFile(file, "\n   Threshold Maps for Ordered Dither Operations\n");
 
   while ( ( option=(const StringInfo *) GetNextValueInLinkedList(options) )
           != (const StringInfo *) NULL)
   {
-    (void) fprintf(file,"\nPATH: %s\n\n",GetStringInfoPath(option));
+    (void) FormatLocaleFile(file,"\nPATH: %s\n\n",GetStringInfoPath(option));
     status|=ListThresholdMapFile(file,(const char *) GetStringInfoDatum(option),
       GetStringInfoPath(option),exception);
   }

@@ -371,7 +371,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     Read TIFF image.
   */
   read_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) FormatMagickString(read_info->filename,MaxTextExtent,"%s",filename);
+  (void) FormatLocaleString(read_info->filename,MaxTextExtent,"%s",filename);
   image=ReadTIFFImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
@@ -604,7 +604,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
           shorty;
 
         if (TIFFGetField(tiff,exif_info[i].tag,&shorty) != 0)
-          (void) FormatMagickString(value,MaxTextExtent,"%d",shorty);
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
         break;
       }
       case TIFF_LONG:
@@ -613,7 +613,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
           ssize_ty;
 
         if (TIFFGetField(tiff,exif_info[i].tag,&ssize_ty) != 0)
-          (void) FormatMagickString(value,MaxTextExtent,"%d",ssize_ty);
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",ssize_ty);
         break;
       }
       case TIFF_RATIONAL:
@@ -623,7 +623,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
           rational;
 
         if (TIFFGetField(tiff,exif_info[i].tag,&rational) != 0)
-          (void) FormatMagickString(value,MaxTextExtent,"%g",rational);
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",rational);
         break;
       }
       default:
@@ -1017,7 +1017,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
            (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YCBCRSUBSAMPLING,
              &horizontal,&vertical);
-           (void) FormatMagickString(sampling_factor,MaxTextExtent,"%dx%d",
+           (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
              horizontal,vertical);
            (void) SetImageProperty(image,"jpeg:sampling-factor",
              sampling_factor);
@@ -1132,7 +1132,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           value[MaxTextExtent];
 
         method=ReadStripMethod;
-        (void) FormatMagickString(value,MaxTextExtent,"%u",
+        (void) FormatLocaleString(value,MaxTextExtent,"%u",
           (unsigned int) rows_per_strip);
         (void) SetImageProperty(image,"tiff:rows-per-strip",value);
       }
@@ -1710,7 +1710,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   UnlockSemaphoreInfo(tiff_semaphore);
   *version='\0';
 #if defined(TIFF_VERSION)
-  (void) FormatMagickString(version,MaxTextExtent,"%d",TIFF_VERSION);
+  (void) FormatLocaleString(version,MaxTextExtent,"%d",TIFF_VERSION);
 #endif
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   {
@@ -1926,7 +1926,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
         "UnableToCreateTemporaryFile",filename);
       return(MagickFalse);
     }
-  (void) FormatMagickString(huffman_image->filename,MaxTextExtent,"tiff:%s",
+  (void) FormatLocaleString(huffman_image->filename,MaxTextExtent,"tiff:%s",
     filename);
   (void) SetImageType(huffman_image,BilevelType);
   write_info=CloneImageInfo((ImageInfo *) NULL);
@@ -2390,7 +2390,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
         float
           rational;
 
-        rational=StringToDouble(value,(char **) NULL);
+        rational=LocaleToDouble(value,(char **) NULL);
         (void) TIFFSetField(tiff,exif_info[i].tag,rational);
         break;
       }

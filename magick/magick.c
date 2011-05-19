@@ -954,17 +954,17 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
     return(MagickFalse);
   ClearMagickException(exception);
 #if !defined(MAGICKCORE_MODULES_SUPPORT)
-  (void) fprintf(file,"   Format  Mode  Description\n");
+  (void) FormatLocaleFile(file,"   Format  Mode  Description\n");
 #else
-  (void) fprintf(file,"   Format  Module    Mode  Description\n");
+  (void) FormatLocaleFile(file,"   Format  Module    Mode  Description\n");
 #endif
-  (void) fprintf(file,"--------------------------------------------------------"
+  (void) FormatLocaleFile(file,"--------------------------------------------------------"
     "-----------------------\n");
   for (i=0; i < (ssize_t) number_formats; i++)
   {
     if (magick_info[i]->stealth != MagickFalse)
       continue;
-    (void) fprintf(file,"%9s%c ",magick_info[i]->name != (char *) NULL ?
+    (void) FormatLocaleFile(file,"%9s%c ",magick_info[i]->name != (char *) NULL ?
       magick_info[i]->name : "",
       magick_info[i]->blob_support != MagickFalse ? '*' : ' ');
 #if defined(MAGICKCORE_MODULES_SUPPORT)
@@ -977,17 +977,17 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
         (void) CopyMagickString(module,magick_info[i]->module,MaxTextExtent);
       (void) ConcatenateMagickString(module,"          ",MaxTextExtent);
       module[9]='\0';
-      (void) fprintf(file,"%9s ",module);
+      (void) FormatLocaleFile(file,"%9s ",module);
     }
 #endif
-    (void) fprintf(file,"%c%c%c ",magick_info[i]->decoder ? 'r' : '-',
+    (void) FormatLocaleFile(file,"%c%c%c ",magick_info[i]->decoder ? 'r' : '-',
       magick_info[i]->encoder ? 'w' : '-',magick_info[i]->encoder != NULL &&
       magick_info[i]->adjoin != MagickFalse ? '+' : '-');
     if (magick_info[i]->description != (char *) NULL)
-      (void) fprintf(file,"  %s",magick_info[i]->description);
+      (void) FormatLocaleFile(file,"  %s",magick_info[i]->description);
     if (magick_info[i]->version != (char *) NULL)
-      (void) fprintf(file," (%s)",magick_info[i]->version);
-    (void) fprintf(file,"\n");
+      (void) FormatLocaleFile(file," (%s)",magick_info[i]->version);
+    (void) FormatLocaleFile(file,"\n");
     if (magick_info[i]->note != (char *) NULL)
       {
         char
@@ -998,17 +998,17 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
           {
             for (j=0; text[j] != (char *) NULL; j++)
             {
-              (void) fprintf(file,"           %s\n",text[j]);
+              (void) FormatLocaleFile(file,"           %s\n",text[j]);
               text[j]=DestroyString(text[j]);
             }
             text=(char **) RelinquishMagickMemory(text);
           }
       }
   }
-  (void) fprintf(file,"\n* native blob support\n");
-  (void) fprintf(file,"r read support\n");
-  (void) fprintf(file,"w write support\n");
-  (void) fprintf(file,"+ support for multiple images\n");
+  (void) FormatLocaleFile(file,"\n* native blob support\n");
+  (void) FormatLocaleFile(file,"r read support\n");
+  (void) FormatLocaleFile(file,"w write support\n");
+  (void) FormatLocaleFile(file,"+ support for multiple images\n");
   (void) fflush(file);
   magick_info=(const MagickInfo **) RelinquishMagickMemory((void *)
     magick_info);

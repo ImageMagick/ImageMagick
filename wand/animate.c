@@ -312,10 +312,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
       if ((LocaleCompare("version",option+1) == 0) ||
           (LocaleCompare("-version",option+1) == 0))
         {
-          (void) fprintf(stdout,"Version: %s\n",
+          (void) FormatLocaleFile(stdout,"Version: %s\n",
             GetMagickVersion((size_t *) NULL));
-          (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
-          (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
+          (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
+          (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
           return(MagickFalse);
         }
     }
@@ -1004,7 +1004,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
-            value=StringToDouble(argv[i],&p);
+            value=LocaleToDouble(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowAnimateInvalidArgumentException(option,argv[i]);
@@ -1367,10 +1367,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
         if ((LocaleCompare("version",option+1) == 0) ||
             (LocaleCompare("-version",option+1) == 0))
           {
-            (void) fprintf(stdout,"Version: %s\n",
+            (void) FormatLocaleFile(stdout,"Version: %s\n",
               GetMagickVersion((size_t *) NULL));
-            (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
-            (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
+            (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
+            (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
             break;
           }
         if (LocaleCompare("virtual-pixel",option+1) == 0)

@@ -13536,7 +13536,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   (void) WriteBlobString(image,"/*\n");
-  (void) FormatMagickString(buffer,MaxTextExtent,"  %s (%s).\n",
+  (void) FormatLocaleString(buffer,MaxTextExtent,"  %s (%s).\n",
     image->filename,image->storage_class == DirectClass ? "PNM" : "GIF");
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"*/\n");
@@ -13547,7 +13547,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   p=(char *) blob;
   for (i=0; i < (ssize_t) length ; i++)
   {
-    (void) FormatMagickString(buffer,MaxTextExtent,"0x%02X, ",*p & 0xff);
+    (void) FormatLocaleString(buffer,MaxTextExtent,"0x%02X, ",*p & 0xff);
     (void) WriteBlobString(image,buffer);
     if (((i+1) % 12) == 0)
       {

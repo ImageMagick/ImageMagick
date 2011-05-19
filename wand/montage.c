@@ -334,10 +334,10 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       if ((LocaleCompare("version",option+1) == 0) ||
           (LocaleCompare("-version",option+1) == 0))
         {
-          (void) fprintf(stdout,"Version: %s\n",
+          (void) FormatLocaleFile(stdout,"Version: %s\n",
             GetMagickVersion((size_t *) NULL));
-          (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
-          (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
+          (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
+          (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
           return(MagickFalse);
         }
     }
@@ -414,7 +414,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               (void) InterpretImageFilename(image_info,(Image *) NULL,
                 image_info->filename,(int) scene,filename);
               if (LocaleCompare(filename,image_info->filename) == 0)
-                (void) FormatMagickString(filename,MaxTextExtent,"%s.%.20g",
+                (void) FormatLocaleString(filename,MaxTextExtent,"%s.%.20g",
                   image_info->filename,(double) scene);
               (void) CopyMagickString(image_info->filename,filename,
                 MaxTextExtent);
@@ -1134,7 +1134,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            value=StringToDouble(argv[i],&p);
+            value=LocaleToDouble(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowMontageInvalidArgumentException(option,argv[i]);
@@ -1279,7 +1279,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->pointsize=StringToDouble(argv[i],(char **) NULL);
+            montage_info->pointsize=LocaleToDouble(argv[i],(char **) NULL);
             break;
           }
         if (LocaleCompare("polaroid",option+1) == 0)
@@ -1688,10 +1688,10 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         if ((LocaleCompare("version",option+1) == 0) ||
             (LocaleCompare("-version",option+1) == 0))
           {
-            (void) fprintf(stdout,"Version: %s\n",
+            (void) FormatLocaleFile(stdout,"Version: %s\n",
               GetMagickVersion((size_t *) NULL));
-            (void) fprintf(stdout,"Copyright: %s\n",GetMagickCopyright());
-            (void) fprintf(stdout,"Features: %s\n\n",GetMagickFeatures());
+            (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
+            (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
             break;
           }
         if (LocaleCompare("virtual-pixel",option+1) == 0)

@@ -105,7 +105,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
       images->filename);
   (void) ResetMagickMemory(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatMagickString(clone_wand->name,MaxTextExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MaxTextExtent,"%s-%.20g",
     MagickWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -645,7 +645,7 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
   if (draw_info == (DrawInfo *) NULL)
     return(MagickFalse);
   (void) CloneString(&draw_info->text,text);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%+g%+g",x,y);
+  (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",x,y);
   draw_info->affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
   draw_info->affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
   draw_info->affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -894,7 +894,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(thresholds,MaxTextExtent,
+  (void) FormatLocaleString(thresholds,MaxTextExtent,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
@@ -1599,7 +1599,7 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(percent_opaque,MaxTextExtent,
+  (void) FormatLocaleString(percent_opaque,MaxTextExtent,
     "%g,%g,%g,%g",(double) (100.0*QuantumScale*
     PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
@@ -6960,7 +6960,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(modulate,MaxTextExtent,"%g,%g,%g",
+  (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
     brightness,saturation,hue);
   status=ModulateImage(wand->images,modulate);
   if (status == MagickFalse)
@@ -8411,7 +8411,7 @@ WandExport MagickBooleanType MagickRandomThresholdImageChannel(
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(threshold,MaxTextExtent,"%gx%g",low,high);
+  (void) FormatLocaleString(threshold,MaxTextExtent,"%gx%g",low,high);
   status=RandomThresholdImageChannel(wand->images,channel,threshold,
     wand->exception);
   if (status == MagickFalse)
@@ -12135,7 +12135,7 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(percent_opaque,MaxTextExtent,
+  (void) FormatLocaleString(percent_opaque,MaxTextExtent,
     "%g,%g,%g,%g",(double) (100.0*QuantumScale*
     PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
@@ -12700,7 +12700,7 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatMagickString(thresholds,MaxTextExtent,
+  (void) FormatLocaleString(thresholds,MaxTextExtent,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));

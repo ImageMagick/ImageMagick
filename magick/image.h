@@ -134,6 +134,7 @@ typedef struct _ChromaticityInfo
 #include "magick/effect.h"
 #include "magick/geometry.h"
 #include "magick/layer.h"
+#include "magick/locale_.h"
 #include "magick/monitor.h"
 #include "magick/pixel.h"
 #include "magick/profile.h"
