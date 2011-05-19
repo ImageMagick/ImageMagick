@@ -1070,8 +1070,8 @@ static Image *OptimizeLayerFrames(const Image *image,
   bounds[0]=CompareImageBounds(prev_image,curr,CompareAnyLayer,exception);
 #if DEBUG_OPT_FRAME
   FormatLocaleFile(stderr, "overlay: %.20gx%.20g%+.20g%+.20g\n\n",
-       (double) bounds[i].width,(double) bounds[i].height,
-       (double) bounds[i].x,(double) bounds[i].y );
+    (double) bounds[i].width,(double) bounds[i].height,
+    (double) bounds[i].x,(double) bounds[i].y );
 #endif
   /*
     Compute the bounding box of changes for each pair of images.

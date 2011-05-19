@@ -1668,14 +1668,16 @@ static MagickBooleanType RenderPostscript(Image *image,
     (void) FormatLocaleFile(file,
       "/Times-Roman-ISO dup /Times-Roman ReencodeType findfont setfont\n");
   else
-    (void) FormatLocaleFile(file,"/%s-ISO dup /%s ReencodeType findfont setfont\n",
-      draw_info->font,draw_info->font);
+    (void) FormatLocaleFile(file,
+      "/%s-ISO dup /%s ReencodeType findfont setfont\n",draw_info->font,
+      draw_info->font);
   (void) FormatLocaleFile(file,"[%g %g %g %g 0 0] concat\n",
     draw_info->affine.sx,-draw_info->affine.rx,-draw_info->affine.ry,
     draw_info->affine.sy);
   text=EscapeParenthesis(draw_info->text);
   if (identity == MagickFalse)
-    (void) FormatLocaleFile(file,"(%s) stringwidth pop -0.5 mul -0.5 rmoveto\n",text);
+    (void) FormatLocaleFile(file,"(%s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
+      text);
   (void) FormatLocaleFile(file,"(%s) show\n",text);
   text=DestroyString(text);
   (void) FormatLocaleFile(file,"showpage\n");

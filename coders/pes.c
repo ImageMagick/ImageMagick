@@ -635,8 +635,8 @@ static Image *ReadPESImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < (ssize_t) number_blocks; i++)
   {
     offset=blocks[i].offset;
-    (void) FormatLocaleFile(file,"  <path stroke=\"#%02x%02x%02x\" fill=\"none\" "
-      "d=\"M %g %g",blocks[i].color->red,blocks[i].color->green,
+    (void) FormatLocaleFile(file,"  <path stroke=\"#%02x%02x%02x\" "
+      "fill=\"none\" d=\"M %g %g",blocks[i].color->red,blocks[i].color->green,
       blocks[i].color->blue,stitches[offset].x-bounds.x1,
       stitches[offset].y-bounds.y1);
     for (j=1; j < (ssize_t) (blocks[i+1].offset-offset); j++)

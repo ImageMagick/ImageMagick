@@ -869,7 +869,8 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
         if (locale_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",locale_info[i]->path);
         (void) FormatLocaleFile(file,"Tag/Message\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=locale_info[i]->path;

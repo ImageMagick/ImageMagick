@@ -3101,8 +3101,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) CopyMagickString(transfer_syntax,(char *) data,
                 MaxTextExtent);
             if (image_info->verbose != MagickFalse)
-              (void) FormatLocaleFile(stdout,"transfer_syntax=%s\n",(const char*)
-                transfer_syntax);
+              (void) FormatLocaleFile(stdout,"transfer_syntax=%s\n",
+                (const char*) transfer_syntax);
             if (strncmp(transfer_syntax,"1.2.840.10008.1.2",17) == 0)
               {
                 int

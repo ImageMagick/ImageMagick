@@ -1084,8 +1084,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
             (double) GetResizeFilterWeight(resize_filter,x));
         /* A final value so gnuplot can graph the 'stop' properly. */
-        (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",support,GetMagickPrecision(),
-          0.0);
+        (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",support,
+          GetMagickPrecision(),0.0);
       }
       /* Output the above once only for each image - remove setting */
     (void) DeleteImageArtifact((Image *) image,"filter:verbose");

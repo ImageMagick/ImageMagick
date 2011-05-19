@@ -619,8 +619,9 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             return(-2);
           break;
         case 0x7E:
-          (void) FormatLocaleFile(stderr,"\nUnsupported WPG token XOR, please report!");
-    XorMe=!XorMe;
+          (void) FormatLocaleFile(stderr,
+            "\nUnsupported WPG token XOR, please report!");
+          XorMe=!XorMe;
           break;
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
@@ -630,8 +631,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             }
           break;
         case 0xFD:
-    RunCount=ReadBlobByte(image);   /* EXT */
-    for(i=0; i<= RunCount;i++)
+          RunCount=ReadBlobByte(image);   /* EXT */
+          for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
               InsertByte6(SampleBuffer[bbuf]);          
           break;
@@ -640,8 +641,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           if(x!=0)
             {
               (void) FormatLocaleFile(stderr,
-                             "\nUnsupported WPG2 unaligned token RST x=%.20g, please report!\n"
-                             ,(double) x);
+                "\nUnsupported WPG2 unaligned token RST x=%.20g, please report!\n"
+                ,(double) x);
               return(-3);
             }
           {

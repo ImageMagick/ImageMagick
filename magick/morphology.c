@@ -415,7 +415,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string)
 #if 0
   /* For Debugging Geometry Input */
   FormatLocaleFile(stderr, "Geometry = 0x%04X : %lg x %lg %+lg %+lg\n",
-       flags, args.rho, args.sigma, args.xi, args.psi );
+    flags, args.rho, args.sigma, args.xi, args.psi );
 #endif
 
   /* special handling of missing values in input string */
@@ -516,8 +516,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 
       /* Error handling -- this is not proper error handling! */
       if ( new_kernel == (KernelInfo *) NULL ) {
-        FormatLocaleFile(stderr, "Failed to parse kernel number #%.20g\n",(double)
-          kernel_number);
+        FormatLocaleFile(stderr, "Failed to parse kernel number #%.20g\n",
+          (double) kernel_number);
         if ( kernel != (KernelInfo *) NULL )
           kernel=DestroyKernelInfo(kernel);
         return((KernelInfo *) NULL);
@@ -3852,9 +3852,10 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
                       channel, kernel, exception);
 
       if ( verbose == MagickTrue )
-        (void) FormatLocaleFile(stderr, "%s:%.20g.%.20g #%.20g => Changed %.20g\n",
-            CommandOptionToMnemonic(MagickMorphologyOptions, method),
-            1.0,0.0,1.0, (double) changed);
+        (void) FormatLocaleFile(stderr,
+          "%s:%.20g.%.20g #%.20g => Changed %.20g\n",
+          CommandOptionToMnemonic(MagickMorphologyOptions, method),
+          1.0,0.0,1.0, (double) changed);
 
       if ( changed < 0 )
         goto error_cleanup;
@@ -4038,7 +4039,8 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( verbose == MagickTrue ) {
             if ( kernel_loop > 1 )
               FormatLocaleFile(stderr, "\n"); /* add end-of-line from previous */
-            (void) FormatLocaleFile(stderr, "%s%s%s:%.20g.%.20g #%.20g => Changed %.20g",
+            (void) FormatLocaleFile(stderr,
+              "%s%s%s:%.20g.%.20g #%.20g => Changed %.20g",
               v_info,CommandOptionToMnemonic(MagickMorphologyOptions,
               primitive),(this_kernel == rflt_kernel ) ? "*" : "",
               (double) (method_loop+kernel_loop-1),(double) kernel_number,
@@ -4743,8 +4745,8 @@ MagickExport void ShowKernelInfo(KernelInfo *kernel)
           CommandOptionToMnemonic(MagickKernelOptions, k->type) );
     if ( fabs(k->angle) > MagickEpsilon )
       FormatLocaleFile(stderr, "@%lg", k->angle);
-    FormatLocaleFile(stderr, "\" of size %lux%lu%+ld%+ld",(unsigned long) k->width,
-      (unsigned long) k->height,(long) k->x,(long) k->y);
+    FormatLocaleFile(stderr, "\" of size %lux%lu%+ld%+ld",(unsigned long)
+      k->width,(unsigned long) k->height,(long) k->x,(long) k->y);
     FormatLocaleFile(stderr,
           " with values from %.*lg to %.*lg\n",
           GetMagickPrecision(), k->minimum,

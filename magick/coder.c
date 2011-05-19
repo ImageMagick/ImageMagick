@@ -602,7 +602,8 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
         if (coder_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",coder_info[i]->path);
         (void) FormatLocaleFile(file,"Magick      Coder\n");
-        (void) FormatLocaleFile(file,"-------------------------------------------------"
+        (void) FormatLocaleFile(file,
+          "-------------------------------------------------"
           "------------------------------\n");
       }
     path=coder_info[i]->path;

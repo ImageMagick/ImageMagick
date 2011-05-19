@@ -1992,10 +1992,11 @@ MagickExport void XDisplayImageInfo(Display *display,
     (void) FormatLocaleFile(file,"  colormap type: Shared\n");
   else
     (void) FormatLocaleFile(file,"  colormap type: Private\n");
-  (void) FormatLocaleFile(file,"  geometry: %dx%d\n",windows->image.ximage->width,
-    windows->image.ximage->height);
+  (void) FormatLocaleFile(file,"  geometry: %dx%d\n",
+    windows->image.ximage->width,windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    (void) FormatLocaleFile(file,"  crop geometry: %s\n",windows->image.crop_geometry);
+    (void) FormatLocaleFile(file,"  crop geometry: %s\n",
+      windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
     (void) FormatLocaleFile(file,"  type: X Image\n");
   else
@@ -2024,7 +2025,8 @@ MagickExport void XDisplayImageInfo(Display *display,
     undo_image=GetPreviousImageInList(undo_image);
   }
   (void) FormatLocaleFile(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) FormatLocaleFile(file,"  bytes: %.20gmb\n",(double) ((bytes+(1 << 19)) >> 20));
+  (void) FormatLocaleFile(file,"  bytes: %.20gmb\n",(double)
+    ((bytes+(1 << 19)) >> 20));
   (void) FormatLocaleFile(file,"  limit: %.20gmb\n\n",(double)
     resource_info->undo_cache);
   /*

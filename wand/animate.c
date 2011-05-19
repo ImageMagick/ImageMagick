@@ -314,8 +314,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
         {
           (void) FormatLocaleFile(stdout,"Version: %s\n",
             GetMagickVersion((size_t *) NULL));
-          (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
-          (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
+          (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+            GetMagickCopyright());
+          (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+            GetMagickFeatures());
           return(MagickFalse);
         }
     }
@@ -1369,8 +1371,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
           {
             (void) FormatLocaleFile(stdout,"Version: %s\n",
               GetMagickVersion((size_t *) NULL));
-            (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
-            (void) FormatLocaleFile(stdout,"Features: %s\n\n",GetMagickFeatures());
+            (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+              GetMagickCopyright());
+            (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+              GetMagickFeatures());
             break;
           }
         if (LocaleCompare("virtual-pixel",option+1) == 0)

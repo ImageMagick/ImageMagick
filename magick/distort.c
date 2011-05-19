@@ -1853,7 +1853,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         CoefficientsToAffineArgs(inverse);
         FormatLocaleFile(stderr, "Affine Projection:\n");
         FormatLocaleFile(stderr, "  -distort AffineProjection \\\n      '");
-        for (i=0; i<5; i++)
+        for (i=0; i < 5; i++)
           FormatLocaleFile(stderr, "%lf,", inverse[i]);
         FormatLocaleFile(stderr, "%lf'\n", inverse[5]);
         inverse = (double *) RelinquishMagickMemory(inverse);

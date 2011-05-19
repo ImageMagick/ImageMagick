@@ -598,7 +598,8 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
           (void) FormatLocaleFile(file,"Execute ");
         (void) FormatLocaleFile(file,"\n");
         if (policy_info[i]->pattern != (char *) NULL)
-          (void) FormatLocaleFile(file,"    pattern: %s\n",policy_info[i]->pattern);
+          (void) FormatLocaleFile(file,"    pattern: %s\n",
+            policy_info[i]->pattern);
       }
   }
   policy_info=(const PolicyInfo **) RelinquishMagickMemory((void *)
