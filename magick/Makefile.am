@@ -150,6 +150,7 @@ MAGICK_BASE_SRCS = \
 	magick/list.h \
 	magick/locale.c \
 	magick/locale_.h \
+	magick/locale-private.h \
 	magick/log.c \
 	magick/log.h \
 	magick/mac.h \
@@ -386,6 +387,7 @@ MAGICK_NOINST_HDRS = \
 	magick/exception-private.h \
 	magick/fx-private.h \
 	magick/image-private.h \
+	magick/locale-private.h \
 	magick/mac.h \
 	magick/mime-private.h \
 	magick/monitor-private.h \
