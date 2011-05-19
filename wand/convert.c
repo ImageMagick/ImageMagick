@@ -1849,7 +1849,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
-            value=LocaleToDouble(argv[i],&p);
+            value=InterpretLocaleValue(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowConvertInvalidArgumentException(option,argv[i]);

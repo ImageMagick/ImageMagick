@@ -358,13 +358,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (LocaleCompare(keyword,"naxis3") == 0)
         fits_info.number_planes=StringToLong(p);
       if (LocaleCompare(keyword,"datamax") == 0)
-        fits_info.max_data=LocaleToDouble(p,(char **) NULL);
+        fits_info.max_data=InterpretLocaleValue(p,(char **) NULL);
       if (LocaleCompare(keyword,"datamin") == 0)
-        fits_info.min_data=LocaleToDouble(p,(char **) NULL);
+        fits_info.min_data=InterpretLocaleValue(p,(char **) NULL);
       if (LocaleCompare(keyword,"bzero") == 0)
-        fits_info.zero=LocaleToDouble(p,(char **) NULL);
+        fits_info.zero=InterpretLocaleValue(p,(char **) NULL);
       if (LocaleCompare(keyword,"bscale") == 0)
-        fits_info.scale=LocaleToDouble(p,(char **) NULL);
+        fits_info.scale=InterpretLocaleValue(p,(char **) NULL);
       if (LocaleCompare(keyword,"comment") == 0)
         {
           if (comment == (char *) NULL)

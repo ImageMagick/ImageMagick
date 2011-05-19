@@ -340,7 +340,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   attenuate=1.0;
   option=GetImageArtifact(image,"attenuate");
   if (option != (char *) NULL)
-    attenuate=LocaleToDouble(option,(char **) NULL);
+    attenuate=InterpretLocaleValue(option,(char **) NULL);
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
@@ -1165,7 +1165,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
     (double) channel,symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
-    return(QuantumScale*LocaleToDouble(value,(char **) NULL));
+    return(QuantumScale*InterpretLocaleValue(value,(char **) NULL));
   (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
   if (LocaleNCompare(symbol,"depth",5) == 0)
     {
@@ -1237,7 +1237,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
     }
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
     ConstantString(statistic));
-  return(QuantumScale*LocaleToDouble(statistic,(char **) NULL));
+  return(QuantumScale*InterpretLocaleValue(statistic,(char **) NULL));
 }
 
 static MagickRealType
@@ -1849,7 +1849,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
   }
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,symbol);
   if (value != (const char *) NULL)
-    return((MagickRealType) LocaleToDouble(value,(char **) NULL));
+    return((MagickRealType) InterpretLocaleValue(value,(char **) NULL));
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
     "UnableToParseExpression","`%s'",symbol);
   return(0.0);
@@ -2778,7 +2778,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
       break;
   }
   q=(char *) expression;
-  alpha=LocaleToDouble(expression,&q);
+  alpha=InterpretLocaleValue(expression,&q);
   if (q == expression)
     return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
   return(alpha);

@@ -2075,7 +2075,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     artifact=GetImageArtifact(image,"distort:scale");
     output_scaling = 1.0;
     if (artifact != (const char *) NULL) {
-      output_scaling = fabs(LocaleToDouble(artifact,(char **) NULL));
+      output_scaling = fabs(InterpretLocaleValue(artifact,(char **) NULL));
       geometry.width  *= output_scaling;
       geometry.height *= output_scaling;
       geometry.x      *= output_scaling;

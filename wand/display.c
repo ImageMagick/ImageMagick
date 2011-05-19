@@ -1312,7 +1312,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
-            value=LocaleToDouble(argv[i],&p);
+            value=InterpretLocaleValue(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowDisplayInvalidArgumentException(option,argv[i]);
@@ -1848,7 +1848,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowDisplayException(OptionError,"MissingArgument",option);
-            if (LocaleToDouble(argv[i],(char **) NULL) != 0)
+            if (InterpretLocaleValue(argv[i],(char **) NULL) != 0)
               resource_info.window_group=argv[i];
             break;
           }

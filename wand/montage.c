@@ -1136,7 +1136,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            value=LocaleToDouble(argv[i],&p);
+            value=InterpretLocaleValue(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowMontageInvalidArgumentException(option,argv[i]);
@@ -1281,7 +1281,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            montage_info->pointsize=LocaleToDouble(argv[i],(char **) NULL);
+            montage_info->pointsize=InterpretLocaleValue(argv[i],
+              (char **) NULL);
             break;
           }
         if (LocaleCompare("polaroid",option+1) == 0)

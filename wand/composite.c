@@ -1133,7 +1133,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompositeException(OptionError,"MissingArgument",option);
-            value=LocaleToDouble(argv[i],&p);
+            value=InterpretLocaleValue(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowCompositeInvalidArgumentException(option,argv[i]);

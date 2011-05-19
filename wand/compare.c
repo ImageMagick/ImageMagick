@@ -533,7 +533,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (*option == '+')
               dissimilarity_threshold=DefaultDissimilarityThreshold;
             else
-              dissimilarity_threshold=LocaleToDouble(argv[i],(char **) NULL);
+              dissimilarity_threshold=InterpretLocaleValue(argv[i],
+                (char **) NULL);
             break;
           }
         if (LocaleCompare("duration",option+1) == 0)
@@ -663,7 +664,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            value=LocaleToDouble(argv[i],&p);
+            value=InterpretLocaleValue(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowCompareInvalidArgumentException(option,argv[i]);
