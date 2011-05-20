@@ -1,3 +1,7 @@
+2011-05-20  6.6.9-10 Glenn Randers-Pehrson <glennrp@image...>
+  * The PNG encoder now respects the -depth setting, including 1, 2, 4.
+    Previously settings other than 8 and 16 were ignored.
+
 2011-05-16  6.6.9-10 Cristy  <quetzlzacatenango@image...>
   * Don't use comma as a separator for stroked text (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18742).
