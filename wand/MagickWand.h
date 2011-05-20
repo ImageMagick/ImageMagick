@@ -36,6 +36,9 @@ extern "C" {
 #if defined(_magickcore_inline) && !defined(inline)
 # define inline _magickcore_inline
 #endif
+#if defined(_magickcore_restrict) && !defined(restrict)
+# define restrict  _magickcore_restrict
+#endif
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 # endif
