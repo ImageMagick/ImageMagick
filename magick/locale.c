@@ -221,8 +221,8 @@ MagickExport LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
 %
 */
 
-MagickExport ssize_t FormatLocaleFileList(FILE *file,const char *format,
-  va_list operands)
+MagickExport ssize_t FormatLocaleFileList(FILE *file,
+  const char *restrict format,va_list operands)
 {
   int
     n;
@@ -262,7 +262,8 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,const char *format,
   return((ssize_t) n);
 }
 
-MagickExport ssize_t FormatLocaleFile(FILE *file,const char *format,...)
+MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
+  ...)
 {
   ssize_t
     n;
@@ -307,8 +308,8 @@ MagickExport ssize_t FormatLocaleFile(FILE *file,const char *format,...)
 %
 */
 
-MagickExport ssize_t FormatLocaleStringList(char *string,const size_t length,
-  const char *format,va_list operands)
+MagickExport ssize_t FormatLocaleStringList(char *restrict string,
+  const size_t length,const char *restrict format,va_list operands)
 {
   int
     n;
@@ -343,8 +344,8 @@ MagickExport ssize_t FormatLocaleStringList(char *string,const size_t length,
   return((ssize_t) n);
 }
 
-MagickExport ssize_t FormatLocaleString(char *string,const size_t length,
-  const char *format,...)
+MagickExport ssize_t FormatLocaleString(char *restrict string,
+  const size_t length,const char *restrict format,...)
 {
   ssize_t
     n;
@@ -842,7 +843,8 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
 %      referenced by sentinal.
 %
 */
-MagickExport double InterpretLocaleValue(const char *string,char **sentinal)
+MagickExport double InterpretLocaleValue(const char *restrict string,
+  char **restrict sentinal)
 {
   double
     value;
