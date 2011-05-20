@@ -152,6 +152,404 @@
         SetGreenPixelComponent((pixel),(packet).green); \
         SetBluePixelComponent((pixel),(packet).blue);
 
+/* Macros for left-bit-replication to ensure that pixels
+ * and PixelPackets all have the image->depth, and for use
+ * in PNG8 quantization.
+ */
+
+
+/* LBR01: Replicate top bit */
+
+#define LBR01RedPixelPacketComponent(pixelpacket) \
+     (pixelpacket).red=(ScaleQuantumToChar((pixelpacket).red) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01GreenPixelPacketComponent(pixelpacket) \
+     (pixelpacket).green=(ScaleQuantumToChar((pixelpacket).green) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01BluePixelPacketComponent(pixelpacket) \
+     (pixelpacket).blue=(ScaleQuantumToChar((pixelpacket).blue) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01OpacityPixelPacketComponent(pixelpacket) \
+     (pixelpacket).opacity=(ScaleQuantumToChar((pixelpacket).opacity) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01RGBPixelPacketComponent(pixelpacket) \
+        LBR01RedPixelPacketComponent((pixelpacket)); \
+        LBR01GreenPixelPacketComponent((pixelpacket)); \
+        LBR01BluePixelPacketComponent((pixelpacket));
+
+#define LBR01RGBOPixelPacketComponent(pixelpacket) \
+        LBR01RGBPixelPacketComponent((pixelpacket)); \
+        LBR01OpacityPixelPacketComponent((pixelpacket));
+
+#define LBR01RedPixelComponent(pixel) \
+        (ScaleQuantumToChar(GetRedPixelComponent((pixel))) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01GreenPixelComponent(pixel) \
+        (ScaleQuantumToChar(GetGreenPixelComponent((pixel))) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01BluePixelComponent(pixel) \
+        (ScaleQuantumToChar(GetBluePixelComponent((pixel))) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01OpacityPixelComponent(pixel) \
+        (ScaleQuantumToChar(GetOpacityPixelComponent((pixel))) < 0x10 ? \
+        0 : QuantumRange);
+
+#define LBR01RGBPixelComponent(pixel) \
+        LBR01RedPixelComponent((pixel)); \
+        LBR01GreenPixelComponent((pixel)); \
+        LBR01BluePixelComponent((pixel));
+
+#define LBR01RGBOPixelComponent(pixel) \
+        LBR01RGBPixelComponent((pixel)); \
+        LBR01OpacityPixelComponent((pixel));
+
+/* LBR02: Replicate top 2 bits */
+
+#define LBR02RedPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xc0; \
+     (pixelpacket).red=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
+   }
+#define LBR02GreenPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green) & 0xc0; \
+     (pixelpacket).green=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
+   }
+#define LBR02BluePixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue) & 0xc0; \
+     (pixelpacket).blue=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
+   }
+#define LBR02OpacityPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).opacity) & 0xc0; \
+     (pixelpacket).opacity=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
+   }
+
+#define LBR02RGBPixelPacketComponent(pixelpacket) \
+        LBR02RedPixelPacketComponent((pixelpacket)); \
+        LBR02GreenPixelPacketComponent((pixelpacket)); \
+        LBR02BluePixelPacketComponent((pixelpacket));
+
+#define LBR02RGBOPixelPacketComponent(pixelpacket) \
+        LBR02RGBPixelPacketComponent((pixelpacket)); \
+        LBR02OpacityPixelPacketComponent((pixelpacket));
+
+#define LBR02RedPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetRedPixelComponent((pixel))) \
+       & 0xc0; \
+     SetRedPixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6)))); \
+   }
+#define LBR02GreenPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetGreenPixelComponent((pixel)))\
+       & 0xc0; \
+     SetGreenPixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6)))); \
+   }
+#define LBR02BluePixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetBluePixelComponent((pixel))) & 0xc0; \
+     SetBluePixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6)))); \
+   }
+#define LBR02OpacityPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetOpacityPixelComponent((pixel))) & 0xc0; \
+     SetOpacityPixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6)))); \
+   }
+
+#define LBR02RGBPixelComponent(pixel) \
+        LBR02RedPixelComponent((pixel)); \
+        LBR02GreenPixelComponent((pixel)); \
+        LBR02BluePixelComponent((pixel));
+
+#define LBR02RGBOPixelComponent(pixel) \
+        LBR02RGBPixelComponent((pixel)); \
+        LBR02OpacityPixelComponent((pixel));
+
+/* LBR03: Replicate top 3 bits (only used with opaque pixels during
+   PNG8 quantization) */
+
+#define LBR03RedPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xe0; \
+     (pixelpacket).red=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6))); \
+   }
+#define LBR03GreenPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green) & 0xe0; \
+     (pixelpacket).green=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6))); \
+   }
+#define LBR03BluePixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue) & 0xe0; \
+     (pixelpacket).blue=ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6))); \
+   }
+
+#define LBR03RGBPixelPacketComponent(pixelpacket) \
+        LBR03RedPixelPacketComponent((pixelpacket)); \
+        LBR03GreenPixelPacketComponent((pixelpacket)); \
+        LBR03BluePixelPacketComponent((pixelpacket));
+
+#define LBR03RedPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetRedPixelComponent((pixel))) \
+       & 0xe0; \
+     SetRedPixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6)))); \
+   }
+#define LBR03GreenPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetGreenPixelComponent((pixel)))\
+       & 0xe0; \
+     SetGreenPixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6)))); \
+   }
+#define LBR03BluePixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetBluePixelComponent((pixel))) \
+       & 0xe0; \
+     SetBluePixelComponent((pixel), ScaleCharToQuantum( \
+       (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6)))); \
+   }
+
+#define LBR03RGBPixelComponent(pixel) \
+        LBR03RedPixelComponent((pixel)); \
+        LBR03GreenPixelComponent((pixel)); \
+        LBR03BluePixelComponent((pixel));
+
+/* LBR04: Replicate top 4 bits */
+
+#define LBR04RedPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xf0; \
+     (pixelpacket).red=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
+   }
+#define LBR04GreenPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green) & 0xf0; \
+     (pixelpacket).green=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
+   }
+#define LBR04BluePixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue) & 0xf0; \
+     (pixelpacket).blue=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
+   }
+#define LBR04OpacityPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).opacity) & 0xf0; \
+     (pixelpacket).opacity=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
+   }
+
+#define LBR04RGBPixelPacketComponent(pixelpacket) \
+        LBR04RedPixelPacketComponent((pixelpacket)); \
+        LBR04GreenPixelPacketComponent((pixelpacket)); \
+        LBR04BluePixelPacketComponent((pixelpacket));
+
+#define LBR04RGBOPixelPacketComponent(pixelpacket) \
+        LBR04RGBPixelPacketComponent((pixelpacket)); \
+        LBR04OpacityPixelPacketComponent((pixelpacket));
+
+#define LBR04RedPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetRedPixelComponent((pixel))) \
+       & 0xf0; \
+     SetRedPixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4)))); \
+   }
+#define LBR04GreenPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar(GetGreenPixelComponent((pixel)))\
+       & 0xf0; \
+     SetGreenPixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4)))); \
+   }
+#define LBR04BluePixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetBluePixelComponent((pixel))) & 0xf0; \
+     SetBluePixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4)))); \
+   }
+#define LBR04OpacityPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetOpacityPixelComponent((pixel))) & 0xf0; \
+     SetOpacityPixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4)))); \
+   }
+
+#define LBR04RGBPixelComponent(pixel) \
+        LBR04RedPixelComponent((pixel)); \
+        LBR04GreenPixelComponent((pixel)); \
+        LBR04BluePixelComponent((pixel));
+
+#define LBR04RGBOPixelComponent(pixel) \
+        LBR04RGBPixelComponent((pixel)); \
+        LBR04OpacityPixelComponent((pixel));
+
+
+/* LBR08: Replicate top 8 bits */
+
+#define LBR08RedPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red); \
+     (pixelpacket).red=ScaleCharToQuantum((lbr_bits)); \
+   }
+#define LBR08GreenPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green); \
+     (pixelpacket).green=ScaleCharToQuantum((lbr_bits)); \
+   }
+#define LBR08BluePixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue); \
+     (pixelpacket).blue=ScaleCharToQuantum((lbr_bits)); \
+   }
+#define LBR08OpacityPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).opacity); \
+     (pixelpacket).opacity=ScaleCharToQuantum((lbr_bits)); \
+   }
+
+#define LBR08RGBPixelPacketComponent(pixelpacket) \
+        LBR08RedPixelPacketComponent((pixelpacket)); \
+        LBR08GreenPixelPacketComponent((pixelpacket)); \
+        LBR08BluePixelPacketComponent((pixelpacket));
+
+#define LBR08RGBOPixelPacketComponent(pixelpacket) \
+        LBR08RGBPixelPacketComponent((pixelpacket)); \
+        LBR08OpacityPixelPacketComponent((pixelpacket));
+
+#define LBR08RedPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetRedPixelComponent((pixel))); \
+     SetRedPixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits))); \
+   }
+#define LBR08GreenPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetGreenPixelComponent((pixel))); \
+     SetGreenPixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits))); \
+   }
+#define LBR08BluePixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetBluePixelComponent((pixel))); \
+     SetBluePixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits))); \
+   }
+#define LBR08OpacityPixelComponent(pixel) \
+   { \
+     unsigned char lbr_bits= \
+       ScaleQuantumToChar(GetOpacityPixelComponent((pixel))); \
+     SetOpacityPixelComponent((pixel),\
+       ScaleCharToQuantum((lbr_bits))); \
+   }
+
+#define LBR08RGBPixelComponent(pixel) \
+        LBR08RedPixelComponent((pixel)); \
+        LBR08GreenPixelComponent((pixel)); \
+        LBR08BluePixelComponent((pixel));
+
+#define LBR08RGBOPixelComponent(pixel) \
+        LBR08RGBPixelComponent((pixel)); \
+        LBR08OpacityPixelComponent((pixel));
+
+
+/* LBR16: Replicate top 16 bits */
+
+#define LBR16RedPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).red); \
+     (pixelpacket).red=ScaleShortToQuantum((lbr_bits)); \
+   }
+#define LBR16GreenPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).green); \
+     (pixelpacket).green=ScaleShortToQuantum((lbr_bits)); \
+   }
+#define LBR16BluePixelPacketComponent(pixelpacket) \
+   { \
+     unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).blue); \
+     (pixelpacket).blue=ScaleShortToQuantum((lbr_bits)); \
+   }
+#define LBR16OpacityPixelPacketComponent(pixelpacket) \
+   { \
+     unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).opacity); \
+     (pixelpacket).opacity=ScaleShortToQuantum((lbr_bits)); \
+   }
+
+#define LBR16RGBPixelPacketComponent(pixelpacket) \
+        LBR16RedPixelPacketComponent((pixelpacket)); \
+        LBR16GreenPixelPacketComponent((pixelpacket)); \
+        LBR16BluePixelPacketComponent((pixelpacket));
+
+#define LBR16RGBOPixelPacketComponent(pixelpacket) \
+        LBR16RGBPixelPacketComponent((pixelpacket)); \
+        LBR16OpacityPixelPacketComponent((pixelpacket));
+
+#define LBR16RedPixelComponent(pixel) \
+   { \
+     unsigned short lbr_bits= \
+       ScaleQuantumToShort(GetRedPixelComponent((pixel))); \
+     SetRedPixelComponent((pixel),\
+       ScaleShortToQuantum((lbr_bits))); \
+   }
+#define LBR16GreenPixelComponent(pixel) \
+   { \
+     unsigned short lbr_bits= \
+       ScaleQuantumToShort(GetGreenPixelComponent((pixel))); \
+     SetGreenPixelComponent((pixel),\
+       ScaleShortToQuantum((lbr_bits))); \
+   }
+#define LBR16BluePixelComponent(pixel) \
+   { \
+     unsigned short lbr_bits= \
+       ScaleQuantumToShort(GetBluePixelComponent((pixel))); \
+     SetBluePixelComponent((pixel),\
+       ScaleShortToQuantum((lbr_bits))); \
+   }
+#define LBR16OpacityPixelComponent(pixel) \
+   { \
+     unsigned short lbr_bits= \
+       ScaleQuantumToShort(GetOpacityPixelComponent((pixel))); \
+     SetOpacityPixelComponent((pixel),\
+       ScaleShortToQuantum((lbr_bits))); \
+   }
+
+#define LBR16RGBPixelComponent(pixel) \
+        LBR16RedPixelComponent((pixel)); \
+        LBR16GreenPixelComponent((pixel)); \
+        LBR16BluePixelComponent((pixel));
+
+#define LBR16RGBOPixelComponent(pixel) \
+        LBR16RGBPixelComponent((pixel)); \
+        LBR16OpacityPixelComponent((pixel));
+
 /*
   Establish thread safety.
   setjmp/longjmp is claimed to be safe on these platforms:
@@ -1027,7 +1425,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           char
             msg[MaxTextExtent];
 
-          (void) FormatLocaleString(msg,MaxTextExtent,
+          (void) FormatMagickString(msg,MaxTextExtent,
             "Expected %.20g bytes; found %.20g bytes",(double) length,
             (double) check);
           png_warning(png_ptr,msg);
@@ -2335,17 +2733,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      /* encode ping_width, ping_height, ping_bit_depth, ping_color_type,
         ping_interlace_method in value */
 
-     (void) FormatLocaleString(msg,MaxTextExtent,
+     (void) FormatMagickString(msg,MaxTextExtent,
          "%d, %d",(int) ping_width, (int) ping_height);
      (void) SetImageProperty(image,"PNG:IHDR.width,height    ",msg);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
      (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_color_type);
      (void) SetImageProperty(image,"PNG:IHDR.color_type      ",msg);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d",
+     (void) FormatMagickString(msg,MaxTextExtent,"%d",
         (int) ping_interlace_method);
      (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg);
    }
@@ -3092,33 +3490,33 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if (num_text_total != 0)
        {
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatMagickString(msg,MaxTextExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
          (void) SetImageProperty(image,"PNG:text                 ",msg);
        }
 
      if (num_raw_profiles != 0)
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatMagickString(msg,MaxTextExtent,
             "%d were found", num_raw_profiles);
          (void) SetImageProperty(image,"PNG:text-encoded profiles",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%s",
+         (void) FormatMagickString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
          (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"%s",
+         (void) FormatMagickString(msg,MaxTextExtent,"%s",
             "chunk was found (see Background color, above)");
          (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
        }
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%s",
+     (void) FormatMagickString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
      if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
@@ -3130,7 +3528,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatMagickString(msg,MaxTextExtent,
             "intent=%d (See Rendering intent)",
             (int) intent);
          (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
@@ -3139,7 +3537,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatMagickString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)",
             file_gamma);
          (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
@@ -3148,7 +3546,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_pHYs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatMagickString(msg,MaxTextExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
          (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
@@ -3158,7 +3556,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_oFFs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
+         (void) FormatMagickString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
          (void) SetImageProperty(image,"PNG:oFFs                 ",msg);
        }
@@ -3167,7 +3565,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if ((image->page.width != 0 && image->page.width != image->columns) ||
          (image->page.height != 0 && image->page.height != image->rows))
        {
-         (void) FormatLocaleString(msg,MaxTextExtent,
+         (void) FormatMagickString(msg,MaxTextExtent,
             "width=%.20g, height=%.20g",
             (double) image->page.width,(double) image->page.height);
          (void) SetImageProperty(image,"PNG:vpAg                 ",msg);
@@ -3891,7 +4289,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Reading jng_image from color_blob.");
 
-  (void) FormatLocaleString(color_image_info->filename,MaxTextExtent,"%s",
+  (void) FormatMagickString(color_image_info->filename,MaxTextExtent,"%s",
     color_image->filename);
 
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
@@ -3948,7 +4346,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "    Reading opacity from alpha_blob.");
 
-         (void) FormatLocaleString(alpha_image_info->filename,MaxTextExtent,
+         (void) FormatMagickString(alpha_image_info->filename,MaxTextExtent,
            "%s",alpha_image->filename);
 
          jng_image=ReadImage(alpha_image_info,exception);
@@ -4472,7 +4870,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (mng_info->mng_height > 65535L))
               ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
 
-            (void) FormatLocaleString(page_geometry,MaxTextExtent,
+            (void) FormatMagickString(page_geometry,MaxTextExtent,
               "%.20gx%.20g+0+0",(double) mng_info->mng_width,(double)
               mng_info->mng_height);
 
@@ -6840,7 +7238,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
      allocated_length);
    dp+=description_length;
    *dp++='\n';
-   (void) FormatLocaleString(dp,allocated_length-
+   (void) FormatMagickString(dp,allocated_length-
      (png_size_t) (dp-text[0].text),"%8lu ",(unsigned long) length);
    dp+=8;
 
@@ -7158,11 +7556,180 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
-#if 0 /* To do: respect the -depth option */
+  /* Respect the -depth option */
   if (image->depth < MAGICKCORE_QUANTUM_DEPTH)
     {
+       register PixelPacket
+         *r;
+
+       ExceptionInfo
+         *exception;
+
+       exception=(&image->exception);
+
+       if (image->depth > 8)
+         {
+#if MAGICKCORE_QUANTUM_DEPTH > 16
+           /* Scale to 16-bit */
+           LBR16RGBOPixelPacketComponent(image->background_color);
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                LBR16RGBOPixelComponent(r);
+                r++;
+             }
+  
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+           }
+
+           if (image->storage_class == PseudoClass && image->colormap != NULL)
+           {
+             for (i=0; i<image->colors; i++)
+             {
+               LBR16RGBOPixelPacketComponent(image->colormap[i]);
+             }
+           }
+#endif /* MAGICKCORE_QUANTUM_DEPTH > 16 */
+         }
+
+       else if (image->depth > 4)
+         {
+#if MAGICKCORE_QUANTUM_DEPTH > 8
+           /* Scale to 8-bit */
+           LBR08RGBOPixelPacketComponent(image->background_color);
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                LBR08RGBOPixelComponent(r);
+                r++;
+             }
+  
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+           }
+
+           if (image->storage_class == PseudoClass && image->colormap != NULL)
+           {
+             for (i=0; i<image->colors; i++)
+             {
+               LBR08RGBOPixelPacketComponent(image->colormap[i]);
+             }
+           }
+#endif /* MAGICKCORE_QUANTUM_DEPTH > 8 */
+         }
+       else
+         if (image->depth > 2)
+         {
+           /* Scale to 4-bit */
+           LBR04RGBOPixelPacketComponent(image->background_color);
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                LBR04RGBOPixelComponent(r);
+                r++;
+             }
+  
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+           }
+
+           if (image->storage_class == PseudoClass && image->colormap != NULL)
+           {
+             for (i=0; i<image->colors; i++)
+             {
+               LBR04RGBOPixelPacketComponent(image->colormap[i]);
+             }
+           }
+         }
+
+       else if (image->depth > 1)
+         {
+           /* Scale to 2-bit */
+           LBR02RGBOPixelPacketComponent(image->background_color);
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                LBR02RGBOPixelComponent(r);
+                r++;
+             }
+  
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+           }
+
+           if (image->storage_class == PseudoClass && image->colormap != NULL)
+           {
+             for (i=0; i<image->colors; i++)
+             {
+               LBR02RGBOPixelPacketComponent(image->colormap[i]);
+             }
+           }
+         }
+       else
+         {
+           /* Scale to 1-bit */
+           LBR01RGBOPixelPacketComponent(image->background_color);
+
+           for (y=0; y < (ssize_t) image->rows; y++)
+           {
+             r=GetAuthenticPixels(image,0,y,image->columns,1,
+                 exception);
+
+             if (r == (PixelPacket *) NULL)
+               break;
+
+             for (x=0; x < (ssize_t) image->columns; x++)
+             {
+                LBR01RGBOPixelComponent(r);
+                r++;
+             }
+  
+             if (SyncAuthenticPixels(image,exception) == MagickFalse)
+                break;
+           }
+
+           if (image->storage_class == PseudoClass && image->colormap != NULL)
+           {
+             for (i=0; i<image->colors; i++)
+             {
+               LBR01RGBOPixelPacketComponent(image->colormap[i]);
+             }
+           }
+         }
     }
-#endif
 
   /* To do: set to next higher multiple of 8 */
   if (image->depth < 8)
@@ -7172,7 +7739,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /* PNG does not handle depths greater than 16 so reduce it even
    * if lossy
    */
-  if (image->depth > 16)
+  if (image->depth > 8)
       image->depth=16;
 #endif
 
@@ -7239,11 +7806,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
    register PixelPacket
      *r;
-
-   unsigned char
-     hi4,
-     hi3,
-     hi2;
 
    if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7780,12 +8342,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         tried_444 = MagickTrue;
 
-        hi4=ScaleQuantumToChar(image->background_color.red) & 0xf0;
-        image->background_color.red=ScaleCharToQuantum((hi4 | (hi4 >> 4)));
-        hi4=ScaleQuantumToChar(image->background_color.green) & 0xf0;
-        image->background_color.green=ScaleCharToQuantum((hi4 | (hi4 >> 4)));
-        hi4=ScaleQuantumToChar(image->background_color.blue) & 0xf0;
-        image->background_color.blue=ScaleCharToQuantum((hi4 | (hi4 >> 4)));
+        LBR04RGBPixelPacketComponent(image->background_color);
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7804,17 +8361,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetOpacityPixelComponent(r) == OpaqueOpacity)
-                {
-                  hi4=ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xf0;
-                  SetRedPixelComponent(r,ScaleCharToQuantum((hi4 | (hi4 >>
-                  4))));
-                  hi4=ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xf0;
-                  SetGreenPixelComponent(r,ScaleCharToQuantum((hi4 | (hi4 >>
-                  4))));
-                  hi4=ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xf0;
-                  SetBluePixelComponent(r,ScaleCharToQuantum((hi4 | (hi4 >>
-                  4))));
-                }
+                  LBR04RGBPixelComponent(r);
               r++;
             }
     
@@ -7829,14 +8376,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Quantizing the colormap to 4-4-4");
+
           for (i=0; i<image_colors; i++)
           {
-            hi4=ScaleQuantumToChar(image->colormap[i].red) & 0xf0;
-            image->colormap[i].red=ScaleCharToQuantum((hi4 | (hi4 >> 4)));
-            hi4=ScaleQuantumToChar(image->colormap[i].green) & 0xf0;
-            image->colormap[i].green=ScaleCharToQuantum((hi4 | (hi4 >> 4)));
-            hi4=ScaleQuantumToChar(image->colormap[i].blue) & 0xf0;
-            image->colormap[i].blue=ScaleCharToQuantum((hi4 | (hi4 >> 4)));
+            LBR04RGBPixelPacketComponent(image->colormap[i]);
           }
         }
         continue;
@@ -7850,19 +8393,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         tried_333 = MagickTrue;
 
-        hi3=ScaleQuantumToChar(image->background_color.red) & 0xe0;
-        hi2=hi3 & 0xc0;
-        image->background_color.red=ScaleCharToQuantum(
-             (hi3 | (hi3 >> 3) | (hi2 >> 6)));
-        hi3=ScaleQuantumToChar(image->background_color.green) & 0xe0;
-        hi2=hi3 & 0xc0;
-        image->background_color.green=ScaleCharToQuantum(
-             (hi3 | (hi3 >> 3) | (hi2 >> 6)));
-        hi3=ScaleQuantumToChar(image->background_color.blue) & 0xe0;
-        hi2=hi3 & 0xc0;
-        image->background_color.blue=ScaleCharToQuantum(
-             (hi3 | (hi3 >> 3) | (hi2 >> 6)));
-
+        LBR03RGBPixelPacketComponent(image->background_color);
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7881,20 +8412,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetOpacityPixelComponent(r) == OpaqueOpacity)
-                {
-                  hi3=ScaleQuantumToChar(GetRedPixelComponent(r)) & 0xe0;
-                  hi2=hi3 & 0xc0;
-                  SetRedPixelComponent(r,ScaleCharToQuantum(
-                       (hi3 | (hi3 >> 3) | (hi2 >> 6))));
-                  hi3=ScaleQuantumToChar(GetGreenPixelComponent(r)) & 0xe0;
-                  hi2=hi3 & 0xc0;
-                  SetGreenPixelComponent(r,ScaleCharToQuantum(
-                       (hi3 | (hi3 >> 3) | (hi2 >> 6))));
-                  hi3=ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xe0;
-                  hi2=hi3 & 0xc0;
-                  SetBluePixelComponent(r,ScaleCharToQuantum(
-                       (hi3 | (hi3 >> 3) | (hi2 >> 6))));
-                }
+                  LBR03RGBPixelComponent(r);
               r++;
             }
     
@@ -7911,18 +8429,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "    Quantizing the colormap to 3-3-3-1");
           for (i=0; i<image_colors; i++)
           {
-              hi3=ScaleQuantumToChar(image->colormap[i].red) & 0xe0;
-              hi2=hi3 & 0xc0;
-              image->colormap[i].red=ScaleCharToQuantum(
-                   (hi3 | (hi3 >> 3) | (hi2 >> 6)));
-              hi3=ScaleQuantumToChar(image->colormap[i].green) & 0xe0;
-              hi2=hi3 & 0xc0;
-              image->colormap[i].green=ScaleCharToQuantum(
-                   (hi3 | (hi3 >> 3) | (hi2 >> 6)));
-              hi3=ScaleQuantumToChar(image->colormap[i].blue) & 0xe0;
-              hi2=hi3 & 0xc0;
-              image->colormap[i].blue=ScaleCharToQuantum(
-                   (hi3 | (hi3 >> 3) | (hi2 >> 6)));
+              LBR03RGBPixelPacketComponent(image->colormap[i]);
           }
         }
         continue;
@@ -7940,9 +8447,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          * channel
          */
 
-        hi2=ScaleQuantumToChar(image->background_color.blue) & 0xc0;
-        image->background_color.blue=ScaleCharToQuantum(
-            (hi2 | (hi2 >> 2) | (hi2 >> 4) | (hi2 >> 6))); 
+        LBR02BluePixelPacketComponent(image->background_color);
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7961,11 +8466,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetOpacityPixelComponent(r) == OpaqueOpacity)
-                {
-                  hi2=ScaleQuantumToChar(GetBluePixelComponent(r)) & 0xc0;
-                  SetBluePixelComponent(r,ScaleCharToQuantum(
-                      (hi2 | (hi2 >> 2) | (hi2 >> 4) | (hi2 >> 6)))); 
-                }
+                  LBR02BluePixelComponent(r);
               r++;
             }
     
@@ -7982,9 +8483,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "    Quantizing the colormap to 3-3-2-1");
           for (i=0; i<image_colors; i++)
           {
-              hi2=ScaleQuantumToChar(image->colormap[i].blue) & 0xc0;
-              image->colormap[i].blue=ScaleCharToQuantum(
-                  (hi2 | (hi2 >> 2) | (hi2 >> 4) | (hi2 >> 6))); 
+              LBR02BluePixelPacketComponent(image->colormap[i]);
           }
       }
       continue;
@@ -10798,7 +11297,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       jpeg_image_info->type=GrayscaleType;
       (void) SetImageType(jpeg_image,GrayscaleType);
       (void) AcquireUniqueFilename(jpeg_image->filename);
-      (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,
+      (void) FormatMagickString(jpeg_image_info->filename,MaxTextExtent,
         "%s",jpeg_image->filename);
     }
 
@@ -11171,7 +11670,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
 
   (void) AcquireUniqueFilename(jpeg_image->filename);
-  (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,"%s",
+  (void) FormatMagickString(jpeg_image_info->filename,MaxTextExtent,"%s",
     jpeg_image->filename);
 
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
