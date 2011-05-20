@@ -321,9 +321,8 @@ MagickExport void DestroyImageProperties(Image *image)
 %      arguments.
 %
 */
-
-MagickExport MagickBooleanType FormatImagePropertyList(Image *image,
-  const char *property,const char *format,va_list operands)
+MagickExport MagickBooleanType FormatImageProperty(Image *image,
+  const char *property,const char *format,...)
 {
   char
     value[MaxTextExtent];
@@ -331,29 +330,14 @@ MagickExport MagickBooleanType FormatImagePropertyList(Image *image,
   int
     n;
 
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
-  n=vsnprintf(value,MaxTextExtent,format,operands);
-#else
-  n=vsprintf(value,format,operands);
-#endif
-  if (n < 0)
-    value[MaxTextExtent-1]='\0';
-  return(SetImageProperty(image,property,value));
-}
-
-MagickExport MagickBooleanType FormatImageProperty(Image *image,
-  const char *property,const char *format,...)
-{
-  MagickBooleanType
-    status;
-
   va_list
     operands;
 
   va_start(operands,format);
-  status=FormatImagePropertyList(image,property,format,operands);
+  n=FormatLocaleStringList(value,MaxTextExtent,format,operands);
+  (void) n;
   va_end(operands);
-  return(status);
+  return(SetImageProperty(image,property,value));
 }
 
 /*
