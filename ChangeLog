@@ -7,6 +7,7 @@
   * Don't use comma as a separator for stroked text (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18742).
   * Use C locale when generating or interpretting SVG.
+  * Fix "unterminated macro" for Q32 build of coders/png.c.
 
 2011-05-15  6.6.9-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-9.

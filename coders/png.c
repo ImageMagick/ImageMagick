@@ -1425,7 +1425,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           char
             msg[MaxTextExtent];
 
-          (void) FormatMagickString(msg,MaxTextExtent,
+          (void) FormatLocaleString(msg,MaxTextExtent,
             "Expected %.20g bytes; found %.20g bytes",(double) length,
             (double) check);
           png_warning(png_ptr,msg);
@@ -2733,17 +2733,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      /* encode ping_width, ping_height, ping_bit_depth, ping_color_type,
         ping_interlace_method in value */
 
-     (void) FormatMagickString(msg,MaxTextExtent,
+     (void) FormatLocaleString(msg,MaxTextExtent,
          "%d, %d",(int) ping_width, (int) ping_height);
      (void) SetImageProperty(image,"PNG:IHDR.width,height    ",msg);
 
-     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
+     (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
      (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg);
 
-     (void) FormatMagickString(msg,MaxTextExtent,"%d",(int) ping_color_type);
+     (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
      (void) SetImageProperty(image,"PNG:IHDR.color_type      ",msg);
 
-     (void) FormatMagickString(msg,MaxTextExtent,"%d",
+     (void) FormatLocaleString(msg,MaxTextExtent,"%d",
         (int) ping_interlace_method);
      (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg);
    }
@@ -3490,33 +3490,33 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if (num_text_total != 0)
        {
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
-         (void) FormatMagickString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
          (void) SetImageProperty(image,"PNG:text                 ",msg);
        }
 
      if (num_raw_profiles != 0)
        {
-         (void) FormatMagickString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "%d were found", num_raw_profiles);
          (void) SetImageProperty(image,"PNG:text-encoded profiles",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"%s",
+         (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
          (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"%s",
+         (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Background color, above)");
          (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
        }
 
-     (void) FormatMagickString(msg,MaxTextExtent,"%s",
+     (void) FormatLocaleString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
      if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
@@ -3528,7 +3528,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "intent=%d (See Rendering intent)",
             (int) intent);
          (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
@@ -3537,7 +3537,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)",
             file_gamma);
          (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
@@ -3546,7 +3546,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_pHYs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_pHYs))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
          (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
@@ -3556,7 +3556,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_oFFs_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
+         (void) FormatLocaleString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
          (void) SetImageProperty(image,"PNG:oFFs                 ",msg);
        }
@@ -3565,7 +3565,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if ((image->page.width != 0 && image->page.width != image->columns) ||
          (image->page.height != 0 && image->page.height != image->rows))
        {
-         (void) FormatMagickString(msg,MaxTextExtent,
+         (void) FormatLocaleString(msg,MaxTextExtent,
             "width=%.20g, height=%.20g",
             (double) image->page.width,(double) image->page.height);
          (void) SetImageProperty(image,"PNG:vpAg                 ",msg);
@@ -4289,7 +4289,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Reading jng_image from color_blob.");
 
-  (void) FormatMagickString(color_image_info->filename,MaxTextExtent,"%s",
+  (void) FormatLocaleString(color_image_info->filename,MaxTextExtent,"%s",
     color_image->filename);
 
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
@@ -4346,7 +4346,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "    Reading opacity from alpha_blob.");
 
-         (void) FormatMagickString(alpha_image_info->filename,MaxTextExtent,
+         (void) FormatLocaleString(alpha_image_info->filename,MaxTextExtent,
            "%s",alpha_image->filename);
 
          jng_image=ReadImage(alpha_image_info,exception);
@@ -4870,7 +4870,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (mng_info->mng_height > 65535L))
               ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
 
-            (void) FormatMagickString(page_geometry,MaxTextExtent,
+            (void) FormatLocaleString(page_geometry,MaxTextExtent,
               "%.20gx%.20g+0+0",(double) mng_info->mng_width,(double)
               mng_info->mng_height);
 
@@ -6192,13 +6192,13 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                        for (x=(ssize_t) image->columns-1; x >= 0; x--)
                        {
                           SetRedPixelComponent(q,ScaleQuantumToShort(
-                            GetRedPixelComponent(q));
+                            GetRedPixelComponent(q)));
                           SetGreenPixelComponent(q,ScaleQuantumToShort(
-                            GetGreenPixelComponent(q));
+                            GetGreenPixelComponent(q)));
                           SetBluePixelComponent(q,ScaleQuantumToShort(
-                            GetBluePixelComponent(q));
+                            GetBluePixelComponent(q)));
                           SetOpacityPixelComponent(q,ScaleQuantumToShort(
-                            GetOpacityPixelComponent(q));
+                            GetOpacityPixelComponent(q)));
                           q++;
                        }
 
@@ -6502,13 +6502,13 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                      for (x=(ssize_t) image->columns-1; x >= 0; x--)
                      {
                         SetRedPixelComponent(q,ScaleShortToQuantum(
-                            GetRedPixelComponent(q));
+                            GetRedPixelComponent(q)));
                         SetGreenPixelComponent(q,ScaleShortToQuantum(
-                            GetGreenPixelComponent(q));
+                            GetGreenPixelComponent(q)));
                         SetBluePixelComponent(q,ScaleShortToQuantum(
-                            GetBluePixelComponent(q));
+                            GetBluePixelComponent(q)));
                         SetOpacityPixelComponent(q,ScaleShortToQuantum(
-                            GetOpacityPixelComponent(q));
+                            GetOpacityPixelComponent(q)));
                         q++;
                      }
 
@@ -7238,7 +7238,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
      allocated_length);
    dp+=description_length;
    *dp++='\n';
-   (void) FormatMagickString(dp,allocated_length-
+   (void) FormatLocaleString(dp,allocated_length-
      (png_size_t) (dp-text[0].text),"%8lu ",(unsigned long) length);
    dp+=8;
 
@@ -11297,7 +11297,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       jpeg_image_info->type=GrayscaleType;
       (void) SetImageType(jpeg_image,GrayscaleType);
       (void) AcquireUniqueFilename(jpeg_image->filename);
-      (void) FormatMagickString(jpeg_image_info->filename,MaxTextExtent,
+      (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,
         "%s",jpeg_image->filename);
     }
 
@@ -11670,7 +11670,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
 
   (void) AcquireUniqueFilename(jpeg_image->filename);
-  (void) FormatMagickString(jpeg_image_info->filename,MaxTextExtent,"%s",
+  (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,"%s",
     jpeg_image->filename);
 
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
