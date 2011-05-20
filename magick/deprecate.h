@@ -157,7 +157,7 @@ extern MagickExport ssize_t
   FormatMagickString(char *,const size_t,const char *,...)
     magick_attribute((format (printf,3,4))) magick_attribute((deprecated)),
   FormatMagickStringList(char *,const size_t,const char *,va_list)
-    magick_attribute((format (printf,3,0))) magick_attribute((deprecated)),
+    magick_attribute((format (printf,3,0))),
   GetImageListIndex(const Image *) magick_attribute((deprecated)),
   SetMagickRegistry(const RegistryType,const void *,const size_t,
     ExceptionInfo *) magick_attribute((deprecated));
