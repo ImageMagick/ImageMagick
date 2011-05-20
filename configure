@@ -3455,7 +3455,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=4458
+MAGICK_SVN_REVISION=4484
 
 
 
@@ -22312,6 +22312,7 @@ _ACEOF
 
 fi
 
+AC_TYPE_LOCALE_T
 
 # Define ssize_t to a suitable type, if standard headers do not define it.
 ac_fn_c_check_type "$LINENO" "ssize_t" "ac_cv_type_ssize_t" "$ac_includes_default"
