@@ -22312,7 +22312,6 @@ _ACEOF
 
 fi
 
-AC_TYPE_LOCALE_T
 
 # Define ssize_t to a suitable type, if standard headers do not define it.
 ac_fn_c_check_type "$LINENO" "ssize_t" "ac_cv_type_ssize_t" "$ac_includes_default"
