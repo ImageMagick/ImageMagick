@@ -129,10 +129,6 @@ extern "C" {
 # define MaxTextExtent  4096
 #endif
 
-#if defined(__CYGWIN__)
-typedef ssize_t locale_t;
-#endif
-
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(MAGICKCORE_HAVE_SYS_STAT_H)
