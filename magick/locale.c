@@ -63,6 +63,13 @@
 #define MaxRecursionDepth  200
 
 /*
+  Typedef declarations.
+*/
+#if defined(__CYGWIN__)
+typedef struct _locale_t *locale_t;
+#endif
+
+/*
   Static declarations.
 */
 static const char
