@@ -41,6 +41,7 @@
 #include "magick/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include "magick/client.h"
+#include "magick/locale_.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
