@@ -4276,9 +4276,6 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     IndexPacket
       index;
 
-    PixelPacket
-      pixel;
-
     register IndexPacket
       *restrict indexes;
 
@@ -4301,12 +4298,10 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     {
       index=PushColormapIndex(image,(size_t) GetIndexPixelComponent(indexes+x),
         &range_exception);
-      pixel=image->colormap[(ssize_t) index];
-      SetRedPixelComponent(q,pixel.red);
-      SetGreenPixelComponent(q,pixel.green);
-      SetBluePixelComponent(q,pixel.blue);
-      if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,pixel.opacity);
+      if (image->matte == MagickFalse)
+        SetRGBPixelComponent(q,image->colormap+index)
+      else
+        SetRGBOPixelComponent(q,image->colormap+index);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
