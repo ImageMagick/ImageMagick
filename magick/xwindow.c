@@ -4458,7 +4458,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               {
                 index=(IndexPacket) XGetPixel(ximage,x,y);
                 SetIndexPixelComponent(indexes+x,index);
-                SetRGBAPixelComponent(q,composite_image->colormap+index);
+                SetRGBOPixelComponent(q,composite_image->colormap+index);
                 q++;
               }
               if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
