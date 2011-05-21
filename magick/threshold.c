@@ -1779,9 +1779,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               GetPseudoRandomValue(random_info[id]));
           index=(IndexPacket) (intensity <= threshold.index ? 0 : 1);
           SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-          SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-          SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+          SetRGBOPixelComponent(q,image->colormap+index);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);

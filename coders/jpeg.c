@@ -1249,9 +1249,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
             index=ConstrainColormapIndex(image,pixel);
             SetIndexPixelComponent(indexes+x,index);
-            SetRedPixelComponent(q,image->colormap[(int) index].red);
-            SetGreenPixelComponent(q,image->colormap[(int) index].green);
-            SetBluePixelComponent(q,image->colormap[(int) index].blue);
+            SetRGBOPixelComponent(q,image->colormap+index);
             p++;
             q++;
           }
@@ -1289,9 +1287,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p));
           SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,image->colormap[(int) index].red);
-          SetGreenPixelComponent(q,image->colormap[(int) index].green);
-          SetBluePixelComponent(q,image->colormap[(int) index].blue);
+          SetRGBOPixelComponent(q,image->colormap+index);
           p++;
           q++;
         }

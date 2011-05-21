@@ -5554,9 +5554,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
             threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)];
           index=(IndexPacket) (intensity <= threshold ? 0 : 1);
           SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-          SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-          SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+          SetRGBOPixelComponent(q,image->colormap+index);
           q++;
         }
       }
@@ -6623,9 +6621,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(q) <=
         threshold ? 0 : 1);
       SetIndexPixelComponent(indexes+x,index);
-      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+      SetRGBOPixelComponent(q,image->colormap+index);
       q++;
     }
     if (!SyncAuthenticPixels(image,&image->exception))
