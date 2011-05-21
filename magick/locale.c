@@ -243,10 +243,10 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
     if (locale == (locale_t) NULL)
       n=vfprintf(file,format,operands);
     else
-#if defined(__APPLE__)
-      n=vfprintf_l(file,locale,format,operands);
-#else
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
       n=vfprintf_l(file,format,locale,operands);
+#else
+      n=vfprintf_l(file,locale,format,operands);
 #endif
   }
 #else
@@ -334,10 +334,10 @@ MagickExport ssize_t FormatLocaleStringList(char *restrict string,
     if (locale == (locale_t) NULL)
       n=vsnprintf(string,length,format,operands);
     else
-#if defined(__APPLE__)
-      n=vsnprintf_l(string,length,locale,format,operands);
-#else
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
       n=vsnprintf_l(string,length,format,locale,operands);
+#else
+      n=vsnprintf_l(string,length,locale,format,operands);
 #endif
   }
 #elif defined(MAGICKCORE_HAVE_VSNPRINTF)
