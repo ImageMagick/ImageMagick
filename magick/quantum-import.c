@@ -346,12 +346,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                   0x00 : 0x01);
               SetIndexPixelComponent(indexes+x+bit,PushColormapIndex(image,
                 pixel,&range_exception));
-              SetRedPixelComponent(q,image->colormap[(ssize_t)
-                GetIndexPixelComponent(indexes+x+bit)].red);
-              SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                GetIndexPixelComponent(indexes+x+bit)].green);
-              SetBluePixelComponent(q,image->colormap[(ssize_t)
-                GetIndexPixelComponent(indexes+x+bit)].blue);
+              SetRGBOPixelComponent(q,image->colormap+
+                GetIndexPixelComponent(indexes+x+bit));
               q++;
             }
             p++;
@@ -366,12 +362,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 0x00 : 0x01);
             SetIndexPixelComponent(indexes+x+bit,PushColormapIndex(image,pixel,
               &range_exception));
-            SetRedPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x+bit)].red);
-            SetGreenPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x+bit)].green);
-            SetBluePixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x+bit)].blue);
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x+bit));
             q++;
           }
           break;
@@ -386,12 +378,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             pixel=(unsigned char) ((*p >> 4) & 0xf);
             SetIndexPixelComponent(indexes+x,PushColormapIndex(image,pixel,
               &range_exception));
-            SetRedPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].red);
-            SetGreenPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].green);
-            SetBluePixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].blue);
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x));
             q++;
             pixel=(unsigned char) ((*p) & 0xf);
             SetIndexPixelComponent(indexes+x+1,PushColormapIndex(image,pixel,
@@ -405,12 +393,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             pixel=(unsigned char) ((*p++ >> 4) & 0xf);
             SetIndexPixelComponent(indexes+x+bit,PushColormapIndex(image,pixel,
               &range_exception));
-            SetRedPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x+bit)].red);
-            SetGreenPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x+bit)].green);
-            SetBluePixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x+bit)].blue);
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x+bit));
             q++;
           }
           break;
@@ -425,12 +409,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             p=PushCharPixel(p,&pixel);
             SetIndexPixelComponent(indexes+x,PushColormapIndex(image,pixel,
               &range_exception));
-            SetRedPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].red);
-            SetGreenPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].green);
-            SetBluePixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].blue);
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x));
             p+=quantum_info->pad;
             q++;
           }
@@ -449,12 +429,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 SetIndexPixelComponent(indexes+x,PushColormapIndex(image,
                   ClampToQuantum((MagickRealType) QuantumRange*
                   HalfToSinglePrecision(pixel)),&range_exception));
-                SetRedPixelComponent(q,image->colormap[(ssize_t)
-                  GetIndexPixelComponent(indexes+x)].red);
-                SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                  GetIndexPixelComponent(indexes+x)].green);
-                SetBluePixelComponent(q,image->colormap[(ssize_t)
-                  GetIndexPixelComponent(indexes+x)].blue);
+                SetRGBOPixelComponent(q,image->colormap+
+                  GetIndexPixelComponent(indexes+x));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -465,12 +441,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             p=PushShortPixel(endian,p,&pixel);
             SetIndexPixelComponent(indexes+x,PushColormapIndex(image,pixel,
               &range_exception));
-            SetRedPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].red);
-            SetGreenPixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].green);
-            SetBluePixelComponent(q,image->colormap[(ssize_t)
-              GetIndexPixelComponent(indexes+x)].blue);
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x));
             p+=quantum_info->pad;
             q++;
           }
@@ -491,7 +463,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 p=PushFloatPixel(&quantum_state,p,&pixel);
                 SetIndexPixelComponent(indexes+x,PushColormapIndex(image,
                   ClampToQuantum(pixel),&range_exception));
-                *q=image->colormap[(ssize_t) GetIndexPixelComponent(indexes+x)];
+                SetRGBOPixelComponent(q,image->colormap+
+                  GetIndexPixelComponent(indexes+x));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -502,7 +475,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             p=PushLongPixel(endian,p,&pixel);
             SetIndexPixelComponent(indexes+x,PushColormapIndex(image,pixel,
               &range_exception));
-            *q=image->colormap[(ssize_t) GetIndexPixelComponent(indexes+x)];
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x));
             p+=quantum_info->pad;
             q++;
           }
@@ -520,7 +494,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
                 p=PushDoublePixel(&quantum_state,p,&pixel);
                 SetIndexPixelComponent(indexes+x,PushColormapIndex(image,
                   ClampToQuantum(pixel),&range_exception));
-                *q=image->colormap[(ssize_t) GetIndexPixelComponent(indexes+x)];
+                SetRGBOPixelComponent(q,image->colormap+
+                  GetIndexPixelComponent(indexes+x));
                 p+=quantum_info->pad;
                 q++;
               }
@@ -534,7 +509,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             p=PushQuantumPixel(&quantum_state,image->depth,p,&pixel);
             SetIndexPixelComponent(indexes+x,PushColormapIndex(image,pixel,
               &range_exception));
-            *q=image->colormap[(ssize_t) GetIndexPixelComponent(indexes+x)];
+            SetRGBOPixelComponent(q,image->colormap+
+              GetIndexPixelComponent(indexes+x));
             p+=quantum_info->pad;
             q++;
           }
