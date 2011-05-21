@@ -60,6 +60,13 @@ extern "C" {
 #define SetOpacityPixelComponent(pixel,value) \
   ((pixel)->opacity=(Quantum) (value))
 #define SetRedPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetRGBAPixelComponent(q,p) \
+{ \
+  SetRedPixelComponent(q,GetRedPixelComponent(p)); \
+  SetGreenPixelComponent(q,GetGreenPixelComponent(p)); \
+  SetBluePixelComponent(q,GetBluePixelComponent(p)); \
+  SetOpacityPixelComponent(q,GetOpacityPixelComponent(p)); \
+}
 #define SetYellowPixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetYPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
 
