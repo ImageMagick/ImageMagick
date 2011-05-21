@@ -5957,7 +5957,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRGBAPixelComponent(q,&background_color);
+          SetRGBOPixelComponent(q,&background_color);
           q++;
         }
         indexes=GetAuthenticIndexQueue(image);
@@ -5984,7 +5984,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRGBAPixelComponent(q,&background_color);
+      SetRGBOPixelComponent(q,&background_color);
       q++;
     }
     if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
