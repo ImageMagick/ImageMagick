@@ -285,19 +285,16 @@ static MagickBooleanType JPEGErrorHandler(j_common_ptr jpeg_info)
   *message='\0';
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
+  (jpeg_info->err->format_message)(jpeg_info,message);
   if (image->debug != MagickFalse)
-    {
-      /*
-        Log trace message.
-      */
-      (jpeg_info->err->format_message)(jpeg_info,message);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "[%s] JPEG Trace: \"%s\"",image->filename,message);
-    }
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "[%s] JPEG Trace: \"%s\"",image->filename,message);
   if (error_manager->finished != MagickFalse)
-    ThrowBinaryException(CorruptImageWarning,(char *) message,image->filename)
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      CorruptImageWarning,(char *) message,image->filename);
   else
-    ThrowBinaryException(CorruptImageError,(char *) message,image->filename);
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      CorruptImageError,(char *) message,image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
