@@ -19,25 +19,25 @@ wandincdir = $(topincludedir)/wand
 
 WAND_SOURCES = \
 	wand/MagickWand.h \
-  wand/animate.c \
+	wand/animate.c \
 	wand/animate.h \
-  wand/compare.c \
+	wand/compare.c \
 	wand/compare.h \
-  wand/composite.c \
+	wand/composite.c \
 	wand/composite.h \
-  wand/conjure.c \
+	wand/conjure.c \
 	wand/conjure.h \
-  wand/convert.c \
+	wand/convert.c \
 	wand/convert.h \
 	wand/deprecate.h \
 	wand/deprecate.c \
-  wand/display.c \
+	wand/display.c \
 	wand/display.h \
-  wand/drawing-wand.c \
+	wand/drawing-wand.c \
 	wand/drawing-wand.h \
-  wand/identify.c \
+	wand/identify.c \
 	wand/identify.h \
-  wand/import.c \
+	wand/import.c \
 	wand/import.h \
 	wand/magick-image.c \
 	wand/magick-image.h \
@@ -46,10 +46,10 @@ WAND_SOURCES = \
 	wand/magick-wand.c \
 	wand/magick-wand.h \
 	wand/magick-wand-private.h \
-  wand/mogrify.c \
+	wand/mogrify.c \
 	wand/mogrify.h \
 	wand/mogrify-private.h \
-  wand/montage.c \
+	wand/montage.c \
 	wand/montage.h \
 	wand/pixel-iterator.c \
 	wand/pixel-iterator.h \
@@ -88,11 +88,11 @@ WAND_INCLUDE_HDRS = \
 	wand/wand-view.h
 
 WAND_NOINST_HDRS = \
-  wand/mogrify-private.h \
-  wand/magick-wand-private.h \
-  wand/pixel-wand-private.h \
-  wand/studio.h \
-  wand/wand.h
+	wand/mogrify-private.h \
+	wand/magick-wand-private.h \
+	wand/pixel-wand-private.h \
+	wand/studio.h \
+	wand/wand.h
 
 # Headers which are installed
 wandinc_HEADERS = \
@@ -117,8 +117,8 @@ MAGICKWAND_LIBS = wand/libMagickWand.la
 wand_libMagickWand_la_SOURCES = $(WAND_SOURCES)
 wand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 wand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
-  -version-info \
-  $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
+	-version-info \
+	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
 WAND_EXTRA_DIST = \
@@ -127,10 +127,10 @@ WAND_EXTRA_DIST = \
 	wand/input_bilevel.miff \
 	wand/input_gray.miff \
 	wand/input_truecolor.miff \
-  wand/MagickWand-config.1 \
+	wand/MagickWand-config.1 \
 	wand/MagickWand.pc.in \
 	wand/sequence.miff \
-  wand/Wand-config.1 \
+	wand/Wand-config.1 \
 	wand/Wand.pc.in  \
 	wand/common.sh \
 	$(WAND_TESTS)
