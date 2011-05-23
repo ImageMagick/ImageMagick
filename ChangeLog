@@ -1,3 +1,6 @@
+2011-05-23  6.7.0-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-0.
+
 2011-05-21  6.7.0-0 Cristy  <quetzlzacatenango@image...>
   * Avoid fault on corrupt JPEG images.
   * Avoid fault on certain DJVU images (reference
