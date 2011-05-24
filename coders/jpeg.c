@@ -285,19 +285,16 @@ static MagickBooleanType JPEGErrorHandler(j_common_ptr jpeg_info)
   *message='\0';
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
+  (jpeg_info->err->format_message)(jpeg_info,message);
   if (image->debug != MagickFalse)
-    {
-      /*
-        Log trace message.
-      */
-      (jpeg_info->err->format_message)(jpeg_info,message);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "[%s] JPEG Trace: \"%s\"",image->filename,message);
-    }
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "[%s] JPEG Trace: \"%s\"",image->filename,message);
   if (error_manager->finished != MagickFalse)
-    ThrowBinaryException(CorruptImageWarning,(char *) message,image->filename)
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      CorruptImageWarning,(char *) message,image->filename);
   else
-    ThrowBinaryException(CorruptImageError,(char *) message,image->filename);
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      CorruptImageError,(char *) message,image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
@@ -1249,9 +1246,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
             index=ConstrainColormapIndex(image,pixel);
             SetIndexPixelComponent(indexes+x,index);
-            SetRedPixelComponent(q,image->colormap[(int) index].red);
-            SetGreenPixelComponent(q,image->colormap[(int) index].green);
-            SetBluePixelComponent(q,image->colormap[(int) index].blue);
+            SetRGBOPixelComponent(q,image->colormap+index);
             p++;
             q++;
           }
@@ -1289,9 +1284,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p));
           SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,image->colormap[(int) index].red);
-          SetGreenPixelComponent(q,image->colormap[(int) index].green);
-          SetBluePixelComponent(q,image->colormap[(int) index].blue);
+          SetRGBOPixelComponent(q,image->colormap+index);
           p++;
           q++;
         }

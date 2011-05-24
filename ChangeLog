@@ -1,3 +1,12 @@
+2011-05-22  6.7.0-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-0.
+
+2011-05-21  6.7.0-0 Cristy  <quetzlzacatenango@image...>
+  * Avoid fault on corrupt JPEG images.
+  * Avoid fault on certain DJVU images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18807).
+  * Fix -fx to interpret scientfic notation properly.
+
 2011-05-20  6.6.9-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-10.
 

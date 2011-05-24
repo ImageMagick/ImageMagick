@@ -320,8 +320,7 @@ process_message(ddjvu_message_t *message)
  * we use the RGB format!
  */
 static void
-get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, QuantumInfo* quantum_info)
-{
+get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, const ImageInfo *image_info ) {
   ddjvu_format_t
     *format;
 
@@ -349,11 +348,11 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 
         /* stride of this temporary buffer: */
         stride = (type == DDJVU_PAGETYPE_BITONAL)?
-                (lc->image->columns + 7)/8:
-                lc->image->columns *3;
+                (image->columns + 7)/8 : image->columns *3;
 
-        q = (unsigned char *) AcquireQuantumMemory(lc->image->rows,stride);
-
+        q = (unsigned char *) AcquireQuantumMemory(image->rows,stride);
+        if (q == (unsigned char *) NULL)
+          return;
 
         format = ddjvu_format_create(
                 (type == DDJVU_PAGETYPE_BITONAL)?DDJVU_FORMAT_LSBTOMSB : DDJVU_FORMAT_RGB24,
@@ -407,7 +406,8 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                         {
                                                 if (bit == 0) byte= (size_t) q[(y * stride) + (x / 8)];
 
-                                                SetIndexPixelComponent(indexes+x,(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01));
+                                                if (indexes != (IndexPacket *) NULL)
+                                                  SetIndexPixelComponent(indexes+x,(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01));
                                                 bit++;
                                                 if (bit == 8)
                                                         bit=0;
@@ -429,23 +429,26 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                 char* r;
 #else
                 register PixelPacket *r;
+                unsigned char *s;
 #endif
-
-                for (i = 0;i< (ssize_t) lc->image->rows; i++)
+                s=q;
+                for (i = 0;i< (ssize_t) image->rows; i++)
                         {
 #if DEBUG
                                if (i % 1000 == 0) printf("%d\n",i);
 #endif
-                               r = QueueAuthenticPixels(lc->image,0,i,lc->image->columns,1,&image->exception);
+                               r = QueueAuthenticPixels(image,0,i,image->columns,1,&image->exception);
                                if (r == (PixelPacket *) NULL)
                                  break;
+                  for (x=0; x < (ssize_t) image->columns; x++)
+                  {
+                    SetRedPixelComponent(r,ScaleCharToQuantum(*s++));
+                    SetGreenPixelComponent(r,ScaleCharToQuantum(*s++));
+                    SetBluePixelComponent(r,ScaleCharToQuantum(*s++));
+                    r++;
+                  }
 
-                               ImportQuantumPixels(lc->image,
-                                                    (CacheView *) NULL,
-                                                    quantum_info,
-                                                    RGBQuantum, /*GrayQuantum*/
-                                                    q+i*stride,&image->exception);
-                              SyncAuthenticPixels(lc->image,&image->exception);
+                              SyncAuthenticPixels(image,&image->exception);
                         }
         }
         q=(unsigned char *) RelinquishMagickMemory(q);
@@ -568,7 +571,6 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
      type;
 
   ddjvu_pageinfo_t info;
-  QuantumInfo *quantum_info;
   ddjvu_message_t *message;
   Image *image;
   int logging;
@@ -670,12 +672,9 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 
 
 #if 1                           /* per_line */
-        quantum_info=AcquireQuantumInfo(image_info,image);
-        if (quantum_info == (QuantumInfo *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
         /* q = QueueAuthenticPixels(image,0,0,image->columns,image->rows); */
-        get_page_image(lc, lc->page, 0, 0, info.width, info.height, quantum_info);
+        get_page_image(lc, lc->page, 0, 0, info.width, info.height, image_info);
 #else
         int i;
         for (i = 0;i< image->rows; i++)
@@ -696,7 +695,6 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 
         if (!image->ping)
           SyncImage(image);
-        quantum_info=DestroyQuantumInfo(quantum_info);
         /* indexes=GetAuthenticIndexQueue(image); */
         /* mmc: ??? Convert PNM pixels to runlength-encoded MIFF packets. */
         /* image->colors =  */

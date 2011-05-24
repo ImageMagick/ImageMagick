@@ -1241,6 +1241,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               continue;
             i=0;
             items=sscanf(attribute,"%*[^[][%ld",&i);
+            (void) items;
             if (i > (ssize_t) image->colors)
               i%=image->colors;
             if ((strchr(SvPV(sval,na),',') == 0) ||
@@ -1581,6 +1582,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             x=0;
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
+            (void) items;
             image_view=AcquireCacheView(image);
             p=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             if (p != (PixelPacket *) NULL)
@@ -1811,6 +1813,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             x=0;
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
+            (void) items;
             image_view=AcquireCacheView(image);
             q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             indexes=GetCacheViewAuthenticIndexQueue(image_view);
@@ -3474,6 +3477,7 @@ DESTROY(ref)
             DestroyPackageInfo(info);
           }
         key=hv_delete(hv,message,(long) strlen(message),G_DISCARD);
+        (void) key;
         break;
       }
       case SVt_PVMG:
@@ -3814,9 +3818,6 @@ Features(ref,...)
     ExceptionInfo
       *exception;
 
-    HV
-      *hv;
-
     Image
       *image;
 
@@ -3830,7 +3831,6 @@ Features(ref,...)
       *info;
 
     SV
-      *av_reference,
       *perl_exception,
       *reference;
 
@@ -3846,9 +3846,7 @@ Features(ref,...)
         goto PerlException;
       }
     reference=SvRV(ST(0));
-    hv=SvSTASH(reference);
     av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
     if (image == (Image *) NULL)
@@ -4520,6 +4518,7 @@ Get(ref,...)
                 break;
               j=0;
               items=sscanf(attribute,"%*[^[][%ld",&j);
+              (void) items;
               if (j > (ssize_t) image->colors)
                 j%=image->colors;
               (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
@@ -4835,6 +4834,7 @@ Get(ref,...)
                     id);
                   status=SetImageRegistry(ImageRegistryType,key,image,
                     &image->exception);
+                  (void) status;
                   s=newSViv(id++);
                 }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4868,6 +4868,7 @@ Get(ref,...)
               x=0;
               y=0;
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
+              (void) items;
               image_view=AcquireCacheView(image);
               p=GetCacheViewVirtualPixels(image_view,x,y,1,1,&image->exception);
               if (p != (const PixelPacket *) NULL)
@@ -5130,6 +5131,7 @@ Get(ref,...)
               x=0;
               y=0;
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
+              (void) items;
               p=GetVirtualPixels(image,x,y,1,1,exception);
               indexes=GetVirtualIndexQueue(image);
               if (image->colorspace != CMYKColorspace)
@@ -6685,9 +6687,6 @@ Layers(ref,...)
       *image,
       *layers;
 
-    MagickBooleanType
-      dither;
-
     ImageLayerMethod
       method;
 
@@ -6732,7 +6731,6 @@ Layers(ref,...)
         goto PerlException;
       }
     compose=image->compose;
-    dither=MagickFalse;
     method=OptimizeLayer;
     for (i=2; i < items; i+=2)
     {
@@ -6753,26 +6751,6 @@ Layers(ref,...)
                   break;
                 }
               compose=(CompositeOperator) sp;
-              break;
-            }
-          ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
-            attribute);
-          break;
-        }
-        case 'D':
-        case 'd':
-        {
-          if (LocaleCompare(attribute,"dither") == 0)
-            {
-              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
-                MagickBooleanOptions,MagickFalse,SvPV(ST(i),na));
-              if (sp < 0)
-                {
-                  ThrowPerlException(exception,OptionError,"UnrecognizedType",
-                    SvPV(ST(i),na));
-                  break;
-                }
-              dither=(MagickBooleanType) sp;
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -9825,6 +9803,7 @@ Mogrify(ref,...)
 
               flags=ParseGravityGeometry(image,
                 argument_list[0].string_reference,&geometry,exception);
+              (void) flags;
               if (geometry.width == 0)
                 geometry.width=image->columns;
               if (geometry.height == 0)
@@ -10699,6 +10678,7 @@ Mogrify(ref,...)
           */
           status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
+          (void) status;
           (void) CatchImageException(region_image);
           image=DestroyImage(image);
           image=region_image;
@@ -11391,9 +11371,6 @@ Ping(ref,...)
     ExceptionInfo
       *exception;
 
-    HV
-      *hv;
-
     Image
       *image,
       *next;
@@ -11457,7 +11434,6 @@ Ping(ref,...)
         goto PerlException;
       }
     reference=SvRV(ST(0));
-    hv=SvSTASH(reference);
     if (SvTYPE(reference) != SVt_PVAV)
       {
         ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
@@ -13433,32 +13409,32 @@ SetPixel(ref,...)
           scale=QuantumRange;
         if (((channel & RedChannel) != 0) && (i <= av_len(av)))
           {
-            SetRedPixelComponent(q,ClampToQuantum(QuantumRange*SvNV(*(
+            SetRedPixelComponent(q,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))));
             i++;
           }
         if (((channel & GreenChannel) != 0) && (i <= av_len(av)))
           {
-            SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*SvNV(*(
+            SetGreenPixelComponent(q,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))));
             i++;
           }
         if (((channel & BlueChannel) != 0) && (i <= av_len(av)))
           {
-            SetBluePixelComponent(q,ClampToQuantum(QuantumRange*SvNV(*(
+            SetBluePixelComponent(q,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))));
             i++;
           }
         if ((((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace)) && (i <= av_len(av)))
           {
-            SetIndexPixelComponent(indexes,ClampToQuantum(QuantumRange*
+            SetIndexPixelComponent(indexes,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))));
             i++;
           }
         if (((channel & OpacityChannel) != 0) && (i <= av_len(av)))
           {
-            SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*
+            SetOpacityPixelComponent(q,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))));
             i++;
           }
@@ -13685,9 +13661,6 @@ Statistics(ref,...)
     ExceptionInfo
       *exception;
 
-    HV
-      *hv;
-
     Image
       *image;
 
@@ -13698,7 +13671,6 @@ Statistics(ref,...)
       *info;
 
     SV
-      *av_reference,
       *perl_exception,
       *reference;
 
@@ -13714,9 +13686,7 @@ Statistics(ref,...)
         goto PerlException;
       }
     reference=SvRV(ST(0));
-    hv=SvSTASH(reference);
     av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
     if (image == (Image *) NULL)

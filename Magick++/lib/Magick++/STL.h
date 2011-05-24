@@ -1967,8 +1967,8 @@ namespace Magick
     MagickCore::ExceptionInfo exceptionInfo;
     MagickCore::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
-    MagickCore::Image* image = MagickCore::AverageImages( first_->image(),
-              &exceptionInfo );
+    MagickCore::Image* image = MagickCore::EvaluateImages( first_->image(),
+       MagickCore::MeanEvaluateOperator, &exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
     throwException( exceptionInfo );

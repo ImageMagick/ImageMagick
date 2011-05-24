@@ -237,9 +237,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       if (index < 0)
         index+=(ssize_t) image->colors;
       SetIndexPixelComponent(indexes+x,index);
-      SetRedPixelComponent(q,image->colormap[index].red);
-      SetGreenPixelComponent(q,image->colormap[index].green);
-      SetBluePixelComponent(q,image->colormap[index].blue);
+      SetRGBOPixelComponent(q,image->colormap+index);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -380,9 +378,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
     {
       index=(IndexPacket) pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
       SetIndexPixelComponent(indexes+x,index);
-      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+      SetRGBOPixelComponent(q,image->colormap+index);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

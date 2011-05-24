@@ -610,9 +610,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
               SetIndexPixelComponent(indexes+x+i,index);
             if (cube.quantize_info->measure_error == MagickFalse)
               {
-                SetRedPixelComponent(q,image->colormap[index].red);
-                SetGreenPixelComponent(q,image->colormap[index].green);
-                SetBluePixelComponent(q,image->colormap[index].blue);
+                SetRGBPixelComponent(q,image->colormap+index);
                 if (cube.associate_alpha != MagickFalse)
                   SetOpacityPixelComponent(q,image->colormap[index].opacity);
               }
@@ -1600,9 +1598,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
         SetIndexPixelComponent(indexes+u,index);
       if (cube.quantize_info->measure_error == MagickFalse)
         {
-          SetRedPixelComponent(q+u,image->colormap[index].red);
-          SetGreenPixelComponent(q+u,image->colormap[index].green);
-          SetBluePixelComponent(q+u,image->colormap[index].blue);
+          SetRGBPixelComponent(q,image->colormap+index);
           if (cube.associate_alpha != MagickFalse)
             SetOpacityPixelComponent(q+u,image->colormap[index].opacity);
         }
@@ -1823,9 +1819,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         *indexes=(IndexPacket) index;
       if (cube_info->quantize_info->measure_error == MagickFalse)
         {
-          SetRedPixelComponent(q,image->colormap[index].red);
-          SetGreenPixelComponent(q,image->colormap[index].green);
-          SetBluePixelComponent(q,image->colormap[index].blue);
+          SetRGBPixelComponent(q,image->colormap+index);
           if (cube_info->associate_alpha != MagickFalse)
             SetOpacityPixelComponent(q,image->colormap[index].opacity);
         }
