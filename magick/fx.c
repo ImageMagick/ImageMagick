@@ -208,7 +208,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
       (void) SubstituteString(&fx_info->expression,"7e+","7**10^");
       (void) SubstituteString(&fx_info->expression,"8e+","8**10^");
       (void) SubstituteString(&fx_info->expression,"9e+","9**10^");
-      (void) SubstituteString(&fx_info->expression,"0e-","0**10^-");
+      (void) SubstituteString(&fx_info->expression,"0e-1.0*","0**10^-");
       (void) SubstituteString(&fx_info->expression,"1e-1.0*","1**10^-");
       (void) SubstituteString(&fx_info->expression,"2e-1.0*","2**10^-");
       (void) SubstituteString(&fx_info->expression,"3e-1.0*","3**10^-");
@@ -235,7 +235,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
       (void) SubstituteString(&fx_info->expression,"7E+","7**10^");
       (void) SubstituteString(&fx_info->expression,"8E+","8**10^");
       (void) SubstituteString(&fx_info->expression,"9E+","9**10^");
-      (void) SubstituteString(&fx_info->expression,"0E-","0**10^-");
+      (void) SubstituteString(&fx_info->expression,"0E-1.0*","0**10^-");
       (void) SubstituteString(&fx_info->expression,"1E-1.0*","1**10^-");
       (void) SubstituteString(&fx_info->expression,"2E-1.0*","2**10^-");
       (void) SubstituteString(&fx_info->expression,"3E-1.0*","3**10^-");
