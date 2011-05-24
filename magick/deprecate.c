@@ -5554,7 +5554,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
             threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)];
           index=(IndexPacket) (intensity <= threshold ? 0 : 1);
           SetIndexPixelComponent(indexes+x,index);
-          SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+          SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
           q++;
         }
       }
@@ -5955,7 +5955,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRGBOPixelComponent(q,&background_color);
+          SetRGBOPixelComponents(q,&background_color);
           q++;
         }
         indexes=GetAuthenticIndexQueue(image);
@@ -5982,7 +5982,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRGBOPixelComponent(q,&background_color);
+      SetRGBOPixelComponents(q,&background_color);
       q++;
     }
     if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
@@ -6621,7 +6621,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(q) <=
         threshold ? 0 : 1);
       SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
       q++;
     }
     if (!SyncAuthenticPixels(image,&image->exception))

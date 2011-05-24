@@ -638,7 +638,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     {
       index=(IndexPacket) (*p++);
       SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;

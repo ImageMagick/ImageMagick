@@ -446,7 +446,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
         break;
       index=ConstrainColormapIndex(image,(size_t) c);
       SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
       SetOpacityPixelComponent(q,(ssize_t) index == opacity ?
         TransparentOpacity : OpaqueOpacity);
       x++;
