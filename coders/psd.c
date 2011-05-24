@@ -653,7 +653,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                 SetIndexPixelComponent(indexes+x,ScaleQuantumToChar(pixel));
               else
                 SetIndexPixelComponent(indexes+x,ScaleQuantumToShort(pixel));
-              SetRGBOPixelComponent(q,image->colormap+
+              SetRGBOPixelComponent(q,image->colormap+(ssize_t)
                 GetIndexPixelComponent(indexes+x));
               if (image->depth == 1)
                 {
@@ -668,7 +668,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                   {
                     SetIndexPixelComponent(indexes+x,(((unsigned char) pixel) &
                       (0x01 << (7-bit))) != 0 ? 0 : 255);
-                    SetRGBOPixelComponent(q,image->colormap+
+                    SetRGBOPixelComponent(q,image->colormap+(ssize_t)
                       GetIndexPixelComponent(indexes+x));
                     q++;
                     x++;

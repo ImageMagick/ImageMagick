@@ -7694,7 +7694,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            if (image->storage_class == PseudoClass && image->colormap != NULL)
            {
-             for (i=0; i<image->colors; i++)
+             for (i=0; i < (ssize_t) image->colors; i++)
              {
                LBR16RGBOPixelPacketComponent(image->colormap[i]);
              }
@@ -7728,7 +7728,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            if (image->storage_class == PseudoClass && image->colormap != NULL)
            {
-             for (i=0; i<image->colors; i++)
+             for (i=0; i < (ssize_t) image->colors; i++)
              {
                LBR08RGBOPixelPacketComponent(image->colormap[i]);
              }
@@ -7761,7 +7761,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            if (image->storage_class == PseudoClass && image->colormap != NULL)
            {
-             for (i=0; i<image->colors; i++)
+             for (i=0; i < (ssize_t) image->colors; i++)
              {
                LBR04RGBOPixelPacketComponent(image->colormap[i]);
              }
@@ -7793,7 +7793,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            if (image->storage_class == PseudoClass && image->colormap != NULL)
            {
-             for (i=0; i<image->colors; i++)
+             for (i=0; i < (ssize_t) image->colors; i++)
              {
                LBR02RGBOPixelPacketComponent(image->colormap[i]);
              }
@@ -7824,7 +7824,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            if (image->storage_class == PseudoClass && image->colormap != NULL)
            {
-             for (i=0; i<image->colors; i++)
+             for (i=0; i < (ssize_t) image->colors; i++)
              {
                LBR01RGBOPixelPacketComponent(image->colormap[i]);
              }
