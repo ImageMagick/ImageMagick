@@ -843,8 +843,8 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %    o info: a structure of type info.
 %
 */
-static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,ssize_t *current,
-  ssize_t *last,ExceptionInfo *exception)
+static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
+  ssize_t *current,ssize_t *last,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -5998,9 +5998,6 @@ Histogram(ref,...)
     ExceptionInfo
       *exception;
 
-    HV
-      *hv;
-
     Image
       *image;
 
@@ -6014,7 +6011,6 @@ Histogram(ref,...)
       *info;
 
     SV
-      *av_reference,
       *perl_exception,
       *reference;
 
@@ -6033,9 +6029,7 @@ Histogram(ref,...)
         goto PerlException;
       }
     reference=SvRV(ST(0));
-    hv=SvSTASH(reference);
     av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
     if (image == (Image *) NULL)
