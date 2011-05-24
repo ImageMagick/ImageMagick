@@ -238,7 +238,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       if (bit == 8)
         bit=0;
       SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

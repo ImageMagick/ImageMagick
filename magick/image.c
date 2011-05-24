@@ -4299,9 +4299,9 @@ MagickExport MagickBooleanType SyncImage(Image *image)
       index=PushColormapIndex(image,(size_t) GetIndexPixelComponent(indexes+x),
         &range_exception);
       if (image->matte == MagickFalse)
-        SetRGBPixelComponent(q,image->colormap+(ssize_t) index)
+        SetRGBPixelComponents(q,image->colormap+(ssize_t) index)
       else
-        SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+        SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

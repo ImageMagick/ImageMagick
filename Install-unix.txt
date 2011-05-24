@@ -64,7 +64,8 @@ Configure
     JBIG              --with-jbig=		no
     JPEG v1           --with-jpeg=yes		yes
     JPEG-2000         --with-jp2=yes		yes
-    LCMS              --with-lcms=yes		yes
+    LCMS v1           --with-lcms=yes		yes
+    LCMS v2           --with-lcms2=yes		yes
     LQR               --with-lqr=yes		no
     Magick++          --with-magick-plus-plus=yes	yes
     OpenEXR           --with-openexr=yes		yes
@@ -399,7 +400,10 @@ Configure
       disable JPEG v2 support.
   
     --without-lcms
-      disable LCMS support.
+      disable lcms (v1.1X) support
+
+    --without-lcms2
+      disable lcms (v2.X) support
   
     --without-lzma
       disable LZMA support.
