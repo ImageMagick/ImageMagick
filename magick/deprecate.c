@@ -5554,9 +5554,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
             threshold=(MagickRealType) QuantumRange*o4[(x%4)+4*(y%4)];
           index=(IndexPacket) (intensity <= threshold ? 0 : 1);
           SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-          SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-          SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+          SetRGBOPixelComponent(q,image->colormap+index);
           q++;
         }
       }
@@ -5956,7 +5954,10 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
-          *q++=background_color;
+        {
+          SetRGBOPixelComponent(q,&background_color);
+          q++;
+        }
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
           SetIndexPixelComponent(indexes+x,0);
@@ -5980,7 +5981,10 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
-      *q++=background_color;
+    {
+      SetRGBOPixelComponent(q,&background_color);
+      q++;
+    }
     if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
       break;
   }
@@ -6617,9 +6621,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(q) <=
         threshold ? 0 : 1);
       SetIndexPixelComponent(indexes+x,index);
-      SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-      SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-      SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+      SetRGBOPixelComponent(q,image->colormap+index);
       q++;
     }
     if (!SyncAuthenticPixels(image,&image->exception))

@@ -494,9 +494,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               ThrowReaderException(CorruptImageError,"CorruptImage");
             index=(IndexPacket) (mask-(((*ptr) & (mask << bit)) >> bit));
             SetIndexPixelComponent(indexes+x,index);
-            SetRedPixelComponent(q,image->colormap[(ssize_t) index].red);
-            SetGreenPixelComponent(q,image->colormap[(ssize_t) index].green);
-            SetBluePixelComponent(q,image->colormap[(ssize_t) index].blue);
+            SetRGBOPixelComponent(q,image->colormap+index);
             if (bit)
               bit-=bits_per_pixel;
             else

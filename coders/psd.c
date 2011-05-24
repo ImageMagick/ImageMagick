@@ -653,12 +653,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                 SetIndexPixelComponent(indexes+x,ScaleQuantumToChar(pixel));
               else
                 SetIndexPixelComponent(indexes+x,ScaleQuantumToShort(pixel));
-              SetRedPixelComponent(q,image->colormap[(ssize_t)
-                GetIndexPixelComponent(indexes+x)].red);
-              SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                GetIndexPixelComponent(indexes+x)].green);
-              SetBluePixelComponent(q,image->colormap[(ssize_t)
-                GetIndexPixelComponent(indexes+x)].blue);
+              SetRGBOPixelComponent(q,image->colormap+
+                GetIndexPixelComponent(indexes+x));
               if (image->depth == 1)
                 {
                   ssize_t
@@ -672,12 +668,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                   {
                     SetIndexPixelComponent(indexes+x,(((unsigned char) pixel) &
                       (0x01 << (7-bit))) != 0 ? 0 : 255);
-                    SetRedPixelComponent(q,image->colormap[(ssize_t)
-                      GetIndexPixelComponent(indexes+x)].red);
-                    SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                      GetIndexPixelComponent(indexes+x)].green);
-                    SetBluePixelComponent(q,image->colormap[(ssize_t)
-                      GetIndexPixelComponent(indexes+x)].blue);
+                    SetRGBOPixelComponent(q,image->colormap+
+                      GetIndexPixelComponent(indexes+x));
                     q++;
                     x++;
                   }
