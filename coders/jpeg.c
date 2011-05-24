@@ -1246,7 +1246,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
             index=ConstrainColormapIndex(image,pixel);
             SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponent(q,image->colormap+index);
+            SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
             p++;
             q++;
           }
@@ -1284,7 +1284,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p));
           SetIndexPixelComponent(indexes+x,index);
-          SetRGBOPixelComponent(q,image->colormap+index);
+          SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
           p++;
           q++;
         }

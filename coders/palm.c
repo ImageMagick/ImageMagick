@@ -494,7 +494,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               ThrowReaderException(CorruptImageError,"CorruptImage");
             index=(IndexPacket) (mask-(((*ptr) & (mask << bit)) >> bit));
             SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponent(q,image->colormap+index);
+            SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
             if (bit)
               bit-=bits_per_pixel;
             else
