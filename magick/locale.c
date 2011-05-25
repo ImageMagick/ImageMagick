@@ -90,8 +90,10 @@ static SemaphoreInfo
 static SplayTreeInfo
   *locale_list = (SplayTreeInfo *) NULL;
 
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
 static volatile locale_t
   c_locale = (locale_t) NULL;
+#endif
 
 static volatile MagickBooleanType
   instantiate_locale = MagickFalse;
@@ -103,6 +105,7 @@ static MagickBooleanType
   InitializeLocaleList(ExceptionInfo *),
   LoadLocaleLists(const char *,const char *,ExceptionInfo *);
 
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -133,7 +136,9 @@ static locale_t AcquireCLocale(void)
 #endif
   return(c_locale);
 }
+#endif
 
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -164,6 +169,7 @@ static void DestroyCLocale(void)
 #endif
   c_locale=(locale_t) NULL;
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1398,7 +1404,9 @@ MagickExport void LocaleComponentTerminus(void)
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&locale_semaphore);
   LockSemaphoreInfo(locale_semaphore);
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
   DestroyCLocale();
+#endif
   instantiate_locale=MagickFalse;
   UnlockSemaphoreInfo(locale_semaphore);
   DestroySemaphoreInfo(&locale_semaphore);
