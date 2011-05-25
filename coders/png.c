@@ -125,41 +125,6 @@
         ((color).blue == (target).blue))
 #endif
 
-/* Convenience macros for copying RGB or RGB+opacity components
- * between a pixel and a PixelPacket.
- */
-
-#define GetRGBOPixelComponents(pixel, packet) \
-        { \
-        (packet).red = GetRedPixelComponent((pixel)); \
-        (packet).green = GetGreenPixelComponent((pixel)); \
-        (packet).blue = GetBluePixelComponent((pixel)); \
-        (packet).opacity = GetOpacityPixelComponent((pixel)); \
-        }
-
-/* Not same as SetRGBOPixelComponent in magick/pixel.h */
-#define SetRGBOPixelComponents(pixel, packet) \
-        { \
-        SetRedPixelComponent((pixel),(packet).red); \
-        SetGreenPixelComponent((pixel),(packet).green); \
-        SetBluePixelComponent((pixel),(packet).blue); \
-        SetOpacityPixelComponent((pixel),(packet).opacity); \
-        }
-
-#define GetRGBPixelComponents(pixel, packet) \
-        { \
-        (packet).red = GetRedPixelComponent((pixel)); \
-        (packet).green = GetGreenPixelComponent((pixel)); \
-        (packet).blue = GetBluePixelComponent((pixel)); \
-        }
-
-#define SetRGBPixelComponents(pixel, packet) \
-        { \
-        SetRedPixelComponent((pixel),(packet).red); \
-        SetGreenPixelComponent((pixel),(packet).green); \
-        SetBluePixelComponent((pixel),(packet).blue); \
-        }
-
 /* Macros for left-bit-replication to ensure that pixels
  * and PixelPackets all have the image->depth, and for use
  * in PNG8 quantization.
@@ -6358,14 +6323,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (magn_methy <= 1)
                         {
                           /* replicate previous */
-                          SetRGBOPixelComponent(q,(pixels));
+                          SetRGBOPixelComponents(q,(pixels));
                         }
 
                       else if (magn_methy == 2 || magn_methy == 4)
                         {
                           if (i == 0)
                             {
-                              SetRGBOPixelComponent(q,(pixels));
+                              SetRGBOPixelComponents(q,(pixels));
                             }
 
                           else
@@ -6416,12 +6381,12 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           /* Replicate nearest */
                           if (i <= ((m+1) << 1))
                           {
-                             SetRGBOPixelComponent(q,(pixels));
+                             SetRGBOPixelComponents(q,(pixels));
                           }
 
                           else
                           {
-                             SetRGBOPixelComponent(q,(n));
+                             SetRGBOPixelComponents(q,(n));
                           }
 
                           if (magn_methy == 5)
@@ -6499,14 +6464,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       if (magn_methx <= 1)
                         {
                           /* replicate previous */
-                          SetRGBOPixelComponent(q,(pixels));
+                          SetRGBOPixelComponents(q,(pixels));
                         }
 
                       else if (magn_methx == 2 || magn_methx == 4)
                         {
                           if (i == 0)
                           {
-                             SetRGBOPixelComponent(q,(pixels));
+                             SetRGBOPixelComponents(q,(pixels));
                           }
 
                           /* To do: Rewrite using Get/Set***PixelComponent() */
@@ -6563,12 +6528,12 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           /* Replicate nearest */
                           if (i <= ((m+1) << 1))
                           {
-                             SetRGBOPixelComponent(q,(pixels));
+                             SetRGBOPixelComponents(q,(pixels));
                           }
 
                           else
                           {
-                             SetRGBOPixelComponent(q,(n));
+                             SetRGBOPixelComponents(q,(n));
                           }
 
                           if (magn_methx == 5)
@@ -7991,7 +7956,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_opaque == 0)
                      {
-                       GetRGBPixelComponents(q, opaque[0]);
+                       GetRGBPixelComponents(q, opaque);
                        opaque[0].opacity=OpaqueOpacity;
                        number_opaque=1;
                      }
@@ -8006,7 +7971,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_opaque < 259)
                      {
                        number_opaque++;
-                       GetRGBPixelComponents(q, opaque[i]);
+                       GetRGBPixelComponents(q, opaque+i);
                        opaque[i].opacity=OpaqueOpacity;
                      }
                  }
@@ -8017,7 +7982,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_transparent == 0)
                      {
-                       GetRGBOPixelComponents(q, transparent[0]);
+                       GetRGBOPixelComponents(q, transparent);
                        ping_trans_color.red=
                          (unsigned short) GetRedPixelComponent(q);
                        ping_trans_color.green=
@@ -8039,7 +8004,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_transparent < 259)
                      {
                        number_transparent++;
-                       GetRGBOPixelComponents(q, transparent[i]);
+                       GetRGBOPixelComponents(q, transparent+i);
                      }
                  }
              }
@@ -8049,7 +8014,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_semitransparent == 0)
                      {
-                       GetRGBOPixelComponents(q, semitransparent[0]);
+                       GetRGBOPixelComponents(q, semitransparent);
                        number_semitransparent = 1;
                      }
 
@@ -8065,7 +8030,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_semitransparent < 259)
                      {
                        number_semitransparent++;
-                       GetRGBOPixelComponents(q, semitransparent[i]);
+                       GetRGBOPixelComponents(q, semitransparent+i);
                      }
                  }
              }
@@ -8410,7 +8375,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               if (GetOpacityPixelComponent(r) > TransparentOpacity/2)
                 {
                   SetOpacityPixelComponent(r,TransparentOpacity);
-                  SetRGBPixelComponents(r,image->background_color);
+                  SetRGBPixelComponents(r,&image->background_color);
                 }
               else
                   SetOpacityPixelComponent(r,OpaqueOpacity);

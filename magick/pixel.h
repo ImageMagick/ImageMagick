@@ -43,6 +43,19 @@ extern "C" {
 #define GetNextPixel(pixel)  ((pixel)+1)
 #define GetOpacityPixelComponent(pixel) ((pixel)->opacity)
 #define GetRedPixelComponent(pixel) ((pixel)->red)
+#define GetRGBPixelComponents(pixel,packet) \
+{ \
+  (packet)->red=GetRedPixelComponent((pixel)); \
+  (packet)->green=GetGreenPixelComponent((pixel)); \
+  (packet)->blue=GetBluePixelComponent((pixel)); \
+}
+#define GetRGBOPixelComponents(pixel,packet) \
+{ \
+  (packet)->red=GetRedPixelComponent((pixel)); \
+  (packet)->green=GetGreenPixelComponent((pixel)); \
+  (packet)->blue=GetBluePixelComponent((pixel)); \
+  (packet)->opacity=GetOpacityPixelComponent((pixel)); \
+}
 #define GetYPixelComponent(pixel) ((pixel)->red)
 #define GetYellowPixelComponent(pixel) ((pixel)->blue)
 #define SetAlphaPixelComponent(pixel,value) \
