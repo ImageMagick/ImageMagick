@@ -228,7 +228,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p++;
         }
       SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponent(q,image->colormap+(ssize_t) index);
+      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

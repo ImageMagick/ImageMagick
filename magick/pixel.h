@@ -43,6 +43,19 @@ extern "C" {
 #define GetNextPixel(pixel)  ((pixel)+1)
 #define GetOpacityPixelComponent(pixel) ((pixel)->opacity)
 #define GetRedPixelComponent(pixel) ((pixel)->red)
+#define GetRGBPixelComponents(pixel,packet) \
+{ \
+  (packet)->red=GetRedPixelComponent((pixel)); \
+  (packet)->green=GetGreenPixelComponent((pixel)); \
+  (packet)->blue=GetBluePixelComponent((pixel)); \
+}
+#define GetRGBOPixelComponents(pixel,packet) \
+{ \
+  (packet)->red=GetRedPixelComponent((pixel)); \
+  (packet)->green=GetGreenPixelComponent((pixel)); \
+  (packet)->blue=GetBluePixelComponent((pixel)); \
+  (packet)->opacity=GetOpacityPixelComponent((pixel)); \
+}
 #define GetYPixelComponent(pixel) ((pixel)->red)
 #define GetYellowPixelComponent(pixel) ((pixel)->blue)
 #define SetAlphaPixelComponent(pixel,value) \
@@ -60,25 +73,25 @@ extern "C" {
 #define SetOpacityPixelComponent(pixel,value) \
   ((pixel)->opacity=(Quantum) (value))
 #define SetRedPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
-#define SetRGBPixelComponent(destination,source) \
+#define SetRGBPixelComponents(pixel,packet) \
 { \
-  SetRedPixelComponent(destination,GetRedPixelComponent(source)); \
-  SetGreenPixelComponent(destination,GetGreenPixelComponent(source)); \
-  SetBluePixelComponent(destination,GetBluePixelComponent(source)); \
+  SetRedPixelComponent(pixel,(packet)->red); \
+  SetGreenPixelComponent(pixel,(packet)->green); \
+  SetBluePixelComponent(pixel,(packet)->blue); \
 }
-#define SetRGBAPixelComponent(destination,source) \
+#define SetRGBAPixelComponents(pixel,packet) \
 { \
-  SetRedPixelComponent(destination,GetRedPixelComponent(source)); \
-  SetGreenPixelComponent(destination,GetGreenPixelComponent(source)); \
-  SetBluePixelComponent(destination,GetBluePixelComponent(source)); \
-  SetAlphaPixelComponent(destination,GetAlphaPixelComponent(source)); \
+  SetRedPixelComponent(pixel,(packet)->red); \
+  SetGreenPixelComponent(pixel,(packet)->green); \
+  SetBluePixelComponent(pixel,(packet)->blue); \
+  SetAlphaPixelComponent(pixel,(QuantumRange-(packet)->opacity)); \
 }
-#define SetRGBOPixelComponent(destination,source) \
+#define SetRGBOPixelComponents(pixel,packet) \
 { \
-  SetRedPixelComponent(destination,GetRedPixelComponent(source)); \
-  SetGreenPixelComponent(destination,GetGreenPixelComponent(source)); \
-  SetBluePixelComponent(destination,GetBluePixelComponent(source)); \
-  SetOpacityPixelComponent(destination,GetOpacityPixelComponent(source)); \
+  SetRedPixelComponent(pixel,(packet)->red); \
+  SetGreenPixelComponent(pixel,(packet)->green); \
+  SetBluePixelComponent(pixel,(packet)->blue); \
+  SetOpacityPixelComponent(pixel,(packet)->opacity); \
 }
 #define SetYellowPixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetYPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))

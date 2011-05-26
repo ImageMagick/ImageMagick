@@ -154,7 +154,6 @@ namespace Magick
   using MagickCore::GRAYColorspace;
   using MagickCore::HSLColorspace;
   using MagickCore::HWBColorspace;
-  using MagickCore::LABColorspace;
   using MagickCore::LogColorspace;
   using MagickCore::OHTAColorspace;
   using MagickCore::Rec601LumaColorspace;
@@ -533,7 +532,6 @@ namespace Magick
   using MagickCore::GetCacheViewVirtualPixels;
   using MagickCore::AcquireImage;
   using MagickCore::GetVirtualPixels;
-  using MagickCore::AcquireIndexes;
   using MagickCore::AcquireKernelInfo;
   using MagickCore::AcquireMagickMemory;
   using MagickCore::AcquireQuantumInfo;
@@ -746,12 +744,10 @@ namespace Magick
   using MagickCore::GetImageProperty;
   using MagickCore::GetImageQuantizeError;
   using MagickCore::GetImageType;
-  using MagickCore::GetIndexes;
   using MagickCore::GetMagickInfo;
   using MagickCore::GetMagickPixelPacket;
   using MagickCore::GetNumberColors;
   using MagickCore::GetPageGeometry;
-  using MagickCore::GetPixels;
   using MagickCore::GetQuantizeInfo;
   using MagickCore::GetStringInfoDatum;
   using MagickCore::GetStringInfoLength;
@@ -788,7 +784,6 @@ namespace Magick
   using MagickCore::MagickToMime;
   using MagickCore::MagickWand;
   using MagickCore::MagnifyImage;
-  using MagickCore::MapImage;
   using MagickCore::MergeImageLayers;
   using MagickCore::MinifyImage;
   using MagickCore::MissingDelegateError;
@@ -835,7 +830,6 @@ namespace Magick
   using MagickCore::RaiseImage;
   using MagickCore::RandomThresholdImageChannel;
   using MagickCore::ReadImage;
-  using MagickCore::RecolorImage;
   using MagickCore::RectangleInfo;
   using MagickCore::RegisterMagickInfo;
   using MagickCore::RegistryError;
@@ -924,7 +918,6 @@ namespace Magick
   using MagickCore::XValue;
   using MagickCore::YNegative;
   using MagickCore::YValue;
-  using MagickCore::ZoomImage;
 
 #endif // MAGICKCORE_IMPLEMENTATION
 

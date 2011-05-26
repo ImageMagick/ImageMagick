@@ -1,3 +1,10 @@
+2011-05-26  6.7.0-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-1.
+
+2011-05-25  6.7.0-1 Cristy  <quetzlzacatenango@image...>
+  * Not all Linux'es define locale_t (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18819).
+
 2011-05-22  6.7.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-0.
 
