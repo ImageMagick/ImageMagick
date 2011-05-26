@@ -832,24 +832,30 @@ AC_C_RESTRICT
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
 AC_C_BIGENDIAN
 
-# Define mode_t to a suitable type, if standard headers do not define it.
-AC_TYPE_MODE_T
-
-# Define off_t to a suitable type, if standard headers do not define it.
-AC_TYPE_OFF_T
-
-# Define pid_t to a suitable type, if standard headers do not define it.
-AC_TYPE_PID_T
-
-# Define size_t to a suitable type, if standard headers do not define it.
-AC_TYPE_SIZE_T
-
-# Define ssize_t to a suitable type, if standard headers do not define it.
-AC_TYPE_SSIZE_T
-
-# If the C compiler supports a working long double type with more range
-# or precision than the double type, define HAVE_LONG_DOUBLE.
+# Define to a suitable type, if standard headers do not define it.
+AC_TYPE_INT8_T
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_INT64_T
+AC_TYPE_INTMAX_T
+AC_TYPE_INTPTR_T
+AC_TYPE_LONG_DOUBLE
 AC_TYPE_LONG_DOUBLE_WIDER
+AC_TYPE_LONG_LONG_INT
+AC_TYPE_MBSTATE_T
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+AC_TYPE_UID_T
+AC_TYPE_UINT8_T
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
+AC_TYPE_UINTMAX_T
+AC_TYPE_UINTPTR_T
+AC_TYPE_UNSIGNED_LONG_LONG_INT
 
 # If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
 # C compiler predefines it.
