@@ -734,7 +734,7 @@ static double constant(char *name,ssize_t sans)
       if (strEQ(name,"MAGICKCORE_QUANTUM_DEPTH"))
         return(MAGICKCORE_QUANTUM_DEPTH);
       if (strEQ(name,"QuantumDepth"))
-        return(QuantumDepth);
+        return(MAGICKCORE_QUANTUM_DEPTH);
       if (strEQ(name,"QuantumRange"))
         return(QuantumRange);
       break;
