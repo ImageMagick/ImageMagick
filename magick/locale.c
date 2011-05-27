@@ -273,7 +273,7 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
       }
   }
 #else
-  n=fprintf(file,format,operands);
+  n=vfprintf(file,format,operands);
 #endif
 #endif
   return((ssize_t) n);

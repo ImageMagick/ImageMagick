@@ -389,6 +389,16 @@
 #define MAGICKCORE_HAVE_GMTIME_R 1
 #endif
 
+/* Define to 1 if the system has the type `intmax_t'. */
+#ifndef MAGICKCORE_HAVE_INTMAX_T
+#define MAGICKCORE_HAVE_INTMAX_T 1
+#endif
+
+/* Define to 1 if the system has the type `intptr_t'. */
+#ifndef MAGICKCORE_HAVE_INTPTR_T
+#define MAGICKCORE_HAVE_INTPTR_T 1
+#endif
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #ifndef MAGICKCORE_HAVE_INTTYPES_H
 #define MAGICKCORE_HAVE_INTTYPES_H 1
@@ -454,10 +464,20 @@
 #define MAGICKCORE_HAVE_LOCALTIME_R 1
 #endif
 
+/* Define to 1 if the system has the type `long double'. */
+#ifndef MAGICKCORE_HAVE_LONG_DOUBLE
+#define MAGICKCORE_HAVE_LONG_DOUBLE 1
+#endif
+
 /* Define to 1 if the type `long double' works and has more range or precision
    than `double'. */
 #ifndef MAGICKCORE_HAVE_LONG_DOUBLE_WIDER
 #define MAGICKCORE_HAVE_LONG_DOUBLE_WIDER 1
+#endif
+
+/* Define to 1 if the system has the type `long long int'. */
+#ifndef MAGICKCORE_HAVE_LONG_LONG_INT
+#define MAGICKCORE_HAVE_LONG_LONG_INT 1
 #endif
 
 /* Define to 1 if you have the `lstat' function. */
@@ -475,6 +495,11 @@
 
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 /* #undef HAVE_MACH_O_DYLD_H */
+
+/* Define to 1 if <wchar.h> declares mbstate_t. */
+#ifndef MAGICKCORE_HAVE_MBSTATE_T
+#define MAGICKCORE_HAVE_MBSTATE_T 1
+#endif
 
 /* Define to 1 if you have the `memmove' function. */
 #ifndef MAGICKCORE_HAVE_MEMMOVE
@@ -974,12 +999,27 @@
    `tzname'. */
 /* #undef HAVE_TZNAME */
 
+/* Define to 1 if the system has the type `uintmax_t'. */
+#ifndef MAGICKCORE_HAVE_UINTMAX_T
+#define MAGICKCORE_HAVE_UINTMAX_T 1
+#endif
+
+/* Define to 1 if the system has the type `uintptr_t'. */
+#ifndef MAGICKCORE_HAVE_UINTPTR_T
+#define MAGICKCORE_HAVE_UINTPTR_T 1
+#endif
+
 /* Define to 1 if you have the `ulltostr' function. */
 /* #undef HAVE_ULLTOSTR */
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #ifndef MAGICKCORE_HAVE_UNISTD_H
 #define MAGICKCORE_HAVE_UNISTD_H 1
+#endif
+
+/* Define to 1 if the system has the type `unsigned long long int'. */
+#ifndef MAGICKCORE_HAVE_UNSIGNED_LONG_LONG_INT
+#define MAGICKCORE_HAVE_UNSIGNED_LONG_LONG_INT 1
 #endif
 
 /* Define to 1 if you have the `uselocale' function. */
@@ -1461,6 +1501,21 @@
 /* Define to 1 if you need to in order for `stat' and other things to work. */
 /* #undef _POSIX_SOURCE */
 
+/* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
+   #define below would cause a syntax error. */
+/* #undef _UINT32_T */
+
+/* Define for Solaris 2.5.1 so the uint64_t typedef from <sys/synch.h>,
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
+   #define below would cause a syntax error. */
+/* #undef _UINT64_T */
+
+/* Define for Solaris 2.5.1 so the uint8_t typedef from <sys/synch.h>,
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
+   #define below would cause a syntax error. */
+/* #undef _UINT8_T */
+
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__
 /* # undef __CHAR_UNSIGNED__ */
@@ -1475,11 +1530,41 @@
 /* Define to a type to use for `error_t' if it is not otherwise available. */
 /* #undef error_t */
 
+/* Define to `int' if <sys/types.h> doesn't define. */
+/* #undef gid_t */
+
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
 /* #undef inline */
 #endif
+
+/* Define to the type of a signed integer type of width exactly 16 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef int16_t */
+
+/* Define to the type of a signed integer type of width exactly 32 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef int32_t */
+
+/* Define to the type of a signed integer type of width exactly 64 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef int64_t */
+
+/* Define to the type of a signed integer type of width exactly 8 bits if such
+   a type exists and the standard includes do not define it. */
+/* #undef int8_t */
+
+/* Define to the widest signed integer type if <stdint.h> and <inttypes.h> do
+   not define. */
+/* #undef intmax_t */
+
+/* Define to the type of a signed integer type wide enough to hold a pointer,
+   if such a type exists, and if the system does not define it. */
+/* #undef intptr_t */
+
+/* Define to a type if <wchar.h> does not define. */
+/* #undef mbstate_t */
 
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef mode_t */
@@ -1511,6 +1596,33 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef ssize_t */
+
+/* Define to `int' if <sys/types.h> doesn't define. */
+/* #undef uid_t */
+
+/* Define to the type of an unsigned integer type of width exactly 16 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef uint16_t */
+
+/* Define to the type of an unsigned integer type of width exactly 32 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef uint32_t */
+
+/* Define to the type of an unsigned integer type of width exactly 64 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef uint64_t */
+
+/* Define to the type of an unsigned integer type of width exactly 8 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef uint8_t */
+
+/* Define to the widest unsigned integer type if <stdint.h> and <inttypes.h>
+   do not define. */
+/* #undef uintmax_t */
+
+/* Define to the type of an unsigned integer type wide enough to hold a
+   pointer, if such a type exists, and if the system does not define it. */
+/* #undef uintptr_t */
 
 /* Define as `fork' if `vfork' does not work. */
 /* #undef vfork */
