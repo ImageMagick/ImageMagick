@@ -27,15 +27,15 @@ extern "C" {
 */
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2011 ImageMagick Studio LLC"
-#define MagickSVNRevision  "4491"
+#define MagickSVNRevision  "4529"
 #define MagickLibVersion  0x670
 #define MagickLibVersionText  "6.7.0"
 #define MagickLibVersionNumber  4,0,1
-#define MagickLibAddendum  "-1"
+#define MagickLibAddendum  "-2"
 #define MagickLibInterface  4
 #define MagickLibMinInterface  4
-#define MagickReleaseDate  "2011-05-25"
-#define MagickChangeDate   "20110525"
+#define MagickReleaseDate  "2011-05-26"
+#define MagickChangeDate   "20110526"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #define MagickOpenMPFeature  "OpenMP "

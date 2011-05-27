@@ -1,3 +1,11 @@
+2011-05-27  6.7.0-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-2.
+
+2011-05-26  6.7.0-2 Cristy  <quetzlzacatenango@image...>
+  * ImageMagick now compiles on Hurd (reference
+    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=628020).
+  * Use vfprintf rather than fprintf in FormatLocaleFileList().
+
 2011-05-26  6.7.0-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-1.
 
