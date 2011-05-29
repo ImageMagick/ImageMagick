@@ -486,8 +486,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               range));
           }
         if (image->matte != MagickFalse)
-          SetOpacityPixelComponent(q,QuantumRange-ScaleAnyToQuantum(
-            pixel.opacity,range));
+          SetAlphaPixelComponent(q,ScaleAnyToQuantum(pixel.opacity,range));
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }

@@ -276,7 +276,7 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
   n=(ssize_t) vfprintf(file,format,operands);
 #endif
 #endif
-  return();
+  return(n);
 }
 
 MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,

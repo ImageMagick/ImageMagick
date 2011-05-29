@@ -521,8 +521,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (image->matte != MagickFalse)
-                SetOpacityPixelComponent(q,(QuantumRange-
-                  ScaleCharToQuantum(*p++)));
+                SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
               if (sun_info.type == RT_STANDARD)
                 {
                   SetBluePixelComponent(q,ScaleCharToQuantum(*p++));

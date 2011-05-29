@@ -230,8 +230,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ImfHalfToFloat(scanline[x].g)));
       SetBluePixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
         ImfHalfToFloat(scanline[x].b)));
-      SetOpacityPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange-
-        QuantumRange*ImfHalfToFloat(scanline[x].a)));
+      SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].a)));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

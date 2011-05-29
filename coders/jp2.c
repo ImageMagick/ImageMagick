@@ -581,8 +581,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           SetBluePixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[2]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          SetOpacityPixelComponent(q,(QuantumRange-
-            ScaleAnyToQuantum((QuantumAny) pixel,range[3])));
+          SetAlphaPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[3]));
           q++;
         }
         break;

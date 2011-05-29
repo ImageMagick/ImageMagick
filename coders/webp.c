@@ -173,7 +173,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
       SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
       SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
-      SetOpacityPixelComponent(q,(QuantumRange-ScaleCharToQuantum(*p++)));
+      SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
       if (q->opacity != OpaqueOpacity)
         image->matte=MagickTrue;
       q++;
