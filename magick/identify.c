@@ -144,7 +144,7 @@
 %
 */
 
-static int PrintChannelFeatures(FILE *file,const ChannelType channel,
+static ssize_t PrintChannelFeatures(FILE *file,const ChannelType channel,
   const char *name,const ChannelFeatures *channel_features)
 {
 #define PrintFeature(feature) \
@@ -184,10 +184,10 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
   "      Maximum Correlation Coefficient:\n" \
   "        %.*g, %.*g, %.*g, %.*g, %.*g\n"
 
-  int
-    status;
+  ssize_t
+    n;
 
-  status=FormatLocaleFile(file,FeaturesFormat,name,
+  n=FormatLocaleFile(file,FeaturesFormat,name,
     PrintFeature(channel_features[channel].angular_second_moment),
     PrintFeature(channel_features[channel].contrast),
     PrintFeature(channel_features[channel].correlation),
@@ -202,10 +202,10 @@ static int PrintChannelFeatures(FILE *file,const ChannelType channel,
     PrintFeature(channel_features[channel].measure_of_correlation_1),
     PrintFeature(channel_features[channel].measure_of_correlation_2),
     PrintFeature(channel_features[channel].maximum_correlation_coefficient));
-  return(status);
+  return(n);
 }
 
-static int PrintChannelStatistics(FILE *file,const ChannelType channel,
+static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
 {
@@ -214,12 +214,12 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
   "      mean: %g (%g)\n      standard deviation: %g (%g)\n"  \
   "      kurtosis: %g\n      skewness: %g\n"
 
-  int
-    status;
+  ssize_t
+    n;
 
   if (channel == AlphaChannel)
     {
-      status=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
+      n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
         (QuantumRange-channel_statistics[channel].maxima)),
         (QuantumRange-channel_statistics[channel].maxima)/(double) QuantumRange,
         ClampToQuantum(scale*(QuantumRange-channel_statistics[channel].minima)),
@@ -230,9 +230,9 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
         channel_statistics[channel].standard_deviation/(double) QuantumRange,
         channel_statistics[channel].kurtosis,
         channel_statistics[channel].skewness);
-      return(status);
+      return(n);
     }
-  status=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
+  n=FormatLocaleFile(file,StatisticsFormat,name,ClampToQuantum(scale*
     channel_statistics[channel].minima),channel_statistics[channel].minima/
     (double) QuantumRange,ClampToQuantum(scale*
     channel_statistics[channel].maxima),channel_statistics[channel].maxima/
@@ -241,7 +241,7 @@ static int PrintChannelStatistics(FILE *file,const ChannelType channel,
     channel_statistics[channel].standard_deviation,
     channel_statistics[channel].standard_deviation/(double) QuantumRange,
     channel_statistics[channel].kurtosis,channel_statistics[channel].skewness);
-  return(status);
+  return(n);
 }
 
 MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
