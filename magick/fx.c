@@ -1036,7 +1036,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
           case 3:
           {
             if (image->matte != MagickFalse)
-              SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-pixel));
+              SetAlphaPixelComponent(q,ClampToQuantum(pixel));
             break;
           }
           case 4:

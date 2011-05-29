@@ -3230,7 +3230,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             SetBluePixelComponent(q,ClampToQuantum(result.blue));
           if ((channel & OpacityChannel) != 0
               && image->matte == MagickTrue )
-            SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-result.opacity));
+            SetAlphaPixelComponent(q,ClampToQuantum(result.opacity));
           if ((channel & IndexChannel) != 0
               && image->colorspace == CMYKColorspace)
             SetIndexPixelComponent(q_indexes+x,ClampToQuantum(result.index));
@@ -3494,7 +3494,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           if ((channel & BlueChannel) != 0)
             SetBluePixelComponent(q,ClampToQuantum(result.blue));
           if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
-            SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-result.opacity));
+            SetAlphaPixelComponent(q,ClampToQuantum(result.opacity));
           if ((channel & IndexChannel) != 0
               && image->colorspace == CMYKColorspace)
             SetIndexPixelComponent(q_indexes+x,ClampToQuantum(result.index));
@@ -3684,7 +3684,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           if ((channel & BlueChannel) != 0)
             SetBluePixelComponent(q,ClampToQuantum(result.blue));
           if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
-            SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-result.opacity));
+            SetAlphaPixelComponent(q,ClampToQuantum(result.opacity));
           if ((channel & IndexChannel) != 0
               && image->colorspace == CMYKColorspace)
             SetIndexPixelComponent(q_indexes+x,ClampToQuantum(result.index));

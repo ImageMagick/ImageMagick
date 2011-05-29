@@ -577,8 +577,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetOpacityPixelComponent(q,ClampToQuantum(
             evaluate_pixel[i/2].opacity));
         else
-          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-
-            evaluate_pixel[i/2].opacity));
+          SetAlphaPixelComponent(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
         if (evaluate_image->colorspace == CMYKColorspace)
           SetIndexPixelComponent(evaluate_indexes+i,ClampToQuantum(
             evaluate_pixel[i/2].index));
@@ -697,8 +696,7 @@ MagickExport Image *EvaluateImages(const Image *images,
         if (evaluate_image->matte == MagickFalse)
           SetOpacityPixelComponent(q,ClampToQuantum(evaluate_pixel[x].opacity));
         else
-          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-
-            evaluate_pixel[x].opacity));
+          SetAlphaPixelComponent(q,ClampToQuantum(evaluate_pixel[x].opacity));
         if (evaluate_image->colorspace == CMYKColorspace)
           SetIndexPixelComponent(evaluate_indexes+x,ClampToQuantum(
             evaluate_pixel[x].index));
@@ -805,9 +803,8 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
             SetOpacityPixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
               random_info[id],GetOpacityPixelComponent(q),op,value)));
           else
-            SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange-
-              ApplyEvaluateOperator(random_info[id],(Quantum)
-              GetAlphaPixelComponent(q),op,value)));
+            SetAlphaPixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
+              random_info[id],(Quantum) GetAlphaPixelComponent(q),op,value)));
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
         SetIndexPixelComponent(indexes+x,ClampToQuantum(ApplyEvaluateOperator(
@@ -1042,7 +1039,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
               GetOpacityPixelComponent(q),function,number_parameters,parameters,
               exception));
           else
-            SetOpacityPixelComponent(q,QuantumRange-ApplyFunction((Quantum)
+            SetAlphaPixelComponent(q,ApplyFunction((Quantum)
               GetAlphaPixelComponent(q),function,number_parameters,parameters,
               exception));
         }

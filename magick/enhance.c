@@ -842,9 +842,8 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       if ((channel & OpacityChannel) != 0)
         {
           if (clut_image->matte == MagickFalse)
-            SetOpacityPixelComponent(q,(QuantumRange-
-              MagickPixelIntensityToQuantum(clut_map+ScaleQuantumToMap(
-              (Quantum) GetAlphaPixelComponent(q)))));
+            SetAlphaPixelComponent(q,MagickPixelIntensityToQuantum(clut_map+
+              ScaleQuantumToMap((Quantum) GetAlphaPixelComponent(q))));
           else
             if (image->matte == MagickFalse)
               SetOpacityPixelComponent(q,ClampOpacityPixelComponent(clut_map+
@@ -2208,8 +2207,8 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
                 SetOpacityPixelComponent(q,gamma_map[ScaleQuantumToMap(
                   GetOpacityPixelComponent(q))]);
               else
-                SetOpacityPixelComponent(q,(Quantum) QuantumRange-gamma_map[
-                  ScaleQuantumToMap((Quantum) GetAlphaPixelComponent(q))]);
+                SetAlphaPixelComponent(q,gamma_map[ScaleQuantumToMap((Quantum)
+                  GetAlphaPixelComponent(q))]);
             }
         }
       q++;
@@ -2676,8 +2675,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         SetBluePixelComponent(q,LevelQuantum(GetBluePixelComponent(q)));
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        SetOpacityPixelComponent(q,QuantumRange-LevelQuantum(QuantumRange-
-          q->opacity));
+        SetAlphaPixelComponent(q,LevelQuantum(GetAlphaPixelComponent(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetIndexPixelComponent(indexes+x,LevelQuantum(

@@ -559,8 +559,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   ((*(p+4) << 8) | (*(p+5)))));
                 SetOpacityPixelComponent(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  SetOpacityPixelComponent(q,QuantumRange-ScaleShortToQuantum(
-                    (unsigned short) ((*(p+6) << 8) | (*(p+7)))));
+                  SetAlphaPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                    ((*(p+6) << 8) | (*(p+7)))));
                 p+=8;
                 q++;
               }
@@ -589,8 +589,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->blue=ScaleCharToQuantum(*(p+2));
               SetOpacityPixelComponent(q,OpaqueOpacity);
               if (image->matte != MagickFalse)
-                SetOpacityPixelComponent(q,QuantumRange-
-                  ScaleCharToQuantum(*(p+3)));
+                SetAlphaPixelComponent(q,ScaleCharToQuantum(*(p+3)));
               p+=4;
               q++;
             }

@@ -1865,7 +1865,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
               SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1963,7 +1963,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
               SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2043,7 +2043,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(*p));
+                SetAlphaPixelComponent(q,ScaleCharToQuantum(*p));
                 break;
               }
               case OpacityQuantum:
@@ -2222,8 +2222,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
                 QuantumRange*(*p)));
               p++;
-              SetOpacityPixelComponent(q,QuantumRange-ClampToQuantum(
-                (MagickRealType) QuantumRange*(*p)));
+              SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2292,8 +2292,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*(*p)));
+                SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 break;
               }
               case OpacityQuantum:
@@ -2377,8 +2377,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetRedPixelComponent(q,ClampToQuantum((MagickRealType)
                 QuantumRange*(*p)));
               p++;
-              SetOpacityPixelComponent(q,QuantumRange-ClampToQuantum(
-                (MagickRealType) QuantumRange*(*p)));
+              SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2477,8 +2477,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,ClampToQuantum((MagickRealType)
                 QuantumRange*(*p)));
               p++;
-              SetOpacityPixelComponent(q,QuantumRange-ClampToQuantum(
-                (MagickRealType) QuantumRange*(*p)));
+              SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType)
+                QuantumRange*(*p)));
               p++;
               q++;
             }
@@ -2547,14 +2547,14 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-ClampToQuantum(
-                  (MagickRealType) QuantumRange*(*p)));
+                SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType)
+                  QuantumRange*(*p)));
                 break;
               }
               case OpacityQuantum:
               {
                 SetOpacityPixelComponent(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
+                  QuantumRange*(*p)));
                 break;
               }
               case BlackQuantum:
@@ -2620,7 +2620,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,ScaleLongToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleLongToQuantum(*p++));
               SetRedPixelComponent(q,ScaleLongToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleLongToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleLongToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2698,7 +2698,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetRedPixelComponent(q,ScaleLongToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleLongToQuantum(*p++));
               SetBluePixelComponent(q,ScaleLongToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleLongToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleLongToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2758,7 +2758,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-ScaleLongToQuantum(*p));
+                SetAlphaPixelComponent(q,ScaleLongToQuantum(*p));
                 break;
               }
               case OpacityQuantum:
@@ -2827,7 +2827,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,ScaleLongToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleLongToQuantum(*p++));
               SetRedPixelComponent(q,ScaleLongToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleLongToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleLongToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2905,7 +2905,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetRedPixelComponent(q,ScaleLongToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleLongToQuantum(*p++));
               SetBluePixelComponent(q,ScaleLongToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleLongToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleLongToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2965,7 +2965,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-ScaleLongToQuantum(*p));
+                SetAlphaPixelComponent(q,ScaleLongToQuantum(*p));
                 break;
               }
               case OpacityQuantum:
@@ -3034,7 +3034,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,*p++);
               SetGreenPixelComponent(q,*p++);
               SetRedPixelComponent(q,*p++);
-              SetOpacityPixelComponent(q,QuantumRange-(*p++));
+              SetAlphaPixelComponent(q,*p++);
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3112,7 +3112,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetRedPixelComponent(q,*p++);
               SetGreenPixelComponent(q,*p++);
               SetBluePixelComponent(q,*p++);
-              SetOpacityPixelComponent(q,QuantumRange-(*p++));
+              SetAlphaPixelComponent(q,*p++);
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3172,7 +3172,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-(*p));
+                SetAlphaPixelComponent(q,*p);
                 break;
               }
               case OpacityQuantum:
@@ -3241,7 +3241,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetBluePixelComponent(q,ScaleShortToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleShortToQuantum(*p++));
               SetRedPixelComponent(q,ScaleShortToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleShortToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleShortToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3319,7 +3319,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetRedPixelComponent(q,ScaleShortToQuantum(*p++));
               SetGreenPixelComponent(q,ScaleShortToQuantum(*p++));
               SetBluePixelComponent(q,ScaleShortToQuantum(*p++));
-              SetOpacityPixelComponent(q,QuantumRange-ScaleShortToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleShortToQuantum(*p++));
               q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3379,7 +3379,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               }
               case AlphaQuantum:
               {
-                SetOpacityPixelComponent(q,QuantumRange-ScaleShortToQuantum(*p));
+                SetAlphaPixelComponent(q,ScaleShortToQuantum(*p));
                 break;
               }
               case OpacityQuantum:

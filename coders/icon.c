@@ -550,8 +550,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
                   ReadBlobByte(image)));
                 if (icon_info.bits_per_pixel == 32)
-                  SetOpacityPixelComponent(q,(QuantumRange-ScaleCharToQuantum(
-                    (unsigned char) ReadBlobByte(image))));
+                  SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    ReadBlobByte(image)));
                 q++;
               }
               if (icon_info.bits_per_pixel == 24)

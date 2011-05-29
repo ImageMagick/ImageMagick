@@ -448,7 +448,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
             SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
             if (image->matte != MagickFalse)
-              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(*p++));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -532,8 +532,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetRedPixelComponent(q,image->colormap[*p++].red);
                 SetGreenPixelComponent(q,image->colormap[*p++].green);
                 SetBluePixelComponent(q,image->colormap[*p++].blue);
-                SetOpacityPixelComponent(q,QuantumRange-
-                  ScaleCharToQuantum(*p++));
+                SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
                 q++;
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -546,8 +545,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                 }
             }
-            image->colormap=(PixelPacket *)
-              RelinquishMagickMemory(image->colormap);
+            image->colormap=(PixelPacket *) RelinquishMagickMemory(
+              image->colormap);
             image->storage_class=DirectClass;
             image->colors=0;
           }

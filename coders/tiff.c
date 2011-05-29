@@ -1503,8 +1503,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     TIFFGetG(*p)));
                   SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetB(*p)));
-                  SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(
-                    (unsigned char) TIFFGetA(*p)));
+                  SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    TIFFGetA(*p)));
                   q++;
                   p++;
                 }
@@ -1590,8 +1590,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
               TIFFGetB(*p)));
             if (image->matte != MagickFalse)
-              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(
-                (unsigned char) TIFFGetA(*p)));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                TIFFGetA(*p)));
             p--;
             q--;
           }
