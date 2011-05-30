@@ -3070,8 +3070,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  * In a PNG datastream, Opaque is QuantumRange
                  * and Transparent is 0.
                  */
-                SetOpacityPixelComponent(q,
-                    ScaleCharToQuantum((unsigned char) (255-(*p++))));
+                SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  *p++));
                 if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                   found_transparent_pixel = MagickTrue;
                 q++;

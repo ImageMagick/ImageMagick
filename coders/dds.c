@@ -641,8 +641,8 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
                 alpha = 17U * (unsigned char) ((a0 >> (4*(4*j+i))) & 0xf);
               else
                 alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
-              SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
-                (255-alpha)));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                alpha));
               q++;
             }
         }
@@ -745,8 +745,8 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
                 alpha = 255;
               else
                 alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
-              SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
-                (255-alpha)));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                alpha));
               q++;
             }
         }
@@ -830,8 +830,8 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
         ReadBlobByte(image)));
       SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
         ReadBlobByte(image)));
-      SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
-        (255-ReadBlobByte(image))));
+      SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
       q++;
     }
     

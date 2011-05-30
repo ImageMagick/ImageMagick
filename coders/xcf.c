@@ -377,8 +377,8 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
           SetRedPixelComponent(q,ScaleCharToQuantum(*graydata));
           SetGreenPixelComponent(q,GetRedPixelComponent(q));
           SetBluePixelComponent(q,GetRedPixelComponent(q));
-          SetOpacityPixelComponent(q,ScaleCharToQuantum(
-            (unsigned char) (255-inLayerInfo->opacity)));
+          SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            inLayerInfo->opacity));
           graydata++;
           q++;
         }
@@ -391,9 +391,8 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
             SetRedPixelComponent(q,ScaleCharToQuantum(xcfdata->red));
             SetGreenPixelComponent(q,ScaleCharToQuantum(xcfdata->green));
             SetBluePixelComponent(q,ScaleCharToQuantum(xcfdata->blue));
-            SetOpacityPixelComponent(q,xcfdata->opacity == 0U ?
-              TransparentOpacity : ScaleCharToQuantum((unsigned char) (255-
-              inLayerInfo->opacity)));
+            SetAlphaPixelComponent(q,xcfdata->opacity == 0U ?  OpaqueOpacity :
+              ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
             xcfdata++;
             q++;
           }
@@ -480,15 +479,15 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     {
                       SetGreenPixelComponent(q,ScaleCharToQuantum(data));
                       SetBluePixelComponent(q,ScaleCharToQuantum(data));
-                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
-                        (unsigned char) (255-inLayerInfo->opacity)));
+                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->opacity));
                     }
                   else
                     {
                       SetGreenPixelComponent(q,GetRedPixelComponent(q));
                       SetBluePixelComponent(q,GetRedPixelComponent(q));
-                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
-                        (unsigned char) (255-inLayerInfo->opacity)));
+                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->opacity));
                     }
                   break;
                 }
@@ -504,9 +503,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 }
                 case 3:
                 {
-                  SetOpacityPixelComponent(q,data == 0 ? TransparentOpacity :
-                    ScaleCharToQuantum((unsigned char) (255-
-                    inLayerInfo->opacity)));
+                  SetAlphaPixelComponent(q,data == 0 ? OpaqueOpacity :
+                    ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
                   break;
                 }
               }
@@ -541,15 +539,15 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     {
                       SetGreenPixelComponent(q,ScaleCharToQuantum(data));
                       SetBluePixelComponent(q,ScaleCharToQuantum(data));
-                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
-                        (unsigned char) (255-inLayerInfo->opacity)));
+                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->opacity));
                     }
                   else
                     {
                       SetGreenPixelComponent(q,GetRedPixelComponent(q));
                       SetBluePixelComponent(q,GetRedPixelComponent(q));
-                      SetOpacityPixelComponent(q,ScaleCharToQuantum(
-                        (unsigned char) (255-inLayerInfo->opacity)));
+                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->opacity));
                     }
                   break;
                 }
@@ -565,9 +563,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 }
                 case 3:
                 {
-                  SetOpacityPixelComponent(q,data == 0 ? TransparentOpacity :
-                    ScaleCharToQuantum((unsigned char) (255-
-                    inLayerInfo->opacity)));
+                  SetAlphaPixelComponent(q,data == 0 ? OpaqueOpacity :
+                    ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
                   break;
                 }
               }
