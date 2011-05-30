@@ -1072,7 +1072,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     if (next->matte != MagickFalse)
       version=(size_t) MagickMax(version,4);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
-    version=(size_t) MagickMax(version,6);
+    version=(size_t) MagickMax(version,4);
   (void) FormatLocaleString(buffer,MaxTextExtent,"%%PDF-1.%.20g \n",
     (double) version);
   (void) WriteBlobString(image,buffer);
