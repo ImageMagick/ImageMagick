@@ -2269,7 +2269,7 @@ MagickExport void StripString(char *message)
   if (q > p)
     if ((*q == '\'') || (*q == '"'))
       q--;
-  (void) memcpy(message,p,(size_t) (q-p+1));
+  (void) memmove(message,p,(size_t) (q-p+1));
   message[q-p+1]='\0';
   for (p=message; *p != '\0'; p++)
     if (*p == '\n')
