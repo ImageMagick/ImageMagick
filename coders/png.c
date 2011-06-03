@@ -3070,8 +3070,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  * In a PNG datastream, Opaque is QuantumRange
                  * and Transparent is 0.
                  */
-                SetOpacityPixelComponent(q,
-                    ScaleCharToQuantum((unsigned char) (255-(*p++))));
+                SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  *p++));
                 if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                   found_transparent_pixel = MagickTrue;
                 q++;
@@ -3107,7 +3107,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   quantum=((*p++) << 8);
                   quantum|=(*p++);
-                  SetOpacityPixelComponent(q,(Quantum) (QuantumRange-quantum));
+                  SetAlphaPixelComponent(q,quantum);
                   if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   q++;
@@ -3146,7 +3146,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
               if (ping_color_type == 4)
                 {
-                  SetOpacityPixelComponent(q,(Quantum) (QuantumRange-(*p++)));
+                  SetAlphaPixelComponent(q,*p++);
                   if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   p++;
@@ -4383,8 +4383,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
              else
                for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
                {
-                  SetOpacityPixelComponent(q,(Quantum) QuantumRange-
-                      GetRedPixelComponent(s));
+                  SetAlphaPixelComponent(q,GetRedPixelComponent(s));
                   if (GetOpacityPixelComponent(q) != OpaqueOpacity)
                     image->matte=MagickTrue;
                }

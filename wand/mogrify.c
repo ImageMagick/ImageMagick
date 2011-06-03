@@ -405,15 +405,6 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
   double
     *sparse_arguments;
 
-  register size_t
-    x;
-
-  size_t
-    number_arguments;
-
-  size_t
-    number_colors;
-
   Image
     *sparse_image;
 
@@ -422,6 +413,13 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
 
   MagickBooleanType
     error;
+
+  register size_t
+    x;
+
+  size_t
+    number_arguments,
+    number_colors;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3196,7 +3194,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   quantize_info=DestroyQuantizeInfo(quantize_info);
   draw_info=DestroyDrawInfo(draw_info);
   mogrify_info=DestroyImageInfo(mogrify_info);
-  status=(*image)->exception.severity == UndefinedException ? 1 : 0;
+  status=(MagickStatusType) ((*image)->exception.severity == 
+    UndefinedException ? 1 : 0);
   return(status == 0 ? MagickFalse : MagickTrue);
 }
 

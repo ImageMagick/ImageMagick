@@ -609,7 +609,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetGreenPixelComponent(q,ScaleCharToQuantum(*r++));
             SetBluePixelComponent(q,ScaleCharToQuantum(*r++));
             if (image->matte != MagickFalse)
-              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(*r++));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum(*r++));
           }
         q++;
       }

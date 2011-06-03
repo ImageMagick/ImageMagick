@@ -1,3 +1,9 @@
+2011-06-03  6.7.0-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-3.
+
+2011-06-02  6.7.0-2 Cristy  <quetzlzacatenango@image...>
+  * Use memmove() instead of memcpy() in StripString().
+
 2011-05-27  6.7.0-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-2.
 

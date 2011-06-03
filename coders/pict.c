@@ -1213,8 +1213,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                           if (p > (pixels+extent+3*image->columns))
                             ThrowReaderException(CorruptImageError,
                               "NotEnoughPixelData");
-                          SetOpacityPixelComponent(q,(Quantum) (QuantumRange-
-                            ScaleCharToQuantum(*p)));
+                          SetAlphaPixelComponent(q,ScaleCharToQuantum(*p));
                           SetRedPixelComponent(q,ScaleCharToQuantum(
                             *(p+tile_image->columns)));
                           SetGreenPixelComponent(q,ScaleCharToQuantum(

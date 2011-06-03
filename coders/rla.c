@@ -320,8 +320,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case 3:
                 default:
                 {
-                  SetOpacityPixelComponent(q,QuantumRange-
-                    ScaleCharToQuantum(byte));
+                  SetAlphaPixelComponent(q,ScaleCharToQuantum(byte));
                   break;
                 }
               }
@@ -361,7 +360,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 3:
             default:
             {
-              SetOpacityPixelComponent(q,QuantumRange-ScaleCharToQuantum(byte));
+              SetAlphaPixelComponent(q,ScaleCharToQuantum(byte));
               break;
             }
           }
