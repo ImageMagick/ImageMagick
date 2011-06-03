@@ -207,14 +207,19 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   */
   (void) CloneString(&draw_info->text,caption);
   status=GetMultilineTypeMetrics(image,draw_info,&metrics);
-  if (draw_info->gravity != UndefinedGravity)
+  if ((draw_info->gravity != UndefinedGravity) &&
+      (draw_info->direction != RightToLeftDirection))
     image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
   else
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
         -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
         draw_info->stroke_width/2.0);
-      (void) CloneString(&draw_info->geometry,geometry);
+      if (draw_info->direction == RightToLeftDirection)
+        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+          image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
+          metrics.ascent+draw_info->stroke_width/2.0);
+      draw_info->geometry=AcquireString(geometry);
     }
   (void) AnnotateImage(image,draw_info);
   draw_info=DestroyDrawInfo(draw_info);
