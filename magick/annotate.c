@@ -691,6 +691,7 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   if (textlist == (char **) NULL)
     return(MagickFalse);
   annotate_info->render=MagickFalse;
+  annotate_info->direction=UndefinedDirection;
   (void) ResetMagickMemory(metrics,0,sizeof(*metrics));
   (void) ResetMagickMemory(&extent,0,sizeof(extent));
   /*
@@ -784,6 +785,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
   assert(draw_info->signature == MagickSignature);
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   annotate_info->render=MagickFalse;
+  annotate_info->direction=UndefinedDirection;
   (void) ResetMagickMemory(metrics,0,sizeof(*metrics));
   offset.x=0.0;
   offset.y=0.0;
@@ -795,8 +797,8 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
       "underline position: %g; underline thickness: %g",annotate_info->text,
       metrics->width,metrics->height,metrics->ascent,metrics->descent,
       metrics->max_advance,metrics->bounds.x1,metrics->bounds.y1,
-      metrics->bounds.x2,metrics->bounds.y2,metrics->origin.x,metrics->origin.y,
-      metrics->pixels_per_em.x,metrics->pixels_per_em.y,
+      metrics->bounds.x2,metrics->bounds.y2,metrics->origin.x,
+      metrics->origin.y,metrics->pixels_per_em.x,metrics->pixels_per_em.y,
       metrics->underline_position,metrics->underline_thickness);
   annotate_info=DestroyDrawInfo(annotate_info);
   return(status);
