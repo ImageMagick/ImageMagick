@@ -172,8 +172,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetOpacityPixelComponent(q,(QuantumRange-
-          ScaleCharToQuantum(*p++)));
+        SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
         SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
         SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
         SetBluePixelComponent(q,ScaleCharToQuantum(*p++));

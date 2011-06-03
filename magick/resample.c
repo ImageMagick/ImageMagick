@@ -340,7 +340,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   }
 
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "u0=%lf; v0=%lf;\n", u0, v0);
+  (void) FormatLocaleFile(stderr, "u0=%lf; v0=%lf;\n", u0, v0);
 #endif
 
   /*
@@ -551,8 +551,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
   uw = (ssize_t)(2.0*resample_filter->Uwidth)+1;
 
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "v1=%ld; v2=%ld\n", (long)v1, (long)v2);
-  FormatLocaleFile(stderr, "u1=%ld; uw=%ld\n", (long)u1, (long)uw);
+  (void) FormatLocaleFile(stderr, "v1=%ld; v2=%ld\n", (long)v1, (long)v2);
+  (void) FormatLocaleFile(stderr, "u1=%ld; uw=%ld\n", (long)u1, (long)uw);
 #else
 # define DEBUG_HIT_MISS 0 /* only valid if DEBUG_ELLIPSE is enabled */
 #endif
@@ -565,7 +565,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   for( v=v1; v<=v2;  v++ ) {
 #if DEBUG_HIT_MISS
     long uu = ceil(u1);   /* actual pixel location (for debug only) */
-    FormatLocaleFile(stderr, "# scan line from pixel %ld, %ld\n", (long)uu, (long)v);
+    (void) FormatLocaleFile(stderr, "# scan line from pixel %ld, %ld\n", (long)uu, (long)v);
 #endif
     u = (ssize_t)ceil(u1);        /* first pixel in scanline */
     u1 += resample_filter->slope; /* start of next scan line */
@@ -614,14 +614,14 @@ MagickExport MagickBooleanType ResamplePixelColor(
         hit++;
 #if DEBUG_HIT_MISS
         /* mark the pixel according to hit/miss of the ellipse */
-        FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 3\n",
+        (void) FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 3\n",
                      (long)uu-.1,(double)v-.1,(long)uu+.1,(long)v+.1);
-        FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 3\n",
+        (void) FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 3\n",
                      (long)uu+.1,(double)v-.1,(long)uu-.1,(long)v+.1);
       } else {
-        FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 1\n",
+        (void) FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 1\n",
                      (long)uu-.1,(double)v-.1,(long)uu+.1,(long)v+.1);
-        FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 1\n",
+        (void) FormatLocaleFile(stderr, "set arrow from %lf,%lf to %lf,%lf nohead ls 1\n",
                      (long)uu+.1,(double)v-.1,(long)uu-.1,(long)v+.1);
       }
       uu++;
@@ -635,7 +635,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     }
   }
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "Hit=%ld;  Total=%ld;\n", (long)hit, (long)uw*(v2-v1) );
+  (void) FormatLocaleFile(stderr, "Hit=%ld;  Total=%ld;\n", (long)hit, (long)uw*(v2-v1) );
 #endif
 
   /*
@@ -1036,8 +1036,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     return; /* EWA turned off - nothing to do */
 
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "# -----\n" );
-  FormatLocaleFile(stderr, "dux=%lf; dvx=%lf;   duy=%lf; dvy=%lf;\n",
+  (void) FormatLocaleFile(stderr, "# -----\n" );
+  (void) FormatLocaleFile(stderr, "dux=%lf; dvx=%lf;   duy=%lf; dvy=%lf;\n",
        dux, dvx, duy, dvy);
 #endif
 
@@ -1067,7 +1067,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   major_x *= major_mag;  major_y *= major_mag;
   minor_x *= minor_mag;  minor_y *= minor_mag;
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "major_x=%lf; major_y=%lf;  minor_x=%lf; minor_y=%lf;\n",
+  (void) FormatLocaleFile(stderr, "major_x=%lf; major_y=%lf;  minor_x=%lf; minor_y=%lf;\n",
         major_x, major_y, minor_x, minor_y);
 #endif
   A = major_y*major_y+minor_y*minor_y;
@@ -1106,7 +1106,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 #endif
 
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "A=%lf; B=%lf; C=%lf; F=%lf\n", A,B,C,F);
+  (void) FormatLocaleFile(stderr, "A=%lf; B=%lf; C=%lf; F=%lf\n", A,B,C,F);
 
   /* Figure out the various information directly about the ellipse.
      This information currently not needed at this time, but may be
@@ -1127,14 +1127,14 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
       Major = sqrt(2*F/(alpha - gamma));
     Minor = sqrt(2*F/(alpha + gamma));
 
-    FormatLocaleFile(stderr, "# Major=%lf; Minor=%lf\n", Major, Minor );
+    (void) FormatLocaleFile(stderr, "# Major=%lf; Minor=%lf\n", Major, Minor );
 
     /* other information about ellipse include... */
     Eccentricity = Major/Minor;
     Ellipse_Area = MagickPI*Major*Minor;
     Ellipse_Angle = atan2(B, A-C);
 
-    FormatLocaleFile(stderr, "# Angle=%lf   Area=%lf\n",
+    (void) FormatLocaleFile(stderr, "# Angle=%lf   Area=%lf\n",
          RadiansToDegrees(Ellipse_Angle), Ellipse_Area);
   }
 #endif
@@ -1166,7 +1166,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   resample_filter->slope = -B/(2.0*A); /* Reciprocal slope of the parallelogram */
 
 #if DEBUG_ELLIPSE
-  FormatLocaleFile(stderr, "Ulimit=%lf; Vlimit=%lf; UWidth=%lf; Slope=%lf;\n",
+  (void) FormatLocaleFile(stderr, "Ulimit=%lf; Vlimit=%lf; UWidth=%lf; Slope=%lf;\n",
            resample_filter->Ulimit, resample_filter->Vlimit,
            resample_filter->Uwidth, resample_filter->slope );
 #endif

@@ -2473,8 +2473,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetOpacityPixelComponent(q,(QuantumRange-
-            PixelIntensityToQuantum(q)));
+          SetAlphaPixelComponent(q,PixelIntensityToQuantum(q));
           q++;
         }
         break;

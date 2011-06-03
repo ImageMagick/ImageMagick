@@ -636,7 +636,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
       {
         case -1:
         {
-          SetOpacityPixelComponent(q,QuantumRange-pixel);
+          SetAlphaPixelComponent(q,pixel);
           break;
         }
         case 0:
@@ -682,7 +682,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         case 1:
         {
           if (image->storage_class == PseudoClass)
-            SetOpacityPixelComponent(q,QuantumRange-pixel);
+            SetAlphaPixelComponent(q,pixel);
           else
             SetGreenPixelComponent(q,pixel);
           break;
@@ -690,7 +690,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         case 2:
         {
           if (image->storage_class == PseudoClass)
-            SetOpacityPixelComponent(q,QuantumRange-pixel);
+            SetAlphaPixelComponent(q,pixel);
           else
             SetBluePixelComponent(q,pixel);
           break;
@@ -700,14 +700,14 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           if (image->colorspace == CMYKColorspace)
             SetIndexPixelComponent(indexes+x,pixel);
           else
-            SetOpacityPixelComponent(q,QuantumRange-pixel);
+            SetAlphaPixelComponent(q,pixel);
           break;
         }
         case 4:
         {
           if ((image->colorspace == RGBColorspace) && (channels > 3))
             break;
-          SetOpacityPixelComponent(q,QuantumRange-pixel);
+          SetAlphaPixelComponent(q,pixel);
           break;
         }
         default:

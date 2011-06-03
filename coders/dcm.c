@@ -3747,9 +3747,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
                 case 3:
                 {
-                  SetOpacityPixelComponent(q,(QuantumRange-
-                    ScaleCharToQuantum((unsigned char) ReadDCMByte(stream_info,
-                    image))));
+                  SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                    ReadDCMByte(stream_info,image)));
                   break;
                 }
                 default:

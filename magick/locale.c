@@ -237,7 +237,7 @@ MagickExport LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
 MagickExport ssize_t FormatLocaleFileList(FILE *file,
   const char *restrict format,va_list operands)
 {
-  int
+  ssize_t
     n;
 
 #if defined(MAGICKCORE_HAVE_VFPRINTF_L)
@@ -247,12 +247,12 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
 
     locale=AcquireCLocale();
     if (locale == (locale_t) NULL)
-      n=vfprintf(file,format,operands);
+      n=(ssize_t) vfprintf(file,format,operands);
     else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-      n=vfprintf_l(file,format,locale,operands);
+      n=(ssize_t) vfprintf_l(file,format,locale,operands);
 #else
-      n=vfprintf_l(file,locale,format,operands);
+      n=(ssize_t) vfprintf_l(file,locale,format,operands);
 #endif
   }
 #else
@@ -264,19 +264,19 @@ MagickExport ssize_t FormatLocaleFileList(FILE *file,
 
     locale=AcquireCLocale();
     if (locale == (locale_t) NULL)
-      n=vfprintf(file,format,operands);
+      n=(ssize_t) vfprintf(file,format,operands);
     else
       {
         previous_locale=uselocale(locale);
-        n=vfprintf(file,format,operands);
+        n=(ssize_t) vfprintf(file,format,operands);
         uselocale(previous_locale);
       }
   }
 #else
-  n=vfprintf(file,format,operands);
+  n=(ssize_t) vfprintf(file,format,operands);
 #endif
 #endif
-  return((ssize_t) n);
+  return(n);
 }
 
 MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
@@ -289,7 +289,7 @@ MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
     operands;
 
   va_start(operands,format);
-  n=(ssize_t) FormatLocaleFileList(file,format,operands);
+  n=FormatLocaleFileList(file,format,operands);
   va_end(operands);
   return(n);
 }
@@ -328,7 +328,7 @@ MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
 MagickExport ssize_t FormatLocaleStringList(char *restrict string,
   const size_t length,const char *restrict format,va_list operands)
 {
-  int
+  ssize_t
     n;
 
 #if defined(MAGICKCORE_HAVE_VSNPRINTF_L)
@@ -338,12 +338,12 @@ MagickExport ssize_t FormatLocaleStringList(char *restrict string,
 
     locale=AcquireCLocale();
     if (locale == (locale_t) NULL)
-      n=vsnprintf(string,length,format,operands);
+      n=(ssize_t) vsnprintf(string,length,format,operands);
     else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-      n=vsnprintf_l(string,length,format,locale,operands);
+      n=(ssize_t) vsnprintf_l(string,length,format,locale,operands);
 #else
-      n=vsnprintf_l(string,length,locale,format,operands);
+      n=(ssize_t) vsnprintf_l(string,length,locale,format,operands);
 #endif
   }
 #elif defined(MAGICKCORE_HAVE_VSNPRINTF)
@@ -355,23 +355,23 @@ MagickExport ssize_t FormatLocaleStringList(char *restrict string,
 
     locale=AcquireCLocale();
     if (locale == (locale_t) NULL)
-      n=vsnprintf(string,length,format,operands);
+      n=(ssize_t) vsnprintf(string,length,format,operands);
     else
       {
         previous_locale=uselocale(locale);
-        n=vsnprintf(string,length,format,operands);
+        n=(ssize_t) vsnprintf(string,length,format,operands);
         uselocale(previous_locale);
       }
   }
 #else
-  n=vsnprintf(string,length,format,operands);
+  n=(ssize_t) vsnprintf(string,length,format,operands);
 #endif
 #else
-  n=vsprintf(string,format,operands);
+  n=(ssize_t) vsprintf(string,format,operands);
 #endif
   if (n < 0)
     string[length-1]='\0';
-  return((ssize_t) n);
+  return(n);
 }
 
 MagickExport ssize_t FormatLocaleString(char *restrict string,
@@ -384,7 +384,7 @@ MagickExport ssize_t FormatLocaleString(char *restrict string,
     operands;
 
   va_start(operands,format);
-  n=(ssize_t) FormatLocaleStringList(string,length,format,operands);
+  n=FormatLocaleStringList(string,length,format,operands);
   va_end(operands);
   return(n);
 }

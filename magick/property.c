@@ -327,7 +327,7 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
   char
     value[MaxTextExtent];
 
-  int
+  ssize_t
     n;
 
   va_list
