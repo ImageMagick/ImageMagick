@@ -1585,9 +1585,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
               TIFFGetR(*p)));
-            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetG(*p)));
             SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              TIFFGetG(*p)));
+            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
               TIFFGetB(*p)));
             if (image->matte != MagickFalse)
               SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)

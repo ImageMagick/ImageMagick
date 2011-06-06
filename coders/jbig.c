@@ -111,7 +111,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   IndexPacket
     index;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   register IndexPacket
