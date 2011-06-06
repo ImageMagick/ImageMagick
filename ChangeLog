@@ -1,4 +1,7 @@
-2011-06-03  6.7.0-3 Cristy  <quetzlzacatenango@image...>
+2011-06-06  6.7.0-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-4.
+
+2011-06-03  6.7.0-4 Cristy  <quetzlzacatenango@image...>
   * Support -direction right-to-left for the label: and caption: coders.
   * Blue / green reversed for JPEG-compressed TIFF images.
 
