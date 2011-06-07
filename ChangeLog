@@ -1,4 +1,7 @@
 2011-06-07  6.7.0-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-5.
+
+2011-06-07  6.7.0-5 Cristy  <quetzlzacatenango@image...>
   * Fix one-off bug in option parser (reference
     http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=609177).
   * Transient bug with composite over in magick/composite-private.h.
