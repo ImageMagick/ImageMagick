@@ -271,7 +271,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       length=(size_t) tga_info.id_length;
       comment=(char *) NULL;
-      if (~length >= MaxTextExtent)
+      if (~length >= (MaxTextExtent-1))
         comment=(char *) AcquireQuantumMemory(length+MaxTextExtent,
           sizeof(*comment));
       if (comment == (char *) NULL)

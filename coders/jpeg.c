@@ -369,7 +369,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   if (length <= 0)
     return(MagickTrue);
   comment=(char *) NULL;
-  if (~length >= MaxTextExtent)
+  if (~length >= (MaxTextExtent-1))
     comment=(char *) AcquireQuantumMemory(length+MaxTextExtent,
       sizeof(*comment));
   if (comment == (char *) NULL)

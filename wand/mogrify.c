@@ -8050,7 +8050,7 @@ This has been merged completely into MogrifyImage()
                 */
                 length=strlen(argv[i+1]);
                 token=(char *) NULL;
-                if (~length >= MaxTextExtent)
+                if (~length >= (MaxTextExtent-1))
                   token=(char *) AcquireQuantumMemory(length+MaxTextExtent,
                     sizeof(*token));
                 if (token == (char *) NULL)

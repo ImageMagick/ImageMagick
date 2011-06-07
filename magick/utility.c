@@ -877,7 +877,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
               (void) ConcatenateMagickString(path,subimage,MaxTextExtent);
               (void) ConcatenateMagickString(path,"]",MaxTextExtent);
             }
-          if (strlen(path) >= MaxTextExtent)
+          if (strlen(path) >= (MaxTextExtent-1))
             ThrowFatalException(OptionFatalError,"FilenameTruncated");
           if (destroy != MagickFalse)
             {

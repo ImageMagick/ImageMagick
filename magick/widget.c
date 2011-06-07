@@ -2699,7 +2699,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -4124,7 +4124,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -5344,7 +5344,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -6562,7 +6562,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
           (void) XBell(display,0);
         else
           {
@@ -7569,7 +7569,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((Extent(reply_info.text)+length) >= (MaxTextExtent-1))
           (void) XBell(display,0);
         else
           {
