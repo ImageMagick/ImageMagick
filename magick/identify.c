@@ -1005,7 +1005,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
               attribute=(char *) NULL;
-              if (~length >= MaxTextExtent)
+              if (~length >= (MaxTextExtent-1))
                 attribute=(char *) AcquireQuantumMemory(length+
                   MaxTextExtent,sizeof(*attribute));
               if (attribute != (char *) NULL)

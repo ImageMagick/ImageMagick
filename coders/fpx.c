@@ -302,7 +302,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Note image label.
         */
         label=(char *) NULL;
-        if (~summary_info.title.length >= MaxTextExtent)
+        if (~summary_info.title.length >= (MaxTextExtent-1))
           label=(char *) AcquireQuantumMemory(summary_info.title.length+
             MaxTextExtent,sizeof(*label));
         if (label == (char *) NULL)
@@ -326,7 +326,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Note image comment.
         */
         comments=(char *) NULL;
-        if (~summary_info.comments.length >= MaxTextExtent)
+        if (~summary_info.comments.length >= (MaxTextExtent-1))
           comments=(char *) AcquireQuantumMemory(summary_info.comments.length+
             MaxTextExtent,sizeof(*comments));
         if (comments == (char *) NULL)
@@ -935,7 +935,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.title_valid=MagickTrue;
       length=strlen(label);
       summary_info.title.length=length;
-      if (~length >= MaxTextExtent)
+      if (~length >= (MaxTextExtent-1))
         summary_info.title.ptr=(unsigned char *) AcquireQuantumMemory(
           length+MaxTextExtent,sizeof(*summary_info.title.ptr));
       if (summary_info.title.ptr == (unsigned char *) NULL)
