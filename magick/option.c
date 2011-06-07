@@ -1888,7 +1888,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
     while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != sentinel)) &&
            (*p != '\0'))
     {
-      if ((q-token) >= MaxTextExtent)
+      if ((q-token) >= (MaxTextExtent-1))
         break;
       *q++=(*p++);
     }
@@ -2334,7 +2334,7 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option,
     while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != sentinel)) &&
            (*p != '\0'))
     {
-      if ((q-token) >= MaxTextExtent)
+      if ((q-token) >= (MaxTextExtent-1))
         break;
       *q++=(*p++);
     }
