@@ -1413,7 +1413,7 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
     threshold_map=p;
     while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != ',')) &&
                     (*p != '\0')) {
-      if ((p-threshold_map) >= MaxTextExtent)
+      if ((p-threshold_map) >= (MaxTextExtent-1))
         break;
       token[p-threshold_map] = *p;
       p++;

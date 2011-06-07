@@ -8793,10 +8793,6 @@ Mogrify(ref,...)
           char
             modulate[MaxTextExtent];
 
-          ColorspaceType
-            colorspace;
-
-          colorspace=image->colorspace;
           geometry_info.rho=100.0;
           geometry_info.sigma=100.0;
           geometry_info.xi=100.0;
@@ -8809,25 +8805,27 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             {
-              (void) SetImageColorspace(image,HWBColorspace);
               geometry_info.sigma=argument_list[3].real_reference;
+              SetImageArtifact(image,"modulate:colorspace","HWB");
             }
           if (attribute_flag[4] != 0)
-            geometry_info.rho=argument_list[4].real_reference;
+            {
+              geometry_info.rho=argument_list[4].real_reference;
+              SetImageArtifact(image,"modulate:colorspace","HSB");
+            }
           if (attribute_flag[5] != 0)
             {
-              (void) SetImageColorspace(image,HSLColorspace);
               geometry_info.sigma=argument_list[5].real_reference;
+              SetImageArtifact(image,"modulate:colorspace","HSL");
             }
           if (attribute_flag[6] != 0)
             {
-              (void) SetImageColorspace(image,HWBColorspace);
               geometry_info.rho=argument_list[6].real_reference;
+              SetImageArtifact(image,"modulate:colorspace","HWB");
             }
           (void) FormatLocaleString(modulate,MaxTextExtent,"%.15g,%.15g,%.15g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
           (void) ModulateImage(image,modulate);
-          (void) SetImageColorspace(image,colorspace);
           break;
         }
         case 44:  /* Negate */

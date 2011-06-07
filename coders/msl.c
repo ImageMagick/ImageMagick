@@ -7345,7 +7345,7 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   else
     {
       msl_info->content=(char *) NULL;
-      if (~length >= MaxTextExtent)
+      if (~length >= (MaxTextExtent-1))
         msl_info->content=(char *) AcquireQuantumMemory(length+MaxTextExtent,
           sizeof(*msl_info->content));
       if (msl_info->content != (char *) NULL)

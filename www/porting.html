@@ -14,10 +14,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
   <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images."/>
+  <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="porting, to, imagemagick, version, 7, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Swiss, Army, Knife, Image, Processing"/>
+  <meta name="Keywords" content="porting, to, imagemagick, version, 7, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -89,7 +89,7 @@
     <a title="Binary Release: MacOS X" href="../www/binary-releases.html#macosx">Mac OS X</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: iPhone" href="../www/binary-releases.html#iPhone">iPhone</a>
+    <a title="Binary Release: iOS" href="../www/binary-releases.html#iOS">iOS</a>
 </div>
 <div class="sub">
     <a title="Binary Release: Windows" href="../www/binary-releases.html#windows">Windows</a>
@@ -194,7 +194,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -261,7 +261,7 @@
   }
 </pre>
 
-<p>ImageMagick version 7 supports any number of channels from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
+<p>ImageMagick version 7 supports any number of channels from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
 
 <pre class="code">
   for (y=0; y &lt; (ssize_t) image->rows; y++)
@@ -287,18 +287,19 @@
   }
 </pre>
 
+<p>Use GetImageChannels() or GetCacheViewChannels() to advance to the next set of pixel channels.</p>
+
 <p>In addition to supporting any number of channels, version 7 simplifies working with channels and provides opportunity for compiler optimiziations that were previously not possible.  Our benchmarking shows version 7 has increased performance for virtually all image operations.</p>
 </div>
 
 <h2><a id="alpha"></a>Alpha</h2>
 <div class="doc-section">
-<p>We support alpha now, previously opacity.  With alpha, a value of 0 means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of QuantumRange means that the pixel is opaque because the geometry completely overlapped the pixel.</p>
-<p>In version 7, the PixelPacket structure member alpha has replaced the previous opacity member.</p>
+<p>We support alpha now, previously opacity.  With alpha, a value of 0 means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of QuantumRange means that the pixel is opaque because the geometry completely overlapped the pixel. As a consquence, in version 7, the PixelPacket structure member alpha has replaced the previous opacity member.</p>
 </div>
 
 <h2><a id="deprecate"></a>Deprecated Features Removed</h2>
 <div class="doc-section">
-<p>All deprecated features from ImageMagick version 1-6 are removed in version 7.  These include the <kbd>Magick-config<kbd> and <kbd>Wand-config<kbd> configuration utilities.  Instead use:</p>
+<p>All deprecated features from ImageMagick version 6 are removed in version 7.  These include the <kbd>Magick-config</kbd> and <kbd>Wand-config</kbd> configuration utilities.  Instead use:</p>
 
 <pre class="code">
   MagickCore-config
@@ -309,13 +310,14 @@
 </div>
 <h2><a id="summary"></a>Version 7 Change Summary</h2>
 <div class="doc-section">
-<p>Changes from ImageMagick version 1-6 to version 7 are summarized here:</p>
+<p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
 <h5>Pixels</h5>
 <dl>
 <li>Pixels are no longer addressed with PixelPacket structure members (e.g. red, green, blue, opacity) but as an array of channels (e.g. p[RedPixelComponent]).</li>
 <li>Use convenience macros to access pixel components (e.g. GetRedPixelComponent(p), SetRedPixelComponent(q,red)).</li>
 <li>The black channel for the CMYK colorspace is no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead its now a pixel channel and accessed with the convenience pixel macros GetBlackPixelComponent(p) and SetBlackPixelComponent(q).</li>
 <li>Use the index channel to address colormapped indexes.  It no longer hosts the black channel for CMYK and CMYKA images.</li>
+<li>Use GetImageChannels() or GetCacheViewChannels() to advance to the next set of pixel channels.</li>
 </dl>
 <h5>Alpha</h5>
 <dl>

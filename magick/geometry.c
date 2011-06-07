@@ -102,7 +102,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
-  if (strlen(geometry) >= MaxTextExtent)
+  if (strlen(geometry) >= (MaxTextExtent-1))
     return(flags);
   (void) CopyMagickString(pedantic_geometry,geometry,MaxTextExtent);
   for (p=pedantic_geometry; *p != '\0'; )
@@ -757,7 +757,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
-  if (strlen(geometry) >= MaxTextExtent)
+  if (strlen(geometry) >= (MaxTextExtent-1))
     return(flags);
   (void) CopyMagickString(pedantic_geometry,geometry,MaxTextExtent);
   for (p=pedantic_geometry; *p != '\0'; )
