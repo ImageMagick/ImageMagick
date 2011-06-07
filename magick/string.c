@@ -168,7 +168,7 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
   if (string_info->length != 0)
     {
       string_info->datum=(unsigned char *) NULL;
-      if (~string_info->length >= MaxTextExtent)
+      if (~string_info->length >= (MaxTextExtent-1))
         string_info->datum=(unsigned char *) AcquireQuantumMemory(
           string_info->length+MaxTextExtent,sizeof(*string_info->datum));
       if (string_info->datum == (unsigned char *) NULL)
@@ -551,7 +551,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
     }
   length=(size_t) offset;
   string=(char *) NULL;
-  if (~length > MaxTextExtent)
+  if (~length >= (MaxTextExtent-1))
     string=(char *) AcquireQuantumMemory(length+MaxTextExtent,sizeof(*string));
   if (string == (char *) NULL)
     {
@@ -873,7 +873,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
         length++;
       }
   destination=(char *) NULL;
-  if (~length >= MaxTextExtent)
+  if (~length >= (MaxTextExtent-1))
     destination=(char *) AcquireQuantumMemory(length+MaxTextExtent,
       sizeof(*destination));
   if (destination == (char *) NULL)
@@ -1795,7 +1795,7 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
 
   string=(char *) NULL;
   length=string_info->length;
-  if (~length >= MaxTextExtent)
+  if (~length >= (MaxTextExtent-1))
     string=(char *) AcquireQuantumMemory(length+MaxTextExtent,sizeof(*string));
   if (string == (char *) NULL)
     return((char *) NULL);

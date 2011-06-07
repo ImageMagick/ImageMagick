@@ -1374,11 +1374,11 @@ MagickExport DIR *NTOpenDirectory(const char *path)
 
   assert(path != (const char *) NULL);
   length=CopyMagickString(file_specification,path,MaxTextExtent);
-  if (length >= MaxTextExtent)
+  if (length >= (MaxTextExtent-1))
     return((DIR *) NULL);
   length=ConcatenateMagickString(file_specification,DirectorySeparator,
     MaxTextExtent);
-  if (length >= MaxTextExtent)
+  if (length >= (MaxTextExtent-1))
     return((DIR *) NULL);
   entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -1389,7 +1389,7 @@ MagickExport DIR *NTOpenDirectory(const char *path)
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       length=ConcatenateMagickString(file_specification,"\\*.*",MaxTextExtent);
-      if (length >= MaxTextExtent)
+      if (length >= (MaxTextExtent-1))
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
           return((DIR *) NULL);
