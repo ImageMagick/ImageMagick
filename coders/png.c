@@ -410,6 +410,7 @@
         }
 
 
+#if MAGICKCORE_QUANTUM_DEPTH > 8
 /* LBR08: Replicate top 8 bits */
 
 #define LBR08RedPixelPacketComponent(pixelpacket) \
@@ -487,8 +488,10 @@
         LBR08RGBPixelComponent((pixel)); \
         LBR08OpacityPixelComponent((pixel)); \
         }
+#endif /* MAGICKCORE_QUANTUM_DEPTH > 8 */
 
 
+#if MAGICKCORE_QUANTUM_DEPTH > 16
 /* LBR16: Replicate top 16 bits */
 
 #define LBR16RedPixelPacketComponent(pixelpacket) \
@@ -566,6 +569,7 @@
         LBR16RGBPixelComponent((pixel)); \
         LBR16OpacityPixelComponent((pixel)); \
         }
+#endif /* MAGICKCORE_QUANTUM_DEPTH > 16 */
 
 /*
   Establish thread safety.
