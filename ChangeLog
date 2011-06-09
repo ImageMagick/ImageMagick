@@ -1,3 +1,9 @@
+2011-06-08  6.7.0-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-6.
+
+2011-06-08  6.7.0-6 Cristy  <quetzlzacatenango@image...>
+  * Fix transient error for composite over operator.
+
 2011-06-07  6.7.0-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-5.
 
