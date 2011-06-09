@@ -1356,11 +1356,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           PixelPacket
             fill_color;
 
-          register ssize_t
-            x;
-
           register PixelPacket
             *restrict q;
+
+          register ssize_t
+            x;
 
           register unsigned char
             *p;
