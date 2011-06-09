@@ -1,3 +1,10 @@
+2011-05-20  6.7.0-7 Glenn Randers-Pehrson <glennrp@image...>
+  * The PNG encoder would sometimes make black transparent when some
+    other gray level was supposed to be the transparent color (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18900).
+    This occurred only with 1, 2, 4-bit grayscale images with Q16 or Q32
+    builds.
+
 2011-06-08  6.7.0-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-6.
 
