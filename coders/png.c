@@ -9521,7 +9521,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16)
-           ((1./255.)*(maxval*(PixelIntensity(&image->background_color))));
+           ((maxval/255.)*((PixelIntensity(&image->background_color)))+.5);
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -9533,20 +9533,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_have_bKGD = MagickTrue;
          }
 
-#if 1
-   
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Scaling ping_trans_color.gray from %d",
              (int)ping_trans_color.gray);
 
-         ping_trans_color.gray=(png_uint_16) ((1./255.)*(maxval*
+         ping_trans_color.gray=(png_uint_16) ((maxval/255.)*(
            ping_trans_color.gray)+.5);
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "      to %d", (int)ping_trans_color.gray);
-#endif
       }
 
   if (ping_exclude_bKGD == MagickFalse)
