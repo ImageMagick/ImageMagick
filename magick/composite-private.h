@@ -52,6 +52,12 @@ static inline void MagickCompositeOver(const PixelPacket *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
+  if (alpha == TransparentOpacity)
+    {
+      if (composite != q)
+        *composite=(*q);
+      return;
+    }
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   composite->opacity=(Quantum) (QuantumRange*(1.0-gamma)+0.5);
@@ -90,6 +96,11 @@ static inline void MagickPixelCompositeOver(const MagickPixelPacket *p,
   /*
     Compose pixel p over pixel q with the given opacities.
   */
+  if (alpha == OpaqueOpacity)
+    {
+      *composite=(*p);
+      return;
+    }
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
   gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
