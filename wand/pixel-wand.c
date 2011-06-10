@@ -1293,7 +1293,7 @@ WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(color != (PixelPacket *) NULL);
-  SetRedPixelComponent(color,ClampToQuantum(wand->pixel.opacity));
+  SetAlphaPixelComponent(color,ClampToQuantum(wand->pixel.opacity));
   if (wand->pixel.colorspace == CMYKColorspace)
     {
       SetRedPixelComponent(color,ClampToQuantum((MagickRealType) QuantumRange-
