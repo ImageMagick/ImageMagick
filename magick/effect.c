@@ -3310,7 +3310,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
               GetBlobSize(preview_image))/1024.0);
           else
             (void) FormatLocaleString(label,MaxTextExtent,"quality %s\n%.20gb ",
-              factor,(double) GetBlobSize(thumbnail));
+              factor,(double) ((MagickOffsetType) GetBlobSize(thumbnail)));
         break;
       }
     }
