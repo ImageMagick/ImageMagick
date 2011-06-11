@@ -2114,7 +2114,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       case Cylin2PlaneDistortion:
       {
         (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, Internal Coefficents\n");
-        (void) FormatLocaleFile(stderr, "  fov_radians = %+lf\n", coeff[0]);
         (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
         (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, FX Equivelent:\n");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
@@ -2130,7 +2129,6 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       case Plane2CylinDistortion:
       {
         (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, Internal Coefficents\n");
-        (void) FormatLocaleFile(stderr, "  fov_radians = %+lf\n", coeff[0]);
         (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
         (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, FX Equivelent:\n");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
