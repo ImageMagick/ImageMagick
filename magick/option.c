@@ -911,6 +911,8 @@ static const OptionInfo
     { "Polar", PolarDistortion, UndefinedOptionFlag, MagickFalse },
     { "DePolar", DePolarDistortion, UndefinedOptionFlag, MagickFalse },
     { "Barrel", BarrelDistortion, UndefinedOptionFlag, MagickFalse },
+    { "Cylin2Plane", Cylin2PlaneDistortion, UndefinedOptionFlag, MagickTrue },
+    { "Plane2Cylin", Plane2CylinDistortion, UndefinedOptionFlag, MagickTrue },
     { "BarrelInverse", BarrelInverseDistortion, UndefinedOptionFlag, MagickFalse },
     { "Shepards", ShepardsDistortion, UndefinedOptionFlag, MagickFalse },
     { "Resize", ResizeDistortion, UndefinedOptionFlag, MagickFalse },
