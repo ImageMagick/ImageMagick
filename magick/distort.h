@@ -46,6 +46,8 @@ typedef enum
   ArcDistortion,
   PolarDistortion,
   DePolarDistortion,
+  Cylin2PlaneDistortion,
+  Plane2CylinDistortion,
   BarrelDistortion,
   BarrelInverseDistortion,
   ShepardsDistortion,
