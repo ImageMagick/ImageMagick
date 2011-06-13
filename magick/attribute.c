@@ -924,13 +924,13 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
-          GetRedPixelComponent(p)=ScaleAnyToQuantum(ScaleQuantumToAny(GetRedPixelComponent(p),range),range);
+          p->red=ScaleAnyToQuantum(ScaleQuantumToAny(p->red,range),range);
         if ((channel & GreenChannel) != 0)
-          GetGreenPixelComponent(p)=ScaleAnyToQuantum(ScaleQuantumToAny(GetGreenPixelComponent(p),range),range);
+          p->green=ScaleAnyToQuantum(ScaleQuantumToAny(p->green,range),range);
         if ((channel & BlueChannel) != 0)
-          GetBluePixelComponent(p)=ScaleAnyToQuantum(ScaleQuantumToAny(GetBluePixelComponent(p),range),range);
+          p->blue=ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,range),range);
         if ((channel & OpacityChannel) != 0)
-          GetOpacityPixelComponent(p)=ScaleAnyToQuantum(ScaleQuantumToAny(GetOpacityPixelComponent(p),range),
+          p->opacity=ScaleAnyToQuantum(ScaleQuantumToAny(p->opacity,range),
             range);
         p++;
       }
