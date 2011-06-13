@@ -1,3 +1,6 @@
+2011-06-13  6.7.0-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-7.
+
 2011-06-09  6.7.0-7 Cristy  <quetzlzacatenango@image...>
   * Fixed "conversion from unsigned __int64 to double not implemented"
     so IM can compile under VisualStudio 6.
