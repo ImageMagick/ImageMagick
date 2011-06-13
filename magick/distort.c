@@ -2503,41 +2503,52 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           }
           case Cylin2PlaneDistortion:
           { /* 3D Cylinder to Tangential Plane */
-            double aa;
-            d.x -= coeff[4];          /* relative to center of distortion */
-            d.y -= coeff[5];
-            aa=atan(d.x/coeff[1]);    /* a = atan(x/r) */
-            s.x = coeff[1]*aa;        /* u = r*atan(x/r) */
-            s.y = d.y*cos(aa);        /* v = y*cos(u/r) */
-            /* derivatives still to be done */
-            /*    du/dx = 1/(1+(x/r)^2)
-                  du/dy = 0
-                  dv/dx = -x*y*r/(x^2 +r^2)^(3/2)
-                  dv/dy = r/sqrt(x^2 + r^2)
-              ScaleFilter( resample_filter[id],
-                  -, 0, -, - );
-            */
-            s.x += coeff[2];        /* add center of distortion in source */
-            s.y += coeff[3];
+            double ax, cx;
+            /* relative to center of distortion */
+            d.x -= coeff[4]; d.y -= coeff[5];
+            d.x /= coeff[1];        /* x' = x/r */
+            ax=atan(d.x);           /* aa = atan(x/r) = u/r  */
+            cx=cos(ax);             /* cx = cos(atan(x/r)) = 1/sqrt(x^2+u^2) */
+            s.x = coeff[1]*ax;      /* u  = r*atan(x/r) */
+            s.y = d.y*cx;           /* v  = y*cos(u/r) */
+            /* derivatives... (see personnal notes) */
+            ScaleFilter( resample_filter[id],
+                  1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], s.y/d.y );
+#if 0
+if ( i == 0 && j == 0 ) {
+  fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
+  fprintf(stderr, "phi = %lf\n", (double)(ax * 180.0/MagickPI) );
+  fprintf(stderr, "du/dx=%lf  du/dx=%lf  dv/dx=%lf  dv/dy=%lf\n",
+                1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], s.y/d.y );
+  fflush(stderr); }
+#endif
+            /* add center of distortion in source */
+            s.x += coeff[2]; s.y += coeff[3];
             break;
           }
           case Plane2CylinDistortion:
           { /* 3D Cylinder to Tangential Plane */
-            d.x -= coeff[4];          /* relative to center of distortion */
-            d.y -= coeff[5];
+            double cx,tx;
+            /* relative to center of distortion */
+            d.x -= coeff[4]; d.y -= coeff[5];
             d.x /= coeff[1];           /* x'= x/r */
-            s.x = coeff[1]*tan(d.x);   /* u = r * tan(x/r) */
-            s.y = d.y/cos(d.x);        /* v = y / cos(x/r) */
-            /* derivatives still to be done */
-            /*    du/dx = 1/(cos(x/r)^2)
-                  du/dy = 0
-                  dv/dx = (v/r)*tan(u/r)/cos(u/r)
-                  dv/dy = 1/cos(x/r)
-              ScaleFilter( resample_filter[id],
-                  -, 0, -, - );
-            */
-            s.x += coeff[2];        /* add center of distortion in source */
-            s.y += coeff[3];
+            cx = 1/cos(d.x);           /* cx = 1/cos(x/r) */
+            tx = tan(d.x);             /* tx = tan(x/r) */
+            s.x = coeff[1]*tx;         /* u = r * tan(x/r) */
+            s.y = d.y*cx;              /* v = y / cos(x/r) */
+            /* derivatives...  (see personal notes) */
+           ScaleFilter( resample_filter[id],
+                  cx*cx, 0.0, s.y*cx/coeff[1], cx );
+#if 0
+if ( i == 0 && j == 0 ) {
+  fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
+  fprintf(stderr, "phi = %lf\n", (double)(d.x * 180.0/MagickPI) );
+  fprintf(stderr, "du/dx=%lf  du/dx=%lf  dv/dx=%lf  dv/dy=%lf\n",
+      cx*cx, 0.0, s.y*cx/coeff[1], cx);
+  fflush(stderr); }
+#endif
+            /* add center of distortion in source */
+            s.x += coeff[2]; s.y += coeff[3];
             break;
           }
           case BarrelDistortion:
