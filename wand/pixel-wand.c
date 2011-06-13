@@ -1293,21 +1293,21 @@ WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(color != (PixelPacket *) NULL);
-  SetRedPixelComponent(color,ClampToQuantum(wand->pixel.opacity));
+  color->opacity=ClampToQuantum(wand->pixel.opacity);
   if (wand->pixel.colorspace == CMYKColorspace)
     {
-      SetRedPixelComponent(color,ClampToQuantum((MagickRealType) QuantumRange-
-        (wand->pixel.red*(QuantumRange-wand->pixel.index)+wand->pixel.index)));
-      SetGreenPixelComponent(color,ClampToQuantum((MagickRealType) QuantumRange-
+      color->red=ClampToQuantum((MagickRealType) QuantumRange-
+        (wand->pixel.red*(QuantumRange-wand->pixel.index)+wand->pixel.index));
+      color->green=ClampToQuantum((MagickRealType) QuantumRange-
         (wand->pixel.green*(QuantumRange-wand->pixel.index)+
-        wand->pixel.index)));
-      SetBluePixelComponent(color,ClampToQuantum((MagickRealType) QuantumRange-
-        (wand->pixel.blue*(QuantumRange-wand->pixel.index)+wand->pixel.index)));
+        wand->pixel.index));
+      color->blue=ClampToQuantum((MagickRealType) QuantumRange-
+        (wand->pixel.blue*(QuantumRange-wand->pixel.index)+wand->pixel.index));
       return;
     }
-  SetRedPixelComponent(color,ClampToQuantum(wand->pixel.red));
-  SetGreenPixelComponent(color,ClampToQuantum(wand->pixel.green));
-  SetBluePixelComponent(color,ClampToQuantum(wand->pixel.blue));
+  color->red=ClampToQuantum(wand->pixel.red);
+  color->green=ClampToQuantum(wand->pixel.green);
+  color->blue=ClampToQuantum(wand->pixel.blue);
 }
 
 /*
@@ -2194,10 +2194,10 @@ WandExport void PixelSetQuantumColor(PixelWand *wand,const PixelPacket *color)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(color != (PixelPacket *) NULL);
-  wand->pixel.red=(MagickRealType) GetRedPixelComponent(color);
-  wand->pixel.green=(MagickRealType) GetGreenPixelComponent(color);
-  wand->pixel.blue=(MagickRealType) GetBluePixelComponent(color);
-  wand->pixel.opacity=(MagickRealType) GetOpacityPixelComponent(color);
+  wand->pixel.red=(MagickRealType) color->red;
+  wand->pixel.green=(MagickRealType) color->green;
+  wand->pixel.blue=(MagickRealType) color->blue;
+  wand->pixel.opacity=(MagickRealType) color->opacity;
   wand->pixel.matte=color->opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
 }
 

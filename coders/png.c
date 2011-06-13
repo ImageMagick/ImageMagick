@@ -410,7 +410,6 @@
         }
 
 
-#if MAGICKCORE_QUANTUM_DEPTH > 8
 /* LBR08: Replicate top 8 bits */
 
 #define LBR08RedPixelPacketComponent(pixelpacket) \
@@ -488,10 +487,8 @@
         LBR08RGBPixelComponent((pixel)); \
         LBR08OpacityPixelComponent((pixel)); \
         }
-#endif /* MAGICKCORE_QUANTUM_DEPTH > 8 */
 
 
-#if MAGICKCORE_QUANTUM_DEPTH > 16
 /* LBR16: Replicate top 16 bits */
 
 #define LBR16RedPixelPacketComponent(pixelpacket) \
@@ -569,7 +566,6 @@
         LBR16RGBPixelComponent((pixel)); \
         LBR16OpacityPixelComponent((pixel)); \
         }
-#endif /* MAGICKCORE_QUANTUM_DEPTH > 16 */
 
 /*
   Establish thread safety.
@@ -9525,7 +9521,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16)
-           (QuantumScale*(maxval*(PixelIntensity(&image->background_color))));
+           ((maxval/255.)*((PixelIntensity(&image->background_color)))+.5);
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -9537,8 +9533,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_have_bKGD = MagickTrue;
          }
 
-         ping_trans_color.gray=(png_uint_16) (QuantumScale*(maxval*
-           ping_trans_color.gray));
+         if (logging != MagickFalse)
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  Scaling ping_trans_color.gray from %d",
+             (int)ping_trans_color.gray);
+
+         ping_trans_color.gray=(png_uint_16) ((maxval/255.)*(
+           ping_trans_color.gray)+.5);
+
+         if (logging != MagickFalse)
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      to %d", (int)ping_trans_color.gray);
       }
 
   if (ping_exclude_bKGD == MagickFalse)
