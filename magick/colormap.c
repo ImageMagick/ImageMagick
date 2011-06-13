@@ -379,6 +379,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
       index=(IndexPacket) pixels[(ssize_t) GetIndexPixelComponent(indexes+x)];
       SetIndexPixelComponent(indexes+x,index);
       SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+      q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
