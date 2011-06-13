@@ -416,6 +416,8 @@ static double *GenerateCoefficients(const Image *image,
       break;
     case ScaleRotateTranslateDistortion:
     case AffineProjectionDistortion:
+    case Plane2CylinDistortion:
+    case Cylin2PlaneDistortion:
       number_coeff=6;
       break;
     case PolarDistortion:
@@ -1207,6 +1209,54 @@ static double *GenerateCoefficients(const Image *image,
       }
       return(coeff);
     }
+    case Cylin2PlaneDistortion:
+    case Plane2CylinDistortion:
+    {
+      /* 3D Cylinder to/from a Tangential Plane
+
+         Projection between a clinder and flat plain from a point on the
+         center line of the cylinder.
+
+         The two surfaces coincide in 3D space at the given centers of
+         distortion (perpendicular to projection point) on both images.
+
+         Args:  FOV_arc_width
+         Coefficents: FOV(radians), Radius, center_x,y, dest_center_x,y
+
+         FOV (Field Of View) the angular field of view of the distortion,
+         across the width of the image, in degrees.  The centers are the
+         points of least distortion in the input and resulting images.
+
+         These centers are however determined later.
+
+         Coeff 0 is the FOV angle of view of image width in radians
+         Coeff 1 is calculated radius of cylinder.
+         Coeff 2,3  center of distortion of input image
+         Coefficents 4,5 Center of Distortion of dest (determined later)
+      */
+      if ( arguments[0] < MagickEpsilon || arguments[0] > 160.0 ) {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "InvalidArgument", "%s : Invalid FOV Angle",
+            CommandOptionToMnemonic(MagickDistortOptions, *method) );
+        coeff=(double *) RelinquishMagickMemory(coeff);
+        return((double *) NULL);
+      }
+      coeff[0] = DegreesToRadians(arguments[0]);
+      if ( *method == Cylin2PlaneDistortion )
+        /* image is curved around cylinder, so FOV angle (in radians)
+         * scales directly to image X coordinate, according to its radius.
+         */
+        coeff[1] = image->columns/coeff[0];
+      else
+        /* radius is distance away from an image with this angular FOV */
+        coeff[1] = image->columns / ( 2 * tan(coeff[0]/2) );
+
+      coeff[2] = (double)(image->columns)/2.0+image->page.x;
+      coeff[3] = (double)(image->rows)/2.0+image->page.y;
+      coeff[4] = coeff[2];
+      coeff[5] = coeff[3]; /* assuming image size is the same */
+      return(coeff);
+    }
     case BarrelDistortion:
     case BarrelInverseDistortion:
     {
@@ -1585,9 +1635,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-
   /*
-    Handle Special Compound Distortions (in-direct distortions)
+    Handle Special Compound Distortions
   */
   if ( method == ResizeDistortion )
     {
@@ -1604,7 +1653,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     }
 
   /*
-    Convert input arguments (usally as control points for reverse mapping)
+    Convert input arguments (usually as control points for reverse mapping)
     into mapping coefficients to apply the distortion.
 
     Note that some distortions are mapped to other distortions,
@@ -1627,14 +1676,16 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   geometry.y=0;
 
   if ( method == ArcDistortion ) {
-    /* always use the 'best fit' viewport */
-    bestfit = MagickTrue;
+    bestfit = MagickTrue;  /* always calculate a 'best fit' viewport */
   }
 
   /* Work out the 'best fit', (required for ArcDistortion) */
   if ( bestfit ) {
     PointInfo
-      s,d,min,max;
+      s,d,min,max;  /* source, dest coords --mapping--> min, max coords */
+
+    MagickBooleanType
+      fix_bounds = MagickTrue;   /* enlarge bounds for VP handling */
 
     s.x=s.y=min.x=max.x=min.y=max.y=0.0;   /* keep compiler happy */
 
@@ -1764,12 +1815,44 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       {
         /* direct calculation as it needs to tile correctly
          * for reversibility in a DePolar-Polar cycle */
+        fix_bounds = MagickFalse;
         geometry.x = geometry.y = 0;
         geometry.height = (size_t) ceil(coeff[0]-coeff[1]);
         geometry.width = (size_t)
                   ceil((coeff[0]-coeff[1])*(coeff[5]-coeff[4])*0.5);
+        /* correct scaling factors relative to new size */
+        coeff[6]=(coeff[5]-coeff[4])/geometry.width; /* changed width */
+        coeff[7]=(coeff[0]-coeff[1])/geometry.height; /* should be about 1.0 */
         break;
       }
+      case Cylin2PlaneDistortion:
+      {
+        /* direct calculation so center of distortion is either a pixel
+         * center, or pixel edge. This allows for reversibility of the
+         * distortion */
+        geometry.x = geometry.y = 0;
+        geometry.width = ceil( 2.0*coeff[1]*tan(coeff[0]/2.0) );
+        geometry.height = ceil( 2.0*coeff[3]/cos(coeff[0]/2.0) );
+        /* correct center of distortion relative to new size */
+        coeff[4] = geometry.width/2.0;
+        coeff[5] = geometry.height/2.0;
+        fix_bounds = MagickFalse;
+        break;
+      }
+      case Plane2CylinDistortion:
+      {
+        /* direct calculation center is either pixel center, or pixel edge
+         * so as to allow reversibility of the image distortion */
+        geometry.x = geometry.y = 0;
+        geometry.width = ceil(coeff[0]*coeff[1]);  /* FOV * radius */
+        geometry.height = 2*coeff[3];              /* input image height */
+        /* correct center of distortion relative to new size */
+        coeff[4] = geometry.width/2.0;
+        coeff[5] = geometry.height/2.0;
+        fix_bounds = MagickFalse;
+        break;
+      }
+
       case ShepardsDistortion:
       case BilinearForwardDistortion:
       case BilinearReverseDistortion:
@@ -1780,8 +1863,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       case BarrelDistortion:
       case BarrelInverseDistortion:
       default:
-        /* no bestfit available for this distortion */
+        /* no calculated bestfit available for these distortions */
         bestfit = MagickFalse;
+        fix_bounds = MagickFalse;
         break;
     }
 
@@ -1789,25 +1873,18 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
        Yes this tends to 'over do' the file image size, ON PURPOSE!
        Do not do this for DePolar which needs to be exact for virtual tiling.
     */
-    if ( bestfit && method != DePolarDistortion ) {
+    if ( fix_bounds ) {
       geometry.x = (ssize_t) floor(min.x-0.5);
       geometry.y = (ssize_t) floor(min.y-0.5);
       geometry.width=(size_t) ceil(max.x-geometry.x+0.5);
       geometry.height=(size_t) ceil(max.y-geometry.y+0.5);
     }
 
-    /* Now that we have a new size lets some distortions to it exactly
-       This is for correct handling of Depolar and its virtual tile handling
-     */
-    if ( method == DePolarDistortion ) {
-      coeff[6]=(coeff[5]-coeff[4])/geometry.width; /* changed width */
-      coeff[7]=(coeff[0]-coeff[1])/geometry.height; /* should be about 1.0 */
-    }
-  }
+  } /* end bestfit destination image calculations */
 
   /* The user provided a 'viewport' expert option which may
      overrides some parts of the current output image geometry.
-     For ArcDistortion, this also overrides its default 'bestfit' setting.
+     This also overrides its default 'bestfit' setting.
   */
   { const char *artifact=GetImageArtifact(image,"distort:viewport");
     viewport_given = MagickFalse;
@@ -1865,7 +1942,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             coeff[0], coeff[1], coeff[2]);
         (void) FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf;\n",
             coeff[3], coeff[4], coeff[5]);
-        (void) FormatLocaleFile(stderr, "       %s'\n", lookup);
+        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
 
         break;
       }
@@ -1902,7 +1979,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             coeff[0], coeff[1], coeff[2]);
         (void) FormatLocaleFile(stderr, "       yy=(%+lf*ii %+lf*jj %+lf)/rr;\n",
             coeff[3], coeff[4], coeff[5]);
-        (void) FormatLocaleFile(stderr, "       rr%s0 ? %s : blue'\n",
+        (void) FormatLocaleFile(stderr, "       rr%s0 ? %s : blue' \\\n",
             coeff[8] < 0 ? "<" : ">", lookup);
         break;
       }
@@ -1939,7 +2016,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         if ( coeff[9] != 0 )
           (void) FormatLocaleFile(stderr, "       (rt < 0 ) ? red : %s'\n", lookup);
         else
-          (void) FormatLocaleFile(stderr, "       %s'\n", lookup);
+          (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
         break;
 
       case BilinearReverseDistortion:
@@ -1958,7 +2035,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             coeff[0], coeff[1], coeff[2], coeff[3]);
         (void) FormatLocaleFile(stderr, "       yy=%+lf*ii %+lf*jj %+lf*ii*jj %+lf;\n",
             coeff[4], coeff[5], coeff[6], coeff[7]);
-        (void) FormatLocaleFile(stderr, "       %s'\n", lookup);
+        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
         break;
 
       case PolynomialDistortion:
@@ -1980,7 +2057,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
           (void) FormatLocaleFile(stderr, " %+lf%s", coeff[2+i+nterms],
                poly_basis_str(i));
         }
-        (void) FormatLocaleFile(stderr, ";\n       %s'\n", lookup);
+        (void) FormatLocaleFile(stderr, ";\n       %s' \\\n", lookup);
         break;
       }
       case ArcDistortion:
@@ -1998,7 +2075,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
                             coeff[1], coeff[4]);
         (void) FormatLocaleFile(stderr, "       yy=(%lf - hypot(ii,jj)) * %lf;\n",
                             coeff[2], coeff[3]);
-        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}'\n");
+        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
         break;
       }
       case PolarDistortion:
@@ -2017,7 +2094,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
                          coeff[6] );
         (void) FormatLocaleFile(stderr, "       yy=(hypot(ii,jj)%+lf)*%lf;\n",
                          -coeff[1], coeff[7] );
-        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}'\n");
+        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
         break;
       }
       case DePolarDistortion:
@@ -2031,7 +2108,39 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         (void) FormatLocaleFile(stderr, "       rr=(j+.5)*%lf %+lf;\n", coeff[7], +coeff[1] );
         (void) FormatLocaleFile(stderr, "       xx=rr*sin(aa) %+lf;\n", coeff[2] );
         (void) FormatLocaleFile(stderr, "       yy=rr*cos(aa) %+lf;\n", coeff[3] );
-        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}'\n");
+        (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
+        break;
+      }
+      case Cylin2PlaneDistortion:
+      {
+        (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, Internal Coefficents\n");
+        (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
+        (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr, "%s", image_gen);
+        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",
+                         -coeff[4], -coeff[5]);
+        (void) FormatLocaleFile(stderr, "       aa=atan(ii/%+lf);\n", coeff[1] );
+        (void) FormatLocaleFile(stderr, "       xx=%lf*aa%+lf;\n",
+                         coeff[1], coeff[2] );
+        (void) FormatLocaleFile(stderr, "       yy=jj*cos(aa)%+lf;\n", coeff[3] );
+        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
+        break;
+      }
+      case Plane2CylinDistortion:
+      {
+        (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, Internal Coefficents\n");
+        (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
+        (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr, "%s", image_gen);
+        (void) FormatLocaleFile(stderr, "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",
+                         -coeff[4], -coeff[5]);
+        (void) FormatLocaleFile(stderr, "       ii=ii/%+lf;\n", coeff[1] );
+        (void) FormatLocaleFile(stderr, "       xx=%lf*tan(ii)%+lf;\n",
+                         coeff[1], coeff[2] );
+        (void) FormatLocaleFile(stderr, "       yy=jj/cos(ii)%+lf;\n",
+                         coeff[3] );
+        (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
+        break;
         break;
       }
       case BarrelDistortion:
@@ -2059,7 +2168,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         (void) FormatLocaleFile(stderr, "       jj=jj%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
              method == BarrelDistortion ? "*" : "/",
              coeff[4],coeff[5],coeff[6],coeff[7]);
-        (void) FormatLocaleFile(stderr, "       v.p{fx*ii+xc,fy*jj+yc}'\n");
+        (void) FormatLocaleFile(stderr, "       v.p{fx*ii+xc,fy*jj+yc}' \\\n");
       }
       default:
         break;
@@ -2358,7 +2467,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             break;
           }
           case PolarDistortion:
-          { /* Rect/Cartesain/Cylinder to Polar View */
+          { /* 2D Cartesain to Polar View */
             d.x -= coeff[2];
             d.y -= coeff[3];
             s.x  = atan2(d.x,d.y) - (coeff[4]+coeff[5])/2;
@@ -2383,7 +2492,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             break;
           }
           case DePolarDistortion:
-          { /* Polar to Cylindical  */
+          { /* @D Polar to Carteasain  */
             /* ignore all destination virtual offsets */
             d.x = ((double)i+0.5)*output_scaling*coeff[6]-coeff[4];
             d.y = ((double)j+0.5)*output_scaling*coeff[7]+coeff[1];
@@ -2392,9 +2501,59 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             /* derivatives are usless - better to use SuperSampling */
             break;
           }
+          case Cylin2PlaneDistortion:
+          { /* 3D Cylinder to Tangential Plane */
+            double ax, cx;
+            /* relative to center of distortion */
+            d.x -= coeff[4]; d.y -= coeff[5];
+            d.x /= coeff[1];        /* x' = x/r */
+            ax=atan(d.x);           /* aa = atan(x/r) = u/r  */
+            cx=cos(ax);             /* cx = cos(atan(x/r)) = 1/sqrt(x^2+u^2) */
+            s.x = coeff[1]*ax;      /* u  = r*atan(x/r) */
+            s.y = d.y*cx;           /* v  = y*cos(u/r) */
+            /* derivatives... (see personnal notes) */
+            ScaleFilter( resample_filter[id],
+                  1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], s.y/d.y );
+#if 0
+if ( i == 0 && j == 0 ) {
+  fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
+  fprintf(stderr, "phi = %lf\n", (double)(ax * 180.0/MagickPI) );
+  fprintf(stderr, "du/dx=%lf  du/dx=%lf  dv/dx=%lf  dv/dy=%lf\n",
+                1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], s.y/d.y );
+  fflush(stderr); }
+#endif
+            /* add center of distortion in source */
+            s.x += coeff[2]; s.y += coeff[3];
+            break;
+          }
+          case Plane2CylinDistortion:
+          { /* 3D Cylinder to Tangential Plane */
+            double cx,tx;
+            /* relative to center of distortion */
+            d.x -= coeff[4]; d.y -= coeff[5];
+            d.x /= coeff[1];           /* x'= x/r */
+            cx = 1/cos(d.x);           /* cx = 1/cos(x/r) */
+            tx = tan(d.x);             /* tx = tan(x/r) */
+            s.x = coeff[1]*tx;         /* u = r * tan(x/r) */
+            s.y = d.y*cx;              /* v = y / cos(x/r) */
+            /* derivatives...  (see personal notes) */
+           ScaleFilter( resample_filter[id],
+                  cx*cx, 0.0, s.y*cx/coeff[1], cx );
+#if 0
+if ( i == 0 && j == 0 ) {
+  fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
+  fprintf(stderr, "phi = %lf\n", (double)(d.x * 180.0/MagickPI) );
+  fprintf(stderr, "du/dx=%lf  du/dx=%lf  dv/dx=%lf  dv/dy=%lf\n",
+      cx*cx, 0.0, s.y*cx/coeff[1], cx);
+  fflush(stderr); }
+#endif
+            /* add center of distortion in source */
+            s.x += coeff[2]; s.y += coeff[3];
+            break;
+          }
           case BarrelDistortion:
           case BarrelInverseDistortion:
-          {
+          { /* Lens Barrel Distionion Correction */
             double r,fx,fy,gx,gy;
             /* Radial Polynomial Distortion (de-normalized) */
             d.x -= coeff[8];

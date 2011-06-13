@@ -1598,7 +1598,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
         SetIndexPixelComponent(indexes+u,index);
       if (cube.quantize_info->measure_error == MagickFalse)
         {
-          SetRGBPixelComponents(q,image->colormap+index);
+          SetRGBPixelComponents(q+u,image->colormap+index);
           if (cube.associate_alpha != MagickFalse)
             SetOpacityPixelComponent(q+u,image->colormap[index].opacity);
         }

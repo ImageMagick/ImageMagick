@@ -1793,8 +1793,8 @@ static double GetNCCDistortion(const Image *image,
       if ((image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         distortion+=area*QuantumScale*(GetIndexPixelComponent(indexes+x)-
-          image_statistics[OpacityChannel].mean)*(GetIndexPixelComponent(
-          reconstruct_indexes+x)-reconstruct_statistics[OpacityChannel].mean);
+          image_statistics[BlackChannel].mean)*(GetIndexPixelComponent(
+          reconstruct_indexes+x)-reconstruct_statistics[BlackChannel].mean);
       p++;
       q++;
     }
