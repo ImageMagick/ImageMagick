@@ -404,7 +404,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
     if (max_value >= 65536)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    for (depth=1; GetQuantumRange(depth) <= max_value; depth++) ;
+    for (depth=1; GetQuantumRange(depth) < max_value; depth++) ;
     image->depth=depth;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
