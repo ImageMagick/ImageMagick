@@ -167,6 +167,9 @@
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
@@ -4864,26 +4867,6 @@ orientation</a> option.</p>
 CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&minus;&gt;3 channel mapping.
 </p>
 
-<p>The <a href="#profile">-profile</a> option can also be used to inject
-previously-formatted ancillary chunks into the output PNG file, using
-the commandline option as shown below or by setting the profile via a
-programming interface:</p>
-
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
-<p>where <em>x</em> is a location flag and
-<em class="arg">filename</em> is a file containing the chunk
-name in the first 4 bytes, then a colon (":"), followed by the chunk data.
-This encoder will compute the chunk length and CRC, so those must not
-be included in the file.</p>
-
-<p>"x" can be "b" (before PLTE), "m" (middle, i.e., between PLTE and IDAT),
-or "e" (end, i.e., after IDAT).  If you want to write multiple chunks
-of the same type, then add a short unique string after the "x" to prevent
-subsequent profiles from overwriting the preceding ones, e.g.,</p>
-
-
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -profile PNG-chunk-b01:file01 / <br/>
-            -profile PNG-chunk-b02:file02 out.png</span></p>
 <div style="margin: auto;">
   <h4><a id="quality"></a>-quality <em class="arg">value</em></h4>
 </div>
@@ -5266,7 +5249,7 @@ the same name. </p>
 >-verbose</a> information ("<kbd>info:</kbd>" output format) as "Properties".
 </p>
 
-<p>This includes string 'properities' that are set by and assigned to images
+<p>This includes string 'properties' that are set by and assigned to images
 using the options <a href="#comment" >-comment</a>, <a href="#label"
 >-label</a>, <a href="#caption" >-caption</a>. These options actually assign
 a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
@@ -5277,7 +5260,7 @@ Escapes</a> expanded) to images as they are read in.  For example:</p>
 Properties</a> in the defined value.  For example:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \</span><span class='crtout'>        -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Old size = 70x46  New size = 35x23</span></p>
-<p>Other well known 'properities' that can be  include:
+<p>Other well known 'properties' that are availible include:
 '<kbd>date:create</kbd>' and '<kbd>date:modify</kbd>' and
 '<kbd>signature</kbd>'. </p>
 
@@ -5300,7 +5283,7 @@ modify the output filename of an image. For example</p>
 <p>If the setting value is prefixed with "<kbd>option:</kbd>" the setting will
 be saved as a global "Artifact" exactly as if it was set using the <a
 href="#define" >-define</a> option. As such settings are global in scope, they
-can be used to pass 'attributes' and 'properities' of one specific image,
+can be used to pass 'attributes' and 'properties' of one specific image,
 in a way that allows you to use them in a completely different image, even if
 the original image has long since been modified or destroyed. For example: </p>
 
@@ -5312,6 +5295,27 @@ a 'artifact' if the given <em class="arg">key</em> does not match an existing
 <p>You can set the attributes of the image registry by prefixing the value
 with <kbd>registry:</kbd>.</p>
 
+<p>The <a href="#set">-set profile</a> option can also be used to inject
+previously-formatted ancillary chunks into the output PNG file, using
+the commandline option as shown below or by setting the profile via a
+programming interface:</p>
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
+<p>where <em>x</em> is a location flag and
+<em class="arg">filename</em> is a file containing the chunk
+name in the first 4 bytes, then a colon (":"), followed by the chunk data.
+This encoder will compute the chunk length and CRC, so those must not
+be included in the file.</p>
+
+<p>"x" can be "b" (before PLTE), "m" (middle, i.e., between PLTE and IDAT),
+or "e" (end, i.e., after IDAT).  If you want to write multiple chunks
+of the same type, then add a short unique string after the "x" to prevent
+subsequent profiles from overwriting the preceding ones, e.g.,</p>
+
+
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -set profile PNG-chunk-b01:file01 / <br/>
+            -profile PNG-chunk-b02:file02 out.png</span></p>
+<p>&nbsp;</p>
 
 
 <div style="margin: auto;">
