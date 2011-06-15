@@ -416,8 +416,8 @@ static double *GenerateCoefficients(const Image *image,
       break;
     case ScaleRotateTranslateDistortion:
     case AffineProjectionDistortion:
-    case Plane2CylinDistortion:
-    case Cylin2PlaneDistortion:
+    case Plane2CylinderDistortion:
+    case Cylinder2PlaneDistortion:
       number_coeff=6;
       break;
     case PolarDistortion:
@@ -1209,8 +1209,8 @@ static double *GenerateCoefficients(const Image *image,
       }
       return(coeff);
     }
-    case Cylin2PlaneDistortion:
-    case Plane2CylinDistortion:
+    case Cylinder2PlaneDistortion:
+    case Plane2CylinderDistortion:
     {
       /* 3D Cylinder to/from a Tangential Plane
 
@@ -1242,7 +1242,7 @@ static double *GenerateCoefficients(const Image *image,
         return((double *) NULL);
       }
       coeff[0] = DegreesToRadians(arguments[0]);
-      if ( *method == Cylin2PlaneDistortion )
+      if ( *method == Cylinder2PlaneDistortion )
         /* image is curved around cylinder, so FOV angle (in radians)
          * scales directly to image X coordinate, according to its radius.
          */
@@ -1825,7 +1825,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         coeff[7]=(coeff[0]-coeff[1])/geometry.height; /* should be about 1.0 */
         break;
       }
-      case Cylin2PlaneDistortion:
+      case Cylinder2PlaneDistortion:
       {
         /* direct calculation so center of distortion is either a pixel
          * center, or pixel edge. This allows for reversibility of the
@@ -1839,7 +1839,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         fix_bounds = MagickFalse;
         break;
       }
-      case Plane2CylinDistortion:
+      case Plane2CylinderDistortion:
       {
         /* direct calculation center is either pixel center, or pixel edge
          * so as to allow reversibility of the image distortion */
@@ -2111,7 +2111,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         (void) FormatLocaleFile(stderr, "       v.p{xx-.5,yy-.5}' \\\n");
         break;
       }
-      case Cylin2PlaneDistortion:
+      case Cylinder2PlaneDistortion:
       {
         (void) FormatLocaleFile(stderr, "Cylinder to Plane Distort, Internal Coefficents\n");
         (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
@@ -2126,7 +2126,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         (void) FormatLocaleFile(stderr, "       %s' \\\n", lookup);
         break;
       }
-      case Plane2CylinDistortion:
+      case Plane2CylinderDistortion:
       {
         (void) FormatLocaleFile(stderr, "Plane to Cylinder Distort, Internal Coefficents\n");
         (void) FormatLocaleFile(stderr, "  cylinder_radius = %+lf\n", coeff[1]);
@@ -2392,7 +2392,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             c = coeff[4]*d.x - coeff[0]*d.y;
 
             validity = 1.0;
-            /* Handle Special degenerate (non-quadratic) case */
+            /* Handle Special degenerate (non-quadratic) case
+             * Currently without horizon anti-alising */
             if ( fabs(coeff[9]) < MagickEpsilon )
               s.y =  -c/b;
             else {
@@ -2501,7 +2502,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
             /* derivatives are usless - better to use SuperSampling */
             break;
           }
-          case Cylin2PlaneDistortion:
+          case Cylinder2PlaneDistortion:
           { /* 3D Cylinder to Tangential Plane */
             double ax, cx;
             /* relative to center of distortion */
@@ -2526,27 +2527,35 @@ if ( i == 0 && j == 0 ) {
             s.x += coeff[2]; s.y += coeff[3];
             break;
           }
-          case Plane2CylinDistortion:
+          case Plane2CylinderDistortion:
           { /* 3D Cylinder to Tangential Plane */
-            double cx,tx;
             /* relative to center of distortion */
             d.x -= coeff[4]; d.y -= coeff[5];
-            d.x /= coeff[1];           /* x'= x/r */
-            cx = 1/cos(d.x);           /* cx = 1/cos(x/r) */
-            tx = tan(d.x);             /* tx = tan(x/r) */
-            s.x = coeff[1]*tx;         /* u = r * tan(x/r) */
-            s.y = d.y*cx;              /* v = y / cos(x/r) */
-            /* derivatives...  (see personal notes) */
-           ScaleFilter( resample_filter[id],
-                  cx*cx, 0.0, s.y*cx/coeff[1], cx );
+
+            /* is pixel valid - horizon of a infinite Virtual-Pixel Plane
+             * (see Anthony Thyssen's personal note) */
+            validity = (coeff[1]*MagickPI2 - fabs(d.x))/output_scaling + 0.5;
+
+            if ( validity > 0.0 ) {
+              double cx,tx;
+              d.x /= coeff[1];           /* x'= x/r */
+              cx = 1/cos(d.x);           /* cx = 1/cos(x/r) */
+              tx = tan(d.x);             /* tx = tan(x/r) */
+              s.x = coeff[1]*tx;         /* u = r * tan(x/r) */
+              s.y = d.y*cx;              /* v = y / cos(x/r) */
+              /* derivatives...  (see Anthony Thyssen's personal notes) */
+              ScaleFilter( resample_filter[id],
+                    cx*cx, 0.0, s.y*cx/coeff[1], cx );
 #if 0
-if ( i == 0 && j == 0 ) {
+if ( i == 0 && j == 0 )*/
   fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
-  fprintf(stderr, "phi = %lf\n", (double)(d.x * 180.0/MagickPI) );
+  fprintf(stderr, "radius = %lf  phi = %lf  validity = %lf\n",
+      coeff[1],  (double)(d.x * 180.0/MagickPI), validity );
   fprintf(stderr, "du/dx=%lf  du/dx=%lf  dv/dx=%lf  dv/dy=%lf\n",
       cx*cx, 0.0, s.y*cx/coeff[1], cx);
   fflush(stderr); }
 #endif
+            }
             /* add center of distortion in source */
             s.x += coeff[2]; s.y += coeff[3];
             break;
