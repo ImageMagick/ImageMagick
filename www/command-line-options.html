@@ -200,7 +200,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -539,7 +539,7 @@ dark shadows. It also does not work well for diagrams or cartoon like images.
 </p>
 
 <p>It uses the <a href="#channel" >-channel</a> setting, (including the
-'<em>sync</em>' flag for channel syncronization), to determine which color
+'<em>sync</em>' flag for channel synchronization), to determine which color
 values is used and modified. As the default <a href="#channel"
 >-channel</a> setting is '<em>RGB,sync</em>', channels are modified
 together by the same gamma value, preserving colors. </p>
@@ -571,7 +571,7 @@ problems that these operators may have. That is <a href="#auto-level"
 >-auto-level</a> is the perfect or ideal version these operators. </p>
 
 <p>It uses the <a href="#channel" >-channel</a> setting, (including the
-special '<em>sync</em>' flag for channel syncronization), to determine
+special '<em>sync</em>' flag for channel synchronization), to determine
 which color values are used and modified. As the default <a
 href="#channel" >+channel</a> setting is '<em>RGB,sync</em>', the
 '<em>sync</em>' ensures that the color channels will are modified
@@ -921,17 +921,17 @@ you can either use </p>
     -channel RB
 </p>
 
-<p>All the channels that is present in an image can be specified using the
+<p>All the channels that are present in an image can be specified using the
 special channel type <kbd>All</kbd>. Not all operators are 'channel capable',
 but generally any operators that are generally 'grey-scale' image operators,
 will understand this setting.  See individual operator documentation. </p>
 
 <br />
 
-<p>On top of the normal channel selection a extra flag can be specified,
+<p>On top of the normal channel selection an extra flag can be specified,
 '<kbd>Sync</kbd>'.  This is turned on by default and if set means that
 operators that understand this flag should perform: cross-channel
-syncronization of the channels. If not specified, then most grey-scale
+synchronization of the channels. If not specified, then most grey-scale
 operators will apply their image processing operations to each individual
 channel (as specified by the rest of the <a href="#channel">-channel</a>
 setting) completely independently from each other. </p>
@@ -949,7 +949,7 @@ to the alpha channel (if present). That is to say it will modify the image
 processing with the understanding that fully-transparent colors should not
 contribute to the final result. </p>
 
-<p>Basically, by default, operators work with color channels in syncronous, and
+<p>Basically, by default, operators work with color channels in synchronous, and
 treats transparency as special, unless the <a href="#channel">-channel</a>
 setting is modified so as to remove the effect of the '<kbd>Sync</kbd>' flag.
 How each operator does this depends on that operators current implementation.
@@ -2597,6 +2597,7 @@ matrix.</p>
 
 <p>Drawing primitives conform to the <a href="../www/magick-vector-graphics.html">Magick Vector Graphics</a> format.</p>
 
+
 <div style="margin: auto;">
   <h4><a id="duplicate"></a>-duplicate <em class="arg">count,indexes</em></h4>
 </div>
@@ -3054,13 +3055,28 @@ likely to be detrimental to your image resizing.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>create a <em>mirror image</em>.</td><td style='text-align:right;'></td></tr></table>
 
-<p>reflect the scanlines in the vertical direction.</p>
+<p>reflect the scanlines in the vertical direction. The image will be mirrored
+upside-down. </p>
+
 
 <div style="margin: auto;">
   <h4><a id="floodfill"></a>-floodfill {<em class="arg">+-</em>}<em class="arg">x</em>{<em class="arg">+-</em>}<em class="arg">y</em> <em class="arg">color</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>floodfill the image with color at the specified offset. The argument <em class="arg">color</em> is the color at the specified offset coordinates. Use <a href="#fill" >-fill</a> to define the new color.  Use <a href="#fuzz" >-fuzz</a> to floodfill pixels which differ from the given argument <em class="arg">color</em>. The offsets are relative to the <a href="#gravity" >-gravity</a> setting.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>floodfill the image with color at the specified offset.</td><td style='text-align:right;'></td></tr></table>
+
+<p>Flood fill starts from the given 'seed point' which is not gravity effected.
+Any color that matches within <a href="#fuzz" >-fuzz</a> color distance of the
+given <em class="arg">color</em>  argument, connected to that 'seed point'
+will be replaced with the current <a href="#fill" >-fill</a> color. </p>
+
+<p>Note that if the pixel at the 'seed point' does not itself match the given
+<em class="arg">color</em> (according to <a href="#fuzz" >-fuzz</a>), then no
+action will be taken. </p>
+
+<p>This operator works more like the <a href="#opaque" >-opaque</A> option, than
+a more general flood fill that reads the matching color directly at the 'seed point'. For this form of flood fill, look at <a href="#draw" >-draw</a>  and its 'color floodfill' drawing method.  </p>
+
 
 <div style="margin: auto;">
   <h4><a id="flop"></a>-flop</h4>
@@ -3068,7 +3084,8 @@ likely to be detrimental to your image resizing.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>create a <em>mirror image</em>.</td><td style='text-align:right;'></td></tr></table>
 
-<p>reflect the scanlines in the horizontal direction.</p>
+<p>Reflect the scanlines in the horizontal direction, just like the image in
+a vertical mirror. </p>
 
 
 <div style="margin: auto;">
@@ -4852,7 +4869,7 @@ previously-formatted ancillary chunks into the output PNG file, using
 the commandline option as shown below or by setting the profile via a
 programming interface:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>-profile PNG-chunk-x:&lt;filename&gt;</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
 <p>where <em>x</em> is a location flag and
 <em class="arg">filename</em> is a file containing the chunk
 name in the first 4 bytes, then a colon (":"), followed by the chunk data.
@@ -4865,7 +4882,8 @@ of the same type, then add a short unique string after the "x" to prevent
 subsequent profiles from overwriting the preceding ones, e.g.,</p>
 
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>-profile PNG-chunk-b01:file01 -profile PNG-chunk-b02:file02</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -profile PNG-chunk-b01:file01 / <br/>
+            -profile PNG-chunk-b02:file02 out.png</span></p>
 <div style="margin: auto;">
   <h4><a id="quality"></a>-quality <em class="arg">value</em></h4>
 </div>

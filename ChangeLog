@@ -1,3 +1,11 @@
+2011-06-15  6.7.0-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-8.
+
+2011-06-14  6.7.0-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added Initial implementation of Cylinder to/from Plane 3D Distorts
+    Includes deritive (scaled lookup), and anti-alised horizon (validity)
+    Currently can NOT handle extractions from full 360 cylinder panoramas.
+
 2011-06-13  6.7.0-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-7.
 
