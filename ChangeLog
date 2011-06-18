@@ -1,3 +1,6 @@
+2011-06-18  6.7.0-9 Cristy  <quetzlzacatenango@image...>
+  * Defend against corrupt PSD resource blocks.
+
 2011-06-15  6.7.0-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-8.
 
