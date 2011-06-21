@@ -1906,11 +1906,11 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       (void) FormatLocaleString(image_gen, MaxTextExtent,"  -size %.20gx%.20g "
         "-page %+.20g%+.20g xc: +insert \\\n",(double) geometry.width,
         (double) geometry.height,(double) geometry.x,(double) geometry.y);
-      lookup="v.p{ xx-v.page.x-.5, yy-v.page.x-.5 }";
+      lookup="v.p{ xx-v.page.x-.5, yy-v.page.y-.5 }";
     }
     else {
       image_gen[0] = '\0';             /* no destination to generate */
-      lookup = "p{ xx-page.x-.5, yy-page.x-.5 }"; /* simplify lookup */
+      lookup = "p{ xx-page.x-.5, yy-page.y-.5 }"; /* simplify lookup */
     }
 
     switch (method) {
@@ -2546,8 +2546,9 @@ if ( i == 0 && j == 0 ) {
               /* derivatives...  (see Anthony Thyssen's personal notes) */
               ScaleFilter( resample_filter[id],
                     cx*cx, 0.0, s.y*cx/coeff[1], cx );
-#if 0
-if ( i == 0 && j == 0 )*/
+#if 1
+//if ( i == 0 && j == 0 ) {
+if ( d.x == 0.5 && d.y == 0.5 ) {
   fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
   fprintf(stderr, "radius = %lf  phi = %lf  validity = %lf\n",
       coeff[1],  (double)(d.x * 180.0/MagickPI), validity );
