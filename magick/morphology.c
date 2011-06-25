@@ -630,7 +630,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %    # Filter2D
 %    # Filter1D
 %    #    Set kernel values using a resize filter, and given scale (sigma)
-%    #    Cylindrical or Linear.   Is this posible with an image?
+%    #    Cylindrical or Linear.   Is this possible with an image?
 %    #
 %
 %  Named Constant Convolution Kernels
@@ -2384,7 +2384,7 @@ static void ExpandRotateKernelInfo(KernelInfo *kernel, const double angle)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CalcKernelMetaData() recalculate the KernelInfo meta-data of this kernel only,
-%  using the kernel values.  This should only ne used if it is not posible to
+%  using the kernel values.  This should only ne used if it is not possible to
 %  calculate that meta-data in some easier way.
 %
 %  It is important that the meta-data is correct before ScaleKernelInfo() is
@@ -2445,7 +2445,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %
 %  It is basically equivalent to as MorphologyImageChannel() (see below) but
 %  without any user controls.  This allows internel programs to use this
-%  function, to actually perform a specific task without posible interference
+%  function, to actually perform a specific task without possible interference
 %  by any API user supplied settings.
 %
 %  It is MorphologyImageChannel() task to extract any such user controls, and
