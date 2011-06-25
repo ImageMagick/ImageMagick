@@ -109,7 +109,7 @@
 2011-05-02  6.6.9-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Add various Option Flags, and fix option skip counts for plus forms
     of simple operators where plus form is the same as minus form.
-    For example the incorrect counts produces a weird error, and posible
+    For example the incorrect counts produces a weird error, and possible
     future segmentation fault in a command like  convert rose: +border show:
 
 2011-04-30  6.6.9-7 Cristy  <quetzlzacatenango@image...>
@@ -3032,7 +3032,7 @@
     as panarama overlays.
   * Bug fix in handling transparency for EWA resampling.
   * Access to Resize Filter Functions from resize.c (for resample.c)
-    with posible future filter sources... Acquire/Destory/Call ResizeFilter()
+    with possible future filter sources... Acquire/Destory/Call ResizeFilter()
   * All resize filters added to resampling, but filter handling is incomplete.
 
 2007-10-05  6.3.6-2 Cristy  <quetzlzacatenango@image...>
