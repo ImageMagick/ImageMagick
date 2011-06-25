@@ -28,14 +28,16 @@
   <meta name="Distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <script type="text/javascript">
     $(document).ready(function() {
       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
@@ -78,7 +80,6 @@
 <div class="menu">
   <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
 </div>
-<div class="sep"></div>
 <div class="menu">
   <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
 </div>
@@ -200,24 +201,31 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.atlasmultimedia.de">Notebook Reparatur</a><!-- 2011100100025 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-
+<div style="margin: 9pt 9pt 9pt 9pt;">
+  <div class="g-plusone" data-size="standard" data-count="false"></div>
+</div>
 </div>
 
 <div class="main">
 
-<p class="navigation-index">[<a href="#headers">Header Files</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
-
 <h1>ImageMagick Version 7 Porting Guide</h1>
 
-<p>ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  We intend to continue to maintain ImageMagick version 6 for at least 10 years.</p>
+<p class="navigation-index">[<a href="#headers">Header Files</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
 
+<p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
+
+<p>To support variable pixel channels in the MagickCore API, pixel handling has changed and now requires accessors to get or set the pixel components.  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
+
+<p>We intend to make ImageMagick version 7 available as an Alpha release by the end-of-year 2011.  Look for a Beta release sometime in 2012.  An official ImageMagick version 7 release will depend on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
+
+<p>During the ImageMagick version 7 development cycle and release, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
 <h2><a id="headers"></a>Header Files</h2>
 <div class="doc-section">
 <p>Prior versions of ImageMagick (4-6) references the ImageMagick header files as <kbd>magick/</kbd> and <kbd>wand/</kbd>.  ImageMagick 7 instead uses <kbd>MagickCore/</kbd> and <kbd>MagickWand/</kbd> respectively.  For example,</p>
@@ -267,7 +275,7 @@
   }
 </pre>
 
-<p>ImageMagick version 7 supports any number of channels from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
+<p>ImageMagick version 7 supports any number of channels from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
 
 <pre class="code">
   for (y=0; y &lt; (ssize_t) image->rows; y++)
@@ -282,7 +290,40 @@
         continue;
       }
     for (x=0; x &lt; (ssize_t) image->columns; x++)
-      for (channel=0; channel &lt; GetCacheViewChannels(image_view); channel++)
+    {
+      if ((channels & RedChannel) != 0)
+        SetPixelRed(image,QuantumRange-GetPixelRed(image,q),q);
+      if ((channels & GreenChannel) != 0)
+        SetPixelGreen(image,QuantumRange-GetPixelGreen(image,q),q);
+      if ((channels & BlueChannel) != 0)
+        SetPixelBlue(image,QuantumRange-GetPixelBlue(image,q),q);
+      if (((channels & IndexChannel) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        SetPixelBlack(image,QuantumRange-GetPixelBlack(image,q),q);
+      if ((channels & OpacityChannel) != 0)
+        SetPixelAlpha(image,QuantumRange-GetPixelAlpha(image,q),q);
+      q+=GetImagePixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+</pre>
+
+<p>Let's do that again but take full advantage of the new variable pixel channel support:</p>
+<pre class="code">
+  for (y=0; y &lt; (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *q;
+
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x &lt; (ssize_t) image->columns; x++)
+      for (channel=0; channel &lt; GetImagePixelChannels(image); channel++)
       {
         if ((channels & (1 &lt;&lt; channel)) != 0)
           *q=(Quantum) QuantumRange-(*q);
@@ -293,13 +334,25 @@
   }
 </pre>
 
-<p>Use GetImageChannels() or GetCacheViewChannels() to advance to the next set of pixel channels.</p>
+<p>Use GetImagePixelChannels() to advance to the next set of pixel channels.</p>
 
-<p>Use convenience macros to access pixel components (e.g. GetRedPixelComponent(image,p), SetRedPixelComponent(image,red,q)).</p>
+<h4></a>Pixel Accessors</h4>
+<p>Use accessors to get or set pixel components (e.g. GetPixelRed(), SetPixelRed()).  You can find these accessors defined in the header file, <kbd>MagickCore/pixel-accessor.h</kbd></p>
 
-<li>The colormap indexes and black pixel component (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel channel and accessed with the convenience pixel macros GetIndexPixelComponent(), SetIndexPixelComponent(), GetBlackPixelComponent(), and SetBlackPixelComponent().</li>
+<li>The colormap indexes and black pixel component (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel channel and accessed with the convenience pixel macros GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</li>
 
 <p>In addition to supporting any number of channels, version 7 simplifies working with channels and provides opportunity for compiler optimiziations that were previously not possible.  Our benchmarking shows version 7 has increased performance for virtually all image operations.</p>
+
+<h4></a>Associated Pixel Channels</h4>
+<p>In version 7, we introduce <em>associated</em> pixel channels.  These pixel channels are for your exclusive use and are accessed with these MagickCore API methods:</p>
+<dl>
+<li>SetImageAssociatedPixelChannels()</li>
+<li>GetImageAssociatedPixelChannels()</li>
+<li>GetVirtualAssociatedPixels</li>
+<li>GetAuthenticAssociatedPixels</li>
+<li>GetCacheViewAuthenticAssociatedPixels</li>
+<li>GetCacheViewVirtualAssociatedPixels</li>
+</dl>
 </div>
 
 <h2><a id="alpha"></a>Alpha</h2>
@@ -323,16 +376,17 @@
 <p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
 <h5>Pixels</h5>
 <dl>
-<li>Pixels are no longer addressed with PixelPacket structure members (e.g. red, green, blue, opacity) but as an array of channels (e.g. p[RedPixelComponent]).</li>
-<li>Use convenience macros to access pixel components (e.g. GetRedPixelComponent(image,p), SetRedPixelComponent(image,red,q)).</li>
-<li>The black channel for the CMYK colorspace is no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead its now a pixel channel and accessed with the convenience pixel macros GetBlackPixelComponent(p) and SetBlackPixelComponent(q).</li>
+<li>Pixels are no longer addressed with PixelPacket structure members (e.g. red, green, blue, opacity) but as an array of channels (e.g. p[PixelRed]).</li>
+<li>Use convenience macros to access pixel components (e.g. GetPixelRed(), SetPixelRed()).</li>
+<li>The black channel for the CMYK colorspace is no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead its now a pixel channel and accessed with the convenience pixel macros GetPixelBlack() and SetPixelBlack().</li>
 <li>Use the index channel to address colormapped indexes.  It no longer hosts the black channel for CMYK and CMYKA images.</li>
-<li>Use GetImageChannels() or GetCacheViewChannels() to advance to the next set of pixel channels.</li>
+<li>Use GetImagePixelChannels() to advance to the next set of pixel channels.</li>
+<li>Use <em>associated</em> pixel channels for your own use.</li>
 </dl>
 <h5>Alpha</h5>
 <dl>
 <li>We support alpha rather than opacity (0 transparent; QuantumRange opaque).</li>
-<li>The PixelPacket structure member alpha has replaced the previous opacity member.</li>
+<li>Use GetPixelAlpha() or SetPixelAlpha() to get or set the alpha pixel component value.</li>
 </dl>
 <h5>Deprecated Methods</h5>
 <dl>

@@ -31,14 +31,16 @@
   <meta name="Distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <script type="text/javascript">
     $(document).ready(function() {
       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
@@ -81,7 +83,6 @@
 <div class="menu">
   <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
 </div>
-<div class="sep"></div>
 <div class="menu">
   <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
 </div>
@@ -203,14 +204,16 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-
+<div style="margin: 9pt 9pt 9pt 9pt;">
+  <div class="g-plusone" data-size="standard" data-count="false"></div>
+</div>
 </div>
 
 <div class="main">
@@ -2557,8 +2560,10 @@ draw complex curves, it is highly recommended either to use the <kbd>path</kbd> 
 <p>You can use 0,0 for the image size, which means to use the actual
 dimensions found in the image header. Otherwise, it is scaled to the given
 dimensions. See <a href="../www/compose.html">Alpha Compositing</a> for
-a detailed discussion of alpha composition methods that are available. </p>
-
+a detailed discussion of alpha composition methods that are available.
+The "special augmented compose operators" such as "dissolve" that require
+arguments cannot be used at present with the <kbd>-draw image</kbd> option.
+ </p>
 <p>Use <kbd>text</kbd> to annotate an image with text. Follow the text coordinates with a string. If the string has embedded spaces, enclose it in single or double quotes.</p>
 
 <p>For example, the following annotates the image with <kbd>Works like magick!</kbd> for an image titled <kbd>bird.miff</kbd>. </p>
@@ -4374,7 +4379,7 @@ name. </p>
   <h4><a id="mode"></a>-mode <em class="arg">geometry</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>make each pixel the 'predominate color' of the neighborhood.</td><td style='text-align:right;'>[<a href="../www/convert.html">convert</a>, <a href="../www/mogrify.html">mogrify</a>]</td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>make each pixel the 'predominant color' of the neighborhood.</td><td style='text-align:right;'>[<a href="../www/convert.html">convert</a>, <a href="../www/mogrify.html">mogrify</a>]</td></tr></table>
 
 <div style="margin: auto;">
   <h4>-mode <em class="arg">value</em></h4>
