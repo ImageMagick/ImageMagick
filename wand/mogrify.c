@@ -1078,10 +1078,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               for (x=0; x < (ssize_t) mask_image->columns; x++)
               {
                 if (mask_image->matte == MagickFalse)
-                  SetOpacityPixelComponent(q,PixelIntensityToQuantum(q));
-                SetRedPixelComponent(q,GetOpacityPixelComponent(q));
-                SetGreenPixelComponent(q,GetOpacityPixelComponent(q));
-                SetBluePixelComponent(q,GetOpacityPixelComponent(q));
+                  SetPixelOpacity(q,PixelIntensityToQuantum(q));
+                SetPixelRed(q,GetPixelOpacity(q));
+                SetPixelGreen(q,GetPixelOpacity(q));
+                SetPixelBlue(q,GetPixelOpacity(q));
                 q++;
               }
               if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)

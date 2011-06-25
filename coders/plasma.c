@@ -114,11 +114,11 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
   if (q == (PixelPacket *) NULL)
     return;
   range=GetQuantumRange(16UL);
-  SetRedPixelComponent(q,ScaleAnyToQuantum((size_t) (65535.0*
+  SetPixelRed(q,ScaleAnyToQuantum((size_t) (65535.0*
     GetPseudoRandomValue(random_info)+0.5),range));
-  SetGreenPixelComponent(q,ScaleAnyToQuantum((size_t) (65535.0*
+  SetPixelGreen(q,ScaleAnyToQuantum((size_t) (65535.0*
     GetPseudoRandomValue(random_info)+0.5),range));
-  SetBluePixelComponent(q,ScaleAnyToQuantum((size_t) (65535.0*
+  SetPixelBlue(q,ScaleAnyToQuantum((size_t) (65535.0*
     GetPseudoRandomValue(random_info)+0.5),range));
   (void) SyncAuthenticPixels(image,exception);
 }
@@ -173,7 +173,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetOpacityPixelComponent(q,QuantumRange/2);
+      SetPixelOpacity(q,QuantumRange/2);
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

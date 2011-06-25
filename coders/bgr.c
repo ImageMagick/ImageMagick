@@ -246,12 +246,12 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,GetRedPixelComponent(p));
-                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-                SetBluePixelComponent(q,GetBluePixelComponent(p));
-                SetOpacityPixelComponent(q,OpaqueOpacity);
+                SetPixelRed(q,GetPixelRed(p));
+                SetPixelGreen(q,GetPixelGreen(p));
+                SetPixelBlue(q,GetPixelBlue(p));
+                SetPixelOpacity(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                  SetPixelOpacity(q,GetPixelOpacity(p));
                 p++;
                 q++;
               }
@@ -332,27 +332,27 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                   {
                     case RedQuantum:
                     {
-                      SetRedPixelComponent(q,GetRedPixelComponent(p));
+                      SetPixelRed(q,GetPixelRed(p));
                       break;
                     }
                     case GreenQuantum:
                     {
-                      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                      SetPixelGreen(q,GetPixelGreen(p));
                       break;
                     }
                     case BlueQuantum:
                     {
-                      SetBluePixelComponent(q,GetBluePixelComponent(p));
+                      SetPixelBlue(q,GetPixelBlue(p));
                       break;
                     }
                     case OpacityQuantum:
                     {
-                      SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                      SetPixelOpacity(q,GetPixelOpacity(p));
                       break;
                     }
                     case AlphaQuantum:
                     {
-                      SetAlphaPixelComponent(q,GetAlphaPixelComponent(p));
+                      SetPixelAlpha(q,GetPixelAlpha(p));
                       break;
                     }
                     default:
@@ -423,7 +423,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,GetRedPixelComponent(p));
+                SetPixelRed(q,GetPixelRed(p));
                 p++;
                 q++;
               }
@@ -475,7 +475,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                SetPixelGreen(q,GetPixelGreen(p));
                 p++;
                 q++;
               }
@@ -527,7 +527,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetBluePixelComponent(q,GetBluePixelComponent(p));
+                SetPixelBlue(q,GetPixelBlue(p));
                 p++;
                 q++;
               }
@@ -588,7 +588,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                    SetPixelOpacity(q,GetPixelOpacity(p));
                     p++;
                     q++;
                   }
@@ -675,7 +675,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,GetRedPixelComponent(p));
+                SetPixelRed(q,GetPixelRed(p));
                 p++;
                 q++;
               }
@@ -746,7 +746,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                SetPixelGreen(q,GetPixelGreen(p));
                 p++;
                 q++;
               }
@@ -817,7 +817,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetBluePixelComponent(q,GetBluePixelComponent(p));
+                SetPixelBlue(q,GetPixelBlue(p));
                 p++;
                 q++;
               }
@@ -890,7 +890,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                    SetPixelOpacity(q,GetPixelOpacity(p));
                     p++;
                     q++;
                   }

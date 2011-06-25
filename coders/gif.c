@@ -445,9 +445,9 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
       if (c < 0)
         break;
       index=ConstrainColormapIndex(image,(size_t) c);
-      SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
-      SetOpacityPixelComponent(q,(ssize_t) index == opacity ?
+      SetPixelIndex(indexes+x,index);
+      SetPixelRGBO(q,image->colormap+(ssize_t) index);
+      SetPixelOpacity(q,(ssize_t) index == opacity ?
         TransparentOpacity : OpaqueOpacity);
       x++;
       q++;
@@ -674,7 +674,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       /*
         Probe hash table.
       */
-      index=(IndexPacket) ((size_t) GetIndexPixelComponent(indexes+x) & 0xff);
+      index=(IndexPacket) ((size_t) GetPixelIndex(indexes+x) & 0xff);
       p++;
       k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+waiting_code);
       if (k >= MaxHashTable)

@@ -366,27 +366,27 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) >=
+        if (((ssize_t) ScaleQuantumToChar(GetPixelRed(p)) >=
              (cluster->red.left-SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetPixelRed(p)) <=
              (cluster->red.right+SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetPixelGreen(p)) >=
              (cluster->green.left-SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetPixelGreen(p)) <=
              (cluster->green.right+SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetPixelBlue(p)) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetPixelBlue(p)) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
               Count this pixel.
             */
             count++;
-            cluster->red.center+=(MagickRealType) ScaleQuantumToChar(GetRedPixelComponent(p));
+            cluster->red.center+=(MagickRealType) ScaleQuantumToChar(GetPixelRed(p));
             cluster->green.center+=(MagickRealType)
-              ScaleQuantumToChar(GetGreenPixelComponent(p));
-            cluster->blue.center+=(MagickRealType) ScaleQuantumToChar(GetBluePixelComponent(p));
+              ScaleQuantumToChar(GetPixelGreen(p));
+            cluster->blue.center+=(MagickRealType) ScaleQuantumToChar(GetPixelBlue(p));
             cluster->count++;
             break;
           }
@@ -558,7 +558,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetIndexPixelComponent(indexes+x,0);
+      SetPixelIndex(indexes+x,0);
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
         if (((ssize_t) ScaleQuantumToChar(q->red) >=
@@ -577,7 +577,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             /*
               Classify this pixel.
             */
-            SetIndexPixelComponent(indexes+x,cluster->id);
+            SetPixelIndex(indexes+x,cluster->id);
             break;
           }
       }
@@ -603,21 +603,21 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             sum=0.0;
             p=image->colormap+j;
             distance_squared=squares[(ssize_t) ScaleQuantumToChar(q->red)-
-              (ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p))]+
+              (ssize_t) ScaleQuantumToChar(GetPixelRed(p))]+
               squares[(ssize_t) ScaleQuantumToChar(q->green)-
-              (ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p))]+
+              (ssize_t) ScaleQuantumToChar(GetPixelGreen(p))]+
               squares[(ssize_t) ScaleQuantumToChar(q->blue)-
-              (ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p))];
+              (ssize_t) ScaleQuantumToChar(GetPixelBlue(p))];
             numerator=distance_squared;
             for (k=0; k < (ssize_t) image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=squares[(ssize_t) ScaleQuantumToChar(q->red)-
-                (ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p))]+
+                (ssize_t) ScaleQuantumToChar(GetPixelRed(p))]+
                 squares[(ssize_t) ScaleQuantumToChar(q->green)-
-                (ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p))]+
+                (ssize_t) ScaleQuantumToChar(GetPixelGreen(p))]+
                 squares[(ssize_t) ScaleQuantumToChar(q->blue)-
-                (ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p))];
+                (ssize_t) ScaleQuantumToChar(GetPixelBlue(p))];
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }
@@ -627,7 +627,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
                   Classify this pixel.
                 */
                 local_minima=1.0/sum;
-                SetIndexPixelComponent(indexes+x,j);
+                SetPixelIndex(indexes+x,j);
               }
           }
         }
@@ -1098,17 +1098,17 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) >=
+        if (((ssize_t) ScaleQuantumToChar(GetPixelRed(p)) >=
              (cluster->red.left-SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetPixelRed(p)) <=
              (cluster->red.right+SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetPixelGreen(p)) >=
              (cluster->green.left-SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetPixelGreen(p)) <=
              (cluster->green.right+SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) >=
+            ((ssize_t) ScaleQuantumToChar(GetPixelBlue(p)) >=
              (cluster->blue.left-SafeMargin)) &&
-            ((ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p)) <=
+            ((ssize_t) ScaleQuantumToChar(GetPixelBlue(p)) <=
              (cluster->blue.right+SafeMargin)))
           {
             /*
@@ -1116,11 +1116,11 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
             */
             count++;
             cluster->red.center+=(MagickRealType)
-              ScaleQuantumToChar(GetRedPixelComponent(p));
+              ScaleQuantumToChar(GetPixelRed(p));
             cluster->green.center+=(MagickRealType)
-              ScaleQuantumToChar(GetGreenPixelComponent(p));
+              ScaleQuantumToChar(GetPixelGreen(p));
             cluster->blue.center+=(MagickRealType)
-              ScaleQuantumToChar(GetBluePixelComponent(p));
+              ScaleQuantumToChar(GetPixelBlue(p));
             cluster->count++;
             break;
           }
@@ -1262,9 +1262,9 @@ static void InitializeHistogram(const Image *image,ssize_t **histogram,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      histogram[Red][(ssize_t) ScaleQuantumToChar(GetRedPixelComponent(p))]++;
-      histogram[Green][(ssize_t) ScaleQuantumToChar(GetGreenPixelComponent(p))]++;
-      histogram[Blue][(ssize_t) ScaleQuantumToChar(GetBluePixelComponent(p))]++;
+      histogram[Red][(ssize_t) ScaleQuantumToChar(GetPixelRed(p))]++;
+      histogram[Green][(ssize_t) ScaleQuantumToChar(GetPixelGreen(p))]++;
+      histogram[Blue][(ssize_t) ScaleQuantumToChar(GetPixelBlue(p))]++;
       p++;
     }
   }

@@ -254,14 +254,14 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,GetRedPixelComponent(p));
-                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-                SetBluePixelComponent(q,GetBluePixelComponent(p));
-                SetBlackPixelComponent(indexes+x,GetBlackPixelComponent(
+                SetPixelRed(q,GetPixelRed(p));
+                SetPixelGreen(q,GetPixelGreen(p));
+                SetPixelBlue(q,GetPixelBlue(p));
+                SetPixelBlack(indexes+x,GetPixelBlack(
                   canvas_indexes+image->extract_info.x+x));
-                SetOpacityPixelComponent(q,OpaqueOpacity);
+                SetPixelOpacity(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                  SetPixelOpacity(q,GetPixelOpacity(p));
                 p++;
                 q++;
               }
@@ -351,28 +351,28 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                   {
                     case CyanQuantum:
                     {
-                      SetCyanPixelComponent(q,GetCyanPixelComponent(p));
+                      SetPixelCyan(q,GetPixelCyan(p));
                       break;
                     }
                     case MagentaQuantum:
                     {
-                      SetMagentaPixelComponent(q,GetMagentaPixelComponent(p));
+                      SetPixelMagenta(q,GetPixelMagenta(p));
                       break;
                     }
                     case YellowQuantum:
                     {
-                      SetYellowPixelComponent(q,GetYellowPixelComponent(p));
+                      SetPixelYellow(q,GetPixelYellow(p));
                       break;
                     }
                     case BlackQuantum:
                     {
-                      SetIndexPixelComponent(indexes+x,GetIndexPixelComponent(
+                      SetPixelIndex(indexes+x,GetPixelIndex(
                         canvas_indexes+image->extract_info.x+x));
                       break;
                     }
                     case OpacityQuantum:
                     {
-                      SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                      SetPixelOpacity(q,GetPixelOpacity(p));
                       break;
                     }
                     default:
@@ -443,7 +443,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,GetRedPixelComponent(p));
+                SetPixelRed(q,GetPixelRed(p));
                 p++;
                 q++;
               }
@@ -495,7 +495,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                SetPixelGreen(q,GetPixelGreen(p));
                 p++;
                 q++;
               }
@@ -547,7 +547,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetBluePixelComponent(q,GetBluePixelComponent(p));
+                SetPixelBlue(q,GetPixelBlue(p));
                 p++;
                 q++;
               }
@@ -607,7 +607,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetIndexPixelComponent(indexes+x,GetIndexPixelComponent(
+                SetPixelIndex(indexes+x,GetPixelIndex(
                   canvas_indexes+image->extract_info.x+x));
                 p++;
                 q++;
@@ -663,7 +663,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                    SetPixelOpacity(q,GetPixelOpacity(p));
                     p++;
                     q++;
                   }
@@ -750,7 +750,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,GetRedPixelComponent(p));
+                SetPixelRed(q,GetPixelRed(p));
                 p++;
                 q++;
               }
@@ -821,7 +821,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetGreenPixelComponent(q,GetGreenPixelComponent(p));
+                SetPixelGreen(q,GetPixelGreen(p));
                 p++;
                 q++;
               }
@@ -892,7 +892,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetBluePixelComponent(q,GetBluePixelComponent(p));
+                SetPixelBlue(q,GetPixelBlue(p));
                 p++;
                 q++;
               }
@@ -971,7 +971,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetIndexPixelComponent(indexes+x,GetIndexPixelComponent(
+                SetPixelIndex(indexes+x,GetPixelIndex(
                   canvas_indexes+image->extract_info.x+x));
                 p++;
                 q++;
@@ -1045,7 +1045,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+                    SetPixelOpacity(q,GetPixelOpacity(p));
                     p++;
                     q++;
                   }

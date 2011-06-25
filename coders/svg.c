@@ -3345,11 +3345,11 @@ static MagickBooleanType TraceSVGImage(Image *image)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        trace->bitmap[i++]=GetRedPixelComponent(p);
+        trace->bitmap[i++]=GetPixelRed(p);
         if (number_planes == 3)
           {
-            trace->bitmap[i++]=GetGreenPixelComponent(p);
-            trace->bitmap[i++]=GetBluePixelComponent(p);
+            trace->bitmap[i++]=GetPixelGreen(p);
+            trace->bitmap[i++]=GetPixelBlue(p);
           }
         p++;
       }

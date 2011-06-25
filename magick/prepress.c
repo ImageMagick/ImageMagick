@@ -134,8 +134,8 @@ MagickExport double GetImageTotalInkDensity(Image *image)
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      density=(double) GetRedPixelComponent(p)+GetGreenPixelComponent(p)+
-        GetBluePixelComponent(p)+GetIndexPixelComponent(indexes+x);
+      density=(double) GetPixelRed(p)+GetPixelGreen(p)+
+        GetPixelBlue(p)+GetPixelIndex(indexes+x);
       if (density > total_ink_density)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetImageTotalInkDensity)

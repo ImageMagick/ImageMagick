@@ -264,13 +264,13 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
-            SetIndexPixelComponent(indexes+x,(*p) & 0x0f);
-            SetIndexPixelComponent(indexes+x+1,(*p >> 4) & 0x0f);
+            SetPixelIndex(indexes+x,(*p) & 0x0f);
+            SetPixelIndex(indexes+x+1,(*p >> 4) & 0x0f);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              SetIndexPixelComponent(indexes+x,(*p >> 4) & 0x0f);
+              SetPixelIndex(indexes+x,(*p >> 4) & 0x0f);
               p++;
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -298,7 +298,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetAuthenticIndexQueue(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
-            SetIndexPixelComponent(indexes+x,*p++);
+            SetPixelIndex(indexes+x,*p++);
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
@@ -326,11 +326,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             word=(*p++);
             word|=(*p++ << 8);
-            SetBluePixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+            SetPixelBlue(q,ScaleCharToQuantum(ScaleColor5to8(
               (1UL*word >> 10) & 0x1f)));
-            SetGreenPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+            SetPixelGreen(q,ScaleCharToQuantum(ScaleColor5to8(
               (1UL*word >> 5) & 0x1f)));
-            SetRedPixelComponent(q,ScaleCharToQuantum(ScaleColor5to8(
+            SetPixelRed(q,ScaleCharToQuantum(ScaleColor5to8(
               (1UL*word >> 0) & 0x1f)));
             q++;
           }
@@ -359,9 +359,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-            SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-            SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+            SetPixelRed(q,ScaleCharToQuantum(*p++));
+            SetPixelGreen(q,ScaleCharToQuantum(*p++));
+            SetPixelBlue(q,ScaleCharToQuantum(*p++));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)

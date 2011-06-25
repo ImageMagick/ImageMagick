@@ -1251,14 +1251,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               p=source_pixels[id];
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *p++=ScaleQuantumToShort(GetRedPixelComponent(q));
+                *p++=ScaleQuantumToShort(GetPixelRed(q));
                 if (source_channels > 1)
                   {
-                    *p++=ScaleQuantumToShort(GetGreenPixelComponent(q));
-                    *p++=ScaleQuantumToShort(GetBluePixelComponent(q));
+                    *p++=ScaleQuantumToShort(GetPixelGreen(q));
+                    *p++=ScaleQuantumToShort(GetPixelBlue(q));
                   }
                 if (source_channels > 3)
-                  *p++=ScaleQuantumToShort(GetIndexPixelComponent(indexes+x));
+                  *p++=ScaleQuantumToShort(GetPixelIndex(indexes+x));
                 q++;
               }
               cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
@@ -1267,20 +1267,20 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               q-=image->columns;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,ScaleShortToQuantum(*p));
-                SetGreenPixelComponent(q,GetRedPixelComponent(q));
-                SetBluePixelComponent(q,GetRedPixelComponent(q));
+                SetPixelRed(q,ScaleShortToQuantum(*p));
+                SetPixelGreen(q,GetPixelRed(q));
+                SetPixelBlue(q,GetPixelRed(q));
                 p++;
                 if (target_channels > 1)
                   {
-                    SetGreenPixelComponent(q,ScaleShortToQuantum(*p));
+                    SetPixelGreen(q,ScaleShortToQuantum(*p));
                     p++;
-                    SetBluePixelComponent(q,ScaleShortToQuantum(*p));
+                    SetPixelBlue(q,ScaleShortToQuantum(*p));
                     p++;
                   }
                 if (target_channels > 3)
                   {
-                    SetIndexPixelComponent(indexes+x,ScaleShortToQuantum(*p));
+                    SetPixelIndex(indexes+x,ScaleShortToQuantum(*p));
                     p++;
                   }
                 q++;

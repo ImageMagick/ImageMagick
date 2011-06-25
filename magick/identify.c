@@ -606,7 +606,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             indexes=GetVirtualIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity)
+              if (GetPixelOpacity(p) == (Quantum) TransparentOpacity)
                 break;
               p++;
             }

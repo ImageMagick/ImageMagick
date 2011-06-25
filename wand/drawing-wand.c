@@ -388,10 +388,10 @@ static int MvgAutoWrapPrintf(DrawingWand *wand,const char *format,...)
 
 static void MvgAppendColor(DrawingWand *wand,const PixelPacket *color)
 {
-  if ((GetRedPixelComponent(color) == 0) &&
-      (GetGreenPixelComponent(color) == 0) &&
-      (GetBluePixelComponent(color) == 0) &&
-      (GetOpacityPixelComponent(color) == (Quantum) TransparentOpacity))
+  if ((GetPixelRed(color) == 0) &&
+      (GetPixelGreen(color) == 0) &&
+      (GetPixelBlue(color) == 0) &&
+      (GetPixelOpacity(color) == (Quantum) TransparentOpacity))
     (void) MvgPrintf(wand,"none");
   else
     {
@@ -404,10 +404,10 @@ static void MvgAppendColor(DrawingWand *wand,const PixelPacket *color)
       GetMagickPixelPacket(wand->image,&pixel);
       pixel.colorspace=RGBColorspace;
       pixel.matte=color->opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
-      pixel.red=(MagickRealType) GetRedPixelComponent(color);
-      pixel.green=(MagickRealType) GetGreenPixelComponent(color);
-      pixel.blue=(MagickRealType) GetBluePixelComponent(color);
-      pixel.opacity=(MagickRealType) GetOpacityPixelComponent(color);
+      pixel.red=(MagickRealType) GetPixelRed(color);
+      pixel.green=(MagickRealType) GetPixelGreen(color);
+      pixel.blue=(MagickRealType) GetPixelBlue(color);
+      pixel.opacity=(MagickRealType) GetPixelOpacity(color);
       GetColorTuple(&pixel,MagickTrue,tuple);
       (void) MvgPrintf(wand,"%s",tuple);
     }
@@ -2420,15 +2420,15 @@ WandExport double DrawGetTextInterwordSpacing(DrawingWand *wand)
 static inline void SetMagickPixelPacket(const Image *image,
   const PixelPacket *color,const IndexPacket *index,MagickPixelPacket *pixel)
 {
-  pixel->red=(MagickRealType) GetRedPixelComponent(color);
-  pixel->green=(MagickRealType) GetGreenPixelComponent(color);
-  pixel->blue=(MagickRealType) GetBluePixelComponent(color);
+  pixel->red=(MagickRealType) GetPixelRed(color);
+  pixel->green=(MagickRealType) GetPixelGreen(color);
+  pixel->blue=(MagickRealType) GetPixelBlue(color);
   if (image->matte != MagickFalse)
-    pixel->opacity=(MagickRealType) GetOpacityPixelComponent(color);
+    pixel->opacity=(MagickRealType) GetPixelOpacity(color);
   if (((image->colorspace == CMYKColorspace) ||
        (image->storage_class == PseudoClass)) &&
       (index != (const IndexPacket *) NULL))
-    pixel->index=(MagickRealType) GetIndexPixelComponent(index);
+    pixel->index=(MagickRealType) GetPixelIndex(index);
 }
 
 WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
@@ -4506,13 +4506,13 @@ WandExport void DrawScale(DrawingWand *wand,const double x,const double y)
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
 {
-  if (GetRedPixelComponent(p) != GetRedPixelComponent(q))
+  if (GetPixelRed(p) != GetPixelRed(q))
     return(MagickFalse);
-  if (GetGreenPixelComponent(p) != GetGreenPixelComponent(q))
+  if (GetPixelGreen(p) != GetPixelGreen(q))
     return(MagickFalse);
-  if (GetBluePixelComponent(p) != GetBluePixelComponent(q))
+  if (GetPixelBlue(p) != GetPixelBlue(q))
     return(MagickFalse);
-  if (GetOpacityPixelComponent(p) != GetOpacityPixelComponent(q))
+  if (GetPixelOpacity(p) != GetPixelOpacity(q))
     return(MagickFalse);
   return(MagickTrue);
 }

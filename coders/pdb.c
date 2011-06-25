@@ -443,7 +443,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (bit=0; bit < 8; bit++)
           {
             index=(IndexPacket) (*p & (0x80 >> bit) ? 0x00 : 0x01);
-            SetIndexPixelComponent(indexes+x+bit,index);
+            SetPixelIndex(indexes+x+bit,index);
           }
           p++;
         }
@@ -471,13 +471,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x+=4)
         {
           index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03));
-          SetIndexPixelComponent(indexes+x,index);
+          SetPixelIndex(indexes+x,index);
           index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03));
-          SetIndexPixelComponent(indexes+x+1,index);
+          SetPixelIndex(indexes+x+1,index);
           index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03));
-          SetIndexPixelComponent(indexes+x+2,index);
+          SetPixelIndex(indexes+x+2,index);
           index=ConstrainColormapIndex(image,3UL-((*p) & 0x03));
-          SetIndexPixelComponent(indexes+x+3,index);
+          SetPixelIndex(indexes+x+3,index);
           p++;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -504,9 +504,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x+=2)
         {
           index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f));
-          SetIndexPixelComponent(indexes+x,index);
+          SetPixelIndex(indexes+x,index);
           index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f));
-          SetIndexPixelComponent(indexes+x+1,index);
+          SetPixelIndex(indexes+x+1,index);
           p++;
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)

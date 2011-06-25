@@ -191,7 +191,7 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
       break;
     for (x=0; x < (ssize_t) bounds->width; x++)
     {
-      if ((GetOpacityPixelComponent(p) <= (Quantum) (QuantumRange/2)) &&
+      if ((GetPixelOpacity(p) <= (Quantum) (QuantumRange/2)) &&
           (q->opacity > (Quantum) (QuantumRange/2)))
         break;
       p++;
@@ -538,7 +538,7 @@ static MagickBooleanType ComparePixels(const ImageLayerMethod method,
   if (method == CompareAnyLayer)
     return((MagickBooleanType)(IsMagickColorSimilar(p,q) == MagickFalse));
 
-  o1 = (p->matte != MagickFalse) ? GetOpacityPixelComponent(p) : OpaqueOpacity;
+  o1 = (p->matte != MagickFalse) ? GetPixelOpacity(p) : OpaqueOpacity;
   o2 = (q->matte != MagickFalse) ? q->opacity : OpaqueOpacity;
 
   /*

@@ -227,8 +227,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           index=ConstrainColormapIndex(image,((size_t) index << 8)+(*p));
           p++;
         }
-      SetIndexPixelComponent(indexes+x,index);
-      SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+      SetPixelIndex(indexes+x,index);
+      SetPixelRGBO(q,image->colormap+(ssize_t) index);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -426,8 +426,8 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (image->colors > 256)
-        *q++=(unsigned char) ((size_t) GetIndexPixelComponent(indexes+x) >> 8);
-      *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+        *q++=(unsigned char) ((size_t) GetPixelIndex(indexes+x) >> 8);
+      *q++=(unsigned char) GetPixelIndex(indexes+x);
     }
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
   }

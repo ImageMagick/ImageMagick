@@ -447,14 +447,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < ((ssize_t) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
-            SetIndexPixelComponent(indexes+x+7-bit,((*p) & (0x01 << bit) ?
+            SetPixelIndex(indexes+x+7-bit,((*p) & (0x01 << bit) ?
               0x00 : 0x01));
           p++;
         }
         if ((image->columns % 8) != 0)
           {
             for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
-              SetIndexPixelComponent(indexes+x+7-bit,(*p) & (0x01 << bit) ?
+              SetPixelIndex(indexes+x+7-bit,(*p) & (0x01 << bit) ?
                 0x00 : 0x01);
             p++;
           }
@@ -485,7 +485,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             indexes=GetAuthenticIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
-              SetIndexPixelComponent(indexes+x,*p++);
+              SetPixelIndex(indexes+x,*p++);
             if ((image->columns % 2) != 0)
               p++;
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -521,27 +521,27 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (image->matte != MagickFalse)
-                SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
+                SetPixelAlpha(q,ScaleCharToQuantum(*p++));
               if (sun_info.type == RT_STANDARD)
                 {
-                  SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
-                  SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-                  SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
+                  SetPixelBlue(q,ScaleCharToQuantum(*p++));
+                  SetPixelGreen(q,ScaleCharToQuantum(*p++));
+                  SetPixelRed(q,ScaleCharToQuantum(*p++));
                 }
               else
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-                  SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-                  SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+                  SetPixelRed(q,ScaleCharToQuantum(*p++));
+                  SetPixelGreen(q,ScaleCharToQuantum(*p++));
+                  SetPixelBlue(q,ScaleCharToQuantum(*p++));
                 }
               if (image->colors != 0)
                 {
-                  SetRedPixelComponent(q,image->colormap[(ssize_t)
-                    GetRedPixelComponent(q)].red);
-                  SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                    GetGreenPixelComponent(q)].green);
-                  SetBluePixelComponent(q,image->colormap[(ssize_t)
-                    GetBluePixelComponent(q)].blue);
+                  SetPixelRed(q,image->colormap[(ssize_t)
+                    GetPixelRed(q)].red);
+                  SetPixelGreen(q,image->colormap[(ssize_t)
+                    GetPixelGreen(q)].green);
+                  SetPixelBlue(q,image->colormap[(ssize_t)
+                    GetPixelBlue(q)].blue);
                 }
               q++;
             }
@@ -852,10 +852,10 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if (image->matte != MagickFalse)
-              *q++=ScaleQuantumToChar(GetAlphaPixelComponent(p));
-            *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-            *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-            *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+              *q++=ScaleQuantumToChar(GetPixelAlpha(p));
+            *q++=ScaleQuantumToChar(GetPixelRed(p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(p));
+            *q++=ScaleQuantumToChar(GetPixelBlue(p));
             p++;
           }
           if (((bytes_per_pixel*image->columns) & 0x01) != 0)
@@ -944,7 +944,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) WriteBlobByte(image,(unsigned char)
-                GetIndexPixelComponent(indexes+x));
+                GetPixelIndex(indexes+x));
               p++;
             }
             if (image->columns & 0x01)

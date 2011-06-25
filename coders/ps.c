@@ -1026,7 +1026,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if ((image->matte != MagickFalse) && \
-      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity)) \
+      (GetPixelOpacity(p) == (Quantum) TransparentOpacity)) \
     { \
       q=PopHexPixel(hex_digits,0xff,q); \
       q=PopHexPixel(hex_digits,0xff,q); \
@@ -1888,10 +1888,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((GetRedPixelComponent(p) == pixel.red) &&
-                      (GetGreenPixelComponent(p) == pixel.green) &&
-                      (GetBluePixelComponent(p) == pixel.blue) &&
-                      (GetOpacityPixelComponent(p) == pixel.opacity) &&
+                  if ((GetPixelRed(p) == pixel.red) &&
+                      (GetPixelGreen(p) == pixel.green) &&
+                      (GetPixelBlue(p) == pixel.blue) &&
+                      (GetPixelOpacity(p) == pixel.opacity) &&
                       (length < 255) && (x < (ssize_t) (image->columns-1)))
                     length++;
                   else
@@ -1949,7 +1949,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
+                      (GetPixelOpacity(p) == (Quantum) TransparentOpacity))
                     {
                       q=PopHexPixel(hex_digits,0xff,q);
                       q=PopHexPixel(hex_digits,0xff,q);
@@ -1958,11 +1958,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                   else
                     {
                       q=PopHexPixel(hex_digits,ScaleQuantumToChar(
-                        GetRedPixelComponent(p)),q);
+                        GetPixelRed(p)),q);
                       q=PopHexPixel(hex_digits,ScaleQuantumToChar(
-                        GetGreenPixelComponent(p)),q);
+                        GetPixelGreen(p)),q);
                       q=PopHexPixel(hex_digits,ScaleQuantumToChar(
-                        GetBluePixelComponent(p)),q);
+                        GetPixelBlue(p)),q);
                     }
                   if ((q-pixels+6) >= 80)
                     {
@@ -2029,11 +2029,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetVirtualIndexQueue(image);
-                index=GetIndexPixelComponent(indexes);
+                index=GetPixelIndex(indexes);
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((index == GetIndexPixelComponent(indexes+x)) &&
+                  if ((index == GetPixelIndex(indexes+x)) &&
                       (length < 255) && (x < ((ssize_t) image->columns-1)))
                     length++;
                   else
@@ -2053,11 +2053,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                         }
                       length=0;
                     }
-                  index=GetIndexPixelComponent(indexes+x);
-                  pixel.red=GetRedPixelComponent(p);
-                  pixel.green=GetGreenPixelComponent(p);
-                  pixel.blue=GetBluePixelComponent(p);
-                  pixel.opacity=GetOpacityPixelComponent(p);
+                  index=GetPixelIndex(indexes+x);
+                  pixel.red=GetPixelRed(p);
+                  pixel.green=GetPixelGreen(p);
+                  pixel.blue=GetPixelBlue(p);
+                  pixel.opacity=GetPixelOpacity(p);
                   p++;
                 }
                 q=PopHexPixel(hex_digits,(size_t) index,q);
@@ -2094,7 +2094,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  q=PopHexPixel(hex_digits,(size_t) GetIndexPixelComponent(
+                  q=PopHexPixel(hex_digits,(size_t) GetPixelIndex(
                     indexes+x),q);
                   if ((q-pixels+4) >= 80)
                     {

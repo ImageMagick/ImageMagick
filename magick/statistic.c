@@ -555,13 +555,13 @@ MagickExport Image *EvaluateImages(const Image *images,
             }
           indexes=GetCacheViewVirtualIndexQueue(image_view);
           evaluate_pixel[i].red=ApplyEvaluateOperator(random_info[id],
-            GetRedPixelComponent(p),op,evaluate_pixel[i].red);
+            GetPixelRed(p),op,evaluate_pixel[i].red);
           evaluate_pixel[i].green=ApplyEvaluateOperator(random_info[id],
-            GetGreenPixelComponent(p),op,evaluate_pixel[i].green);
+            GetPixelGreen(p),op,evaluate_pixel[i].green);
           evaluate_pixel[i].blue=ApplyEvaluateOperator(random_info[id],
-            GetBluePixelComponent(p),op,evaluate_pixel[i].blue);
+            GetPixelBlue(p),op,evaluate_pixel[i].blue);
           evaluate_pixel[i].opacity=ApplyEvaluateOperator(random_info[id],
-            GetOpacityPixelComponent(p),op,evaluate_pixel[i].opacity);
+            GetPixelOpacity(p),op,evaluate_pixel[i].opacity);
           if (evaluate_image->colorspace == CMYKColorspace)
             evaluate_pixel[i].index=ApplyEvaluateOperator(random_info[id],
               *indexes,op,evaluate_pixel[i].index);
@@ -570,16 +570,16 @@ MagickExport Image *EvaluateImages(const Image *images,
         }
         qsort((void *) evaluate_pixel,number_images,sizeof(*evaluate_pixel),
           IntensityCompare);
-        SetRedPixelComponent(q,ClampToQuantum(evaluate_pixel[i/2].red));
-        SetGreenPixelComponent(q,ClampToQuantum(evaluate_pixel[i/2].green));
-        SetBluePixelComponent(q,ClampToQuantum(evaluate_pixel[i/2].blue));
+        SetPixelRed(q,ClampToQuantum(evaluate_pixel[i/2].red));
+        SetPixelGreen(q,ClampToQuantum(evaluate_pixel[i/2].green));
+        SetPixelBlue(q,ClampToQuantum(evaluate_pixel[i/2].blue));
         if (evaluate_image->matte == MagickFalse)
-          SetOpacityPixelComponent(q,ClampToQuantum(
+          SetPixelOpacity(q,ClampToQuantum(
             evaluate_pixel[i/2].opacity));
         else
-          SetAlphaPixelComponent(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
+          SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
         if (evaluate_image->colorspace == CMYKColorspace)
-          SetIndexPixelComponent(evaluate_indexes+i,ClampToQuantum(
+          SetPixelIndex(evaluate_indexes+i,ClampToQuantum(
             evaluate_pixel[i/2].index));
         q++;
       }
@@ -660,19 +660,19 @@ MagickExport Image *EvaluateImages(const Image *images,
         for (x=0; x < (ssize_t) next->columns; x++)
         {
           evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],
-            GetRedPixelComponent(p),i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].red);
+            GetPixelRed(p),i == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].red);
           evaluate_pixel[x].green=ApplyEvaluateOperator(random_info[id],
-            GetGreenPixelComponent(p),i == 0 ? AddEvaluateOperator : op,
+            GetPixelGreen(p),i == 0 ? AddEvaluateOperator : op,
             evaluate_pixel[x].green);
           evaluate_pixel[x].blue=ApplyEvaluateOperator(random_info[id],
-            GetBluePixelComponent(p),i == 0 ? AddEvaluateOperator : op,
+            GetPixelBlue(p),i == 0 ? AddEvaluateOperator : op,
             evaluate_pixel[x].blue);
           evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
-            GetOpacityPixelComponent(p),i == 0 ? AddEvaluateOperator : op,
+            GetPixelOpacity(p),i == 0 ? AddEvaluateOperator : op,
             evaluate_pixel[x].opacity);
           if (evaluate_image->colorspace == CMYKColorspace)
             evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
-              GetIndexPixelComponent(indexes+x),i == 0 ? AddEvaluateOperator :
+              GetPixelIndex(indexes+x),i == 0 ? AddEvaluateOperator :
               op,evaluate_pixel[x].index);
           p++;
         }
@@ -690,15 +690,15 @@ MagickExport Image *EvaluateImages(const Image *images,
         }
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
-        SetRedPixelComponent(q,ClampToQuantum(evaluate_pixel[x].red));
-        SetGreenPixelComponent(q,ClampToQuantum(evaluate_pixel[x].green));
-        SetBluePixelComponent(q,ClampToQuantum(evaluate_pixel[x].blue));
+        SetPixelRed(q,ClampToQuantum(evaluate_pixel[x].red));
+        SetPixelGreen(q,ClampToQuantum(evaluate_pixel[x].green));
+        SetPixelBlue(q,ClampToQuantum(evaluate_pixel[x].blue));
         if (evaluate_image->matte == MagickFalse)
-          SetOpacityPixelComponent(q,ClampToQuantum(evaluate_pixel[x].opacity));
+          SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[x].opacity));
         else
-          SetAlphaPixelComponent(q,ClampToQuantum(evaluate_pixel[x].opacity));
+          SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[x].opacity));
         if (evaluate_image->colorspace == CMYKColorspace)
-          SetIndexPixelComponent(evaluate_indexes+x,ClampToQuantum(
+          SetPixelIndex(evaluate_indexes+x,ClampToQuantum(
             evaluate_pixel[x].index));
         q++;
       }
@@ -789,26 +789,26 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetRedPixelComponent(q),op,value)));
+        SetPixelRed(q,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelRed(q),op,value)));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetGreenPixelComponent(q),op,value)));
+        SetPixelGreen(q,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelGreen(q),op,value)));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetBluePixelComponent(q),op,value)));
+        SetPixelBlue(q,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelBlue(q),op,value)));
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte == MagickFalse)
-            SetOpacityPixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
-              random_info[id],GetOpacityPixelComponent(q),op,value)));
+            SetPixelOpacity(q,ClampToQuantum(ApplyEvaluateOperator(
+              random_info[id],GetPixelOpacity(q),op,value)));
           else
-            SetAlphaPixelComponent(q,ClampToQuantum(ApplyEvaluateOperator(
-              random_info[id],(Quantum) GetAlphaPixelComponent(q),op,value)));
+            SetPixelAlpha(q,ClampToQuantum(ApplyEvaluateOperator(
+              random_info[id],(Quantum) GetPixelAlpha(q),op,value)));
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
-        SetIndexPixelComponent(indexes+x,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetIndexPixelComponent(indexes+x),op,value)));
+        SetPixelIndex(indexes+x,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelIndex(indexes+x),op,value)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1024,27 +1024,27 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ApplyFunction(GetRedPixelComponent(q),
+        SetPixelRed(q,ApplyFunction(GetPixelRed(q),
           function,number_parameters,parameters,exception));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ApplyFunction(GetGreenPixelComponent(q),
+        SetPixelGreen(q,ApplyFunction(GetPixelGreen(q),
           function,number_parameters,parameters,exception));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ApplyFunction(GetBluePixelComponent(q),
+        SetPixelBlue(q,ApplyFunction(GetPixelBlue(q),
           function,number_parameters,parameters,exception));
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte == MagickFalse)
-            SetOpacityPixelComponent(q,ApplyFunction(
-              GetOpacityPixelComponent(q),function,number_parameters,parameters,
+            SetPixelOpacity(q,ApplyFunction(
+              GetPixelOpacity(q),function,number_parameters,parameters,
               exception));
           else
-            SetAlphaPixelComponent(q,ApplyFunction((Quantum)
-              GetAlphaPixelComponent(q),function,number_parameters,parameters,
+            SetPixelAlpha(q,ApplyFunction((Quantum)
+              GetPixelAlpha(q),function,number_parameters,parameters,
               exception));
         }
       if (((channel & IndexChannel) != 0) && (indexes != (IndexPacket *) NULL))
-        SetIndexPixelComponent(indexes+x,ApplyFunction(GetIndexPixelComponent(
+        SetPixelIndex(indexes+x,ApplyFunction(GetPixelIndex(
           indexes+x),function,number_parameters,parameters,exception));
       q++;
     }
@@ -1345,62 +1345,62 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
     {
       if ((channel & RedChannel) != 0)
         {
-          mean+=GetRedPixelComponent(p);
-          sum_squares+=(double) GetRedPixelComponent(p)*GetRedPixelComponent(p);
-          sum_cubes+=(double) GetRedPixelComponent(p)*GetRedPixelComponent(p)*
-            GetRedPixelComponent(p);
-          sum_fourth_power+=(double) GetRedPixelComponent(p)*
-            GetRedPixelComponent(p)*GetRedPixelComponent(p)*
-            GetRedPixelComponent(p);
+          mean+=GetPixelRed(p);
+          sum_squares+=(double) GetPixelRed(p)*GetPixelRed(p);
+          sum_cubes+=(double) GetPixelRed(p)*GetPixelRed(p)*
+            GetPixelRed(p);
+          sum_fourth_power+=(double) GetPixelRed(p)*
+            GetPixelRed(p)*GetPixelRed(p)*
+            GetPixelRed(p);
           area++;
         }
       if ((channel & GreenChannel) != 0)
         {
-          mean+=GetGreenPixelComponent(p);
-          sum_squares+=(double) GetGreenPixelComponent(p)*
-            GetGreenPixelComponent(p);
-          sum_cubes+=(double) GetGreenPixelComponent(p)*
-            GetGreenPixelComponent(p)*GetGreenPixelComponent(p);
-          sum_fourth_power+=(double) GetGreenPixelComponent(p)*
-            GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*
-            GetGreenPixelComponent(p);
+          mean+=GetPixelGreen(p);
+          sum_squares+=(double) GetPixelGreen(p)*
+            GetPixelGreen(p);
+          sum_cubes+=(double) GetPixelGreen(p)*
+            GetPixelGreen(p)*GetPixelGreen(p);
+          sum_fourth_power+=(double) GetPixelGreen(p)*
+            GetPixelGreen(p)*GetPixelGreen(p)*
+            GetPixelGreen(p);
           area++;
         }
       if ((channel & BlueChannel) != 0)
         {
-          mean+=GetBluePixelComponent(p);
-          sum_squares+=(double) GetBluePixelComponent(p)*
-            GetBluePixelComponent(p);
-          sum_cubes+=(double) GetBluePixelComponent(p)*GetBluePixelComponent(p)*
-            GetBluePixelComponent(p);
-          sum_fourth_power+=(double) GetBluePixelComponent(p)*
-            GetBluePixelComponent(p)*GetBluePixelComponent(p)*
-            GetBluePixelComponent(p);
+          mean+=GetPixelBlue(p);
+          sum_squares+=(double) GetPixelBlue(p)*
+            GetPixelBlue(p);
+          sum_cubes+=(double) GetPixelBlue(p)*GetPixelBlue(p)*
+            GetPixelBlue(p);
+          sum_fourth_power+=(double) GetPixelBlue(p)*
+            GetPixelBlue(p)*GetPixelBlue(p)*
+            GetPixelBlue(p);
           area++;
         }
       if ((channel & OpacityChannel) != 0)
         {
-          mean+=GetOpacityPixelComponent(p);
-          sum_squares+=(double) GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p);
-          sum_cubes+=(double) GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
-          sum_fourth_power+=(double) GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p);
+          mean+=GetPixelOpacity(p);
+          sum_squares+=(double) GetPixelOpacity(p)*
+            GetPixelOpacity(p);
+          sum_cubes+=(double) GetPixelOpacity(p)*
+            GetPixelOpacity(p)*GetPixelOpacity(p);
+          sum_fourth_power+=(double) GetPixelOpacity(p)*
+            GetPixelOpacity(p)*GetPixelOpacity(p)*
+            GetPixelOpacity(p);
           area++;
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          mean+=GetIndexPixelComponent(indexes+x);
-          sum_squares+=(double) GetIndexPixelComponent(indexes+x)*
-            GetIndexPixelComponent(indexes+x);
-          sum_cubes+=(double) GetIndexPixelComponent(indexes+x)*
-            GetIndexPixelComponent(indexes+x)*GetIndexPixelComponent(indexes+x);
-          sum_fourth_power+=(double) GetIndexPixelComponent(indexes+x)*
-            GetIndexPixelComponent(indexes+x)*GetIndexPixelComponent(indexes+x)*
-            GetIndexPixelComponent(indexes+x);
+          mean+=GetPixelIndex(indexes+x);
+          sum_squares+=(double) GetPixelIndex(indexes+x)*
+            GetPixelIndex(indexes+x);
+          sum_cubes+=(double) GetPixelIndex(indexes+x)*
+            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x);
+          sum_fourth_power+=(double) GetPixelIndex(indexes+x)*
+            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
+            GetPixelIndex(indexes+x);
           area++;
         }
       p++;
@@ -1534,10 +1534,10 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          if ((double) GetIndexPixelComponent(indexes+x) < *minima)
-            *minima=(double) GetIndexPixelComponent(indexes+x);
-          if ((double) GetIndexPixelComponent(indexes+x) > *maxima)
-            *maxima=(double) GetIndexPixelComponent(indexes+x);
+          if ((double) GetPixelIndex(indexes+x) < *minima)
+            *minima=(double) GetPixelIndex(indexes+x);
+          if ((double) GetPixelIndex(indexes+x) > *maxima)
+            *maxima=(double) GetPixelIndex(indexes+x);
         }
       p++;
     }
@@ -1642,8 +1642,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[RedChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetRedPixelComponent(p) != ScaleAnyToQuantum(
-            ScaleQuantumToAny(GetRedPixelComponent(p),range),range) ?
+          status=GetPixelRed(p) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetPixelRed(p),range),range) ?
             MagickTrue : MagickFalse;
           if (status != MagickFalse)
             {
@@ -1655,8 +1655,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[GreenChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetGreenPixelComponent(p) != ScaleAnyToQuantum(
-            ScaleQuantumToAny(GetGreenPixelComponent(p),range),range) ?
+          status=GetPixelGreen(p) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetPixelGreen(p),range),range) ?
             MagickTrue : MagickFalse;
           if (status != MagickFalse)
             {
@@ -1668,8 +1668,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
         {
           depth=channel_statistics[BlueChannel].depth;
           range=GetQuantumRange(depth);
-          status=GetBluePixelComponent(p) != ScaleAnyToQuantum(
-            ScaleQuantumToAny(GetBluePixelComponent(p),range),range) ?
+          status=GetPixelBlue(p) != ScaleAnyToQuantum(
+            ScaleQuantumToAny(GetPixelBlue(p),range),range) ?
             MagickTrue : MagickFalse;
           if (status != MagickFalse)
             {
@@ -1683,8 +1683,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[OpacityChannel].depth;
               range=GetQuantumRange(depth);
-              status=GetOpacityPixelComponent(p) != ScaleAnyToQuantum(
-                ScaleQuantumToAny(GetOpacityPixelComponent(p),range),range) ?
+              status=GetPixelOpacity(p) != ScaleAnyToQuantum(
+                ScaleQuantumToAny(GetPixelOpacity(p),range),range) ?
                 MagickTrue : MagickFalse;
               if (status != MagickFalse)
                 {
@@ -1699,8 +1699,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
             {
               depth=channel_statistics[BlackChannel].depth;
               range=GetQuantumRange(depth);
-              status=GetIndexPixelComponent(indexes+x) !=
-                ScaleAnyToQuantum(ScaleQuantumToAny(GetIndexPixelComponent(
+              status=GetPixelIndex(indexes+x) !=
+                ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelIndex(
                 indexes+x),range),range) ? MagickTrue : MagickFalse;
               if (status != MagickFalse)
                 {
@@ -1709,85 +1709,85 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
                 }
             }
         }
-      if ((double) GetRedPixelComponent(p) < channel_statistics[RedChannel].minima)
-        channel_statistics[RedChannel].minima=(double) GetRedPixelComponent(p);
-      if ((double) GetRedPixelComponent(p) > channel_statistics[RedChannel].maxima)
-        channel_statistics[RedChannel].maxima=(double) GetRedPixelComponent(p);
-      channel_statistics[RedChannel].sum+=GetRedPixelComponent(p);
-      channel_statistics[RedChannel].sum_squared+=(double) GetRedPixelComponent(p)*
-        GetRedPixelComponent(p);
+      if ((double) GetPixelRed(p) < channel_statistics[RedChannel].minima)
+        channel_statistics[RedChannel].minima=(double) GetPixelRed(p);
+      if ((double) GetPixelRed(p) > channel_statistics[RedChannel].maxima)
+        channel_statistics[RedChannel].maxima=(double) GetPixelRed(p);
+      channel_statistics[RedChannel].sum+=GetPixelRed(p);
+      channel_statistics[RedChannel].sum_squared+=(double) GetPixelRed(p)*
+        GetPixelRed(p);
       channel_statistics[RedChannel].sum_cubed+=(double)
-        GetRedPixelComponent(p)*GetRedPixelComponent(p)*
-        GetRedPixelComponent(p);
+        GetPixelRed(p)*GetPixelRed(p)*
+        GetPixelRed(p);
       channel_statistics[RedChannel].sum_fourth_power+=(double)
-        GetRedPixelComponent(p)*GetRedPixelComponent(p)*
-        GetRedPixelComponent(p)*GetRedPixelComponent(p);
-      if ((double) GetGreenPixelComponent(p) < channel_statistics[GreenChannel].minima)
+        GetPixelRed(p)*GetPixelRed(p)*
+        GetPixelRed(p)*GetPixelRed(p);
+      if ((double) GetPixelGreen(p) < channel_statistics[GreenChannel].minima)
         channel_statistics[GreenChannel].minima=(double)
-          GetGreenPixelComponent(p);
-      if ((double) GetGreenPixelComponent(p) > channel_statistics[GreenChannel].maxima)
+          GetPixelGreen(p);
+      if ((double) GetPixelGreen(p) > channel_statistics[GreenChannel].maxima)
         channel_statistics[GreenChannel].maxima=(double)
-          GetGreenPixelComponent(p);
-      channel_statistics[GreenChannel].sum+=GetGreenPixelComponent(p);
+          GetPixelGreen(p);
+      channel_statistics[GreenChannel].sum+=GetPixelGreen(p);
       channel_statistics[GreenChannel].sum_squared+=(double)
-        GetGreenPixelComponent(p)*GetGreenPixelComponent(p);
+        GetPixelGreen(p)*GetPixelGreen(p);
       channel_statistics[GreenChannel].sum_cubed+=(double)
-        GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*
-        GetGreenPixelComponent(p);
+        GetPixelGreen(p)*GetPixelGreen(p)*
+        GetPixelGreen(p);
       channel_statistics[GreenChannel].sum_fourth_power+=(double)
-        GetGreenPixelComponent(p)*GetGreenPixelComponent(p)*
-        GetGreenPixelComponent(p)*GetGreenPixelComponent(p);
-      if ((double) GetBluePixelComponent(p) < channel_statistics[BlueChannel].minima)
+        GetPixelGreen(p)*GetPixelGreen(p)*
+        GetPixelGreen(p)*GetPixelGreen(p);
+      if ((double) GetPixelBlue(p) < channel_statistics[BlueChannel].minima)
         channel_statistics[BlueChannel].minima=(double)
-          GetBluePixelComponent(p);
-      if ((double) GetBluePixelComponent(p) > channel_statistics[BlueChannel].maxima)
+          GetPixelBlue(p);
+      if ((double) GetPixelBlue(p) > channel_statistics[BlueChannel].maxima)
         channel_statistics[BlueChannel].maxima=(double)
-          GetBluePixelComponent(p);
-      channel_statistics[BlueChannel].sum+=GetBluePixelComponent(p);
+          GetPixelBlue(p);
+      channel_statistics[BlueChannel].sum+=GetPixelBlue(p);
       channel_statistics[BlueChannel].sum_squared+=(double)
-        GetBluePixelComponent(p)*GetBluePixelComponent(p);
+        GetPixelBlue(p)*GetPixelBlue(p);
       channel_statistics[BlueChannel].sum_cubed+=(double)
-        GetBluePixelComponent(p)*GetBluePixelComponent(p)*
-        GetBluePixelComponent(p);
+        GetPixelBlue(p)*GetPixelBlue(p)*
+        GetPixelBlue(p);
       channel_statistics[BlueChannel].sum_fourth_power+=(double)
-        GetBluePixelComponent(p)*GetBluePixelComponent(p)*
-        GetBluePixelComponent(p)*GetBluePixelComponent(p);
+        GetPixelBlue(p)*GetPixelBlue(p)*
+        GetPixelBlue(p)*GetPixelBlue(p);
       if (image->matte != MagickFalse)
         {
-          if ((double) GetOpacityPixelComponent(p) < channel_statistics[OpacityChannel].minima)
+          if ((double) GetPixelOpacity(p) < channel_statistics[OpacityChannel].minima)
             channel_statistics[OpacityChannel].minima=(double)
-              GetOpacityPixelComponent(p);
-          if ((double) GetOpacityPixelComponent(p) > channel_statistics[OpacityChannel].maxima)
+              GetPixelOpacity(p);
+          if ((double) GetPixelOpacity(p) > channel_statistics[OpacityChannel].maxima)
             channel_statistics[OpacityChannel].maxima=(double)
-              GetOpacityPixelComponent(p);
-          channel_statistics[OpacityChannel].sum+=GetOpacityPixelComponent(p);
+              GetPixelOpacity(p);
+          channel_statistics[OpacityChannel].sum+=GetPixelOpacity(p);
           channel_statistics[OpacityChannel].sum_squared+=(double)
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
+            GetPixelOpacity(p)*GetPixelOpacity(p);
           channel_statistics[OpacityChannel].sum_cubed+=(double)
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p);
+            GetPixelOpacity(p)*GetPixelOpacity(p)*
+            GetPixelOpacity(p);
           channel_statistics[OpacityChannel].sum_fourth_power+=(double)
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p)*
-            GetOpacityPixelComponent(p)*GetOpacityPixelComponent(p);
+            GetPixelOpacity(p)*GetPixelOpacity(p)*
+            GetPixelOpacity(p)*GetPixelOpacity(p);
         }
       if (image->colorspace == CMYKColorspace)
         {
-          if ((double) GetIndexPixelComponent(indexes+x) < channel_statistics[BlackChannel].minima)
+          if ((double) GetPixelIndex(indexes+x) < channel_statistics[BlackChannel].minima)
             channel_statistics[BlackChannel].minima=(double)
-              GetIndexPixelComponent(indexes+x);
-          if ((double) GetIndexPixelComponent(indexes+x) > channel_statistics[BlackChannel].maxima)
+              GetPixelIndex(indexes+x);
+          if ((double) GetPixelIndex(indexes+x) > channel_statistics[BlackChannel].maxima)
             channel_statistics[BlackChannel].maxima=(double)
-              GetIndexPixelComponent(indexes+x);
+              GetPixelIndex(indexes+x);
           channel_statistics[BlackChannel].sum+=
-            GetIndexPixelComponent(indexes+x);
+            GetPixelIndex(indexes+x);
           channel_statistics[BlackChannel].sum_squared+=(double)
-            GetIndexPixelComponent(indexes+x)*GetIndexPixelComponent(indexes+x);
+            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x);
           channel_statistics[BlackChannel].sum_cubed+=(double)
-            GetIndexPixelComponent(indexes+x)*GetIndexPixelComponent(indexes+x)*
-            GetIndexPixelComponent(indexes+x);
+            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
+            GetPixelIndex(indexes+x);
           channel_statistics[BlackChannel].sum_fourth_power+=(double)
-            GetIndexPixelComponent(indexes+x)*GetIndexPixelComponent(indexes+x)*
-            GetIndexPixelComponent(indexes+x)*GetIndexPixelComponent(indexes+x);
+            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x)*
+            GetPixelIndex(indexes+x)*GetPixelIndex(indexes+x);
         }
       x++;
       p++;

@@ -405,13 +405,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(IndexPacket) ((pixel >> red_shift) & red_mask);
-              SetRedPixelComponent(q,ScaleShortToQuantum(colors[(ssize_t)
+              SetPixelRed(q,ScaleShortToQuantum(colors[(ssize_t)
                 index].red));
               index=(IndexPacket) ((pixel >> green_shift) & green_mask);
-              SetGreenPixelComponent(q,ScaleShortToQuantum(colors[(ssize_t)
+              SetPixelGreen(q,ScaleShortToQuantum(colors[(ssize_t)
                 index].green));
               index=(IndexPacket) ((pixel >> blue_shift) & blue_mask);
-              SetBluePixelComponent(q,ScaleShortToQuantum(colors[(ssize_t)
+              SetPixelBlue(q,ScaleShortToQuantum(colors[(ssize_t)
                 index].blue));
               q++;
             }
@@ -433,15 +433,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
               color=(color*65535UL)/red_mask;
-              SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short)
+              SetPixelRed(q,ScaleShortToQuantum((unsigned short)
                 color));
               color=(pixel >> green_shift) & green_mask;
               color=(color*65535UL)/green_mask;
-              SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+              SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
                 color));
               color=(pixel >> blue_shift) & blue_mask;
               color=(color*65535UL)/blue_mask;
-              SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short)
+              SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
                 color));
               q++;
             }
@@ -477,8 +477,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,
               (int) y));
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -769,14 +769,14 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
       {
         indexes=GetVirtualIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+          *q++=(unsigned char) GetPixelIndex(indexes+x);
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
         p++;
       }
     for (x=0; x < (ssize_t) scanline_pad; x++)

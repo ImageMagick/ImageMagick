@@ -215,18 +215,18 @@ static Image *ReadSCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
               if(binar[z])
             {
-                SetRedPixelComponent(q,ScaleCharToQuantum(
+                SetPixelRed(q,ScaleCharToQuantum(
                   colour_palette[3*ink]));
-                SetGreenPixelComponent(q,ScaleCharToQuantum(
+                SetPixelGreen(q,ScaleCharToQuantum(
                   colour_palette[1+(3*ink)]));
-                SetBluePixelComponent(q,ScaleCharToQuantum(
+                SetPixelBlue(q,ScaleCharToQuantum(
                   colour_palette[2+(3*ink)]));
             } else {
-                SetRedPixelComponent(q,ScaleCharToQuantum(
+                SetPixelRed(q,ScaleCharToQuantum(
                   colour_palette[3*paper]));
-                SetGreenPixelComponent(q,ScaleCharToQuantum(
+                SetPixelGreen(q,ScaleCharToQuantum(
                   colour_palette[1+(3*paper)]));
-                SetBluePixelComponent(q,ScaleCharToQuantum(
+                SetPixelBlue(q,ScaleCharToQuantum(
                   colour_palette[2+(3*paper)]));
             }
 
