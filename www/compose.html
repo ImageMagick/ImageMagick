@@ -28,14 +28,16 @@
   <meta name="Distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <script type="text/javascript">
     $(document).ready(function() {
       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
@@ -78,7 +80,6 @@
 <div class="menu">
   <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
 </div>
-<div class="sep"></div>
 <div class="menu">
   <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
 </div>
@@ -200,14 +201,16 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-
+<div style="margin: 9pt 9pt 9pt 9pt;">
+  <div class="g-plusone" data-size="standard" data-count="false"></div>
+</div>
 </div>
 
 <div class="main">
@@ -627,7 +630,7 @@ these extra arguments to its <a href="../www/command-line-options.html#composite
 attribute of '<kbd class="arg">compose:args</kbd>'.  This means you can now
 make use of these special argumented <a href="../www/command-line-options.html#compose"
 >-compose</a> methods, those the argument and the method both need to be set
-separatally.  For example... </p>
+separately.  For example... </p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert ... -compose blend  -define compose:args=50,50 -composite ...</span></p>
 <p>The following is a table of these special 'argumented' compose methods,
@@ -714,12 +717,12 @@ with a brief summary of what they do. For more details see the equivalent
         each point of the overlaid area.  Much like the displacement map is a
         'lens' that distorts the original 'background' image behind it.
     <br><br>
-        The X-scale is modilated by the 'red' channel of the overlay image
+        The X-scale is modulated by the 'red' channel of the overlay image
         while the Y-scale is modulated by the green channel, (the mask image
         if given is rolled into green channel of the overlay image. This
         separation allows you to modulate the X and Y lookup displacement
-        separatally allowing you to di 2 dimentional displacements, rather
-        than 1 dimentional verctored displacements (using grayscale image).
+        separately allowing you to do 2-dimensional displacements, rather
+        than 1-dimensional verctored displacements (using grayscale image).
     <br><br>
         If the overlay image contains transparency this is used as a mask
         of the resulting image to remove 'invalid' pixels.
