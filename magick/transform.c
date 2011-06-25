@@ -715,7 +715,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CropImageToTiles() will crop a single image, into a posible list of tiles.
+%  CropImageToTiles() will crop a single image, into a possible list of tiles.
 %  This may include a single sub-region of the image.  This basically applies
 %  all the normal geometry flags for Crop.
 %

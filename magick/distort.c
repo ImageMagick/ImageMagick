@@ -1127,7 +1127,7 @@ static double *GenerateCoefficients(const Image *image,
          Coefficient 6  is the angle to coord ratio  and visa-versa
          Coefficient 7  is the radius to coord ratio and visa-versa
 
-         WARNING: It is posible for  Radius max<min  and/or  Angle from>to
+         WARNING: It is possible for  Radius max<min  and/or  Angle from>to
       */
       if ( number_arguments == 3
           || ( number_arguments > 6 && *method == PolarDistortion )
