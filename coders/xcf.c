@@ -374,10 +374,10 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
       {
         for (x=0; x < (ssize_t) tile_image->columns; x++)
         {
-          SetRedPixelComponent(q,ScaleCharToQuantum(*graydata));
-          SetGreenPixelComponent(q,GetRedPixelComponent(q));
-          SetBluePixelComponent(q,GetRedPixelComponent(q));
-          SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+          SetPixelRed(q,ScaleCharToQuantum(*graydata));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
             inLayerInfo->opacity));
           graydata++;
           q++;
@@ -388,10 +388,10 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
         {
           for (x=0; x < (ssize_t) tile_image->columns; x++)
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum(xcfdata->red));
-            SetGreenPixelComponent(q,ScaleCharToQuantum(xcfdata->green));
-            SetBluePixelComponent(q,ScaleCharToQuantum(xcfdata->blue));
-            SetAlphaPixelComponent(q,xcfdata->opacity == 0U ?  OpaqueOpacity :
+            SetPixelRed(q,ScaleCharToQuantum(xcfdata->red));
+            SetPixelGreen(q,ScaleCharToQuantum(xcfdata->green));
+            SetPixelBlue(q,ScaleCharToQuantum(xcfdata->blue));
+            SetPixelAlpha(q,xcfdata->opacity == 0U ?  OpaqueOpacity :
               ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
             xcfdata++;
             q++;
@@ -474,36 +474,36 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum(data));
+                  SetPixelRed(q,ScaleCharToQuantum(data));
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
-                      SetGreenPixelComponent(q,ScaleCharToQuantum(data));
-                      SetBluePixelComponent(q,ScaleCharToQuantum(data));
-                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                      SetPixelGreen(q,ScaleCharToQuantum(data));
+                      SetPixelBlue(q,ScaleCharToQuantum(data));
+                      SetPixelAlpha(q,ScaleCharToQuantum(
                         (unsigned char) inLayerInfo->opacity));
                     }
                   else
                     {
-                      SetGreenPixelComponent(q,GetRedPixelComponent(q));
-                      SetBluePixelComponent(q,GetRedPixelComponent(q));
-                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                      SetPixelGreen(q,GetPixelRed(q));
+                      SetPixelBlue(q,GetPixelRed(q));
+                      SetPixelAlpha(q,ScaleCharToQuantum(
                         (unsigned char) inLayerInfo->opacity));
                     }
                   break;
                 }
                 case 1:
                 {
-                  SetGreenPixelComponent(q,ScaleCharToQuantum(data));
+                  SetPixelGreen(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 2:
                 {
-                  SetBluePixelComponent(q,ScaleCharToQuantum(data));
+                  SetPixelBlue(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 3:
                 {
-                  SetAlphaPixelComponent(q,data == 0 ? OpaqueOpacity :
+                  SetPixelAlpha(q,data == 0 ? OpaqueOpacity :
                     ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
                   break;
                 }
@@ -534,36 +534,36 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum(data));
+                  SetPixelRed(q,ScaleCharToQuantum(data));
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
-                      SetGreenPixelComponent(q,ScaleCharToQuantum(data));
-                      SetBluePixelComponent(q,ScaleCharToQuantum(data));
-                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                      SetPixelGreen(q,ScaleCharToQuantum(data));
+                      SetPixelBlue(q,ScaleCharToQuantum(data));
+                      SetPixelAlpha(q,ScaleCharToQuantum(
                         (unsigned char) inLayerInfo->opacity));
                     }
                   else
                     {
-                      SetGreenPixelComponent(q,GetRedPixelComponent(q));
-                      SetBluePixelComponent(q,GetRedPixelComponent(q));
-                      SetAlphaPixelComponent(q,ScaleCharToQuantum(
+                      SetPixelGreen(q,GetPixelRed(q));
+                      SetPixelBlue(q,GetPixelRed(q));
+                      SetPixelAlpha(q,ScaleCharToQuantum(
                         (unsigned char) inLayerInfo->opacity));
                     }
                   break;
                 }
                 case 1:
                 {
-                  SetGreenPixelComponent(q,ScaleCharToQuantum(data));
+                  SetPixelGreen(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 2:
                 {
-                  SetBluePixelComponent(q,ScaleCharToQuantum(data));
+                  SetPixelBlue(q,ScaleCharToQuantum(data));
                   break;
                 }
                 case 3:
                 {
-                  SetAlphaPixelComponent(q,data == 0 ? OpaqueOpacity :
+                  SetPixelAlpha(q,data == 0 ? OpaqueOpacity :
                     ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
                   break;
                 }

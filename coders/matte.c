@@ -194,10 +194,10 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,GetOpacityPixelComponent(p));
-      SetGreenPixelComponent(q,GetOpacityPixelComponent(p));
-      SetBluePixelComponent(q,GetOpacityPixelComponent(p));
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelRed(q,GetPixelOpacity(p));
+      SetPixelGreen(q,GetPixelOpacity(p));
+      SetPixelBlue(q,GetPixelOpacity(p));
+      SetPixelOpacity(q,OpaqueOpacity);
       p++;
       q++;
     }

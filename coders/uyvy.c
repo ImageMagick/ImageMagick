@@ -158,13 +158,13 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       y1=(unsigned char) ReadBlobByte(image);
       v=(unsigned char) ReadBlobByte(image);
       y2=(unsigned char) ReadBlobByte(image);
-      SetRedPixelComponent(q,ScaleCharToQuantum(y1));
-      SetGreenPixelComponent(q,ScaleCharToQuantum(u));
-      SetBluePixelComponent(q,ScaleCharToQuantum(v));
+      SetPixelRed(q,ScaleCharToQuantum(y1));
+      SetPixelGreen(q,ScaleCharToQuantum(u));
+      SetPixelBlue(q,ScaleCharToQuantum(v));
       q++;
-      SetRedPixelComponent(q,ScaleCharToQuantum(y2));
-      SetGreenPixelComponent(q,ScaleCharToQuantum(u));
-      SetBluePixelComponent(q,ScaleCharToQuantum(v));
+      SetPixelRed(q,ScaleCharToQuantum(y2));
+      SetPixelGreen(q,ScaleCharToQuantum(u));
+      SetPixelBlue(q,ScaleCharToQuantum(v));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -338,17 +338,17 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     {
       if (full != MagickFalse)
         {
-          pixel.green=(pixel.green+GetGreenPixelComponent(p))/2;
-          pixel.blue=(pixel.blue+GetBluePixelComponent(p))/2;
+          pixel.green=(pixel.green+GetPixelGreen(p))/2;
+          pixel.blue=(pixel.blue+GetPixelBlue(p))/2;
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.green));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.red));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.blue));
           (void) WriteBlobByte(image,ScaleQuantumToChar(
-             GetRedPixelComponent(p)));
+             GetPixelRed(p)));
         }
-      pixel.red=(double) GetRedPixelComponent(p);
-      pixel.green=(double) GetGreenPixelComponent(p);
-      pixel.blue=(double) GetBluePixelComponent(p);
+      pixel.red=(double) GetPixelRed(p);
+      pixel.green=(double) GetPixelGreen(p);
+      pixel.blue=(double) GetPixelBlue(p);
       full=full == MagickFalse ? MagickTrue : MagickFalse;
       p++;
     }

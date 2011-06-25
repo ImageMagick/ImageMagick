@@ -636,25 +636,25 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
       {
         case -1:
         {
-          SetAlphaPixelComponent(q,pixel);
+          SetPixelAlpha(q,pixel);
           break;
         }
         case 0:
         {
-          SetRedPixelComponent(q,pixel);
+          SetPixelRed(q,pixel);
           if (channels == 1)
             {
-              SetGreenPixelComponent(q,GetRedPixelComponent(q));
-              SetBluePixelComponent(q,GetRedPixelComponent(q));
+              SetPixelGreen(q,GetPixelRed(q));
+              SetPixelBlue(q,GetPixelRed(q));
             }
           if (image->storage_class == PseudoClass)
             {
               if (packet_size == 1)
-                SetIndexPixelComponent(indexes+x,ScaleQuantumToChar(pixel));
+                SetPixelIndex(indexes+x,ScaleQuantumToChar(pixel));
               else
-                SetIndexPixelComponent(indexes+x,ScaleQuantumToShort(pixel));
-              SetRGBOPixelComponents(q,image->colormap+(ssize_t)
-                GetIndexPixelComponent(indexes+x));
+                SetPixelIndex(indexes+x,ScaleQuantumToShort(pixel));
+              SetPixelRGBO(q,image->colormap+(ssize_t)
+                GetPixelIndex(indexes+x));
               if (image->depth == 1)
                 {
                   ssize_t
@@ -666,10 +666,10 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                     number_bits=8;
                   for (bit=0; bit < number_bits; bit++)
                   {
-                    SetIndexPixelComponent(indexes+x,(((unsigned char) pixel) &
+                    SetPixelIndex(indexes+x,(((unsigned char) pixel) &
                       (0x01 << (7-bit))) != 0 ? 0 : 255);
-                    SetRGBOPixelComponents(q,image->colormap+(ssize_t)
-                      GetIndexPixelComponent(indexes+x));
+                    SetPixelRGBO(q,image->colormap+(ssize_t)
+                      GetPixelIndex(indexes+x));
                     q++;
                     x++;
                   }
@@ -682,32 +682,32 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         case 1:
         {
           if (image->storage_class == PseudoClass)
-            SetAlphaPixelComponent(q,pixel);
+            SetPixelAlpha(q,pixel);
           else
-            SetGreenPixelComponent(q,pixel);
+            SetPixelGreen(q,pixel);
           break;
         }
         case 2:
         {
           if (image->storage_class == PseudoClass)
-            SetAlphaPixelComponent(q,pixel);
+            SetPixelAlpha(q,pixel);
           else
-            SetBluePixelComponent(q,pixel);
+            SetPixelBlue(q,pixel);
           break;
         }
         case 3:
         {
           if (image->colorspace == CMYKColorspace)
-            SetIndexPixelComponent(indexes+x,pixel);
+            SetPixelIndex(indexes+x,pixel);
           else
-            SetAlphaPixelComponent(q,pixel);
+            SetPixelAlpha(q,pixel);
           break;
         }
         case 4:
         {
           if ((image->colorspace == RGBColorspace) && (channels > 3))
             break;
-          SetAlphaPixelComponent(q,pixel);
+          SetPixelAlpha(q,pixel);
           break;
         }
         default:
@@ -2024,7 +2024,7 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
-    if (id == 0x000003ed)
+    if ((id == 0x000003ed) && (PSDQuantum(count) < (length-12)))
       {
         (void) CopyMagickMemory(q,q+PSDQuantum(count)+12,length-
           (PSDQuantum(count)+12)-(q-datum));

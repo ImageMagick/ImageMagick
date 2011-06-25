@@ -159,7 +159,7 @@ Image Operators:
   \-linear-stretch geometry
                        improve contrast by `stretching with saturation' the intensity range
   \-median geometry     apply a median filter to the image
-  \-mode geometry       make each pixel the 'predominate color' of the neighborhood
+  \-mode geometry       make each pixel the 'predominant color' of the neighborhood
   \-modulate value      vary the brightness, saturation, and hue
   \-monochrome          transform image to black and white
   \-motion-blur geometry

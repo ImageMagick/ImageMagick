@@ -602,14 +602,14 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (image->storage_class == PseudoClass)
-          SetIndexPixelComponent(indexes+x,*r++);
+          SetPixelIndex(indexes+x,*r++);
         else
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum(*r++));
-            SetGreenPixelComponent(q,ScaleCharToQuantum(*r++));
-            SetBluePixelComponent(q,ScaleCharToQuantum(*r++));
+            SetPixelRed(q,ScaleCharToQuantum(*r++));
+            SetPixelGreen(q,ScaleCharToQuantum(*r++));
+            SetPixelBlue(q,ScaleCharToQuantum(*r++));
             if (image->matte != MagickFalse)
-              SetAlphaPixelComponent(q,ScaleCharToQuantum(*r++));
+              SetPixelAlpha(q,ScaleCharToQuantum(*r++));
           }
         q++;
       }
@@ -1011,7 +1011,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+                  *q++=ScaleQuantumToChar(GetPixelRed(p));
                   p++;
                 }
                 break;
@@ -1020,7 +1020,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
+                  *q++=ScaleQuantumToChar(GetPixelGreen(p));
                   p++;
                 }
                 break;
@@ -1029,7 +1029,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+                  *q++=ScaleQuantumToChar(GetPixelBlue(p));
                   p++;
                 }
                 break;
@@ -1040,7 +1040,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
                 for (x=(ssize_t) pcx_info.bytes_per_line; x != 0; x--)
                 {
                   *q++=ScaleQuantumToChar((Quantum)
-                    (GetAlphaPixelComponent(p)));
+                    (GetPixelAlpha(p)));
                   p++;
                 }
                 break;
@@ -1069,7 +1069,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
             indexes=GetVirtualIndexQueue(image);
             q=pcx_pixels;
             for (x=0; x < (ssize_t) image->columns; x++)
-              *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+              *q++=(unsigned char) GetPixelIndex(indexes+x);
             if (PCXWritePixels(&pcx_info,pcx_pixels,image) == MagickFalse)
               break;
             if (image->previous == (Image *) NULL)
@@ -1111,7 +1111,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                if (GetIndexPixelComponent(indexes+x) == polarity)
+                if (GetPixelIndex(indexes+x) == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)

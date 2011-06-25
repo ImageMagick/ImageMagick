@@ -201,7 +201,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
           if (byte == EOF)
             ThrowReaderException(CorruptImageError,"CorruptImage");
         }
-      SetIndexPixelComponent(indexes+x,(byte & (0x01 << (7-bit))) ? 1 : 0);
+      SetPixelIndex(indexes+x,(byte & (0x01 << (7-bit))) ? 1 : 0);
       bit++;
       if (bit == 8)
         bit=0;

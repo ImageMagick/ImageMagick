@@ -243,25 +243,25 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           case 0:
           {
-            SetRedPixelComponent(q,pixel);
-            SetGreenPixelComponent(q,pixel);
-            SetBluePixelComponent(q,pixel);
+            SetPixelRed(q,pixel);
+            SetPixelGreen(q,pixel);
+            SetPixelBlue(q,pixel);
             break;
           }
           case 1:
           {
-            SetGreenPixelComponent(q,pixel);
+            SetPixelGreen(q,pixel);
             break;
           }
           case 2:
           {
-            SetBluePixelComponent(q,pixel);
+            SetPixelBlue(q,pixel);
             break;
           }
           case 3: 
           {
             if (image->colorspace == CMYKColorspace)
-              SetBlackPixelComponent(indexes+x,pixel);
+              SetPixelBlack(indexes+x,pixel);
             break;
           }
         }

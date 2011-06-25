@@ -476,17 +476,17 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (PixelPacket *) NULL)
           continue;
-        SetRedPixelComponent(q,ScaleAnyToQuantum(pixel.red,range));
-        SetGreenPixelComponent(q,ScaleAnyToQuantum(pixel.green,range));
-        SetBluePixelComponent(q,ScaleAnyToQuantum(pixel.blue,range));
+        SetPixelRed(q,ScaleAnyToQuantum(pixel.red,range));
+        SetPixelGreen(q,ScaleAnyToQuantum(pixel.green,range));
+        SetPixelBlue(q,ScaleAnyToQuantum(pixel.blue,range));
         if (image->colorspace == CMYKColorspace)
           {
             indexes=GetAuthenticIndexQueue(image);
-            SetIndexPixelComponent(indexes,ScaleAnyToQuantum(pixel.index,
+            SetPixelIndex(indexes,ScaleAnyToQuantum(pixel.index,
               range));
           }
         if (image->matte != MagickFalse)
-          SetAlphaPixelComponent(q,ScaleAnyToQuantum(pixel.opacity,range));
+          SetPixelAlpha(q,ScaleAnyToQuantum(pixel.opacity,range));
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }

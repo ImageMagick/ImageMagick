@@ -165,7 +165,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        ConvertRGBToHSB(GetRedPixelComponent(p),GetGreenPixelComponent(p),GetBluePixelComponent(p),&hue,&saturation,&brightness);
+        ConvertRGBToHSB(GetPixelRed(p),GetPixelGreen(p),GetPixelBlue(p),&hue,&saturation,&brightness);
         brightness*=QuantumRange;
         brightness_sum_x+=brightness;
         brightness_sum_x2+=brightness*brightness;

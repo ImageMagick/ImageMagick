@@ -363,7 +363,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (bit == 0)
         byte=(size_t) (*p++);
-      SetIndexPixelComponent(indexes+x,(byte & 0x01) != 0 ? 0x01 : 0x00);
+      SetPixelIndex(indexes+x,(byte & 0x01) != 0 ? 0x01 : 0x00);
       bit++;
       byte>>=1;
       if (bit == 8)

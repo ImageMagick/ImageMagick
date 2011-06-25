@@ -167,9 +167,9 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
       if (bit == 0)
         byte=(size_t) ReadBlobByte(image);
       if (image_info->endian == LSBEndian)
-        SetIndexPixelComponent(indexes+x,((byte & 0x01) != 0) ? 0x00 : 0x01);
+        SetPixelIndex(indexes+x,((byte & 0x01) != 0) ? 0x00 : 0x01);
       else
-        SetIndexPixelComponent(indexes+x,((byte & 0x01) != 0) ? 0x01 : 0x00);
+        SetPixelIndex(indexes+x,((byte & 0x01) != 0) ? 0x01 : 0x00);
       bit++;
       if (bit == 8)
         bit=0;

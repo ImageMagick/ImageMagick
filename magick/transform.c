@@ -197,7 +197,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           if (indexes != (IndexPacket *) NULL)
             {
               if (chop_indexes != (IndexPacket *) NULL)
-                *chop_indexes++=GetIndexPixelComponent(indexes+x);
+                *chop_indexes++=GetPixelIndex(indexes+x);
             }
           q++;
         }
@@ -260,7 +260,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           if (indexes != (IndexPacket *) NULL)
             {
               if (chop_indexes != (IndexPacket *) NULL)
-                *chop_indexes++=GetIndexPixelComponent(indexes+x);
+                *chop_indexes++=GetPixelIndex(indexes+x);
             }
           q++;
         }
@@ -368,7 +368,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        SetRedPixelComponent(q,QuantumRange-PixelIntensityToQuantum(p));
+        SetPixelRed(q,QuantumRange-PixelIntensityToQuantum(p));
         p++;
         q++;
       }
@@ -468,7 +468,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       indexes=GetCacheViewAuthenticIndexQueue(cmyk_view);
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        SetIndexPixelComponent(indexes+x,QuantumRange-
+        SetPixelIndex(indexes+x,QuantumRange-
           PixelIntensityToQuantum(p));
         p++;
       }
@@ -715,7 +715,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CropImageToTiles() will crop a single image, into a posible list of tiles.
+%  CropImageToTiles() will crop a single image, into a possible list of tiles.
 %  This may include a single sub-region of the image.  This basically applies
 %  all the normal geometry flags for Crop.
 %
@@ -1402,8 +1402,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       (*--q)=(*p++);
       if ((indexes != (const IndexPacket *) NULL) &&
           (flop_indexes != (IndexPacket *) NULL))
-        SetIndexPixelComponent(flop_indexes+flop_image->columns-x-1,
-         GetIndexPixelComponent( indexes+x));
+        SetPixelIndex(flop_indexes+flop_image->columns-x-1,
+         GetPixelIndex( indexes+x));
     }
     if (SyncCacheViewAuthenticPixels(flop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1822,15 +1822,15 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_indexes=GetCacheViewAuthenticIndexQueue(splice_view);
     for (x=0; x < splice_geometry.x; x++)
     {
-      SetRedPixelComponent(q,GetRedPixelComponent(p));
-      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-      SetBluePixelComponent(q,GetBluePixelComponent(p));
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelRed(q,GetPixelRed(p));
+      SetPixelGreen(q,GetPixelGreen(p));
+      SetPixelBlue(q,GetPixelBlue(p));
+      SetPixelOpacity(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+        SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetIndexPixelComponent(splice_indexes+x,
-          GetIndexPixelComponent(indexes));
+        SetPixelIndex(splice_indexes+x,
+          GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -1839,15 +1839,15 @@ MagickExport Image *SpliceImage(const Image *image,
       q++;
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
-      SetRedPixelComponent(q,GetRedPixelComponent(p));
-      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-      SetBluePixelComponent(q,GetBluePixelComponent(p));
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelRed(q,GetPixelRed(p));
+      SetPixelGreen(q,GetPixelGreen(p));
+      SetPixelBlue(q,GetPixelBlue(p));
+      SetPixelOpacity(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+        SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetIndexPixelComponent(splice_indexes+x,
-          GetIndexPixelComponent(indexes));
+        SetPixelIndex(splice_indexes+x,
+          GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -1904,15 +1904,15 @@ MagickExport Image *SpliceImage(const Image *image,
     splice_indexes=GetCacheViewAuthenticIndexQueue(splice_view);
     for (x=0; x < splice_geometry.x; x++)
     {
-      SetRedPixelComponent(q,GetRedPixelComponent(p));
-      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-      SetBluePixelComponent(q,GetBluePixelComponent(p));
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelRed(q,GetPixelRed(p));
+      SetPixelGreen(q,GetPixelGreen(p));
+      SetPixelBlue(q,GetPixelBlue(p));
+      SetPixelOpacity(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+        SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetIndexPixelComponent(splice_indexes+x,
-           GetIndexPixelComponent(indexes));
+        SetPixelIndex(splice_indexes+x,
+           GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -1921,15 +1921,15 @@ MagickExport Image *SpliceImage(const Image *image,
       q++;
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
-      SetRedPixelComponent(q,GetRedPixelComponent(p));
-      SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-      SetBluePixelComponent(q,GetBluePixelComponent(p));
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelRed(q,GetPixelRed(p));
+      SetPixelGreen(q,GetPixelGreen(p));
+      SetPixelBlue(q,GetPixelBlue(p));
+      SetPixelOpacity(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+        SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetIndexPixelComponent(splice_indexes+x,
-          GetIndexPixelComponent(indexes));
+        SetPixelIndex(splice_indexes+x,
+          GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -2359,8 +2359,8 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         transverse_indexes=GetCacheViewAuthenticIndexQueue(transverse_view);
         if (transverse_indexes != (IndexPacket *) NULL)
           for (x=0; x < (ssize_t) image->columns; x++)
-            SetIndexPixelComponent(transverse_indexes+image->columns-x-1,
-              GetIndexPixelComponent(indexes+x));
+            SetPixelIndex(transverse_indexes+image->columns-x-1,
+              GetPixelIndex(indexes+x));
       }
     sync=SyncCacheViewAuthenticPixels(transverse_view,exception);
     if (sync == MagickFalse)

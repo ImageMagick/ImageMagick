@@ -288,20 +288,20 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushCharPixel(p,&quantum);
-      SetRedPixelComponent(pixel,ScaleCharToQuantum(quantum));
+      SetPixelRed(pixel,ScaleCharToQuantum(quantum));
       p=PushCharPixel(p,&quantum);
-      SetGreenPixelComponent(pixel,ScaleCharToQuantum(quantum));
+      SetPixelGreen(pixel,ScaleCharToQuantum(quantum));
       p=PushCharPixel(p,&quantum);
-      SetBluePixelComponent(pixel,ScaleCharToQuantum(quantum));
+      SetPixelBlue(pixel,ScaleCharToQuantum(quantum));
       if (image->matte != MagickFalse)
         {
           p=PushCharPixel(p,&quantum);
-          SetOpacityPixelComponent(pixel,ScaleCharToQuantum(quantum));
+          SetPixelOpacity(pixel,ScaleCharToQuantum(quantum));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushCharPixel(p,&quantum);
-          SetBlackPixelComponent(index,ScaleCharToQuantum(quantum));
+          SetPixelBlack(index,ScaleCharToQuantum(quantum));
         }
       break;
     }
@@ -311,24 +311,24 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushShortPixel(MSBEndian,p,&quantum);
-      SetRedPixelComponent(pixel,quantum >> (image->depth-
+      SetPixelRed(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       p=PushShortPixel(MSBEndian,p,&quantum);
-      SetGreenPixelComponent(pixel,quantum >> (image->depth-
+      SetPixelGreen(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       p=PushShortPixel(MSBEndian,p,&quantum);
-      SetBluePixelComponent(pixel,quantum >> (image->depth-
+      SetPixelBlue(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       if (image->matte != MagickFalse)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          SetOpacityPixelComponent(pixel,quantum >> (image->depth-
+          SetPixelOpacity(pixel,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
-          SetBlackPixelComponent(index,quantum >> (image->depth-
+          SetPixelBlack(index,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
@@ -339,24 +339,24 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushLongPixel(MSBEndian,p,&quantum);
-      SetRedPixelComponent(pixel,quantum >> (image->depth-
+      SetPixelRed(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       p=PushLongPixel(MSBEndian,p,&quantum);
-      SetGreenPixelComponent(pixel,quantum >> (image->depth-
+      SetPixelGreen(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       p=PushLongPixel(MSBEndian,p,&quantum);
-      SetBluePixelComponent(pixel,quantum >> (image->depth-
+      SetPixelBlue(pixel,quantum >> (image->depth-
         MAGICKCORE_QUANTUM_DEPTH));
       if (image->matte != MagickFalse)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          SetOpacityPixelComponent(pixel,quantum >> (image->depth-
+          SetPixelOpacity(pixel,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       if (image->colorspace == CMYKColorspace)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
-          SetIndexPixelComponent(index,quantum >> (image->depth-
+          SetPixelIndex(index,quantum >> (image->depth-
             MAGICKCORE_QUANTUM_DEPTH));
         }
       break;
@@ -1422,11 +1422,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             length--;
             if ((image->storage_class == PseudoClass) ||
                 (image->colorspace == CMYKColorspace))
-              SetIndexPixelComponent(indexes+x,index);
-            SetRedPixelComponent(q,pixel.red);
-            SetGreenPixelComponent(q,pixel.green);
-            SetBluePixelComponent(q,pixel.blue);
-            SetOpacityPixelComponent(q,pixel.opacity);
+              SetPixelIndex(indexes+x,index);
+            SetPixelRed(q,pixel.red);
+            SetPixelGreen(q,pixel.green);
+            SetPixelBlue(q,pixel.blue);
+            SetPixelOpacity(q,pixel.opacity);
             q++;
           }
           break;
@@ -2420,9 +2420,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             if ((length < 255) && (x < (ssize_t) (image->columns-1)) &&
                 (IsColorEqual(p,&pixel) != MagickFalse) &&
                 ((image->matte == MagickFalse) ||
-                 (GetOpacityPixelComponent(p) == pixel.opacity)) &&
+                 (GetPixelOpacity(p) == pixel.opacity)) &&
                 ((indexes == (IndexPacket *) NULL) ||
-                 (index == GetIndexPixelComponent(indexes+x))))
+                 (index == GetPixelIndex(indexes+x))))
               length++;
             else
               {
@@ -2432,7 +2432,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               }
             pixel=(*p);
             if (indexes != (IndexPacket *) NULL)
-              index=GetIndexPixelComponent(indexes+x);
+              index=GetPixelIndex(indexes+x);
             p++;
           }
           q=PopRunlengthPacket(image,q,length,pixel,index);

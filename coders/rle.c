@@ -444,11 +444,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-            SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-            SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+            SetPixelRed(q,ScaleCharToQuantum(*p++));
+            SetPixelGreen(q,ScaleCharToQuantum(*p++));
+            SetPixelBlue(q,ScaleCharToQuantum(*p++));
             if (image->matte != MagickFalse)
-              SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
+              SetPixelAlpha(q,ScaleCharToQuantum(*p++));
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -504,7 +504,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
-                SetIndexPixelComponent(indexes+x,*p++);
+                SetPixelIndex(indexes+x,*p++);
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -529,10 +529,10 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,image->colormap[*p++].red);
-                SetGreenPixelComponent(q,image->colormap[*p++].green);
-                SetBluePixelComponent(q,image->colormap[*p++].blue);
-                SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
+                SetPixelRed(q,image->colormap[*p++].red);
+                SetPixelGreen(q,image->colormap[*p++].green);
+                SetPixelBlue(q,image->colormap[*p++].blue);
+                SetPixelAlpha(q,ScaleCharToQuantum(*p++));
                 q++;
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)

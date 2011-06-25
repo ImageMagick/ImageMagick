@@ -223,9 +223,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetRedPixelComponent(q,GetRedPixelComponent(p));
-            SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-            SetBluePixelComponent(q,GetBluePixelComponent(p));
+            SetPixelRed(q,GetPixelRed(p));
+            SetPixelGreen(q,GetPixelGreen(p));
+            SetPixelBlue(q,GetPixelBlue(p));
             p++;
             q++;
           }

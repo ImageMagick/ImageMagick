@@ -443,10 +443,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
-        SetRedPixelComponent(q,ClampToQuantum(scale*(fits_info.scale*(pixel-
+        SetPixelRed(q,ClampToQuantum(scale*(fits_info.scale*(pixel-
           fits_info.min_data)+fits_info.zero)));
-        SetGreenPixelComponent(q,GetRedPixelComponent(q));
-        SetBluePixelComponent(q,GetRedPixelComponent(q));
+        SetPixelGreen(q,GetPixelRed(q));
+        SetPixelBlue(q,GetPixelRed(q));
         q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)

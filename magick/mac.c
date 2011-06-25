@@ -1364,11 +1364,11 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     for (x=0; x < image->columns; x++)
     {
       GetCPixel(x,y,&Pixel);
-      SetRedPixelComponent(q,ScaleCharToQuantum(Pixel.red & 0xff));
-      SetGreenPixelComponent(q,ScaleCharToQuantum(Pixel.green & 0xff));
-      SetBluePixelComponent(q,ScaleCharToQuantum(Pixel.blue & 0xff));
+      SetPixelRed(q,ScaleCharToQuantum(Pixel.red & 0xff));
+      SetPixelGreen(q,ScaleCharToQuantum(Pixel.green & 0xff));
+      SetPixelBlue(q,ScaleCharToQuantum(Pixel.blue & 0xff));
       if (image->storage_class == PseudoClass)
-        SetIndexPixelComponent(indexes+x,Color2Index(&Pixel));
+        SetPixelIndex(indexes+x,Color2Index(&Pixel));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

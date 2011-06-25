@@ -406,7 +406,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) CopyXPMColor(key,p,(size_t) width);
           j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
           if (image->storage_class == PseudoClass)
-            SetIndexPixelComponent(indexes+x,j);
+            SetPixelIndex(indexes+x,j);
           *r=image->colormap[j];
           r++;
           p+=width;
@@ -687,7 +687,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
               if (q->opacity == (Quantum) TransparentOpacity)
                 transparent=MagickTrue;
               else
-                SetOpacityPixelComponent(q,OpaqueOpacity);
+                SetPixelOpacity(q,OpaqueOpacity);
               q++;
             }
             if (SyncAuthenticPixels(picon,exception) == MagickFalse)
@@ -716,7 +716,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
         for (x=0; x < (ssize_t) picon->columns; x++)
         {
           if (q->opacity == (Quantum) TransparentOpacity)
-            SetIndexPixelComponent(indexes+x,picon->colors);
+            SetPixelIndex(indexes+x,picon->colors);
           q++;
         }
         if (SyncAuthenticPixels(picon,exception) == MagickFalse)
@@ -787,11 +787,11 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     (void) WriteBlobString(image,"\"");
     for (x=0; x < (ssize_t) picon->columns; x++)
     {
-      k=((ssize_t) GetIndexPixelComponent(indexes+x) % MaxCixels);
+      k=((ssize_t) GetPixelIndex(indexes+x) % MaxCixels);
       symbol[0]=Cixel[k];
       for (j=1; j < (ssize_t) characters_per_pixel; j++)
       {
-        k=(((int) GetIndexPixelComponent(indexes+x)-k)/MaxCixels) % MaxCixels;
+        k=(((int) GetPixelIndex(indexes+x)-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
@@ -1018,11 +1018,11 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"\"");
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      k=((ssize_t) GetIndexPixelComponent(indexes+x) % MaxCixels);
+      k=((ssize_t) GetPixelIndex(indexes+x) % MaxCixels);
       symbol[0]=Cixel[k];
       for (j=1; j < (ssize_t) characters_per_pixel; j++)
       {
-        k=(((int) GetIndexPixelComponent(indexes+x)-k)/MaxCixels) % MaxCixels;
+        k=(((int) GetPixelIndex(indexes+x)-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
