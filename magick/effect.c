@@ -4953,7 +4953,7 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
     channels[5];
 
   /*
-    Make each pixel the 'predominate color' of the specified neighborhood.
+    Make each pixel the 'predominant color' of the specified neighborhood.
   */
   for (channel=0; channel < 5; channel++)
   {
