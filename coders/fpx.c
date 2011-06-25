@@ -459,21 +459,21 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (fpx_info.numberOfComponents > 2)
         {
-          SetRedPixelComponent(q,ScaleCharToQuantum(*r));
-          SetGreenPixelComponent(q,ScaleCharToQuantum(*g));
-          SetBluePixelComponent(q,ScaleCharToQuantum(*b));
+          SetPixelRed(q,ScaleCharToQuantum(*r));
+          SetPixelGreen(q,ScaleCharToQuantum(*g));
+          SetPixelBlue(q,ScaleCharToQuantum(*b));
         }
       else
         {
           index=ScaleCharToQuantum(*r);
-          SetIndexPixelComponent(indexes+x,index);
-          SetRedPixelComponent(q,index);
-          SetGreenPixelComponent(q,index);
-          SetBluePixelComponent(q,index);
+          SetPixelIndex(indexes+x,index);
+          SetPixelRed(q,index);
+          SetPixelGreen(q,index);
+          SetPixelBlue(q,index);
         }
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelOpacity(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetAlphaPixelComponent(q,ScaleCharToQuantum(*a));
+        SetPixelAlpha(q,ScaleCharToQuantum(*a));
       q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;

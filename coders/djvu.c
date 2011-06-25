@@ -407,7 +407,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                                 if (bit == 0) byte= (size_t) q[(y * stride) + (x / 8)];
 
                                                 if (indexes != (IndexPacket *) NULL)
-                                                  SetIndexPixelComponent(indexes+x,(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01));
+                                                  SetPixelIndex(indexes+x,(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01));
                                                 bit++;
                                                 if (bit == 8)
                                                         bit=0;
@@ -442,9 +442,9 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                  break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetRedPixelComponent(r,ScaleCharToQuantum(*s++));
-                    SetGreenPixelComponent(r,ScaleCharToQuantum(*s++));
-                    SetBluePixelComponent(r,ScaleCharToQuantum(*s++));
+                    SetPixelRed(r,ScaleCharToQuantum(*s++));
+                    SetPixelGreen(r,ScaleCharToQuantum(*s++));
+                    SetPixelBlue(r,ScaleCharToQuantum(*s++));
                     r++;
                   }
 

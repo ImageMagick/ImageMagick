@@ -286,7 +286,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
           node_info->list[i].pixel=(*p);
           if ((image->colorspace == CMYKColorspace) ||
               (image->storage_class == PseudoClass))
-            node_info->list[i].index=GetIndexPixelComponent(indexes+x);
+            node_info->list[i].index=GetPixelIndex(indexes+x);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;
@@ -757,7 +757,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
           node_info->list[i].pixel=(*p);
           if ((image->colorspace == CMYKColorspace) ||
               (image->storage_class == PseudoClass))
-            node_info->list[i].index=GetIndexPixelComponent(indexes+x);
+            node_info->list[i].index=GetPixelIndex(indexes+x);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;
@@ -920,7 +920,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
           node_info->list[i].pixel=(*p);
           if ((image->colorspace == CMYKColorspace) ||
               (image->storage_class == PseudoClass))
-            node_info->list[i].index=GetIndexPixelComponent(indexes+x);
+            node_info->list[i].index=GetPixelIndex(indexes+x);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;

@@ -189,10 +189,10 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
         if (image->storage_class == PseudoClass)
-          SetIndexPixelComponent(indexes+x,index);
-        SetBluePixelComponent(q,blue);
-        SetGreenPixelComponent(q,green);
-        SetRedPixelComponent(q,red);
+          SetPixelIndex(indexes+x,index);
+        SetPixelBlue(q,blue);
+        SetPixelGreen(q,green);
+        SetPixelRed(q,red);
         length--;
         q++;
       }

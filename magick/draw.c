@@ -3624,7 +3624,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   return(polygon_info);
 }
 
-static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
+static MagickRealType GetOpacityPixel(PolygonInfo *polygon_info,
   const MagickRealType mid,const MagickBooleanType fill,
   const FillRule fill_rule,const double x,const double y,
   MagickRealType *stroke_opacity)
@@ -3968,7 +3968,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       /*
         Fill and/or stroke.
       */
-      fill_opacity=GetPixelOpacity(polygon_info[id],mid,fill,
+      fill_opacity=GetOpacityPixel(polygon_info[id],mid,fill,
         draw_info->fill_rule,(double) x,(double) y,&stroke_opacity);
       if (draw_info->stroke_antialias == MagickFalse)
         {
@@ -4302,7 +4302,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           if (q == (PixelPacket *) NULL)
             break;
           (void) GetFillColor(draw_info,x,y,&pixel);
-          SetOpacityPixelComponent(q,pixel.opacity);
+          SetPixelOpacity(q,pixel.opacity);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
         }
@@ -4336,7 +4336,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel);
-              SetOpacityPixelComponent(q,pixel.opacity);
+              SetPixelOpacity(q,pixel.opacity);
               q++;
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4386,7 +4386,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,&pixel);
-              SetOpacityPixelComponent(q,pixel.opacity);
+              SetPixelOpacity(q,pixel.opacity);
               q++;
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);

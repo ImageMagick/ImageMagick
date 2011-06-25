@@ -172,10 +172,10 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
-        SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-        SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-        SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+        SetPixelAlpha(q,ScaleCharToQuantum(*p++));
+        SetPixelRed(q,ScaleCharToQuantum(*p++));
+        SetPixelGreen(q,ScaleCharToQuantum(*p++));
+        SetPixelBlue(q,ScaleCharToQuantum(*p++));
         if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;
         q++;
@@ -376,10 +376,10 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         *q++=ScaleQuantumToChar((Quantum) (QuantumRange-(image->matte !=
-          MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
-        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+          MagickFalse ? GetPixelOpacity(p) : OpaqueOpacity)));
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
         p++;
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);

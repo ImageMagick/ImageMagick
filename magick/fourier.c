@@ -305,37 +305,37 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelRed(q,ClampToQuantum(QuantumRange*
             magnitude_source[i]));
           break;
         }
         case GreenChannel:
         {
-          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelGreen(q,ClampToQuantum(QuantumRange*
             magnitude_source[i]));
           break;
         }
         case BlueChannel:
         {
-          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelBlue(q,ClampToQuantum(QuantumRange*
             magnitude_source[i]));
           break;
         }
         case OpacityChannel:
         {
-          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelOpacity(q,ClampToQuantum(QuantumRange*
             magnitude_source[i]));
           break;
         }
         case IndexChannel:
         {
-          SetIndexPixelComponent(indexes+x,ClampToQuantum(QuantumRange*
+          SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*
             magnitude_source[i]));
           break;
         }
         case GrayChannels:
         {
-          SetGrayPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelGray(q,ClampToQuantum(QuantumRange*
             magnitude_source[i]));
           break;
         }
@@ -362,37 +362,37 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelRed(q,ClampToQuantum(QuantumRange*
             phase_source[i]));
           break;
         }
         case GreenChannel:
         {
-          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelGreen(q,ClampToQuantum(QuantumRange*
             phase_source[i]));
           break;
         }
         case BlueChannel:
         {
-          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelBlue(q,ClampToQuantum(QuantumRange*
             phase_source[i]));
           break;
         }
         case OpacityChannel:
         {
-          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*
+          SetPixelOpacity(q,ClampToQuantum(QuantumRange*
             phase_source[i]));
           break;
         }
         case IndexChannel:
         {
-          SetIndexPixelComponent(indexes+x,ClampToQuantum(QuantumRange*
+          SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*
             phase_source[i]));
           break;
         }
         case GrayChannels:
         {
-          SetGrayPixelComponent(q,ClampToQuantum(QuantumRange*phase_source[i]));
+          SetPixelGray(q,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
       }
@@ -468,32 +468,32 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          source[i]=QuantumScale*GetRedPixelComponent(p);
+          source[i]=QuantumScale*GetPixelRed(p);
           break;
         }
         case GreenChannel:
         {
-          source[i]=QuantumScale*GetGreenPixelComponent(p);
+          source[i]=QuantumScale*GetPixelGreen(p);
           break;
         }
         case BlueChannel:
         {
-          source[i]=QuantumScale*GetBluePixelComponent(p);
+          source[i]=QuantumScale*GetPixelBlue(p);
           break;
         }
         case OpacityChannel:
         {
-          source[i]=QuantumScale*GetOpacityPixelComponent(p);
+          source[i]=QuantumScale*GetPixelOpacity(p);
           break;
         }
         case IndexChannel:
         {
-          source[i]=QuantumScale*GetIndexPixelComponent(indexes+x);
+          source[i]=QuantumScale*GetPixelIndex(indexes+x);
           break;
         }
         case GrayChannels:
         {
-          source[i]=QuantumScale*GetGrayPixelComponent(p);
+          source[i]=QuantumScale*GetPixelGray(p);
           break;
         }
       }
@@ -893,32 +893,32 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          magnitude_source[i]=QuantumScale*GetRedPixelComponent(p);
+          magnitude_source[i]=QuantumScale*GetPixelRed(p);
           break;
         }
         case GreenChannel:
         {
-          magnitude_source[i]=QuantumScale*GetGreenPixelComponent(p);
+          magnitude_source[i]=QuantumScale*GetPixelGreen(p);
           break;
         }
         case BlueChannel:
         {
-          magnitude_source[i]=QuantumScale*GetBluePixelComponent(p);
+          magnitude_source[i]=QuantumScale*GetPixelBlue(p);
           break;
         }
         case OpacityChannel:
         {
-          magnitude_source[i]=QuantumScale*GetOpacityPixelComponent(p);
+          magnitude_source[i]=QuantumScale*GetPixelOpacity(p);
           break;
         }
         case IndexChannel:
         {
-          magnitude_source[i]=QuantumScale*GetIndexPixelComponent(indexes+x);
+          magnitude_source[i]=QuantumScale*GetPixelIndex(indexes+x);
           break;
         }
         case GrayChannels:
         {
-          magnitude_source[i]=QuantumScale*GetGrayPixelComponent(p);
+          magnitude_source[i]=QuantumScale*GetPixelGray(p);
           break;
         }
       }
@@ -942,32 +942,32 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          phase_source[i]=QuantumScale*GetRedPixelComponent(p);
+          phase_source[i]=QuantumScale*GetPixelRed(p);
           break;
         }
         case GreenChannel:
         {
-          phase_source[i]=QuantumScale*GetGreenPixelComponent(p);
+          phase_source[i]=QuantumScale*GetPixelGreen(p);
           break;
         }
         case BlueChannel:
         {
-          phase_source[i]=QuantumScale*GetBluePixelComponent(p);
+          phase_source[i]=QuantumScale*GetPixelBlue(p);
           break;
         }
         case OpacityChannel:
         {
-          phase_source[i]=QuantumScale*GetOpacityPixelComponent(p);
+          phase_source[i]=QuantumScale*GetPixelOpacity(p);
           break;
         }
         case IndexChannel:
         {
-          phase_source[i]=QuantumScale*GetIndexPixelComponent(indexes+x);
+          phase_source[i]=QuantumScale*GetPixelIndex(indexes+x);
           break;
         }
         case GrayChannels:
         {
-          phase_source[i]=QuantumScale*GetGrayPixelComponent(p);
+          phase_source[i]=QuantumScale*GetPixelGray(p);
           break;
         }
       }
@@ -1110,33 +1110,33 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
+          SetPixelRed(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case GreenChannel:
         {
-          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
+          SetPixelGreen(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case BlueChannel:
         {
-          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
+          SetPixelBlue(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case OpacityChannel:
         {
-          SetOpacityPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
+          SetPixelOpacity(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
         case IndexChannel:
         {
-          SetIndexPixelComponent(indexes+x,ClampToQuantum(QuantumRange*
+          SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*
             source[i]));
           break;
         }
         case GrayChannels:
         {
-          SetGrayPixelComponent(q,ClampToQuantum(QuantumRange*source[i]));
+          SetPixelGray(q,ClampToQuantum(QuantumRange*source[i]));
           break;
         }
       }

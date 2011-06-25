@@ -1708,11 +1708,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-                *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-                *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+                *q++=ScaleQuantumToChar(GetPixelRed(p));
+                *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                *q++=ScaleQuantumToChar(GetPixelBlue(p));
                 if (image->colorspace == CMYKColorspace)
-                  *q++=ScaleQuantumToChar(GetIndexPixelComponent(indexes+x));
+                  *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1755,14 +1755,14 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetRedPixelComponent(p)));
+                  GetPixelRed(p)));
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetGreenPixelComponent(p)));
+                  GetPixelGreen(p)));
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetBluePixelComponent(p)));
+                  GetPixelBlue(p)));
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(
-                    GetIndexPixelComponent(indexes+x)));
+                    GetPixelIndex(indexes+x)));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1808,7 +1808,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                  *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+                  *q++=(unsigned char) GetPixelIndex(indexes+x);
                 if (image->previous == (Image *) NULL)
                   {
                     status=SetImageProgress(image,SaveImageTag,
@@ -1849,7 +1849,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                   Ascii85Encode(image,(unsigned char)
-                    GetIndexPixelComponent(indexes+x));
+                    GetPixelIndex(indexes+x));
                 if (image->previous == (Image *) NULL)
                   {
                     status=SetImageProgress(image,SaveImageTag,
@@ -2151,11 +2151,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               indexes=GetVirtualIndexQueue(tile_image);
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-                *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-                *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+                *q++=ScaleQuantumToChar(GetPixelRed(p));
+                *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                *q++=ScaleQuantumToChar(GetPixelBlue(p));
                 if (image->colorspace == CMYKColorspace)
-                  *q++=ScaleQuantumToChar(GetIndexPixelComponent(indexes+x));
+                  *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
                 p++;
               }
             }
@@ -2192,14 +2192,14 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetRedPixelComponent(p)));
+                  GetPixelRed(p)));
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetGreenPixelComponent(p)));
+                  GetPixelGreen(p)));
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetBluePixelComponent(p)));
+                  GetPixelBlue(p)));
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(
-                    GetIndexPixelComponent(indexes+x)));
+                    GetPixelIndex(indexes+x)));
                 p++;
               }
             }
@@ -2241,7 +2241,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetVirtualIndexQueue(tile_image);
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
-                  *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+                  *q++=(unsigned char) GetPixelIndex(indexes+x);
               }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
               if (compression == ZipCompression)
@@ -2275,7 +2275,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 indexes=GetVirtualIndexQueue(tile_image);
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
                   Ascii85Encode(image,(unsigned char)
-                    GetIndexPixelComponent(indexes+x));
+                    GetPixelIndex(indexes+x));
               }
               Ascii85Flush(image);
               break;
@@ -2440,7 +2440,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar((Quantum) (GetAlphaPixelComponent(p)));
+                *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(p)));
                 p++;
               }
             }
@@ -2475,7 +2475,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar((Quantum) (QuantumRange-
-                  GetOpacityPixelComponent(p))));
+                  GetPixelOpacity(p))));
                 p++;
               }
             }

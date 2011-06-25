@@ -172,12 +172,12 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
-        SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-        SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
+        SetPixelBlue(q,ScaleCharToQuantum(*p++));
+        SetPixelGreen(q,ScaleCharToQuantum(*p++));
+        SetPixelRed(q,ScaleCharToQuantum(*p++));
         if (*p == 254)
           *p=255;
-        SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
+        SetPixelAlpha(q,ScaleCharToQuantum(*p++));
         if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;
         q++;
@@ -377,11 +377,11 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
         *q=ScaleQuantumToChar((Quantum) (QuantumRange-(image->matte !=
-          MagickFalse ? GetOpacityPixelComponent(p) : OpaqueOpacity)));
+          MagickFalse ? GetPixelOpacity(p) : OpaqueOpacity)));
         if (*q == 255)
           *q=254;
         p++;

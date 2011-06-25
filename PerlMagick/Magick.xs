@@ -1590,7 +1590,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 indexes=GetCacheViewAuthenticIndexQueue(image_view);
                 items=sscanf(SvPV(sval,na),"%ld",&index);
                 if ((index >= 0) && (index < (ssize_t) image->colors))
-                  SetIndexPixelComponent(indexes,index);
+                  SetPixelIndex(indexes,index);
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -1836,14 +1836,14 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                     if ((flags & ChiValue) != 0)
                       pixel.index=geometry_info.chi;
                   }
-                SetRedPixelComponent(q,ClampToQuantum(pixel.red));
-                SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
-                SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
-                SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
+                SetPixelRed(q,ClampToQuantum(pixel.red));
+                SetPixelGreen(q,ClampToQuantum(pixel.green));
+                SetPixelBlue(q,ClampToQuantum(pixel.blue));
+                SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
                 if (((image->colorspace == CMYKColorspace) ||
                      (image->storage_class == PseudoClass)) &&
                     (indexes != (IndexPacket *) NULL))
-                  SetIndexPixelComponent(indexes,ClampToQuantum(pixel.index));
+                  SetPixelIndex(indexes,ClampToQuantum(pixel.index));
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -4875,7 +4875,7 @@ Get(ref,...)
                 {
                   indexes=GetCacheViewVirtualIndexQueue(image_view);
                   (void) FormatLocaleString(name,MaxTextExtent,QuantumFormat,
-                    GetIndexPixelComponent(indexes));
+                    GetPixelIndex(indexes));
                   s=newSVpv(name,0);
                   PUSHs(s ? sv_2mortal(s) : &sv_undef);
                 }
@@ -5137,14 +5137,14 @@ Get(ref,...)
               if (image->colorspace != CMYKColorspace)
                 (void) FormatLocaleString(tuple,MaxTextExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat,
-                  GetRedPixelComponent(p),GetGreenPixelComponent(p),
-                  GetBluePixelComponent(p),GetOpacityPixelComponent(p));
+                  GetPixelRed(p),GetPixelGreen(p),
+                  GetPixelBlue(p),GetPixelOpacity(p));
               else
                 (void) FormatLocaleString(tuple,MaxTextExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat ","
-                  QuantumFormat,GetRedPixelComponent(p),
-                  GetGreenPixelComponent(p),GetBluePixelComponent(p),
-                  GetIndexPixelComponent(indexes),GetOpacityPixelComponent(p));
+                  QuantumFormat,GetPixelRed(p),
+                  GetPixelGreen(p),GetPixelBlue(p),
+                  GetPixelIndex(indexes),GetPixelOpacity(p));
               s=newSVpv(tuple,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -6267,16 +6267,16 @@ GetPixel(ref,...)
         if (normalize != MagickFalse)
           scale=1.0/QuantumRange;
         if ((channel & RedChannel) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetRedPixelComponent(p))));
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelRed(p))));
         if ((channel & GreenChannel) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetGreenPixelComponent(p))));
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelGreen(p))));
         if ((channel & BlueChannel) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetBluePixelComponent(p))));
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelBlue(p))));
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          PUSHs(sv_2mortal(newSVnv(scale*GetIndexPixelComponent(indexes))));
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelIndex(indexes))));
         if ((channel & OpacityChannel) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetOpacityPixelComponent(p))));
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelOpacity(p))));
       }
 
   PerlException:
@@ -13401,32 +13401,32 @@ SetPixel(ref,...)
           scale=QuantumRange;
         if (((channel & RedChannel) != 0) && (i <= av_len(av)))
           {
-            SetRedPixelComponent(q,ClampToQuantum(scale*SvNV(*(
+            SetPixelRed(q,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))));
             i++;
           }
         if (((channel & GreenChannel) != 0) && (i <= av_len(av)))
           {
-            SetGreenPixelComponent(q,ClampToQuantum(scale*SvNV(*(
+            SetPixelGreen(q,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))));
             i++;
           }
         if (((channel & BlueChannel) != 0) && (i <= av_len(av)))
           {
-            SetBluePixelComponent(q,ClampToQuantum(scale*SvNV(*(
+            SetPixelBlue(q,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))));
             i++;
           }
         if ((((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace)) && (i <= av_len(av)))
           {
-            SetIndexPixelComponent(indexes,ClampToQuantum(scale*
+            SetPixelIndex(indexes,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))));
             i++;
           }
         if (((channel & OpacityChannel) != 0) && (i <= av_len(av)))
           {
-            SetOpacityPixelComponent(q,ClampToQuantum(scale*
+            SetPixelOpacity(q,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))));
             i++;
           }

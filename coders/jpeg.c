@@ -1245,8 +1245,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             else
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
             index=ConstrainColormapIndex(image,pixel);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             p++;
             q++;
           }
@@ -1254,27 +1254,27 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           if (image->colorspace != CMYKColorspace)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetRedPixelComponent(q,ScaleShortToQuantum((unsigned char)
+              SetPixelRed(q,ScaleShortToQuantum((unsigned char)
                 (GETJSAMPLE(*p++) << 4)));
-              SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned char)
+              SetPixelGreen(q,ScaleShortToQuantum((unsigned char)
                 (GETJSAMPLE(*p++) << 4)));
-              SetBluePixelComponent(q,ScaleShortToQuantum((unsigned char)
+              SetPixelBlue(q,ScaleShortToQuantum((unsigned char)
                 (GETJSAMPLE(*p++) << 4)));
-              SetOpacityPixelComponent(q,OpaqueOpacity);
+              SetPixelOpacity(q,OpaqueOpacity);
               q++;
             }
           else
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetCyanPixelComponent(q,QuantumRange-ScaleShortToQuantum(
+              SetPixelCyan(q,QuantumRange-ScaleShortToQuantum(
                 (unsigned char) (GETJSAMPLE(*p++) << 4)));
-              SetMagentaPixelComponent(q,QuantumRange-ScaleShortToQuantum(
+              SetPixelMagenta(q,QuantumRange-ScaleShortToQuantum(
                 (unsigned char) (GETJSAMPLE(*p++) << 4)));
-              SetYellowPixelComponent(q,QuantumRange-ScaleShortToQuantum(
+              SetPixelYellow(q,QuantumRange-ScaleShortToQuantum(
                 (unsigned char) (GETJSAMPLE(*p++) << 4)));
-              SetBlackPixelComponent(indexes+x,QuantumRange-ScaleShortToQuantum(
+              SetPixelBlack(indexes+x,QuantumRange-ScaleShortToQuantum(
                 (unsigned char) (GETJSAMPLE(*p++) << 4)));
-              SetOpacityPixelComponent(q,OpaqueOpacity);
+              SetPixelOpacity(q,OpaqueOpacity);
               q++;
             }
       }
@@ -1283,8 +1283,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p));
-          SetIndexPixelComponent(indexes+x,index);
-          SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+          SetPixelIndex(indexes+x,index);
+          SetPixelRGBO(q,image->colormap+(ssize_t) index);
           p++;
           q++;
         }
@@ -1292,27 +1292,27 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         if (image->colorspace != CMYKColorspace)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
               GETJSAMPLE(*p++)));
-            SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
               GETJSAMPLE(*p++)));
-            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
               GETJSAMPLE(*p++)));
-            SetOpacityPixelComponent(q,OpaqueOpacity);
+            SetPixelOpacity(q,OpaqueOpacity);
             q++;
           }
         else
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetCyanPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+            SetPixelCyan(q,QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++)));
-            SetMagentaPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+            SetPixelMagenta(q,QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++)));
-            SetYellowPixelComponent(q,QuantumRange-ScaleCharToQuantum(
+            SetPixelYellow(q,QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++)));
-            SetBlackPixelComponent(indexes+x,QuantumRange-ScaleCharToQuantum(
+            SetPixelBlack(indexes+x,QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++)));
-            SetOpacityPixelComponent(q,OpaqueOpacity);
+            SetPixelOpacity(q,OpaqueOpacity);
             q++;
           }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2225,9 +2225,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           q=jpeg_pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q++=(JSAMPLE) ScaleQuantumToChar(GetRedPixelComponent(p));
-            *q++=(JSAMPLE) ScaleQuantumToChar(GetGreenPixelComponent(p));
-            *q++=(JSAMPLE) ScaleQuantumToChar(GetBluePixelComponent(p));
+            *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelRed(p));
+            *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelGreen(p));
+            *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelBlue(p));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2284,13 +2284,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetRedPixelComponent(p))));
+                GetPixelRed(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetGreenPixelComponent(p))));
+                GetPixelGreen(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetBluePixelComponent(p))));
+                GetPixelBlue(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetIndexPixelComponent(indexes+x))));
+                GetPixelIndex(indexes+x))));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2343,11 +2343,11 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           q=jpeg_pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q++=(JSAMPLE) (ScaleQuantumToShort(GetRedPixelComponent(p)) >>
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelRed(p)) >>
               4);
-            *q++=(JSAMPLE) (ScaleQuantumToShort(GetGreenPixelComponent(p)) >>
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelGreen(p)) >>
               4);
-            *q++=(JSAMPLE) (ScaleQuantumToShort(GetBluePixelComponent(p)) >>
+            *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelBlue(p)) >>
               4);
             p++;
           }
@@ -2380,13 +2380,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetRedPixelComponent(p)) >> 4));
+              GetPixelRed(p)) >> 4));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetGreenPixelComponent(p)) >> 4));
+              GetPixelGreen(p)) >> 4));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetBluePixelComponent(p)) >> 4));
+              GetPixelBlue(p)) >> 4));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
-              GetIndexPixelComponent(indexes+x)) >> 4));
+              GetPixelIndex(indexes+x)) >> 4));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

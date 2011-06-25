@@ -613,10 +613,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,ScaleCharToQuantum(pBits->rgbRed));
-      SetGreenPixelComponent(q,ScaleCharToQuantum(pBits->rgbGreen));
-      SetBluePixelComponent(q,ScaleCharToQuantum(pBits->rgbBlue));
-      SetOpacityPixelComponent(q,OpaqueOpacity);
+      SetPixelRed(q,ScaleCharToQuantum(pBits->rgbRed));
+      SetPixelGreen(q,ScaleCharToQuantum(pBits->rgbGreen));
+      SetPixelBlue(q,ScaleCharToQuantum(pBits->rgbBlue));
+      SetPixelOpacity(q,OpaqueOpacity);
       pBits++;
       q++;
     }

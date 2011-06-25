@@ -747,40 +747,40 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < y; x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
       q++;
     }
     for ( ; x < (ssize_t) (image->columns-y); x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*AccentuateFactor+(MagickRealType) foreground*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*AccentuateFactor+(MagickRealType) foreground*
         (QuantumRange-AccentuateFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*AccentuateFactor+(MagickRealType) foreground*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*AccentuateFactor+(MagickRealType) foreground*
         (QuantumRange-AccentuateFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*AccentuateFactor+(MagickRealType) foreground*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*AccentuateFactor+(MagickRealType) foreground*
         (QuantumRange-AccentuateFactor))));
       q++;
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType) 
-        GetRedPixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType) 
+        GetPixelRed(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
       q++;
     }
@@ -817,14 +817,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) raise_info->width; x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
       q++;
     }
@@ -832,14 +832,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       q++;
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
       q++;
     }
@@ -876,40 +876,40 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) (image->rows-y); x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*HighlightFactor+(MagickRealType) foreground*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*HighlightFactor+(MagickRealType) foreground*
         (QuantumRange-HighlightFactor))));
       q++;
     }
     for ( ; x < (ssize_t) (image->columns-(image->rows-y)); x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*TroughFactor+(MagickRealType) background*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*TroughFactor+(MagickRealType) background*
         (QuantumRange-TroughFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*TroughFactor+(MagickRealType) background*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*TroughFactor+(MagickRealType) background*
         (QuantumRange-TroughFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*TroughFactor+(MagickRealType) background*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*TroughFactor+(MagickRealType) background*
         (QuantumRange-TroughFactor))));
       q++;
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetRedPixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelRed(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
-      SetGreenPixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetGreenPixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelGreen(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
-      SetBluePixelComponent(q,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetBluePixelComponent(q)*ShadowFactor+(MagickRealType) background*
+      SetPixelBlue(q,ClampToQuantum(QuantumScale*((MagickRealType)
+        GetPixelBlue(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
       q++;
     }

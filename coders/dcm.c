@@ -3729,25 +3729,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case 0:
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelRed(q,ScaleCharToQuantum((unsigned char)
                     ReadDCMByte(stream_info,image)));
                   break;
                 }
                 case 1:
                 {
-                  SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
                     ReadDCMByte(stream_info,image)));
                   break;
                 }
                 case 2:
                 {
-                  SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
                     ReadDCMByte(stream_info,image)));
                   break;
                 }
                 case 3:
                 {
-                  SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
                     ReadDCMByte(stream_info,image)));
                   break;
                 }
@@ -3869,7 +3869,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 index&=mask;
                 index=(int) ConstrainColormapIndex(image,(size_t) index);
-                SetIndexPixelComponent(indexes+x,index);
+                SetPixelIndex(indexes+x,index);
                 pixel.red=1UL*image->colormap[index].red;
                 pixel.green=1UL*image->colormap[index].green;
                 pixel.blue=1UL*image->colormap[index].blue;
@@ -3907,9 +3907,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     pixel.blue=scale[pixel.blue];
                   }
               }
-            SetRedPixelComponent(q,pixel.red);
-            SetGreenPixelComponent(q,pixel.green);
-            SetBluePixelComponent(q,pixel.blue);
+            SetPixelRed(q,pixel.red);
+            SetPixelGreen(q,pixel.green);
+            SetPixelBlue(q,pixel.blue);
             q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3999,8 +3999,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                   index&=mask;
                   index=(int) ConstrainColormapIndex(image,(size_t) index);
-                  SetIndexPixelComponent(indexes+x,(((size_t)
-                    GetIndexPixelComponent(indexes+x)) | (((size_t) index) <<
+                  SetPixelIndex(indexes+x,(((size_t)
+                    GetPixelIndex(indexes+x)) | (((size_t) index) <<
                     8)));
                   pixel.red=1UL*image->colormap[index].red;
                   pixel.green=1UL*image->colormap[index].green;
@@ -4039,11 +4039,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       pixel.blue=scale[pixel.blue];
                     }
                 }
-              SetRedPixelComponent(q,(((size_t) GetRedPixelComponent(q)) |
+              SetPixelRed(q,(((size_t) GetPixelRed(q)) |
                 (((size_t) pixel.red) << 8)));
-              SetGreenPixelComponent(q,(((size_t) GetGreenPixelComponent(q)) |
+              SetPixelGreen(q,(((size_t) GetPixelGreen(q)) |
                 (((size_t) pixel.green) << 8)));
-              SetBluePixelComponent(q,(((size_t) GetBluePixelComponent(q)) |
+              SetPixelBlue(q,(((size_t) GetPixelBlue(q)) |
                 (((size_t) pixel.blue) << 8)));
               q++;
             }

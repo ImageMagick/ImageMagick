@@ -462,15 +462,15 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel[2]=pixels[i++];
           pixel[3]=pixels[i++];
         }
-      SetRedPixelComponent(q,0);
-      SetGreenPixelComponent(q,0);
-      SetBluePixelComponent(q,0);
+      SetPixelRed(q,0);
+      SetPixelGreen(q,0);
+      SetPixelBlue(q,0);
       if (pixel[3] != 0)
         {
           gamma=pow(2.0,pixel[3]-(128.0+8.0));
-          SetRedPixelComponent(q,ClampToQuantum(QuantumRange*gamma*pixel[0]));
-          SetGreenPixelComponent(q,ClampToQuantum(QuantumRange*gamma*pixel[1]));
-          SetBluePixelComponent(q,ClampToQuantum(QuantumRange*gamma*pixel[2]));
+          SetPixelRed(q,ClampToQuantum(QuantumRange*gamma*pixel[0]));
+          SetPixelGreen(q,ClampToQuantum(QuantumRange*gamma*pixel[1]));
+          SetPixelBlue(q,ClampToQuantum(QuantumRange*gamma*pixel[2]));
         }
       q++;
     }
@@ -752,22 +752,22 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
       pixel[1]=0;
       pixel[2]=0;
       pixel[3]=0;
-      gamma=QuantumScale*GetRedPixelComponent(p);
-      if ((QuantumScale*GetGreenPixelComponent(p)) > gamma)
-        gamma=QuantumScale*GetGreenPixelComponent(p);
-      if ((QuantumScale*GetBluePixelComponent(p)) > gamma)
-        gamma=QuantumScale*GetBluePixelComponent(p);
+      gamma=QuantumScale*GetPixelRed(p);
+      if ((QuantumScale*GetPixelGreen(p)) > gamma)
+        gamma=QuantumScale*GetPixelGreen(p);
+      if ((QuantumScale*GetPixelBlue(p)) > gamma)
+        gamma=QuantumScale*GetPixelBlue(p);
       if (gamma > MagickEpsilon)
         {
           int
             exponent;
 
           gamma=frexp(gamma,&exponent)*256.0/gamma;
-          pixel[0]=(unsigned char) (gamma*QuantumScale*GetRedPixelComponent(p));
+          pixel[0]=(unsigned char) (gamma*QuantumScale*GetPixelRed(p));
           pixel[1]=(unsigned char) (gamma*QuantumScale*
-            GetGreenPixelComponent(p));
+            GetPixelGreen(p));
           pixel[2]=(unsigned char) (gamma*QuantumScale*
-            GetBluePixelComponent(p));
+            GetPixelBlue(p));
           pixel[3]=(unsigned char) (exponent+128);
         }
       if ((image->columns >= 8) && (image->columns <= 0x7ffff))
