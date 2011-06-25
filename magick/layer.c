@@ -929,7 +929,7 @@ MagickExport Image *DeconstructImages(const Image *images,
 %  From this it then attempts to select the smallest cropped image and
 %  disposal method needed to reproduce the resulting image.
 %
-%  Note that this not easy, and may require the expandsion of the bounds
+%  Note that this not easy, and may require the expansion of the bounds
 %  of previous frame, simply clear pixels for the next animation frame to
 %  transparency according to the selected dispose method.
 %
