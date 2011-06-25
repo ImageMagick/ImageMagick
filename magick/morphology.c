@@ -577,7 +577,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       The a No-Op or Scaling single element kernel.
 %
 %    Gaussian:{radius},{sigma}
-%       Generate a two-dimentional gaussian kernel, as used by -gaussian.
+%       Generate a two-dimensional gaussian kernel, as used by -gaussian.
 %       The sigma for the curve is required.  The resulting kernel is
 %       normalized,
 %
@@ -604,7 +604,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %        The result is a zero-summing kernel.
 %
 %    Blur:{radius},{sigma}[,{angle}]
-%       Generates a 1 dimensional or linear gaussian blur, at the angle given
+%       Generates a 1-dimensional or linear gaussian blur, at the angle given
 %       (current restricted to orthogonal angles).  If a 'radius' is given the
 %       kernel is clipped to a width of 2*radius+1.  Kernel can be rotated
 %       by a 90 degree angle.
@@ -4426,7 +4426,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   if ( 45.0 < fmod(angle, 180.0)  && fmod(angle,180.0) <= 135.0 )
     {
       if ( kernel->width == 1 || kernel->height == 1 )
-        { /* Do a transpose of a 1 dimentional kernel,
+        { /* Do a transpose of a 1-dimensional kernel,
           ** which results in a fast 90 degree rotation of some type.
           */
           ssize_t
