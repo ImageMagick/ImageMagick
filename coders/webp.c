@@ -170,10 +170,10 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-      SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-      SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
-      SetAlphaPixelComponent(q,ScaleCharToQuantum(*p++));
+      SetPixelRed(q,ScaleCharToQuantum(*p++));
+      SetPixelGreen(q,ScaleCharToQuantum(*p++));
+      SetPixelBlue(q,ScaleCharToQuantum(*p++));
+      SetPixelAlpha(q,ScaleCharToQuantum(*p++));
       if (q->opacity != OpaqueOpacity)
         image->matte=MagickTrue;
       q++;
@@ -371,12 +371,12 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-      *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-      *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+      *q++=ScaleQuantumToChar(GetPixelRed(p));
+      *q++=ScaleQuantumToChar(GetPixelGreen(p));
+      *q++=ScaleQuantumToChar(GetPixelBlue(p));
       if (image->matte != MagickFalse)
         *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
-          (image->matte != MagickFalse ? GetOpacityPixelComponent(p) :
+          (image->matte != MagickFalse ? GetPixelOpacity(p) :
           OpaqueOpacity)));
       p++;
     }

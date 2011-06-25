@@ -248,7 +248,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              matte_image[i]=(unsigned char) (GetOpacityPixelComponent(p) ==
+              matte_image[i]=(unsigned char) (GetPixelOpacity(p) ==
                 (Quantum) TransparentOpacity ? 1 : 0);
               if (matte_image[i] != 0)
                 transparent=MagickTrue;
@@ -277,7 +277,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (matte_image[i] != 0)
-                SetIndexPixelComponent(indexes+x,image->colors);
+                SetPixelIndex(indexes+x,image->colors);
               p++;
             }
           }
@@ -355,11 +355,11 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"    \"");
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      k=((ssize_t) GetIndexPixelComponent(indexes+x) % MaxCixels);
+      k=((ssize_t) GetPixelIndex(indexes+x) % MaxCixels);
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
-        k=(((int) GetIndexPixelComponent(indexes+x)-k)/MaxCixels) % MaxCixels;
+        k=(((int) GetPixelIndex(indexes+x)-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';

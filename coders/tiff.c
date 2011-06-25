@@ -1402,14 +1402,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           p=(unsigned char *) (((uint32 *) pixels)+image->columns*i);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
               (TIFFGetR(*p))));
-            SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
               (TIFFGetG(*p))));
-            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
               (TIFFGetB(*p))));
             if (image->matte != MagickFalse)
-              SetOpacityPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              SetPixelOpacity(q,ScaleCharToQuantum((unsigned char)
                 (TIFFGetA(*p))));
             p++;
             q++;
@@ -1497,13 +1497,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->matte != MagickFalse)
                 for (column=columns_remaining; column > 0; column--)
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelRed(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetR(*p)));
-                  SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetG(*p)));
-                  SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetB(*p)));
-                  SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetA(*p)));
                   q++;
                   p++;
@@ -1511,11 +1511,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               else
                 for (column=columns_remaining; column > 0; column--)
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelRed(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetR(*p)));
-                  SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetG(*p)));
-                  SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+                  SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
                     TIFFGetB(*p)));
                   q++;
                   p++;
@@ -1583,14 +1583,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q+=image->columns-1;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetRedPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
               TIFFGetR(*p)));
-            SetGreenPixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
               TIFFGetG(*p)));
-            SetBluePixelComponent(q,ScaleCharToQuantum((unsigned char)
+            SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
               TIFFGetB(*p)));
             if (image->matte != MagickFalse)
-              SetAlphaPixelComponent(q,ScaleCharToQuantum((unsigned char)
+              SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)));
             p--;
             q--;

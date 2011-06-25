@@ -1091,7 +1091,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %  and ^ in relation to image resizing.
 %
 %  Final image dimensions are adjusted so as to preserve the aspect ratio as
-%  much as posible, while generating a integer (pixel) size, and fitting the
+%  much as possible, while generating a integer (pixel) size, and fitting the
 %  image within the specified geometry width and height.
 %
 %  Flags are interpreted...

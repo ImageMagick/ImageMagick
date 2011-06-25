@@ -541,16 +541,15 @@ MagickExport Image *AppendImages(const Image *images,
       append_indexes=GetCacheViewAuthenticIndexQueue(append_view);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetRedPixelComponent(q,GetRedPixelComponent(p));
-        SetGreenPixelComponent(q,GetGreenPixelComponent(p));
-        SetBluePixelComponent(q,GetBluePixelComponent(p));
-        SetOpacityPixelComponent(q,OpaqueOpacity);
+        SetPixelRed(q,GetPixelRed(p));
+        SetPixelGreen(q,GetPixelGreen(p));
+        SetPixelBlue(q,GetPixelBlue(p));
+        SetPixelOpacity(q,OpaqueOpacity);
         if (image->matte != MagickFalse)
-          SetOpacityPixelComponent(q,GetOpacityPixelComponent(p));
+          SetPixelOpacity(q,GetPixelOpacity(p));
         if ((image->colorspace == CMYKColorspace) &&
             (append_image->colorspace == CMYKColorspace))
-          SetIndexPixelComponent(append_indexes+x,GetIndexPixelComponent(
-            indexes+x));
+          SetPixelIndex(append_indexes+x,GetPixelIndex(indexes+x));
         p++;
         q++;
       }
@@ -1102,7 +1101,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetRedPixelComponent(q,PixelIntensityToQuantum(p));
+          SetPixelRed(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1118,7 +1117,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetGreenPixelComponent(q,PixelIntensityToQuantum(p));
+          SetPixelGreen(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1134,7 +1133,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetBluePixelComponent(q,PixelIntensityToQuantum(p));
+          SetPixelBlue(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1150,7 +1149,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetOpacityPixelComponent(q,PixelIntensityToQuantum(p));
+          SetPixelOpacity(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
@@ -1170,7 +1169,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         indexes=GetCacheViewAuthenticIndexQueue(combine_view);
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetIndexPixelComponent(indexes+x,PixelIntensityToQuantum(p));
+          SetPixelIndex(indexes+x,PixelIntensityToQuantum(p));
           p++;
         }
         image_view=DestroyCacheView(image_view);
@@ -2407,8 +2406,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetGreenPixelComponent(q,GetRedPixelComponent(q));
-          SetBluePixelComponent(q,GetRedPixelComponent(q));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
           q++;
         }
         break;
@@ -2417,8 +2416,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,GetGreenPixelComponent(q));
-          SetBluePixelComponent(q,GetGreenPixelComponent(q));
+          SetPixelRed(q,GetPixelGreen(q));
+          SetPixelBlue(q,GetPixelGreen(q));
           q++;
         }
         break;
@@ -2427,8 +2426,8 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,GetBluePixelComponent(q));
-          SetGreenPixelComponent(q,GetBluePixelComponent(q));
+          SetPixelRed(q,GetPixelBlue(q));
+          SetPixelGreen(q,GetPixelBlue(q));
           q++;
         }
         break;
@@ -2437,9 +2436,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,GetOpacityPixelComponent(q));
-          SetGreenPixelComponent(q,GetOpacityPixelComponent(q));
-          SetBluePixelComponent(q,GetOpacityPixelComponent(q));
+          SetPixelRed(q,GetPixelOpacity(q));
+          SetPixelGreen(q,GetPixelOpacity(q));
+          SetPixelBlue(q,GetPixelOpacity(q));
           q++;
         }
         break;
@@ -2451,9 +2450,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,GetIndexPixelComponent(indexes+x));
-          SetGreenPixelComponent(q,GetIndexPixelComponent(indexes+x));
-          SetBluePixelComponent(q,GetIndexPixelComponent(indexes+x));
+          SetPixelRed(q,GetPixelIndex(indexes+x));
+          SetPixelGreen(q,GetPixelIndex(indexes+x));
+          SetPixelBlue(q,GetPixelIndex(indexes+x));
           q++;
         }
         break;
@@ -2462,9 +2461,9 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,GetAlphaPixelComponent(q));
-          SetGreenPixelComponent(q,GetAlphaPixelComponent(q));
-          SetBluePixelComponent(q,GetAlphaPixelComponent(q));
+          SetPixelRed(q,GetPixelAlpha(q));
+          SetPixelGreen(q,GetPixelAlpha(q));
+          SetPixelBlue(q,GetPixelAlpha(q));
           q++;
         }
         break;
@@ -2473,7 +2472,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetAlphaPixelComponent(q,PixelIntensityToQuantum(q));
+          SetPixelAlpha(q,PixelIntensityToQuantum(q));
           q++;
         }
         break;
@@ -2692,9 +2691,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           if (q->opacity == TransparentOpacity)
             {
-              SetRedPixelComponent(q,pixel.red);
-              SetGreenPixelComponent(q,pixel.green);
-              SetBluePixelComponent(q,pixel.blue);
+              SetPixelRed(q,pixel.red);
+              SetPixelGreen(q,pixel.green);
+              SetPixelBlue(q,pixel.blue);
             }
           q++;
         }
@@ -2702,7 +2701,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           {
             indexes=GetCacheViewAuthenticIndexQueue(image_view);
             for (x=0; x < (ssize_t) image->columns; x++)
-              SetIndexPixelComponent(indexes+x,index);
+              SetPixelIndex(indexes+x,index);
           }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -2866,7 +2865,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
 
         indexes=GetCacheViewAuthenticIndexQueue(image_view);
         for (x=0; x < (ssize_t) image->columns; x++)
-          SetIndexPixelComponent(indexes+x,index);
+          SetPixelIndex(indexes+x,index);
       }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3645,7 +3644,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetOpacityPixelComponent(q,opacity);
+      SetPixelOpacity(q,opacity);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3952,7 +3951,7 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
     {
       p=GetCacheViewVirtualPixels(left_view,x,left_geometry.y+y,1,1,exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetOpacityPixelComponent(p) != TransparentOpacity) ||
+          (GetPixelOpacity(p) != TransparentOpacity) ||
           ((left_image->columns-x-1) >= gap))
         break;
     }
@@ -3962,7 +3961,7 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
       p=GetCacheViewVirtualPixels(right_view,x,right_geometry.y+y,1,1,
         exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetOpacityPixelComponent(p) != TransparentOpacity) || ((x+i) >= (ssize_t) gap))
+          (GetPixelOpacity(p) != TransparentOpacity) || ((x+i) >= (ssize_t) gap))
         break;
     }
     if ((x+i) < (ssize_t) gap)
@@ -4022,7 +4021,7 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
     {
       p=GetCacheViewVirtualPixels(top_view,top_geometry.x+x,y,1,1,exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetOpacityPixelComponent(p) != TransparentOpacity) || ((top_image->rows-y-1) >= gap))
+          (GetPixelOpacity(p) != TransparentOpacity) || ((top_image->rows-y-1) >= gap))
         break;
     }
     i=(ssize_t) top_image->rows-y-1;
@@ -4031,7 +4030,7 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
       p=GetCacheViewVirtualPixels(bottom_view,bottom_geometry.x+x,y,1,1,
         exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetOpacityPixelComponent(p) != TransparentOpacity) || ((y+i) >= (ssize_t) gap))
+          (GetPixelOpacity(p) != TransparentOpacity) || ((y+i) >= (ssize_t) gap))
         break;
     }
     if ((y+i) < (ssize_t) gap)
@@ -4295,12 +4294,12 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=PushColormapIndex(image,(size_t) GetIndexPixelComponent(indexes+x),
+      index=PushColormapIndex(image,(size_t) GetPixelIndex(indexes+x),
         &range_exception);
       if (image->matte == MagickFalse)
-        SetRGBPixelComponents(q,image->colormap+(ssize_t) index)
+        SetPixelRGB(q,image->colormap+(ssize_t) index)
       else
-        SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+        SetPixelRGBO(q,image->colormap+(ssize_t) index);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

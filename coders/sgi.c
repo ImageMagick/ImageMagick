@@ -551,15 +551,15 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetRedPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                SetPixelRed(q,ScaleShortToQuantum((unsigned short)
                   ((*(p+0) << 8) | (*(p+1)))));
-                SetGreenPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
                   ((*(p+2) << 8) | (*(p+3)))));
-                SetBluePixelComponent(q,ScaleShortToQuantum((unsigned short)
+                SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
                   ((*(p+4) << 8) | (*(p+5)))));
-                SetOpacityPixelComponent(q,OpaqueOpacity);
+                SetPixelOpacity(q,OpaqueOpacity);
                 if (image->matte != MagickFalse)
-                  SetAlphaPixelComponent(q,ScaleShortToQuantum((unsigned short)
+                  SetPixelAlpha(q,ScaleShortToQuantum((unsigned short)
                     ((*(p+6) << 8) | (*(p+7)))));
                 p+=8;
                 q++;
@@ -584,12 +584,12 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetRedPixelComponent(q,ScaleCharToQuantum(*p));
+              SetPixelRed(q,ScaleCharToQuantum(*p));
               q->green=ScaleCharToQuantum(*(p+1));
               q->blue=ScaleCharToQuantum(*(p+2));
-              SetOpacityPixelComponent(q,OpaqueOpacity);
+              SetPixelOpacity(q,OpaqueOpacity);
               if (image->matte != MagickFalse)
-                SetAlphaPixelComponent(q,ScaleCharToQuantum(*(p+3)));
+                SetPixelAlpha(q,ScaleCharToQuantum(*(p+3)));
               p+=4;
               q++;
             }
@@ -627,7 +627,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 quantum=(*p << 8);
                 quantum|=(*(p+1));
-                SetIndexPixelComponent(indexes+x,quantum);
+                SetPixelIndex(indexes+x,quantum);
                 p+=8;
                 q++;
               }
@@ -652,7 +652,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             indexes=GetAuthenticIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetIndexPixelComponent(indexes+x,*p);
+              SetPixelIndex(indexes+x,*p);
               p+=4;
               q++;
             }
@@ -984,10 +984,10 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
 
           q=(unsigned char *) iris_pixels;
           q+=((iris_info.rows-1)-y)*(4*iris_info.columns)+4*x;
-          *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-          *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-          *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-          *q++=ScaleQuantumToChar(GetAlphaPixelComponent(p));
+          *q++=ScaleQuantumToChar(GetPixelRed(p));
+          *q++=ScaleQuantumToChar(GetPixelGreen(p));
+          *q++=ScaleQuantumToChar(GetPixelBlue(p));
+          *q++=ScaleQuantumToChar(GetPixelAlpha(p));
           p++;
         }
       else
@@ -998,10 +998,10 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
 
           q=(unsigned short *) iris_pixels;
           q+=((iris_info.rows-1)-y)*(4*iris_info.columns)+4*x;
-          *q++=ScaleQuantumToShort(GetRedPixelComponent(p));
-          *q++=ScaleQuantumToShort(GetGreenPixelComponent(p));
-          *q++=ScaleQuantumToShort(GetBluePixelComponent(p));
-          *q++=ScaleQuantumToShort(GetAlphaPixelComponent(p));
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          *q++=ScaleQuantumToShort(GetPixelAlpha(p));
           p++;
         }
       if (image->previous == (Image *) NULL)

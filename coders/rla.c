@@ -304,23 +304,23 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case 0:
                 {
-                  SetRedPixelComponent(q,ScaleCharToQuantum(byte));
+                  SetPixelRed(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 1:
                 {
-                  SetGreenPixelComponent(q,ScaleCharToQuantum(byte));
+                  SetPixelGreen(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 2:
                 {
-                  SetBluePixelComponent(q,ScaleCharToQuantum(byte));
+                  SetPixelBlue(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 3:
                 default:
                 {
-                  SetAlphaPixelComponent(q,ScaleCharToQuantum(byte));
+                  SetPixelAlpha(q,ScaleCharToQuantum(byte));
                   break;
                 }
               }
@@ -344,23 +344,23 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 0:
             {
-              SetRedPixelComponent(q,ScaleCharToQuantum(byte));
+              SetPixelRed(q,ScaleCharToQuantum(byte));
               break;
             }
             case 1:
             {
-              SetGreenPixelComponent(q,ScaleCharToQuantum(byte));
+              SetPixelGreen(q,ScaleCharToQuantum(byte));
               break;
             }
             case 2:
             {
-              SetBluePixelComponent(q,ScaleCharToQuantum(byte));
+              SetPixelBlue(q,ScaleCharToQuantum(byte));
               break;
             }
             case 3:
             default:
             {
-              SetAlphaPixelComponent(q,ScaleCharToQuantum(byte));
+              SetPixelAlpha(q,ScaleCharToQuantum(byte));
               break;
             }
           }

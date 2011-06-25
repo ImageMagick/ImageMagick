@@ -536,10 +536,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetRedPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[0]));
-          SetGreenPixelComponent(q,GetRedPixelComponent(q));
-          SetBluePixelComponent(q,GetRedPixelComponent(q));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
           q++;
         }
         break;
@@ -552,13 +552,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetRedPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetGreenPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetBluePixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[2]));
           q++;
         }
@@ -572,16 +572,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetRedPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetGreenPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetBluePixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[2]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          SetAlphaPixelComponent(q,ScaleAnyToQuantum((QuantumAny) pixel,
+          SetPixelAlpha(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[3]));
           q++;
         }
@@ -936,14 +936,14 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
       else
         {
           jas_matrix_setv(pixels[0],x,(jas_seqent_t)
-            ScaleQuantumToAny(GetRedPixelComponent(p),range));
+            ScaleQuantumToAny(GetPixelRed(p),range));
           jas_matrix_setv(pixels[1],x,(jas_seqent_t)
-            ScaleQuantumToAny(GetGreenPixelComponent(p),range));
+            ScaleQuantumToAny(GetPixelGreen(p),range));
           jas_matrix_setv(pixels[2],x,(jas_seqent_t)
-            ScaleQuantumToAny(GetBluePixelComponent(p),range));
+            ScaleQuantumToAny(GetPixelBlue(p),range));
           if (number_components > 3)
             jas_matrix_setv(pixels[3],x,(jas_seqent_t)
-              ScaleQuantumToAny((Quantum) (GetAlphaPixelComponent(p)),range));
+              ScaleQuantumToAny((Quantum) (GetPixelAlpha(p)),range));
         }
       p++;
     }

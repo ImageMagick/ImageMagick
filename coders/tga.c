@@ -441,12 +441,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       if (image->storage_class == PseudoClass)
-        SetIndexPixelComponent(indexes+x,index);
-      SetRedPixelComponent(q,pixel.red);
-      SetGreenPixelComponent(q,pixel.green);
-      SetBluePixelComponent(q,pixel.blue);
+        SetPixelIndex(indexes+x,index);
+      SetPixelRed(q,pixel.red);
+      SetPixelGreen(q,pixel.green);
+      SetPixelBlue(q,pixel.blue);
       if (image->matte != MagickFalse)
-        SetOpacityPixelComponent(q,pixel.opacity);
+        SetPixelOpacity(q,pixel.opacity);
       q++;
     }
     if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
@@ -784,20 +784,20 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (targa_info.image_type == TargaColormap)
-        *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+        *q++=(unsigned char) GetPixelIndex(indexes+x);
       else
         if (targa_info.image_type == TargaMonochrome)
           *q++=(unsigned char) ScaleQuantumToChar(PixelIntensityToQuantum(p));
         else
           {
-            *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-            *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-            *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
+            *q++=ScaleQuantumToChar(GetPixelBlue(p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(p));
+            *q++=ScaleQuantumToChar(GetPixelRed(p));
             if (image->matte != MagickFalse)
               *q++=(unsigned char) ScaleQuantumToChar(
-                GetAlphaPixelComponent(p));
+                GetPixelAlpha(p));
             if (image->colorspace == CMYKColorspace)
-              *q++=ScaleQuantumToChar(GetIndexPixelComponent(indexes+x));
+              *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
           }
       p++;
     }

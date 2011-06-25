@@ -884,7 +884,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
+                      (GetPixelOpacity(p) == (Quantum) TransparentOpacity))
                     {
                       *q++=ScaleQuantumToChar((Quantum) QuantumRange);
                       *q++=ScaleQuantumToChar((Quantum) QuantumRange);
@@ -893,16 +893,16 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   else
                     if (image->colorspace != CMYKColorspace)
                       {
-                        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-                        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-                        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
+                        *q++=ScaleQuantumToChar(GetPixelRed(p));
+                        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                        *q++=ScaleQuantumToChar(GetPixelBlue(p));
                       }
                     else
                       {
-                        *q++=ScaleQuantumToChar(GetRedPixelComponent(p));
-                        *q++=ScaleQuantumToChar(GetGreenPixelComponent(p));
-                        *q++=ScaleQuantumToChar(GetBluePixelComponent(p));
-                        *q++=ScaleQuantumToChar(GetIndexPixelComponent(
+                        *q++=ScaleQuantumToChar(GetPixelRed(p));
+                        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                        *q++=ScaleQuantumToChar(GetPixelBlue(p));
+                        *q++=ScaleQuantumToChar(GetPixelIndex(
                           indexes+x));
                       }
                   p++;
@@ -941,7 +941,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (GetOpacityPixelComponent(p) == (Quantum) TransparentOpacity))
+                      (GetPixelOpacity(p) == (Quantum) TransparentOpacity))
                     {
                       Ascii85Encode(image,ScaleQuantumToChar((Quantum)
                         QuantumRange));
@@ -954,22 +954,22 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                     if (image->colorspace != CMYKColorspace)
                       {
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetRedPixelComponent(p)));
+                          GetPixelRed(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetGreenPixelComponent(p)));
+                          GetPixelGreen(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetBluePixelComponent(p)));
+                          GetPixelBlue(p)));
                       }
                     else
                       {
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetRedPixelComponent(p)));
+                          GetPixelRed(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetGreenPixelComponent(p)));
+                          GetPixelGreen(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetBluePixelComponent(p)));
+                          GetPixelBlue(p)));
                         Ascii85Encode(image,ScaleQuantumToChar(
-                          GetIndexPixelComponent(indexes+x)));
+                          GetPixelIndex(indexes+x)));
                       }
                   p++;
                 }
@@ -1035,7 +1035,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                  *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+                  *q++=(unsigned char) GetPixelIndex(indexes+x);
                 progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
                   y,image->rows);
                 if (progress == MagickFalse)
@@ -1068,7 +1068,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                  Ascii85Encode(image,(unsigned char) GetIndexPixelComponent(
+                  Ascii85Encode(image,(unsigned char) GetPixelIndex(
                     indexes+x));
                 progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
                   y,image->rows);

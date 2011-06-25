@@ -25,76 +25,76 @@ extern "C" {
 #include <magick/colorspace.h>
 #include <magick/constitute.h>
 
-#define ClampRedPixelComponent(pixel) ClampToQuantum((pixel)->red)
-#define ClampGreenPixelComponent(pixel) ClampToQuantum((pixel)->green)
-#define ClampBluePixelComponent(pixel) ClampToQuantum((pixel)->blue)
-#define ClampIndexPixelComponent(indexes) ClampToQuantum(*(indexes))
-#define ClampOpacityPixelComponent(pixel) ClampToQuantum((pixel)->opacity)
-#define GetAlphaPixelComponent(pixel) (QuantumRange-(pixel)->opacity)
-#define GetBlackPixelComponent(indexes) (*(indexes))
-#define GetBluePixelComponent(pixel) ((pixel)->blue)
-#define GetCbPixelComponent(pixel) ((pixel)->green)
-#define GetCrPixelComponent(pixel) ((pixel)->blue)
-#define GetCyanPixelComponent(pixel) ((pixel)->red)
-#define GetGrayPixelComponent(pixel) ((pixel)->red)
-#define GetGreenPixelComponent(pixel) ((pixel)->green)
-#define GetIndexPixelComponent(indexes) (*(indexes))
-#define GetMagentaPixelComponent(pixel) ((pixel)->green)
-#define GetNextPixel(pixel)  ((pixel)+1)
-#define GetOpacityPixelComponent(pixel) ((pixel)->opacity)
-#define GetRedPixelComponent(pixel) ((pixel)->red)
-#define GetRGBPixelComponents(pixel,packet) \
+#define ClampPixelRed(pixel) ClampToQuantum((pixel)->red)
+#define ClampPixelGreen(pixel) ClampToQuantum((pixel)->green)
+#define ClampPixelBlue(pixel) ClampToQuantum((pixel)->blue)
+#define ClampPixelIndex(indexes) ClampToQuantum(*(indexes))
+#define ClampPixelOpacity(pixel) ClampToQuantum((pixel)->opacity)
+#define GetPixelAlpha(pixel) (QuantumRange-(pixel)->opacity)
+#define GetPixelBlack(indexes) (*(indexes))
+#define GetPixelBlue(pixel) ((pixel)->blue)
+#define GetPixelCb(pixel) ((pixel)->green)
+#define GetPixelCr(pixel) ((pixel)->blue)
+#define GetPixelCyan(pixel) ((pixel)->red)
+#define GetPixelGray(pixel) ((pixel)->red)
+#define GetPixelGreen(pixel) ((pixel)->green)
+#define GetPixelIndex(indexes) (*(indexes))
+#define GetPixelMagenta(pixel) ((pixel)->green)
+#define GetPixelNext(pixel)  ((pixel)+1)
+#define GetPixelOpacity(pixel) ((pixel)->opacity)
+#define GetPixelRed(pixel) ((pixel)->red)
+#define GetPixelRGB(pixel,packet) \
 { \
-  (packet)->red=GetRedPixelComponent((pixel)); \
-  (packet)->green=GetGreenPixelComponent((pixel)); \
-  (packet)->blue=GetBluePixelComponent((pixel)); \
+  (packet)->red=GetPixelRed((pixel)); \
+  (packet)->green=GetPixelGreen((pixel)); \
+  (packet)->blue=GetPixelBlue((pixel)); \
 }
-#define GetRGBOPixelComponents(pixel,packet) \
+#define GetPixelRGBO(pixel,packet) \
 { \
-  (packet)->red=GetRedPixelComponent((pixel)); \
-  (packet)->green=GetGreenPixelComponent((pixel)); \
-  (packet)->blue=GetBluePixelComponent((pixel)); \
-  (packet)->opacity=GetOpacityPixelComponent((pixel)); \
+  (packet)->red=GetPixelRed((pixel)); \
+  (packet)->green=GetPixelGreen((pixel)); \
+  (packet)->blue=GetPixelBlue((pixel)); \
+  (packet)->opacity=GetPixelOpacity((pixel)); \
 }
-#define GetYPixelComponent(pixel) ((pixel)->red)
-#define GetYellowPixelComponent(pixel) ((pixel)->blue)
-#define SetAlphaPixelComponent(pixel,value) \
+#define GetPixelY(pixel) ((pixel)->red)
+#define GetPixelYellow(pixel) ((pixel)->blue)
+#define SetPixelAlpha(pixel,value) \
   ((pixel)->opacity=(Quantum) (QuantumRange-(value)))
-#define SetBlackPixelComponent(indexes,value) (*(indexes)=(Quantum) (value))
-#define SetBluePixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
-#define SetCbPixelComponent(pixel,value) ((pixel)->green=(Quantum) (value))
-#define SetCrPixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
-#define SetCyanPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
-#define SetGrayPixelComponent(pixel,value) \
+#define SetPixelBlack(indexes,value) (*(indexes)=(Quantum) (value))
+#define SetPixelBlue(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelCb(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelCr(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelCyan(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetPixelGray(pixel,value) \
   ((pixel)->red=(pixel)->green=(pixel)->blue=(Quantum) (value))
-#define SetGreenPixelComponent(pixel,value) ((pixel)->green=(Quantum) (value))
-#define SetIndexPixelComponent(indexes,value) (*(indexes)=(IndexPacket) (value))
-#define SetMagentaPixelComponent(pixel,value) ((pixel)->green=(Quantum) (value))
-#define SetOpacityPixelComponent(pixel,value) \
+#define SetPixelGreen(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelIndex(indexes,value) (*(indexes)=(IndexPacket) (value))
+#define SetPixelMagenta(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelOpacity(pixel,value) \
   ((pixel)->opacity=(Quantum) (value))
-#define SetRedPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
-#define SetRGBPixelComponents(pixel,packet) \
+#define SetPixelRed(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetPixelRGB(pixel,packet) \
 { \
-  SetRedPixelComponent(pixel,(packet)->red); \
-  SetGreenPixelComponent(pixel,(packet)->green); \
-  SetBluePixelComponent(pixel,(packet)->blue); \
+  SetPixelRed(pixel,(packet)->red); \
+  SetPixelGreen(pixel,(packet)->green); \
+  SetPixelBlue(pixel,(packet)->blue); \
 }
-#define SetRGBAPixelComponents(pixel,packet) \
+#define SetPixelRGBA(pixel,packet) \
 { \
-  SetRedPixelComponent(pixel,(packet)->red); \
-  SetGreenPixelComponent(pixel,(packet)->green); \
-  SetBluePixelComponent(pixel,(packet)->blue); \
-  SetAlphaPixelComponent(pixel,(QuantumRange-(packet)->opacity)); \
+  SetPixelRed(pixel,(packet)->red); \
+  SetPixelGreen(pixel,(packet)->green); \
+  SetPixelBlue(pixel,(packet)->blue); \
+  SetPixelAlpha(pixel,(QuantumRange-(packet)->opacity)); \
 }
-#define SetRGBOPixelComponents(pixel,packet) \
+#define SetPixelRGBO(pixel,packet) \
 { \
-  SetRedPixelComponent(pixel,(packet)->red); \
-  SetGreenPixelComponent(pixel,(packet)->green); \
-  SetBluePixelComponent(pixel,(packet)->blue); \
-  SetOpacityPixelComponent(pixel,(packet)->opacity); \
+  SetPixelRed(pixel,(packet)->red); \
+  SetPixelGreen(pixel,(packet)->green); \
+  SetPixelBlue(pixel,(packet)->blue); \
+  SetPixelOpacity(pixel,(packet)->opacity); \
 }
-#define SetYellowPixelComponent(pixel,value) ((pixel)->blue=(Quantum) (value))
-#define SetYPixelComponent(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetPixelYellow(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelY(pixel,value) ((pixel)->red=(Quantum) (value))
 
 typedef enum
 {
@@ -111,19 +111,19 @@ typedef enum
 
 typedef enum
 {
-  RedPixelComponent = 0,
-  CyanPixelComponent = 0,
-  GrayPixelComponent = 0,
-  YPixelComponent = 0,
-  GreenPixelComponent = 1,
-  MagentaPixelComponent = 1,
-  CbPixelComponent = 1,
-  BluePixelComponent = 2,
-  YellowPixelComponent = 2,
-  CrPixelComponent = 2,
-  AlphaPixelComponent = 3,
-  BlackPixelComponent = 4,
-  IndexPixelComponent = 4,
+  PixelRed = 0,
+  PixelCyan = 0,
+  PixelGray = 0,
+  PixelY = 0,
+  PixelGreen = 1,
+  PixelMagenta = 1,
+  PixelCb = 1,
+  PixelBlue = 2,
+  PixelYellow = 2,
+  PixelCr = 2,
+  PixelAlpha = 3,
+  PixelBlack = 4,
+  PixelIndex = 4,
   MaskPixelComponent = 5
 } PixelComponent;
 

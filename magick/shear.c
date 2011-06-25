@@ -739,9 +739,9 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if (((MagickRealType) GetRedPixelComponent(p) < threshold) ||
-          ((MagickRealType) GetGreenPixelComponent(p) < threshold) ||
-          ((MagickRealType) GetBluePixelComponent(p) < threshold))
+      if (((MagickRealType) GetPixelRed(p) < threshold) ||
+          ((MagickRealType) GetPixelGreen(p) < threshold) ||
+          ((MagickRealType) GetPixelBlue(p) < threshold))
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -790,9 +790,9 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if (((MagickRealType) GetRedPixelComponent(p) < threshold) ||
-          ((MagickRealType) GetGreenPixelComponent(p) < threshold) ||
-          ((MagickRealType) GetBluePixelComponent(p) < threshold))
+      if (((MagickRealType) GetPixelRed(p) < threshold) ||
+          ((MagickRealType) GetPixelGreen(p) < threshold) ||
+          ((MagickRealType) GetPixelBlue(p) < threshold))
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -856,10 +856,10 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
     {
       if ((x >= offset) && (x < ((ssize_t) image->columns-offset)))
         continue;
-      background.red+=QuantumScale*GetRedPixelComponent(p);
-      background.green+=QuantumScale*GetGreenPixelComponent(p);
-      background.blue+=QuantumScale*GetBluePixelComponent(p);
-      background.opacity+=QuantumScale*GetOpacityPixelComponent(p);
+      background.red+=QuantumScale*GetPixelRed(p);
+      background.green+=QuantumScale*GetPixelGreen(p);
+      background.blue+=QuantumScale*GetPixelBlue(p);
+      background.opacity+=QuantumScale*GetPixelOpacity(p);
       count++;
       p++;
     }
@@ -1238,8 +1238,8 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         if ((indexes != (IndexPacket *) NULL) &&
             (rotate_indexes != (IndexPacket *) NULL))
           for (x=0; x < (ssize_t) image->columns; x++)
-            SetIndexPixelComponent(rotate_indexes+image->columns-x-1,
-              GetIndexPixelComponent(indexes+x));
+            SetPixelIndex(rotate_indexes+image->columns-x-1,
+              GetPixelIndex(indexes+x));
         sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
         if (sync == MagickFalse)
           status=MagickFalse;
@@ -1551,7 +1551,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
             }
           SetMagickPixelPacket(image,p,indexes,&source);
           MagickPixelCompositeAreaBlend(&pixel,(MagickRealType) pixel.opacity,
-            &source,(MagickRealType) GetOpacityPixelComponent(p),area,&destination);
+            &source,(MagickRealType) GetPixelOpacity(p),area,&destination);
           SetPixelPacket(image,&destination,q++,shear_indexes++);
           SetMagickPixelPacket(image,p++,indexes++,&pixel);
         }
@@ -1581,7 +1581,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
             continue;
           SetMagickPixelPacket(image,p,indexes,&source);
           MagickPixelCompositeAreaBlend(&pixel,(MagickRealType) pixel.opacity,
-            &source,(MagickRealType) GetOpacityPixelComponent(p),area,&destination);
+            &source,(MagickRealType) GetPixelOpacity(p),area,&destination);
           SetPixelPacket(image,&destination,q,shear_indexes);
           SetMagickPixelPacket(image,p,indexes,&pixel);
         }
@@ -1771,7 +1771,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
             }
           SetMagickPixelPacket(image,p,indexes,&source);
           MagickPixelCompositeAreaBlend(&pixel,(MagickRealType) pixel.opacity,
-            &source,(MagickRealType) GetOpacityPixelComponent(p),area,&destination);
+            &source,(MagickRealType) GetPixelOpacity(p),area,&destination);
           SetPixelPacket(image,&destination,q++,shear_indexes++);
           SetMagickPixelPacket(image,p++,indexes++,&pixel);
         }
@@ -1801,7 +1801,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
             continue;
           SetMagickPixelPacket(image,p,indexes,&source);
           MagickPixelCompositeAreaBlend(&pixel,(MagickRealType) pixel.opacity,
-            &source,(MagickRealType) GetOpacityPixelComponent(p),area,&destination);
+            &source,(MagickRealType) GetPixelOpacity(p),area,&destination);
           SetPixelPacket(image,&destination,q,shear_indexes);
           SetMagickPixelPacket(image,p,indexes,&pixel);
         }

@@ -58,7 +58,7 @@
 %  AcquireMagickMatrix() allocates and returns a matrix in the form of an
 %  array of pointers to an array of doubles, with all values pre-set to zero.
 %
-%  This used to generate the two dimentional matrix, and vectors required
+%  This used to generate the two dimensional matrix, and vectors required
 %  for the GaussJordanElimination() method below, solving some system of
 %  simultanious equations.
 %
@@ -315,7 +315,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %    o results: the result(s) that should be generated from the given terms
 %               weighted by the yet-to-be-solved coefficents.
 %
-%    o rank: the rank or size of the dimentions of the square matrix.
+%    o rank: the rank or size of the dimensions of the square matrix.
 %            Also the length of vectors, and number of terms being added.
 %
 %    o number_vectors: Number of result vectors, and number or results being
@@ -324,7 +324,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %
 %  Example of use...
 %
-%     2 dimentional Affine Equations (which are separable)
+%     2 dimensional Affine Equations (which are separable)
 %         c0*x + c2*y + c4*1 => u
 %         c1*x + c3*y + c5*1 => v
 %

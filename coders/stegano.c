@@ -100,9 +100,9 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 {
 #define GetBit(alpha,i) MagickMin((((size_t) (alpha) >> (size_t) \
   (i)) & 0x01),16)
-#define SetBit(indexes,i,set) SetIndexPixelComponent(indexes,((set) != 0 ? \
-  (size_t) GetIndexPixelComponent(indexes) | (one << (size_t) (i)) : (size_t) \
-  GetIndexPixelComponent(indexes) & ~(one << (size_t) (i))))
+#define SetBit(indexes,i,set) SetPixelIndex(indexes,((set) != 0 ? \
+  (size_t) GetPixelIndex(indexes) | (one << (size_t) (i)) : (size_t) \
+  GetPixelIndex(indexes) & ~(one << (size_t) (i))))
 
   Image
     *image,

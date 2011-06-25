@@ -628,9 +628,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             for (bit=0; bit < 8; bit++)
               if (PixelIntensity(q) < ((MagickRealType) QuantumRange/2.0))
                 {
-                  quantum=(size_t) GetIndexPixelComponent(indexes+x+bit);
+                  quantum=(size_t) GetPixelIndex(indexes+x+bit);
                   quantum|=0x01;
-                  SetIndexPixelComponent(indexes+x+bit,quantum);
+                  SetPixelIndex(indexes+x+bit,quantum);
                 }
             p++;
           }
@@ -639,9 +639,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
                 if (PixelIntensity(q) < ((MagickRealType) QuantumRange/2.0))
                   {
-                    quantum=(size_t) GetIndexPixelComponent(indexes+x+bit);
+                    quantum=(size_t) GetPixelIndex(indexes+x+bit);
                     quantum|=0x01;
-                    SetIndexPixelComponent(indexes+x+bit,quantum);
+                    SetPixelIndex(indexes+x+bit,quantum);
                   }
               p++;
             }
@@ -665,7 +665,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < (ssize_t) image->columns; x++)
-            SetIndexPixelComponent(indexes+x,*p++);
+            SetPixelIndex(indexes+x,*p++);
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
           if (image->previous == (Image *) NULL)
@@ -689,19 +689,19 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetRedPixelComponent(q,ScaleCharToQuantum(*p));
-              SetGreenPixelComponent(q,ScaleCharToQuantum(*(p+number_pixels)));
-              SetBluePixelComponent(q,ScaleCharToQuantum(*(p+2*number_pixels)));
+              SetPixelRed(q,ScaleCharToQuantum(*p));
+              SetPixelGreen(q,ScaleCharToQuantum(*(p+number_pixels)));
+              SetPixelBlue(q,ScaleCharToQuantum(*(p+2*number_pixels)));
               if (image->colors != 0)
                 {
-                  SetRedPixelComponent(q,image->colormap[(ssize_t)
-                    GetRedPixelComponent(q)].red);
-                  SetGreenPixelComponent(q,image->colormap[(ssize_t)
-                    GetGreenPixelComponent(q)].green);
-                  SetBluePixelComponent(q,image->colormap[(ssize_t)
-                    GetBluePixelComponent(q)].blue);
+                  SetPixelRed(q,image->colormap[(ssize_t)
+                    GetPixelRed(q)].red);
+                  SetPixelGreen(q,image->colormap[(ssize_t)
+                    GetPixelGreen(q)].green);
+                  SetPixelBlue(q,image->colormap[(ssize_t)
+                    GetPixelBlue(q)].blue);
                 }
-              SetOpacityPixelComponent(q,image->matte != MagickFalse ?
+              SetPixelOpacity(q,image->matte != MagickFalse ?
                 QuantumRange-ScaleCharToQuantum(*(p+number_pixels*3)) :
                 OpaqueOpacity);
               p++;
@@ -1097,12 +1097,12 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q=ScaleQuantumToChar(GetRedPixelComponent(p));
-            *(q+number_pixels)=ScaleQuantumToChar(GetGreenPixelComponent(p));
-            *(q+number_pixels*2)=ScaleQuantumToChar(GetBluePixelComponent(p));
+            *q=ScaleQuantumToChar(GetPixelRed(p));
+            *(q+number_pixels)=ScaleQuantumToChar(GetPixelGreen(p));
+            *(q+number_pixels*2)=ScaleQuantumToChar(GetPixelBlue(p));
             if (image->matte != MagickFalse)
               *(q+number_pixels*3)=ScaleQuantumToChar((Quantum)
-                (GetAlphaPixelComponent(p)));
+                (GetPixelAlpha(p)));
             p++;
             q++;
           }
@@ -1148,7 +1148,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               break;
             indexes=GetVirtualIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
-              *q++=(unsigned char) GetIndexPixelComponent(indexes+x);
+              *q++=(unsigned char) GetPixelIndex(indexes+x);
             if (image->previous == (Image *) NULL)
               {
                 status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

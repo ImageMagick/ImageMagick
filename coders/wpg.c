@@ -296,8 +296,8 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
             for (bit=0; bit < 8; bit++)
               {
                 index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                SetIndexPixelComponent(indexes+x+bit,index);
-                SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+                SetPixelIndex(indexes+x+bit,index);
+                SetPixelRGBO(q,image->colormap+(ssize_t) index);
                 q++;
               }
             p++;
@@ -307,8 +307,8 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
             for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
               {
                 index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                SetIndexPixelComponent(indexes+x+bit,index);
-                SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+                SetPixelIndex(indexes+x+bit,index);
+                SetPixelRGBO(q,image->colormap+(ssize_t) index);
                 q++;
               }
             p++;
@@ -326,42 +326,42 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
             index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
             index=ConstrainColormapIndex(image,(*p) & 0x3);
-            SetIndexPixelComponent(indexes+x+1,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x+1,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             p++;
             q++;
         }
        if ((image->columns % 4) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
             if ((image->columns % 4) >= 1)
 
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
-                SetIndexPixelComponent(indexes+x,index);
-                SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+                SetPixelIndex(indexes+x,index);
+                SetPixelRGBO(q,image->colormap+(ssize_t) index);
                 q++;
                 if ((image->columns % 4) >= 2)
 
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
-                    SetIndexPixelComponent(indexes+x,index);
-                    SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+                    SetPixelIndex(indexes+x,index);
+                    SetPixelRGBO(q,image->colormap+(ssize_t) index);
                     q++;
                   }
               }
@@ -381,20 +381,20 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           { 
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             q++;
             index=ConstrainColormapIndex(image,(*p) & 0x0f);
-            SetIndexPixelComponent(indexes+x+1,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x+1,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             p++;
             q++;
           }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             p++;
             q++;
           }
@@ -411,8 +411,8 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         for (x=0; x < (ssize_t) image->columns; x++)
           {
             index=ConstrainColormapIndex(image,*p);
-            SetIndexPixelComponent(indexes+x,index);
-            SetRGBOPixelComponents(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
             p++;
             q++;
           }
@@ -427,9 +427,9 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-          SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-          SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+          SetPixelRed(q,ScaleCharToQuantum(*p++));
+          SetPixelGreen(q,ScaleCharToQuantum(*p++));
+          SetPixelBlue(q,ScaleCharToQuantum(*p++));
           q++;
         }
       if (!SyncAuthenticPixels(image,exception))

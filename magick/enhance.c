@@ -658,14 +658,14 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      luma=0.2126*GetRedPixelComponent(q)+0.7152*GetGreenPixelComponent(q)+
-        0.0722*GetBluePixelComponent(q);
-      SetRedPixelComponent(q,ClampToQuantum(luma+color_correction.saturation*
-        (cdl_map[ScaleQuantumToMap(GetRedPixelComponent(q))].red-luma)));
-      SetGreenPixelComponent(q,ClampToQuantum(luma+color_correction.saturation*
-        (cdl_map[ScaleQuantumToMap(GetGreenPixelComponent(q))].green-luma)));
-      SetBluePixelComponent(q,ClampToQuantum(luma+color_correction.saturation*
-        (cdl_map[ScaleQuantumToMap(GetBluePixelComponent(q))].blue-luma)));
+      luma=0.2126*GetPixelRed(q)+0.7152*GetPixelGreen(q)+
+        0.0722*GetPixelBlue(q);
+      SetPixelRed(q,ClampToQuantum(luma+color_correction.saturation*
+        (cdl_map[ScaleQuantumToMap(GetPixelRed(q))].red-luma)));
+      SetPixelGreen(q,ClampToQuantum(luma+color_correction.saturation*
+        (cdl_map[ScaleQuantumToMap(GetPixelGreen(q))].green-luma)));
+      SetPixelBlue(q,ClampToQuantum(luma+color_correction.saturation*
+        (cdl_map[ScaleQuantumToMap(GetPixelBlue(q))].blue-luma)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -831,31 +831,31 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
     {
       SetMagickPixelPacket(image,q,indexes+x,&pixel);
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ClampRedPixelComponent(clut_map+
-          ScaleQuantumToMap(GetRedPixelComponent(q))));
+        SetPixelRed(q,ClampPixelRed(clut_map+
+          ScaleQuantumToMap(GetPixelRed(q))));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ClampGreenPixelComponent(clut_map+
-          ScaleQuantumToMap(GetGreenPixelComponent(q))));
+        SetPixelGreen(q,ClampPixelGreen(clut_map+
+          ScaleQuantumToMap(GetPixelGreen(q))));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ClampBluePixelComponent(clut_map+
-          ScaleQuantumToMap(GetBluePixelComponent(q))));
+        SetPixelBlue(q,ClampPixelBlue(clut_map+
+          ScaleQuantumToMap(GetPixelBlue(q))));
       if ((channel & OpacityChannel) != 0)
         {
           if (clut_image->matte == MagickFalse)
-            SetAlphaPixelComponent(q,MagickPixelIntensityToQuantum(clut_map+
-              ScaleQuantumToMap((Quantum) GetAlphaPixelComponent(q))));
+            SetPixelAlpha(q,MagickPixelIntensityToQuantum(clut_map+
+              ScaleQuantumToMap((Quantum) GetPixelAlpha(q))));
           else
             if (image->matte == MagickFalse)
-              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(clut_map+
+              SetPixelOpacity(q,ClampPixelOpacity(clut_map+
                 ScaleQuantumToMap((Quantum) MagickPixelIntensity(&pixel))));
             else
-              SetOpacityPixelComponent(q,ClampOpacityPixelComponent(
-                clut_map+ScaleQuantumToMap(GetOpacityPixelComponent(q))));
+              SetPixelOpacity(q,ClampPixelOpacity(
+                clut_map+ScaleQuantumToMap(GetPixelOpacity(q))));
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetIndexPixelComponent(indexes+x,ClampToQuantum((clut_map+(ssize_t)
-          GetIndexPixelComponent(indexes+x))->index));
+        SetPixelIndex(indexes+x,ClampToQuantum((clut_map+(ssize_t)
+          GetPixelIndex(indexes+x))->index));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1008,13 +1008,13 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      red=GetRedPixelComponent(q);
-      green=GetGreenPixelComponent(q);
-      blue=GetBluePixelComponent(q);
+      red=GetPixelRed(q);
+      green=GetPixelGreen(q);
+      blue=GetPixelBlue(q);
       Contrast(sign,&red,&green,&blue);
-      SetRedPixelComponent(q,red);
-      SetGreenPixelComponent(q,green);
-      SetBluePixelComponent(q,blue);
+      SetPixelRed(q,red);
+      SetPixelGreen(q,green);
+      SetPixelBlue(q,blue);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1207,16 +1207,16 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if ((channel & RedChannel) != 0)
-          histogram[ScaleQuantumToMap(GetRedPixelComponent(p))].red++;
+          histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
         if ((channel & GreenChannel) != 0)
-          histogram[ScaleQuantumToMap(GetGreenPixelComponent(p))].green++;
+          histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
         if ((channel & BlueChannel) != 0)
-          histogram[ScaleQuantumToMap(GetBluePixelComponent(p))].blue++;
+          histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
         if ((channel & OpacityChannel) != 0)
-          histogram[ScaleQuantumToMap(GetOpacityPixelComponent(p))].opacity++;
+          histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          histogram[ScaleQuantumToMap(GetIndexPixelComponent(
+          histogram[ScaleQuantumToMap(GetPixelIndex(
             indexes+x))].index++;
         p++;
       }
@@ -1480,33 +1480,33 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       if ((channel & RedChannel) != 0)
         {
           if (black.red != white.red)
-            SetRedPixelComponent(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetRedPixelComponent(q))].red));
+            SetPixelRed(q,ClampToQuantum(stretch_map[
+              ScaleQuantumToMap(GetPixelRed(q))].red));
         }
       if ((channel & GreenChannel) != 0)
         {
           if (black.green != white.green)
-            SetGreenPixelComponent(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetGreenPixelComponent(q))].green));
+            SetPixelGreen(q,ClampToQuantum(stretch_map[
+              ScaleQuantumToMap(GetPixelGreen(q))].green));
         }
       if ((channel & BlueChannel) != 0)
         {
           if (black.blue != white.blue)
-            SetBluePixelComponent(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetBluePixelComponent(q))].blue));
+            SetPixelBlue(q,ClampToQuantum(stretch_map[
+              ScaleQuantumToMap(GetPixelBlue(q))].blue));
         }
       if ((channel & OpacityChannel) != 0)
         {
           if (black.opacity != white.opacity)
-            SetOpacityPixelComponent(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetOpacityPixelComponent(q))].opacity));
+            SetPixelOpacity(q,ClampToQuantum(stretch_map[
+              ScaleQuantumToMap(GetPixelOpacity(q))].opacity));
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           if (black.index != white.index)
-            SetIndexPixelComponent(indexes+x,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetIndexPixelComponent(indexes+x))].index));
+            SetPixelIndex(indexes+x,ClampToQuantum(stretch_map[
+              ScaleQuantumToMap(GetPixelIndex(indexes+x))].index));
         }
       q++;
     }
@@ -1559,16 +1559,16 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
-  mean=((MagickRealType) GetRedPixelComponent(r)+pixel.red)/2; \
-  distance=(MagickRealType) GetRedPixelComponent(r)-(MagickRealType) pixel.red; \
+  mean=((MagickRealType) GetPixelRed(r)+pixel.red)/2; \
+  distance=(MagickRealType) GetPixelRed(r)-(MagickRealType) pixel.red; \
   distance_squared=QuantumScale*(2.0*((MagickRealType) QuantumRange+1.0)+ \
      mean)*distance*distance; \
-  mean=((MagickRealType) GetGreenPixelComponent(r)+pixel.green)/2; \
-  distance=(MagickRealType) GetGreenPixelComponent(r)-(MagickRealType) \
+  mean=((MagickRealType) GetPixelGreen(r)+pixel.green)/2; \
+  distance=(MagickRealType) GetPixelGreen(r)-(MagickRealType) \
     pixel.green; \
   distance_squared+=4.0*distance*distance; \
-  mean=((MagickRealType) GetBluePixelComponent(r)+pixel.blue)/2; \
-  distance=(MagickRealType) GetBluePixelComponent(r)-(MagickRealType) \
+  mean=((MagickRealType) GetPixelBlue(r)+pixel.blue)/2; \
+  distance=(MagickRealType) GetPixelBlue(r)-(MagickRealType) \
     pixel.blue; \
   distance_squared+=QuantumScale*(3.0*((MagickRealType) \
     QuantumRange+1.0)-1.0-mean)*distance*distance; \
@@ -1579,10 +1579,10 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   if (distance_squared < ((MagickRealType) QuantumRange*(MagickRealType) \
       QuantumRange/25.0f)) \
     { \
-      aggregate.red+=(weight)*GetRedPixelComponent(r); \
-      aggregate.green+=(weight)*GetGreenPixelComponent(r); \
-      aggregate.blue+=(weight)*GetBluePixelComponent(r); \
-      aggregate.opacity+=(weight)*GetOpacityPixelComponent(r); \
+      aggregate.red+=(weight)*GetPixelRed(r); \
+      aggregate.green+=(weight)*GetPixelGreen(r); \
+      aggregate.blue+=(weight)*GetPixelBlue(r); \
+      aggregate.opacity+=(weight)*GetPixelOpacity(r); \
       total_weight+=(weight); \
     } \
   r++;
@@ -1697,11 +1697,11 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
       r=p+4*(image->columns+4);
       Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
-      SetRedPixelComponent(q,(aggregate.red+(total_weight/2)-1)/total_weight);
-      SetGreenPixelComponent(q,(aggregate.green+(total_weight/2)-1)/
+      SetPixelRed(q,(aggregate.red+(total_weight/2)-1)/total_weight);
+      SetPixelGreen(q,(aggregate.green+(total_weight/2)-1)/
         total_weight);
-      SetBluePixelComponent(q,(aggregate.blue+(total_weight/2)-1)/total_weight);
-      SetOpacityPixelComponent(q,(aggregate.opacity+(total_weight/2)-1)/
+      SetPixelBlue(q,(aggregate.blue+(total_weight/2)-1)/total_weight);
+      SetPixelOpacity(q,(aggregate.opacity+(total_weight/2)-1)/
         total_weight);
       p++;
       q++;
@@ -1837,16 +1837,16 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        histogram[ScaleQuantumToMap(GetRedPixelComponent(p))].red++;
+        histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
       if ((channel & GreenChannel) != 0)
-        histogram[ScaleQuantumToMap(GetGreenPixelComponent(p))].green++;
+        histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
       if ((channel & BlueChannel) != 0)
-        histogram[ScaleQuantumToMap(GetBluePixelComponent(p))].blue++;
+        histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
       if ((channel & OpacityChannel) != 0)
-        histogram[ScaleQuantumToMap(GetOpacityPixelComponent(p))].opacity++;
+        histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        histogram[ScaleQuantumToMap(GetIndexPixelComponent(indexes+x))].index++;
+        histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
       p++;
     }
   }
@@ -1956,22 +1956,22 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (((channel & RedChannel) != 0) && (white.red != black.red))
-        SetRedPixelComponent(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetRedPixelComponent(q))].red));
+        SetPixelRed(q,ClampToQuantum(equalize_map[
+          ScaleQuantumToMap(GetPixelRed(q))].red));
       if (((channel & GreenChannel) != 0) && (white.green != black.green))
-        SetGreenPixelComponent(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetGreenPixelComponent(q))].green));
+        SetPixelGreen(q,ClampToQuantum(equalize_map[
+          ScaleQuantumToMap(GetPixelGreen(q))].green));
       if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
-        SetBluePixelComponent(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetBluePixelComponent(q))].blue));
+        SetPixelBlue(q,ClampToQuantum(equalize_map[
+          ScaleQuantumToMap(GetPixelBlue(q))].blue));
       if (((channel & OpacityChannel) != 0) && (white.opacity != black.opacity))
-        SetOpacityPixelComponent(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetOpacityPixelComponent(q))].opacity));
+        SetPixelOpacity(q,ClampToQuantum(equalize_map[
+          ScaleQuantumToMap(GetPixelOpacity(q))].opacity));
       if ((((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace)) &&
           (white.index != black.index))
-        SetIndexPixelComponent(indexes+x,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetIndexPixelComponent(indexes+x))].index));
+        SetPixelIndex(indexes+x,ClampToQuantum(equalize_map[
+          ScaleQuantumToMap(GetPixelIndex(indexes+x))].index));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2183,32 +2183,32 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     {
       if (channel == DefaultChannels)
         {
-          SetRedPixelComponent(q,gamma_map[ScaleQuantumToMap(
-            GetRedPixelComponent(q))]);
-          SetGreenPixelComponent(q,gamma_map[ScaleQuantumToMap(
-            GetGreenPixelComponent(q))]);
-          SetBluePixelComponent(q,gamma_map[ScaleQuantumToMap(
-            GetBluePixelComponent(q))]);
+          SetPixelRed(q,gamma_map[ScaleQuantumToMap(
+            GetPixelRed(q))]);
+          SetPixelGreen(q,gamma_map[ScaleQuantumToMap(
+            GetPixelGreen(q))]);
+          SetPixelBlue(q,gamma_map[ScaleQuantumToMap(
+            GetPixelBlue(q))]);
         }
       else
         {
           if ((channel & RedChannel) != 0)
-            SetRedPixelComponent(q,gamma_map[ScaleQuantumToMap(
-              GetRedPixelComponent(q))]);
+            SetPixelRed(q,gamma_map[ScaleQuantumToMap(
+              GetPixelRed(q))]);
           if ((channel & GreenChannel) != 0)
-            SetGreenPixelComponent(q,gamma_map[ScaleQuantumToMap(
-              GetGreenPixelComponent(q))]);
+            SetPixelGreen(q,gamma_map[ScaleQuantumToMap(
+              GetPixelGreen(q))]);
           if ((channel & BlueChannel) != 0)
-            SetBluePixelComponent(q,gamma_map[ScaleQuantumToMap(
-              GetBluePixelComponent(q))]);
+            SetPixelBlue(q,gamma_map[ScaleQuantumToMap(
+              GetPixelBlue(q))]);
           if ((channel & OpacityChannel) != 0)
             {
               if (image->matte == MagickFalse)
-                SetOpacityPixelComponent(q,gamma_map[ScaleQuantumToMap(
-                  GetOpacityPixelComponent(q))]);
+                SetPixelOpacity(q,gamma_map[ScaleQuantumToMap(
+                  GetPixelOpacity(q))]);
               else
-                SetAlphaPixelComponent(q,gamma_map[ScaleQuantumToMap((Quantum)
-                  GetAlphaPixelComponent(q))]);
+                SetPixelAlpha(q,gamma_map[ScaleQuantumToMap((Quantum)
+                  GetPixelAlpha(q))]);
             }
         }
       q++;
@@ -2216,8 +2216,8 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     if (((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace))
       for (x=0; x < (ssize_t) image->columns; x++)
-        SetIndexPixelComponent(indexes+x,gamma_map[ScaleQuantumToMap(
-          GetIndexPixelComponent(indexes+x))]);
+        SetPixelIndex(indexes+x,gamma_map[ScaleQuantumToMap(
+          GetPixelIndex(indexes+x))]);
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -2394,9 +2394,9 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
     pixel4=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      point.x=QuantumScale*(level-1.0)*GetRedPixelComponent(q);
-      point.y=QuantumScale*(level-1.0)*GetGreenPixelComponent(q);
-      point.z=QuantumScale*(level-1.0)*GetBluePixelComponent(q);
+      point.x=QuantumScale*(level-1.0)*GetPixelRed(q);
+      point.y=QuantumScale*(level-1.0)*GetPixelGreen(q);
+      point.z=QuantumScale*(level-1.0)*GetPixelBlue(q);
       offset=point.x+level*floor(point.y)+cube_size*floor(point.z);
       point.x-=floor(point.x);
       point.y-=floor(point.y);
@@ -2421,16 +2421,16 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       MagickPixelCompositeAreaBlend(&pixel3,pixel3.opacity,&pixel4,
         pixel4.opacity,point.z,&pixel);
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ClampToQuantum(pixel.red));
+        SetPixelRed(q,ClampToQuantum(pixel.red));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ClampToQuantum(pixel.green));
+        SetPixelGreen(q,ClampToQuantum(pixel.green));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ClampToQuantum(pixel.blue));
+        SetPixelBlue(q,ClampToQuantum(pixel.blue));
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        SetOpacityPixelComponent(q,ClampToQuantum(pixel.opacity));
+        SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetIndexPixelComponent(indexes+x,ClampToQuantum(pixel.index));
+        SetPixelIndex(indexes+x,ClampToQuantum(pixel.index));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2668,18 +2668,18 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,LevelQuantum(GetRedPixelComponent(q)));
+        SetPixelRed(q,LevelQuantum(GetPixelRed(q)));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,LevelQuantum(GetGreenPixelComponent(q)));
+        SetPixelGreen(q,LevelQuantum(GetPixelGreen(q)));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,LevelQuantum(GetBluePixelComponent(q)));
+        SetPixelBlue(q,LevelQuantum(GetPixelBlue(q)));
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        SetAlphaPixelComponent(q,LevelQuantum(GetAlphaPixelComponent(q)));
+        SetPixelAlpha(q,LevelQuantum(GetPixelAlpha(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetIndexPixelComponent(indexes+x,LevelQuantum(
-          GetIndexPixelComponent(indexes+x)));
+        SetPixelIndex(indexes+x,LevelQuantum(
+          GetPixelIndex(indexes+x)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2840,18 +2840,18 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,LevelizeValue(GetRedPixelComponent(q)));
+        SetPixelRed(q,LevelizeValue(GetPixelRed(q)));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,LevelizeValue(GetGreenPixelComponent(q)));
+        SetPixelGreen(q,LevelizeValue(GetPixelGreen(q)));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,LevelizeValue(GetBluePixelComponent(q)));
+        SetPixelBlue(q,LevelizeValue(GetPixelBlue(q)));
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        SetOpacityPixelComponent(q,LevelizeValue(GetOpacityPixelComponent(q)));
+        SetPixelOpacity(q,LevelizeValue(GetPixelOpacity(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetIndexPixelComponent(indexes+x,LevelizeValue(
-          GetIndexPixelComponent(indexes+x)));
+        SetPixelIndex(indexes+x,LevelizeValue(
+          GetPixelIndex(indexes+x)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3326,9 +3326,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      red=GetRedPixelComponent(q);
-      green=GetGreenPixelComponent(q);
-      blue=GetBluePixelComponent(q);
+      red=GetPixelRed(q);
+      green=GetPixelGreen(q);
+      blue=GetPixelBlue(q);
       switch (colorspace)
       {
         case HSBColorspace:
@@ -3351,9 +3351,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           break;
         }
       }
-      SetRedPixelComponent(q,red);
-      SetGreenPixelComponent(q,green);
-      SetBluePixelComponent(q,blue);
+      SetPixelRed(q,red);
+      SetPixelGreen(q,green);
+      SetPixelBlue(q,blue);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3506,25 +3506,25 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
         indexes=GetCacheViewAuthenticIndexQueue(image_view);
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          if ((GetRedPixelComponent(q) != GetGreenPixelComponent(q)) ||
-              (GetGreenPixelComponent(q) != GetBluePixelComponent(q)))
+          if ((GetPixelRed(q) != GetPixelGreen(q)) ||
+              (GetPixelGreen(q) != GetPixelBlue(q)))
             {
               q++;
               continue;
             }
           if ((channel & RedChannel) != 0)
-            SetRedPixelComponent(q,QuantumRange-GetRedPixelComponent(q));
+            SetPixelRed(q,QuantumRange-GetPixelRed(q));
           if ((channel & GreenChannel) != 0)
-            SetGreenPixelComponent(q,QuantumRange-GetGreenPixelComponent(q));
+            SetPixelGreen(q,QuantumRange-GetPixelGreen(q));
           if ((channel & BlueChannel) != 0)
-            SetBluePixelComponent(q,QuantumRange-GetBluePixelComponent(q));
+            SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
           if ((channel & OpacityChannel) != 0)
-            SetOpacityPixelComponent(q,QuantumRange-
-              GetOpacityPixelComponent(q));
+            SetPixelOpacity(q,QuantumRange-
+              GetPixelOpacity(q));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
-            SetIndexPixelComponent(indexes+x,QuantumRange-
-              GetIndexPixelComponent(indexes+x));
+            SetPixelIndex(indexes+x,QuantumRange-
+              GetPixelIndex(indexes+x));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -3576,17 +3576,17 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,QuantumRange-GetRedPixelComponent(q));
+        SetPixelRed(q,QuantumRange-GetPixelRed(q));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,QuantumRange-GetGreenPixelComponent(q));
+        SetPixelGreen(q,QuantumRange-GetPixelGreen(q));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,QuantumRange-GetBluePixelComponent(q));
+        SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
       if ((channel & OpacityChannel) != 0)
-        SetOpacityPixelComponent(q,QuantumRange-GetOpacityPixelComponent(q));
+        SetPixelOpacity(q,QuantumRange-GetPixelOpacity(q));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetIndexPixelComponent(indexes+x,QuantumRange-
-          GetIndexPixelComponent(indexes+x));
+        SetPixelIndex(indexes+x,QuantumRange-
+          GetPixelIndex(indexes+x));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3845,21 +3845,21 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetRedPixelComponent(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetRedPixelComponent(q))]));
+        SetPixelRed(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
+          GetPixelRed(q))]));
       if ((channel & GreenChannel) != 0)
-        SetGreenPixelComponent(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetGreenPixelComponent(q))]));
+        SetPixelGreen(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
+          GetPixelGreen(q))]));
       if ((channel & BlueChannel) != 0)
-        SetBluePixelComponent(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetBluePixelComponent(q))]));
+        SetPixelBlue(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
+          GetPixelBlue(q))]));
       if ((channel & OpacityChannel) != 0)
-        SetOpacityPixelComponent(q,ClampToQuantum(sigmoidal_map[
-          ScaleQuantumToMap(GetOpacityPixelComponent(q))]));
+        SetPixelOpacity(q,ClampToQuantum(sigmoidal_map[
+          ScaleQuantumToMap(GetPixelOpacity(q))]));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetIndexPixelComponent(indexes+x,ClampToQuantum(sigmoidal_map[
-          ScaleQuantumToMap(GetIndexPixelComponent(indexes+x))]));
+        SetPixelIndex(indexes+x,ClampToQuantum(sigmoidal_map[
+          ScaleQuantumToMap(GetPixelIndex(indexes+x))]));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

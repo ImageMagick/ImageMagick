@@ -224,13 +224,13 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ImfInputReadPixels(file,min_y+y,min_y+y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetRedPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
         ImfHalfToFloat(scanline[x].r)));
-      SetGreenPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*
         ImfHalfToFloat(scanline[x].g)));
-      SetBluePixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*
         ImfHalfToFloat(scanline[x].b)));
-      SetAlphaPixelComponent(q,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*
         ImfHalfToFloat(scanline[x].a)));
       q++;
     }
@@ -431,16 +431,16 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ImfFloatToHalf(QuantumScale*GetRedPixelComponent(p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetPixelRed(p),&half_quantum);
       scanline[x].r=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetGreenPixelComponent(p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetPixelGreen(p),&half_quantum);
       scanline[x].g=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetBluePixelComponent(p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetPixelBlue(p),&half_quantum);
       scanline[x].b=half_quantum;
       if (image->matte == MagickFalse)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(1.0-QuantumScale*GetOpacityPixelComponent(p),
+        ImfFloatToHalf(1.0-QuantumScale*GetPixelOpacity(p),
           &half_quantum);
       scanline[x].a=half_quantum;
       p++;

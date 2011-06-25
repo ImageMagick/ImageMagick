@@ -271,11 +271,11 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        histogram[ScaleQuantumToChar(GetRedPixelComponent(p))].red++;
+        histogram[ScaleQuantumToChar(GetPixelRed(p))].red++;
       if ((channel & GreenChannel) != 0)
-        histogram[ScaleQuantumToChar(GetGreenPixelComponent(p))].green++;
+        histogram[ScaleQuantumToChar(GetPixelGreen(p))].green++;
       if ((channel & BlueChannel) != 0)
-        histogram[ScaleQuantumToChar(GetBluePixelComponent(p))].blue++;
+        histogram[ScaleQuantumToChar(GetPixelBlue(p))].blue++;
       p++;
     }
   }
@@ -308,7 +308,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         r=q+y;
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
-          SetRedPixelComponent(r,QuantumRange);
+          SetPixelRed(r,QuantumRange);
           r++;
         }
       }
@@ -318,7 +318,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         r=q+y;
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
-          SetGreenPixelComponent(r,QuantumRange);
+          SetPixelGreen(r,QuantumRange);
           r++;
         }
       }
@@ -328,7 +328,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         r=q+y;
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
-          SetBluePixelComponent(r,QuantumRange);
+          SetPixelBlue(r,QuantumRange);
           r++;
         }
       }

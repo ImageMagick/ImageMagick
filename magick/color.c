@@ -1564,7 +1564,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=(MagickRealType) ((image->matte != MagickFalse ? GetOpacityPixelComponent(p) :
+      pixel=(MagickRealType) ((image->matte != MagickFalse ? GetPixelOpacity(p) :
         OpaqueOpacity)-(image->matte != MagickFalse ? q->opacity :
         OpaqueOpacity));
       distance=pixel*pixel;
@@ -1574,8 +1574,8 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
         Generate a alpha scaling factor to generate a 4D cone on colorspace
         Note that if one color is transparent, distance has no color component.
       */
-      scale=(QuantumScale*GetAlphaPixelComponent(p));
-      scale*=(QuantumScale*GetAlphaPixelComponent(q));
+      scale=(QuantumScale*GetPixelAlpha(p));
+      scale*=(QuantumScale*GetPixelAlpha(q));
       if (scale <= MagickEpsilon)
         return(MagickTrue);
     }
@@ -1584,7 +1584,7 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-  pixel=(MagickRealType) GetRedPixelComponent(p)-GetRedPixelComponent(q);
+  pixel=(MagickRealType) GetPixelRed(p)-GetPixelRed(q);
   if ((image->colorspace == HSLColorspace) ||
       (image->colorspace == HSBColorspace) ||
       (image->colorspace == HWBColorspace))
@@ -1600,11 +1600,11 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=(MagickRealType) GetGreenPixelComponent(p)-q->green;
+  pixel=(MagickRealType) GetPixelGreen(p)-q->green;
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=(MagickRealType) GetBluePixelComponent(p)-q->blue;
+  pixel=(MagickRealType) GetPixelBlue(p)-q->blue;
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
@@ -1758,7 +1758,7 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
 %  This implements the equivalent of...
 %    fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
 %
-%  Which produces a multi-dimentional cone for that colorspace along the
+%  Which produces a multi-dimensional cone for that colorspace along the
 %  transparency vector.
 %
 %  For example for an RGB
@@ -1810,7 +1810,7 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       /*
         Transparencies are involved - set alpha distance.
       */
-      pixel=(p->matte != MagickFalse ? GetOpacityPixelComponent(p) :
+      pixel=(p->matte != MagickFalse ? GetPixelOpacity(p) :
         OpaqueOpacity)-(q->matte != MagickFalse ? q->opacity : OpaqueOpacity);
       distance=pixel*pixel;
       if (distance > fuzz)
@@ -1820,9 +1820,9 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
         Note that if one color is transparent, distance has no color component
       */
       if (p->matte != MagickFalse)
-        scale=(QuantumScale*GetAlphaPixelComponent(p));
+        scale=(QuantumScale*GetPixelAlpha(p));
       if (q->matte != MagickFalse)
-        scale*=(QuantumScale*GetAlphaPixelComponent(q));
+        scale*=(QuantumScale*GetPixelAlpha(q));
       if ( scale <= MagickEpsilon )
         return(MagickTrue);
     }
@@ -1859,11 +1859,11 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetGreenPixelComponent(p)-q->green;
+  pixel=GetPixelGreen(p)-q->green;
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetBluePixelComponent(p)-q->blue;
+  pixel=GetPixelBlue(p)-q->blue;
   distance+=pixel*pixel*scale;
   if (distance > fuzz)
     return(MagickFalse);
@@ -1912,10 +1912,10 @@ MagickExport MagickBooleanType IsOpacitySimilar(const Image *image,
 
   if (image->matte == MagickFalse)
     return(MagickTrue);
-  if (GetOpacityPixelComponent(p) == q->opacity)
+  if (GetPixelOpacity(p) == q->opacity)
     return(MagickTrue);
   fuzz=MagickMax(image->fuzz,MagickSQ1_2)*MagickMax(image->fuzz,MagickSQ1_2);
-  pixel=(MagickRealType) GetOpacityPixelComponent(p)-(MagickRealType) q->opacity;
+  pixel=(MagickRealType) GetPixelOpacity(p)-(MagickRealType) q->opacity;
   distance=pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
@@ -2304,11 +2304,11 @@ static MagickBooleanType LoadColorLists(const char *filename,
     color_info->name=(char *) p->name;
     GetMagickPixelPacket((Image *) NULL,&color_info->color);
     color_info->color.red=(MagickRealType) ScaleCharToQuantum(
-      GetRedPixelComponent(p));
+      GetPixelRed(p));
     color_info->color.green=(MagickRealType) ScaleCharToQuantum(
-      GetGreenPixelComponent(p));
+      GetPixelGreen(p));
     color_info->color.blue=(MagickRealType) ScaleCharToQuantum(
-      GetBluePixelComponent(p));
+      GetPixelBlue(p));
     color_info->color.opacity=(MagickRealType) (QuantumRange-QuantumRange*
       p->alpha);
     color_info->compliance=(ComplianceType) p->compliance;
@@ -2384,23 +2384,23 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
     pixel;
 
   status=QueryMagickColorCompliance(name,compliance,&pixel,exception);
-  SetOpacityPixelComponent(color,ClampToQuantum(pixel.opacity));
+  SetPixelOpacity(color,ClampToQuantum(pixel.opacity));
   if (pixel.colorspace == CMYKColorspace)
     {
-      SetRedPixelComponent(color,ClampToQuantum((MagickRealType)
+      SetPixelRed(color,ClampToQuantum((MagickRealType)
         (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
         pixel.red*(QuantumRange-pixel.index)+pixel.index)))));
-      SetGreenPixelComponent(color,ClampToQuantum((MagickRealType)
+      SetPixelGreen(color,ClampToQuantum((MagickRealType)
         (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
         pixel.green*(QuantumRange-pixel.index)+pixel.index)))));
-      SetBluePixelComponent(color,ClampToQuantum((MagickRealType)
+      SetPixelBlue(color,ClampToQuantum((MagickRealType)
         (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
         pixel.blue*(QuantumRange-pixel.index)+pixel.index)))));
       return(status);
     }
-  SetRedPixelComponent(color,ClampToQuantum(pixel.red));
-  SetGreenPixelComponent(color,ClampToQuantum(pixel.green));
-  SetBluePixelComponent(color,ClampToQuantum(pixel.blue));
+  SetPixelRed(color,ClampToQuantum(pixel.red));
+  SetPixelGreen(color,ClampToQuantum(pixel.green));
+  SetPixelBlue(color,ClampToQuantum(pixel.blue));
   return(status);
 }
 

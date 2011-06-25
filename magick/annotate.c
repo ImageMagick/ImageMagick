@@ -1791,12 +1791,12 @@ static MagickBooleanType RenderPostscript(Image *image,
         for (x=0; x < (ssize_t) annotate_image->columns; x++)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color);
-          SetAlphaPixelComponent(q,ClampToQuantum((((QuantumRange-
+          SetPixelAlpha(q,ClampToQuantum((((QuantumRange-
             (MagickRealType) PixelIntensityToQuantum(q))*(QuantumRange-
             fill_color.opacity))/QuantumRange)));
-          SetRedPixelComponent(q,fill_color.red);
-          SetGreenPixelComponent(q,fill_color.green);
-          SetBluePixelComponent(q,fill_color.blue);
+          SetPixelRed(q,fill_color.red);
+          SetPixelGreen(q,fill_color.green);
+          SetPixelBlue(q,fill_color.blue);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(annotate_view,exception);

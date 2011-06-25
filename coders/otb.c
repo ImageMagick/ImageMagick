@@ -184,7 +184,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (byte == EOF)
             ThrowReaderException(CorruptImageError,"CorruptImage");
         }
-      SetIndexPixelComponent(indexes+x,(byte & (0x01 << (7-bit))) ?
+      SetPixelIndex(indexes+x,(byte & (0x01 << (7-bit))) ?
         0x00 : 0x01);
       bit++;
       if (bit == 8)

@@ -403,11 +403,11 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetBlackQuantum(source->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetIndex(source->pixel_wands[id][x],
-         GetIndexPixelComponent(indexes+x));
+         GetPixelIndex(indexes+x));
     duplex_pixels=GetCacheViewVirtualPixels(duplex->view,duplex->region.x,y,
       duplex->region.width,1,duplex->exception);
     if (duplex_pixels == (const PixelPacket *) NULL)
@@ -421,11 +421,11 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
     if (duplex_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) duplex->region.width; x++)
         PixelSetBlackQuantum(duplex->pixel_wands[id][x],
-          GetIndexPixelComponent(duplex_indexes+x));
+          GetPixelIndex(duplex_indexes+x));
     if (duplex_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) duplex->region.width; x++)
         PixelSetIndex(duplex->pixel_wands[id][x],
-          GetIndexPixelComponent(duplex_indexes+x));
+          GetPixelIndex(duplex_indexes+x));
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->region.x,y,destination->region.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -440,11 +440,11 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->region.width; x++)
         PixelSetBlackQuantum(destination->pixel_wands[id][x],
-          GetIndexPixelComponent(destination_indexes+x));
+          GetPixelIndex(destination_indexes+x));
     if (destination_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) destination->region.width; x++)
         PixelSetIndex(destination->pixel_wands[id][x],
-          GetIndexPixelComponent(destination_indexes+x));
+          GetPixelIndex(destination_indexes+x));
     if (transfer(source,duplex,destination,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) destination->region.width; x++)
@@ -452,7 +452,7 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
         destination_pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->region.width; x++)
-        SetIndexPixelComponent(destination_indexes+x,PixelGetBlackQuantum(
+        SetPixelIndex(destination_indexes+x,PixelGetBlackQuantum(
           destination->pixel_wands[id][x]));
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
@@ -660,11 +660,11 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetBlackQuantum(source->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetIndex(source->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (get(source,context) == MagickFalse)
       status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -1745,7 +1745,7 @@ WandExport MagickWand *MagickMinimumImages(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickModeImage() makes each pixel the 'predominate color' of the
+%  MagickModeImage() makes each pixel the 'predominant color' of the
 %  neighborhood of the specified radius.
 %
 %  The format of the MagickModeImage method is:
@@ -2757,7 +2757,7 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
       PixelGetQuantumColor(destination->pixel_wands[id][x],pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->region.width; x++)
-        SetIndexPixelComponent(indexes+x,PixelGetBlackQuantum(
+        SetPixelIndex(indexes+x,PixelGetBlackQuantum(
           destination->pixel_wands[id][x]));
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
@@ -2898,11 +2898,11 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetBlackQuantum(source->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (source_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetIndex(source->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->region.x,y,destination->region.width,1,exception);
     if (destination_pixels == (PixelPacket *) NULL)
@@ -2916,11 +2916,11 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->region.width; x++)
         PixelSetBlackQuantum(destination->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (destination_image->storage_class == PseudoClass)
       for (x=0; x < (ssize_t) destination->region.width; x++)
         PixelSetIndex(destination->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (transfer(source,destination,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) destination->region.width; x++)
@@ -2928,7 +2928,7 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
         destination_pixels+x);
     if (destination_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) destination->region.width; x++)
-        SetIndexPixelComponent(destination_indexes+x,PixelGetBlackQuantum(
+        SetPixelIndex(destination_indexes+x,PixelGetBlackQuantum(
           destination->pixel_wands[id][x]));
     sync=SyncCacheViewAuthenticPixels(destination->view,exception);
     if (sync == MagickFalse)
@@ -3056,14 +3056,14 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->region.width; x++)
         PixelSetBlackQuantum(source->pixel_wands[id][x],
-          GetIndexPixelComponent(indexes+x));
+          GetPixelIndex(indexes+x));
     if (update(source,context) == MagickFalse)
       status=MagickFalse;
     for (x=0; x < (ssize_t) source->region.width; x++)
       PixelGetQuantumColor(source->pixel_wands[id][x],pixels+x);
     if (source_image->colorspace == CMYKColorspace)
       for (x=0; x < (ssize_t) source->region.width; x++)
-        SetIndexPixelComponent(indexes+x,PixelGetBlackQuantum(
+        SetPixelIndex(indexes+x,PixelGetBlackQuantum(
           source->pixel_wands[id][x]));
     if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
       {

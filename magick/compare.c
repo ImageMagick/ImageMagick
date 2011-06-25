@@ -263,23 +263,23 @@ MagickExport Image *CompareImageChannels(Image *image,
       else
         {
           if (((channel & RedChannel) != 0) &&
-              (GetRedPixelComponent(p) != GetRedPixelComponent(q)))
+              (GetPixelRed(p) != GetPixelRed(q)))
             difference=MagickTrue;
           if (((channel & GreenChannel) != 0) &&
-              (GetGreenPixelComponent(p) != GetGreenPixelComponent(q)))
+              (GetPixelGreen(p) != GetPixelGreen(q)))
             difference=MagickTrue;
           if (((channel & BlueChannel) != 0) &&
-              (GetBluePixelComponent(p) != GetBluePixelComponent(q)))
+              (GetPixelBlue(p) != GetPixelBlue(q)))
             difference=MagickTrue;
           if (((channel & OpacityChannel) != 0) &&
               (image->matte != MagickFalse) &&
-              (GetOpacityPixelComponent(p) != GetOpacityPixelComponent(q)))
+              (GetPixelOpacity(p) != GetPixelOpacity(q)))
             difference=MagickTrue;
           if ((((channel & IndexChannel) != 0) &&
                (image->colorspace == CMYKColorspace) &&
                (reconstruct_image->colorspace == CMYKColorspace)) &&
-              (GetIndexPixelComponent(indexes+x) !=
-               GetIndexPixelComponent(reconstruct_indexes+x)))
+              (GetPixelIndex(indexes+x) !=
+               GetPixelIndex(reconstruct_indexes+x)))
             difference=MagickTrue;
         }
       if (difference != MagickFalse)
@@ -532,22 +532,22 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
 
       if ((channel & RedChannel) != 0)
         {
-          distance=QuantumScale*(GetRedPixelComponent(p)-(MagickRealType)
-            GetRedPixelComponent(q));
+          distance=QuantumScale*(GetPixelRed(p)-(MagickRealType)
+            GetPixelRed(q));
           channel_distortion[RedChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
       if ((channel & GreenChannel) != 0)
         {
-          distance=QuantumScale*(GetGreenPixelComponent(p)-(MagickRealType)
-            GetGreenPixelComponent(q));
+          distance=QuantumScale*(GetPixelGreen(p)-(MagickRealType)
+            GetPixelGreen(q));
           channel_distortion[GreenChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
       if ((channel & BlueChannel) != 0)
         {
-          distance=QuantumScale*(GetBluePixelComponent(p)-(MagickRealType)
-            GetBluePixelComponent(q));
+          distance=QuantumScale*(GetPixelBlue(p)-(MagickRealType)
+            GetPixelBlue(q));
           channel_distortion[BlueChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
@@ -555,9 +555,9 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
           (reconstruct_image->matte != MagickFalse)))
         {
           distance=QuantumScale*((image->matte != MagickFalse ?
-            GetOpacityPixelComponent(p) : OpaqueOpacity)-
+            GetPixelOpacity(p) : OpaqueOpacity)-
             (reconstruct_image->matte != MagickFalse ?
-            GetOpacityPixelComponent(q): OpaqueOpacity));
+            GetPixelOpacity(q): OpaqueOpacity));
           channel_distortion[OpacityChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
@@ -565,8 +565,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
           (image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         {
-          distance=QuantumScale*(GetIndexPixelComponent(indexes+x)-
-            (MagickRealType) GetIndexPixelComponent(reconstruct_indexes+x));
+          distance=QuantumScale*(GetPixelIndex(indexes+x)-
+            (MagickRealType) GetPixelIndex(reconstruct_indexes+x));
           channel_distortion[BlackChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
@@ -652,38 +652,38 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
 
       if ((channel & RedChannel) != 0)
         {
-          distance=QuantumScale*fabs(GetRedPixelComponent(p)-(double)
-            GetRedPixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelRed(p)-(double)
+            GetPixelRed(q));
           channel_distortion[RedChannel]+=distance;
           channel_distortion[CompositeChannels]+=distance;
         }
       if ((channel & GreenChannel) != 0)
         {
-          distance=QuantumScale*fabs(GetGreenPixelComponent(p)-(double)
-            GetGreenPixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelGreen(p)-(double)
+            GetPixelGreen(q));
           channel_distortion[GreenChannel]+=distance;
           channel_distortion[CompositeChannels]+=distance;
         }
       if ((channel & BlueChannel) != 0)
         {
-          distance=QuantumScale*fabs(GetBluePixelComponent(p)-(double)
-            GetBluePixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelBlue(p)-(double)
+            GetPixelBlue(q));
           channel_distortion[BlueChannel]+=distance;
           channel_distortion[CompositeChannels]+=distance;
         }
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         {
-          distance=QuantumScale*fabs(GetOpacityPixelComponent(p)-(double)
-            GetOpacityPixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelOpacity(p)-(double)
+            GetPixelOpacity(q));
           channel_distortion[OpacityChannel]+=distance;
           channel_distortion[CompositeChannels]+=distance;
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          distance=QuantumScale*fabs(GetIndexPixelComponent(indexes+x)-(double)
-            GetIndexPixelComponent(reconstruct_indexes+x));
+          distance=QuantumScale*fabs(GetPixelIndex(indexes+x)-(double)
+            GetPixelIndex(reconstruct_indexes+x));
           channel_distortion[BlackChannel]+=distance;
           channel_distortion[CompositeChannels]+=distance;
         }
@@ -764,14 +764,14 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       if ((channel & OpacityChannel) != 0)
         {
           if (image->matte != MagickFalse)
-            alpha=(MagickRealType) (QuantumScale*(GetAlphaPixelComponent(p)));
+            alpha=(MagickRealType) (QuantumScale*(GetPixelAlpha(p)));
           if (reconstruct_image->matte != MagickFalse)
-            beta=(MagickRealType) (QuantumScale*GetAlphaPixelComponent(q));
+            beta=(MagickRealType) (QuantumScale*GetPixelAlpha(q));
         }
       if ((channel & RedChannel) != 0)
         {
-          distance=fabs(alpha*GetRedPixelComponent(p)-beta*
-            GetRedPixelComponent(q));
+          distance=fabs(alpha*GetPixelRed(p)-beta*
+            GetPixelRed(q));
           distortion[RedChannel]+=distance;
           distortion[CompositeChannels]+=distance;
           mean_error+=distance*distance;
@@ -781,8 +781,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         }
       if ((channel & GreenChannel) != 0)
         {
-          distance=fabs(alpha*GetGreenPixelComponent(p)-beta*
-            GetGreenPixelComponent(q));
+          distance=fabs(alpha*GetPixelGreen(p)-beta*
+            GetPixelGreen(q));
           distortion[GreenChannel]+=distance;
           distortion[CompositeChannels]+=distance;
           mean_error+=distance*distance;
@@ -792,8 +792,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         }
       if ((channel & BlueChannel) != 0)
         {
-          distance=fabs(alpha*GetBluePixelComponent(p)-beta*
-            GetBluePixelComponent(q));
+          distance=fabs(alpha*GetPixelBlue(p)-beta*
+            GetPixelBlue(q));
           distortion[BlueChannel]+=distance;
           distortion[CompositeChannels]+=distance;
           mean_error+=distance*distance;
@@ -804,8 +804,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         {
-          distance=fabs((double) GetOpacityPixelComponent(p)-
-            GetOpacityPixelComponent(q));
+          distance=fabs((double) GetPixelOpacity(p)-
+            GetPixelOpacity(q));
           distortion[OpacityChannel]+=distance;
           distortion[CompositeChannels]+=distance;
           mean_error+=distance*distance;
@@ -817,8 +817,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
           (image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         {
-          distance=fabs(alpha*GetIndexPixelComponent(indexes+x)-beta*
-            GetIndexPixelComponent(reconstruct_indexes+x));
+          distance=fabs(alpha*GetPixelIndex(indexes+x)-beta*
+            GetPixelIndex(reconstruct_indexes+x));
           distortion[BlackChannel]+=distance;
           distortion[CompositeChannels]+=distance;
           mean_error+=distance*distance;
@@ -898,30 +898,30 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
 
       if ((channel & RedChannel) != 0)
         {
-          distance=QuantumScale*(GetRedPixelComponent(p)-(MagickRealType)
-            GetRedPixelComponent(q));
+          distance=QuantumScale*(GetPixelRed(p)-(MagickRealType)
+            GetPixelRed(q));
           channel_distortion[RedChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
       if ((channel & GreenChannel) != 0)
         {
-          distance=QuantumScale*(GetGreenPixelComponent(p)-(MagickRealType)
-            GetGreenPixelComponent(q));
+          distance=QuantumScale*(GetPixelGreen(p)-(MagickRealType)
+            GetPixelGreen(q));
           channel_distortion[GreenChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
       if ((channel & BlueChannel) != 0)
         {
-          distance=QuantumScale*(GetBluePixelComponent(p)-(MagickRealType)
-            GetBluePixelComponent(q));
+          distance=QuantumScale*(GetPixelBlue(p)-(MagickRealType)
+            GetPixelBlue(q));
           channel_distortion[BlueChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         {
-          distance=QuantumScale*(GetOpacityPixelComponent(p)-(MagickRealType)
-            GetOpacityPixelComponent(q));
+          distance=QuantumScale*(GetPixelOpacity(p)-(MagickRealType)
+            GetPixelOpacity(q));
           channel_distortion[OpacityChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
@@ -929,8 +929,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
           (image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         {
-          distance=QuantumScale*(GetIndexPixelComponent(indexes+x)-
-            (MagickRealType) GetIndexPixelComponent(reconstruct_indexes+x));
+          distance=QuantumScale*(GetPixelIndex(indexes+x)-
+            (MagickRealType) GetPixelIndex(reconstruct_indexes+x));
           channel_distortion[BlackChannel]+=distance*distance;
           channel_distortion[CompositeChannels]+=distance*distance;
         }
@@ -1020,30 +1020,30 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        distortion[RedChannel]+=area*QuantumScale*(GetRedPixelComponent(p)-
-          image_statistics[RedChannel].mean)*(GetRedPixelComponent(q)-
+        distortion[RedChannel]+=area*QuantumScale*(GetPixelRed(p)-
+          image_statistics[RedChannel].mean)*(GetPixelRed(q)-
           reconstruct_statistics[RedChannel].mean);
       if ((channel & GreenChannel) != 0)
-        distortion[GreenChannel]+=area*QuantumScale*(GetGreenPixelComponent(p)-
-          image_statistics[GreenChannel].mean)*(GetGreenPixelComponent(q)-
+        distortion[GreenChannel]+=area*QuantumScale*(GetPixelGreen(p)-
+          image_statistics[GreenChannel].mean)*(GetPixelGreen(q)-
           reconstruct_statistics[GreenChannel].mean);
       if ((channel & BlueChannel) != 0)
-        distortion[BlueChannel]+=area*QuantumScale*(GetBluePixelComponent(p)-
-          image_statistics[BlueChannel].mean)*(GetBluePixelComponent(q)-
+        distortion[BlueChannel]+=area*QuantumScale*(GetPixelBlue(p)-
+          image_statistics[BlueChannel].mean)*(GetPixelBlue(q)-
           reconstruct_statistics[BlueChannel].mean);
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         distortion[OpacityChannel]+=area*QuantumScale*(
-          GetOpacityPixelComponent(p)-image_statistics[OpacityChannel].mean)*
-          (GetOpacityPixelComponent(q)-
+          GetPixelOpacity(p)-image_statistics[OpacityChannel].mean)*
+          (GetPixelOpacity(q)-
           reconstruct_statistics[OpacityChannel].mean);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         distortion[BlackChannel]+=area*QuantumScale*(
-          GetIndexPixelComponent(indexes+x)-
+          GetPixelIndex(indexes+x)-
           image_statistics[OpacityChannel].mean)*(
-          GetIndexPixelComponent(reconstruct_indexes+x)-
+          GetPixelIndex(reconstruct_indexes+x)-
           reconstruct_statistics[OpacityChannel].mean);
       p++;
       q++;
@@ -1160,8 +1160,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 
       if ((channel & RedChannel) != 0)
         {
-          distance=QuantumScale*fabs(GetRedPixelComponent(p)-(double)
-            GetRedPixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelRed(p)-(double)
+            GetPixelRed(q));
           if (distance > channel_distortion[RedChannel])
             channel_distortion[RedChannel]=distance;
           if (distance > channel_distortion[CompositeChannels])
@@ -1169,8 +1169,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         }
       if ((channel & GreenChannel) != 0)
         {
-          distance=QuantumScale*fabs(GetGreenPixelComponent(p)-(double)
-            GetGreenPixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelGreen(p)-(double)
+            GetPixelGreen(q));
           if (distance > channel_distortion[GreenChannel])
             channel_distortion[GreenChannel]=distance;
           if (distance > channel_distortion[CompositeChannels])
@@ -1178,8 +1178,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         }
       if ((channel & BlueChannel) != 0)
         {
-          distance=QuantumScale*fabs(GetBluePixelComponent(p)-(double)
-            GetBluePixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelBlue(p)-(double)
+            GetPixelBlue(q));
           if (distance > channel_distortion[BlueChannel])
             channel_distortion[BlueChannel]=distance;
           if (distance > channel_distortion[CompositeChannels])
@@ -1188,8 +1188,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       if (((channel & OpacityChannel) != 0) &&
           (image->matte != MagickFalse))
         {
-          distance=QuantumScale*fabs(GetOpacityPixelComponent(p)-(double)
-            GetOpacityPixelComponent(q));
+          distance=QuantumScale*fabs(GetPixelOpacity(p)-(double)
+            GetPixelOpacity(q));
           if (distance > channel_distortion[OpacityChannel])
             channel_distortion[OpacityChannel]=distance;
           if (distance > channel_distortion[CompositeChannels])
@@ -1199,8 +1199,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
           (image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         {
-          distance=QuantumScale*fabs(GetIndexPixelComponent(indexes+x)-(double)
-            GetIndexPixelComponent(reconstruct_indexes+x));
+          distance=QuantumScale*fabs(GetPixelIndex(indexes+x)-(double)
+            GetPixelIndex(reconstruct_indexes+x));
           if (distance > channel_distortion[BlackChannel])
             channel_distortion[BlackChannel]=distance;
           if (distance > channel_distortion[CompositeChannels])
@@ -1621,22 +1621,22 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       MagickRealType
         distance;
 
-      distance=fabs(GetRedPixelComponent(p)-(double)
-        GetRedPixelComponent(q));
+      distance=fabs(GetPixelRed(p)-(double)
+        GetPixelRed(q));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
       area++;
-      distance=fabs(GetGreenPixelComponent(p)-(double)
-        GetGreenPixelComponent(q));
+      distance=fabs(GetPixelGreen(p)-(double)
+        GetPixelGreen(q));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
       area++;
-      distance=fabs(GetBluePixelComponent(p)-(double)
-        GetBluePixelComponent(q));
+      distance=fabs(GetPixelBlue(p)-(double)
+        GetPixelBlue(q));
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
@@ -1644,8 +1644,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       area++;
       if (image->matte != MagickFalse)
         {
-          distance=fabs(GetOpacityPixelComponent(p)-(double)
-            GetOpacityPixelComponent(q));
+          distance=fabs(GetPixelOpacity(p)-(double)
+            GetPixelOpacity(q));
           mean_error_per_pixel+=distance;
           mean_error+=distance*distance;
           if (distance > maximum_error)
@@ -1655,8 +1655,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       if ((image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
         {
-          distance=fabs(GetIndexPixelComponent(indexes+x)-(double)
-            GetIndexPixelComponent(reconstruct_indexes+x));
+          distance=fabs(GetPixelIndex(indexes+x)-(double)
+            GetPixelIndex(reconstruct_indexes+x));
           mean_error_per_pixel+=distance;
           mean_error+=distance*distance;
           if (distance > maximum_error)
@@ -1777,23 +1777,23 @@ static double GetNCCDistortion(const Image *image,
     reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      distortion+=area*QuantumScale*(GetRedPixelComponent(p)-
-        image_statistics[RedChannel].mean)*(GetRedPixelComponent(q)-
+      distortion+=area*QuantumScale*(GetPixelRed(p)-
+        image_statistics[RedChannel].mean)*(GetPixelRed(q)-
         reconstruct_statistics[RedChannel].mean);
-      distortion+=area*QuantumScale*(GetGreenPixelComponent(p)-
-        image_statistics[GreenChannel].mean)*(GetGreenPixelComponent(q)-
+      distortion+=area*QuantumScale*(GetPixelGreen(p)-
+        image_statistics[GreenChannel].mean)*(GetPixelGreen(q)-
         reconstruct_statistics[GreenChannel].mean);
-      distortion+=area*QuantumScale*(GetBluePixelComponent(p)-
+      distortion+=area*QuantumScale*(GetPixelBlue(p)-
         image_statistics[BlueChannel].mean)*(q->blue-
         reconstruct_statistics[BlueChannel].mean);
       if (image->matte != MagickFalse)
-        distortion+=area*QuantumScale*(GetOpacityPixelComponent(p)-
-          image_statistics[OpacityChannel].mean)*(GetOpacityPixelComponent(q)-
+        distortion+=area*QuantumScale*(GetPixelOpacity(p)-
+          image_statistics[OpacityChannel].mean)*(GetPixelOpacity(q)-
           reconstruct_statistics[OpacityChannel].mean);
       if ((image->colorspace == CMYKColorspace) &&
           (reconstruct_image->colorspace == CMYKColorspace))
-        distortion+=area*QuantumScale*(GetIndexPixelComponent(indexes+x)-
-          image_statistics[BlackChannel].mean)*(GetIndexPixelComponent(
+        distortion+=area*QuantumScale*(GetPixelIndex(indexes+x)-
+          image_statistics[BlackChannel].mean)*(GetPixelIndex(
           reconstruct_indexes+x)-reconstruct_statistics[BlackChannel].mean);
       p++;
       q++;
@@ -1934,10 +1934,10 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
           offset->x=x;
           offset->y=y;
         }
-      SetRedPixelComponent(q,ClampToQuantum(QuantumRange-QuantumRange*
+      SetPixelRed(q,ClampToQuantum(QuantumRange-QuantumRange*
         similarity));
-      SetGreenPixelComponent(q,GetRedPixelComponent(q));
-      SetBluePixelComponent(q,GetRedPixelComponent(q));
+      SetPixelGreen(q,GetPixelRed(q));
+      SetPixelBlue(q,GetPixelRed(q));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(similarity_view,exception) == MagickFalse)

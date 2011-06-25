@@ -62,27 +62,27 @@ static inline void MagickCompositeOver(const PixelPacket *p,
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   composite->opacity=(Quantum) (QuantumRange*(1.0-gamma)+0.5);
   gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
-  SetRedPixelComponent(composite,gamma*MagickOver_((MagickRealType)
-    GetRedPixelComponent(p),alpha,(MagickRealType)
-    GetRedPixelComponent(q),beta)+0.5);
-  SetGreenPixelComponent(composite,gamma*MagickOver_((MagickRealType)
-    GetGreenPixelComponent(p),alpha,(MagickRealType)
-    GetGreenPixelComponent(q),beta)+0.5);
-  SetBluePixelComponent(composite,gamma*MagickOver_((MagickRealType)
-    GetBluePixelComponent(p),alpha,(MagickRealType)
-    GetBluePixelComponent(q),beta)+0.5);
+  SetPixelRed(composite,gamma*MagickOver_((MagickRealType)
+    GetPixelRed(p),alpha,(MagickRealType)
+    GetPixelRed(q),beta)+0.5);
+  SetPixelGreen(composite,gamma*MagickOver_((MagickRealType)
+    GetPixelGreen(p),alpha,(MagickRealType)
+    GetPixelGreen(q),beta)+0.5);
+  SetPixelBlue(composite,gamma*MagickOver_((MagickRealType)
+    GetPixelBlue(p),alpha,(MagickRealType)
+    GetPixelBlue(q),beta)+0.5);
 #else
-  SetOpacityPixelComponent(composite,QuantumRange*(1.0-gamma));
+  SetPixelOpacity(composite,QuantumRange*(1.0-gamma));
   gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
-  SetRedPixelComponent(composite,gamma*MagickOver_((MagickRealType)
-    GetRedPixelComponent(p),alpha,(MagickRealType)
-    GetRedPixelComponent(q),beta));
-  SetGreenPixelComponent(composite,gamma*MagickOver_((MagickRealType)
-    GetGreenPixelComponent(p),alpha,(MagickRealType)
-    GetGreenPixelComponent(q),beta));
-  SetBluePixelComponent(composite,gamma*MagickOver_((MagickRealType)
-    GetBluePixelComponent(p),alpha,(MagickRealType)
-    GetBluePixelComponent(q),beta));
+  SetPixelRed(composite,gamma*MagickOver_((MagickRealType)
+    GetPixelRed(p),alpha,(MagickRealType)
+    GetPixelRed(q),beta));
+  SetPixelGreen(composite,gamma*MagickOver_((MagickRealType)
+    GetPixelGreen(p),alpha,(MagickRealType)
+    GetPixelGreen(q),beta));
+  SetPixelBlue(composite,gamma*MagickOver_((MagickRealType)
+    GetPixelBlue(p),alpha,(MagickRealType)
+    GetPixelBlue(q),beta));
 #endif
 }
 
