@@ -962,7 +962,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   if (artifact != (const char *) NULL)
     resize_filter->support=fabs(InterpretLocaleValue(artifact,(char **) NULL));
   /*
-    Scale windowing function separatally to the support 'clipping'
+    Scale windowing function separately to the support 'clipping'
     window that calling operator is planning to actually use. (Expert
     override)
   */
