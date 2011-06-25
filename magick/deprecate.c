@@ -4670,7 +4670,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ModeImage() makes each pixel the 'predominate color' of the neighborhood
+%  ModeImage() makes each pixel the 'predominant color' of the neighborhood
 %  of the specified radius.
 %
 %  The format of the ModeImage method is:

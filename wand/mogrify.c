@@ -3324,7 +3324,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
       "-median geometry     apply a median filter to the image",
-      "-mode geometry       make each pixel the 'predominate color' of the neighborhood",
+      "-mode geometry       make each pixel the 'predominant color' of the neighborhood",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morphology method kernel",

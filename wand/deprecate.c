@@ -1745,7 +1745,7 @@ WandExport MagickWand *MagickMinimumImages(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickModeImage() makes each pixel the 'predominate color' of the
+%  MagickModeImage() makes each pixel the 'predominant color' of the
 %  neighborhood of the specified radius.
 %
 %  The format of the MagickModeImage method is:
