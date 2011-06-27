@@ -2976,6 +2976,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         Convert grayscale image to PseudoClass pixel packets.
       */
+
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Converting grayscale pixels to pixel packets");
       image->matte=ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ?
         MagickTrue : MagickFalse;
 
@@ -3088,55 +3092,32 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           {
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
-#if (MAGICKCORE_QUANTUM_DEPTH == 16)
+#if (MAGICKCORE_QUANTUM_DEPTH == 16) || (MAGICKCORE_QUANTUM_DEPTH == 32)
               size_t
                 quantum;
 
               if (image->colors > 256)
-                *r=((*p++) << 8);
+                quantum=((*p++) << 8);
 
               else
-                *r=0;
+                quantum=0;
 
-              quantum=(*r);
               quantum|=(*p++);
-              *r=(Quantum) quantum;
+
+              *r=ScaleShortToQuantum(quantum);
               r++;
 
               if (ping_color_type == 4)
                 {
-                  quantum=((*p++) << 8);
+                  if (image->colors > 256)
+                    quantum=((*p++) << 8);
+                  else
+                    quantum=0;
+
                   quantum|=(*p++);
-                  SetPixelAlpha(q,quantum);
+                  SetPixelAlpha(q,ScaleShortToQuantum(quantum));
                   if (GetPixelOpacity(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
-                  q++;
-                }
-#else
-#if (MAGICKCORE_QUANTUM_DEPTH == 32)
-              size_t
-                quantum;
-
-              if (image->colors > 256)
-                *r=((*p++) << 8);
-
-              else
-                *r=0;
-
-              quantum=(*r);
-              quantum|=(*p++);
-              *r=quantum;
-              r++;
-
-              if (ping_color_type == 4)
-                {
-                  quantum=(*p << 8) | *(p+1);
-                  quantum*=65537L;
-                  SetPixelOpacity(q,
-                    (Quantum) GetPixelAlpha(q));
-                  if (GetPixelOpacity(q) != OpaqueOpacity)
-                    found_transparent_pixel = MagickTrue;
-                  p+=2;
                   q++;
                 }
 
@@ -3152,7 +3133,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   p++;
                   q++;
                 }
-#endif
 #endif
             }
 
