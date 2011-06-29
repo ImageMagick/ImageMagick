@@ -1411,7 +1411,7 @@ static void LogPNGChunk(MagickBooleanType logging, png_bytep type,
 %    We will not attempt to read files containing the CgBI chunk.
 %    They are really Xcode files meant for display on the iPhone.
 %    These are not valid PNG files and it is impossible to recover
-%    the orginal PNG from files that have been converted to Xcode-PNG,
+%    the original PNG from files that have been converted to Xcode-PNG,
 %    since irretrievable loss of color data has occurred due to the
 %    use of premultiplied alpha.
 */
