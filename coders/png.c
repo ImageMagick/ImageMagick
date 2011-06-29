@@ -9595,6 +9595,46 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   png_set_compression_mem_level(ping, 9);
 
+  /* Untangle the "-quality" setting:
+
+     Undefined is 0; the default is used.
+     Default is 75
+
+     10's digit:
+
+        0: Use Z_HUFFMAN_ONLY strategy with the
+           zlib default compression level
+
+        1-9: the zlib compression level
+
+     1's digit:
+
+        0-4: the PNG filter method
+
+        5:   libpng adaptive filtering if compression level > 5
+             libpng filter type "none" if compression level <= 5
+                or if image is grayscale or palette
+             
+        6:   libpng adaptive filtering
+
+        7:   "LOCO" filtering (intrapixel differing) if writing
+             a MNG, othewise "none".  Did not work in IM-6.7.0-9
+             and earlier because of a missing "else".
+
+        8:   Z_RLE strategy, all filters
+             Unused prior to IM-6.7.0-10, was same as n6
+
+        9:   Z_RLE strategy, no PNG filters
+             Unused prior to IM-6.7.0-10, was same as n6
+
+    Note that using the -quality option, not all combinations of
+    PNG filter type, zlib compression level, and zlib compression
+    strategy are possible.  This will be addressed soon in a
+    release that accomodates "-define PNG:compression-strategy",
+    etc.
+
+   */
+
   quality=image->quality == UndefinedCompressionQuality ? 75UL :
      image->quality;
 
@@ -9625,23 +9665,28 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Setting up filtering");
 
-#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
-  /* This became available in libpng-1.0.9.  Output must be a MNG. */
   if (mng_info->write_mng && ((quality % 10) == 7))
     {
+#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
       if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Filter_type: PNG_INTRAPIXEL_DIFFERENCING");
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Filter_type: PNG_INTRAPIXEL_DIFFERENCING");
 
-      ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
+          /* This became available in libpng-1.0.9.  Output must be a MNG. */
+          ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
+        }
+      else
+#endif
+        {
+          if (logging != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Filter_type: 0");
+          ping_filter_method=0;
+        }
     }
 
   else
-    if (logging != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Filter_type: 0");
-#endif
-
   {
     int
       base_filter;
@@ -9649,18 +9694,30 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     if ((quality % 10) > 5)
       base_filter=PNG_ALL_FILTERS;
 
-    else
-      if ((quality % 10) != 5)
+    if ((quality %10) == 8)
+        {
+          png_set_compression_strategy(ping, Z_RLE);
+          base_filter=PNG_NO_FILTERS;
+        }
+
+    else if ((quality %10) == 9)
+        {
+          png_set_compression_strategy(ping, Z_RLE);
+        }
+
+    else if ((quality % 10) < 5)
         base_filter=(int) quality % 10;
 
-      else
-        if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
-            ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
-            (quality < 50))
-          base_filter=PNG_NO_FILTERS;
+    else if ((quality % 10) == 5)
+        {
+          if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+              ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
+              (quality < 50))
+            base_filter=PNG_NO_FILTERS;
 
-        else
-          base_filter=PNG_ALL_FILTERS;
+          else
+            base_filter=PNG_ALL_FILTERS;
+        }
 
     if (logging != MagickFalse)
       {
