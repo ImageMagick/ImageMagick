@@ -1,3 +1,10 @@
+2011-06-09  6.7.0-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Handle "-quality 97" properly in the png encoder, .e., to use
+    intrapixel filtering when writing a MNG file. and no filtering when
+    writing a PNG file.
+  * Added support for Z_RLE strategy in the png compressor, using
+    -quality 98 or 99.
+
 2011-06-28  6.7.0-10 Cristy  <quetzlzacatenango@image...>
   * Properly allocate points when render text with large font size (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18997).
