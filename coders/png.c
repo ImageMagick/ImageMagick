@@ -859,6 +859,9 @@ typedef struct _MngInfo
     write_mng,
     write_png_colortype,
     write_png_depth,
+    write_png_compression_level,
+    write_png_compression_strategy,
+    write_png_compression_filter,
     write_png8,
     write_png24,
     write_png32;
@@ -9622,10 +9625,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              and earlier because of a missing "else".
 
         8:   Z_RLE strategy, all filters
-             Unused prior to IM-6.7.0-10, was same as n6
+             Unused prior to IM-6.7.0-10, was same as 6
 
         9:   Z_RLE strategy, no PNG filters
-             Unused prior to IM-6.7.0-10, was same as n6
+             Unused prior to IM-6.7.0-10, was same as 6
 
     Note that using the -quality option, not all combinations of
     PNG filter type, zlib compression level, and zlib compression
@@ -9638,99 +9641,99 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   quality=image->quality == UndefinedCompressionQuality ? 75UL :
      image->quality;
 
-  if (quality > 9)
+  if (quality <= 9)
+    {
+      if (mng_info->write_png_compression_strategy == 0)
+        mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
+    }
+  
+  else if (mng_info->write_png_compression_level == 0)
     {
       int
         level;
 
       level=(int) MagickMin((ssize_t) quality/10,9);
 
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Compression level: %d",level);
-
-      png_set_compression_level(ping,level);
+      mng_info->write_png_compression_level = level+1;
     }
 
-  else
+  if (mng_info->write_png_compression_strategy == 0)
     {
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Compression strategy: Z_HUFFMAN_ONLY");
-
-      png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
+        if ((quality %10) == 8 || (quality %10) == 9)
+            mng_info->write_png_compression_strategy=Z_RLE;
     }
+
+  if (mng_info->write_png_compression_filter == 0)
+        mng_info->write_png_compression_filter=((int) quality % 10) + 1;
 
   if (logging != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  Setting up filtering");
-
-  if (mng_info->write_mng && ((quality % 10) == 7))
     {
-#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
-      if (logging != MagickFalse)
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Filter_type: PNG_INTRAPIXEL_DIFFERENCING");
+     if (mng_info->write_png_compression_level)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Compression level:    %d",
+            (int) mng_info->write_png_compression_level-1);
 
-          /* This became available in libpng-1.0.9.  Output must be a MNG. */
-          ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
-        }
-      else
-#endif
-        {
-          if (logging != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Filter_type: 0");
-          ping_filter_method=0;
-        }
-    }
+     if (mng_info->write_png_compression_strategy)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Compression strategy: %d",
+            (int) mng_info->write_png_compression_strategy-1);
 
-  else
-  {
-    int
-      base_filter;
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  Setting up filtering");
 
-    if ((quality % 10) > 5)
-      base_filter=PNG_ALL_FILTERS;
-
-    if ((quality %10) == 8)
-        {
-          png_set_compression_strategy(ping, Z_RLE);
-          base_filter=PNG_NO_FILTERS;
-        }
-
-    else if ((quality %10) == 9)
-        {
-          png_set_compression_strategy(ping, Z_RLE);
-        }
-
-    else if ((quality % 10) < 5)
-        base_filter=(int) quality % 10;
-
-    else if ((quality % 10) == 5)
-        {
-          if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
-              ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
-              (quality < 50))
-            base_filter=PNG_NO_FILTERS;
-
-          else
-            base_filter=PNG_ALL_FILTERS;
-        }
-
-    if (logging != MagickFalse)
-      {
-        if (base_filter == PNG_ALL_FILTERS)
+        if (mng_info->write_png_compression_filter == PNG_ALL_FILTERS+1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: ADAPTIVE");
-        else
+        else if (mng_info->write_png_compression_filter == PNG_NO_FILTERS+1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: NONE");
-      }
+        else
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Base filter method: %d",
+            (int) mng_info->write_png_compression_filter-1);
+    }
 
-    png_set_filter(ping,PNG_FILTER_TYPE_BASE,base_filter);
-  }
+  if (mng_info->write_png_compression_level != 0)
+    png_set_compression_level(ping,mng_info->write_png_compression_level-1);
+
+  if (mng_info->write_png_compression_filter == 6)
+    {
+      if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+         ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
+         (quality < 50))
+        png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
+      else
+        png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+     }
+
+  if (mng_info->write_png_compression_filter == 7 ||
+      mng_info->write_png_compression_filter == 10)
+    png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+
+  else if (mng_info->write_png_compression_filter == 8)
+    {
+#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
+      if (mng_info->write_mng)
+      {
+         if (((int) ping_color_type == PNG_COLOR_TYPE_RGB) ||
+             ((int) ping_color_type == PNG_COLOR_TYPE_RGBA))
+        ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
+      }
+#endif
+      png_set_filter(ping,PNG_FILTER_TYPE_BASE,0);
+    }
+
+  else if (mng_info->write_png_compression_filter == 9)
+    png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
+
+  else if (mng_info->write_png_compression_filter != 0)
+    png_set_filter(ping,PNG_FILTER_TYPE_BASE,
+       mng_info->write_png_compression_filter-1);
+
+  if (mng_info->write_png_compression_strategy != 0)
+    png_set_compression_strategy(ping,
+       mng_info->write_png_compression_strategy-1);
+
 
   if ((ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse) &&
      (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
@@ -10983,6 +10986,123 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
      value=GetImageOption(image_info,"png:preserve-colormap");
   if (value != NULL)
      mng_info->ping_preserve_colormap=MagickTrue;
+
+  /* Thes compression-level, compression-strategy, and compression-filter
+   * defines take precedence over values from the -quality option.
+   */
+  value=GetImageArtifact(image,"png:compression-level");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:compression-level");
+  if (value != NULL)
+  {
+      /* To do: use a "LocaleInteger:()" function here. */
+
+      /* We have to add 1 to everything because 0 is a valid input,
+       * and we want to use 0 (the default) to mean undefined.
+       */
+      if (LocaleCompare(value,"0") == 0)
+        mng_info->write_png_compression_level = 1;
+
+      if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_compression_level = 2;
+
+      else if (LocaleCompare(value,"2") == 0)
+        mng_info->write_png_compression_level = 3;
+
+      else if (LocaleCompare(value,"3") == 0)
+        mng_info->write_png_compression_level = 4;
+
+      else if (LocaleCompare(value,"4") == 0)
+        mng_info->write_png_compression_level = 5;
+
+      else if (LocaleCompare(value,"5") == 0)
+        mng_info->write_png_compression_level = 6;
+
+      else if (LocaleCompare(value,"6") == 0)
+        mng_info->write_png_compression_level = 7;
+
+      else if (LocaleCompare(value,"7") == 0)
+        mng_info->write_png_compression_level = 8;
+
+      else if (LocaleCompare(value,"8") == 0)
+        mng_info->write_png_compression_level = 9;
+
+      else if (LocaleCompare(value,"9") == 0)
+        mng_info->write_png_compression_level = 10;
+
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:compression-level",
+             "=%s",value);
+    }
+
+  value=GetImageArtifact(image,"png:compression-strategy");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:compression-strategy");
+  if (value != NULL)
+  {
+
+      if (LocaleCompare(value,"0") == 0)
+        mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
+
+      else if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_compression_strategy = Z_FILTERED+1;
+
+      else if (LocaleCompare(value,"2") == 0)
+        mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
+
+      else if (LocaleCompare(value,"3") == 0)
+        mng_info->write_png_compression_strategy = Z_RLE+1;
+
+      else if (LocaleCompare(value,"4") == 0)
+        mng_info->write_png_compression_strategy = Z_FIXED+1;
+
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:compression-strategy",
+             "=%s",value);
+    }
+
+  value=GetImageArtifact(image,"png:compression-filter");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:compression-filter");
+  if (value != NULL)
+  {
+
+      /* To do: combinations of filters allowed by libpng
+       * masks 0x08 through 0xf8
+       *
+       * Implement this as a comma-separated list of 0,1,2,3,4,5
+       * where 5 is a special case meaning PNG_ALL_FILTERS.
+       */
+
+      if (LocaleCompare(value,"0") == 0)
+        mng_info->write_png_compression_filter = 1;
+
+      if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_compression_filter = 2;
+
+      else if (LocaleCompare(value,"2") == 0)
+        mng_info->write_png_compression_filter = 3;
+
+      else if (LocaleCompare(value,"3") == 0)
+        mng_info->write_png_compression_filter = 4;
+
+      else if (LocaleCompare(value,"4") == 0)
+        mng_info->write_png_compression_filter = 5;
+
+      else if (LocaleCompare(value,"5") == 0)
+        mng_info->write_png_compression_filter = 6;
+
+
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:compression-filter",
+             "=%s",value);
+    }
 
   excluding=MagickFalse;
 
