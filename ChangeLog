@@ -1,4 +1,7 @@
-2011-06-09  6.7.0-7 Glenn Randers-Pehrson <glennrp@image...>
+2011-06-30  6.7.0-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.0-10.
+
+2011-06-29  6.7.0-7 Glenn Randers-Pehrson <glennrp@image...>
   * Handle "-quality 97" properly in the png encoder, .e., to use
     intrapixel filtering when writing a MNG file. and no filtering when
     writing a PNG file.
