@@ -1,5 +1,5 @@
 2011-06-30  6.7.0-11 Glenn Randers-Pehrson <glennrp@image...>
-  * Added PNG:compression_level, compression_strategy, and compession_filter
+  * Added PNG:compression-level, compression-strategy, and compression-filter
     defines to the PNG encoder.  If these defines are used, they take
     precedence over the -quality option.
 
