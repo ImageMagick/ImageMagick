@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # libtool - Provide generalized library-building support services.
-# Generated automatically by config.status (ImageMagick) 6.7.0-9
+# Generated automatically by config.status (ImageMagick) 6.7.0-10
 # Libtool was configured on host magick.imagemagick.org:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
@@ -272,7 +272,7 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.6.0 /usr/lib64 /lib64 "
+sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.6.1 /usr/lib64 /lib64 "
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/atlas /usr/lib64/mysql /usr/lib64/qt-3.3/lib /usr/lib64/tcl8.5/tclx8.4 /usr/lib64/tcl8.5 /usr/lib/wine/ /usr/lib64/wine/ /usr/lib64/xulrunner-2 "
@@ -10213,17 +10213,17 @@ file_list_spec=""
 hardcode_action=immediate
 
 # The directories searched by this compiler when creating a shared library.
-compiler_lib_search_dirs="/usr/lib/gcc/x86_64-redhat-linux/4.6.0 /usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../../../lib64 /lib/../lib64 /usr/lib/../lib64 /usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../.."
+compiler_lib_search_dirs="/usr/lib/gcc/x86_64-redhat-linux/4.6.1 /usr/lib/gcc/x86_64-redhat-linux/4.6.1/../../../../lib64 /lib/../lib64 /usr/lib/../lib64 /usr/lib/gcc/x86_64-redhat-linux/4.6.1/../../.."
 
 # Dependencies to place before and after the objects being linked to
 # create a shared library.
-predep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.6.0/crtbeginS.o"
-postdep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.6.0/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../../../lib64/crtn.o"
+predep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.6.1/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.6.1/crtbeginS.o"
+postdep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.6.1/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.6.1/../../../../lib64/crtn.o"
 predeps=""
 postdeps="-lstdc++ -lm -lgcc_s -lpthread -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path="-L/usr/lib/gcc/x86_64-redhat-linux/4.6.0 -L/usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.6.0/../../.."
+compiler_lib_search_path="-L/usr/lib/gcc/x86_64-redhat-linux/4.6.1 -L/usr/lib/gcc/x86_64-redhat-linux/4.6.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.6.1/../../.."
 
 # ### END LIBTOOL TAG CONFIG: CXX

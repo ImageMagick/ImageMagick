@@ -219,9 +219,9 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetRedPixelComponent(q,ScaleCharToQuantum(*p++));
-        SetGreenPixelComponent(q,ScaleCharToQuantum(*p++));
-        SetBluePixelComponent(q,ScaleCharToQuantum(*p++));
+        SetPixelRed(q,ScaleCharToQuantum(*p++));
+        SetPixelGreen(q,ScaleCharToQuantum(*p++));
+        SetPixelBlue(q,ScaleCharToQuantum(*p++));
         q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)

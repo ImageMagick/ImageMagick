@@ -887,6 +887,9 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
     type_info=GetTypeInfoByFamily("Century Schoolbook",draw_info->style,
       draw_info->stretch,draw_info->weight,&image->exception);
   if (type_info == (const TypeInfo *) NULL)
+    type_info=GetTypeInfoByFamily("Sans",draw_info->style,
+      draw_info->stretch,draw_info->weight,&image->exception);
+  if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
       draw_info->stretch,draw_info->weight,&image->exception);
   if (type_info == (const TypeInfo *) NULL)

@@ -133,33 +133,33 @@
 
 /* LBR01: Replicate top bit */
 
-#define LBR01RedPixelPacketComponent(pixelpacket) \
+#define LBR01PacketRed(pixelpacket) \
      (pixelpacket).red=(ScaleQuantumToChar((pixelpacket).red) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01GreenPixelPacketComponent(pixelpacket) \
+#define LBR01PacketGreen(pixelpacket) \
      (pixelpacket).green=(ScaleQuantumToChar((pixelpacket).green) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01BluePixelPacketComponent(pixelpacket) \
+#define LBR01PacketBlue(pixelpacket) \
      (pixelpacket).blue=(ScaleQuantumToChar((pixelpacket).blue) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01OpacityPixelPacketComponent(pixelpacket) \
+#define LBR01PacketOpacity(pixelpacket) \
      (pixelpacket).opacity=(ScaleQuantumToChar((pixelpacket).opacity) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01RGBPixelPacketComponent(pixelpacket) \
+#define LBR01PacketRGB(pixelpacket) \
         { \
-        LBR01RedPixelPacketComponent((pixelpacket)); \
-        LBR01GreenPixelPacketComponent((pixelpacket)); \
-        LBR01BluePixelPacketComponent((pixelpacket)); \
+        LBR01PacketRed((pixelpacket)); \
+        LBR01PacketGreen((pixelpacket)); \
+        LBR01PacketBlue((pixelpacket)); \
         }
 
-#define LBR01RGBOPixelPacketComponent(pixelpacket) \
+#define LBR01PacketRGBO(pixelpacket) \
         { \
-        LBR01RGBPixelPacketComponent((pixelpacket)); \
-        LBR01OpacityPixelPacketComponent((pixelpacket)); \
+        LBR01PacketRGB((pixelpacket)); \
+        LBR01PacketOpacity((pixelpacket)); \
         }
 
 #define LBR01PixelRed(pixel) \
@@ -193,42 +193,42 @@
 
 /* LBR02: Replicate top 2 bits */
 
-#define LBR02RedPixelPacketComponent(pixelpacket) \
+#define LBR02PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xc0; \
      (pixelpacket).red=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
    }
-#define LBR02GreenPixelPacketComponent(pixelpacket) \
+#define LBR02PacketGreen(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green) & 0xc0; \
      (pixelpacket).green=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
    }
-#define LBR02BluePixelPacketComponent(pixelpacket) \
+#define LBR02PacketBlue(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue) & 0xc0; \
      (pixelpacket).blue=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
    }
-#define LBR02OpacityPixelPacketComponent(pixelpacket) \
+#define LBR02PacketOpacity(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).opacity) & 0xc0; \
      (pixelpacket).opacity=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))); \
    }
 
-#define LBR02RGBPixelPacketComponent(pixelpacket) \
+#define LBR02PacketRGB(pixelpacket) \
         { \
-        LBR02RedPixelPacketComponent((pixelpacket)); \
-        LBR02GreenPixelPacketComponent((pixelpacket)); \
-        LBR02BluePixelPacketComponent((pixelpacket)); \
+        LBR02PacketRed((pixelpacket)); \
+        LBR02PacketGreen((pixelpacket)); \
+        LBR02PacketBlue((pixelpacket)); \
         }
 
-#define LBR02RGBOPixelPacketComponent(pixelpacket) \
+#define LBR02PacketRGBO(pixelpacket) \
         { \
-        LBR02RGBPixelPacketComponent((pixelpacket)); \
-        LBR02OpacityPixelPacketComponent((pixelpacket)); \
+        LBR02PacketRGB((pixelpacket)); \
+        LBR02PacketOpacity((pixelpacket)); \
         }
 
 #define LBR02PixelRed(pixel) \
@@ -276,30 +276,30 @@
 /* LBR03: Replicate top 3 bits (only used with opaque pixels during
    PNG8 quantization) */
 
-#define LBR03RedPixelPacketComponent(pixelpacket) \
+#define LBR03PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xe0; \
      (pixelpacket).red=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6))); \
    }
-#define LBR03GreenPixelPacketComponent(pixelpacket) \
+#define LBR03PacketGreen(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green) & 0xe0; \
      (pixelpacket).green=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6))); \
    }
-#define LBR03BluePixelPacketComponent(pixelpacket) \
+#define LBR03PacketBlue(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue) & 0xe0; \
      (pixelpacket).blue=ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 3) | (lbr_bits >> 6))); \
    }
 
-#define LBR03RGBPixelPacketComponent(pixelpacket) \
+#define LBR03PacketRGB(pixelpacket) \
         { \
-        LBR03RedPixelPacketComponent((pixelpacket)); \
-        LBR03GreenPixelPacketComponent((pixelpacket)); \
-        LBR03BluePixelPacketComponent((pixelpacket)); \
+        LBR03PacketRed((pixelpacket)); \
+        LBR03PacketGreen((pixelpacket)); \
+        LBR03PacketBlue((pixelpacket)); \
         }
 
 #define LBR03PixelRed(pixel) \
@@ -333,38 +333,38 @@
 
 /* LBR04: Replicate top 4 bits */
 
-#define LBR04RedPixelPacketComponent(pixelpacket) \
+#define LBR04PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xf0; \
      (pixelpacket).red=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
    }
-#define LBR04GreenPixelPacketComponent(pixelpacket) \
+#define LBR04PacketGreen(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green) & 0xf0; \
      (pixelpacket).green=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
    }
-#define LBR04BluePixelPacketComponent(pixelpacket) \
+#define LBR04PacketBlue(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue) & 0xf0; \
      (pixelpacket).blue=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
    }
-#define LBR04OpacityPixelPacketComponent(pixelpacket) \
+#define LBR04PacketOpacity(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).opacity) & 0xf0; \
      (pixelpacket).opacity=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
    }
 
-#define LBR04RGBPixelPacketComponent(pixelpacket) \
+#define LBR04PacketRGB(pixelpacket) \
         { \
-        LBR04RedPixelPacketComponent((pixelpacket)); \
-        LBR04GreenPixelPacketComponent((pixelpacket)); \
-        LBR04BluePixelPacketComponent((pixelpacket)); \
+        LBR04PacketRed((pixelpacket)); \
+        LBR04PacketGreen((pixelpacket)); \
+        LBR04PacketBlue((pixelpacket)); \
         }
 
-#define LBR04RGBOPixelPacketComponent(pixelpacket) \
+#define LBR04PacketRGBO(pixelpacket) \
         { \
-        LBR04RGBPixelPacketComponent((pixelpacket)); \
-        LBR04OpacityPixelPacketComponent((pixelpacket)); \
+        LBR04PacketRGB((pixelpacket)); \
+        LBR04PacketOpacity((pixelpacket)); \
         }
 
 #define LBR04PixelRed(pixel) \
@@ -412,38 +412,38 @@
 
 /* LBR08: Replicate top 8 bits */
 
-#define LBR08RedPixelPacketComponent(pixelpacket) \
+#define LBR08PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red); \
      (pixelpacket).red=ScaleCharToQuantum((lbr_bits)); \
    }
-#define LBR08GreenPixelPacketComponent(pixelpacket) \
+#define LBR08PacketGreen(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).green); \
      (pixelpacket).green=ScaleCharToQuantum((lbr_bits)); \
    }
-#define LBR08BluePixelPacketComponent(pixelpacket) \
+#define LBR08PacketBlue(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).blue); \
      (pixelpacket).blue=ScaleCharToQuantum((lbr_bits)); \
    }
-#define LBR08OpacityPixelPacketComponent(pixelpacket) \
+#define LBR08PacketOpacity(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).opacity); \
      (pixelpacket).opacity=ScaleCharToQuantum((lbr_bits)); \
    }
 
-#define LBR08RGBPixelPacketComponent(pixelpacket) \
+#define LBR08PacketRGB(pixelpacket) \
         { \
-        LBR08RedPixelPacketComponent((pixelpacket)); \
-        LBR08GreenPixelPacketComponent((pixelpacket)); \
-        LBR08BluePixelPacketComponent((pixelpacket)); \
+        LBR08PacketRed((pixelpacket)); \
+        LBR08PacketGreen((pixelpacket)); \
+        LBR08PacketBlue((pixelpacket)); \
         }
 
-#define LBR08RGBOPixelPacketComponent(pixelpacket) \
+#define LBR08PacketRGBO(pixelpacket) \
         { \
-        LBR08RGBPixelPacketComponent((pixelpacket)); \
-        LBR08OpacityPixelPacketComponent((pixelpacket)); \
+        LBR08PacketRGB((pixelpacket)); \
+        LBR08PacketOpacity((pixelpacket)); \
         }
 
 #define LBR08PixelRed(pixel) \
@@ -491,38 +491,38 @@
 
 /* LBR16: Replicate top 16 bits */
 
-#define LBR16RedPixelPacketComponent(pixelpacket) \
+#define LBR16PacketRed(pixelpacket) \
    { \
      unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).red); \
      (pixelpacket).red=ScaleShortToQuantum((lbr_bits)); \
    }
-#define LBR16GreenPixelPacketComponent(pixelpacket) \
+#define LBR16PacketGreen(pixelpacket) \
    { \
      unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).green); \
      (pixelpacket).green=ScaleShortToQuantum((lbr_bits)); \
    }
-#define LBR16BluePixelPacketComponent(pixelpacket) \
+#define LBR16PacketBlue(pixelpacket) \
    { \
      unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).blue); \
      (pixelpacket).blue=ScaleShortToQuantum((lbr_bits)); \
    }
-#define LBR16OpacityPixelPacketComponent(pixelpacket) \
+#define LBR16PacketOpacity(pixelpacket) \
    { \
      unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).opacity); \
      (pixelpacket).opacity=ScaleShortToQuantum((lbr_bits)); \
    }
 
-#define LBR16RGBPixelPacketComponent(pixelpacket) \
+#define LBR16PacketRGB(pixelpacket) \
         { \
-        LBR16RedPixelPacketComponent((pixelpacket)); \
-        LBR16GreenPixelPacketComponent((pixelpacket)); \
-        LBR16BluePixelPacketComponent((pixelpacket)); \
+        LBR16PacketRed((pixelpacket)); \
+        LBR16PacketGreen((pixelpacket)); \
+        LBR16PacketBlue((pixelpacket)); \
         }
 
-#define LBR16RGBOPixelPacketComponent(pixelpacket) \
+#define LBR16PacketRGBO(pixelpacket) \
         { \
-        LBR16RGBPixelPacketComponent((pixelpacket)); \
-        LBR16OpacityPixelPacketComponent((pixelpacket)); \
+        LBR16PacketRGB((pixelpacket)); \
+        LBR16PacketOpacity((pixelpacket)); \
         }
 
 #define LBR16PixelRed(pixel) \
@@ -859,6 +859,9 @@ typedef struct _MngInfo
     write_mng,
     write_png_colortype,
     write_png_depth,
+    write_png_compression_level,
+    write_png_compression_strategy,
+    write_png_compression_filter,
     write_png8,
     write_png24,
     write_png32;
@@ -1411,7 +1414,7 @@ static void LogPNGChunk(MagickBooleanType logging, png_bytep type,
 %    We will not attempt to read files containing the CgBI chunk.
 %    They are really Xcode files meant for display on the iPhone.
 %    These are not valid PNG files and it is impossible to recover
-%    the orginal PNG from files that have been converted to Xcode-PNG,
+%    the original PNG from files that have been converted to Xcode-PNG,
 %    since irretrievable loss of color data has occurred due to the
 %    use of premultiplied alpha.
 */
@@ -2976,6 +2979,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         Convert grayscale image to PseudoClass pixel packets.
       */
+
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Converting grayscale pixels to pixel packets");
       image->matte=ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ?
         MagickTrue : MagickFalse;
 
@@ -3088,55 +3095,32 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           {
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
-#if (MAGICKCORE_QUANTUM_DEPTH == 16)
+#if (MAGICKCORE_QUANTUM_DEPTH == 16) || (MAGICKCORE_QUANTUM_DEPTH == 32)
               size_t
                 quantum;
 
               if (image->colors > 256)
-                *r=((*p++) << 8);
+                quantum=((*p++) << 8);
 
               else
-                *r=0;
+                quantum=0;
 
-              quantum=(*r);
               quantum|=(*p++);
-              *r=(Quantum) quantum;
+
+              *r=ScaleShortToQuantum(quantum);
               r++;
 
               if (ping_color_type == 4)
                 {
-                  quantum=((*p++) << 8);
+                  if (image->colors > 256)
+                    quantum=((*p++) << 8);
+                  else
+                    quantum=0;
+
                   quantum|=(*p++);
-                  SetPixelAlpha(q,quantum);
+                  SetPixelAlpha(q,ScaleShortToQuantum(quantum));
                   if (GetPixelOpacity(q) != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
-                  q++;
-                }
-#else
-#if (MAGICKCORE_QUANTUM_DEPTH == 32)
-              size_t
-                quantum;
-
-              if (image->colors > 256)
-                *r=((*p++) << 8);
-
-              else
-                *r=0;
-
-              quantum=(*r);
-              quantum|=(*p++);
-              *r=quantum;
-              r++;
-
-              if (ping_color_type == 4)
-                {
-                  quantum=(*p << 8) | *(p+1);
-                  quantum*=65537L;
-                  SetPixelOpacity(q,
-                    (Quantum) GetPixelAlpha(q));
-                  if (GetPixelOpacity(q) != OpaqueOpacity)
-                    found_transparent_pixel = MagickTrue;
-                  p+=2;
                   q++;
                 }
 
@@ -3152,7 +3136,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   p++;
                   q++;
                 }
-#endif
 #endif
             }
 
@@ -7636,7 +7619,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 #if MAGICKCORE_QUANTUM_DEPTH > 16
            /* Scale to 16-bit */
-           LBR16RGBOPixelPacketComponent(image->background_color);
+           LBR16PacketRGBO(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -7660,7 +7643,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR16RGBOPixelPacketComponent(image->colormap[i]);
+               LBR16PacketRGBO(image->colormap[i]);
              }
            }
 #endif /* MAGICKCORE_QUANTUM_DEPTH > 16 */
@@ -7670,7 +7653,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 #if MAGICKCORE_QUANTUM_DEPTH > 8
            /* Scale to 8-bit */
-           LBR08RGBOPixelPacketComponent(image->background_color);
+           LBR08PacketRGBO(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -7694,7 +7677,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR08RGBOPixelPacketComponent(image->colormap[i]);
+               LBR08PacketRGBO(image->colormap[i]);
              }
            }
 #endif /* MAGICKCORE_QUANTUM_DEPTH > 8 */
@@ -7703,7 +7686,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          if (image->depth > 2)
          {
            /* Scale to 4-bit */
-           LBR04RGBOPixelPacketComponent(image->background_color);
+           LBR04PacketRGBO(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -7727,7 +7710,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR04RGBOPixelPacketComponent(image->colormap[i]);
+               LBR04PacketRGBO(image->colormap[i]);
              }
            }
          }
@@ -7735,7 +7718,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        else if (image->depth > 1)
          {
            /* Scale to 2-bit */
-           LBR02RGBOPixelPacketComponent(image->background_color);
+           LBR02PacketRGBO(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -7759,14 +7742,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR02RGBOPixelPacketComponent(image->colormap[i]);
+               LBR02PacketRGBO(image->colormap[i]);
              }
            }
          }
        else
          {
            /* Scale to 1-bit */
-           LBR01RGBOPixelPacketComponent(image->background_color);
+           LBR01PacketRGBO(image->background_color);
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
@@ -7790,7 +7773,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            {
              for (i=0; i < (ssize_t) image->colors; i++)
              {
-               LBR01RGBOPixelPacketComponent(image->colormap[i]);
+               LBR01PacketRGBO(image->colormap[i]);
              }
            }
          }
@@ -8407,7 +8390,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         tried_444 = MagickTrue;
 
-        LBR04RGBPixelPacketComponent(image->background_color);
+        LBR04PacketRGB(image->background_color);
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8444,7 +8427,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           for (i=0; i<image_colors; i++)
           {
-            LBR04RGBPixelPacketComponent(image->colormap[i]);
+            LBR04PacketRGB(image->colormap[i]);
           }
         }
         continue;
@@ -8458,7 +8441,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         tried_333 = MagickTrue;
 
-        LBR03RGBPixelPacketComponent(image->background_color);
+        LBR03PacketRGB(image->background_color);
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8494,7 +8477,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "    Quantizing the colormap to 3-3-3-1");
           for (i=0; i<image_colors; i++)
           {
-              LBR03RGBPixelPacketComponent(image->colormap[i]);
+              LBR03PacketRGB(image->colormap[i]);
           }
         }
         continue;
@@ -8512,7 +8495,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          * channel
          */
 
-        LBR02BluePixelPacketComponent(image->background_color);
+        LBR02PacketBlue(image->background_color);
 
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8548,7 +8531,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               "    Quantizing the colormap to 3-3-2-1");
           for (i=0; i<image_colors; i++)
           {
-              LBR02BluePixelPacketComponent(image->colormap[i]);
+              LBR02PacketBlue(image->colormap[i]);
           }
       }
       continue;
@@ -9615,85 +9598,142 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   png_set_compression_mem_level(ping, 9);
 
+  /* Untangle the "-quality" setting:
+
+     Undefined is 0; the default is used.
+     Default is 75
+
+     10's digit:
+
+        0: Use Z_HUFFMAN_ONLY strategy with the
+           zlib default compression level
+
+        1-9: the zlib compression level
+
+     1's digit:
+
+        0-4: the PNG filter method
+
+        5:   libpng adaptive filtering if compression level > 5
+             libpng filter type "none" if compression level <= 5
+                or if image is grayscale or palette
+             
+        6:   libpng adaptive filtering
+
+        7:   "LOCO" filtering (intrapixel differing) if writing
+             a MNG, othewise "none".  Did not work in IM-6.7.0-9
+             and earlier because of a missing "else".
+
+        8:   Z_RLE strategy, all filters
+             Unused prior to IM-6.7.0-10, was same as 6
+
+        9:   Z_RLE strategy, no PNG filters
+             Unused prior to IM-6.7.0-10, was same as 6
+
+    Note that using the -quality option, not all combinations of
+    PNG filter type, zlib compression level, and zlib compression
+    strategy are possible.  This will be addressed soon in a
+    release that accomodates "-define PNG:compression-strategy",
+    etc.
+
+   */
+
   quality=image->quality == UndefinedCompressionQuality ? 75UL :
      image->quality;
 
-  if (quality > 9)
+  if (quality <= 9)
+    {
+      if (mng_info->write_png_compression_strategy == 0)
+        mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
+    }
+  
+  else if (mng_info->write_png_compression_level == 0)
     {
       int
         level;
 
       level=(int) MagickMin((ssize_t) quality/10,9);
 
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Compression level: %d",level);
-
-      png_set_compression_level(ping,level);
+      mng_info->write_png_compression_level = level+1;
     }
 
-  else
+  if (mng_info->write_png_compression_strategy == 0)
     {
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Compression strategy: Z_HUFFMAN_ONLY");
-
-      png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
+        if ((quality %10) == 8 || (quality %10) == 9)
+            mng_info->write_png_compression_strategy=Z_RLE;
     }
+
+  if (mng_info->write_png_compression_filter == 0)
+        mng_info->write_png_compression_filter=((int) quality % 10) + 1;
 
   if (logging != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  Setting up filtering");
-
-#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
-  /* This became available in libpng-1.0.9.  Output must be a MNG. */
-  if (mng_info->write_mng && ((quality % 10) == 7))
     {
-      if (logging != MagickFalse)
+     if (mng_info->write_png_compression_level)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Filter_type: PNG_INTRAPIXEL_DIFFERENCING");
+          "    Compression level:    %d",
+            (int) mng_info->write_png_compression_level-1);
 
-      ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
-    }
+     if (mng_info->write_png_compression_strategy)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Compression strategy: %d",
+            (int) mng_info->write_png_compression_strategy-1);
 
-  else
-    if (logging != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Filter_type: 0");
-#endif
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  Setting up filtering");
 
-  {
-    int
-      base_filter;
-
-    if ((quality % 10) > 5)
-      base_filter=PNG_ALL_FILTERS;
-
-    else
-      if ((quality % 10) != 5)
-        base_filter=(int) quality % 10;
-
-      else
-        if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
-            ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
-            (quality < 50))
-          base_filter=PNG_NO_FILTERS;
-
-        else
-          base_filter=PNG_ALL_FILTERS;
-
-    if (logging != MagickFalse)
-      {
-        if (base_filter == PNG_ALL_FILTERS)
+        if (mng_info->write_png_compression_filter == PNG_ALL_FILTERS+1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: ADAPTIVE");
-        else
+        else if (mng_info->write_png_compression_filter == PNG_NO_FILTERS+1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: NONE");
-      }
+        else
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    Base filter method: %d",
+            (int) mng_info->write_png_compression_filter-1);
+    }
 
-    png_set_filter(ping,PNG_FILTER_TYPE_BASE,base_filter);
-  }
+  if (mng_info->write_png_compression_level != 0)
+    png_set_compression_level(ping,mng_info->write_png_compression_level-1);
+
+  if (mng_info->write_png_compression_filter == 6)
+    {
+      if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+         ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
+         (quality < 50))
+        png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
+      else
+        png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+     }
+
+  if (mng_info->write_png_compression_filter == 7 ||
+      mng_info->write_png_compression_filter == 10)
+    png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+
+  else if (mng_info->write_png_compression_filter == 8)
+    {
+#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
+      if (mng_info->write_mng)
+      {
+         if (((int) ping_color_type == PNG_COLOR_TYPE_RGB) ||
+             ((int) ping_color_type == PNG_COLOR_TYPE_RGBA))
+        ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
+      }
+#endif
+      png_set_filter(ping,PNG_FILTER_TYPE_BASE,0);
+    }
+
+  else if (mng_info->write_png_compression_filter == 9)
+    png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
+
+  else if (mng_info->write_png_compression_filter != 0)
+    png_set_filter(ping,PNG_FILTER_TYPE_BASE,
+       mng_info->write_png_compression_filter-1);
+
+  if (mng_info->write_png_compression_strategy != 0)
+    png_set_compression_strategy(ping,
+       mng_info->write_png_compression_strategy-1);
+
 
   if ((ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse) &&
      (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
@@ -10946,6 +10986,123 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
      value=GetImageOption(image_info,"png:preserve-colormap");
   if (value != NULL)
      mng_info->ping_preserve_colormap=MagickTrue;
+
+  /* Thes compression-level, compression-strategy, and compression-filter
+   * defines take precedence over values from the -quality option.
+   */
+  value=GetImageArtifact(image,"png:compression-level");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:compression-level");
+  if (value != NULL)
+  {
+      /* To do: use a "LocaleInteger:()" function here. */
+
+      /* We have to add 1 to everything because 0 is a valid input,
+       * and we want to use 0 (the default) to mean undefined.
+       */
+      if (LocaleCompare(value,"0") == 0)
+        mng_info->write_png_compression_level = 1;
+
+      if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_compression_level = 2;
+
+      else if (LocaleCompare(value,"2") == 0)
+        mng_info->write_png_compression_level = 3;
+
+      else if (LocaleCompare(value,"3") == 0)
+        mng_info->write_png_compression_level = 4;
+
+      else if (LocaleCompare(value,"4") == 0)
+        mng_info->write_png_compression_level = 5;
+
+      else if (LocaleCompare(value,"5") == 0)
+        mng_info->write_png_compression_level = 6;
+
+      else if (LocaleCompare(value,"6") == 0)
+        mng_info->write_png_compression_level = 7;
+
+      else if (LocaleCompare(value,"7") == 0)
+        mng_info->write_png_compression_level = 8;
+
+      else if (LocaleCompare(value,"8") == 0)
+        mng_info->write_png_compression_level = 9;
+
+      else if (LocaleCompare(value,"9") == 0)
+        mng_info->write_png_compression_level = 10;
+
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:compression-level",
+             "=%s",value);
+    }
+
+  value=GetImageArtifact(image,"png:compression-strategy");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:compression-strategy");
+  if (value != NULL)
+  {
+
+      if (LocaleCompare(value,"0") == 0)
+        mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
+
+      else if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_compression_strategy = Z_FILTERED+1;
+
+      else if (LocaleCompare(value,"2") == 0)
+        mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
+
+      else if (LocaleCompare(value,"3") == 0)
+        mng_info->write_png_compression_strategy = Z_RLE+1;
+
+      else if (LocaleCompare(value,"4") == 0)
+        mng_info->write_png_compression_strategy = Z_FIXED+1;
+
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:compression-strategy",
+             "=%s",value);
+    }
+
+  value=GetImageArtifact(image,"png:compression-filter");
+  if (value == NULL)
+     value=GetImageOption(image_info,"png:compression-filter");
+  if (value != NULL)
+  {
+
+      /* To do: combinations of filters allowed by libpng
+       * masks 0x08 through 0xf8
+       *
+       * Implement this as a comma-separated list of 0,1,2,3,4,5
+       * where 5 is a special case meaning PNG_ALL_FILTERS.
+       */
+
+      if (LocaleCompare(value,"0") == 0)
+        mng_info->write_png_compression_filter = 1;
+
+      if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_compression_filter = 2;
+
+      else if (LocaleCompare(value,"2") == 0)
+        mng_info->write_png_compression_filter = 3;
+
+      else if (LocaleCompare(value,"3") == 0)
+        mng_info->write_png_compression_filter = 4;
+
+      else if (LocaleCompare(value,"4") == 0)
+        mng_info->write_png_compression_filter = 5;
+
+      else if (LocaleCompare(value,"5") == 0)
+        mng_info->write_png_compression_filter = 6;
+
+
+      else
+        (void) ThrowMagickException(&image->exception,
+             GetMagickModule(),CoderWarning,
+             "ignoring invalid defined png:compression-filter",
+             "=%s",value);
+    }
 
   excluding=MagickFalse;
 

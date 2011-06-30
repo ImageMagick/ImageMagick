@@ -1220,7 +1220,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   if ((LocaleCompare(write_info->magick,"info") != 0) &&
       (write_info->verbose != MagickFalse))
-    (void) IdentifyImage(image,stdout,MagickFalse);
+    (void) IdentifyImage(image,stderr,MagickFalse);
   write_info=DestroyImageInfo(write_info);
   return(status);
 }

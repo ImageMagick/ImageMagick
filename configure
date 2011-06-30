@@ -3582,7 +3582,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=4615
+MAGICK_SVN_REVISION=4660
 
 
 
@@ -21207,9 +21207,6 @@ case "${with_quantum_depth}" in
     64 ) ;;
     * ) as_fn_error 16 "\"Pixel quantum depth must have value of 8" "$LINENO" 5 ;;
 esac
-if test "$enable_hdri" = 'yes'; then
-  with_quantum_depth=16
-fi
 QUANTUM_DEPTH="$with_quantum_depth"
 
 cat >>confdefs.h <<_ACEOF
