@@ -27,14 +27,16 @@
   <meta name="Distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <script type="text/javascript">
     $(document).ready(function() {
       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
@@ -77,7 +79,6 @@
 <div class="menu">
   <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
 </div>
-<div class="sep"></div>
 <div class="menu">
   <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
 </div>
@@ -199,14 +200,16 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.atlasmultimedia.de">Notebook Reparatur</a><!-- 2011100100025 atlas.multimedia-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-
+<div style="margin: 9pt 9pt 9pt 9pt;">
+  <div class="g-plusone" data-size="standard" data-count="false"></div>
+</div>
 </div>
 
 <div class="main">
@@ -303,7 +306,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.0-8 2011-06-03 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.0-9 2011-06-03 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -343,10 +346,10 @@
       break;
     for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
     {
-      q-&gt;red=90*p-&gt;red/100;
-      q-&gt;green=90*p-&gt;green/100;
-      q-&gt;blue=90*p-&gt;blue/100;
-      q-&gt;opacity=90*p-&gt;opacity/100;
+      SetPixelRed(q,90*p-&gt;red/100);
+      SetPixelGreen(q,90*p-&gt;green/100);
+      SetPixelBlue(q,90*p-&gt;blue/100);
+      SetPixelOpacity(q,90*p-&gt;opacity/100);
       p++;
       q++;
     }
@@ -372,7 +375,7 @@
       break;
     indexes=GetVirtualIndexQueue(source);
     for (x=0; x &lt; (ssize_t) source-&gt;columns; x++)
-      (void) printf("%d\n",GetIndexPixelComponent(indexes+x));
+      (void) printf("%d\n",GetPixelIndex(indexes+x));
   }
   if (y &lt; (ssize_t) source-&gt;rows)
     /* an exception was thrown */
@@ -654,12 +657,12 @@ image=ReadStream(image_info,&amp;StreamPixels,exception);
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
     {
-      SetRedPixelComponent(q,...);
-      SetGreenPixelComponent(q,...);
-      SetBluePixelComponent(q,...);
-      SetOpacityPixelComponent(q,...);
+      SetPixelRed(q,...);
+      SetPixelGreen(q,...);
+      SetPixelBlue(q,...);
+      SetPixelOpacity(q,...);
       if (indexes != (IndexPacket *) NULL)
-        SetIndexPixelComponent(indexes+x,...);
+        SetPixelIndex(indexes+x,...);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -700,17 +703,25 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
   #pragma omp parallel for
   for (int y=0; y &lt; int(image->rows()); y++)
   {
-    int row=(bmp_info->biHeight > 0) ? (image->rows()-y-1) : y;
-    register const unsigned char *restrict p=pixels+row*bytes_per_row;
-    register MagickCore::PixelPacket *restrict q=
-      image->setPixels(0,y,image->columns(),1);
+    int
+      row;
+
+    register const unsigned char
+      *restrict p;
+
+    register MagickCore::PixelPacket
+      *restrict q;
+
+    row=(bmp_info->biHeight > 0) ? (image->rows()-y-1) : y;
+    p=pixels+row*bytes_per_row;
+    q=image->setPixels(0,y,image->columns(),1);
     for (int x=0; x &lt; int(image->columns()); x++)
     {
-      SetBluePixelComponent(q,p[0]);
-      SetGreenPixelComponent(q,p[1]);
-      SetRedPixelComponent(q,p[2]);
+      SetPixelBlue(q,p[0]);
+      SetPixelGreen(q,p[1]);
+      SetPixelRed(q,p[2]);
       if (bmp_info->biBitCount == 32) {
-        SetOpacityPixelComponent(q,p[3]);
+        SetPixelOpacity(q,p[3]);
       }
       q++;
       p+=bmp_info->biBitCount/8;
@@ -1006,9 +1017,9 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
         break;
       for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
-        q-&gt;red=ScaleCharToQuantum(*p++);
-        q-&gt;green=ScaleCharToQuantum(*p++);
-        q-&gt;blue=ScaleCharToQuantum(*p++);
+        SetPixelRed(q,ScaleCharToQuantum(*p++));
+        SetPixelGreen(q,ScaleCharToQuantum(*p++));
+        SetPixelBlue(q,ScaleCharToQuantum(*p++));
         q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1205,9 +1216,9 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
-        *q++=ScaleQuantumToChar(p-&gt;red);
-        *q++=ScaleQuantumToChar(p-&gt;green);
-        *q++=ScaleQuantumToChar(p-&gt;blue);
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
         p++;
       }
       (void) WriteBlob(image,(size_t) (q-pixels),pixels);
@@ -1374,7 +1385,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
         }
       for (x=0; x &lt; (ssize_t) image-&gt;columns; x++)
       {
-        ConvertRGBToHSB(p-&gt;red,p-&gt;green,p-&gt;blue,&amp;hue,&amp;saturation,&amp;brightness);
+        ConvertRGBToHSB(GetPixelRed(p),GetPixelGreen(p),GetPixelBue(p),&amp;hue,&amp;saturation,&amp;brightness);
         brightness*=QuantumRange;
         brightness_sum_x+=brightness;
         brightness_sum_x2+=brightness*brightness;

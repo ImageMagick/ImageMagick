@@ -27,14 +27,16 @@
   <meta name="Distribution" content="Global"/>
   <link rel="icon" href="../../images/wand.png"/>
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="../fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <script type="text/javascript">
     $(document).ready(function() {
       $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
@@ -77,7 +79,6 @@
 <div class="menu">
   <a title="About ImageMagick" href="../../index.html">About ImageMagick</a>
 </div>
-<div class="sep"></div>
 <div class="menu">
   <a title="Binary Releases" href="../../www/binary-releases.html">Binary Releases</a>
 </div>
@@ -199,14 +200,16 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-
+<div style="margin: 9pt 9pt 9pt 9pt;">
+  <div class="g-plusone" data-size="standard" data-count="false"></div>
+</div>
 </div>
 
 <div class="main">
@@ -288,7 +291,7 @@
 
 <p>Unity The a No-Op or Scaling single element kernel.</p>
 
-<p>Gaussian:{radius},{sigma} Generate a two-dimentional gaussian kernel, as used by -gaussian. The sigma for the curve is required.  The resulting kernel is normalized,</p>
+<p>Gaussian:{radius},{sigma} Generate a two-dimensional gaussian kernel, as used by -gaussian. The sigma for the curve is required.  The resulting kernel is normalized,</p>
 
 <p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p>
 
@@ -300,7 +303,7 @@
 
 <p>DoG:{radius},{sigma1},{sigma2} "Difference of Gaussians" Kernel. As "Gaussian" but with a gaussian produced by 'sigma2' subtracted from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1. The result is a zero-summing kernel.</p>
 
-<p>Blur:{radius},{sigma}[,{angle}] Generates a 1 dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p>
+<p>Blur:{radius},{sigma}[,{angle}] Generates a 1-dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p>
 
 <p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p>
 
@@ -310,7 +313,7 @@
 
 <p>Note that the first argument is the width of the kernel and not the radius of the kernel.</p>
 
-<p># Still to be implemented... # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this posible with an image? #</p>
+<p># Still to be implemented... # # Filter2D # Filter1D #    Set kernel values using a resize filter, and given scale (sigma) #    Cylindrical or Linear.   Is this possible with an image? #</p>
 
 <p>Named Constant Convolution Kernels</p>
 
@@ -466,7 +469,7 @@
 
 <p>MorphologyApply() applies a morphological method, multiple times using a list of multiple kernels.</p>
 
-<p>It is basically equivalent to as MorphologyImageChannel() (see below) but without any user controls.  This allows internel programs to use this function, to actually perform a specific task without posible interference by any API user supplied settings.</p>
+<p>It is basically equivalent to as MorphologyImageChannel() (see below) but without any user controls.  This allows internel programs to use this function, to actually perform a specific task without possible interference by any API user supplied settings.</p>
 
 <p>It is MorphologyImageChannel() task to extract any such user controls, and pass them to this function for processing.</p>
 
