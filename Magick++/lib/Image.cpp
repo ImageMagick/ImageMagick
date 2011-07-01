@@ -8,7 +8,6 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
-#include "Magick++/Include.h"
 #include <cstdlib>
 #include <string>
 #include <string.h>
@@ -17,6 +16,7 @@
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <strings.h>
 #endif
+#include "Magick++/Include.h"
 
 using namespace std;
 
@@ -27,7 +27,6 @@ using namespace std;
 #include "Magick++/ImageRef.h"
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 
 MagickDLLDeclExtern const char *Magick::borderGeometryDefault = "6x6+0+0";
@@ -581,9 +580,9 @@ void Magick::Image::cdl ( const std::string &cdl_ )
 }
 
 // Colorize
-void Magick::Image::colorize ( const unsigned int opacityRed_,
-                               const unsigned int opacityGreen_,
-                               const unsigned int opacityBlue_,
+void Magick::Image::colorize ( const unsigned int alphaRed_,
+                               const unsigned int alphaGreen_,
+                               const unsigned int alphaBlue_,
 			       const Color &penColor_ )
 {
   if ( !penColor_.isValid() )
@@ -592,22 +591,22 @@ void Magick::Image::colorize ( const unsigned int opacityRed_,
 			    "Pen color argument is invalid");
   }
 
-  char opacity[MaxTextExtent];
-  FormatLocaleString(opacity,MaxTextExtent,"%u/%u/%u",opacityRed_,opacityGreen_,opacityBlue_);
+  char alpha[MaxTextExtent];
+  FormatLocaleString(alpha,MaxTextExtent,"%u/%u/%u",alphaRed_,alphaGreen_,alphaBlue_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-  ColorizeImage ( image(), opacity,
+  ColorizeImage ( image(), alpha,
 		  penColor_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
-void Magick::Image::colorize ( const unsigned int opacity_,
+void Magick::Image::colorize ( const unsigned int alpha_,
 			       const Color &penColor_ )
 {
-  colorize( opacity_, opacity_, opacity_, penColor_ );
+  colorize( alpha_, alpha_, alpha_, penColor_ );
 }
 
 // Apply a color matrix to the image channels.  The user supplied
@@ -960,20 +959,20 @@ void Magick::Image::floodFillColor( const Geometry &point_,
 }
 
 // Floodfill pixels matching color (within fuzz factor) of target
-// pixel(x,y) with replacement opacity value using method.
+// pixel(x,y) with replacement alpha value using method.
 void Magick::Image::floodFillOpacity( const ssize_t x_,
                                       const ssize_t y_,
-                                      const unsigned int opacity_,
+                                      const unsigned int alpha_,
                                       const PaintMethod method_ )
 {
   modifyImage();
-  MagickPixelPacket target;
-  GetMagickPixelPacket(image(),&target);
+  PixelInfo target;
+  GetPixelInfo(image(),&target);
   PixelPacket pixel=static_cast<PixelPacket>(pixelColor(x_,y_));
   target.red=pixel.red;
   target.green=pixel.green;
   target.blue=pixel.blue;
-  target.opacity=opacity_;
+  target.alpha=alpha_;
   FloodfillPaintImage ( image(),
                         DefaultChannels,
                         options()->drawInfo(), // const DrawInfo *draw_info
@@ -998,12 +997,12 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   // Get pixel view
   Pixels pixels(*this);
   // Fill image
-  PixelPacket *p = pixels.get(x_, y_, 1, 1 );
-  MagickPixelPacket target;
-  GetMagickPixelPacket(constImage(),&target);
-  target.red=p->red;
-  target.green=p->green;
-  target.blue=p->blue;
+  Quantum *p = pixels.get(x_, y_, 1, 1 );
+  PixelInfo target;
+  GetPixelInfo(constImage(),&target);
+  target.red=GetPixelRed(constImage(),p);
+  target.green=GetPixelGreen(constImage(),p);
+  target.blue=GetPixelBlue(constImage(),p);
   if (p)
     FloodfillPaintImage ( image(), // Image *image
                           DefaultChannels,
@@ -1035,8 +1034,8 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   // Set drawing fill pattern
   options()->fillPattern(texture_.constImage());
 
-  MagickPixelPacket target;
-  GetMagickPixelPacket(constImage(),&target);
+  PixelInfo target;
+  GetPixelInfo(constImage(),&target);
   target.red=static_cast<PixelPacket>(borderColor_).red;
   target.green=static_cast<PixelPacket>(borderColor_).green;
   target.blue=static_cast<PixelPacket>(borderColor_).blue;
@@ -1293,19 +1292,19 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
              mapImage_.constImage());
   throwImageException();
 }
-// Floodfill designated area with replacement opacity value
+// Floodfill designated area with replacement alpha value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
-				     const unsigned int opacity_,
+				     const unsigned int alpha_,
 				     const ssize_t x_, const ssize_t y_,
 				     const Magick::PaintMethod method_ )
 {
   modifyImage();
-  MagickPixelPacket target;
-  GetMagickPixelPacket(constImage(),&target);
+  PixelInfo target;
+  GetPixelInfo(constImage(),&target);
   target.red=static_cast<PixelPacket>(target_).red;
   target.green=static_cast<PixelPacket>(target_).green;
   target.blue=static_cast<PixelPacket>(target_).blue;
-  target.opacity=opacity_;
+  target.alpha=alpha_;
   FloodfillPaintImage ( image(), OpacityChannel, options()->drawInfo(), &target,
     x_, y_, method_ == FloodfillMethod ? MagickFalse : MagickTrue);
   throwImageException();
@@ -1399,16 +1398,16 @@ void Magick::Image::oilPaint ( const double radius_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-// Set or attenuate the opacity channel. If the image pixels are
-// opaque then they are set to the specified opacity value, otherwise
-// they are blended with the supplied opacity value.  The value of
-// opacity_ ranges from 0 (completely opaque) to QuantumRange. The defines
-// OpaqueOpacity and TransparentOpacity are available to specify
+// Set or attenuate the alpha channel. If the image pixels are
+// opaque then they are set to the specified alpha value, otherwise
+// they are blended with the supplied alpha value.  The value of
+// alpha_ ranges from 0 (completely opaque) to QuantumRange. The defines
+// OpaqueAlpha and TransparentAlpha are available to specify
 // completely opaque or completely transparent, respectively.
-void Magick::Image::opacity ( const unsigned int opacity_ )
+void Magick::Image::alpha ( const unsigned int alpha_ )
 {
   modifyImage();
-  SetImageOpacity( image(), opacity_ );
+  SetImageOpacity( image(), alpha_ );
 }
 
 // Change the color of an opaque pixel to the pen color.
@@ -1430,8 +1429,8 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
   std::string opaqueColor = opaqueColor_;
   std::string penColor = penColor_;
 
-  MagickPixelPacket opaque;
-  MagickPixelPacket pen;
+  PixelInfo opaque;
+  PixelInfo pen;
   (void) QueryMagickColor(std::string(opaqueColor_).c_str(),&opaque,&image()->exception);
   (void) QueryMagickColor(std::string(penColor_).c_str(),&pen,&image()->exception);
   OpaquePaintImage ( image(), &opaque, &pen, MagickFalse );
@@ -2062,10 +2061,10 @@ void Magick::Image::transparent ( const Color &color_ )
 
   std::string color = color_;
 
-  MagickPixelPacket target;
+  PixelInfo target;
   (void) QueryMagickColor(std::string(color_).c_str(),&target,&image()->exception);
   modifyImage();
-  TransparentPaintImage ( image(), &target, TransparentOpacity, MagickFalse );
+  TransparentPaintImage ( image(), &target, TransparentAlpha, MagickFalse );
   throwImageException();
 }
 
@@ -2082,15 +2081,15 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
   std::string colorLow = colorLow_;
   std::string colorHigh = colorHigh_;
 
-  MagickPixelPacket targetLow;
-  MagickPixelPacket targetHigh;
+  PixelInfo targetLow;
+  PixelInfo targetHigh;
   (void) QueryMagickColor(std::string(colorLow_).c_str(),&targetLow,
     &image()->exception);
   (void) QueryMagickColor(std::string(colorHigh_).c_str(),&targetHigh,
     &image()->exception);
   modifyImage();
   TransparentPaintImageChroma ( image(), &targetLow, &targetHigh,
-    TransparentOpacity, MagickFalse );
+    TransparentAlpha, MagickFalse );
   throwImageException();
 }
 
@@ -3202,7 +3201,7 @@ void Magick::Image::matte ( const bool matteFlag_ )
   // desired, then set the matte channel to opaque.
   if ((matteFlag_ && !constImage()->matte) ||
       (constImage()->matte && !matteFlag_))
-    SetImageOpacity(image(),OpaqueOpacity);
+    SetImageOpacity(image(),OpaqueAlpha);
 
   image()->matte = (MagickBooleanType) matteFlag_;
 }
@@ -3364,7 +3363,9 @@ void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
   // Get pixel view
   Pixels pixels(*this);
     // Set pixel value
-  *(pixels.get(x_, y_, 1, 1 )) = color_;
+  Quantum *pixel = pixels.get(x_, y_, 1, 1 );
+  PixelPacket packet = color_;
+  MagickCore::SetPixelPacket(constImage(),&packet,pixel);
   // Tell ImageMagick that pixels have been updated
   pixels.sync();
 
@@ -3378,19 +3379,12 @@ Magick::Color Magick::Image::pixelColor ( const ssize_t x_,
   ClassType storage_class;
   storage_class = classType();
   // DirectClass
-  const PixelPacket* pixel = getConstPixels( x_, y_, 1, 1 );
-  if ( storage_class == DirectClass )
+  const Quantum* pixel = getConstPixels( x_, y_, 1, 1 );
+  if ( pixel )
     {
-      if ( pixel )
-        return Color( *pixel );
-    }
-
-  // PseudoClass
-  if ( storage_class == PseudoClass )
-    {
-      const IndexPacket* indexes = getConstIndexes();
-      if ( indexes )
-        return colorMap( (size_t) *indexes );
+      PixelPacket packet;
+      MagickCore::GetPixelPacket(constImage(),pixel,&packet);
+      return Color( packet );
     }
 
   return Color(); // invalid
@@ -3613,13 +3607,13 @@ void Magick::Image::statistics ( ImageStatistics *statistics ) const
     &statistics->blue.kurtosis,&statistics->blue.skewness,&exceptionInfo);
   (void) GetImageChannelRange(constImage(),OpacityChannel,&minimum,&maximum,
     &exceptionInfo);
-  statistics->opacity.minimum=minimum;
-	statistics->opacity.maximum=maximum;
+  statistics->alpha.minimum=minimum;
+  statistics->alpha.maximum=maximum;
   (void) GetImageChannelMean(constImage(),OpacityChannel,
-    &statistics->opacity.mean,&statistics->opacity.standard_deviation,
+    &statistics->alpha.mean,&statistics->alpha.standard_deviation,
     &exceptionInfo);
   (void) GetImageChannelKurtosis(constImage(),OpacityChannel,
-    &statistics->opacity.kurtosis,&statistics->opacity.skewness,&exceptionInfo);
+    &statistics->alpha.kurtosis,&statistics->alpha.skewness,&exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -3793,16 +3787,6 @@ void Magick::Image::textEncoding ( const std::string &encoding_ )
 std::string Magick::Image::textEncoding ( void ) const
 {
   return constOptions()->textEncoding( );
-}
-
-void Magick::Image::tileName ( const std::string &tileName_ )
-{
-  modifyImage();
-  options()->tileName( tileName_ );
-}
-std::string Magick::Image::tileName ( void ) const
-{
-  return constOptions()->tileName( );
 }
 
 size_t Magick::Image::totalColors ( void )
@@ -3980,14 +3964,14 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 
 // Transfers read-only pixels from the image to the pixel cache as
 // defined by the specified region
-const Magick::PixelPacket* Magick::Image::getConstPixels
+const Magick::Quantum* Magick::Image::getConstPixels
   ( const ssize_t x_, const ssize_t y_,
     const size_t columns_,
     const size_t rows_ ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  const PixelPacket* p = (*GetVirtualPixels)( constImage(),
+  const Quantum* p = (*GetVirtualPixels)( constImage(),
                                                 x_, y_,
                                                 columns_, rows_,
                                                 &exceptionInfo );
@@ -3996,10 +3980,10 @@ const Magick::PixelPacket* Magick::Image::getConstPixels
   return p;
 }
 
-// Obtain read-only pixel indexes (valid for PseudoClass images)
-const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
+// Obtain read-only pixel associated pixels channels
+const void* Magick::Image::getConstMetacontent ( void ) const
 {
-  const Magick::IndexPacket* result = GetVirtualIndexQueue( constImage() );
+  const void* result = GetVirtualMetacontent( constImage() );
 
   if( !result )
     throwImageException();
@@ -4007,10 +3991,10 @@ const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
   return result;
 }
 
-// Obtain image pixel indexes (valid for PseudoClass images)
-Magick::IndexPacket* Magick::Image::getIndexes ( void )
+// Obtain image pixel associated pixels channels
+void* Magick::Image::getMetacontent ( void )
 {
-  Magick::IndexPacket* result = GetAuthenticIndexQueue( image() );
+  void* result = GetAuthenticMetacontent( image() );
 
   if( !result )
     throwImageException();
@@ -4021,14 +4005,14 @@ Magick::IndexPacket* Magick::Image::getIndexes ( void )
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently
 // transferred back to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::getPixels ( const ssize_t x_, const ssize_t y_,
+Magick::Quantum* Magick::Image::getPixels ( const ssize_t x_, const ssize_t y_,
 						const size_t columns_,
 						const size_t rows_ )
 {
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  PixelPacket* result = (*GetAuthenticPixels)( image(),
+  Quantum* result = (*GetAuthenticPixels)( image(),
                                            x_, y_,
                                            columns_, rows_, &exceptionInfo );
   throwException( exceptionInfo );
@@ -4040,14 +4024,14 @@ Magick::PixelPacket* Magick::Image::getPixels ( const ssize_t x_, const ssize_t 
 // Allocates a pixel cache region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel cache to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::setPixels ( const ssize_t x_, const ssize_t y_,
+Magick::Quantum* Magick::Image::setPixels ( const ssize_t x_, const ssize_t y_,
 						const size_t columns_,
 						const size_t rows_ )
 {
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  PixelPacket* result = (*QueueAuthenticPixels)( image(),
+  Quantum* result = (*QueueAuthenticPixels)( image(),
                                            x_, y_,
                                            columns_, rows_, &exceptionInfo );
   throwException( exceptionInfo );

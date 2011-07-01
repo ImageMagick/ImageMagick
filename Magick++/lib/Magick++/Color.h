@@ -52,7 +52,7 @@ namespace Magick
     void           blueQuantum ( Quantum blue_ );
     Quantum        blueQuantum ( void ) const;
 
-    // Alpha level (range OpaqueOpacity=0 to TransparentOpacity=QuantumRange)
+    // Alpha level (range OpaqueAlpha=0 to TransparentAlpha=QuantumRange)
     void           alphaQuantum ( Quantum alpha_ );
     Quantum        alphaQuantum ( void ) const;
 
@@ -124,12 +124,12 @@ namespace Magick
     //   Red      = red;
     //   Green    = green;
     //   Blue     = blue;
-    //   Alpha    = opacity;
+    //   Alpha    = alpha;
     // CYMKPixel:
     //   Cyan     = red
     //   Yellow   = green
     //   Magenta  = blue
-    //   Black(K) = opacity
+    //   Black(K) = alpha
     enum PixelType
     {
       RGBPixel,
@@ -149,7 +149,7 @@ namespace Magick
     //  red     = red   (range 0 to QuantumRange)
     //  green   = green (range 0 to QuantumRange)
     //  blue    = blue  (range 0 to QuantumRange)
-    //  opacity = alpha (range OpaqueOpacity=0 to TransparentOpacity=QuantumRange)
+    //  alpha = alpha (range OpaqueAlpha=0 to TransparentAlpha=QuantumRange)
     //  index   = PseudoColor colormap index
     PixelPacket*     _pixel;
 
@@ -322,7 +322,7 @@ inline void Magick::Color::initPixel()
   _pixel->red     = 0;
   _pixel->green   = 0;
   _pixel->blue    = 0;
-  _pixel->opacity = TransparentOpacity;
+  _pixel->alpha = TransparentAlpha;
 }
 
 inline void Magick::Color::redQuantum ( Magick::Quantum red_ )
@@ -360,13 +360,13 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 
 inline void  Magick::Color::alphaQuantum ( Magick::Quantum alpha_ )
 {
-  _pixel->opacity = alpha_;
+  _pixel->alpha = alpha_;
   _isValid = true ;
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
 {
-  return _pixel->opacity;
+  return _pixel->alpha;
 }
 
 // Return ImageMagick PixelPacket struct based on color.

@@ -39,34 +39,35 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colormap-private.h"
-#include "magick/colorspace.h"
-#include "magick/composite.h"
-#include "magick/constitute.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/profile.h"
-#include "magick/resource_.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/transform.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/composite.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/log.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/transform.h"
+#include "MagickCore/utility.h"
 
 /*
   ImageMagick Macintosh PICT Methods.
@@ -492,7 +493,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        q=pixels+y*width;
+        q=pixels+y*width*GetPixelChannels(image);;
         number_pixels=bytes_per_line;
         count=ReadBlob(blob,(size_t) number_pixels,scanline);
         (void) count;
@@ -795,9 +796,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     c,
     code;
@@ -812,17 +810,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   PICTPixmap
     pixmap;
 
-  register IndexPacket
-    *indexes;
+  Quantum
+    index;
 
-  register ssize_t
-    x;
-
-  register PixelPacket
+  register Quantum
     *q;
 
   register ssize_t
-    i;
+    i,
+    x;
 
   size_t
     extent,
@@ -1033,8 +1029,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           case 0x9a:
           case 0x9b:
           {
-            ssize_t
-              bytes_per_line;
+            Image
+              *tile_image;
 
             PICTRectangle
               source,
@@ -1046,11 +1042,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             size_t
               j;
 
+            ssize_t
+              bytes_per_line;
+
             unsigned char
               *pixels;
-
-            Image
-              *tile_image;
 
             /*
               Pixmap clipped by a rectangle.
@@ -1166,21 +1162,20 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
               q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,
                 exception);
-              if (q == (PixelPacket *) NULL)
+              if (q == (const Quantum *) NULL)
                 break;
-              indexes=GetAuthenticIndexQueue(tile_image);
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 if (tile_image->storage_class == PseudoClass)
                   {
                     index=ConstrainColormapIndex(tile_image,*p);
-                    SetPixelIndex(indexes+x,index);
-                    SetPixelRed(q,
-                      tile_image->colormap[(ssize_t) index].red);
-                    SetPixelGreen(q,
-                      tile_image->colormap[(ssize_t) index].green);
-                    SetPixelBlue(q,
-                      tile_image->colormap[(ssize_t) index].blue);
+                    SetPixelIndex(tile_image,index,q);
+                    SetPixelRed(tile_image,
+                      tile_image->colormap[(ssize_t) index].red,q);
+                    SetPixelGreen(tile_image,
+                      tile_image->colormap[(ssize_t) index].green,q);
+                    SetPixelBlue(tile_image,
+                      tile_image->colormap[(ssize_t) index].blue,q);
                   }
                 else
                   {
@@ -1188,13 +1183,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       {
                         i=(*p++);
                         j=(*p);
-                        SetPixelRed(q,ScaleCharToQuantum(
-                          (unsigned char) ((i & 0x7c) << 1)));
-                        SetPixelGreen(q,ScaleCharToQuantum(
+                        SetPixelRed(tile_image,ScaleCharToQuantum(
+                          (unsigned char) ((i & 0x7c) << 1)),q);
+                        SetPixelGreen(tile_image,ScaleCharToQuantum(
                           (unsigned char) (((i & 0x03) << 6) |
-                          ((j & 0xe0) >> 2))));
-                        SetPixelBlue(q,ScaleCharToQuantum(
-                          (unsigned char) ((j & 0x1f) << 3)));
+                          ((j & 0xe0) >> 2))),q);
+                        SetPixelBlue(tile_image,ScaleCharToQuantum(
+                          (unsigned char) ((j & 0x1f) << 3)),q);
                       }
                     else
                       if (tile_image->matte == MagickFalse)
@@ -1202,28 +1197,28 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                           if (p > (pixels+extent+2*image->columns))
                             ThrowReaderException(CorruptImageError,
                               "NotEnoughPixelData");
-                          SetPixelRed(q,ScaleCharToQuantum(*p));
-                          SetPixelGreen(q,ScaleCharToQuantum(
-                            *(p+tile_image->columns)));
-                          SetPixelBlue(q,ScaleCharToQuantum(
-                            *(p+2*tile_image->columns)));
+                          SetPixelRed(tile_image,ScaleCharToQuantum(*p),q);
+                          SetPixelGreen(tile_image,ScaleCharToQuantum(
+                            *(p+tile_image->columns)),q);
+                          SetPixelBlue(tile_image,ScaleCharToQuantum(
+                            *(p+2*tile_image->columns)),q);
                         }
                       else
                         {
                           if (p > (pixels+extent+3*image->columns))
                             ThrowReaderException(CorruptImageError,
                               "NotEnoughPixelData");
-                          SetPixelAlpha(q,ScaleCharToQuantum(*p));
-                          SetPixelRed(q,ScaleCharToQuantum(
-                            *(p+tile_image->columns)));
-                          SetPixelGreen(q,ScaleCharToQuantum(
-                            *(p+2*tile_image->columns)));
-                          SetPixelBlue(q,ScaleCharToQuantum(
-                            *(p+3*tile_image->columns)));
+                          SetPixelAlpha(tile_image,ScaleCharToQuantum(*p),q);
+                          SetPixelRed(tile_image,ScaleCharToQuantum(
+                            *(p+tile_image->columns)),q);
+                          SetPixelGreen(tile_image,ScaleCharToQuantum(
+                            *(p+2*tile_image->columns)),q);
+                          SetPixelBlue(tile_image,ScaleCharToQuantum(
+                            *(p+3*tile_image->columns)),q);
                         }
                   }
                 p++;
-                q++;
+                q+=GetPixelChannels(tile_image);
               }
               if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
                 break;
@@ -1560,10 +1555,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     size_rectangle,
     source_rectangle;
 
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -1582,7 +1574,6 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     *buffer,
     *packed_scanline,
     *scanline;
-
 
   unsigned short
     base_address,
@@ -1881,11 +1872,13 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
-      indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
-        scanline[x]=(unsigned char) GetPixelIndex(indexes+x);
+      {
+        scanline[x]=(unsigned char) GetPixelIndex(image,p);
+        p+=GetPixelChannels(image);
+      }
       count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
         packed_scanline);
       if (image->previous == (Image *) NULL)
@@ -1919,7 +1912,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
           red=scanline;
           green=scanline+image->columns;
@@ -1933,13 +1926,12 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             }
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *red++=ScaleQuantumToChar(GetPixelRed(p));
-            *green++=ScaleQuantumToChar(GetPixelGreen(p));
-            *blue++=ScaleQuantumToChar(GetPixelBlue(p));
+            *red++=ScaleQuantumToChar(GetPixelRed(image,p));
+            *green++=ScaleQuantumToChar(GetPixelGreen(image,p));
+            *blue++=ScaleQuantumToChar(GetPixelBlue(image,p));
             if (image->matte != MagickFalse)
-              *opacity++=ScaleQuantumToChar((Quantum)
-                (GetPixelAlpha(p)));
-            p++;
+              *opacity++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
+            p+=GetPixelChannels(image);
           }
           count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,
             packed_scanline);

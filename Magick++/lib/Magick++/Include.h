@@ -10,7 +10,7 @@
 #if !defined(_MAGICK_CONFIG_H)
 # define _MAGICK_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
-#  include "magick/magick-config.h"
+#  include "MagickCore/magick-config.h"
 # else
 #  include "magick-config.h"
 # endif
@@ -44,8 +44,8 @@
 //
 namespace MagickCore
 {
-#include <magick/MagickCore.h>
-#include <wand/MagickWand.h>
+#include <MagickCore/MagickCore.h>
+#include <MagickWand/MagickWand.h>
 #undef inline // Remove possible definition from config.h
 
 #undef class
@@ -144,7 +144,6 @@ namespace Magick
   using MagickCore::YellowChannel;
   using MagickCore::OpacityChannel;
   using MagickCore::BlackChannel;
-  using MagickCore::MatteChannel;
   using MagickCore::DefaultChannels;
   using MagickCore::AllChannels;
   
@@ -170,7 +169,6 @@ namespace Magick
   using MagickCore::YUVColorspace;
   
   // Composition operations
-  using MagickCore::AddCompositeOp;
   using MagickCore::AtopCompositeOp;
   using MagickCore::BlendCompositeOp;
   using MagickCore::BumpmapCompositeOp;
@@ -196,7 +194,6 @@ namespace Magick
   using MagickCore::InCompositeOp;
   using MagickCore::LightenCompositeOp;
   using MagickCore::LuminizeCompositeOp;
-  using MagickCore::MinusCompositeOp;
   using MagickCore::ModulateCompositeOp;
   using MagickCore::MultiplyCompositeOp;
   using MagickCore::NoCompositeOp;
@@ -207,7 +204,6 @@ namespace Magick
   using MagickCore::SaturateCompositeOp;
   using MagickCore::ScreenCompositeOp;
   using MagickCore::SoftLightCompositeOp;
-  using MagickCore::SubtractCompositeOp;
   using MagickCore::ThresholdCompositeOp;
   using MagickCore::UndefinedCompositeOp;
   using MagickCore::XorCompositeOp;
@@ -451,9 +447,7 @@ namespace Magick
 
   // PixelPacket structure
   using MagickCore::PixelPacket;
-
-  // IndexPacket type
-  using MagickCore::IndexPacket;
+  using MagickCore::Quantum;
 
   // Sparse Color methods
   using MagickCore::SparseColorMethod;
@@ -571,7 +565,6 @@ namespace Magick
   using MagickCore::ColorDecisionListImage;
   using MagickCore::ColorizeImage;
   using MagickCore::ColorMatrixImage;
-  using MagickCore::ColorPacket;
   using MagickCore::CompositeImage;
   using MagickCore::ConfigureError;
   using MagickCore::ConfigureFatalError;
@@ -587,7 +580,6 @@ namespace Magick
   using MagickCore::CorruptImageWarning;
   using MagickCore::CropImage;
   using MagickCore::CycleColormapImage;
-  using MagickCore::DeconstructImages;
   using MagickCore::DelegateError;
   using MagickCore::DelegateFatalError;
   using MagickCore::DelegateWarning;
@@ -720,10 +712,10 @@ namespace Magick
   using MagickCore::GaussianBlurImage;
   using MagickCore::GaussianBlurImageChannel;
   using MagickCore::GetAffineMatrix;
-  using MagickCore::GetAuthenticIndexQueue;
+  using MagickCore::GetAuthenticMetacontent;
   using MagickCore::GetBlobSize;
   using MagickCore::GetCacheViewException;
-  using MagickCore::GetCacheViewAuthenticIndexQueue;
+  using MagickCore::GetCacheViewAuthenticMetacontent;
   using MagickCore::GetCacheViewAuthenticPixels;
   using MagickCore::GetColorTuple;
   using MagickCore::GetDrawInfo;
@@ -745,14 +737,14 @@ namespace Magick
   using MagickCore::GetImageQuantizeError;
   using MagickCore::GetImageType;
   using MagickCore::GetMagickInfo;
-  using MagickCore::GetMagickPixelPacket;
+  using MagickCore::GetPixelInfo;
   using MagickCore::GetNumberColors;
   using MagickCore::GetPageGeometry;
   using MagickCore::GetQuantizeInfo;
   using MagickCore::GetStringInfoDatum;
   using MagickCore::GetStringInfoLength;
   using MagickCore::GetTypeMetrics;
-  using MagickCore::GetVirtualIndexQueue;
+  using MagickCore::GetVirtualMetacontent;
   using MagickCore::GetImageVirtualPixelMethod;
   using MagickCore::GlobExpression;
   using MagickCore::GravityAdjustGeometry;
@@ -780,7 +772,7 @@ namespace Magick
   using MagickCore::LogMagickEvent;
   using MagickCore::MagickCoreTerminus;
   using MagickCore::MagickInfo;
-  using MagickCore::MagickPixelPacket;
+  using MagickCore::PixelInfo;
   using MagickCore::MagickToMime;
   using MagickCore::MagickWand;
   using MagickCore::MagnifyImage;
@@ -813,7 +805,7 @@ namespace Magick
   using MagickCore::PercentValue;
   using MagickCore::PingBlob;
   using MagickCore::PingImage;
-  using MagickCore::PixelSetQuantumColor;
+  using MagickCore::PixelSetQuantumPacket;
 	using MagickCore::PixelWand;
   using MagickCore::PointInfo;
   using MagickCore::PopDrawingWand;

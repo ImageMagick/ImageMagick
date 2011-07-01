@@ -41,52 +41,53 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/annotate.h"
-#include "magick/artifact.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/cache-view.h"
-#include "magick/color.h"
-#include "magick/colormap.h"
-#include "magick/color-private.h"
-#include "magick/composite.h"
-#include "magick/constitute.h"
-#include "magick/decorate.h"
-#include "magick/display.h"
-#include "magick/draw.h"
-#include "magick/effect.h"
-#include "magick/enhance.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/fx.h"
-#include "magick/geometry.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/module.h"
-#include "magick/option.h"
-#include "magick/paint.h"
-#include "magick/profile.h"
-#include "magick/property.h"
-#include "magick/quantize.h"
-#include "magick/quantum-private.h"
-#include "magick/registry.h"
-#include "magick/resize.h"
-#include "magick/resource_.h"
-#include "magick/segment.h"
-#include "magick/shear.h"
-#include "magick/signature.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/string-private.h"
-#include "magick/transform.h"
-#include "magick/threshold.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/annotate.h"
+#include "MagickCore/artifact.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/cache-view.h"
+#include "MagickCore/color.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/composite.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/decorate.h"
+#include "MagickCore/display.h"
+#include "MagickCore/draw.h"
+#include "MagickCore/effect.h"
+#include "MagickCore/enhance.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/fx.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/log.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/option.h"
+#include "MagickCore/paint.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantize.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/registry.h"
+#include "MagickCore/resize.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/segment.h"
+#include "MagickCore/shear.h"
+#include "MagickCore/signature.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
+#include "MagickCore/transform.h"
+#include "MagickCore/threshold.h"
+#include "MagickCore/utility.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    if defined(__MINGW32__)
@@ -1601,7 +1602,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           PaintMethod
             paint_method;
 
-          MagickPixelPacket
+          PixelInfo
             target;
 
           /*
@@ -1914,13 +1915,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       register ssize_t
                         x;
 
-                      register PixelPacket
+                      register Quantum
                         *q;
 
                       CacheView
                         *composite_view;
 
-                      opacity=QuantumRange-StringToLong(value);
+                      opacity=StringToLong(value);
                       if (compose != DissolveCompositeOp)
                         {
                           (void) SetImageOpacity(composite_image,(Quantum)
@@ -1930,17 +1931,18 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       (void) SetImageArtifact(msl_info->image[n],
                                             "compose:args",value);
                       if (composite_image->matte != MagickTrue)
-                        (void) SetImageOpacity(composite_image,OpaqueOpacity);
+                        (void) SetImageOpacity(composite_image,OpaqueAlpha);
                       composite_view=AcquireCacheView(composite_image);
                       for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
-                        q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)
-                          composite_image->columns,1,&exception);
+                        q=GetCacheViewAuthenticPixels(composite_view,0,y,
+                          (ssize_t) composite_image->columns,1,&exception);
                         for (x=0; x < (ssize_t) composite_image->columns; x++)
                         {
-                          if (q->opacity == OpaqueOpacity)
-                            q->opacity=ClampToQuantum(opacity);
-                          q++;
+                          if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
+                            SetPixelAlpha(composite_image,
+                              ClampToQuantum(opacity),q);
+                          q+=GetPixelChannels(composite_image);
                         }
                         if (SyncCacheViewAuthenticPixels(composite_view,&exception) == MagickFalse)
                           break;
@@ -3130,7 +3132,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           char
             gamma[MaxTextExtent];
 
-          MagickPixelPacket
+          PixelInfo
             pixel;
 
           /*
@@ -3639,7 +3641,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           double
             opacity;
 
-          MagickPixelPacket
+          PixelInfo
             target;
 
           PaintMethod
@@ -3759,7 +3761,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
-          draw_info->fill.opacity=ClampToQuantum(opacity);
+          draw_info->fill.alpha=ClampToQuantum(opacity);
           (void) FloodfillPaintImage(msl_info->image[n],OpacityChannel,
             draw_info,&target,geometry.x,geometry.y,
             paint_method == FloodfillMethod ? MagickFalse : MagickTrue);
@@ -4181,7 +4183,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag,"opaque") == 0)
         {
-          MagickPixelPacket
+          PixelInfo
             fill_color,
             target;
 
@@ -6037,7 +6039,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword, "opacity") == 0)
                 {
-                  ssize_t  opac = OpaqueOpacity,
+                  ssize_t  opac = OpaqueAlpha,
                   len = (ssize_t) strlen( value );
 
                   if (value[len-1] == '%') {
@@ -7116,12 +7118,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword,"color") == 0)
               {
-                MagickPixelPacket
+                PixelInfo
                   target;
 
                 (void) QueryMagickColor(value,&target,&exception);
                 (void) TransparentPaintImage(msl_info->image[n],&target,
-                  TransparentOpacity,MagickFalse);
+                  TransparentAlpha,MagickFalse);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);

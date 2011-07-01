@@ -40,30 +40,31 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/colormap-private.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colorspace.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/profile.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/transform.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/colormap-private.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/log.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/transform.h"
 
 /*
   Macro definitions (from Windows wingdi.h).
@@ -490,9 +491,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
-    index;
-
   MagickBooleanType
     status;
 
@@ -500,10 +498,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset,
     start_position;
 
-  register IndexPacket
-    *indexes;
+  Quantum
+    index;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register ssize_t
@@ -972,8 +970,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           while (((bmp_info.blue_mask << shift.blue) & 0x80000000UL) == 0)
             shift.blue++;
         if (bmp_info.alpha_mask != 0)
-          while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000UL) == 0)
-            shift.opacity++;
+          while (((bmp_info.alpha_mask << shift.alpha) & 0x80000000UL) == 0)
+            shift.alpha++;
         sample=shift.red;
         while (((bmp_info.red_mask << sample) & 0x80000000UL) != 0)
           sample++;
@@ -986,10 +984,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         while (((bmp_info.blue_mask << sample) & 0x80000000UL) != 0)
           sample++;
         quantum_bits.blue=(Quantum) (sample-shift.blue);
-        sample=shift.opacity;
+        sample=shift.alpha;
         while (((bmp_info.alpha_mask << sample) & 0x80000000UL) != 0)
           sample++;
-        quantum_bits.opacity=(Quantum) (sample-shift.opacity);
+        quantum_bits.alpha=(Quantum) (sample-shift.alpha);
       }
     switch (bmp_info.bits_per_pixel)
     {
@@ -1002,16 +1000,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
-          indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < ((ssize_t) image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
             {
-              index=(IndexPacket) (((*p) & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
-              SetPixelIndex(indexes+x+bit,index);
-              q++;
+              index=(Quantum) (((*p) & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
+              SetPixelIndex(image,index,q);
+              q+=GetPixelChannels(image);
             }
             p++;
           }
@@ -1019,8 +1016,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               for (bit=0; bit < (image->columns % 8); bit++)
               {
-                index=(IndexPacket) (((*p) & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
-                SetPixelIndex(indexes+x+bit,index);
+                index=(Quantum) (((*p) & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
+                SetPixelIndex(image,index,q);
+                q+=GetPixelChannels(image);
               }
               p++;
             }
@@ -1046,21 +1044,23 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
-          indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            SetPixelIndex(indexes+x,index);
+            SetPixelIndex(image,index,q);
+            q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,*p & 0x0f);
-            SetPixelIndex(indexes+x+1,index);
+            SetPixelIndex(image,index,q);
+            q+=GetPixelChannels(image);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
               index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
-              SetPixelIndex(indexes+x,index);
+              SetPixelIndex(image,index,q);
+              q+=GetPixelChannels(image);
               p++;
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1088,16 +1088,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
-          indexes=GetAuthenticIndexQueue(image);
           for (x = (ssize_t)image->columns; x != 0; --x)
           {
-            index=ConstrainColormapIndex(image,*p);
-            SetPixelIndex(indexes,index);
-            indexes++;
-            p++;
-            q++;
+            index=ConstrainColormapIndex(image,*p++);
+            SetPixelIndex(image,index,q);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1134,7 +1131,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -1157,18 +1154,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               blue|=((blue & 0xe000) >> 5);
             if (quantum_bits.blue <= 8)
               blue|=((blue & 0xff00) >> 8);
-            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            if (quantum_bits.opacity <= 8)
+            opacity=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
+            if (quantum_bits.alpha <= 8)
               opacity|=((opacity & 0xff00) >> 8);
-            SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
-            SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
-              green));
-            SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
-            SetPixelOpacity(q,OpaqueOpacity);
+            SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
+            SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
+            SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
+            SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short)
-                opacity));
-            q++;
+              SetPixelAlpha(image,
+                ScaleShortToQuantum((unsigned short) opacity),q);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1193,15 +1189,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelBlue(q,ScaleCharToQuantum(*p++));
-            SetPixelGreen(q,ScaleCharToQuantum(*p++));
-            SetPixelRed(q,ScaleCharToQuantum(*p++));
-            SetPixelOpacity(q,OpaqueOpacity);
-            q++;
+            SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+            SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+            SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+            SetPixelAlpha(image,OpaqueAlpha,q);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1236,7 +1232,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           p=pixels+(image->rows-y-1)*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -1253,18 +1249,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             if (quantum_bits.blue == 8)
               blue|=(blue >> 8);
-            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            if (quantum_bits.opacity == 8)
+            opacity=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
+            if (quantum_bits.alpha == 8)
               opacity|=(opacity >> 8);
-            SetPixelRed(q,ScaleShortToQuantum((unsigned short) red));
-            SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
-              green));
-            SetPixelBlue(q,ScaleShortToQuantum((unsigned short) blue));
-            SetPixelOpacity(q,OpaqueOpacity);
+            SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
+            SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
+            SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
+            SetPixelAlpha(image,OpaqueAlpha,q);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleShortToQuantum((unsigned short)
-                opacity));
-            q++;
+              SetPixelAlpha(image,
+                ScaleShortToQuantum((unsigned short) opacity),q);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1467,10 +1462,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -1645,17 +1637,19 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+          ssize_t
+            offset;
+
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
-          indexes=GetVirtualIndexQueue(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
           bit=0;
           byte=0;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            byte|=GetPixelIndex(indexes+x) != 0 ? 0x01 : 0x00;
+            byte|=GetPixelIndex(image,p) != 0 ? 0x01 : 0x00;
             bit++;
             if (bit == 8)
               {
@@ -1663,13 +1657,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
+             p+=GetPixelChannels(image);
            }
            if (bit != 0)
              {
                *q++=(unsigned char) (byte << (8-bit));
                x++;
              }
-          for (x=(ssize_t) (image->columns+7)/8; x < (ssize_t) bytes_per_line; x++)
+          offset=(ssize_t) (image->columns+7)/8;
+          for (x=offset; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
           if (image->previous == (Image *) NULL)
             {
@@ -1684,8 +1680,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
       case 4:
       {
         size_t
+          byte,
           nibble,
-          byte;
+          offset;
 
         /*
           Convert PseudoClass image to a BMP monochrome image.
@@ -1693,16 +1690,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
-          indexes=GetVirtualIndexQueue(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
           nibble=0;
           byte=0;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=4;
-            byte|=((size_t) GetPixelIndex(indexes+x) & 0x0f);
+            byte|=((size_t) GetPixelIndex(image,p) & 0x0f);
             nibble++;
             if (nibble == 2)
               {
@@ -1710,13 +1706,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
                 nibble=0;
                 byte=0;
               }
-           }
-         if (nibble != 0)
-           {
-             *q++=(unsigned char) (byte << 4);
-             x++;
-           }
-          for (x=(ssize_t) (image->columns+1)/2; x < (ssize_t) bytes_per_line; x++)
+            p+=GetPixelChannels(image);
+          }
+          if (nibble != 0)
+            {
+              *q++=(unsigned char) (byte << 4);
+              x++;
+            }
+          offset=(ssize_t) (image->columns+1)/2;
+          for (x=offset; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
           if (image->previous == (Image *) NULL)
             {
@@ -1736,12 +1734,14 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
-          indexes=GetVirtualIndexQueue(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
-            *q++=(unsigned char) GetPixelIndex(indexes+x);
+          {
+            *q++=(unsigned char) GetPixelIndex(image,p);
+            p+=GetPixelChannels(image);
+          }
           for ( ; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
           if (image->previous == (Image *) NULL)
@@ -1762,15 +1762,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(GetPixelBlue(p));
-            *q++=ScaleQuantumToChar(GetPixelGreen(p));
-            *q++=ScaleQuantumToChar(GetPixelRed(p));
-            p++;
+            *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+            *q++=ScaleQuantumToChar(GetPixelRed(image,p));
+            p+=GetPixelChannels(image);
           }
           for (x=3L*(ssize_t) image->columns; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
@@ -1792,16 +1792,16 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(GetPixelBlue(p));
-            *q++=ScaleQuantumToChar(GetPixelGreen(p));
-            *q++=ScaleQuantumToChar(GetPixelRed(p));
-            *q++=ScaleQuantumToChar(QuantumRange-GetPixelOpacity(p));
-            p++;
+            *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+            *q++=ScaleQuantumToChar(GetPixelRed(image,p));
+            *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
+            p+=GetPixelChannels(image);
           }
           if (image->previous == (Image *) NULL)
             {
