@@ -4,7 +4,7 @@ libdir=${exec_prefix}/lib
 includedir=${prefix}/include/ImageMagick
 
 Name: Wand
-Version: 6.7.0
+Version: 6.7.1
 Description:  MagickWand - C API for ImageMagick
 Requires: ImageMagick
 Libs: -L${libdir} -lMagickWand -lMagickCore
