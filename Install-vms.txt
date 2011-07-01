@@ -6,7 +6,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-6.7.1-0.zip
+      unzip ImageMagick-7.0.0-0.zip
 			set default [.imagemagick]
 			@make
       set display/create/node=node_name::

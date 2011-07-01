@@ -203,14 +203,14 @@ namespace Magick
     // applies the correction to the image.
     void            cdl ( const std::string &cdl_ );
     
-    // Colorize image with pen color, using specified percent opacity
+    // Colorize image with pen color, using specified percent alpha
     // for red, green, and blue quantums
-    void            colorize ( const unsigned int opacityRed_,
-                               const unsigned int opacityGreen_,
-                               const unsigned int opacityBlue_,
+    void            colorize ( const unsigned int alphaRed_,
+                               const unsigned int alphaGreen_,
+                               const unsigned int alphaBlue_,
              const Color &penColor_ );
-    // Colorize image with pen color, using specified percent opacity.
-    void            colorize ( const unsigned int opacity_,
+    // Colorize image with pen color, using specified percent alpha.
+    void            colorize ( const unsigned int alpha_,
              const Color &penColor_ );
     
     // Apply a color matrix to the image channels.  The user supplied
@@ -332,10 +332,10 @@ namespace Magick
             const Color &borderColor_ );
 
     // Floodfill pixels matching color (within fuzz factor) of target
-    // pixel(x,y) with replacement opacity value using method.
+    // pixel(x,y) with replacement alpha value using method.
     void            floodFillOpacity ( const ::ssize_t x_,
                                        const ::ssize_t y_,
-                                       const unsigned int opacity_,
+                                       const unsigned int alpha_,
                                        const PaintMethod method_ );
 
     // Flood-fill texture across pixels that match the color of the
@@ -442,9 +442,9 @@ namespace Magick
     void            map ( const Image &mapImage_ ,
                           const bool dither_ = false );
     
-    // Floodfill designated area with replacement opacity value
+    // Floodfill designated area with replacement alpha value
     void            matteFloodfill ( const Color &target_ ,
-             const unsigned int opacity_,
+             const unsigned int alpha_,
              const ::ssize_t x_, const ::ssize_t y_,
              const PaintMethod method_ );
 
@@ -481,14 +481,14 @@ namespace Magick
     // Oilpaint image (image looks like oil painting)
     void            oilPaint ( const double radius_ = 3.0 );
 
-    // Set or attenuate the opacity channel in the image. If the image
-    // pixels are opaque then they are set to the specified opacity
-    // value, otherwise they are blended with the supplied opacity
-    // value.  The value of opacity_ ranges from 0 (completely opaque)
-    // to QuantumRange. The defines OpaqueOpacity and TransparentOpacity are
+    // Set or attenuate the alpha channel in the image. If the image
+    // pixels are opaque then they are set to the specified alpha
+    // value, otherwise they are blended with the supplied alpha
+    // value.  The value of alpha_ ranges from 0 (completely opaque)
+    // to QuantumRange. The defines OpaqueAlpha and TransparentAlpha are
     // available to specify completely opaque or completely
     // transparent, respectively.
-    void            opacity ( const unsigned int opacity_ );
+    void            alpha ( const unsigned int alpha_ );
 
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
@@ -1021,7 +1021,7 @@ typedef struct _ImageStatistics
    ImageChannelStatistics red;
    ImageChannelStatistics green;
    ImageChannelStatistics blue;
-   ImageChannelStatistics opacity;
+   ImageChannelStatistics alpha;
  } ImageStatistics;
 
     void            statistics ( ImageStatistics *statistics ) const;
@@ -1209,10 +1209,6 @@ typedef struct _ImageStatistics
     void            textEncoding ( const std::string &encoding_ );
     std::string     textEncoding ( void ) const;
 
-    // Tile name
-    void            tileName ( const std::string &tileName_ );
-    std::string     tileName ( void ) const;
-
     // Number of colors in the image
     size_t   totalColors ( void );
 
@@ -1276,28 +1272,28 @@ typedef struct _ImageStatistics
 
     // Transfers read-only pixels from the image to the pixel cache as
     // defined by the specified region
-    const PixelPacket* getConstPixels ( const ::ssize_t x_, const ::ssize_t y_,
+    const Quantum* getConstPixels ( const ::ssize_t x_, const ::ssize_t y_,
                                         const size_t columns_,
                                         const size_t rows_ ) const;
 
-    // Obtain mutable image pixel indexes (valid for PseudoClass images)
-    IndexPacket* getIndexes ( void );
+    // Obtain mutable image pixel metacontent (valid for PseudoClass images)
+    void* getMetacontent ( void );
 
-    // Obtain immutable image pixel indexes (valid for PseudoClass images)
-    const IndexPacket* getConstIndexes ( void ) const;
+    // Obtain immutable image pixel metacontent (valid for PseudoClass images)
+    const void* getConstMetacontent ( void ) const;
 
     // Transfers pixels from the image to the pixel cache as defined
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.  This method is
     // valid for DirectClass images.
-    PixelPacket* getPixels ( const ::ssize_t x_, const ::ssize_t y_,
+    Quantum* getPixels ( const ::ssize_t x_, const ::ssize_t y_,
            const size_t columns_,
                              const size_t rows_ );
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
-    PixelPacket* setPixels ( const ::ssize_t x_, const ::ssize_t y_,
+    Quantum* setPixels ( const ::ssize_t x_, const ::ssize_t y_,
            const size_t columns_,
                              const size_t rows_ );
 

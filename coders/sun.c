@@ -39,27 +39,29 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colorspace.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -239,10 +241,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
-  register IndexPacket
-    *indexes;
-
-  register PixelPacket
+  register Quantum
     *q;
 
   register ssize_t
@@ -441,21 +440,24 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
-        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < ((ssize_t) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
-            SetPixelIndex(indexes+x+7-bit,((*p) & (0x01 << bit) ?
-              0x00 : 0x01));
+          {
+            SetPixelIndex(image,((*p) & (0x01 << bit) ? 0x00 : 0x01),q);
+            q+=GetPixelChannels(image);
+          }
           p++;
         }
         if ((image->columns % 8) != 0)
           {
             for (bit=7; bit >= (ssize_t) (8-(image->columns % 8)); bit--)
-              SetPixelIndex(indexes+x+7-bit,(*p) & (0x01 << bit) ?
-                0x00 : 0x01);
+            {
+              SetPixelIndex(image,(*p) & (0x01 << bit) ? 0x00 : 0x01,q);
+              q+=GetPixelChannels(image);
+            }
             p++;
           }
         if ((((image->columns/8)+(image->columns % 8 ? 1 : 0)) % 2) != 0)
@@ -481,11 +483,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (PixelPacket *) NULL)
+            if (q == (const Quantum *) NULL)
               break;
-            indexes=GetAuthenticIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
-              SetPixelIndex(indexes+x,*p++);
+            {
+              SetPixelIndex(image,*p++,q);
+              q+=GetPixelChannels(image);
+            }
             if ((image->columns % 2) != 0)
               p++;
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -516,34 +520,34 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (PixelPacket *) NULL)
+            if (q == (const Quantum *) NULL)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (image->matte != MagickFalse)
-                SetPixelAlpha(q,ScaleCharToQuantum(*p++));
+                SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
               if (sun_info.type == RT_STANDARD)
                 {
-                  SetPixelBlue(q,ScaleCharToQuantum(*p++));
-                  SetPixelGreen(q,ScaleCharToQuantum(*p++));
-                  SetPixelRed(q,ScaleCharToQuantum(*p++));
+                  SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+                  SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+                  SetPixelRed(image,ScaleCharToQuantum(*p++),q);
                 }
               else
                 {
-                  SetPixelRed(q,ScaleCharToQuantum(*p++));
-                  SetPixelGreen(q,ScaleCharToQuantum(*p++));
-                  SetPixelBlue(q,ScaleCharToQuantum(*p++));
+                  SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+                  SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+                  SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
                 }
               if (image->colors != 0)
                 {
-                  SetPixelRed(q,image->colormap[(ssize_t)
-                    GetPixelRed(q)].red);
-                  SetPixelGreen(q,image->colormap[(ssize_t)
-                    GetPixelGreen(q)].green);
-                  SetPixelBlue(q,image->colormap[(ssize_t)
-                    GetPixelBlue(q)].blue);
+                  SetPixelRed(image,image->colormap[(ssize_t)
+                    GetPixelRed(image,q)].red,q);
+                  SetPixelGreen(image,image->colormap[(ssize_t)
+                    GetPixelGreen(image,q)].green,q);
+                  SetPixelBlue(image,image->colormap[(ssize_t)
+                    GetPixelBlue(image,q)].blue,q);
                 }
-              q++;
+              q+=GetPixelChannels(image);
             }
             if (((bytes_per_pixel*image->columns) % 2) != 0)
               p++;
@@ -719,10 +723,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
   MagickSizeType
     number_pixels;
 
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -779,7 +780,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           0;
       }
     else
-      if (IsMonochromeImage(image,&image->exception))
+      if (IsImageMonochrome(image,&image->exception))
         {
           /*
             Monochrome SUN raster.
@@ -846,17 +847,17 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
           q=pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if (image->matte != MagickFalse)
-              *q++=ScaleQuantumToChar(GetPixelAlpha(p));
-            *q++=ScaleQuantumToChar(GetPixelRed(p));
-            *q++=ScaleQuantumToChar(GetPixelGreen(p));
-            *q++=ScaleQuantumToChar(GetPixelBlue(p));
-            p++;
+              *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
+            *q++=ScaleQuantumToChar(GetPixelRed(image,p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+            *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+            p+=GetPixelChannels(image);
           }
           if (((bytes_per_pixel*image->columns) & 0x01) != 0)
             *q++='\0';  /* pad scanline */
@@ -872,7 +873,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       }
     else
-      if (IsMonochromeImage(image,&image->exception))
+      if (IsImageMonochrome(image,&image->exception))
         {
           register unsigned char
             bit,
@@ -885,15 +886,14 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
+            if (p == (const Quantum *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(image);
             bit=0;
             byte=0;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               byte<<=1;
-              if (PixelIntensity(p) < (MagickRealType) (QuantumRange/2.0))
+              if (GetPixelIntensity(image,p) < (MagickRealType) (QuantumRange/2.0))
                 byte|=0x01;
               bit++;
               if (bit == 8)
@@ -902,7 +902,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
                   bit=0;
                   byte=0;
                 }
-              p++;
+              p+=GetPixelChannels(image);
             }
             if (bit != 0)
               (void) WriteBlobByte(image,(unsigned char) (byte << (8-bit)));
@@ -938,14 +938,13 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
+            if (p == (const Quantum *) NULL)
               break;
-            indexes=GetVirtualIndexQueue(image);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) WriteBlobByte(image,(unsigned char)
-                GetPixelIndex(indexes+x));
-              p++;
+                GetPixelIndex(image,p));
+              p+=GetPixelChannels(image);
             }
             if (image->columns & 0x01)
               (void) WriteBlobByte(image,0);  /* pad scanline */

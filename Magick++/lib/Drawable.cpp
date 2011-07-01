@@ -9,9 +9,9 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 #define MAGICK_DRAWABLE_IMPLEMENTATION
 
-#include "Magick++/Include.h"
 #include <math.h>
 #include <string>
+#include "Magick++/Include.h"
 
 #include "Magick++/Drawable.h"
 #include "Magick++/Image.h"
@@ -585,7 +585,7 @@ void Magick::DrawableFillColor::operator()
 {
   PixelPacket color = static_cast<PixelPacket>(_color);
   PixelWand *pixel_wand=NewPixelWand();
-  PixelSetQuantumColor(pixel_wand,&color);
+  PixelSetQuantumPacket(pixel_wand,&color);
   DrawSetFillColor(context_,pixel_wand);
   pixel_wand=DestroyPixelWand(pixel_wand);
 }
@@ -608,14 +608,14 @@ Magick::DrawableBase* Magick::DrawableFillRule::copy() const
   return new DrawableFillRule(*this);
 }
 
-// Specify drawing fill opacity
+// Specify drawing fill alpha
 Magick::DrawableFillOpacity::~DrawableFillOpacity ( void )
 {
 }
 void Magick::DrawableFillOpacity::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  DrawSetFillOpacity( context_, _opacity );
+  DrawSetFillOpacity( context_, _alpha );
 }
 Magick::DrawableBase* Magick::DrawableFillOpacity::copy() const
 {
@@ -1212,7 +1212,7 @@ void Magick::DrawableStrokeColor::operator()
 {
   PixelPacket color = static_cast<PixelPacket>(_color);
   PixelWand *pixel_wand=NewPixelWand();
-  PixelSetQuantumColor(pixel_wand,&color);
+  PixelSetQuantumPacket(pixel_wand,&color);
   DrawSetStrokeColor(context_,pixel_wand);
   pixel_wand=DestroyPixelWand(pixel_wand);
 }
@@ -1221,14 +1221,14 @@ Magick::DrawableBase* Magick::DrawableStrokeColor::copy() const
   return new DrawableStrokeColor(*this);
 }
 
-// Stroke opacity
+// Stroke alpha
 Magick::DrawableStrokeOpacity::~DrawableStrokeOpacity ( void )
 {
 }
 void Magick::DrawableStrokeOpacity::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  DrawSetStrokeOpacity( context_, _opacity );
+  DrawSetStrokeOpacity( context_, _alpha );
 }
 Magick::DrawableBase* Magick::DrawableStrokeOpacity::copy() const
 {
@@ -1358,7 +1358,7 @@ void Magick::DrawableTextUnderColor::operator()
 {
   PixelPacket color = static_cast<PixelPacket>(_color);
   PixelWand *pixel_wand=NewPixelWand();
-  PixelSetQuantumColor(pixel_wand,&color);
+  PixelSetQuantumPacket(pixel_wand,&color);
   DrawSetTextUnderColor(context_,pixel_wand);
   pixel_wand=DestroyPixelWand(pixel_wand);
 }

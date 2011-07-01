@@ -39,44 +39,45 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/attribute.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colorspace.h"
-#include "magick/constitute.h"
-#include "magick/enhance.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/geometry.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/module.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/option.h"
-#include "magick/property.h"
-#include "magick/quantum.h"
-#include "magick/quantum-private.h"
-#include "magick/profile.h"
-#include "magick/resize.h"
-#include "magick/resource_.h"
-#include "magick/semaphore.h"
-#include "magick/splay-tree.h"
-#include "magick/static.h"
-#include "magick/statistic.h"
-#include "magick/string_.h"
-#include "magick/string-private.h"
-#include "magick/thread_.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/enhance.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/log.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantum.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/resize.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/semaphore.h"
+#include "MagickCore/splay-tree.h"
+#include "MagickCore/static.h"
+#include "MagickCore/statistic.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
+#include "MagickCore/thread_.h"
+#include "MagickCore/utility.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 # if defined(MAGICKCORE_HAVE_TIFFCONF_H)
 #  include "tiffconf.h"
@@ -1233,14 +1234,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           int
             status;
 
-          register PixelPacket
+          register Quantum
             *restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
@@ -1291,14 +1292,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           int
             status;
 
-          register PixelPacket
+          register Quantum
             *restrict q;
 
           status=TIFFReadPixels(tiff,bits_per_sample,0,y,(char *) pixels);
           if (status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
@@ -1323,7 +1324,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         {
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            register PixelPacket
+            register Quantum
               *restrict q;
 
             int
@@ -1334,7 +1335,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (status == -1)
               break;
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (PixelPacket *) NULL)
+            if (q == (const Quantum *) NULL)
               break;
             if (image->colorspace != CMYKColorspace)
               switch (i)
@@ -1385,11 +1386,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           register ssize_t
             x;
 
-          register PixelPacket
+          register Quantum
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           if (i == 0)
             {
@@ -1402,17 +1403,17 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           p=(unsigned char *) (((uint32 *) pixels)+image->columns*i);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-              (TIFFGetR(*p))));
-            SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-              (TIFFGetG(*p))));
-            SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-              (TIFFGetB(*p))));
+            SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+              (TIFFGetR(*p))),q);
+            SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+              (TIFFGetG(*p))),q);
+            SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+              (TIFFGetB(*p))),q);
             if (image->matte != MagickFalse)
-              SetPixelOpacity(q,ScaleCharToQuantum((unsigned char)
-                (TIFFGetA(*p))));
+              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+                (TIFFGetA(*p))),q);
             p++;
-            q++;
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1459,14 +1460,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         for (y=0; y < (ssize_t) image->rows; y+=rows)
         {
-          PixelPacket
-            *tile;
-
           register ssize_t
             x;
 
-          register PixelPacket
-            *restrict q;
+          register Quantum
+            *restrict q,
+            *restrict tile;
 
           size_t
             columns_remaining,
@@ -1477,7 +1476,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             rows_remaining=rows;
           tile=QueueAuthenticPixels(image,0,y,image->columns,rows_remaining,
             exception);
-          if (tile == (PixelPacket *) NULL)
+          if (tile == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x+=columns)
           {
@@ -1497,31 +1496,31 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->matte != MagickFalse)
                 for (column=columns_remaining; column > 0; column--)
                 {
-                  SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetR(*p)));
-                  SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetG(*p)));
-                  SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetB(*p)));
-                  SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetA(*p)));
-                  q++;
+                  SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetR(*p)),q);
+                  SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetG(*p)),q);
+                  SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetB(*p)),q);
+                  SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetA(*p)),q);
                   p++;
+                  q+=GetPixelChannels(image);
                 }
               else
                 for (column=columns_remaining; column > 0; column--)
                 {
-                  SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetR(*p)));
-                  SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetG(*p)));
-                  SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-                    TIFFGetB(*p)));
-                  q++;
+                  SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetR(*p)),q);
+                  SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetG(*p)),q);
+                  SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+                    TIFFGetB(*p)),q);
                   p++;
+                  q+=GetPixelChannels(image);
                 }
               p+=columns-columns_remaining;
-              q-=(image->columns+columns_remaining);
+              q-=GetPixelChannels(image)*(image->columns+columns_remaining);
             }
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1574,26 +1573,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           register ssize_t
             x;
 
-          register PixelPacket
+          register Quantum
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
-          q+=image->columns-1;
+          q+=GetPixelChannels(image)*(image->columns-1);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetR(*p)));
-            SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetG(*p)));
-            SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
-              TIFFGetB(*p)));
+            SetPixelRed(image,ScaleCharToQuantum((unsigned char)
+              TIFFGetR(*p)),q);
+            SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
+              TIFFGetG(*p)),q);
+            SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
+              TIFFGetB(*p)),q);
             if (image->matte != MagickFalse)
-              SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-                TIFFGetA(*p)));
+              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+                TIFFGetA(*p)),q);
             p--;
-            q--;
+            q-=GetPixelChannels(image);;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -2697,14 +2696,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             (image_info->type != TrueColorMatteType))
           {
             if ((image_info->type != PaletteType) &&
-                (IsGrayImage(image,&image->exception) != MagickFalse))
+                (IsImageGray(image,&image->exception) != MagickFalse))
               {
                 photometric=(uint16) (quantum_info->min_is_white !=
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 if ((image_info->depth == 0) && (image->matte == MagickFalse) &&
-                    (IsMonochromeImage(image,&image->exception) != MagickFalse))
+                    (IsImageMonochrome(image,&image->exception) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
                     if (status == MagickFalse)
@@ -3045,15 +3044,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               quantum_type=RGBAQuantum;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const PixelPacket
+              register const Quantum
                 *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(const CacheView *) NULL,
-                quantum_info,quantum_type,pixels,&image->exception);
+              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                quantum_type,pixels,&image->exception);
               (void) length;
               if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
@@ -3075,15 +3074,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             */
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const PixelPacket
+              register const Quantum
                 *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(const CacheView *) NULL,
-                quantum_info,RedQuantum,pixels,&image->exception);
+              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                RedQuantum,pixels,&image->exception);
               if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
             }
@@ -3095,15 +3094,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const PixelPacket
+              register const Quantum
                 *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(const CacheView *) NULL,
-                quantum_info,GreenQuantum,pixels,&image->exception);
+              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                GreenQuantum,pixels,&image->exception);
               if (TIFFWritePixels(tiff,&tiff_info,y,1,image) == -1)
                 break;
             }
@@ -3115,15 +3114,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              register const PixelPacket
+              register const Quantum
                 *restrict p;
 
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
-              length=ExportQuantumPixels(image,(const CacheView *) NULL,
-                quantum_info,BlueQuantum,pixels,&image->exception);
+              length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                BlueQuantum,pixels,&image->exception);
               if (TIFFWritePixels(tiff,&tiff_info,y,2,image) == -1)
                 break;
             }
@@ -3136,14 +3135,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             if (image->matte != MagickFalse)
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                register const PixelPacket
+                register const Quantum
                   *restrict p;
 
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const PixelPacket *) NULL)
+                if (p == (const Quantum *) NULL)
                   break;
-                length=ExportQuantumPixels(image,(const CacheView *) NULL,
+                length=ExportQuantumPixels(image,(CacheView *) NULL,
                   quantum_info,AlphaQuantum,pixels,&image->exception);
                 if (TIFFWritePixels(tiff,&tiff_info,y,3,image) == -1)
                   break;
@@ -3171,14 +3170,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           (void) TransformImageColorspace(image,CMYKColorspace);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const PixelPacket
+          register const Quantum
             *restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,
-            quantum_info,quantum_type,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            quantum_type,pixels,&image->exception);
           if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
             break;
           if (image->previous == (Image *) NULL)
@@ -3242,14 +3241,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
              quantum_type=GrayQuantum;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          register const PixelPacket
+          register const Quantum
             *restrict p;
 
           p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
+          if (p == (const Quantum *) NULL)
             break;
-          length=ExportQuantumPixels(image,(const CacheView *) NULL,
-            quantum_info,quantum_type,pixels,&image->exception);
+          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            quantum_type,pixels,&image->exception);
           if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
             break;
           if (image->previous == (Image *) NULL)
