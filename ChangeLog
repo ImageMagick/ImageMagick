@@ -9,9 +9,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?&f=1&p=73548).
 
 2011-06-29  6.7.0-7 Glenn Randers-Pehrson <glennrp@image...>
-  * Handle "-quality 97" properly in the png encoder, .e., to use
-    intrapixel filtering when writing a MNG file. and no filtering when
-    writing a PNG file.
+  * Handle "-quality 97" properly in the png encoder, i.e., use intrapixel
+    filtering when writing a MNG file and no filtering when writing a PNG file.
   * Added support for Z_RLE strategy in the png compressor, using
     -quality 98 or 99.
 
