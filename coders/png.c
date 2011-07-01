@@ -10733,9 +10733,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %  the user should make sure that ImageMagick has already reduced the
 %  image depth and number of colors and limit transparency to binary
 %  transparency prior to attempting to write the image with depth, color,
-%   or transparency limitations.
-%
-%  To do: Enforce the previous paragraph.
+%  or transparency limitations.
 %
 %  Note that another definition, "png:bit-depth-written" exists, but it
 %  is not intended for external use.  It is only used internally by the
@@ -10995,8 +10993,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
      value=GetImageOption(image_info,"png:compression-level");
   if (value != NULL)
   {
-      /* To do: use a "LocaleInteger:()" function here. */
-
       /* We have to add 1 to everything because 0 is a valid input,
        * and we want to use 0 (the default) to mean undefined.
        */
@@ -11104,6 +11100,17 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       else if (LocaleCompare(value,"5") == 0)
         mng_info->write_png_compression_filter = 6;
 
+      else if (LocaleCompare(value,"6") == 0)
+        mng_info->write_png_compression_filter = 7;
+
+      else if (LocaleCompare(value,"7") == 0)
+        mng_info->write_png_compression_filter = 8;
+
+      else if (LocaleCompare(value,"8") == 0)
+        mng_info->write_png_compression_filter = 9;
+
+      else if (LocaleCompare(value,"9") == 0)
+        mng_info->write_png_compression_filter = 10;
 
       else
         (void) ThrowMagickException(&image->exception,
