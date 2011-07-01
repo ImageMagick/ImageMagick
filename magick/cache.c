@@ -4499,7 +4499,7 @@ static PixelPacket *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  QueueAuthenticPixels() queues a mutable pixel region.  If the region is
-%  successfully intialized a pointer to a PixelPacket array representing the
+%  successfully initialized a pointer to a PixelPacket array representing the
 %  region is returned, otherwise NULL is returned.  The returned pointer may
 %  point to a temporary working buffer for the pixels or it may point to the
 %  final location of the pixels in memory.

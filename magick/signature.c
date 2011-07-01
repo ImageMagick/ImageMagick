@@ -375,7 +375,7 @@ MagickExport unsigned int GetSignatureDigestsize(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IntializeSignature() intializes the Signature accumulator.
+%  InitializeSignature() initializes the Signature accumulator.
 %
 %  The format of the DestroySignatureInfo method is:
 %
