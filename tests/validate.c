@@ -45,8 +45,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include "wand/MagickWand.h"
-#include "magick/string-private.h"
+#include "MagickWand/MagickWand.h"
+#include "MagickCore/string-private.h"
 #include "validate.h"
 
 /*
