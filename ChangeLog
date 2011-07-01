@@ -1,4 +1,9 @@
 
+2011-07-01  6.7.1-0 Glenn Randers-Pehrson <glennrp@image...>
+  * Use zlib default compression strategy instead of Z_RLE and Z_FIXED
+    strategies when linking with zlib versions (prior to 1.2.0 and 1.2.2.2,
+    respectively) that don't support them.
+
 2011-06-30  6.7.0-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-10.
 
