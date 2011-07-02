@@ -791,14 +791,14 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
         cache_info->filename);
       return(MagickFalse);
     }
-  if (OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
     {
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         cache_info->cache_filename);
       return(MagickFalse);
     }
-  if (OpenPixelCacheOnDisk(clone_info,WriteMode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse)
     {
       (void) ClosePixelCacheOnDisk(cache_info);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
