@@ -791,14 +791,14 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
         cache_info->filename);
       return(MagickFalse);
     }
-  if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse)
     {
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         cache_info->cache_filename);
       return(MagickFalse);
     }
-  if (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(clone_info,WriteMode) == MagickFalse)
     {
       (void) ClosePixelCacheOnDisk(cache_info);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -972,7 +972,13 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
     }
   if (clone_info->type == DiskCache)
     {
-      if (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse)
+      if ((cache_info->type == DiskCache) &&
+          (strcmp(cache_info->cache_filename,clone_info->cache_filename) == 0))
+        {
+          (void) ClosePixelCacheOnDisk(clone_info);
+          *clone_info->cache_filename='\0';
+        }
+      if (OpenPixelCacheOnDisk(clone_info,WriteMode) == MagickFalse)
         {
           if (cache_info->type == DiskCache)
             (void) ClosePixelCacheOnDisk(cache_info);
@@ -4107,12 +4113,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
-    }
-  if (cache_info->type == DiskCache)
-    {
-      (void) ClosePixelCacheOnDisk(cache_info);
-      *cache_info->cache_filename='\0';
-      status=DiskToDiskPixelCacheClone(cache_info,&source_info,exception);
     }
   if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
