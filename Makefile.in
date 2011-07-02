@@ -494,7 +494,7 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	coders/exr.c coders/fpx.c coders/clipboard.c coders/emf.c \
 	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
 	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
-	coders/x.c coders/xwd.c
+	coders/x.c coders/xwd.c filters/analyze.c
 am__objects_1 = MagickCore/MagickCore_libMagickCore_la-accelerate.lo \
 	MagickCore/MagickCore_libMagickCore_la-animate.lo \
 	MagickCore/MagickCore_libMagickCore_la-annotate.lo \
@@ -714,9 +714,10 @@ am__objects_16 = coders/MagickCore_libMagickCore_la-aai.lo \
 	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
 	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
 	$(am__objects_13) $(am__objects_14) $(am__objects_15)
+am__objects_17 = filters/MagickCore_libMagickCore_la-analyze.lo
 @WITH_MODULES_FALSE@am_MagickCore_libMagickCore_la_OBJECTS =  \
 @WITH_MODULES_FALSE@	$(am__objects_1) $(am__objects_2) \
-@WITH_MODULES_FALSE@	$(am__objects_16)
+@WITH_MODULES_FALSE@	$(am__objects_16) $(am__objects_17)
 @WITH_MODULES_TRUE@am_MagickCore_libMagickCore_la_OBJECTS =  \
 @WITH_MODULES_TRUE@	$(am__objects_1) $(am__objects_2)
 MagickCore_libMagickCore_la_OBJECTS =  \
@@ -728,7 +729,7 @@ MagickCore_libMagickCore_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 MagickWand_libMagickWand_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am__objects_17 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
+am__objects_18 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-compare.lo \
 	MagickWand/MagickWand_libMagickWand_la-composite.lo \
 	MagickWand/MagickWand_libMagickWand_la-conjure.lo \
@@ -748,7 +749,7 @@ am__objects_17 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-stream.lo \
 	MagickWand/MagickWand_libMagickWand_la-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-wand-view.lo
-am_MagickWand_libMagickWand_la_OBJECTS = $(am__objects_17)
+am_MagickWand_libMagickWand_la_OBJECTS = $(am__objects_18)
 MagickWand_libMagickWand_la_OBJECTS =  \
 	$(am_MagickWand_libMagickWand_la_OBJECTS)
 MagickWand_libMagickWand_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1706,12 +1707,12 @@ ltdl_libltdl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	-o $@
 @INSTALL_LTDL_TRUE@am_ltdl_libltdl_la_rpath = -rpath $(libdir)
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-am__objects_18 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
+am__objects_19 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
 	ltdl/ltdl_libltdlc_la-lt__alloc.lo \
 	ltdl/ltdl_libltdlc_la-lt_dlloader.lo \
 	ltdl/ltdl_libltdlc_la-lt_error.lo \
 	ltdl/ltdl_libltdlc_la-ltdl.lo ltdl/ltdl_libltdlc_la-slist.lo
-am_ltdl_libltdlc_la_OBJECTS = $(am__objects_18)
+am_ltdl_libltdlc_la_OBJECTS = $(am__objects_19)
 ltdl_libltdlc_la_OBJECTS = $(am_ltdl_libltdlc_la_OBJECTS)
 ltdl_libltdlc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -4543,7 +4544,7 @@ MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 
 # Where filter modules get installed
 filtersdir = $(FILTER_PATH)
-MAGICK_FILTER_SRCS = \
+MAGICKCORE_FILTER_SRCS = \
 	filters/analyze.c
 
 @WITH_MODULES_FALSE@filters_LTLIBRARIES = 
@@ -5527,6 +5528,14 @@ coders/MagickCore_libMagickCore_la-x.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_la-xwd.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
+filters/$(am__dirstamp):
+	@$(MKDIR_P) filters
+	@: > filters/$(am__dirstamp)
+filters/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) filters/$(DEPDIR)
+	@: > filters/$(DEPDIR)/$(am__dirstamp)
+filters/MagickCore_libMagickCore_la-analyze.lo:  \
+	filters/$(am__dirstamp) filters/$(DEPDIR)/$(am__dirstamp)
 MagickCore/libMagickCore.la: $(MagickCore_libMagickCore_la_OBJECTS) $(MagickCore_libMagickCore_la_DEPENDENCIES) MagickCore/$(am__dirstamp)
 	$(AM_V_CCLD)$(MagickCore_libMagickCore_la_LINK) -rpath $(libdir) $(MagickCore_libMagickCore_la_OBJECTS) $(MagickCore_libMagickCore_la_LIBADD) $(LIBS)
 MagickWand/$(am__dirstamp):
@@ -6065,12 +6074,6 @@ coders/coders_yuv_la-yuv.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/yuv.la: $(coders_yuv_la_OBJECTS) $(coders_yuv_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_yuv_la_LINK) $(am_coders_yuv_la_rpath) $(coders_yuv_la_OBJECTS) $(coders_yuv_la_LIBADD) $(LIBS)
-filters/$(am__dirstamp):
-	@$(MKDIR_P) filters
-	@: > filters/$(am__dirstamp)
-filters/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) filters/$(DEPDIR)
-	@: > filters/$(DEPDIR)/$(am__dirstamp)
 filters/filters_analyze_la-analyze.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
 filters/analyze.la: $(filters_analyze_la_OBJECTS) $(filters_analyze_la_DEPENDENCIES) filters/$(am__dirstamp)
@@ -7177,6 +7180,8 @@ mostlyclean-compile:
 	-rm -f coders/coders_ycbcr_la-ycbcr.lo
 	-rm -f coders/coders_yuv_la-yuv.$(OBJEXT)
 	-rm -f coders/coders_yuv_la-yuv.lo
+	-rm -f filters/MagickCore_libMagickCore_la-analyze.$(OBJEXT)
+	-rm -f filters/MagickCore_libMagickCore_la-analyze.lo
 	-rm -f filters/filters_analyze_la-analyze.$(OBJEXT)
 	-rm -f filters/filters_analyze_la-analyze.lo
 	-rm -f ltdl/loaders/dld_link.$(OBJEXT)
@@ -7614,6 +7619,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_xwd_la-xwd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_ycbcr_la-ycbcr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_yuv_la-yuv.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/MagickCore_libMagickCore_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_analyze_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo@am__quote@
@@ -9328,6 +9334,14 @@ coders/MagickCore_libMagickCore_la-xwd.lo: coders/xwd.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/xwd.c' object='coders/MagickCore_libMagickCore_la-xwd.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_la-xwd.lo `test -f 'coders/xwd.c' || echo '$(srcdir)/'`coders/xwd.c
+
+filters/MagickCore_libMagickCore_la-analyze.lo: filters/analyze.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/MagickCore_libMagickCore_la-analyze.lo -MD -MP -MF filters/$(DEPDIR)/MagickCore_libMagickCore_la-analyze.Tpo -c -o filters/MagickCore_libMagickCore_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) filters/$(DEPDIR)/MagickCore_libMagickCore_la-analyze.Tpo filters/$(DEPDIR)/MagickCore_libMagickCore_la-analyze.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/analyze.c' object='filters/MagickCore_libMagickCore_la-analyze.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/MagickCore_libMagickCore_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
 
 MagickWand/MagickWand_libMagickWand_la-animate.lo: MagickWand/animate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-animate.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-animate.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-animate.lo `test -f 'MagickWand/animate.c' || echo '$(srcdir)/'`MagickWand/animate.c
