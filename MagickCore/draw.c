@@ -4221,7 +4221,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel);
-              SetPixelAlpha(image,pixel.alpha,q);
+              SetPixelPacket(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
