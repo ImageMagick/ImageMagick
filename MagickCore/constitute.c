@@ -859,6 +859,11 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       sans=DestroyExceptionInfo(sans);
       (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
+      if (read_info->number_scenes == 0)
+        {
+          read_info=DestroyImageInfo(read_info);
+          return(ReadImage(image_info,exception));
+        }
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
