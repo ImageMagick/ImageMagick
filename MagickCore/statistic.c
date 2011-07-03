@@ -683,14 +683,14 @@ MagickExport Image *EvaluateImages(const Image *images,
         SetPixelGreen(evaluate_image,ClampToQuantum(evaluate_pixel[x].green),q);
         SetPixelBlue(evaluate_image,ClampToQuantum(evaluate_pixel[x].blue),q);
         if (evaluate_image->colorspace == CMYKColorspace)
-          SetPixelBlack(evaluate_image,
-          ClampToQuantum(evaluate_pixel[x].black),q);
+          SetPixelBlack(evaluate_image,ClampToQuantum(evaluate_pixel[x].black),
+            q);
         if (evaluate_image->matte == MagickFalse)
-          SetPixelAlpha(evaluate_image,
-            ClampToQuantum(evaluate_pixel[x].alpha),q);
+          SetPixelAlpha(evaluate_image,ClampToQuantum(evaluate_pixel[x].alpha),
+            q);
         else
-          SetPixelAlpha(evaluate_image,
-            ClampToQuantum(evaluate_pixel[x].alpha),q);
+          SetPixelAlpha(evaluate_image,ClampToQuantum(evaluate_pixel[x].alpha),
+            q);
         q+=GetPixelChannels(evaluate_image);
       }
       if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
@@ -776,32 +776,26 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetPixelRed(image,ClampToQuantum(
-          ApplyEvaluateOperator(random_info[id],
-          GetPixelRed(image,q),op,value)),q);
+        SetPixelRed(image,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelRed(image,q),op,value)),q);
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(image,ClampToQuantum(
-          ApplyEvaluateOperator(random_info[id],
-          GetPixelGreen(image,q),op,value)),q);
+        SetPixelGreen(image,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelGreen(image,q),op,value)),q);
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(image,ClampToQuantum(
-          ApplyEvaluateOperator(random_info[id],
-          GetPixelBlue(image,q),op,value)),q);
+        SetPixelBlue(image,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelBlue(image,q),op,value)),q);
       if (((channel & BlackChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,ClampToQuantum(
-          ApplyEvaluateOperator(random_info[id],
-          GetPixelBlack(image,q),op,value)),q);
+        SetPixelBlack(image,ClampToQuantum(ApplyEvaluateOperator(
+          random_info[id],GetPixelBlack(image,q),op,value)),q);
       if ((channel & AlphaChannel) != 0)
         {
           if (image->matte == MagickFalse)
-            SetPixelAlpha(image,
-              ClampToQuantum(ApplyEvaluateOperator(random_info[id],
-                GetPixelAlpha(image,q),op,value)),q);
+            SetPixelAlpha(image,ClampToQuantum(ApplyEvaluateOperator(
+              random_info[id],GetPixelAlpha(image,q),op,value)),q);
           else
-            SetPixelAlpha(image,
-              ClampToQuantum(ApplyEvaluateOperator(random_info[id],
-                GetPixelAlpha(image,q),op,value)),q);
+            SetPixelAlpha(image,ClampToQuantum(ApplyEvaluateOperator(
+              random_info[id],GetPixelAlpha(image,q),op,value)),q);
         }
       q+=GetPixelChannels(image);
     }
