@@ -58,19 +58,19 @@ typedef enum
 
 typedef enum
 {
-  UndefinedPixelTrait,
-  AlphaPixelTrait,
-  IgnorePixelTrait,
-  UnusedPixelTrait
-} PixelTrait;
+  ColorPixelType,
+  MaskPixelType,
+  IgnorePixelType,
+  UnusedPixelType
+} PixelType;
 
 typedef struct _PixelComponentMap
 {
   PixelComponent
     component;
 
-  PixelTrait
-    trait;
+  PixelType
+    type;
 } PixelComponentMap;
 
 typedef struct _DoublePixelPacket
