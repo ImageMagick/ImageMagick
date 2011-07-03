@@ -1,12 +1,12 @@
 /*
   Copyright 1999-2011 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-  
+
     http://www.imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -90,7 +90,7 @@ static inline Quantum GetPixelInfoLuminance(const PixelInfo *pixel_info)
 {
   Quantum
     luminance;
-  
+
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   luminance=(Quantum) (0.21267*pixel_info->red+0.71516*pixel_info->green+
     0.07217*pixel_info->blue+0.5);
@@ -145,6 +145,12 @@ static inline Quantum GetPixelPacketIntensity(const PixelPacket *pixel)
     return((Quantum) (0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue));
   }
 #endif
+}
+
+static inline PixelTrait GetPixelTrait(const Image *image,
+  const PixelComponent component)
+{
+  return(image->component_map[component].trait);
 }
 
 static inline Quantum GetPixelY(const Image *image,const Quantum *pixel)
