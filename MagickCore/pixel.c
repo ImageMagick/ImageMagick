@@ -101,7 +101,7 @@ MagickExport PixelComponentMap *AcquirePixelComponentMap(void)
   for (i=0; i < MaxPixelChannels; i++)
   {
     component_map[i].component=(PixelComponent) i;
-    component_map[i].trait=UndefinedPixelTrait;
+    component_map[i].type=UnusedPixelType;
   }
   return(component_map);
 }
@@ -204,10 +204,26 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 MagickExport void DefinePixelComponentMap(Image *image)
 {
   image->pixel_channels=4;
-  if (image->storage_class == PseudoClass)
-    image->pixel_channels++;
+  SetPixelComponent(image,RedPixelComponent,RedPixelComponent);
+  SetPixelType(image,RedPixelComponent,ColorPixelType);
+  SetPixelComponent(image,GreenPixelComponent,GreenPixelComponent);
+  SetPixelType(image,GreenPixelComponent,ColorPixelType);
+  SetPixelComponent(image,BluePixelComponent,BluePixelComponent);
+  SetPixelType(image,BluePixelComponent,ColorPixelType);
+  SetPixelComponent(image,AlphaPixelComponent,AlphaPixelComponent);
+  SetPixelType(image,AlphaPixelComponent,MaskPixelType);
   if (image->colorspace == CMYKColorspace)
-    image->pixel_channels++;
+    {
+      image->pixel_channels++;
+      SetPixelComponent(image,BlackPixelComponent,BlackPixelComponent);
+      SetPixelType(image,BlackPixelComponent,ColorPixelType);
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      image->pixel_channels++;
+      SetPixelComponent(image,IndexPixelComponent,IndexPixelComponent);
+      SetPixelType(image,IndexPixelComponent,IgnorePixelType);
+    }
 }
 
 /*
