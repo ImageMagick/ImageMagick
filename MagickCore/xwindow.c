@@ -7481,20 +7481,20 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   (void) FormatLocaleString(tuple,MaxTextExtent,"%d,%d: ",
     windows->magnify.x,windows->magnify.y);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
-  ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
+  ConcatenateColorComponent(&pixel,RedPixelComponent,X11Compliance,tuple);
   (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-  ConcatenateColorComponent(&pixel,GreenChannel,X11Compliance,tuple);
+  ConcatenateColorComponent(&pixel,GreenPixelComponent,X11Compliance,tuple);
   (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-  ConcatenateColorComponent(&pixel,BlueChannel,X11Compliance,tuple);
+  ConcatenateColorComponent(&pixel,BluePixelComponent,X11Compliance,tuple);
   if (pixel.colorspace == CMYKColorspace)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-      ConcatenateColorComponent(&pixel,BlackChannel,X11Compliance,tuple);
+      ConcatenateColorComponent(&pixel,BlackPixelComponent,X11Compliance,tuple);
     }
   if (pixel.matte != MagickFalse)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-      ConcatenateColorComponent(&pixel,OpacityChannel,X11Compliance,tuple);
+      ConcatenateColorComponent(&pixel,AlphaPixelComponent,X11Compliance,tuple);
     }
   (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
   height=(unsigned int) windows->magnify.font_info->ascent+

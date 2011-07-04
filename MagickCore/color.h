@@ -89,7 +89,7 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport void
   ColorComponentTerminus(void),
-  ConcatenateColorComponent(const PixelInfo *,const ChannelType,
+  ConcatenateColorComponent(const PixelInfo *,const PixelComponent,
     const ComplianceType,char *),
   GetColorTuple(const PixelInfo *,const MagickBooleanType,char *);
 
