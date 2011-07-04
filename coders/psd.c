@@ -2126,8 +2126,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         (image->depth == 1) ? MagickTrue : MagickFalse;
       (void) WriteBlobMSBShort(image,(unsigned short)
         (monochrome != MagickFalse ? 1 : image->depth > 8 ? 16 : 8));
-      (void) WriteBlobMSBShort(image,monochrome != MagickFalse ? BitmapMode :
-        GrayscaleMode);
+      (void) WriteBlobMSBShort(image,(unsigned short)
+        (monochrome != MagickFalse ? BitmapMode : GrayscaleMode));
     }
   else
     {
