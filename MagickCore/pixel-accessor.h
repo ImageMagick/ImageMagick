@@ -208,7 +208,7 @@ static inline Quantum GetPixelPacketIntensity(const PixelPacket *pixel)
 #endif
 }
 
-static inline PixelTrait GetPixelTraits(const Image *image,
+static inline PixelTrait GetPixelComponentTraits(const Image *image,
   const PixelComponent component)
 {
   return(image->component_map[component].traits);
@@ -459,9 +459,9 @@ static inline void SetPixelChannels(Image *image,const size_t channels)
 }
 
 static inline void SetPixelComponent(const Image *image,
-  const PixelComponent component,const PixelComponent components)
+  const PixelComponent component,const PixelComponent component)
 {
-  image->component_map[component].component=components;
+  image->component_map[component].component=component;
 }
 
 static inline void SetPixelCr(const Image *image,const Quantum cr,
@@ -600,7 +600,7 @@ static inline void SetPixelPixelInfo(const Image *image,
     SetPixelBlack(image,ClampToQuantum(pixel_info->black),packet);
 }
 
-static inline void SetPixelTraits(Image *image,
+static inline void SetPixelComponentTraits(Image *image,
   const PixelComponent component,const PixelTrait traits)
 {
   image->component_map[component].traits=traits;
