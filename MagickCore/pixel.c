@@ -4500,23 +4500,23 @@ MagickExport void StandardPixelComponentMap(Image *image)
 {
   image->pixel_channels=4;
   SetPixelComponent(image,RedPixelComponent,RedPixelComponent);
-  SetPixelTrait(image,RedPixelComponent,ActivePixelTrait);
+  SetPixelTraits(image,RedPixelComponent,ActivePixelTrait);
   SetPixelComponent(image,GreenPixelComponent,GreenPixelComponent);
-  SetPixelTrait(image,GreenPixelComponent,ActivePixelTrait);
+  SetPixelTraits(image,GreenPixelComponent,ActivePixelTrait);
   SetPixelComponent(image,BluePixelComponent,BluePixelComponent);
-  SetPixelTrait(image,BluePixelComponent,ActivePixelTrait);
+  SetPixelTraits(image,BluePixelComponent,ActivePixelTrait);
   SetPixelComponent(image,AlphaPixelComponent,AlphaPixelComponent);
-  SetPixelTrait(image,AlphaPixelComponent,ActivePixelTrait);
+  SetPixelTraits(image,AlphaPixelComponent,ActivePixelTrait);
   if (image->colorspace == CMYKColorspace)
     {
       image->pixel_channels++;
       SetPixelComponent(image,BlackPixelComponent,BlackPixelComponent);
-      SetPixelTrait(image,BlackPixelComponent,ActivePixelTrait);
+      SetPixelTraits(image,BlackPixelComponent,ActivePixelTrait);
     }
   if (image->storage_class == PseudoClass)
     {
       image->pixel_channels++;
       SetPixelComponent(image,IndexPixelComponent,IndexPixelComponent);
-      SetPixelTrait(image,IndexPixelComponent,ActivePixelTrait);
+      SetPixelTraits(image,IndexPixelComponent,ActivePixelTrait);
     }
 }
