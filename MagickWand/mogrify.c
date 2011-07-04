@@ -978,6 +978,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               channel=DefaultChannels;
             else
               channel=(ChannelType) ParseChannelOption(argv[i+1]);
+            SetPixelComponentMap(*image,argv[i+1]);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)

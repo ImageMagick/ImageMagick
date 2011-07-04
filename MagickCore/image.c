@@ -1045,7 +1045,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
-  if ((channel & AlphaChannel) != 0)
+  if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
     combine_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(combine_image);
   /*
@@ -1084,7 +1084,8 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         continue;
       }
     next=image;
-    if (((channel & RedChannel) != 0) && (next != (Image *) NULL))
+    if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
+        (next != (Image *) NULL))
       {
         image_view=AcquireCacheView(next);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
@@ -1100,7 +1101,8 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
       }
-    if (((channel & GreenChannel) != 0) && (next != (Image *) NULL))
+    if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
+        (next != (Image *) NULL))
       {
         image_view=AcquireCacheView(next);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
@@ -1116,7 +1118,8 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
       }
-    if (((channel & BlueChannel) != 0) && (next != (Image *) NULL))
+    if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
+        (next != (Image *) NULL))
       {
         image_view=AcquireCacheView(next);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
@@ -1132,7 +1135,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
       }
-    if (((channel & BlackChannel) != 0) &&
+    if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
         (image->colorspace == CMYKColorspace) && (next != (Image *) NULL))
       {
         image_view=AcquireCacheView(next);
@@ -1149,7 +1152,8 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
       }
-    if (((channel & AlphaChannel) != 0) && (next != (Image *) NULL))
+    if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+        (next != (Image *) NULL))
       {
         image_view=AcquireCacheView(next);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
@@ -2491,31 +2495,31 @@ MagickExport Image *SeparateImages(const Image *image,const ChannelType channel,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   images=NewImageList();
-  if ((channel & RedChannel) != 0)
+  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
       (void) SeparateImageChannel(separate_image,RedChannel);
       AppendImageToList(&images,separate_image);
     }
-  if ((channel & GreenChannel) != 0)
+  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
       (void) SeparateImageChannel(separate_image,GreenChannel);
       AppendImageToList(&images,separate_image);
     }
-  if ((channel & BlueChannel) != 0)
+  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
       (void) SeparateImageChannel(separate_image,BlueChannel);
       AppendImageToList(&images,separate_image);
     }
-  if (((channel & BlackChannel) != 0) && (image->colorspace == CMYKColorspace))
+  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) && (image->colorspace == CMYKColorspace))
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
       (void) SeparateImageChannel(separate_image,BlackChannel);
       AppendImageToList(&images,separate_image);
     }
-  if ((channel & AlphaChannel) != 0)
+  if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
       (void) SeparateImageChannel(separate_image,AlphaChannel);

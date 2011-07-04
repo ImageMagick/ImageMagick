@@ -332,19 +332,19 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         for (u=0; u < (ssize_t) (width-i); u++)
         {
           alpha=1.0;
-          if (((channel & AlphaChannel) != 0) &&
+          if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
               (image->matte != MagickFalse))
             alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,p));
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             pixel.red+=(*k)*alpha*GetPixelRed(image,p);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             pixel.green+=(*k)*alpha*GetPixelGreen(image,p);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             pixel.blue+=(*k)*alpha*GetPixelBlue(image,p);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             pixel.black+=(*k)*alpha*GetPixelBlack(image,p);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             pixel.alpha+=(*k)*GetPixelAlpha(image,p);
           gamma+=(*k)*alpha;
           k++;
@@ -352,16 +352,16 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         }
       }
       gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(blur_image,ClampToQuantum(gamma*pixel.red),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(blur_image,ClampToQuantum(gamma*pixel.green),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(blur_image,ClampToQuantum(gamma*pixel.blue),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(blur_image,ClampToQuantum(gamma*pixel.black),q);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(blur_image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(blur_image);
       r+=GetPixelChannels(edge_image);
@@ -642,19 +642,19 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         for (u=0; u < (ssize_t) (width-i); u++)
         {
           alpha=1.0;
-          if (((channel & AlphaChannel) != 0) &&
+          if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
               (image->matte != MagickFalse))
             alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,p));
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             pixel.red+=(*k)*alpha*GetPixelRed(image,p);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             pixel.green+=(*k)*alpha*GetPixelGreen(image,p);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             pixel.blue+=(*k)*alpha*GetPixelBlue(image,p);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             pixel.black+=(*k)*alpha*GetPixelBlack(image,p);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             pixel.alpha+=(*k)*GetPixelAlpha(image,p);
           gamma+=(*k)*alpha;
           k++;
@@ -662,16 +662,16 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         }
       }
       gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(sharp_image,ClampToQuantum(gamma*pixel.red),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(sharp_image,ClampToQuantum(gamma*pixel.green),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(sharp_image,ClampToQuantum(gamma*pixel.blue),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(sharp_image,ClampToQuantum(gamma*pixel.black),q);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(sharp_image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(sharp_image);
       r+=GetPixelChannels(edge_image);
@@ -929,7 +929,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
       pixel=bias;
       k=kernel;
       kernel_pixels=p;
-      if (((channel & AlphaChannel) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
         {
           for (i=0; i < (ssize_t) width; i++)
           {
@@ -941,16 +941,16 @@ MagickExport Image *BlurImageChannel(const Image *image,
             k++;
             kernel_pixels+=GetPixelChannels(image);
           }
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,ClampToQuantum(pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,ClampToQuantum(pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,ClampToQuantum(pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (blur_image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,ClampToQuantum(pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=kernel;
               kernel_pixels=p;
@@ -984,16 +984,16 @@ MagickExport Image *BlurImageChannel(const Image *image,
             kernel_pixels+=GetPixelChannels(image);
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,ClampToQuantum(gamma*pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,ClampToQuantum(gamma*pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,ClampToQuantum(gamma*pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (blur_image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,ClampToQuantum(gamma*pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=kernel;
               kernel_pixels=p;
@@ -1073,7 +1073,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
       pixel=bias;
       k=kernel;
       kernel_pixels=p;
-      if (((channel & AlphaChannel) == 0) || (blur_image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (blur_image->matte == MagickFalse))
         {
           for (i=0; i < (ssize_t) width; i++)
           {
@@ -1085,16 +1085,16 @@ MagickExport Image *BlurImageChannel(const Image *image,
             k++;
             kernel_pixels+=GetPixelChannels(blur_image);
           }
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,ClampToQuantum(pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,ClampToQuantum(pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,ClampToQuantum(pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (blur_image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,ClampToQuantum(pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=kernel;
               kernel_pixels=p;
@@ -1128,16 +1128,16 @@ MagickExport Image *BlurImageChannel(const Image *image,
             kernel_pixels+=GetPixelChannels(blur_image);
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,ClampToQuantum(gamma*pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,ClampToQuantum(gamma*pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,ClampToQuantum(gamma*pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (blur_image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,ClampToQuantum(gamma*pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=kernel;
               kernel_pixels=p;
@@ -1386,7 +1386,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
       pixel=bias;
       k=normal_kernel;
       kernel_pixels=p;
-      if (((channel & AlphaChannel) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
         {
           for (v=0; v < (ssize_t) width; v++)
           {
@@ -1405,16 +1405,16 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
             }
             kernel_pixels+=(image->columns+width)*GetPixelChannels(image);
           }
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(convolve_image,ClampToQuantum(pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(convolve_image,ClampToQuantum(pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(convolve_image,ClampToQuantum(pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(convolve_image,ClampToQuantum(pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=normal_kernel;
               kernel_pixels=p;
@@ -1460,16 +1460,16 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
             kernel_pixels+=(image->columns+width)*GetPixelChannels(image);
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(convolve_image,ClampToQuantum(gamma*pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(convolve_image,ClampToQuantum(gamma*pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(convolve_image,ClampToQuantum(gamma*pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(convolve_image,ClampToQuantum(gamma*pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=normal_kernel;
               kernel_pixels=p;
@@ -2148,7 +2148,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
       pixel=bias;
       k=kernel->values;
       kernel_pixels=p;
-      if (((channel & AlphaChannel) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
         {
           for (v=0; v < (ssize_t) kernel->width; v++)
           {
@@ -2168,16 +2168,16 @@ MagickExport Image *FilterImageChannel(const Image *image,
             kernel_pixels+=(image->columns+kernel->width)*
               GetPixelChannels(image);
           }
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(filter_image,ClampToQuantum(pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(filter_image,ClampToQuantum(pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(filter_image,ClampToQuantum(pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(filter_image,ClampToQuantum(pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=kernel->values;
               kernel_pixels=p;
@@ -2224,16 +2224,16 @@ MagickExport Image *FilterImageChannel(const Image *image,
               GetPixelChannels(image);
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(filter_image,ClampToQuantum(gamma*pixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(filter_image,ClampToQuantum(gamma*pixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(filter_image,ClampToQuantum(gamma*pixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(filter_image,ClampToQuantum(gamma*pixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               k=kernel->values;
               kernel_pixels=p;
@@ -2575,7 +2575,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
 
       k=kernel;
       qixel=bias;
-      if (((channel & AlphaChannel) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
         {
           for (i=0; i < (ssize_t) width; i++)
           {
@@ -2589,20 +2589,20 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
               qixel.black+=(*k)*pixel.black;
             k++;
           }
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,
               ClampToQuantum(qixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,
               ClampToQuantum(qixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,
               ClampToQuantum(qixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,
               ClampToQuantum(qixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             SetPixelAlpha(blur_image,
               ClampToQuantum(qixel.alpha),q);
         }
@@ -2629,20 +2629,20 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
             k++;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,
               ClampToQuantum(gamma*qixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,
               ClampToQuantum(gamma*qixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,
               ClampToQuantum(gamma*qixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,
               ClampToQuantum(gamma*qixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             SetPixelAlpha(blur_image,
               ClampToQuantum(qixel.alpha),q);
         }
@@ -3380,7 +3380,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
         }
       normalize=0.0;
       qixel=bias;
-      if (((channel & AlphaChannel) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
         {
           for (i=0; i < (ssize_t) n; i+=(ssize_t) step)
           {
@@ -3398,20 +3398,20 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
           }
           normalize=1.0/(fabs((double) normalize) <= MagickEpsilon ? 1.0 :
             normalize);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,
               ClampToQuantum(normalize*qixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,
               ClampToQuantum(normalize*qixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,
               ClampToQuantum(normalize*qixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,
               ClampToQuantum(normalize*qixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             SetPixelAlpha(blur_image,
               ClampToQuantum(normalize*qixel.alpha),q);
         }
@@ -3442,20 +3442,20 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
           normalize=1.0/(fabs((double) normalize) <= MagickEpsilon ? 1.0 :
             normalize);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(blur_image,
               ClampToQuantum(gamma*qixel.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(blur_image,
               ClampToQuantum(gamma*qixel.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(blur_image,
               ClampToQuantum(gamma*qixel.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(blur_image,
               ClampToQuantum(gamma*qixel.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             SetPixelAlpha(blur_image,
               ClampToQuantum(normalize*qixel.alpha),q);
         }
@@ -3698,7 +3698,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       k=kernel;
       gamma=0.0;
       j=0;
-      if (((channel & AlphaChannel) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
         {
           for (v=0; v < (ssize_t) width; v++)
           {
@@ -3726,17 +3726,17 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           if (gamma != 0.0)
             {
               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-              if ((channel & RedChannel) != 0)
+              if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
                 SetPixelRed(blur_image,ClampToQuantum(gamma*pixel.red),q);
-              if ((channel & GreenChannel) != 0)
+              if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
                 SetPixelGreen(blur_image,ClampToQuantum(gamma*pixel.green),q);
-              if ((channel & BlueChannel) != 0)
+              if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
                 SetPixelBlue(blur_image,ClampToQuantum(gamma*pixel.blue),q);
-              if (((channel & BlackChannel) != 0) &&
+              if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
                   (image->colorspace == CMYKColorspace))
                 SetPixelBlack(blur_image,ClampToQuantum(gamma*pixel.black),q);
             }
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               gamma=0.0;
               j=0;
@@ -3801,17 +3801,17 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           if (gamma != 0.0)
             {
               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-              if ((channel & RedChannel) != 0)
+              if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
                 SetPixelRed(blur_image,ClampToQuantum(gamma*pixel.red),q);
-              if ((channel & GreenChannel) != 0)
+              if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
                 SetPixelGreen(blur_image,ClampToQuantum(gamma*pixel.green),q);
-              if ((channel & BlueChannel) != 0)
+              if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
                 SetPixelBlue(blur_image,ClampToQuantum(gamma*pixel.blue),q);
-              if (((channel & BlackChannel) != 0) &&
+              if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
                   (image->colorspace == CMYKColorspace))
                 SetPixelBlack(blur_image,ClampToQuantum(gamma*pixel.black),q);
             }
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             {
               gamma=0.0;
               j=0;
@@ -5140,20 +5140,20 @@ MagickExport Image *StatisticImageChannel(const Image *image,
           break;
         }
       }
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(statistic_image,
           ClampToQuantum(pixel.red),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(statistic_image,
           ClampToQuantum(pixel.green),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(statistic_image,
           ClampToQuantum(pixel.blue),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(statistic_image,
           ClampToQuantum(pixel.black),q);
-      if (((channel & AlphaChannel) != 0) &&
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte != MagickFalse))
         SetPixelAlpha(statistic_image,
           ClampToQuantum(pixel.alpha),q);
@@ -5314,7 +5314,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
     pixel=bias;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           pixel.red=GetPixelRed(image,p)-(MagickRealType) GetPixelRed(image,q);
           if (fabs(2.0*pixel.red) < quantum_threshold)
@@ -5323,7 +5323,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
             pixel.red=(MagickRealType) GetPixelRed(image,p)+(pixel.red*amount);
           SetPixelRed(unsharp_image,ClampToQuantum(pixel.red),q);
         }
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           pixel.green=GetPixelGreen(image,p)-
             (MagickRealType) GetPixelGreen(image,q);
@@ -5337,7 +5337,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           SetPixelGreen(unsharp_image,
             ClampToQuantum(pixel.green),q);
         }
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           pixel.blue=GetPixelBlue(image,p)-
             (MagickRealType) GetPixelBlue(image,q);
@@ -5350,7 +5350,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           SetPixelBlue(unsharp_image,
             ClampToQuantum(pixel.blue),q);
         }
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           pixel.black=GetPixelBlack(image,p)-
@@ -5365,7 +5365,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           SetPixelBlack(unsharp_image,
             ClampToQuantum(pixel.black),q);
         }
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           pixel.alpha=GetPixelAlpha(image,p)-
             (MagickRealType) GetPixelAlpha(image,q);

@@ -339,16 +339,16 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
           SetPixelInfoPacket(image,&fill_color,&fill);
           if (image->colorspace == CMYKColorspace)
             ConvertRGBToCMYK(&fill);
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(fill.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(image,ClampToQuantum(fill.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(image,ClampToQuantum(fill.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(fill.black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             SetPixelAlpha(image,ClampToQuantum(fill.alpha),q);
         }
       p+=GetPixelChannels(floodplane_image);
@@ -820,16 +820,16 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
       SetPixelInfo(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
         {
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(fill->red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(image,ClampToQuantum(fill->green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(image,ClampToQuantum(fill->blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(fill->black),q);
-          if ((channel & AlphaChannel) != 0)
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
             SetPixelAlpha(image,ClampToQuantum(fill->alpha),q);
         }
       q+=GetPixelChannels(image);

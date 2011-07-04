@@ -94,14 +94,14 @@ MagickExport PixelComponentMap *AcquirePixelComponentMap(void)
   register ssize_t
     i;
 
-  component_map=(PixelComponentMap *) AcquireAlignedMemory(MaxPixelChannels,
+  component_map=(PixelComponentMap *) AcquireAlignedMemory(MaxPixelComponents,
     sizeof(*component_map));
   if (component_map == (PixelComponentMap *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  for (i=0; i < MaxPixelChannels; i++)
+  for (i=0; i < MaxPixelComponents; i++)
   {
     component_map[i].component=(PixelComponent) i;
-    component_map[i].type=UnusedPixelType;
+    component_map[i].traits=UndefinedPixelTrait;
   }
   return(component_map);
 }
@@ -139,7 +139,7 @@ MagickExport PixelComponentMap *ClonePixelComponentMap(
   clone_map=AcquirePixelComponentMap();
   if (clone_map == (PixelComponentMap *) NULL)
     return((PixelComponentMap *) NULL);
-  (void) CopyMagickMemory(clone_map,component_map,MaxPixelChannels*
+  (void) CopyMagickMemory(clone_map,component_map,MaxPixelComponents*
     sizeof(*component_map));
   return(clone_map);
 }
@@ -177,53 +177,6 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *pixel_info=(*pixel);
   return(pixel_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e f i n e P i x e l C o m p o n e n t M a p                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DefinePixelComponentMap() defines the pixel component map.
-%
-%  The format of the DefinePixelComponentMap() method is:
-%
-%      void DefinePixelComponentMap(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport void DefinePixelComponentMap(Image *image)
-{
-  image->pixel_channels=4;
-  SetPixelComponent(image,RedPixelComponent,RedPixelComponent);
-  SetPixelType(image,RedPixelComponent,ColorPixelType);
-  SetPixelComponent(image,GreenPixelComponent,GreenPixelComponent);
-  SetPixelType(image,GreenPixelComponent,ColorPixelType);
-  SetPixelComponent(image,BluePixelComponent,BluePixelComponent);
-  SetPixelType(image,BluePixelComponent,ColorPixelType);
-  SetPixelComponent(image,AlphaPixelComponent,AlphaPixelComponent);
-  SetPixelType(image,AlphaPixelComponent,MaskPixelType);
-  if (image->colorspace == CMYKColorspace)
-    {
-      image->pixel_channels++;
-      SetPixelComponent(image,BlackPixelComponent,BlackPixelComponent);
-      SetPixelType(image,BlackPixelComponent,ColorPixelType);
-    }
-  if (image->storage_class == PseudoClass)
-    {
-      image->pixel_channels++;
-      SetPixelComponent(image,IndexPixelComponent,IndexPixelComponent);
-      SetPixelType(image,IndexPixelComponent,IgnorePixelType);
-    }
 }
 
 /*
@@ -4469,4 +4422,101 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
   if (distance > fuzz)
     return(MagickFalse);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t P i x e l C o m p o n e n t M a p                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetPixelComponentMap() sets the pixel component map from the specified
+%  string map.
+%
+%  The format of the SetPixelComponentMap method is:
+%
+%      void SetPixelComponentMap(Image *image,const char *components)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o components: One or more pixel components separated by commas.
+%
+*/
+MagickExport void SetPixelComponentMap(Image *image,const char *components)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    channel;
+
+  for (i=0; i < MaxPixelComponents; i++)
+    image->component_map[i].traits=UndefinedPixelTrait;
+  channel=(ChannelType) ParseChannelOption(components);
+  if (channel < 0)
+    channel=DefaultChannels;
+  if ((channel & RedChannel) != 0)
+    SetPixelRedTraits(image,ActivePixelTrait);
+  if ((channel & GreenChannel) != 0)
+    SetPixelGreenTraits(image,ActivePixelTrait);
+  if ((channel & BlueChannel) != 0)
+    SetPixelBlueTraits(image,ActivePixelTrait);
+  if ((channel & BlackChannel) != 0)
+    SetPixelBlackTraits(image,ActivePixelTrait);
+  if ((channel & AlphaChannel) != 0)
+    SetPixelAlphaTraits(image,ActivePixelTrait);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S t a n d a r d P i x e l C o m p o n e n t M a p                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StandardPixelComponentMap() defines the standard pixel component map.
+%
+%  The format of the StandardPixelComponentMap() method is:
+%
+%      void StandardPixelComponentMap(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport void StandardPixelComponentMap(Image *image)
+{
+  image->pixel_channels=4;
+  SetPixelComponent(image,RedPixelComponent,RedPixelComponent);
+  SetPixelTrait(image,RedPixelComponent,ActivePixelTrait);
+  SetPixelComponent(image,GreenPixelComponent,GreenPixelComponent);
+  SetPixelTrait(image,GreenPixelComponent,ActivePixelTrait);
+  SetPixelComponent(image,BluePixelComponent,BluePixelComponent);
+  SetPixelTrait(image,BluePixelComponent,ActivePixelTrait);
+  SetPixelComponent(image,AlphaPixelComponent,AlphaPixelComponent);
+  SetPixelTrait(image,AlphaPixelComponent,ActivePixelTrait);
+  if (image->colorspace == CMYKColorspace)
+    {
+      image->pixel_channels++;
+      SetPixelComponent(image,BlackPixelComponent,BlackPixelComponent);
+      SetPixelTrait(image,BlackPixelComponent,ActivePixelTrait);
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      image->pixel_channels++;
+      SetPixelComponent(image,IndexPixelComponent,IndexPixelComponent);
+      SetPixelTrait(image,IndexPixelComponent,ActivePixelTrait);
+    }
 }

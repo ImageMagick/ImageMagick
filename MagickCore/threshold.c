@@ -415,20 +415,20 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        if ((channel & RedChannel) != 0)
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
           SetPixelRed(image,(Quantum) ((MagickRealType)
             GetPixelRed(image,q) <= threshold ? 0 : QuantumRange),q);
-        if ((channel & GreenChannel) != 0)
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
           SetPixelGreen(image,(Quantum) ((MagickRealType)
             GetPixelGreen(image,q) <= threshold ? 0 : QuantumRange),q);
-        if ((channel & BlueChannel) != 0)
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
           SetPixelBlue(image,(Quantum) ((MagickRealType)
             GetPixelBlue(image,q) <= threshold ? 0 : QuantumRange),q);
-        if (((channel & BlackChannel) != 0) &&
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
           SetPixelBlack(image,(Quantum) ((MagickRealType)
             GetPixelBlack(image,q) <= threshold ? 0 : QuantumRange),q);
-        if ((channel & AlphaChannel) != 0)
+        if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
           {
             if (image->matte == MagickFalse)
               SetPixelAlpha(image,(Quantum) ((MagickRealType)
@@ -601,20 +601,20 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
         }
       else
         {
-          if (((channel & RedChannel) != 0) &&
+          if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelRed(image,q) < threshold.red))
             SetPixelRed(image,0,q);
-          if (((channel & GreenChannel) != 0) &&
+          if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelGreen(image,q) < threshold.green))
             SetPixelGreen(image,0,q);
-          if (((channel & BlueChannel) != 0) &&
+          if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelBlue(image,q) < threshold.blue))
             SetPixelBlue(image,0,q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace) &&
               ((MagickRealType) GetPixelBlack(image,q) < threshold.black))
             SetPixelBlack(image,0,q);
-          if (((channel & OpacityChannel) != 0) &&
+          if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelAlpha(image,q) < threshold.alpha))
             SetPixelAlpha(image,0,q);
         }
@@ -760,16 +760,16 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(image,ClampToUnsignedQuantum(GetPixelRed(image,q)),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(image,ClampToUnsignedQuantum(GetPixelGreen(image,q)),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(image,ClampToUnsignedQuantum(GetPixelBlue(image,q)),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,ClampToUnsignedQuantum(GetPixelBlack(image,q)),q);
-      if ((channel & OpacityChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(image,ClampToUnsignedQuantum(GetPixelAlpha(image,q)),q);
       q+=GetPixelChannels(image);
     }
@@ -1356,22 +1356,22 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
     levels.blue    = ((channel & BlueChannel)    != 0) ? levels.black : 0;
     levels.black   = ((channel & BlackChannel)   != 0 &&
       (image->colorspace == CMYKColorspace)) ? levels.black : 0;
-    levels.alpha = ((channel & OpacityChannel) != 0) ? levels.black : 0;
+    levels.alpha = ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) ? levels.black : 0;
 
     /* if more than a single number, each channel has a separate value */
     if ( p != (char *) NULL && *p == ',' ) {
       p=strchr((char *) threshold_map,',');
       p++;
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         levels.red = (unsigned int) strtoul(p, &p, 10),   (void)(*p == ',' && p++);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         levels.green = (unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         levels.blue = (unsigned int) strtoul(p, &p, 10),  (void)(*p == ',' && p++);
-      if ((channel & BlackChannel) != 0 &&
+      if ((GetPixelBlackTraits(image) & ActivePixelTrait) != 0 &&
           (image->colorspace == CMYKColorspace))
         levels.black=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
-      if ((channel & OpacityChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         levels.alpha = (unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
     }
   }
@@ -1740,7 +1740,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           if ((MagickRealType) GetPixelRed(image,q) < min_threshold)
             threshold.red=min_threshold;
@@ -1751,7 +1751,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               threshold.red=(MagickRealType) (QuantumRange*
                 GetPseudoRandomValue(random_info[id]));
         }
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           if ((MagickRealType) GetPixelGreen(image,q) < min_threshold)
             threshold.green=min_threshold;
@@ -1762,7 +1762,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               threshold.green=(MagickRealType) (QuantumRange*
                 GetPseudoRandomValue(random_info[id]));
         }
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           if ((MagickRealType) GetPixelBlue(image,q) < min_threshold)
             threshold.blue=min_threshold;
@@ -1773,7 +1773,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               threshold.blue=(MagickRealType) (QuantumRange*
                 GetPseudoRandomValue(random_info[id]));
         }
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           if ((MagickRealType) GetPixelBlack(image,q) < min_threshold)
@@ -1785,7 +1785,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               threshold.black=(MagickRealType) (QuantumRange*
                 GetPseudoRandomValue(random_info[id]));
         }
-      if ((channel & OpacityChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           if ((MagickRealType) GetPixelAlpha(image,q) < min_threshold)
             threshold.alpha=min_threshold;
@@ -1796,20 +1796,20 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               threshold.alpha=(MagickRealType) (QuantumRange*
                 GetPseudoRandomValue(random_info[id]));
         }
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(image,(Quantum) ((MagickRealType)
           GetPixelRed(image,q) <= threshold.red ? 0 : QuantumRange),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(image,(Quantum) ((MagickRealType)
           GetPixelGreen(image,q) <= threshold.green ? 0 : QuantumRange),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(image,(Quantum) ((MagickRealType)
           GetPixelBlue(image,q) <= threshold.blue ? 0 : QuantumRange),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,(Quantum) ((MagickRealType)
           GetPixelBlack(image,q) <= threshold.black ? 0 : QuantumRange),q);
-      if ((channel & OpacityChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(image,(Quantum) ((MagickRealType)
           GetPixelAlpha(image,q) <= threshold.alpha ? 0 : QuantumRange),q);
       q+=GetPixelChannels(image);
@@ -1976,20 +1976,20 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
         }
       else
         {
-          if (((channel & RedChannel) != 0) &&
+          if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelRed(image,q) > threshold.red))
             SetPixelRed(image,QuantumRange,q);
-          if (((channel & GreenChannel) != 0) &&
+          if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelGreen(image,q) > threshold.green))
             SetPixelGreen(image,QuantumRange,q);
-          if (((channel & BlueChannel) != 0) &&
+          if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelBlue(image,q) > threshold.blue))
             SetPixelBlue(image,QuantumRange,q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace) &&
               ((MagickRealType) GetPixelBlack(image,q)) > threshold.black)
             SetPixelBlack(image,QuantumRange,q);
-          if (((channel & OpacityChannel) != 0) &&
+          if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
               ((MagickRealType) GetPixelAlpha(image,q) > threshold.alpha))
             SetPixelAlpha(image,QuantumRange,q);
         }

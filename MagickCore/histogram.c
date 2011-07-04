@@ -1006,7 +1006,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   /*
     Auto-level each channel separately.
   */
-  if ((channel & RedChannel) != 0)
+  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,RedChannel,&min,&max,&image->exception);
       min+=black_value;
@@ -1014,7 +1014,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,RedChannel,min,max,1.0);
     }
-  if ((channel & GreenChannel) != 0)
+  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,GreenChannel,&min,&max,
         &image->exception);
@@ -1023,7 +1023,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,GreenChannel,min,max,1.0);
     }
-  if ((channel & BlueChannel) != 0)
+  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,BlueChannel,&min,&max,
         &image->exception);
@@ -1032,7 +1032,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,BlueChannel,min,max,1.0);
     }
-  if (((channel & BlackChannel) != 0) &&
+  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
        (image->colorspace == CMYKColorspace))
     {
       (void) GetImageChannelRange(image,BlackChannel,&min,&max,
@@ -1042,7 +1042,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImageChannel(image,BlackChannel,min,max,1.0);
     }
-  if (((channel & OpacityChannel) != 0) &&
+  if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
        (image->matte == MagickTrue))
     {
       (void) GetImageChannelRange(image,OpacityChannel,&min,&max,

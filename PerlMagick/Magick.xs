@@ -6204,16 +6204,16 @@ GetPixel(ref,...)
         scale=1.0;
         if (normalize != MagickFalse)
           scale=1.0/QuantumRange;
-        if ((channel & RedChannel) != 0)
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
           PUSHs(sv_2mortal(newSVnv(scale*GetPixelRed(image,p))));
-        if ((channel & GreenChannel) != 0)
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
           PUSHs(sv_2mortal(newSVnv(scale*GetPixelGreen(image,p))));
-        if ((channel & BlueChannel) != 0)
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
           PUSHs(sv_2mortal(newSVnv(scale*GetPixelBlue(image,p))));
-        if (((channel & BlackChannel) != 0) &&
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
           PUSHs(sv_2mortal(newSVnv(scale*GetPixelBlack(image,p))));
-        if ((channel & AlphaChannel) != 0)
+        if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
           PUSHs(sv_2mortal(newSVnv(scale*GetPixelAlpha(image,p))));
       }
 
@@ -13333,32 +13333,32 @@ SetPixel(ref,...)
         scale=1.0;
         if (normalize != MagickFalse)
           scale=QuantumRange;
-        if (((channel & RedChannel) != 0) && (i <= av_len(av)))
+        if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
           {
             SetPixelRed(image,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))),q);
             i++;
           }
-        if (((channel & GreenChannel) != 0) && (i <= av_len(av)))
+        if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
           {
             SetPixelGreen(image,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))),q);
             i++;
           }
-        if (((channel & BlueChannel) != 0) && (i <= av_len(av)))
+        if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
           {
             SetPixelBlue(image,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))),q);
             i++;
           }
-        if ((((channel & BlackChannel) != 0) &&
+        if ((((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace)) && (i <= av_len(av)))
           {
             SetPixelBlack(image,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))),q);
             i++;
           }
-        if (((channel & AlphaChannel) != 0) && (i <= av_len(av)))
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
           {
             SetPixelAlpha(image,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))),q);

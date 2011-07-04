@@ -775,20 +775,20 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(image,ClampToQuantum(ApplyEvaluateOperator(
           random_info[id],GetPixelRed(image,q),op,value)),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(image,ClampToQuantum(ApplyEvaluateOperator(
           random_info[id],GetPixelGreen(image,q),op,value)),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(image,ClampToQuantum(ApplyEvaluateOperator(
           random_info[id],GetPixelBlue(image,q),op,value)),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,ClampToQuantum(ApplyEvaluateOperator(
           random_info[id],GetPixelBlack(image,q),op,value)),q);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           if (image->matte == MagickFalse)
             SetPixelAlpha(image,ClampToQuantum(ApplyEvaluateOperator(
@@ -1007,20 +1007,20 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(image,ApplyFunction(GetPixelRed(image,q),function,
           number_parameters,parameters,exception),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(image,ApplyFunction(GetPixelGreen(image,q),function,
           number_parameters,parameters,exception),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(image,ApplyFunction(GetPixelBlue(image,q),function,
           number_parameters,parameters,exception),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,ApplyFunction(GetPixelBlack(image,q),function,
           number_parameters,parameters,exception),q);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           if (image->matte == MagickFalse)
             SetPixelAlpha(image,ApplyFunction(GetPixelAlpha(image,q),function,
@@ -1175,7 +1175,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
   channels=0;
   channel_statistics[CompositeChannels].mean=0.0;
   channel_statistics[CompositeChannels].standard_deviation=0.0;
-  if ((channel & RedChannel) != 0)
+  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[RedChannel].mean;
@@ -1185,7 +1185,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[RedChannel].mean;
       channels++;
     }
-  if ((channel & GreenChannel) != 0)
+  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[GreenChannel].mean;
@@ -1195,7 +1195,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[GreenChannel].mean;
       channels++;
     }
-  if ((channel & BlueChannel) != 0)
+  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       channel_statistics[CompositeChannels].mean+=
         channel_statistics[BlueChannel].mean;
@@ -1205,7 +1205,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlueChannel].mean;
       channels++;
     }
-  if (((channel & BlackChannel) != 0) &&
+  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace))
     {
       channel_statistics[CompositeChannels].mean+=
@@ -1216,7 +1216,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
         channel_statistics[BlackChannel].mean;
       channels++;
     }
-  if (((channel & AlphaChannel) != 0) &&
+  if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
       (image->matte != MagickFalse))
     {
       channel_statistics[CompositeChannels].mean+=
@@ -1322,7 +1322,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           mean+=GetPixelRed(image,p);
           sum_squares+=(double) GetPixelRed(image,p)*GetPixelRed(image,p);
@@ -1332,7 +1332,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
             GetPixelRed(image,p)*GetPixelRed(image,p)*GetPixelRed(image,p);
           area++;
         }
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           mean+=GetPixelGreen(image,p);
           sum_squares+=(double) GetPixelGreen(image,p)*GetPixelGreen(image,p);
@@ -1343,7 +1343,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
             GetPixelGreen(image,p);
           area++;
         }
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           mean+=GetPixelBlue(image,p);
           sum_squares+=(double) GetPixelBlue(image,p)*GetPixelBlue(image,p);
@@ -1354,7 +1354,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
             GetPixelBlue(image,p);
           area++;
         }
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           mean+=GetPixelBlack(image,p);
@@ -1366,7 +1366,7 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
             GetPixelBlack(image,p);
           area++;
         }
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           mean+=GetPixelAlpha(image,p);
           sum_squares+=(double) GetPixelAlpha(image,p)*GetPixelAlpha(image,p);
@@ -1473,28 +1473,28 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelInfo(image,p,&pixel);
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           if (pixel.red < *minima)
             *minima=(double) pixel.red;
           if (pixel.red > *maxima)
             *maxima=(double) pixel.red;
         }
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           if (pixel.green < *minima)
             *minima=(double) pixel.green;
           if (pixel.green > *maxima)
             *maxima=(double) pixel.green;
         }
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           if (pixel.blue < *minima)
             *minima=(double) pixel.blue;
           if (pixel.blue > *maxima)
             *maxima=(double) pixel.blue;
         }
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           if (pixel.black < *minima)
@@ -1502,7 +1502,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
           if (pixel.black > *maxima)
             *maxima=(double) pixel.black;
         }
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           if (pixel.alpha < *minima)
             *minima=(double) pixel.alpha;

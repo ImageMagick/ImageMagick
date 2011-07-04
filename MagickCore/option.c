@@ -2103,8 +2103,8 @@ MagickExport const char *CommandOptionToMnemonic(const CommandOption option,
 %
 %  The format of the ListCommandOptions method is:
 %
-%      MagickBooleanType ListCommandOptions(FILE *file,const CommandOption option,
-%        ExceptionInfo *exception)
+%      MagickBooleanType ListCommandOptions(FILE *file,
+%        const CommandOption option,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
