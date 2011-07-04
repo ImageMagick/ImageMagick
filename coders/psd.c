@@ -904,7 +904,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  reading image resource blocks - %.20g bytes",(double) length);
+          "  reading image resource blocks - %.20g bytes",(double)
+          ((MagickOffsetType) length));
       blocks=(unsigned char *) AcquireQuantumMemory((size_t) length,
         sizeof(*blocks));
       if (blocks == (unsigned char *) NULL)
@@ -1093,7 +1094,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         "      layer mask: offset(%.20g,%.20g), size(%.20g,%.20g), length=%.20g",
                         (double) layer_info[i].mask.x,(double) layer_info[i].mask.y,
                         (double) layer_info[i].mask.width,(double)
-                        layer_info[i].mask.height,(double) length-16);
+                        layer_info[i].mask.height,(double)
+                        ((MagickOffsetType) length)-16);
                     /*
                       Skip over the rest of the layer mask information.
                     */
@@ -1111,7 +1113,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->debug != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "      layer blending ranges: length=%.20g",(double)
-                        length);
+                        ((MagickOffsetType) length));
                     /*
                       We read it, but don't use it...
                     */
@@ -1179,7 +1181,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      unsupported data: length=%.20g",(double)
-                    (size-combinedlength));
+                    ((MagickOffsetType) (size-combinedlength)));
                 if (DiscardBlobBytes(image,size-combinedlength) == MagickFalse)
                   ThrowFileException(exception,CorruptImageError,
                     "UnexpectedEndOfFile",image->filename);
