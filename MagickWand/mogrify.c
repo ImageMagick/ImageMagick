@@ -975,9 +975,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("channel",option+1) == 0)
           {
             if (*option == '+')
-                channel=DefaultChannels;
+              channel=DefaultChannels;
             else
-                channel=(ChannelType) ParseChannelOption(argv[i+1]);
+              channel=(ChannelType) ParseChannelOption(argv[i+1]);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)
