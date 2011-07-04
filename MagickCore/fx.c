@@ -406,20 +406,20 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(noise_image,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelRed(image,p),noise_type,attenuate)),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(noise_image,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelGreen(image,p),noise_type,attenuate)),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(noise_image,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelBlue(image,p),noise_type,attenuate)),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(noise_image,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelBlack(image,p),noise_type,attenuate)),q);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(noise_image,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelAlpha(image,p),noise_type,attenuate)),q);
       p+=GetPixelChannels(image);
@@ -3012,28 +3012,28 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
     alpha=0.0;
     for (x=0; x < (ssize_t) fx_image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],RedChannel,x,y,
             &alpha,exception);
           SetPixelRed(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
             alpha),q);
         }
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],GreenChannel,x,y,
             &alpha,exception);
           SetPixelGreen(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
             alpha),q);
         }
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],BlueChannel,x,y,
             &alpha,exception);
           SetPixelBlue(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
             alpha),q);
         }
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (fx_image->colorspace == CMYKColorspace))
         {
           (void) FxEvaluateChannelExpression(fx_info[id],BlackChannel,x,y,
@@ -3041,7 +3041,7 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
           SetPixelBlack(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
             alpha),q);
         }
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         {
           (void) FxEvaluateChannelExpression(fx_info[id],AlphaChannel,x,y,
             &alpha,exception);

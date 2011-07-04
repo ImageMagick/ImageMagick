@@ -333,8 +333,8 @@ static inline MagickRealType Darken(const MagickRealType p,
   return(MagickOver_(q,beta,p,alpha));    /* dst-over */
 }
 
-static inline void CompositeDarken(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeDarken(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     gamma;
@@ -348,16 +348,16 @@ static inline void CompositeDarken(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=MagickMin(p->red,q->red);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=MagickMin(p->green,q->green);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=MagickMin(p->blue,q->blue);
-      if ((channel & BlackChannel) != 0 &&
+      if ((GetPixelBlackTraits(image) & ActivePixelTrait) != 0 &&
           (q->colorspace == CMYKColorspace))
         composite->black=MagickMin(p->black,q->black);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=MagickMax(p->alpha,q->alpha);
       return;
     }
@@ -371,8 +371,9 @@ static inline void CompositeDarken(const PixelInfo *p,const PixelInfo *q,
     composite->black=gamma*Darken(p->black,p->alpha,q->black,q->alpha);
 }
 
-static inline void CompositeDarkenIntensity(const PixelInfo *p,
-  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
+static inline void CompositeDarkenIntensity(const Image *image,
+  const PixelInfo *p,const PixelInfo *q,const ChannelType channel,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -390,16 +391,16 @@ static inline void CompositeDarkenIntensity(const PixelInfo *p,
 
       from_p=GetPixelInfoIntensity(p) < GetPixelInfoIntensity(q) ? MagickTrue :
         MagickFalse;
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=from_p != MagickFalse ? p->red : q->red;
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=from_p != MagickFalse ? p->green : q->green;
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=from_p != MagickFalse ? p->blue : q->blue;
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=from_p != MagickFalse ? p->black : q->black;
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=from_p != MagickFalse ? p->alpha : q->alpha;
       return;
     }
@@ -418,7 +419,7 @@ static inline MagickRealType Difference(const MagickRealType p,
   return(Sa*p+Da*q-Sa*Da*2.0*MagickMin(p,q));
 }
 
-static inline void CompositeDifference(const PixelInfo *p,
+static inline void CompositeDifference(const Image *image,const PixelInfo *p,
   const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
@@ -433,16 +434,16 @@ static inline void CompositeDifference(const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=fabs((double) (p->red-q->red));
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=fabs((double) (p->green-q->green));
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=fabs((double) (p->blue-q->blue));
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=fabs((double) (p->black-q->black));
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=fabs((double) (p->alpha-q->alpha));
      return;
    }
@@ -476,8 +477,8 @@ static MagickRealType Divide(const MagickRealType Sca,const MagickRealType Sa,
   return(Sca*Da*Da/Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
 
-static inline void CompositeDivide(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeDivide(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -491,20 +492,20 @@ static inline void CompositeDivide(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=QuantumRange*Divide(QuantumScale*p->red,1.0,
           QuantumScale*q->red,1.0);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=QuantumRange*Divide(QuantumScale*p->green,1.0,
           QuantumScale*q->green,1.0);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=QuantumRange*Divide(QuantumScale*p->blue,1.0,
           QuantumScale*q->blue,1.0);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Divide(QuantumScale*p->black,1.0,
           QuantumScale*q->black,1.0);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Divide(Sa,1.0,Da,1.0));
       return;
     }
@@ -528,8 +529,8 @@ static MagickRealType Exclusion(const MagickRealType Sca,
   return(Sca*Da+Dca*Sa-2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
 
-static inline void CompositeExclusion(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeExclusion(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     gamma,
@@ -543,20 +544,20 @@ static inline void CompositeExclusion(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=QuantumRange*Exclusion(QuantumScale*p->red,1.0,
           QuantumScale*q->red,1.0);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=QuantumRange*Exclusion(QuantumScale*p->green,1.0,
           QuantumScale*q->green,1.0);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=QuantumRange*Exclusion(QuantumScale*p->blue,1.0,
           QuantumScale*q->blue,1.0);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Exclusion(QuantumScale*p->black,1.0,
           QuantumScale*q->black,1.0);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Exclusion(Sa,1.0,Da,1.0));
       return;
     }
@@ -682,8 +683,8 @@ static inline MagickRealType Lighten(const MagickRealType p,
    return(MagickOver_(q,beta,p,alpha));    /* dst-over */
 }
 
-static inline void CompositeLighten(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeLighten(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     gamma;
@@ -697,16 +698,16 @@ static inline void CompositeLighten(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=MagickMax(p->red,q->red);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=MagickMax(p->green,q->green);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=MagickMax(p->blue,q->blue);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=MagickMax(p->black,q->black);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=MagickMin(p->alpha,q->alpha);
       return;
     }
@@ -720,8 +721,9 @@ static inline void CompositeLighten(const PixelInfo *p,const PixelInfo *q,
     composite->black=gamma*Lighten(p->black,p->alpha,q->black,q->alpha);
 }
 
-static inline void CompositeLightenIntensity(const PixelInfo *p,
-  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
+static inline void CompositeLightenIntensity(const Image *image,
+  const PixelInfo *p,const PixelInfo *q,const ChannelType channel,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -739,16 +741,16 @@ static inline void CompositeLightenIntensity(const PixelInfo *p,
 
       from_p=GetPixelInfoIntensity(p) > GetPixelInfoIntensity(q) ? MagickTrue :
         MagickFalse;
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=from_p != MagickFalse ? p->red : q->red;
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=from_p != MagickFalse ? p->green : q->green;
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=from_p != MagickFalse ? p->blue : q->blue;
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=from_p != MagickFalse ? p->black : q->black;
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=from_p != MagickFalse ? p->alpha : q->alpha;
       return;
     }
@@ -882,8 +884,9 @@ static inline MagickRealType Mathematics(const MagickRealType Sca,
   return(gamma);
 }
 
-static inline void CompositeMathematics(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel, const GeometryInfo *args, PixelInfo *composite)
+static inline void CompositeMathematics(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel, const GeometryInfo *args,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -897,20 +900,20 @@ static inline void CompositeMathematics(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=QuantumRange*Mathematics(QuantumScale*p->red,1.0,
           QuantumScale*q->red,1.0,args);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=QuantumRange*Mathematics(QuantumScale*p->green,1.0,
           QuantumScale*q->green,1.0,args);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=QuantumRange*Mathematics(QuantumScale*p->blue,1.0,
           QuantumScale*q->blue,1.0,args);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Mathematics(QuantumScale*p->black,1.0,
           QuantumScale*q->black,1.0,args);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Mathematics(Sa,1.0,Da,1.0,args));
       return;
     }
@@ -928,8 +931,8 @@ static inline void CompositeMathematics(const PixelInfo *p,const PixelInfo *q,
       QuantumScale*q->black*Da,Da,args);
 }
 
-static inline void CompositePlus(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositePlus(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   /*
     NOTE: "Plus" does not use 'over' alpha-blending but uses a special
@@ -951,16 +954,16 @@ static inline void CompositePlus(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=p->red+q->red;
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=p->green+q->green;
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=p->blue+q->blue;
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=p->black+q->black;
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=p->alpha+q->alpha-QuantumRange;
       return;
     }
@@ -979,8 +982,8 @@ static inline MagickRealType Minus(const MagickRealType Sca,
   return(Sca+Dca-2.0*Dca*Sa);
 }
 
-static inline void CompositeMinus(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeMinus(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -994,16 +997,16 @@ static inline void CompositeMinus(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=p->red-q->red;
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=p->green-q->green;
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=p->blue-q->blue;
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=p->black-q->black;
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-(Sa-Da));
       return;
     }
@@ -1029,8 +1032,8 @@ static inline MagickRealType ModulusAdd(const MagickRealType p,
   return(pixel*Sa*Da+p*Sa*(1.0-Da)+q*Da*(1.0-Sa));
 }
 
-static inline void CompositeModulusAdd(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeModulusAdd(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1042,16 +1045,16 @@ static inline void CompositeModulusAdd(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=ModulusAdd(p->red,1.0,q->red,1.0);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=ModulusAdd(p->green,1.0,q->green,1.0);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=ModulusAdd(p->blue,1.0,q->blue,1.0);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=ModulusAdd(p->black,1.0,q->black,1.0);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=ModulusAdd(p->alpha,1.0,q->alpha,1.0);
       return;
     }
@@ -1079,8 +1082,9 @@ static inline MagickRealType ModulusSubtract(const MagickRealType p,
   return(pixel*Sa*Da+p*Sa*(1.0-Da)+q*Da*(1.0-Sa));
 }
 
-static inline void CompositeModulusSubtract(const PixelInfo *p,
-  const PixelInfo *q, const ChannelType channel,PixelInfo *composite)
+static inline void CompositeModulusSubtract(const Image *image,
+  const PixelInfo *p,const PixelInfo *q, const ChannelType channel,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1092,16 +1096,16 @@ static inline void CompositeModulusSubtract(const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels,
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=ModulusSubtract(p->red,1.0,q->red,1.0);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=ModulusSubtract(p->green,1.0,q->green,1.0);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=ModulusSubtract(p->blue,1.0,q->blue,1.0);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=ModulusSubtract(p->black,1.0,q->black,1.0);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=ModulusSubtract(p->alpha,1.0,q->alpha,1.0);
       return;
     }
@@ -1123,8 +1127,8 @@ static  inline MagickRealType Multiply(const MagickRealType Sca,
   return(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
 }
 
-static inline void CompositeMultiply(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeMultiply(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1138,16 +1142,16 @@ static inline void CompositeMultiply(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=QuantumScale*p->red*q->red;
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=QuantumScale*p->green*q->green;
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=QuantumScale*p->blue*q->blue;
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumScale*p->black*q->black;
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Sa*Da);
       return;
     }
@@ -1281,8 +1285,8 @@ static inline MagickRealType Screen(const MagickRealType Sca,
   return(Sca+Dca-Sca*Dca);
 }
 
-static inline void CompositeScreen(const PixelInfo *p,const PixelInfo *q,
-  const ChannelType channel,PixelInfo *composite)
+static inline void CompositeScreen(const Image *image,const PixelInfo *p,
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1296,20 +1300,20 @@ static inline void CompositeScreen(const PixelInfo *p,const PixelInfo *q,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         composite->red=QuantumRange*Screen(QuantumScale*p->red,
           QuantumScale*q->red);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         composite->green=QuantumRange*Screen(QuantumScale*p->green,
           QuantumScale*q->green);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         composite->blue=QuantumRange*Screen(QuantumScale*p->blue,
           QuantumScale*q->blue);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Screen(QuantumScale*p->black,
           QuantumScale*q->black);
-      if ((channel & AlphaChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Screen(Sa,Da));
       return;
     }
@@ -2391,83 +2395,86 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
         case PlusCompositeOp:
         {
-          CompositePlus(&source,&destination,channel,&composite);
+          CompositePlus(image,&source,&destination,channel,&composite);
           break;
         }
         case MinusDstCompositeOp:
         {
-          CompositeMinus(&source,&destination,channel,&composite);
+          CompositeMinus(image,&source,&destination,channel,&composite);
           break;
         }
         case MinusSrcCompositeOp:
         {
-          CompositeMinus(&destination,&source,channel,&composite);
+          CompositeMinus(image,&destination,&source,channel,&composite);
           break;
         }
         case ModulusAddCompositeOp:
         {
-          CompositeModulusAdd(&source,&destination,channel,&composite);
+          CompositeModulusAdd(image,&source,&destination,channel,&composite);
           break;
         }
         case ModulusSubtractCompositeOp:
         {
-          CompositeModulusSubtract(&source,&destination,channel,&composite);
+          CompositeModulusSubtract(image,&source,&destination,channel,
+            &composite);
           break;
         }
         case DifferenceCompositeOp:
         {
-          CompositeDifference(&source,&destination,channel,&composite);
+          CompositeDifference(image,&source,&destination,channel,&composite);
           break;
         }
         case ExclusionCompositeOp:
         {
-          CompositeExclusion(&source,&destination,channel,&composite);
+          CompositeExclusion(image,&source,&destination,channel,&composite);
           break;
         }
         case MultiplyCompositeOp:
         {
-          CompositeMultiply(&source,&destination,channel,&composite);
+          CompositeMultiply(image,&source,&destination,channel,&composite);
           break;
         }
         case ScreenCompositeOp:
         {
-          CompositeScreen(&source,&destination,channel,&composite);
+          CompositeScreen(image,&source,&destination,channel,&composite);
           break;
         }
         case DivideDstCompositeOp:
         {
-          CompositeDivide(&source,&destination,channel,&composite);
+          CompositeDivide(image,&source,&destination,channel,&composite);
           break;
         }
         case DivideSrcCompositeOp:
         {
-          CompositeDivide(&destination,&source,channel,&composite);
+          CompositeDivide(image,&destination,&source,channel,&composite);
           break;
         }
         case DarkenCompositeOp:
         {
-          CompositeDarken(&source,&destination,channel,&composite);
+          CompositeDarken(image,&source,&destination,channel,&composite);
           break;
         }
         case LightenCompositeOp:
         {
-          CompositeLighten(&source,&destination,channel,&composite);
+          CompositeLighten(image,&source,&destination,channel,&composite);
           break;
         }
         case DarkenIntensityCompositeOp:
         {
-          CompositeDarkenIntensity(&source,&destination,channel,&composite);
+          CompositeDarkenIntensity(image,&source,&destination,channel,
+            &composite);
           break;
         }
         case LightenIntensityCompositeOp:
         {
-          CompositeLightenIntensity(&source,&destination,channel,&composite);
+          CompositeLightenIntensity(image,&source,&destination,channel,
+            &composite);
           break;
         }
         case MathematicsCompositeOp:
         {
-          CompositeMathematics(&source,&destination,channel,&geometry_info,
-            &composite);
+          CompositeMathematics(image,&source,&destination,channel,
+            &geometry_info,&composite);
           break;
         }
         case ColorDodgeCompositeOp:

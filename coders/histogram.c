@@ -271,11 +271,11 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelRed(image,p))].red++;
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelGreen(image,p))].green++;
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelBlue(image,p))].blue++;
       p+=GetPixelChannels(image);
     }
@@ -283,11 +283,14 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   maximum=histogram[0].red;
   for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
-    if (((channel & RedChannel) != 0) && (maximum < histogram[x].red))
+    if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
+        (maximum < histogram[x].red))
       maximum=histogram[x].red;
-    if (((channel & GreenChannel) != 0) && (maximum < histogram[x].green))
+    if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
+        (maximum < histogram[x].green))
       maximum=histogram[x].green;
-    if (((channel & BlueChannel) != 0) && (maximum < histogram[x].blue))
+    if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
+        (maximum < histogram[x].blue))
       maximum=histogram[x].blue;
   }
   scale=(MagickRealType) histogram_image->rows/maximum;
@@ -303,7 +306,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     q=GetAuthenticPixels(histogram_image,x,0,1,histogram_image->rows,exception);
     if (q == (const Quantum *) NULL)
       break;
-    if ((channel & RedChannel) != 0)
+    if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].red-0.5);
         r=q+y;
@@ -313,7 +316,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
           r++;
         }
       }
-    if ((channel & GreenChannel) != 0)
+    if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].green-0.5);
         r=q+y;
@@ -323,7 +326,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
           r++;
         }
       }
-    if ((channel & BlueChannel) != 0)
+    if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].blue-0.5);
         r=q+y;

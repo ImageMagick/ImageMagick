@@ -131,7 +131,7 @@ typedef MagickOffsetType QuantumAny;
 typedef MagickSizeType QuantumAny;
 #endif
 
-#define MaxPixelChannels  4096
+#define MaxPixelComponents  4096
 
 #if defined(macintosh)
 #define ExceptionInfo  MagickExceptionInfo

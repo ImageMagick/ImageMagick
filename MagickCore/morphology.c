@@ -2673,16 +2673,16 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
               k--;
               k_pixels++;
             }
-            if ((channel & RedChannel) != 0)
+            if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
               SetPixelRed(morphology_image,ClampToQuantum(result.red),q);
-            if ((channel & GreenChannel) != 0)
+            if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
               SetPixelGreen(morphology_image,ClampToQuantum(result.green),q);
-            if ((channel & BlueChannel) != 0)
+            if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
               SetPixelBlue(morphology_image,ClampToQuantum(result.blue),q);
-            if (((channel & BlackChannel) != 0) &&
+            if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
                 (image->colorspace == CMYKColorspace))
               SetPixelBlack(morphology_image,ClampToQuantum(result.black),q);
-            if (((channel & OpacityChannel) != 0) &&
+            if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
                 (image->matte == MagickTrue))
               SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
           }
@@ -2904,18 +2904,23 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                   }
                   k_pixels += virt_width*GetPixelChannels(image);
                 }
-                if ((channel & RedChannel) != 0)
-                  SetPixelRed(morphology_image,ClampToQuantum(result.red),q);
-                if ((channel & GreenChannel) != 0)
-                  SetPixelGreen(morphology_image,ClampToQuantum(result.green),q);
-                if ((channel & BlueChannel) != 0)
-                  SetPixelBlue(morphology_image,ClampToQuantum(result.blue),q);
-                if (((channel & BlackChannel) != 0) &&
+                if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+                  SetPixelRed(morphology_image,ClampToQuantum(result.red),
+                    q);
+                if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+                  SetPixelGreen(morphology_image,ClampToQuantum(result.green),
+                    q);
+                if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+                  SetPixelBlue(morphology_image,ClampToQuantum(result.blue),
+                    q);
+                if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
                     (image->colorspace == CMYKColorspace))
-                  SetPixelBlack(morphology_image,ClampToQuantum(result.black),q);
-                if (((channel & OpacityChannel) != 0) &&
+                  SetPixelBlack(morphology_image,ClampToQuantum(result.black),
+                    q);
+                if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
                     (image->matte == MagickTrue))
-                  SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
+                  SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),
+                    q);
               }
             else
               { /* Channel 'Sync' Flag, and Alpha Channel enabled.
@@ -3218,16 +3223,16 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
         case ErodeIntensityMorphology:
           break;  /* full pixel was directly assigned - not a channel method */
         default:
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(morphology_image,ClampToQuantum(result.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(morphology_image,ClampToQuantum(result.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(morphology_image,ClampToQuantum(result.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(morphology_image,ClampToQuantum(result.black),q);
-          if (((channel & OpacityChannel) != 0) &&
+          if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
               (image->matte == MagickTrue))
             SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
           break;
@@ -3476,16 +3481,17 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           SetPixelPixelInfo(image,&result,q);
           break;
         default:
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(result.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(image,ClampToQuantum(result.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(image,ClampToQuantum(result.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(result.black),q);
-          if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0 &&
+              (image->matte == MagickTrue))
             SetPixelAlpha(image,ClampToQuantum(result.alpha),q);
           break;
       }
@@ -3659,16 +3665,17 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           SetPixelPixelInfo(image,&result,q);
           break;
         default:
-          if ((channel & RedChannel) != 0)
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(result.red),q);
-          if ((channel & GreenChannel) != 0)
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
             SetPixelGreen(image,ClampToQuantum(result.green),q);
-          if ((channel & BlueChannel) != 0)
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
             SetPixelBlue(image,ClampToQuantum(result.blue),q);
-          if (((channel & BlackChannel) != 0) &&
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(result.black),q);
-          if ((channel & OpacityChannel) != 0 && image->matte == MagickTrue )
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0 &&
+              (image->matte == MagickTrue))
             SetPixelAlpha(image,ClampToQuantum(result.alpha),q);
           break;
       }

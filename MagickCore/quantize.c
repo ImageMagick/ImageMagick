@@ -2355,13 +2355,13 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
       /*
         Posterize colormap.
       */
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         image->colormap[i].red=PosterizePixel(image->colormap[i].red);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         image->colormap[i].green=PosterizePixel(image->colormap[i].green);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         image->colormap[i].blue=PosterizePixel(image->colormap[i].blue);
-      if ((channel & OpacityChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         image->colormap[i].alpha=PosterizePixel(image->colormap[i].alpha);
     }
   /*
@@ -2392,16 +2392,16 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(image,PosterizePixel(GetPixelRed(image,q)),q);
-      if ((channel & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(image,PosterizePixel(GetPixelGreen(image,q)),q);
-      if ((channel & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(image,PosterizePixel(GetPixelBlue(image,q)),q);
-      if (((channel & BlackChannel) != 0) &&
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
-      if (((channel & OpacityChannel) != 0) &&
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
       q+=GetPixelChannels(image);

@@ -4009,7 +4009,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
-  DefinePixelComponentMap(image);
+  StandardPixelComponentMap(image);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   source_info=(*cache_info);

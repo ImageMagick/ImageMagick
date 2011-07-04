@@ -159,8 +159,9 @@ extern MagickExport PixelInfo
   *ClonePixelInfo(const PixelInfo *);
 
 extern MagickExport void
-  DefinePixelComponentMap(Image *),
-  GetPixelInfo(const Image *,PixelInfo *);
+  StandardPixelComponentMap(Image *),
+  GetPixelInfo(const Image *,PixelInfo *),
+  SetPixelComponentMap(Image *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
