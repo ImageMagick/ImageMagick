@@ -8698,7 +8698,6 @@ Mogrify(ref,...)
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
           if (attribute_flag[0] != 0)
-          if (attribute_flag[0] != 0)
             flags=ParsePageGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
@@ -8721,8 +8720,10 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
+          SetPixelComponentMap(image,"alpha");
           (void) FloodfillPaintImage(image,AlphaChannel,draw_info,&target,
             geometry.x,geometry.y,invert);
+          StandardPixelComponentMap(image);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }

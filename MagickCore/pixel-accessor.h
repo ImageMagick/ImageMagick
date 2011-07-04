@@ -32,9 +32,9 @@ static inline Quantum GetPixelAlpha(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[AlphaPixelComponent].component]);
 }
 
-static inline PixelType GetPixelAlphaType(const Image *image)
+static inline PixelTrait GetPixelAlphaTraits(const Image *image)
 {
-  return(image->component_map[AlphaPixelComponent].type);
+  return(image->component_map[AlphaPixelComponent].traits);
 }
 
 static inline Quantum GetPixelBlack(const Image *image,const Quantum *pixel)
@@ -42,9 +42,9 @@ static inline Quantum GetPixelBlack(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[BlackPixelComponent].component]);
 }
 
-static inline PixelType GetPixelBlackType(const Image *image)
+static inline PixelTrait GetPixelBlackTraits(const Image *image)
 {
-  return(image->component_map[BlackPixelComponent].type);
+  return(image->component_map[BlackPixelComponent].traits);
 }
 
 static inline Quantum GetPixelBlue(const Image *image,const Quantum *pixel)
@@ -52,9 +52,9 @@ static inline Quantum GetPixelBlue(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[BluePixelComponent].component]);
 }
 
-static inline PixelType GetPixelBlueType(const Image *image)
+static inline PixelTrait GetPixelBlueTraits(const Image *image)
 {
-  return(image->component_map[BluePixelComponent].type);
+  return(image->component_map[BluePixelComponent].traits);
 }
 
 static inline Quantum GetPixelCb(const Image *image,const Quantum *pixel)
@@ -62,9 +62,9 @@ static inline Quantum GetPixelCb(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[CbPixelComponent].component]);
 }
 
-static inline PixelType GetPixelCbType(const Image *image)
+static inline PixelTrait GetPixelCbTraits(const Image *image)
 {
-  return(image->component_map[CbPixelComponent].type);
+  return(image->component_map[CbPixelComponent].traits);
 }
 
 static inline size_t GetPixelChannels(const Image *image)
@@ -83,9 +83,9 @@ static inline Quantum GetPixelCr(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[CrPixelComponent].component]);
 }
 
-static inline PixelType GetPixelCrType(const Image *image)
+static inline PixelTrait GetPixelCrTraits(const Image *image)
 {
-  return(image->component_map[CrPixelComponent].type);
+  return(image->component_map[CrPixelComponent].traits);
 }
 
 static inline Quantum GetPixelCyan(const Image *image,const Quantum *pixel)
@@ -93,9 +93,9 @@ static inline Quantum GetPixelCyan(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[CyanPixelComponent].component]);
 }
 
-static inline PixelType GetPixelCyanType(const Image *image)
+static inline PixelTrait GetPixelCyanTraits(const Image *image)
 {
-  return(image->component_map[CyanPixelComponent].type);
+  return(image->component_map[CyanPixelComponent].traits);
 }
 
 static inline Quantum GetPixelGray(const Image *image,const Quantum *pixel)
@@ -103,9 +103,9 @@ static inline Quantum GetPixelGray(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[GrayPixelComponent].component]);
 }
 
-static inline PixelType GetPixelGrayType(const Image *image)
+static inline PixelTrait GetPixelGrayTraits(const Image *image)
 {
-  return(image->component_map[GrayPixelComponent].type);
+  return(image->component_map[GrayPixelComponent].traits);
 }
 
 static inline Quantum GetPixelGreen(const Image *image,const Quantum *pixel)
@@ -113,9 +113,9 @@ static inline Quantum GetPixelGreen(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[GreenPixelComponent].component]);
 }
 
-static inline PixelType GetPixelGreenType(const Image *image)
+static inline PixelTrait GetPixelGreenTraits(const Image *image)
 {
-  return(image->component_map[GreenPixelComponent].type);
+  return(image->component_map[GreenPixelComponent].traits);
 }
 
 static inline Quantum GetPixelIndex(const Image *image,const Quantum *pixel)
@@ -123,9 +123,9 @@ static inline Quantum GetPixelIndex(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[IndexPixelComponent].component]);
 }
 
-static inline PixelType GetPixelIndexType(const Image *image)
+static inline PixelTrait GetPixelIndexTraits(const Image *image)
 {
-  return(image->component_map[IndexPixelComponent].type);
+  return(image->component_map[IndexPixelComponent].traits);
 }
 
 static inline Quantum GetPixelInfoIntensity(const PixelInfo *pixel_info)
@@ -158,9 +158,9 @@ static inline Quantum GetPixelMagenta(const Image *image,
   return(pixel[image->component_map[MagentaPixelComponent].component]);
 }
 
-static inline PixelType GetPixelMagentaType(const Image *image)
+static inline PixelTrait GetPixelMagentaTraits(const Image *image)
 {
-  return(image->component_map[MagentaPixelComponent].type);
+  return(image->component_map[MagentaPixelComponent].traits);
 }
 
 static inline size_t GetPixelMetacontentExtent(const Image *image)
@@ -173,9 +173,9 @@ static inline Quantum GetPixelRed(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[RedPixelComponent].component]);
 }
 
-static inline PixelType GetPixelRedType(const Image *image)
+static inline PixelTrait GetPixelRedTraits(const Image *image)
 {
-  return(image->component_map[RedPixelComponent].type);
+  return(image->component_map[RedPixelComponent].traits);
 }
 
 static inline void GetPixelPacket(const Image *image,const Quantum *pixel,
@@ -208,10 +208,10 @@ static inline Quantum GetPixelPacketIntensity(const PixelPacket *pixel)
 #endif
 }
 
-static inline PixelType GetPixelType(const Image *image,
+static inline PixelTrait GetPixelTraits(const Image *image,
   const PixelComponent component)
 {
-  return(image->component_map[component].type);
+  return(image->component_map[component].traits);
 }
 
 static inline Quantum GetPixelY(const Image *image,const Quantum *pixel)
@@ -219,9 +219,9 @@ static inline Quantum GetPixelY(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[YPixelComponent].component]);
 }
 
-static inline PixelType GetPixelYType(const Image *image)
+static inline PixelTrait GetPixelYTraits(const Image *image)
 {
-  return(image->component_map[YPixelComponent].type);
+  return(image->component_map[YPixelComponent].traits);
 }
 
 static inline Quantum GetPixelYellow(const Image *image,
@@ -230,9 +230,9 @@ static inline Quantum GetPixelYellow(const Image *image,
   return(pixel[image->component_map[YellowPixelComponent].component]);
 }
 
-static inline PixelType GetPixelYellowType(const Image *image)
+static inline PixelTrait GetPixelYellowTraits(const Image *image)
 {
-  return(image->component_map[YellowPixelComponent].type);
+  return(image->component_map[YellowPixelComponent].traits);
 }
 
 static inline MagickBooleanType IsPixelEquivalent(const Image *image,
@@ -415,9 +415,9 @@ static inline void SetPixelAlpha(const Image *image,const Quantum alpha,
   pixel[image->component_map[AlphaPixelComponent].component]=alpha;
 }
 
-static inline void SetPixelAlphaType(const Image *image,const PixelType type)
+static inline void SetPixelAlphaTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[AlphaPixelComponent].type=type;
+  image->component_map[AlphaPixelComponent].traits=traits;
 }
 
 static inline void SetPixelBlack(const Image *image,const Quantum black,
@@ -426,9 +426,9 @@ static inline void SetPixelBlack(const Image *image,const Quantum black,
   pixel[image->component_map[BlackPixelComponent].component]=black;
 }
 
-static inline void SetPixelBlackType(const Image *image,const PixelType type)
+static inline void SetPixelBlackTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[BlackPixelComponent].type=type;
+  image->component_map[BlackPixelComponent].traits=traits;
 }
 
 static inline void SetPixelBlue(const Image *image,const Quantum blue,
@@ -437,9 +437,9 @@ static inline void SetPixelBlue(const Image *image,const Quantum blue,
   pixel[image->component_map[BluePixelComponent].component]=blue;
 }
 
-static inline void SetPixelBlueType(const Image *image,const PixelType type)
+static inline void SetPixelBlueTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[BluePixelComponent].type=type;
+  image->component_map[BluePixelComponent].traits=traits;
 }
 
 static inline void SetPixelCb(const Image *image,const Quantum cb,
@@ -448,9 +448,9 @@ static inline void SetPixelCb(const Image *image,const Quantum cb,
   pixel[image->component_map[CbPixelComponent].component]=cb;
 }
 
-static inline void SetPixelCbType(const Image *image,const PixelType type)
+static inline void SetPixelCbTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[CbPixelComponent].type=type;
+  image->component_map[CbPixelComponent].traits=traits;
 }
 
 static inline void SetPixelChannels(Image *image,const size_t channels)
@@ -470,9 +470,9 @@ static inline void SetPixelCr(const Image *image,const Quantum cr,
   pixel[image->component_map[CrPixelComponent].component]=cr;
 }
 
-static inline void SetPixelCrType(const Image *image,const PixelType type)
+static inline void SetPixelCrTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[CrPixelComponent].type=type;
+  image->component_map[CrPixelComponent].traits=traits;
 }
 
 static inline void SetPixelCyan(const Image *image,const Quantum cyan,
@@ -487,9 +487,9 @@ static inline void SetPixelGray(const Image *image,const Quantum gray,
   pixel[image->component_map[GrayPixelComponent].component]=gray;
 }
 
-static inline void SetPixelGrayType(const Image *image,const PixelType type)
+static inline void SetPixelGrayTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[GrayPixelComponent].type=type;
+  image->component_map[GrayPixelComponent].traits=traits;
 }
 
 static inline void SetPixelGreen(const Image *image,const Quantum green,
@@ -498,9 +498,9 @@ static inline void SetPixelGreen(const Image *image,const Quantum green,
   pixel[image->component_map[GreenPixelComponent].component]=green;
 }
 
-static inline void SetPixelGreenType(const Image *image,const PixelType type)
+static inline void SetPixelGreenTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[GreenPixelComponent].type=type;
+  image->component_map[GreenPixelComponent].traits=traits;
 }
 
 static inline void SetPixelIndex(const Image *image,const Quantum index,
@@ -509,9 +509,9 @@ static inline void SetPixelIndex(const Image *image,const Quantum index,
   pixel[image->component_map[IndexPixelComponent].component]=index;
 }
 
-static inline void SetPixelIndexType(const Image *image,const PixelType type)
+static inline void SetPixelIndexTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[IndexPixelComponent].type=type;
+  image->component_map[IndexPixelComponent].traits=traits;
 }
 
 static inline void SetPixelInfo(const Image *image,const Quantum *pixel,
@@ -559,9 +559,9 @@ static inline void SetPixelMagenta(const Image *image,const Quantum magenta,
   pixel[image->component_map[MagentaPixelComponent].component]=magenta;
 }
 
-static inline void SetPixelMagentaType(const Image *image,const PixelType type)
+static inline void SetPixelMagentaTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[MagentaPixelComponent].type=type;
+  image->component_map[MagentaPixelComponent].traits=traits;
 }
 
 static inline void SetPixelMetacontentExtent(Image *image,const size_t extent)
@@ -575,9 +575,9 @@ static inline void SetPixelRed(const Image *image,const Quantum red,
   pixel[image->component_map[RedPixelComponent].component]=red;
 }
 
-static inline void SetPixelRedType(const Image *image,const PixelType type)
+static inline void SetPixelRedTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[RedPixelComponent].type=type;
+  image->component_map[RedPixelComponent].traits=traits;
 }
 
 static inline void SetPixelPacket(const Image *image,const PixelPacket *packet,
@@ -600,10 +600,10 @@ static inline void SetPixelPixelInfo(const Image *image,
     SetPixelBlack(image,ClampToQuantum(pixel_info->black),packet);
 }
 
-static inline void SetPixelType(const Image *image,
-  const PixelComponent component,const PixelType type)
+static inline void SetPixelTraits(Image *image,
+  const PixelComponent component,const PixelTrait traits)
 {
-  image->component_map[component].type=type;
+  image->component_map[component].traits=traits;
 }
 
 static inline void SetPixelYellow(const Image *image,const Quantum yellow,
@@ -612,9 +612,9 @@ static inline void SetPixelYellow(const Image *image,const Quantum yellow,
   pixel[image->component_map[YellowPixelComponent].component]=yellow;
 }
 
-static inline void SetPixelYellowType(const Image *image,const PixelType type)
+static inline void SetPixelYellowTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[YellowPixelComponent].type=type;
+  image->component_map[YellowPixelComponent].traits=traits;
 }
 
 static inline void SetPixelY(const Image *image,const Quantum y,
@@ -623,9 +623,9 @@ static inline void SetPixelY(const Image *image,const Quantum y,
   pixel[image->component_map[YPixelComponent].component]=y;
 }
 
-static inline void SetPixelYType(const Image *image,const PixelType type)
+static inline void SetPixelYTraits(Image *image,const PixelTrait traits)
 {
-  image->component_map[YPixelComponent].type=type;
+  image->component_map[YPixelComponent].traits=traits;
 }
 
 static inline Quantum GetPixelIntensity(const Image *image,
