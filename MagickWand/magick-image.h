@@ -48,7 +48,7 @@ extern WandExport DisposeType
   MagickGetImageDispose(MagickWand *);
 
 extern WandExport double
-  *MagickGetImageChannelDistortions(MagickWand *,const MagickWand *,
+  *MagickGetImageDistortions(MagickWand *,const MagickWand *,
     const MetricType),
   MagickGetImageFuzz(MagickWand *),
   MagickGetImageGamma(MagickWand *),
@@ -172,8 +172,6 @@ extern WandExport MagickBooleanType
   MagickGetImageBackgroundColor(MagickWand *,PixelWand *),
   MagickGetImageBluePrimary(MagickWand *,double *,double *),
   MagickGetImageBorderColor(MagickWand *,PixelWand *),
-  MagickGetImageChannelDistortion(MagickWand *,const MagickWand *,
-    const ChannelType,const MetricType,double *),
   MagickGetImageChannelKurtosis(MagickWand *,const ChannelType,double *,
     double *),
   MagickGetImageChannelMean(MagickWand *,const ChannelType,double *,double *),
@@ -373,11 +371,9 @@ extern WandExport MagickWand
   *MagickAppendImages(MagickWand *,const MagickBooleanType),
   *MagickCoalesceImages(MagickWand *),
   *MagickCombineImages(MagickWand *,const ChannelType),
-  *MagickCompareImageChannels(MagickWand *,const MagickWand *,const ChannelType,
-    const MetricType,double *),
   *MagickCompareImages(MagickWand *,const MagickWand *,const MetricType,
     double *),
-  *MagickCompareImageLayers(MagickWand *,const ImageLayerMethod),
+  *MagickCompareImagesLayers(MagickWand *,const ImageLayerMethod),
   *MagickDeconstructImages(MagickWand *),
   *MagickEvaluateImages(MagickWand *,const MagickEvaluateOperator),
   *MagickFxImage(MagickWand *,const char *),

@@ -3065,7 +3065,7 @@ void
 Compare(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
-    CompareImage = 1
+    CompareImages = 1
     compare      = 2
     compareimage = 3
   PPCODE:
@@ -3075,9 +3075,6 @@ Compare(ref,...)
 
     char
       *attribute;
-
-    ChannelType
-      channel;
 
     double
       distortion;
@@ -3141,7 +3138,6 @@ Compare(ref,...)
     /*
       Get attribute.
     */
-    channel=DefaultChannels;
     reconstruct_image=image;
     metric=RootMeanSquaredErrorMetric;
     for (i=2; i < items; i+=2)
@@ -3164,7 +3160,7 @@ Compare(ref,...)
                     "UnrecognizedType",SvPV(ST(i),na));
                   return;
                 }
-              channel=(ChannelType) option;
+              SetPixelComponentMap(image,(ChannelType) option);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -3224,8 +3220,8 @@ Compare(ref,...)
         }
       }
     }
-    difference_image=CompareImageChannels(image,reconstruct_image,channel,
-      metric,&distortion,exception);
+    difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
+      exception);
     if (difference_image != (Image *) NULL)
       {
         difference_image->error.mean_error_per_pixel=distortion;
@@ -3264,7 +3260,7 @@ void
 CompareLayers(ref)
   Image::Magick ref=NO_INIT
   ALIAS:
-    CompareImageLayers   = 1
+    CompareImagesLayers   = 1
     comparelayers        = 2
     compareimagelayers   = 3
   PPCODE:
@@ -3360,7 +3356,7 @@ CompareLayers(ref)
         }
       }
     }
-    image=CompareImageLayers(image,method,exception);
+    image=CompareImagesLayers(image,method,exception);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     for ( ; image; image=image->next)
@@ -6048,9 +6044,6 @@ GetPixel(ref,...)
     char
       *attribute;
 
-    ChannelType
-      channel;
-
     ExceptionInfo
       *exception;
 
@@ -6094,7 +6087,6 @@ GetPixel(ref,...)
           PackageName);
         goto PerlException;
       }
-    channel=DefaultChannels;
     normalize=MagickTrue;
     region.x=0;
     region.y=0;
@@ -6122,7 +6114,7 @@ GetPixel(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-               channel=(ChannelType) option;
+              SetPixelComponentMap(image,(ChannelType) option);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -6725,7 +6717,7 @@ Layers(ref,...)
       case CompareOverlayLayer:
       default:
       {
-        layers=CompareImageLayers(image,method,exception);
+        layers=CompareImagesLayers(image,method,exception);
         break;
       }
       case MergeLayer:
@@ -8720,7 +8712,7 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
-          SetPixelComponentMap(image,"alpha");
+          SetPixelComponentMap(image,AlphaChannel);
           (void) FloodfillPaintImage(image,AlphaChannel,draw_info,&target,
             geometry.x,geometry.y,invert);
           StandardPixelComponentMap(image);
@@ -9082,7 +9074,7 @@ Mogrify(ref,...)
         }
         case 65:  /* Deconstruct */
         {
-          image=CompareImageLayers(image,CompareAnyLayer,exception);
+          image=CompareImagesLayers(image,CompareAnyLayer,exception);
           break;
         }
         case 66:  /* GaussianBlur */

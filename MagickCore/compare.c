@@ -73,19 +73,18 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p a r e I m a g e C h a n n e l s                                   %
+%   C o m p a r e I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompareImageChannels() compares one or more image channels of an image
-%  to a reconstructed image and returns the difference image.
+%  CompareImages() compares one or more pixel channels of an image to a 
+%  reconstructed image and returns the difference image.
 %
-%  The format of the CompareImageChannels method is:
+%  The format of the CompareImages method is:
 %
-%      Image *CompareImageChannels(const Image *image,
-%        const Image *reconstruct_image,const ChannelType channel,
+%      Image *CompareImages(const Image *image,const Image *reconstruct_image,
 %        const MetricType metric,double *distortion,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -94,8 +93,6 @@
 %
 %    o reconstruct_image: the reconstruct image.
 %
-%    o channel: the channel.
-%
 %    o metric: the metric.
 %
 %    o distortion: the computed distortion between the images.
@@ -103,20 +100,7 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
-  const MetricType metric,double *distortion,ExceptionInfo *exception)
-{
-  Image
-    *highlight_image;
-
-  highlight_image=CompareImageChannels(image,reconstruct_image,CompositeChannels,
-    metric,distortion,exception);
-  return(highlight_image);
-}
-
-MagickExport Image *CompareImageChannels(Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 {
   CacheView
@@ -155,8 +139,8 @@ MagickExport Image *CompareImageChannels(Image *image,
   if ((reconstruct_image->columns != image->columns) ||
       (reconstruct_image->rows != image->rows))
     ThrowImageException(ImageError,"ImageSizeDiffers");
-  status=GetImageChannelDistortion(image,reconstruct_image,channel,metric,
-    distortion,exception);
+  status=GetImageDistortion(image,reconstruct_image,metric,distortion,
+    exception);
   if (status == MagickFalse)
     return((Image *) NULL);
   difference_image=CloneImage(image,0,0,MagickTrue,exception);
@@ -244,7 +228,7 @@ MagickExport Image *CompareImageChannels(Image *image,
       SetPixelInfo(image,p,&pixel);
       SetPixelInfo(reconstruct_image,q,&reconstruct_pixel);
       difference=MagickFalse;
-      if (channel == CompositeChannels)
+      if (image->sync == MagickTrue)
         {
           if (IsFuzzyEquivalencePixelInfo(&pixel,&reconstruct_pixel) == MagickFalse)
             difference=MagickTrue;
@@ -297,28 +281,26 @@ MagickExport Image *CompareImageChannels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l D i s t o r t i o n                         %
+%   G e t I m a g e D i s t o r t i o n                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelDistortion() compares one or more image channels of an image
-%  to a reconstructed image and returns the specified distortion metric.
+%  GetImageDistortion() compares one or more pixel channels of an image to a 
+%  reconstructed image and returns the specified distortion metric.
 %
-%  The format of the CompareImageChannels method is:
+%  The format of the CompareImages method is:
 %
-%      MagickBooleanType GetImageChannelDistortion(const Image *image,
-%        const Image *reconstruct_image,const ChannelType channel,
-%        const MetricType metric,double *distortion,ExceptionInfo *exception)
+%      MagickBooleanType GetImageDistortion(const Image *image,
+%        const Image *reconstruct_image,const MetricType metric,
+%        double *distortion,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o reconstruct_image: the reconstruct image.
-%
-%    o channel: the channel.
 %
 %    o metric: the metric.
 %
@@ -328,21 +310,8 @@ MagickExport Image *CompareImageChannels(Image *image,
 %
 */
 
-MagickExport MagickBooleanType GetImageDistortion(Image *image,
-  const Image *reconstruct_image,const MetricType metric,double *distortion,
-  ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=GetImageChannelDistortion(image,reconstruct_image,CompositeChannels,
-    metric,distortion,exception);
-  return(status);
-}
-
 static MagickBooleanType GetAbsoluteDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,double *distortion,
-  ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -431,8 +400,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   return(status);
 }
 
-static size_t GetNumberChannels(const Image *image,
-  const ChannelType channel)
+static size_t GetNumberChannels(const Image *image)
 {
   size_t
     channels;
@@ -454,8 +422,7 @@ static size_t GetNumberChannels(const Image *image,
 }
 
 static MagickBooleanType GetFuzzDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -560,17 +527,15 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
       ((image->matte != MagickFalse) ||
       (reconstruct_image->matte != MagickFalse)))
-    distortion[CompositeChannels]/=(double)
-      (GetNumberChannels(image,channel)-1);
+    distortion[CompositeChannels]/=(double) (GetNumberChannels(image)-1);
   else
-    distortion[CompositeChannels]/=(double) GetNumberChannels(image,channel);
+    distortion[CompositeChannels]/=(double) GetNumberChannels(image);
   distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]);
   return(status);
 }
 
 static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -670,13 +635,12 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
     distortion[i]/=((double) image->columns*image->rows);
-  distortion[CompositeChannels]/=(double) GetNumberChannels(image,channel);
+  distortion[CompositeChannels]/=(double) GetNumberChannels(image);
   return(status);
 }
 
 static MagickBooleanType GetMeanErrorPerPixel(Image *image,
-  const Image *reconstruct_image,const ChannelType channel,double *distortion,
-  ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -805,8 +769,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
 }
 
 static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -907,13 +870,13 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
     distortion[i]/=((double) image->columns*image->rows);
-  distortion[CompositeChannels]/=(double) GetNumberChannels(image,channel);
+  distortion[CompositeChannels]/=(double) GetNumberChannels(image);
   return(status);
 }
 
 static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
-  const Image *image,const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *image,const Image *reconstruct_image,double *distortion,
+  ExceptionInfo *exception)
 {
 #define SimilarityImageTag  "Similarity/Image"
 
@@ -1048,7 +1011,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     distortion[CompositeChannels]+=distortion[BlackChannel]*
       distortion[BlackChannel];
   distortion[CompositeChannels]=sqrt(distortion[CompositeChannels]/
-    GetNumberChannels(image,channel));
+    GetNumberChannels(image));
   /*
     Free resources.
   */
@@ -1060,8 +1023,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
 }
 
 static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -1172,14 +1134,12 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 }
 
 static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
 
-  status=GetMeanSquaredDistortion(image,reconstruct_image,channel,distortion,
-    exception);
+  status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     distortion[RedChannel]=20.0*log10((double) 1.0/sqrt(
       distortion[RedChannel]));
@@ -1203,14 +1163,12 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 }
 
 static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  double *distortion,ExceptionInfo *exception)
+  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
 
-  status=GetMeanSquaredDistortion(image,reconstruct_image,channel,distortion,
-    exception);
+  status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     distortion[RedChannel]=sqrt(distortion[RedChannel]);
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
@@ -1227,9 +1185,9 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
   return(status);
 }
 
-MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
-  const Image *reconstruct_image,const ChannelType channel,
-  const MetricType metric,double *distortion,ExceptionInfo *exception)
+MagickExport MagickBooleanType GetImageDistortion(Image *image,
+  const Image *reconstruct_image,const MetricType metric,double *distortion,
+  ExceptionInfo *exception)
 {
   double
     *channel_distortion;
@@ -1267,31 +1225,31 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
   {
     case AbsoluteErrorMetric:
     {
-      status=GetAbsoluteDistortion(image,reconstruct_image,channel,
-        channel_distortion,exception);
+      status=GetAbsoluteDistortion(image,reconstruct_image,channel_distortion,
+        exception);
       break;
     }
     case FuzzErrorMetric:
     {
-      status=GetFuzzDistortion(image,reconstruct_image,channel,
-        channel_distortion,exception);
+      status=GetFuzzDistortion(image,reconstruct_image,channel_distortion,
+        exception);
       break;
     }
     case MeanAbsoluteErrorMetric:
     {
-      status=GetMeanAbsoluteDistortion(image,reconstruct_image,channel,
+      status=GetMeanAbsoluteDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
     case MeanErrorPerPixelMetric:
     {
-      status=GetMeanErrorPerPixel(image,reconstruct_image,channel,
-        channel_distortion,exception);
+      status=GetMeanErrorPerPixel(image,reconstruct_image,channel_distortion,
+        exception);
       break;
     }
     case MeanSquaredErrorMetric:
     {
-      status=GetMeanSquaredDistortion(image,reconstruct_image,channel,
+      status=GetMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
@@ -1299,24 +1257,24 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
     default:
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
-        channel,channel_distortion,exception);
+        channel_distortion,exception);
       break;
     }
     case PeakAbsoluteErrorMetric:
     {
-      status=GetPeakAbsoluteDistortion(image,reconstruct_image,channel,
+      status=GetPeakAbsoluteDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
     case PeakSignalToNoiseRatioMetric:
     {
-      status=GetPeakSignalToNoiseRatio(image,reconstruct_image,channel,
+      status=GetPeakSignalToNoiseRatio(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
     case RootMeanSquaredErrorMetric:
     {
-      status=GetRootMeanSquaredDistortion(image,reconstruct_image,channel,
+      status=GetRootMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
@@ -1331,19 +1289,19 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l D i s t o r t i o n s                       %
+%   G e t I m a g e D i s t o r t i o n s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelDistrortion() compares the image channels of an image to a
+%  GetImageDistrortion() compares the pixel channels of an image to a
 %  reconstructed image and returns the specified distortion metric for each
 %  channel.
 %
-%  The format of the CompareImageChannels method is:
+%  The format of the CompareImages method is:
 %
-%      double *GetImageChannelDistortions(const Image *image,
+%      double *GetImageDistortions(const Image *image,
 %        const Image *reconstruct_image,const MetricType metric,
 %        ExceptionInfo *exception)
 %
@@ -1358,7 +1316,7 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport double *GetImageChannelDistortions(Image *image,
+MagickExport double *GetImageDistortions(Image *image,
   const Image *reconstruct_image,const MetricType metric,
   ExceptionInfo *exception)
 {
@@ -1401,31 +1359,31 @@ MagickExport double *GetImageChannelDistortions(Image *image,
   {
     case AbsoluteErrorMetric:
     {
-      status=GetAbsoluteDistortion(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetAbsoluteDistortion(image,reconstruct_image,channel_distortion,
+        exception);
       break;
     }
     case FuzzErrorMetric:
     {
-      status=GetFuzzDistortion(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetFuzzDistortion(image,reconstruct_image,channel_distortion,
+        exception);
       break;
     }
     case MeanAbsoluteErrorMetric:
     {
-      status=GetMeanAbsoluteDistortion(image,reconstruct_image,CompositeChannels,
+      status=GetMeanAbsoluteDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
     case MeanErrorPerPixelMetric:
     {
-      status=GetMeanErrorPerPixel(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetMeanErrorPerPixel(image,reconstruct_image,channel_distortion,
+        exception);
       break;
     }
     case MeanSquaredErrorMetric:
     {
-      status=GetMeanSquaredDistortion(image,reconstruct_image,CompositeChannels,
+      status=GetMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
@@ -1433,24 +1391,24 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     default:
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
-        CompositeChannels,channel_distortion,exception);
+        channel_distortion,exception);
       break;
     }
     case PeakAbsoluteErrorMetric:
     {
-      status=GetPeakAbsoluteDistortion(image,reconstruct_image,CompositeChannels,
+      status=GetPeakAbsoluteDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
     case PeakSignalToNoiseRatioMetric:
     {
-      status=GetPeakSignalToNoiseRatio(image,reconstruct_image,CompositeChannels,
+      status=GetPeakSignalToNoiseRatio(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
     case RootMeanSquaredErrorMetric:
     {
-      status=GetRootMeanSquaredDistortion(image,reconstruct_image,CompositeChannels,
+      status=GetRootMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }

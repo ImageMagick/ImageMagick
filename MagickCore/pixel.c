@@ -4435,32 +4435,26 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetPixelComponentMap() sets the pixel component map from the specified
-%  string map.
+%  channel mask.
 %
 %  The format of the SetPixelComponentMap method is:
 %
-%      void SetPixelComponentMap(Image *image,const char *components)
+%      void SetPixelComponentMap(Image *image,const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o components: One or more pixel components separated by commas.
+%    o channel: the channel mask.
 %
 */
-MagickExport void SetPixelComponentMap(Image *image,const char *components)
+MagickExport void SetPixelComponentMap(Image *image,const ChannelType channel)
 {
   register ssize_t
     i;
 
-  ssize_t
-    channel;
-
   for (i=0; i < MaxPixelComponents; i++)
     image->component_map[i].traits=UndefinedPixelTrait;
-  channel=(ChannelType) ParseChannelOption(components);
-  if (channel < 0)
-    channel=DefaultChannels;
   image->sync=(channel & SyncChannels) != 0 ? MagickTrue : MagickFalse;
   if ((channel & RedChannel) != 0)
     SetPixelRedTraits(image,ActivePixelTrait);

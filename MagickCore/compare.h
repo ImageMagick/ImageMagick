@@ -39,20 +39,15 @@ typedef enum
 } MetricType;
 
 extern MagickExport double
-  *GetImageChannelDistortions(Image *,const Image *,const MetricType,
-    ExceptionInfo *);
+  *GetImageDistortions(Image *,const Image *,const MetricType,ExceptionInfo *);
 
 extern MagickExport Image
-  *CompareImageChannels(Image *,const Image *,const ChannelType,
-    const MetricType,double *,ExceptionInfo *),
   *CompareImages(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
   *SimilarityImage(Image *,const Image *,RectangleInfo *,double *,
     ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  GetImageChannelDistortion(Image *,const Image *,const ChannelType,
-    const MetricType,double *,ExceptionInfo *),
   GetImageDistortion(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
   IsImagesEqual(Image *,const Image *);

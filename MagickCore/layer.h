@@ -57,7 +57,7 @@ typedef enum
 extern MagickExport Image
   *CoalesceImages(const Image *,ExceptionInfo *),
   *DisposeImages(const Image *,ExceptionInfo *),
-  *CompareImageLayers(const Image *,const ImageLayerMethod,ExceptionInfo *),
+  *CompareImagesLayers(const Image *,const ImageLayerMethod,ExceptionInfo *),
   *MergeImageLayers(Image *,const ImageLayerMethod,ExceptionInfo *),
   *OptimizeImageLayers(const Image *,ExceptionInfo *),
   *OptimizePlusImageLayers(const Image *,ExceptionInfo *);

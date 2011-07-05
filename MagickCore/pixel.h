@@ -160,7 +160,7 @@ extern MagickExport PixelInfo
 extern MagickExport void
   StandardPixelComponentMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),
-  SetPixelComponentMap(Image *,const char *);
+  SetPixelComponentMap(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
