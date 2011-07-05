@@ -76,7 +76,7 @@ int main(int argc,char **argv)
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   metadata=(char *) NULL;
-  status=MagickCommandGenesis(image_info,CompareImageCommand,argc,argv,
+  status=MagickCommandGenesis(image_info,CompareImagesCommand,argc,argv,
     &metadata,exception);
   if (metadata != (char *) NULL)
     metadata=DestroyString(metadata);

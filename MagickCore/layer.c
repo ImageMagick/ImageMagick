@@ -508,7 +508,7 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
 %  ComparePixels() Compare the two pixels and return true if the pixels
 %  differ according to the given LayerType comparision method.
 %
-%  This currently only used internally by CompareImageBounds(). It is
+%  This currently only used internally by CompareImagesBounds(). It is
 %  doubtful that this sub-routine will be useful outside this module.
 %
 %  The format of the ComparePixels method is:
@@ -572,16 +572,16 @@ static MagickBooleanType ComparePixels(const ImageLayerMethod method,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompareImageBounds() Given two images return the smallest rectangular area
+%  CompareImagesBounds() Given two images return the smallest rectangular area
 %  by which the two images differ, accourding to the given 'Compare...'
 %  layer method.
 %
 %  This currently only used internally in this module, but may eventually
 %  be used by other modules.
 %
-%  The format of the CompareImageBounds method is:
+%  The format of the CompareImagesBounds method is:
 %
-%      RectangleInfo *CompareImageBounds(const ImageLayerMethod method,
+%      RectangleInfo *CompareImagesBounds(const ImageLayerMethod method,
 %        const Image *image1, const Image *image2, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -595,7 +595,7 @@ static MagickBooleanType ComparePixels(const ImageLayerMethod method,
 %
 */
 
-static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
+static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2,
   const ImageLayerMethod method,ExceptionInfo *exception)
 {
   RectangleInfo
@@ -725,7 +725,7 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompareImageLayers() compares each image with the next in a sequence and
+%  CompareImagesLayers() compares each image with the next in a sequence and
 %  returns the minimum bounding region of all the pixel differences (of the
 %  ImageLayerMethod specified) it discovers.
 %
@@ -736,9 +736,9 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
 %  No GIF dispose methods are applied, so GIF animations must be coalesced
 %  before applying this image operator to find differences to them.
 %
-%  The format of the CompareImageLayers method is:
+%  The format of the CompareImagesLayers method is:
 %
-%      Image *CompareImageLayers(const Image *images,
+%      Image *CompareImagesLayers(const Image *images,
 %        const ImageLayerMethod method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -752,7 +752,7 @@ static RectangleInfo CompareImageBounds(const Image *image1,const Image *image2,
 %
 */
 
-MagickExport Image *CompareImageLayers(const Image *image,
+MagickExport Image *CompareImagesLayers(const Image *image,
   const ImageLayerMethod method, ExceptionInfo *exception)
 {
   Image
@@ -818,7 +818,7 @@ MagickExport Image *CompareImageLayers(const Image *image,
       }
     (void) CompositeImage(image_a,CopyCompositeOp,next,next->page.x,
                            next->page.y);
-    bounds[i]=CompareImageBounds(image_b,image_a,method,exception);
+    bounds[i]=CompareImagesBounds(image_b,image_a,method,exception);
 
     image_b=DestroyImage(image_b);
     i++;
@@ -1014,7 +1014,7 @@ static Image *OptimizeLayerFrames(const Image *image,
   (void) FormatLocaleFile(stderr, "frame %.20g :-\n", (double) i);
 #endif
   disposals[0]=NoneDispose;
-  bounds[0]=CompareImageBounds(prev_image,curr,CompareAnyLayer,exception);
+  bounds[0]=CompareImagesBounds(prev_image,curr,CompareAnyLayer,exception);
 #if DEBUG_OPT_FRAME
   (void) FormatLocaleFile(stderr, "overlay: %.20gx%.20g%+.20g%+.20g\n\n",
     (double) bounds[i].width,(double) bounds[i].height,
@@ -1039,7 +1039,7 @@ static Image *OptimizeLayerFrames(const Image *image,
     /*
       Assume none disposal is the best
     */
-    bounds[i]=CompareImageBounds(curr->previous,curr,CompareAnyLayer,exception);
+    bounds[i]=CompareImagesBounds(curr->previous,curr,CompareAnyLayer,exception);
     cleared=IsBoundsCleared(curr->previous,curr,&bounds[i],exception);
     disposals[i-1]=NoneDispose;
 #if DEBUG_OPT_FRAME
@@ -1069,7 +1069,7 @@ static Image *OptimizeLayerFrames(const Image *image,
         /*
           Compare a none disposal against a previous disposal
         */
-        try_bounds=CompareImageBounds(prev_image,curr,CompareAnyLayer,exception);
+        try_bounds=CompareImagesBounds(prev_image,curr,CompareAnyLayer,exception);
         try_cleared=IsBoundsCleared(prev_image,curr,&try_bounds,exception);
 #if DEBUG_OPT_FRAME
     (void) FormatLocaleFile(stderr, "test_prev: %.20gx%.20g%+.20g%+.20g%s\n",
@@ -1108,9 +1108,9 @@ static Image *OptimizeLayerFrames(const Image *image,
                 prev_image=DestroyImage(prev_image);
                 return((Image *) NULL);
               }
-            dup_bounds=CompareImageBounds(dup_image,curr,CompareClearLayer,exception);
+            dup_bounds=CompareImagesBounds(dup_image,curr,CompareClearLayer,exception);
             ClearBounds(dup_image,&dup_bounds);
-            try_bounds=CompareImageBounds(dup_image,curr,CompareAnyLayer,exception);
+            try_bounds=CompareImagesBounds(dup_image,curr,CompareAnyLayer,exception);
             if ( cleared ||
                    dup_bounds.width*dup_bounds.height
                       +try_bounds.width*try_bounds.height
@@ -1140,7 +1140,7 @@ static Image *OptimizeLayerFrames(const Image *image,
           }
         bgnd_bounds=bounds[i-1]; /* interum bounds of the previous image */
         ClearBounds(bgnd_image,&bgnd_bounds);
-        try_bounds=CompareImageBounds(bgnd_image,curr,CompareAnyLayer,exception);
+        try_bounds=CompareImagesBounds(bgnd_image,curr,CompareAnyLayer,exception);
         try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
 #if DEBUG_OPT_FRAME
     (void) FormatLocaleFile(stderr, "background: %s\n",
@@ -1154,7 +1154,7 @@ static Image *OptimizeLayerFrames(const Image *image,
               include the pixels that are cleared.  This guaranteed
               to work, though may not be the most optimized solution.
             */
-            try_bounds=CompareImageBounds(curr->previous,curr,CompareClearLayer,exception);
+            try_bounds=CompareImagesBounds(curr->previous,curr,CompareClearLayer,exception);
 #if DEBUG_OPT_FRAME
             (void) FormatLocaleFile(stderr, "expand_clear: %.20gx%.20g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
@@ -1211,18 +1211,18 @@ static Image *OptimizeLayerFrames(const Image *image,
  * to see, or writet he image at this point it is hard to tell what is wrong!
  * Only CompareOverlay seemed to return something sensible.
  */
-            try_bounds=CompareImageBounds(bgnd_image,curr,CompareClearLayer,exception);
+            try_bounds=CompareImagesBounds(bgnd_image,curr,CompareClearLayer,exception);
             (void) FormatLocaleFile(stderr, "expand_ctst: %.20gx%.20g%+.20g%+.20g\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y );
-            try_bounds=CompareImageBounds(bgnd_image,curr,CompareAnyLayer,exception);
+            try_bounds=CompareImagesBounds(bgnd_image,curr,CompareAnyLayer,exception);
             try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
             (void) FormatLocaleFile(stderr, "expand_any : %.20gx%.20g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y,
                 try_cleared?"   (pixels cleared)":"");
 #endif
-            try_bounds=CompareImageBounds(bgnd_image,curr,CompareOverlayLayer,exception);
+            try_bounds=CompareImagesBounds(bgnd_image,curr,CompareOverlayLayer,exception);
 #if DEBUG_OPT_FRAME
             try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
             (void) FormatLocaleFile(stderr, "expand_test: %.20gx%.20g%+.20g%+.20g%s\n",
@@ -1609,7 +1609,7 @@ MagickExport void RemoveDuplicateLayers(Image **images,
     if ( curr->columns != next->columns || curr->rows != next->rows
          || curr->page.x != next->page.x || curr->page.y != next->page.y )
       continue;
-    bounds=CompareImageBounds(curr,next,CompareAnyLayer,exception);
+    bounds=CompareImagesBounds(curr,next,CompareAnyLayer,exception);
     if ( bounds.x < 0 ) {
       /*
         the two images are the same, merge time delays and delete one.

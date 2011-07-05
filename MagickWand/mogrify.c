@@ -84,7 +84,7 @@
 %    o image_info: the image info.
 %
 %    o command: Choose from ConvertImageCommand, IdentifyImageCommand,
-%      MogrifyImageCommand, CompositeImageCommand, CompareImageCommand,
+%      MogrifyImageCommand, CompositeImageCommand, CompareImagesCommand,
 %      ConjureImageCommand, StreamImageCommand, ImportImageCommand,
 %      DisplayImageCommand, or AnimateImageCommand.
 %
@@ -978,7 +978,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               channel=DefaultChannels;
             else
               channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelComponentMap(*image,argv[i+1]);
+            SetPixelComponentMap(*image,channel);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)
@@ -7503,7 +7503,7 @@ This has been merged completely into MogrifyImage()
               *deconstruct_image;
 
             (void) SyncImagesSettings(mogrify_info,*images);
-            deconstruct_image=CompareImageLayers(*images,CompareAnyLayer,
+            deconstruct_image=CompareImagesLayers(*images,CompareAnyLayer,
               exception);
             if (deconstruct_image == (Image *) NULL)
               {
@@ -7760,7 +7760,7 @@ This has been merged completely into MogrifyImage()
               case CompareOverlayLayer:
               default:
               {
-                layers=CompareImageLayers(*images,method,exception);
+                layers=CompareImagesLayers(*images,method,exception);
                 break;
               }
               case MergeLayer:

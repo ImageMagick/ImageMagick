@@ -1760,76 +1760,19 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k C o m p a r e I m a g e C h a n n e l s                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickCompareImageChannels() compares one or more image channels of an image
-%  to a reconstructed image and returns the difference image.
-%
-%  The format of the MagickCompareImageChannels method is:
-%
-%      MagickWand *MagickCompareImageChannels(MagickWand *wand,
-%        const MagickWand *reference,const ChannelType channel,
-%        const MetricType metric,double *distortion)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o reference: the reference wand.
-%
-%    o channel: the channel.
-%
-%    o metric: the metric.
-%
-%    o distortion: the computed distortion between the images.
-%
-*/
-WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
-  const MagickWand *reference,const ChannelType channel,const MetricType metric,
-  double *distortion)
-{
-  Image
-    *compare_image;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
-    {
-      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
-      return((MagickWand *) NULL);
-    }
-  compare_image=CompareImageChannels(wand->images,reference->images,channel,
-    metric,distortion,&wand->images->exception);
-  if (compare_image == (Image *) NULL)
-    return((MagickWand *) NULL);
-  return(CloneMagickWandFromImages(wand,compare_image));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   M a g i c k C o m p a r e I m a g e L a y e r s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCompareImageLayers() compares each image with the next in a sequence
+%  MagickCompareImagesLayers() compares each image with the next in a sequence
 %  and returns the maximum bounding region of any pixel differences it
 %  discovers.
 %
-%  The format of the MagickCompareImageLayers method is:
+%  The format of the MagickCompareImagesLayers method is:
 %
-%      MagickWand *MagickCompareImageLayers(MagickWand *wand,
+%      MagickWand *MagickCompareImagesLayers(MagickWand *wand,
 %        const ImageLayerMethod method)
 %
 %  A description of each parameter follows:
@@ -1839,7 +1782,7 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
 %    o method: the compare method.
 %
 */
-WandExport MagickWand *MagickCompareImageLayers(MagickWand *wand,
+WandExport MagickWand *MagickCompareImagesLayers(MagickWand *wand,
   const ImageLayerMethod method)
 {
   Image
@@ -1851,7 +1794,7 @@ WandExport MagickWand *MagickCompareImageLayers(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  layers_image=CompareImageLayers(wand->images,method,wand->exception);
+  layers_image=CompareImagesLayers(wand->images,method,wand->exception);
   if (layers_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,layers_image));
@@ -2409,7 +2352,7 @@ WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  deconstruct_image=CompareImageLayers(wand->images,CompareAnyLayer,
+  deconstruct_image=CompareImagesLayers(wand->images,CompareAnyLayer,
     wand->exception);
   if (deconstruct_image == (Image *) NULL)
     return((MagickWand *) NULL);
@@ -4161,112 +4104,6 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l D i s t o r t i o n             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageChannelDistortion() compares one or more image channels of an
-%  image to a reconstructed image and returns the specified distortion metric.
-%
-%  The format of the MagickGetImageChannelDistortion method is:
-%
-%      MagickBooleanType MagickGetImageChannelDistortion(MagickWand *wand,
-%        const MagickWand *reference,const ChannelType channel,
-%        const MetricType metric,double *distortion)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o reference: the reference wand.
-%
-%    o channel: the channel.
-%
-%    o metric: the metric.
-%
-%    o distortion: the computed distortion between the images.
-%
-*/
-WandExport MagickBooleanType MagickGetImageChannelDistortion(MagickWand *wand,
-  const MagickWand *reference,const ChannelType channel,const MetricType metric,
-  double *distortion)
-{
-  MagickBooleanType
-    status;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  assert(reference != (MagickWand *) NULL);
-  assert(reference->signature == WandSignature);
-  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GetImageChannelDistortion(wand->images,reference->images,channel,
-    metric,distortion,&wand->images->exception);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l D i s t o r t i o n s           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageChannelDistortions() compares one or more image channels of an
-%  image to a reconstructed image and returns the specified distortion metrics.
-%
-%  Use MagickRelinquishMemory() to free the metrics when you are done with them.
-%
-%  The format of the MagickGetImageChannelDistortion method is:
-%
-%      double *MagickGetImageChannelDistortion(MagickWand *wand,
-%        const MagickWand *reference,const MetricType metric)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o reference: the reference wand.
-%
-%    o metric: the metric.
-%
-*/
-WandExport double *MagickGetImageChannelDistortions(MagickWand *wand,
-  const MagickWand *reference,const MetricType metric)
-{
-  double
-    *channel_distortion;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  assert(reference != (MagickWand *) NULL);
-  assert(reference->signature == WandSignature);
-  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
-    {
-      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
-      return((double *) NULL);
-    }
-  channel_distortion=GetImageChannelDistortions(wand->images,reference->images,
-    metric,&wand->images->exception);
-  return(channel_distortion);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   M a g i c k G e t I m a g e C h a n n e l F e a t u r e s                 %
 %                                                                             %
 %                                                                             %
@@ -4806,6 +4643,43 @@ WandExport size_t MagickGetImageDepth(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e D i s p o s e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageDispose() gets the image disposal method.
+%
+%  The format of the MagickGetImageDispose method is:
+%
+%      DisposeType MagickGetImageDispose(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport DisposeType MagickGetImageDispose(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return(UndefinedDispose);
+    }
+  return((DisposeType) wand->images->dispose);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e D i s t o r t i o n                           %
 %                                                                             %
 %                                                                             %
@@ -4838,7 +4712,6 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
   MagickBooleanType
     status;
 
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
@@ -4855,36 +4728,52 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e D i s p o s e                                 %
+%   M a g i c k G e t I m a g e D i s t o r t i o n s                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageDispose() gets the image disposal method.
+%  MagickGetImageDistortions() compares one or more pixel channels of an
+%  image to a reconstructed image and returns the specified distortion metrics.
 %
-%  The format of the MagickGetImageDispose method is:
+%  Use MagickRelinquishMemory() to free the metrics when you are done with them.
 %
-%      DisposeType MagickGetImageDispose(MagickWand *wand)
+%  The format of the MagickGetImageDistortion method is:
+%
+%      double *MagickGetImageDistortion(MagickWand *wand,
+%        const MagickWand *reference,const MetricType metric)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
+%    o reference: the reference wand.
+%
+%    o metric: the metric.
+%
 */
-WandExport DisposeType MagickGetImageDispose(MagickWand *wand)
+WandExport double *MagickGetImageDistortions(MagickWand *wand,
+  const MagickWand *reference,const MetricType metric)
 {
+  double
+    *channel_distortion;
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
+  assert(reference != (MagickWand *) NULL);
+  assert(reference->signature == WandSignature);
+  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
         "ContainsNoImages","`%s'",wand->name);
-      return(UndefinedDispose);
+      return((double *) NULL);
     }
-  return((DisposeType) wand->images->dispose);
+  channel_distortion=GetImageDistortions(wand->images,reference->images,
+    metric,&wand->images->exception);
+  return(channel_distortion);
 }
 
 /*

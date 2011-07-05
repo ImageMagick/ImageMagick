@@ -57,13 +57,13 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompareImageCommand() compares two images and returns the difference between
+%  CompareImagesCommand() compares two images and returns the difference between
 %  them as a distortion metric and as a new image visually annotating their
 %  differences.
 %
-%  The format of the CompareImageCommand method is:
+%  The format of the CompareImagesCommand method is:
 %
-%      MagickBooleanType CompareImageCommand(ImageInfo *image_info,int argc,
+%      MagickBooleanType CompareImagesCommand(ImageInfo *image_info,int argc,
 %        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -171,7 +171,7 @@ static MagickBooleanType CompareUsage(void)
   return(MagickFalse);
 }
 
-WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
+WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define DefaultDissimilarityThreshold  0.31830988618379067154
@@ -208,9 +208,6 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
 
   const char
     *format;
-
-  ChannelType
-    channels;
 
   double
     dissimilarity_threshold,
@@ -273,7 +270,6 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     }
   if (argc < 3)
     return(CompareUsage());
-  channels=CompositeChannels;
   difference_image=NewImageList();
   similarity_image=NewImageList();
   dissimilarity_threshold=DefaultDissimilarityThreshold;
@@ -397,7 +393,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
             if (channel < 0)
               ThrowCompareException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
-            channels=(ChannelType) channel;
+            SetPixelComponentMap(image,(ChannelType) channel);
             break;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
@@ -954,8 +950,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
     }
   if ((reconstruct_image->columns == image->columns) &&
       (reconstruct_image->rows == image->rows))
-    difference_image=CompareImageChannels(image,reconstruct_image,channels,
-      metric,&distortion,exception);
+    difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
+      exception);
   else
     if (similarity_image == (Image *) NULL)
       ThrowCompareException(OptionError,"ImageWidthsOrHeightsDiffer",
@@ -970,14 +966,14 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
         */
         composite_image=CloneImage(image,0,0,MagickTrue,exception);
         if (composite_image == (Image *) NULL)
-          difference_image=CompareImageChannels(image,reconstruct_image,
-            channels,metric,&distortion,exception);
+          difference_image=CompareImages(image,reconstruct_image,metric,
+            &distortion,exception);
         else
           {
             (void) CompositeImage(composite_image,CopyCompositeOp,
               reconstruct_image,offset.x,offset.y);
-            difference_image=CompareImageChannels(image,composite_image,
-              channels,metric,&distortion,exception);
+            difference_image=CompareImages(image,composite_image,metric,
+              &distortion,exception);
             if (difference_image != (Image *) NULL)
               {
                 difference_image->page.x=offset.x;
@@ -1052,7 +1048,7 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
           double
             *channel_distortion;
 
-          channel_distortion=GetImageChannelDistortions(image,reconstruct_image,
+          channel_distortion=GetImageDistortions(image,reconstruct_image,
             metric,&image->exception);
           (void) FormatLocaleFile(stderr,"Image: %s\n",image->filename);
           if ((reconstruct_image->columns != image->columns) ||
