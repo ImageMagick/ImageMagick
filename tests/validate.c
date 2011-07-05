@@ -613,7 +613,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
       difference_image=CompareImages(reference_image,reconstruct_image,
-        CompositeChannels,MeanSquaredErrorMetric,&distortion,exception);
+        MeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
@@ -829,7 +829,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
       difference_image=CompareImages(reference_image,reconstruct_image,
-        CompositeChannels,MeanSquaredErrorMetric,&distortion,exception);
+        MeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
@@ -1007,7 +1007,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
         Compare reference to reconstruct image.
       */
       difference_image=CompareImages(reference_image,reconstruct_image,
-        CompositeChannels,MeanSquaredErrorMetric,&distortion,exception);
+        MeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
