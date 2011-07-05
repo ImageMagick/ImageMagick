@@ -244,36 +244,27 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l D e p t h                                   %
+%   G e t I m a g e D e p t h                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelDepth() returns the depth of a particular image channel.
+%  GetImageDepth() returns the depth of a particular image channel.
 %
-%  The format of the GetImageChannelDepth method is:
+%  The format of the GetImageDepth method is:
 %
 %      size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
-%      size_t GetImageChannelDepth(const Image *image,
-%        const ChannelType channel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
-{
-  return(GetImageChannelDepth(image,CompositeChannels,exception));
-}
-
-MagickExport size_t GetImageChannelDepth(const Image *image,
-  const ChannelType channel,ExceptionInfo *exception)
+MagickExport size_t GetImageDepth(const Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -784,18 +775,18 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e C h a n n e l D e p t h                                   %
+%   S e t I m a g e D e p t h                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageChannelDepth() sets the depth of the image.
+%  SetImageDepth() sets the depth of the image.
 %
-%  The format of the SetImageChannelDepth method is:
+%  The format of the SetImageDepth method is:
 %
 %      MagickBooleanType SetImageDepth(Image *image,const size_t depth)
-%      MagickBooleanType SetImageChannelDepth(Image *image,
+%      MagickBooleanType SetImageDepth(Image *image,
 %        const ChannelType channel,const size_t depth)
 %
 %  A description of each parameter follows:
@@ -809,12 +800,6 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
 */
 MagickExport MagickBooleanType SetImageDepth(Image *image,
   const size_t depth)
-{
-  return(SetImageChannelDepth(image,CompositeChannels,depth));
-}
-
-MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
-  const ChannelType channel,const size_t depth)
 {
   CacheView
     *image_view;

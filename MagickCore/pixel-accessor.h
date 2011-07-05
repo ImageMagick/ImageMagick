@@ -459,9 +459,15 @@ static inline void SetPixelChannels(Image *image,const size_t channels)
 }
 
 static inline void SetPixelComponent(const Image *image,
-  const PixelComponent component,const PixelComponent component)
+  const PixelComponent component,const PixelComponent components)
 {
-  image->component_map[component].component=component;
+  image->component_map[component].component=components;
+}
+
+static inline void SetPixelComponentTraits(Image *image,
+  const PixelComponent component,const PixelTrait traits)
+{
+  image->component_map[component].traits=traits;
 }
 
 static inline void SetPixelCr(const Image *image,const Quantum cr,
@@ -598,12 +604,6 @@ static inline void SetPixelPixelInfo(const Image *image,
   SetPixelAlpha(image,ClampToQuantum(pixel_info->alpha),packet);
   if (image->colorspace == CMYKColorspace)
     SetPixelBlack(image,ClampToQuantum(pixel_info->black),packet);
-}
-
-static inline void SetPixelComponentTraits(Image *image,
-  const PixelComponent component,const PixelTrait traits)
-{
-  image->component_map[component].traits=traits;
 }
 
 static inline void SetPixelYellow(const Image *image,const Quantum yellow,

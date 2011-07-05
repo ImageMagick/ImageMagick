@@ -4161,43 +4161,6 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l D e p t h                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageChannelDepth() gets the depth for one or more image channels.
-%
-%  The format of the MagickGetImageChannelDepth method is:
-%
-%      size_t MagickGetImageChannelDepth(MagickWand *wand,
-%        const ChannelType channel)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
-%
-*/
-WandExport size_t MagickGetImageChannelDepth(MagickWand *wand,
-  const ChannelType channel)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(GetImageChannelDepth(wand->images,channel,wand->exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   M a g i c k G e t I m a g e C h a n n e l D i s t o r t i o n             %
 %                                                                             %
 %                                                                             %
@@ -4835,7 +4798,7 @@ WandExport size_t MagickGetImageDepth(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(wand->images->depth);
+  return(GetImageDepth(wand->images,wand->exception));
 }
 
 /*
@@ -9477,45 +9440,6 @@ WandExport MagickBooleanType MagickSetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e C h a n n e l D e p t h                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickSetImageChannelDepth() sets the depth of a particular image channel.
-%
-%  The format of the MagickSetImageChannelDepth method is:
-%
-%      MagickBooleanType MagickSetImageChannelDepth(MagickWand *wand,
-%        const ChannelType channel,const size_t depth)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
-%
-%    o depth: the image depth in bits.
-%
-*/
-WandExport MagickBooleanType MagickSetImageChannelDepth(MagickWand *wand,
-  const ChannelType channel,const size_t depth)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(SetImageChannelDepth(wand->images,channel,depth));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   M a g i c k S e t I m a g e C l i p M a s k                               %
 %                                                                             %
 %                                                                             %
@@ -9870,8 +9794,7 @@ WandExport MagickBooleanType MagickSetImageDepth(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  wand->images->depth=depth;
-  return(MagickTrue);
+  return(SetImageDepth(wand->images,depth));
 }
 
 /*

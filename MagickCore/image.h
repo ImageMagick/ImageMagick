@@ -283,6 +283,9 @@ struct _Image
     pixel_channels,
     metacontent_extent;
 
+  MagickBooleanType
+    sync;
+
   PixelComponentMap
     *component_map;
 

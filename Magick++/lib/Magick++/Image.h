@@ -181,9 +181,8 @@ namespace Magick
     void            channel ( const ChannelType channel_ );
 
     // Set or obtain modulus channel depth
-    void            channelDepth ( const ChannelType channel_,
-                                   const size_t depth_ );
-    size_t    channelDepth ( const ChannelType channel_ );
+    void            channelDepth ( const size_t depth_ );
+    size_t    channelDepth ( );
 
     // Charcoal effect image (looks like charcoal sketch)
     // The radius_ parameter specifies the radius of the Gaussian, in

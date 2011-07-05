@@ -722,7 +722,7 @@ namespace Magick
   using MagickCore::GetExceptionInfo;
   using MagickCore::GetGeometry;
   using MagickCore::GetImageBoundingBox;
-  using MagickCore::GetImageChannelDepth;
+  using MagickCore::GetImageDepth;
   using MagickCore::GetImageChannelMean;
   using MagickCore::GetImageChannelKurtosis;
   using MagickCore::GetImageChannelRange;
@@ -845,7 +845,7 @@ namespace Magick
   using MagickCore::SetClientName;
   using MagickCore::SetGeometry;
   using MagickCore::SetImageBackgroundColor;
-  using MagickCore::SetImageChannelDepth;
+  using MagickCore::SetImageDepth;
   using MagickCore::SetImageClipMask;
   using MagickCore::SetImageDepth;
   using MagickCore::SetImageExtent;
