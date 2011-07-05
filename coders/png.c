@@ -238,28 +238,32 @@
      unsigned char lbr_bits=ScaleQuantumToChar(GetPixelRed(image,(pixel))) \
        & 0xc0; \
      SetPixelRed(image, ScaleCharToQuantum( \
-       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), (pixel)); \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
+       (pixel)); \
    }
 #define LBR02Green(pixel) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar(GetPixelGreen(image,(pixel)))\
        & 0xc0; \
      SetPixelGreen(image, ScaleCharToQuantum( \
-       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), (pixel)); \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
+       (pixel)); \
    }
 #define LBR02Blue(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelBlue(image,(pixel))) & 0xc0; \
      SetPixelBlue(image, ScaleCharToQuantum( \
-       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), (pixel)); \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
+       (pixel)); \
    }
 #define LBR02Alpha(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelAlpha(image,(pixel))) & 0xc0; \
      SetPixelAlpha(image, ScaleCharToQuantum( \
-       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), (pixel) ); \
+       (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
+       (pixel) ); \
    }
 
 #define LBR02RGB(pixel) \
@@ -2927,9 +2931,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   }
                 if ((ping_color_type == PNG_COLOR_TYPE_RGB ||
                     ping_color_type == PNG_COLOR_TYPE_GRAY) &&
-                    (ScaleQuantumToShort(GetPixelRed(image,q)) == transparent_color.red &&
-                    ScaleQuantumToShort(GetPixelGreen(image,q)) == transparent_color.green &&
-                    ScaleQuantumToShort(GetPixelBlue(image,q)) == transparent_color.blue))
+                    (ScaleQuantumToShort(GetPixelRed(image,q)) ==
+                    transparent_color.red &&
+                    ScaleQuantumToShort(GetPixelGreen(image,q)) ==
+                    transparent_color.green &&
+                    ScaleQuantumToShort(GetPixelBlue(image,q)) ==
+                    transparent_color.blue))
                   {
                     if (logging != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3279,9 +3286,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              */
             for (x=(ssize_t) image->columns-1; x >= 0; x--)
             {
-              if (ScaleQuantumToShort(GetPixelRed(image,q)) == transparent_color.red &&
-                  ScaleQuantumToShort(GetPixelGreen(image,q)) == transparent_color.green &&
-                  ScaleQuantumToShort(GetPixelBlue(image,q)) == transparent_color.blue)
+              if (ScaleQuantumToShort(GetPixelRed(image,q)) ==
+                  transparent_color.red &&
+                  ScaleQuantumToShort(GetPixelGreen(image,q)) ==
+                  transparent_color.green &&
+                  ScaleQuantumToShort(GetPixelBlue(image,q)) ==
+                  transparent_color.blue)
                 {
                   SetPixelAlpha(image,TransparentAlpha,q);
                 }
@@ -6308,19 +6318,26 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         {
                           /* replicate previous */
                           SetPixelRed(large_image,GetPixelRed(image,pixels),q);
-                          SetPixelGreen(large_image,GetPixelGreen(image,pixels),q);
-                          SetPixelBlue(large_image,GetPixelBlue(image,pixels),q);
-                          SetPixelAlpha(large_image,GetPixelAlpha(image,pixels),q);
+                          SetPixelGreen(large_image,GetPixelGreen(image,
+                             pixels),q);
+                          SetPixelBlue(large_image,GetPixelBlue(image,
+                             pixels),q);
+                          SetPixelAlpha(large_image,GetPixelAlpha(image,
+                             pixels),q);
                         }
 
                       else if (magn_methy == 2 || magn_methy == 4)
                         {
                           if (i == 0)
                             {
-                              SetPixelRed(large_image,GetPixelRed(image,pixels),q);
-                              SetPixelGreen(large_image,GetPixelGreen(image,pixels),q);
-                              SetPixelBlue(large_image,GetPixelBlue(image,pixels),q);
-                              SetPixelAlpha(large_image,GetPixelAlpha(image,pixels),q);
+                              SetPixelRed(large_image,GetPixelRed(image,
+                                 pixels),q);
+                              SetPixelGreen(large_image,GetPixelGreen(image,
+                                 pixels),q);
+                              SetPixelBlue(large_image,GetPixelBlue(image,
+                                 pixels),q);
+                              SetPixelAlpha(large_image,GetPixelAlpha(image,
+                                 pixels),q);
                             }
 
                           else
@@ -6354,9 +6371,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             {
                               /* Replicate nearest */
                               if (i <= ((m+1) << 1))
-                                 SetPixelAlpha(large_image,GetPixelAlpha(image,pixels),q);
+                                 SetPixelAlpha(large_image,GetPixelAlpha(image,
+                                    pixels),q);
                               else
-                                 SetPixelAlpha(large_image,GetPixelAlpha(image,n),q);
+                                 SetPixelAlpha(large_image,GetPixelAlpha(image,
+                                    n),q);
                             }
                         }
 
@@ -6365,18 +6384,25 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           /* Replicate nearest */
                           if (i <= ((m+1) << 1))
                           {
-                             SetPixelRed(large_image,GetPixelRed(image,pixels),q);
-                             SetPixelGreen(large_image,GetPixelGreen(image,pixels),q);
-                             SetPixelBlue(large_image,GetPixelBlue(image,pixels),q);
-                             SetPixelAlpha(large_image,GetPixelAlpha(image,pixels),q);
+                             SetPixelRed(large_image,GetPixelRed(image,
+                                    pixels),q);
+                             SetPixelGreen(large_image,GetPixelGreen(image,
+                                    pixels),q);
+                             SetPixelBlue(large_image,GetPixelBlue(image,
+                                    pixels),q);
+                             SetPixelAlpha(large_image,GetPixelAlpha(image,
+                                    pixels),q);
                           }
 
                           else
                           {
                              SetPixelRed(large_image,GetPixelRed(image,n),q);
-                             SetPixelGreen(large_image,GetPixelGreen(image,n),q);
-                             SetPixelBlue(large_image,GetPixelBlue(image,n),q);
-                             SetPixelAlpha(large_image,GetPixelAlpha(image,n),q);
+                             SetPixelGreen(large_image,GetPixelGreen(image,n),
+                                    q);
+                             SetPixelBlue(large_image,GetPixelBlue(image,n),
+                                    q);
+                             SetPixelAlpha(large_image,GetPixelAlpha(image,n),
+                                    q);
                           }
 
                           if (magn_methy == 5)
@@ -8660,9 +8686,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                  if (GetPixelAlpha(image,q) != TransparentAlpha &&
-                     (unsigned short) GetPixelRed(image,q) == ping_trans_color.red &&
-                     (unsigned short) GetPixelGreen(image,q) == ping_trans_color.green &&
-                     (unsigned short) GetPixelBlue(image,q) == ping_trans_color.blue)
+                     (unsigned short) GetPixelRed(image,q) ==
+                                     ping_trans_color.red &&
+                     (unsigned short) GetPixelGreen(image,q) ==
+                                     ping_trans_color.green &&
+                     (unsigned short) GetPixelBlue(image,q) ==
+                                     ping_trans_color.blue)
                    {
                      ping_have_cheap_transparency = MagickFalse;
                      break;
@@ -9508,7 +9537,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16)
-           ((maxval/255.)*((GetPixelPacketIntensity(&image->background_color)))+.5);
+           ((maxval/255.)*((GetPixelPacketIntensity(&image->background_color)))
+                                    +.5);
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
