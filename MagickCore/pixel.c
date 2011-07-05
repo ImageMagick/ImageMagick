@@ -98,11 +98,10 @@ MagickExport PixelComponentMap *AcquirePixelComponentMap(void)
     sizeof(*component_map));
   if (component_map == (PixelComponentMap *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(component_map,0,MaxPixelComponents*
+    sizeof(*component_map));
   for (i=0; i < MaxPixelComponents; i++)
-  {
     component_map[i].component=(PixelComponent) i;
-    component_map[i].traits=UndefinedPixelTrait;
-  }
   return(component_map);
 }
 
@@ -4462,6 +4461,7 @@ MagickExport void SetPixelComponentMap(Image *image,const char *components)
   channel=(ChannelType) ParseChannelOption(components);
   if (channel < 0)
     channel=DefaultChannels;
+  image->sync=(channel & SyncChannels) != 0 ? MagickTrue : MagickFalse;
   if ((channel & RedChannel) != 0)
     SetPixelRedTraits(image,ActivePixelTrait);
   if ((channel & GreenChannel) != 0)

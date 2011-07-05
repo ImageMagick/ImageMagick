@@ -524,21 +524,19 @@ void Magick::Image::channel ( const ChannelType channel_ )
 }
 
 // Set or obtain modulus channel depth
-void Magick::Image::channelDepth ( const ChannelType channel_,
-                                   const size_t depth_)
+void Magick::Image::channelDepth ( const size_t depth_ )
 {
   modifyImage();
-  SetImageChannelDepth( image(), channel_, depth_);
+  SetImageDepth( image(), depth_);
   throwImageException();
 }
-size_t Magick::Image::channelDepth ( const ChannelType channel_ )
+size_t Magick::Image::channelDepth ( )
 {
   size_t channel_depth;
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  channel_depth=GetImageChannelDepth( constImage(), channel_,
-                                      &exceptionInfo );
+  channel_depth=GetImageDepth( constImage(), &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
   return channel_depth;
