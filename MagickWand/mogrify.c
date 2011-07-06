@@ -797,7 +797,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Auto Adjust Gamma of image based on its mean
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) AutoGammaImageChannel(*image,channel);
+            (void) AutoGammaImage(*image);
             break;
           }
         if (LocaleCompare("auto-level",option+1) == 0)
@@ -806,7 +806,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Perfectly Normalize (max/min stretch) the image
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) AutoLevelImageChannel(*image,channel);
+            (void) AutoLevelImage(*image);
             break;
           }
         if (LocaleCompare("auto-orient",option+1) == 0)
@@ -2432,8 +2432,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   Composite region.
                 */
                 (void) CompositeImage(region_image,region_image->matte !=
-                  MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
-                  region_geometry.x,region_geometry.y);
+                     MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
+                     region_geometry.x,region_geometry.y);
                 InheritException(exception,&region_image->exception);
                 *image=DestroyImage(*image);
                 *image=region_image;
@@ -3176,8 +3176,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       */
       (void) SyncImageSettings(mogrify_info,*image);
       (void) CompositeImage(region_image,region_image->matte !=
-        MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
-        region_geometry.x,region_geometry.y);
+           MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
+           region_geometry.x,region_geometry.y);
       InheritException(exception,&region_image->exception);
       *image=DestroyImage(*image);
       *image=region_image;
@@ -7460,8 +7460,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     (void) NegateImage(image->mask,MagickFalse);
                   }
               }
-            (void) CompositeImage(image,image->compose,composite_image,
-              geometry.x,geometry.y);
+            (void) CompositeImageChannel(image,channel,image->compose,
+              composite_image,geometry.x,geometry.y);
             if (mask_image != (Image *) NULL)
               mask_image=image->mask=DestroyImage(image->mask);
             composite_image=DestroyImage(composite_image);

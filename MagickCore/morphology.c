@@ -3852,7 +3852,8 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       if ( method == VoronoiMorphology ) {
         /* Preserve the alpha channel of input image - but turned off */
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
-        (void) CompositeImage(rslt_image,CopyOpacityCompositeOp,image,0,0);
+        (void) CompositeImageChannel(rslt_image, DefaultChannels,
+          CopyOpacityCompositeOp, image, 0, 0);
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
       }
       goto exit_cleanup;
@@ -4079,14 +4080,17 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, "\n%s: Difference with original image",
                  CommandOptionToMnemonic(MagickMorphologyOptions, method) );
-          (void) CompositeImage(curr_image,DifferenceCompositeOp,image,0,0);
+          (void) CompositeImageChannel(curr_image,
+                  (ChannelType) (channel & ~SyncChannels),
+                  DifferenceCompositeOp, image, 0, 0);
           break;
         case EdgeMorphology:
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, "\n%s: Difference of Dilate and Erode",
                  CommandOptionToMnemonic(MagickMorphologyOptions, method) );
-          (void) CompositeImage(curr_image,DifferenceCompositeOp,save_image,
-            0,0);
+          (void) CompositeImageChannel(curr_image,
+                  (ChannelType) (channel & ~SyncChannels),
+                  DifferenceCompositeOp, save_image, 0, 0);
           save_image = DestroyImage(save_image); /* finished with save image */
           break;
         default:
@@ -4122,7 +4126,9 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
                  CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
-          (void) CompositeImage(rslt_image,rslt_compose,curr_image,0,0);
+          (void) CompositeImageChannel(rslt_image,
+               (ChannelType) (channel & ~SyncChannels), rslt_compose,
+               curr_image, 0, 0);
           curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */
         }

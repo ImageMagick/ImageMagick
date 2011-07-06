@@ -90,26 +90,13 @@
 %  The format of the AutoGammaImage method is:
 %
 %      MagickBooleanType AutoGammaImage(Image *image)
-%      MagickBooleanType AutoGammaImageChannel(Image *image,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image to auto-level
 %
-%    o channel: The channels to auto-level.  If the special 'SyncChannels'
-%      flag is set all given channels is adjusted in the same way using the
-%      mean average of those channels.
-%
 */
-
 MagickExport MagickBooleanType AutoGammaImage(Image *image)
-{
-  return(AutoGammaImageChannel(image,DefaultChannels));
-}
-
-MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
-  const ChannelType channel)
 {
   MagickStatusType
     status;
@@ -121,17 +108,16 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
     sans;
 
   log_mean=log(0.5);
-
-  if ((channel & SyncChannels) != 0 )
+  if (image->sync != MagickFalse)
     {
       /*
         Apply gamma correction equally accross all given channels
       */
-      (void) GetImageChannelMean(image,channel,&mean,&sans,&image->exception);
+      (void) GetImageChannelMean(image,DefaultChannels,&mean,&sans,
+        &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      return(LevelImageChannel(image,channel,0.0,(double)QuantumRange,gamma));
+      return(LevelImageChannel(image,DefaultChannels,0.0,(double) QuantumRange,gamma));
     }
-
   /*
     Auto-gamma each channel separately.
   */
@@ -142,7 +128,7 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImageChannel(image,RedChannel,0.0,(double)
-        QuantumRange, gamma);
+        QuantumRange,gamma);
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
@@ -198,31 +184,15 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
 %  The format of the LevelImage method is:
 %
 %      MagickBooleanType AutoLevelImage(Image *image)
-%      MagickBooleanType AutoLevelImageChannel(Image *image,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image to auto-level
 %
-%    o channel: The channels to auto-level.  If the special 'SyncChannels'
-%      flag is set the min/max/mean value of all given channels is used for
-%      all given channels, to all channels in the same way.
-%
 */
-
 MagickExport MagickBooleanType AutoLevelImage(Image *image)
 {
-  return(AutoLevelImageChannel(image,DefaultChannels));
-}
-
-MagickExport MagickBooleanType AutoLevelImageChannel(Image *image,
-  const ChannelType channel)
-{
-  /*
-    This is simply a convenience function around a Min/Max Histogram Stretch
-  */
-  return MinMaxStretchImage(image, channel, 0.0, 0.0);
+  return(MinMaxStretchImage(image,DefaultChannels,0.0,0.0));
 }
 
 /*

@@ -24,9 +24,7 @@ extern "C" {
 
 extern MagickExport MagickBooleanType
   AutoGammaImage(Image *),
-  AutoGammaImageChannel(Image *,const ChannelType),
   AutoLevelImage(Image *),
-  AutoLevelImageChannel(Image *,const ChannelType),
   BrightnessContrastImage(Image *,const double,const double),
   BrightnessContrastImageChannel(Image *,const ChannelType,const double,
     const double),
