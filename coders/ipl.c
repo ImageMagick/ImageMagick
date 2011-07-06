@@ -46,6 +46,7 @@
 #include "magick/blob-private.h"
 #include "magick/cache.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -573,10 +574,10 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   ipl_info.width = (unsigned int) image->columns;
   ipl_info.height = (unsigned int) image->rows;
   
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   
-  if(image->colorspace == RGBColorspace) { ipl_info.colors = 3; }
+  if(IsRGBColorspace(image->colorspace) == MagickTrue) { ipl_info.colors = 3; }
   else{ ipl_info.colors = 1; }
   
   ipl_info.size = (unsigned int) (28 + 
