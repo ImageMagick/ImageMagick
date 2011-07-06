@@ -48,6 +48,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
@@ -703,7 +704,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         }
         case 4:
         {
-          if ((image->colorspace == RGBColorspace) && (channels > 3))
+          if ((IsRGBColorspace(image->colorspace) == MagickTrue) && (channels > 3))
             break;
           SetPixelAlpha(image,pixel,q);
           break;
@@ -2135,7 +2136,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
            (image->colorspace != CMYKColorspace)) &&
           (image_info->colorspace != CMYKColorspace))
         {
-          if (image->colorspace != RGBColorspace)
+          if (IsRGBColorspace(image->colorspace) == MagickFalse)
             (void) TransformImageColorspace(image,RGBColorspace);
           (void) WriteBlobMSBShort(image,(unsigned short)
             (image->storage_class == PseudoClass ? IndexedMode : RGBMode));

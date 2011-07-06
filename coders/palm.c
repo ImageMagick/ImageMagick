@@ -50,6 +50,7 @@
 #include "MagickCore/colormap-private.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/histogram.h"
@@ -732,7 +733,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   scene=0;
   do
   {
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     count=GetNumberColors(image,NULL,&exception);
     for (bits_per_pixel=1;  (one << bits_per_pixel) < count; bits_per_pixel*=2) ;

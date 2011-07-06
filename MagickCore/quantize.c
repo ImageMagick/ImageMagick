@@ -181,6 +181,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -513,7 +514,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
       cube_info->quantize_info->colorspace);
   else
     if ((image->colorspace != GRAYColorspace) &&
-        (image->colorspace != RGBColorspace) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYColorspace))
       (void) TransformImageColorspace((Image *) image,RGBColorspace);
   if (AcquireImageColormap(image,cube_info->colors) == MagickFalse)
@@ -800,7 +801,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   else
     if ((image->colorspace != GRAYColorspace) &&
         (image->colorspace != CMYColorspace) &&
-        (image->colorspace != RGBColorspace))
+        (IsRGBColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace((Image *) image,RGBColorspace);
   midpoint.red=(MagickRealType) QuantumRange/2.0;
   midpoint.green=(MagickRealType) QuantumRange/2.0;
