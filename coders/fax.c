@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/compress.h"
@@ -323,7 +324,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to monochrome.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     status=HuffmanEncodeImage(write_info,image,image);
     if (GetNextImageInList(image) == (Image *) NULL)

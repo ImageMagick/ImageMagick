@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -1101,7 +1102,7 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to BGR raster pixels.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     if ((LocaleCompare(image_info->magick,"BGRA") == 0) &&
         (image->matte == MagickFalse))

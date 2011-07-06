@@ -55,6 +55,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -737,7 +738,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
 
   if (image -> colors <= 2  ||  GetImageType( image, &image -> exception ) == BilevelType) { /* TS */
@@ -812,7 +813,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
     sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Convert to GRAY raster scanline.

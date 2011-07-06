@@ -49,6 +49,7 @@
 #include "MagickCore/colormap.h"
 #include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -1553,7 +1554,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
   one=1;
   do
   {
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     opacity=(-1);
     if (IsImageOpaque(image,&image->exception) != MagickFalse)

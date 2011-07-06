@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -354,7 +355,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Write AVS header.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
     (void) WriteBlobMSBLong(image,(unsigned int) image->rows);

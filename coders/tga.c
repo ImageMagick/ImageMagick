@@ -48,6 +48,7 @@
 #include "MagickCore/colormap.h"
 #include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -674,7 +675,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
   */
   if ((image->columns > 65535L) || (image->rows > 65535L))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   targa_info.id_length=0;
   value=GetImageProperty(image,"comment");

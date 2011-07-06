@@ -48,6 +48,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
@@ -2687,7 +2688,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             }
           else
             {
-              if (image->colorspace != RGBColorspace)
+              if (IsRGBColorspace(image->colorspace) == MagickFalse)
                 (void) TransformImageColorspace(image,RGBColorspace);
               photometric=PHOTOMETRIC_RGB;
             }
@@ -2859,7 +2860,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
-        if (image->colorspace == RGBColorspace)
+        if (IsRGBColorspace(image->colorspace) == MagickTrue)
           {
             const char
               *value;

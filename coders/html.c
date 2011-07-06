@@ -45,6 +45,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -245,7 +246,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   (void) CloseBlob(image);
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   *url='\0';
   if ((LocaleCompare(image_info->magick,"FTP") == 0) ||

@@ -47,6 +47,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -1547,7 +1548,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     if (format != '7')
       {
-        if (image->colorspace != RGBColorspace)
+        if (IsRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,RGBColorspace);
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",
           (double) image->columns,(double) image->rows);

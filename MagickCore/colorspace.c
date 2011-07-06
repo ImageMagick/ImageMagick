@@ -1237,12 +1237,12 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     }
   if (image->colorspace == colorspace)
     return(MagickTrue);
-  if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
+  if ((colorspace == RGBColorspace) ||
+      (colorspace == sRGBColorspace) ||
+      (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,image->colorspace));
   status=MagickTrue;
-  if ((image->colorspace != RGBColorspace) &&
-      (image->colorspace != TransparentColorspace) &&
-      (image->colorspace != GRAYColorspace))
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     status=TransformRGBImage(image,image->colorspace);
   if (RGBTransformImage(image,colorspace) == MagickFalse)
     status=MagickFalse;

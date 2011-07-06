@@ -53,6 +53,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -1806,7 +1807,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
     default:
     {
-      if (image->colorspace != RGBColorspace)
+      if (IsRGBColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,RGBColorspace);
       break;
     }

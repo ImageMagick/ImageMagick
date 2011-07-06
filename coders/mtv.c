@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -359,7 +360,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
       3UL*sizeof(*pixels));

@@ -43,6 +43,7 @@
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/color.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/configure.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -1152,7 +1153,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                  (source_colorspace != LabColorspace) &&
                  (source_colorspace != XYZColorspace) &&
                  (source_colorspace != YCbCrColorspace) &&
-                 (image->colorspace != RGBColorspace))
+                 (IsRGBColorspace(image->colorspace) == MagickFalse))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
             switch (image->rendering_intent)
