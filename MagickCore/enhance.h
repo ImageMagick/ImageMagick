@@ -26,8 +26,6 @@ extern MagickExport MagickBooleanType
   AutoGammaImage(Image *),
   AutoLevelImage(Image *),
   BrightnessContrastImage(Image *,const double,const double),
-  BrightnessContrastImageChannel(Image *,const ChannelType,const double,
-    const double),
   ClutImage(Image *,const Image *),
   ClutImageChannel(Image *,const ChannelType,const Image *),
   ColorDecisionListImage(Image *,const char *),
@@ -57,9 +55,8 @@ extern MagickExport MagickBooleanType
   NegateImageChannel(Image *,const ChannelType,const MagickBooleanType),
   NormalizeImage(Image *),
   NormalizeImageChannel(Image *,const ChannelType),
-  SigmoidalContrastImage(Image *,const MagickBooleanType,const char *),
-  SigmoidalContrastImageChannel(Image *,const ChannelType,
-    const MagickBooleanType,const double,const double);
+  SigmoidalContrastImage(Image *,const MagickBooleanType,const double,
+    const double);
 
 extern MagickExport Image
   *EnhanceImage(const Image *,ExceptionInfo *);

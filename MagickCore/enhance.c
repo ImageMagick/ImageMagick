@@ -214,35 +214,18 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image)
 %
 %      MagickBooleanType BrightnessContrastImage(Image *image,
 %        const double brightness,const double contrast)
-%      MagickBooleanType BrightnessContrastImageChannel(Image *image,
-%        const ChannelType channel,const double brightness,
-%        const double contrast)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o brightness: the brightness percent (-100 .. 100).
 %
 %    o contrast: the contrast percent (-100 .. 100).
 %
 */
-
 MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   const double brightness,const double contrast)
-{
-  MagickBooleanType
-    status;
-
-  status=BrightnessContrastImageChannel(image,DefaultChannels,brightness,
-    contrast);
-  return(status);
-}
-
-MagickExport MagickBooleanType BrightnessContrastImageChannel(Image *image,
-  const ChannelType channel,const double brightness,const double contrast)
 {
 #define BrightnessContastImageTag  "BrightnessContast/Image"
 
@@ -269,8 +252,8 @@ MagickExport MagickBooleanType BrightnessContrastImageChannel(Image *image,
   intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
   coefficients[0]=slope;
   coefficients[1]=intercept;
-  status=FunctionImageChannel(image,channel,PolynomialFunction,2,coefficients,
-    &image->exception);
+  status=FunctionImageChannel(image,DefaultChannels,PolynomialFunction,2,
+    coefficients,&image->exception);
   return(status);
 }
 
@@ -3626,15 +3609,10 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 %
 %      MagickBooleanType SigmoidalContrastImage(Image *image,
 %        const MagickBooleanType sharpen,const char *levels)
-%      MagickBooleanType SigmoidalContrastImageChannel(Image *image,
-%        const ChannelType channel,const MagickBooleanType sharpen,
-%        const double contrast,const double midpoint)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o sharpen: Increase or decrease image contrast.
 %
@@ -3644,32 +3622,8 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 %    o beta: midpoint of the function as a color value 0 to QuantumRange.
 %
 */
-
 MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
-  const MagickBooleanType sharpen,const char *levels)
-{
-  GeometryInfo
-    geometry_info;
-
-  MagickBooleanType
-    status;
-
-  MagickStatusType
-    flags;
-
-  flags=ParseGeometry(levels,&geometry_info);
-  if ((flags & SigmaValue) == 0)
-    geometry_info.sigma=1.0*QuantumRange/2.0;
-  if ((flags & PercentValue) != 0)
-    geometry_info.sigma=1.0*QuantumRange*geometry_info.sigma/100.0;
-  status=SigmoidalContrastImageChannel(image,DefaultChannels,sharpen,
-    geometry_info.rho,geometry_info.sigma);
-  return(status);
-}
-
-MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
-  const ChannelType channel,const MagickBooleanType sharpen,
-  const double contrast,const double midpoint)
+  const MagickBooleanType sharpen,const double contrast,const double midpoint)
 {
 #define SigmoidalContrastImageTag  "SigmoidalContrast/Image"
 
@@ -3810,7 +3764,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_SigmoidalContrastImageChannel)
+  #pragma omp critical (MagickCore_SigmoidalContrastImage)
 #endif
         proceed=SetImageProgress(image,SigmoidalContrastImageTag,progress++,
           image->rows);

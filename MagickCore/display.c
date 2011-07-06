@@ -7849,6 +7849,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case SigmoidalContrastCommand:
     {
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        flags;
+
       static char
         levels[MaxTextExtent] = "3x50%";
 
@@ -7864,7 +7870,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) SigmoidalContrastImage(*image,MagickTrue,levels);
+      flags=ParseGeometry(levels,&geometry_info);
+      if ((flags & SigmaValue) == 0)
+        geometry_info.sigma=1.0*QuantumRange/2.0;
+      if ((flags & PercentValue) != 0)
+        geometry_info.sigma=1.0*QuantumRange*geometry_info.sigma/100.0;
+      (void) SigmoidalContrastImage(*image,MagickTrue,geometry_info.rho,
+        geometry_info.sigma);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
