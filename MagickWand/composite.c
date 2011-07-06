@@ -50,9 +50,6 @@
 */
 typedef struct _CompositeOptions
 {
-  ChannelType
-    channel;
-
   char
     *compose_args,
     *geometry;
@@ -189,8 +186,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               columns=composite_image->columns;
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
-                  status&=CompositeImageChannel(*image,
-                    composite_options->channel,composite_options->compose,
+                  status&=CompositeImage(*image,composite_options->compose,
                     composite_image,x,y);
               GetImageException(*image,exception);
             }
@@ -213,9 +209,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               /*
                 Digitally composite image.
               */
-              status&=CompositeImageChannel(*image,composite_options->channel,
-                composite_options->compose,composite_image,geometry.x,
-                geometry.y);
+              status&=CompositeImage(*image,composite_options->compose,
+                composite_image,geometry.x,geometry.y);
               GetImageException(*image,exception);
             }
     }
@@ -368,7 +363,6 @@ static MagickBooleanType CompositeUsage(void)
 static void GetCompositeOptions(CompositeOptions *composite_options)
 {
   (void) ResetMagickMemory(composite_options,0,sizeof(*composite_options));
-  composite_options->channel=DefaultChannels;
   composite_options->compose=OverCompositeOp;
 }
 
@@ -662,7 +656,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
 
             if (*option == '+')
               {
-                composite_options.channel=DefaultChannels;
+                SetPixelComponentMap(image,DefaultChannels);
                 break;
               }
             i++;
@@ -672,7 +666,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             if (channel < 0)
               ThrowCompositeException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
-            composite_options.channel=(ChannelType) channel;
+            SetPixelComponentMap(image,(ChannelType) channel);
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)

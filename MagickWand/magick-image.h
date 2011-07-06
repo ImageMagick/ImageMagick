@@ -115,7 +115,6 @@ extern WandExport MagickBooleanType
   MagickCommentImage(MagickWand *,const char *),
   MagickCompositeImage(MagickWand *,const MagickWand *,const CompositeOperator,
     const ssize_t,const ssize_t),
-  MagickCompositeImageChannel(MagickWand *,const ChannelType,const MagickWand *,    const CompositeOperator,const ssize_t,const ssize_t),
   MagickConstituteImage(MagickWand *,const size_t,const size_t,const char *,
     const StorageType,const void *),
   MagickContrastImage(MagickWand *,const MagickBooleanType),

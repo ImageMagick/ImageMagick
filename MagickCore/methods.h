@@ -189,7 +189,7 @@ extern "C" {
 #define CompareSplayTreeStringInfo  PrependMagickMethod(CompareSplayTreeStringInfo)
 #define CompareSplayTreeString  PrependMagickMethod(CompareSplayTreeString)
 #define CompareStringInfo  PrependMagickMethod(CompareStringInfo)
-#define CompositeImageChannel  PrependMagickMethod(CompositeImageChannel)
+#define CompositeImage  PrependMagickMethod(CompositeImage)
 #define CompositeImage  PrependMagickMethod(CompositeImage)
 #define CompositeLayers  PrependMagickMethod(CompositeLayers)
 #define CompressImageColormap  PrependMagickMethod(CompressImageColormap)

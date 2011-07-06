@@ -2053,8 +2053,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             &exception);
           if (rotate_image == (Image *) NULL)
-            CompositeImageChannel(image,channel,compose,composite_image,
-              geometry.x,geometry.y);
+            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
           else
             {
               /*
@@ -2063,8 +2062,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               geometry.x-=(ssize_t) (rotate_image->columns-
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-composite_image->rows)/2;
-              CompositeImageChannel(image,channel,compose,rotate_image,
-                geometry.x,geometry.y);
+              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
           composite_image=DestroyImage(composite_image);
