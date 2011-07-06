@@ -9706,13 +9706,16 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            {
+              channel=(ChannelType) argument_list[3].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
           sharpen=MagickTrue;
           if (attribute_flag[4] != 0)
             sharpen=argument_list[4].integer_reference != 0 ? MagickTrue :
               MagickFalse;
-          (void) SigmoidalContrastImageChannel(image,channel,sharpen,
-            geometry_info.rho,geometry_info.sigma);
+          (void) SigmoidalContrastImage(image,sharpen,geometry_info.rho,
+            geometry_info.sigma);
           break;
         }
         case 93:  /* Extent */
@@ -10464,9 +10467,11 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             contrast=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
-            channel=(ChannelType) argument_list[4].integer_reference;
-          (void) BrightnessContrastImageChannel(image,channel,brightness,
-            contrast);
+            {
+              channel=(ChannelType) argument_list[4].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
+          (void) BrightnessContrastImage(image,brightness,contrast);
           break;
         }
         case 133:  /* Morphology */

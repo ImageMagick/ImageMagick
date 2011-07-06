@@ -1929,7 +1929,7 @@ void Magick::Image::shear ( const double xShearAngle_,
 void Magick::Image::sigmoidalContrast ( const size_t sharpen_, const double contrast, const double midpoint )
 {
   modifyImage();
-  (void) SigmoidalContrastImageChannel( image(), DefaultChannels, (MagickBooleanType) sharpen_, contrast, midpoint );
+  (void) SigmoidalContrastImage( image(), (MagickBooleanType) sharpen_, contrast, midpoint );
   throwImageException();
 }
 

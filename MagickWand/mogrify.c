@@ -947,8 +947,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             contrast=0.0;
             if ((flags & SigmaValue) != 0)
               contrast=geometry_info.sigma;
-            (void) BrightnessContrastImageChannel(*image,channel,brightness,
-              contrast);
+            (void) BrightnessContrastImage(*image,brightness,contrast);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -2745,9 +2744,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & PercentValue) != 0)
               geometry_info.sigma=(double) QuantumRange*geometry_info.sigma/
                 100.0;
-            (void) SigmoidalContrastImageChannel(*image,channel,
-              (*option == '-') ? MagickTrue : MagickFalse,geometry_info.rho,
-              geometry_info.sigma);
+            (void) SigmoidalContrastImage(*image,(*option == '-') ?
+              MagickTrue : MagickFalse,geometry_info.rho,geometry_info.sigma);
             InheritException(exception,&(*image)->exception);
             break;
           }
