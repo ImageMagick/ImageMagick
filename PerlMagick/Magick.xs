@@ -8329,10 +8329,7 @@ Mogrify(ref,...)
                 }
             }
           if (attribute_flag[11] != 0) /* channel */
-            {
-              channel=(ChannelType) argument_list[11].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[11].integer_reference;
           /*
             Composite two images (normal composition).
           */
@@ -8343,7 +8340,8 @@ Mogrify(ref,...)
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             exception);
           if (attribute_flag[8] == 0) /* no rotate */
-            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
+            CompositeImageChannel(image,channel,compose,composite_image,
+              geometry.x,geometry.y);
           else
             {
               /*
@@ -8353,7 +8351,8 @@ Mogrify(ref,...)
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-
                 composite_image->rows)/2;
-              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
+              CompositeImageChannel(image,channel,compose,rotate_image,
+                geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
           if (attribute_flag[10] != 0) /* mask */
@@ -8626,7 +8625,7 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          EqualizeImage(image,channel);
+          EqualizeImageChannel(image,channel);
           break;
         }
         case 40:  /* Gamma */
@@ -8650,7 +8649,7 @@ Mogrify(ref,...)
           if (strchr(argument_list[0].string_reference,',') != (char *) NULL)
             (void) GammaImage(image,argument_list[0].string_reference);
           else
-            (void) GammaImage(image,channel,InterpretLocaleValue(
+            (void) GammaImageChannel(image,channel,InterpretLocaleValue(
               argument_list[0].string_reference,(char **) NULL));
           break;
         }
@@ -8766,7 +8765,7 @@ Mogrify(ref,...)
             argument_list[0].integer_reference=0;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          (void) NegateImage(image,channel,
+          (void) NegateImageChannel(image,channel,
             argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse);
           break;
         }
@@ -8774,7 +8773,7 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          NormalizeImage(image,channel);
+          NormalizeImageChannel(image,channel);
           break;
         }
         case 46:  /* NumberColors */
@@ -9315,7 +9314,7 @@ Mogrify(ref,...)
               argument_list[0].real_reference=argument_list[5].real_reference;
               attribute_flag[0]=attribute_flag[5];
             }
-          (void) LevelImage(image,channel,black_point,white_point,gamma);
+          (void) LevelImageChannel(image,channel,black_point,white_point,gamma);
           break;
         }
         case 74:  /* Clip */
@@ -9712,7 +9711,7 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             sharpen=argument_list[4].integer_reference != 0 ? MagickTrue :
               MagickFalse;
-          (void) SigmoidalContrastImage(image,channel,sharpen,
+          (void) SigmoidalContrastImageChannel(image,channel,sharpen,
             geometry_info.rho,geometry_info.sigma);
           break;
         }
@@ -9808,7 +9807,7 @@ Mogrify(ref,...)
             white_point=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          (void) ContrastStretchImage(image,channel,black_point,
+          (void) ContrastStretchImageChannel(image,channel,black_point,
             white_point);
           break;
         }
@@ -10149,7 +10148,7 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          (void) ClutImage(image,channel,
+          (void) ClutImageChannel(image,channel,
             argument_list[0].image_reference);
           break;
         }
@@ -10343,7 +10342,7 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          (void) HaldClutImage(image,channel,
+          (void) HaldClutImageChannel(image,channel,
             argument_list[0].image_reference);
           break;
         }
@@ -10380,15 +10379,21 @@ Mogrify(ref,...)
         case 127:  /* AutoGamma */
         {
           if (attribute_flag[0] != 0)
-            channel=(ChannelType) argument_list[0].integer_reference;
-          (void) AutoGammaImage(image,channel);
+            {
+              channel=(ChannelType) argument_list[0].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
+          (void) AutoGammaImage(image);
           break;
         }
         case 128:  /* AutoLevel */
         {
           if (attribute_flag[0] != 0)
-            channel=(ChannelType) argument_list[0].integer_reference;
-          (void) AutoLevelImage(image,channel);
+            {
+              channel=(ChannelType) argument_list[0].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
+          (void) AutoLevelImage(image);
           break;
         }
         case 129:  /* LevelColors */
@@ -10407,7 +10412,7 @@ Mogrify(ref,...)
                &white_point,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          (void) LevelColorsImage(image,channel,&black_point,
+          (void) LevelColorsImageChannel(image,channel,&black_point,
             &white_point,argument_list[0].integer_reference != 0 ? MagickTrue :
             MagickFalse);
           break;

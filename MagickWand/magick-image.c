@@ -761,27 +761,13 @@ WandExport MagickWand *MagickAppendImages(MagickWand *wand,
 %  The format of the MagickAutoGammaImage method is:
 %
 %      MagickBooleanType MagickAutoGammaImage(MagickWand *wand)
-%      MagickBooleanType MagickAutoGammaImageChannel(MagickWand *wand,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 */
 WandExport MagickBooleanType MagickAutoGammaImage(MagickWand *wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickAutoGammaImageChannel(wand,DefaultChannels);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickAutoGammaImageChannel(MagickWand *wand,
-  const ChannelType channel)
 {
   MagickBooleanType
     status;
@@ -792,7 +778,7 @@ WandExport MagickBooleanType MagickAutoGammaImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=AutoGammaImageChannel(wand->images,channel);
+  status=AutoGammaImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -815,27 +801,13 @@ WandExport MagickBooleanType MagickAutoGammaImageChannel(MagickWand *wand,
 %  The format of the MagickAutoLevelImage method is:
 %
 %      MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
-%      MagickBooleanType MagickAutoLevelImageChannel(MagickWand *wand,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 */
 WandExport MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickAutoLevelImageChannel(wand,DefaultChannels);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickAutoLevelImageChannel(MagickWand *wand,
-  const ChannelType channel)
 {
   MagickBooleanType
     status;
@@ -846,7 +818,7 @@ WandExport MagickBooleanType MagickAutoLevelImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=AutoLevelImageChannel(wand->images,channel);
+  status=AutoLevelImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -1874,6 +1846,9 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %      MagickBooleanType MagickCompositeImage(MagickWand *wand,
 %        const MagickWand *composite_wand,const CompositeOperator compose,
 %        const ssize_t x,const ssize_t y)
+%      MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
+%        const ChannelType channel,const MagickWand *composite_wand,
+%        const CompositeOperator compose,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -1895,9 +1870,22 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %    o y: the row offset of the composited image.
 %
 */
+
 WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
-  const MagickWand *composite_wand,const CompositeOperator compose,
-  const ssize_t x,const ssize_t y)
+  const MagickWand *composite_wand,const CompositeOperator compose,const ssize_t x,
+  const ssize_t y)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickCompositeImageChannel(wand,DefaultChannels,composite_wand,
+    compose,x,y);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
+  const ChannelType channel,const MagickWand *composite_wand,
+  const CompositeOperator compose,const ssize_t x,const ssize_t y)
 {
   MagickBooleanType
     status;
@@ -1909,7 +1897,8 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
   if ((wand->images == (Image *) NULL) ||
       (composite_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=CompositeImage(wand->images,compose,composite_wand->images,x,y);
+  status=CompositeImageChannel(wand->images,channel,compose,
+    composite_wand->images,x,y);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);

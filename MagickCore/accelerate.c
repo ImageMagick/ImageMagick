@@ -52,7 +52,6 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/accelerate.h"
 #include "MagickCore/artifact.h"
-#include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/enhance.h"

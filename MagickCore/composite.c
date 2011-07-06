@@ -79,24 +79,29 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p o s i t e I m a g e                                               %
+%   C o m p o s i t e I m a g e C h a n n e l                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompositeImage() returns the second image composited onto the first
+%  CompositeImageChannel() returns the second image composited onto the first
 %  at the specified offset, using the specified composite method.
 %
-%  The format of the CompositeImage method is:
+%  The format of the CompositeImageChannel method is:
 %
 %      MagickBooleanType CompositeImage(Image *image,
 %        const CompositeOperator compose,Image *composite_image,
 %        const ssize_t x_offset,const ssize_t y_offset)
+%      MagickBooleanType CompositeImageChannel(Image *image,
+%        const ChannelType channel,const CompositeOperator compose,
+%        Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
 %
 %  A description of each parameter follows:
 %
 %    o image: the destination image, modified by he composition
+%
+%    o channel: the channel.
 %
 %    o compose: This operator affects how the composite is applied to
 %      the image.  The operators and how they are utilized are listed here
@@ -329,7 +334,7 @@ static inline MagickRealType Darken(const MagickRealType p,
 }
 
 static inline void CompositeDarken(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     gamma;
@@ -367,7 +372,8 @@ static inline void CompositeDarken(const Image *image,const PixelInfo *p,
 }
 
 static inline void CompositeDarkenIntensity(const Image *image,
-  const PixelInfo *p,const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *p,const PixelInfo *q,const ChannelType channel,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -414,7 +420,7 @@ static inline MagickRealType Difference(const MagickRealType p,
 }
 
 static inline void CompositeDifference(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -472,7 +478,7 @@ static MagickRealType Divide(const MagickRealType Sca,const MagickRealType Sa,
 }
 
 static inline void CompositeDivide(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -524,7 +530,7 @@ static MagickRealType Exclusion(const MagickRealType Sca,
 }
 
 static inline void CompositeExclusion(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     gamma,
@@ -678,7 +684,7 @@ static inline MagickRealType Lighten(const MagickRealType p,
 }
 
 static inline void CompositeLighten(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     gamma;
@@ -716,7 +722,8 @@ static inline void CompositeLighten(const Image *image,const PixelInfo *p,
 }
 
 static inline void CompositeLightenIntensity(const Image *image,
-  const PixelInfo *p,const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *p,const PixelInfo *q,const ChannelType channel,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -878,7 +885,8 @@ static inline MagickRealType Mathematics(const MagickRealType Sca,
 }
 
 static inline void CompositeMathematics(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,const GeometryInfo *args,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel, const GeometryInfo *args,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -924,7 +932,7 @@ static inline void CompositeMathematics(const Image *image,const PixelInfo *p,
 }
 
 static inline void CompositePlus(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   /*
     NOTE: "Plus" does not use 'over' alpha-blending but uses a special
@@ -975,7 +983,7 @@ static inline MagickRealType Minus(const MagickRealType Sca,
 }
 
 static inline void CompositeMinus(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1025,7 +1033,7 @@ static inline MagickRealType ModulusAdd(const MagickRealType p,
 }
 
 static inline void CompositeModulusAdd(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1075,7 +1083,8 @@ static inline MagickRealType ModulusSubtract(const MagickRealType p,
 }
 
 static inline void CompositeModulusSubtract(const Image *image,
-  const PixelInfo *p,const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *p,const PixelInfo *q, const ChannelType channel,
+  PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1119,7 +1128,7 @@ static  inline MagickRealType Multiply(const MagickRealType Sca,
 }
 
 static inline void CompositeMultiply(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1277,7 +1286,7 @@ static inline MagickRealType Screen(const MagickRealType Sca,
 }
 
 static inline void CompositeScreen(const Image *image,const PixelInfo *p,
-  const PixelInfo *q,PixelInfo *composite)
+  const PixelInfo *q,const ChannelType channel,PixelInfo *composite)
 {
   MagickRealType
     Da,
@@ -1545,6 +1554,18 @@ static void HSBComposite(const double hue,const double saturation,
 MagickExport MagickBooleanType CompositeImage(Image *image,
   const CompositeOperator compose,const Image *composite_image,
   const ssize_t x_offset,const ssize_t y_offset)
+{
+  MagickBooleanType
+    status;
+
+  status=CompositeImageChannel(image,DefaultChannels,compose,composite_image,
+    x_offset,y_offset);
+  return(status);
+}
+
+MagickExport MagickBooleanType CompositeImageChannel(Image *image,
+  const ChannelType channel,const CompositeOperator compose,
+  const Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
 {
 #define CompositeImageTag  "Composite/Image"
 
@@ -2374,83 +2395,86 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
         case PlusCompositeOp:
         {
-          CompositePlus(image,&source,&destination,&composite);
+          CompositePlus(image,&source,&destination,channel,&composite);
           break;
         }
         case MinusDstCompositeOp:
         {
-          CompositeMinus(image,&source,&destination,&composite);
+          CompositeMinus(image,&source,&destination,channel,&composite);
           break;
         }
         case MinusSrcCompositeOp:
         {
-          CompositeMinus(image,&destination,&source,&composite);
+          CompositeMinus(image,&destination,&source,channel,&composite);
           break;
         }
         case ModulusAddCompositeOp:
         {
-          CompositeModulusAdd(image,&source,&destination,&composite);
+          CompositeModulusAdd(image,&source,&destination,channel,&composite);
           break;
         }
         case ModulusSubtractCompositeOp:
         {
-          CompositeModulusSubtract(image,&source,&destination,&composite);
+          CompositeModulusSubtract(image,&source,&destination,channel,
+            &composite);
           break;
         }
         case DifferenceCompositeOp:
         {
-          CompositeDifference(image,&source,&destination,&composite);
+          CompositeDifference(image,&source,&destination,channel,&composite);
           break;
         }
         case ExclusionCompositeOp:
         {
-          CompositeExclusion(image,&source,&destination,&composite);
+          CompositeExclusion(image,&source,&destination,channel,&composite);
           break;
         }
         case MultiplyCompositeOp:
         {
-          CompositeMultiply(image,&source,&destination,&composite);
+          CompositeMultiply(image,&source,&destination,channel,&composite);
           break;
         }
         case ScreenCompositeOp:
         {
-          CompositeScreen(image,&source,&destination,&composite);
+          CompositeScreen(image,&source,&destination,channel,&composite);
           break;
         }
         case DivideDstCompositeOp:
         {
-          CompositeDivide(image,&source,&destination,&composite);
+          CompositeDivide(image,&source,&destination,channel,&composite);
           break;
         }
         case DivideSrcCompositeOp:
         {
-          CompositeDivide(image,&destination,&source,&composite);
+          CompositeDivide(image,&destination,&source,channel,&composite);
           break;
         }
         case DarkenCompositeOp:
         {
-          CompositeDarken(image,&source,&destination,&composite);
+          CompositeDarken(image,&source,&destination,channel,&composite);
           break;
         }
         case LightenCompositeOp:
         {
-          CompositeLighten(image,&source,&destination,&composite);
+          CompositeLighten(image,&source,&destination,channel,&composite);
           break;
         }
         case DarkenIntensityCompositeOp:
         {
-          CompositeDarkenIntensity(image,&source,&destination,&composite);
+          CompositeDarkenIntensity(image,&source,&destination,channel,
+            &composite);
           break;
         }
         case LightenIntensityCompositeOp:
         {
-          CompositeLightenIntensity(image,&source,&destination,&composite);
+          CompositeLightenIntensity(image,&source,&destination,channel,
+            &composite);
           break;
         }
         case MathematicsCompositeOp:
         {
-          CompositeMathematics(image,&source,&destination,&geometry_info,
-            &composite);
+          CompositeMathematics(image,&source,&destination,channel,
+            &geometry_info,&composite);
           break;
         }
         case ColorDodgeCompositeOp:
@@ -2706,7 +2730,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_CompositeImage)
+  #pragma omp critical (MagickCore_CompositeImageChannel)
 #endif
         proceed=SetImageProgress(image,CompositeImageTag,progress++,
           image->rows);
