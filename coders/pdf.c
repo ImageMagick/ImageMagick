@@ -46,6 +46,7 @@
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
@@ -545,7 +546,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page.width=page.height;
       page.height=swap;
     }
-  if (image_info->colorspace == RGBColorspace)
+  if (IsRGBColorspace(image_info->colorspace) != MagickFalse)
     cmyk=MagickFalse;
   /*
     Create Ghostscript control file.
@@ -1247,7 +1248,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     }
     if (compression == JPEG2000Compression)
       {
-        if (image->colorspace != RGBColorspace)
+        if (IsRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,RGBColorspace);
       }
     /*

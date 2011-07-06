@@ -47,6 +47,7 @@
 #include "magick/color-private.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -903,7 +904,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SGI raster file header.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     (void) ResetMagickMemory(&iris_info,0,sizeof(iris_info));
     iris_info.magic=0x01DA;

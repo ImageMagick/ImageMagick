@@ -46,6 +46,7 @@
 #include "magick/color-private.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -315,7 +316,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLSBShort(image,(unsigned short) image->columns);
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   length=(image->columns+7)/8;
   pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));

@@ -2658,10 +2658,12 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
   modifyImage();
 
   if ( colorSpace_ != RGBColorspace &&
+       colorSpace_ != sRGBColorspace &&
        colorSpace_ != TransparentColorspace &&
        colorSpace_ != GRAYColorspace )
     {
       if (image()->colorspace != RGBColorspace &&
+          image()->colorspace != sRGBColorspace &&
           image()->colorspace != TransparentColorspace &&
           image()->colorspace != GRAYColorspace)
         {
@@ -2676,6 +2678,7 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
     }
 
   if ( colorSpace_ == RGBColorspace ||
+       colorSpace_ == sRGBColorspace ||
        colorSpace_ == TransparentColorspace ||
        colorSpace_ == GRAYColorspace )
     {
