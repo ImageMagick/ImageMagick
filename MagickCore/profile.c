@@ -1246,7 +1246,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
                 (unsigned int) image->columns);
               p=target_pixels[id];
-              q-=image->columns;
+              q-=image->columns*GetPixelChannels(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelRed(image,ScaleShortToQuantum(*p),q);
