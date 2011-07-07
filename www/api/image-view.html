@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -212,7 +212,7 @@
 <div class="main">
 
 <h1>Module image-view Methods</h1>
-<p class="navigation-index">[<a href="#CloneImageView">CloneImageView</a> &bull; <a href="#DestroyImageView">DestroyImageView</a> &bull; <a href="#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> &bull; <a href="#GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a> &bull; <a href="#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> &bull; <a href="#GetImageViewException">GetImageViewException</a> &bull; <a href="#GetImageViewExtent">GetImageViewExtent</a> &bull; <a href="#GetImageViewImage">GetImageViewImage</a> &bull; <a href="#GetImageViewIterator">GetImageViewIterator</a> &bull; <a href="#GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a> &bull; <a href="#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> &bull; <a href="#IsImageView">IsImageView</a> &bull; <a href="#NewImageView">NewImageView</a> &bull; <a href="#NewImageViewRegion">NewImageViewRegion</a> &bull; <a href="#SetImageViewDescription">SetImageViewDescription</a> &bull; <a href="#SetImageViewIterator">SetImageViewIterator</a> &bull; <a href="#SetImageViewThreads">SetImageViewThreads</a> &bull; <a href="#TransferImageViewIterator">TransferImageViewIterator</a> &bull; <a href="#UpdateImageViewIterator">UpdateImageViewIterator</a>]</p>
+<p class="navigation-index">[<a href="#CloneImageView">CloneImageView</a> &bull; <a href="#DestroyImageView">DestroyImageView</a> &bull; <a href="#DuplexTransferImageViewIterator">DuplexTransferImageViewIterator</a> &bull; <a href="#GetImageViewAuthenticMetacontent">GetImageViewAuthenticMetacontent</a> &bull; <a href="#GetImageViewAuthenticPixels">GetImageViewAuthenticPixels</a> &bull; <a href="#GetImageViewException">GetImageViewException</a> &bull; <a href="#GetImageViewExtent">GetImageViewExtent</a> &bull; <a href="#GetImageViewImage">GetImageViewImage</a> &bull; <a href="#GetImageViewIterator">GetImageViewIterator</a> &bull; <a href="#GetImageViewVirtualMetacontent">GetImageViewVirtualMetacontent</a> &bull; <a href="#GetImageViewVirtualPixels">GetImageViewVirtualPixels</a> &bull; <a href="#IsImageView">IsImageView</a> &bull; <a href="#NewImageView">NewImageView</a> &bull; <a href="#NewImageViewRegion">NewImageViewRegion</a> &bull; <a href="#SetImageViewDescription">SetImageViewDescription</a> &bull; <a href="#SetImageViewIterator">SetImageViewIterator</a> &bull; <a href="#SetImageViewThreads">SetImageViewThreads</a> &bull; <a href="#TransferImageViewIterator">TransferImageViewIterator</a> &bull; <a href="#UpdateImageViewIterator">UpdateImageViewIterator</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="CloneImageView">CloneImageView</a></h2>
 <div class="doc-section">
@@ -295,15 +295,16 @@
 <p>the user defined context.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewAuthenticIndexes">GetImageViewAuthenticIndexes</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewAuthenticMetacontent">GetImageViewAuthenticMetacontent</a></h2>
 <div class="doc-section">
 
-<p>GetImageViewAuthenticIndexes() returns the image view authentic indexes.</p>
+<p>GetImageViewAuthenticMetacontent() returns the image view authentic meta-content.</p>
 
 <p>The format of the GetImageViewAuthenticPixels method is:</p>
 
 <pre class="code">
-  IndexPacket *GetImageViewAuthenticIndexes(const ImageView *image_view)
+  void *GetImageViewAuthenticMetacontent(
+    const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -320,7 +321,7 @@
 <p>The format of the GetImageViewAuthenticPixels method is:</p>
 
 <pre class="code">
-  PixelPacket *GetImageViewAuthenticPixels(const ImageView *image_view)
+  Quantum *GetImageViewAuthenticPixels(const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -423,15 +424,15 @@
 <p>the user defined context.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewVirtualIndexes">GetImageViewVirtualIndexes</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/image-view_8c.html" id="GetImageViewVirtualMetacontent">GetImageViewVirtualMetacontent</a></h2>
 <div class="doc-section">
 
-<p>GetImageViewVirtualIndexes() returns the image view virtual indexes.</p>
+<p>GetImageViewVirtualMetacontent() returns the image view virtual meta-content.</p>
 
-<p>The format of the GetImageViewVirtualIndexes method is:</p>
+<p>The format of the GetImageViewVirtualMetacontent method is:</p>
 
 <pre class="code">
-  const IndexPacket *GetImageViewVirtualIndexes(
+  const void *GetImageViewVirtualMetacontent(
     const ImageView *image_view)
 </pre>
 
@@ -449,7 +450,7 @@
 <p>The format of the GetImageViewVirtualPixels method is:</p>
 
 <pre class="code">
-  const PixelPacket *GetImageViewVirtualPixels(const ImageView *image_view)
+  const Quantum *GetImageViewVirtualPixels(const ImageView *image_view)
 </pre>
 
 <p>A description of each parameter follows:</p>

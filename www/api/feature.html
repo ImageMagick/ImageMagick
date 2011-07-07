@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011090100025 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -212,24 +212,24 @@
 <div class="main">
 
 <h1>Module feature Methods</h1>
-<p class="navigation-index">[<a href="#GetImageChannelFeatures">GetImageChannelFeatures</a>]</p>
+<p class="navigation-index">[<a href="#GetImageFeatures">GetImageFeatures</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageChannelFeatures">GetImageChannelFeatures</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/feature_8c.html" id="GetImageFeatures">GetImageFeatures</a></h2>
 <div class="doc-section">
 
-<p>GetImageChannelFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
+<p>GetImageFeatures() returns features for each channel in the image in each of four directions (horizontal, vertical, left and right diagonals) for the specified distance.  The features include the angular second moment, contrast, correlation, sum of squares: variance, inverse difference moment, sum average, sum varience, sum entropy, entropy, difference variance,  difference entropy, information measures of correlation 1, information measures of correlation 2, and maximum correlation coefficient.  You can access the red channel contrast, for example, like this:</p>
 
 <pre class="text">
-  channel_features=GetImageChannelFeatures(image,1,exception);
+  channel_features=GetImageFeatures(image,1,exception);
   contrast=channel_features[RedChannel].contrast[0];
 </pre>
 
 <p>Use MagickRelinquishMemory() to free the features buffer.</p>
 
-<p>The format of the GetImageChannelFeatures method is:</p>
+<p>The format of the GetImageFeatures method is:</p>
 
 <pre class="code">
-  ChannelFeatures *GetImageChannelFeatures(const Image *image,
+  ChannelFeatures *GetImageFeatures(const Image *image,
     const size_t distance,ExceptionInfo *exception)
 </pre>
 

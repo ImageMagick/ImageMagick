@@ -198,7 +198,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -214,11 +214,11 @@
 
 <h1>ImageMagick Version 7 Porting Guide</h1>
 
-<p class="navigation-index">[<a href="#headers">Header Files</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#grayscale">Grayscale</a> &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
+<p class="navigation-index">[<a href="#headers">Header Files</a> &bull; <a href="#components">Pixel Components</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#grayscale">Grayscale</a> &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
 
-<p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
+<p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel components.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
 
-<p>To support variable pixel channels in the MagickCore API, pixel handling has changed and now requires accessors to get or set the pixel components.  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
+<p>To support variable pixel components in the MagickCore API, pixel handling has changed and now requires accessors to get or set the pixel components.  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
 
 <p>We intend to make ImageMagick version 7 available as an Alpha release by the end-of-year 2011.  Look for a Beta release sometime in 2012.  An official ImageMagick version 7 release will depend on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
 
@@ -232,9 +232,10 @@
 </pre>
 </div>
 
-<h2><a id="channels"></a>Pixel Channels</h2>
+<h2><a id="components"></a>Pixel Components</h2>
 <div class="doc-section">
-<p>Prior versions of ImageMagick (4-6), supports 4 to 5 pixel channels (RGBA or CMYKA).  The first 4 channels are accessed with the PixelPacket data structure.   The structure includes 4 members of type Quantum (typically 16-bits) of red, green, blue, and opacity.  The black channel or colormap indexes are supported by a separate method and structure, IndexPacket.  As an example, here is a code snippet from ImageMagick version 6 that negates image pixels:</p>
+<p>A pixel is comprised of one or more color values we call <em>components</em> (e.g. red pixel component).  However, when we discuss a pixel component across more than one pixel, we call these <em>channels</em> (i.e. the red pixel channel).</p>
+<p>Prior versions of ImageMagick (4-6), supports 4 to 5 pixel components (RGBA or CMYKA).  The first 4 components are accessed with the PixelPacket data structure.   The structure includes 4 members of type Quantum (typically 16-bits) of red, green, blue, and opacity.  The black component or colormap indexes are supported by a separate method and structure, IndexPacket.  As an example, here is a code snippet from ImageMagick version 6 that negates image pixels:</p>
 
 <pre class="code">
   for (y=0; y &lt; (ssize_t) image->rows; y++)
@@ -254,15 +255,15 @@
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x &lt; (ssize_t) image->columns; x++)
     {
-      if ((channels & RedChannel) != 0)
+      if ((channel & RedChannel) != 0)
         q->red=(Quantum) QuantumRange-q->red;
-      if ((channels & GreenChannel) != 0)
+      if ((channel & GreenChannel) != 0)
         q->green=(Quantum) QuantumRange-q->green;
-      if ((channels & BlueChannel) != 0)
+      if ((channel & BlueChannel) != 0)
         q->blue=(Quantum) QuantumRange-q->blue;
-      if ((channels & OpacityChannel) != 0)
+      if ((channel & OpacityChannel) != 0)
         q->opacity=(Quantum) QuantumRange-q->opacity;
-      if (((channels & IndexChannel) != 0) &&
+      if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         indexes[x]=(IndexPacket) QuantumRange-indexes[x];
       q++;
@@ -272,7 +273,7 @@
   }
 </pre>
 
-<p>ImageMagick version 7 supports any number of channels from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
+<p>ImageMagick version 7 supports any number of components from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of pixel components of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
 
 <pre class="code">
   for (y=0; y &lt; (ssize_t) image->rows; y++)
@@ -288,25 +289,24 @@
       }
     for (x=0; x &lt; (ssize_t) image->columns; x++)
     {
-      if ((channels & RedChannel) != 0)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         SetPixelRed(image,QuantumRange-GetPixelRed(image,q),q);
-      if ((channels & GreenChannel) != 0)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         SetPixelGreen(image,QuantumRange-GetPixelGreen(image,q),q);
-      if ((channels & BlueChannel) != 0)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         SetPixelBlue(image,QuantumRange-GetPixelBlue(image,q),q);
-      if (((channels & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
+      if ((GetPixelBlackTraits(image) & BlackPixelTrait) != 0)
         SetPixelBlack(image,QuantumRange-GetPixelBlack(image,q),q);
-      if ((channels & OpacityChannel) != 0)
+      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(image,QuantumRange-GetPixelAlpha(image,q),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
 </pre>
 
-<p>Let's do that again but take full advantage of the new variable pixel channel support:</p>
+<p>Let's do that again but take full advantage of the new variable pixel component support:</p>
 <pre class="code">
   for (y=0; y &lt; (ssize_t) image->rows; y++)
   {
@@ -320,9 +320,9 @@
         continue;
       }
     for (x=0; x &lt; (ssize_t) image->columns; x++)
-      for (channel=0; channel &lt; GetPixelChannels(image); channel++)
+      for (component=0; component &lt; GetPixelComponents(image); component++)
       {
-        if ((channels & (1 &lt;&lt; channel)) != 0)
+        if ((GetPixelComponentTraits(image,component) & ActivePixelTrait) != 0)
           *q=(Quantum) QuantumRange-(*q);
         q++;
       }
@@ -331,11 +331,11 @@
   }
 </pre>
 
-<p>Use GetPixelChannels() to advance to the next set of pixel channels.</p>
+<p>Use GetPixelComponents() to advance to the next set of pixel components.</p>
 
-<p>The colormap indexes and black pixel component (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel channel and accessed with the convenience pixel macros GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
+<p>The colormap indexes and black pixel component (for the CMYK colorspace) are no longer stored in the index component, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel component and accessed with the convenience pixel macros GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
 
-<p>In addition to supporting any number of channels, version 7 simplifies working with channels and provides opportunity for compiler optimiziations that were previously not possible.  Our benchmarking shows version 7 has increased performance for virtually all image operations.</p>
+<p>In addition to supporting any number of components, version 7 simplifies working with components and provides opportunity for compiler optimiziations that were previously not possible.  Our benchmarking shows version 7 has increased performance for virtually all image operations.</p>
 
 <h4></a>Pixel Accessors</h4>
 <p>Use accessors to get or set pixel components:</p>
@@ -345,7 +345,7 @@
   GetPixelBlack()
   GetPixelBlue()
   GetPixelCb()
-  GetPixelChannels()
+  GetPixelComponents()
   GetPixelCr()
   GetPixelCyan()
   GetPixelGray()
@@ -364,7 +364,7 @@
   SetPixelBlack()
   SetPixelBlue()
   SetPixelCb()
-  SetPixelChannels()
+  SetPixelComponents()
   SetPixelCr()
   SetPixelCyan()
   SetPixelGray()
@@ -382,6 +382,64 @@
 </pre>
 
 <p>You can find these accessors defined in the header file, <kbd>MagickCore/pixel-accessor.h</kbd></p>
+
+<h4></a>Pixel Traits</h4>
+<p>Each pixel component includes one or more of these traits:</p>
+<dl>
+<dt>Undefined</dt>
+<dd>no traits associated with this pixel component<dd>
+<dt>Active</dt>
+<dd>an image processing algorithm operates on this pixel component if this trait is enabled, conversely if this trait is not enabled, the pixel component is skipped (e.g. negate red pixel component but not blue or green)<dd>
+<dt>Blend</dt>
+<dd>blend this pixel component with the alpha mask if it's enabled<dd>
+</dl>
+<p>We provide these methods to set and get pixel traits:</p>
+<pre class="text">
+  GetPixelAlphaTraits()
+  GetPixelBlackTraits()
+  GetPixelBlueTraits()
+  GetPixelCbTraits()
+  GetPixelCrTraits()
+  GetPixelCyanTraits()
+  GetPixelGrayTraits()
+  GetPixelGreenTraits()
+  GetPixelIndexTraits()
+  GetPixelMagentaTraits()
+  GetPixelRedTraits()
+  GetPixelComponentTraits()
+  GetPixelYTraits()
+  GetPixelYellowTraits()
+  SetPixelAlphaTraits()
+  SetPixelBlackTraits()
+  SetPixelBlueTraits()
+  SetPixelCbTraits()
+  SetPixelComponentTraits()
+  SetPixelCrTraits()
+  SetPixelGrayTraits()
+  SetPixelGreenTraits()
+  SetPixelIndexTraits()
+  SetPixelMagentaTraits()
+  SetPixelRedTraits()
+  SetPixelYellowTraits()
+  SetPixelYTraits()
+</pre>
+<p>For convenience you can set the active trait for a set of pixel components with a channel mask and these methods:</p>
+<pre class="text">
+  PopPixelComponentMap()
+  PushPixelComponentMap()
+  SetPixelComponentMap()
+</pre>
+
+<p>Previously MagickCore methods had channel analogs, for example, NegateImage() and NegateImageChannels().  The channel analog methods are no longer necessary because the pixel component traits specify whether to act on a particular pixel component and whether to blend with the alpha mask.  For example, instead of</p>
+<pre class="text">
+  NegateImageChannel(image,channel);
+</pre>
+<p>we use:</p>
+<pre class="text">
+  PushPixelComponentMap(image,channel);
+  NegateImage(image);
+  PopPixelComponentMap(image);
+</pre>
 
 <h4></a>Pixel Metacontent</h4>
 <p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or amplifies the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use and is accessed with these MagickCore API methods:</p>
@@ -401,7 +459,7 @@
 </div>
 <h2><a id="grayscale"></a>Grayscale</h2>
 <div class="doc-section">
-<p>Previously, grayscale images consumed 4 channels: red, green, blue, and alpha.  With version 7, grayscale consumes only 1 channel consuming far less resources as a result.  However, there may be unintended consequences.  With 1 channel, all image processing algorithms write to this one channel.  Drawing yellow text on a grayscale image will produce gray lettering.  To get the expected results, simply modify the colorspace to RGB (e.g. -colorspace rgb).</p>
+<p>Previously, grayscale images consumed 4 components: red, green, blue, and alpha.  With version 7, grayscale consumes only 1 component consuming far less resources as a result.  However, there may be unintended consequences.  With 1 component, all image processing algorithms write to this one component.  Drawing yellow text on a grayscale image will produce gray lettering.  To get the expected results, simply modify the colorspace to RGB (e.g. -colorspace rgb).</p>
 </div>
 
 <h2><a id="deprecate"></a>Deprecated Features Removed</h2>
@@ -420,12 +478,12 @@
 <p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
 <h5>Pixels</h5>
 <dl>
-<li>Pixels are no longer addressed with PixelPacket structure members (e.g. red, green, blue, opacity) but as an array of channels (e.g. pixel[PixelRedComponent]).</li>
+<li>Pixels are no longer addressed with PixelPacket structure members (e.g. red, green, blue, opacity) but as an array of components (e.g. pixel[PixelRedComponent]).</li>
 <li>Use convenience macros to access pixel components (e.g. GetPixelRed(), SetPixelRed()).</li>
-<li>The black channel for the CMYK colorspace is no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead its now a pixel channel and accessed with the convenience pixel macros GetPixelBlack() and SetPixelBlack().</li>
-<li>The index channel for colormapped images are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead its now a pixel channel and accessed with the convenience pixel macros GetPixelIndex() and SetPixelIndex().</li>
-<li>Use GetPixelChannels() to advance to the next set of pixel channels.</li>
-<li>Use the <em>metacontent</em> channel  to associate metacontent with each pixel.</li>
+<li>The black component for the CMYK colorspace is no longer stored in the index component, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead it is now a pixel component and accessed with the convenience pixel macros GetPixelBlack() and SetPixelBlack().</li>
+<li>The index component for colormapped images are no longer stored in the index component, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead it is now a pixel component and accessed with the convenience pixel macros GetPixelIndex() and SetPixelIndex().</li>
+<li>Use GetPixelComponents() to advance to the next set of pixel components.</li>
+<li>Use the <em>metacontent</em> component  to associate metacontent with each pixel.</li>
 </dl>
 <h5>Alpha</h5>
 <dl>
@@ -434,11 +492,12 @@
 </dl>
 <h5>Grayscale</h5>
 <dl>
-<li>Grayscale images consume one channel in ImageMagick version 7.  To process RGB, set the colorspace to RGB (e.g. -colorspace rgb).</li>
+<li>Grayscale images consume one pixel component in ImageMagick version 7.  To process RGB, set the colorspace to RGB (e.g. -colorspace rgb).</li>
 </dl>
 <h5>Deprecated Methods</h5>
 <dl>
 <li>All ImageMagick version 6 MagickCore and MagickWand deprecated methods are removed and no longer available in ImageMagick version 7.</li>
+<li>All MagickCore channel method analogs are removed (e.g. NegateImageChannels()).  For version 7, use pixel traits instead.</li>
 </dl>
 </div>
 

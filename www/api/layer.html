@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
 </div>
 </div>
 </div>
@@ -212,7 +212,7 @@
 <div class="main">
 
 <h1>Module layer Methods</h1>
-<p class="navigation-index">[<a href="#CoalesceImages">CoalesceImages</a> &bull; <a href="#DisposeImages">DisposeImages</a> &bull; <a href="#CompareImageLayers">CompareImageLayers</a> &bull; <a href="#DeconstructImages">DeconstructImages</a> &bull; <a href="#OptimizeImageLayers">OptimizeImageLayers</a> &bull; <a href="#OptimizeImagePlusLayers">OptimizeImagePlusLayers</a> &bull; <a href="#OptimizeImageTransparency">OptimizeImageTransparency</a> &bull; <a href="#RemoveDuplicateLayers">RemoveDuplicateLayers</a> &bull; <a href="#RemoveZeroDelayLayers">RemoveZeroDelayLayers</a> &bull; <a href="#CompositeLayers">CompositeLayers</a> &bull; <a href="#MergeImageLayers">MergeImageLayers</a>]</p>
+<p class="navigation-index">[<a href="#CoalesceImages">CoalesceImages</a> &bull; <a href="#DisposeImages">DisposeImages</a> &bull; <a href="#CompareImagesLayers">CompareImagesLayers</a> &bull; <a href="#OptimizeImageLayers">OptimizeImageLayers</a> &bull; <a href="#OptimizeImagePlusLayers">OptimizeImagePlusLayers</a> &bull; <a href="#OptimizeImageTransparency">OptimizeImageTransparency</a> &bull; <a href="#RemoveDuplicateLayers">RemoveDuplicateLayers</a> &bull; <a href="#RemoveZeroDelayLayers">RemoveZeroDelayLayers</a> &bull; <a href="#CompositeLayers">CompositeLayers</a> &bull; <a href="#MergeImageLayers">MergeImageLayers</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CoalesceImages">CoalesceImages</a></h2>
 <div class="doc-section">
@@ -254,19 +254,19 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompareImageLayers">CompareImageLayers</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompareImagesLayers">CompareImagesLayers</a></h2>
 <div class="doc-section">
 
-<p>CompareImageLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the ImageLayerMethod specified) it discovers.</p>
+<p>CompareImagesLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the ImageLayerMethod specified) it discovers.</p>
 
 <p>Images do NOT have to be the same size, though it is best that all the images are 'coalesced' (images are all the same size, on a flattened canvas, so as to represent exactly how an specific frame should look).</p>
 
 <p>No GIF dispose methods are applied, so GIF animations must be coalesced before applying this image operator to find differences to them.</p>
 
-<p>The format of the CompareImageLayers method is:</p>
+<p>The format of the CompareImagesLayers method is:</p>
 
 <pre class="code">
-  Image *CompareImageLayers(const Image *images,
+  Image *CompareImagesLayers(const Image *images,
     const ImageLayerMethod method,ExceptionInfo *exception)
 </pre>
 
@@ -277,28 +277,6 @@
 
 <h5>method</h5>
 <p>the layers type to compare images with. Must be one of... CompareAnyLayer, CompareClearLayer, CompareOverlayLayer.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="DeconstructImages">DeconstructImages</a></h2>
-<div class="doc-section">
-
-<p>DeconstructImages() compares each image with the next in a sequence and returns the minimum bounding region of all differences from the first image.</p>
-
-<p>This function is deprecated in favor of the more universal CompareImageLayers() function.</p>
-
-<p>The format of the DeconstructImages method is:</p>
-
-<pre class="code">
-  Image *DeconstructImages(const Image *images, ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>

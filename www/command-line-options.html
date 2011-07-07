@@ -201,7 +201,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011090100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -1750,18 +1750,21 @@ available:</p>
     which can be 1, 2, 4, or 8.  In such files, the color samples always have
     8-bit depth.</dd>
 
+<dt>png:compression-filter=<em class="arg">value</em></dt>
+   <dd> valid values are 0 through 7. 0-4 are the corresponding PNG filters,
+   5 means adaptive filtering except for images with a colormap, 6 means
+   adaptive filtering for all images, 7 means MNG "loco" compression.</dd>  
+
 <dt>png:compression-level=<em class="arg">value</em></dt>
    <dd> valid values are 0 through 9, with 0 providing the least but fastest
        compression and 9 usually providing the best and always the slowest.</dd>
 
 <dt>png:compression-strategy=<em class="arg">value</em></dt>
    <dd> valid values are 0 through 4, meaning default, filtered, huffman_only,
-   rle, and fixed ZLIB compression strategy.</dd>
-
-<dt>png:compression-filter=<em class="arg">value</em></dt>
-   <dd> valid values are 0 through 7. 0-4 are the corresponding PNG filters,
-   5 means adaptive filtering except for images with a colormap, 6 means
-   adaptive filtering for all images, 7 means MNG "loco" compression.</dd>  
+   rle, and fixed ZLIB compression strategy. If you are using an old zlib
+   that does not support Z_RLE (before 1.2.0) or Z_FIXED (before 1.2.2.2),
+   values 3 and 4, respectively, will use the zlib default strategy
+   instead.</dd>
 
 <dt>png:exclude-chunk=<em class="arg">value</em></dt>
 <dt>png:include-chunk=<em class="arg">value</em></dt>
@@ -1789,8 +1792,8 @@ available:</p>
 </pre>
 
     <p>The critical PNG chunks <kbd>IHDR</kbd>, <kbd>PLTE</kbd>,
-    <kbd>IDAT</kbd>, and <kbd>IEND</kbd> cannot be excluded.  Any of
-    these entries appearing in the list will be ignored.</p>
+    <kbd>IDAT</kbd>, and <kbd>IEND</kbd> cannot be excluded.  Any such
+    entries appearing in the list will be ignored.</p>
 
     <p>If the ancillary PNG <kbd>tRNS</kbd> chunk is excluded and the
     image has transparency, the PNG colortype is forced to be 4 or 6
@@ -1977,7 +1980,7 @@ the  <em class="arg">scale</em> bounds.  In other words each pixel can lookup
 any other nearby pixel, producing complex 2 dimensional displacements, rather
 than a simple 1 dimensional vector displacements. </p>
 
-<p>Alteratively rather than suppling two separate images, as of IM v6.4.4-0,
+<p>Alteratively rather than supplying two separate images, as of IM v6.4.4-0,
 you can use the 'red' channel of the overlay image to specify the horizontal
 or X displacement, and the 'green' channel for the vertical or Y displacement.
 </p>
@@ -4908,7 +4911,8 @@ compression level 7 with no PNG filtering.</p>
 
 <p>For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.</p>
 
-<p>If filter-type is 4 or less, the specified filter-type is used for all scanlines:</p>
+<p>If filter-type is 4 or less, the specified PNG filter-type is used for
+all scanlines:</p>
 
 <pre class="text">
    0: none
@@ -4935,8 +4939,15 @@ with <em class="arg">minimum-sum-of-absolute-values</em> are used.</p>
 <p>If the filter-type is 9 the zlib Z_RLE compression strategy is used with
  adaptive PNG filtering.</p>
 
-<p>The quality setting has no effect on the appearance of PNG and MNG images,
-since the compression is always lossless.</p>
+<p>The quality setting has no effect on the appearance or signature of PNG
+and MNG images, since the compression is always lossless.</p>
+
+<p>Not all combinations of compression level, strategy, and PNG filter type
+can be obtained using the -quality option.  For more precise control,
+you can use the PNG:compression-level=N, PNG:compression-strategy=N, and
+PNG:compression-filter=N defines, respectively, instead.
+See <a href="#define">-define</a>. Values from the defines take precedence
+over values from the -quality option.</p>
 
 <p>For further information, see
 the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
