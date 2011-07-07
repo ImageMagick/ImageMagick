@@ -964,43 +964,37 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %
 %  The format of the MinMaxStretchImage method is:
 %
-%      MagickBooleanType MinMaxStretchImage(Image *image,
-%        const ChannelType channel, const double black_adjust,
-%        const double white_adjust)
+%      MagickBooleanType MinMaxStretchImage(Image *image,const double black,
+%        const double white)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image to auto-level
 %
-%    o channel: The channels to auto-level.  If the special 'SyncChannels'
-%      flag is set, all the given channels are stretched by the same amount.
-%
-%    o black_adjust, white_adjust:  Move the Black/White Point inward
-%      from the minimum and maximum points by this color value.
+%    o black, white:  move the black / white point inward from the minimum and
+%      maximum points by this color value.
 %
 */
 MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
-  const ChannelType channel,const double black_value,const double white_value)
+  const double black,const double white)
 {
   double
     min,
     max;
 
-  Image
-    *stretch_image;
-
   MagickStatusType
     status;
 
   status=MagickTrue;
-  if ((channel & SyncChannels) != 0)
+  if (image->sync != MagickFalse)
     {
       /*
         Auto-level all channels equally.
       */
-      (void) GetImageChannelRange(image,channel,&min,&max,&image->exception);
-      min+=black_value;
-      max-=white_value;
+      (void) GetImageChannelRange(image,DefaultChannels,&min,&max,
+        &image->exception);
+      min+=black;
+      max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImage(image,min,max,1.0);
       return(status != 0 ? MagickTrue : MagickFalse);
@@ -1008,42 +1002,42 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   /*
     Auto-level each channel separately.
   */
-  stretch_image=CloneImage(image,0,0,MagickTrue,&image->exception);
-  if (stretch_image == (Image *) NULL)
-    return(MagickFalse);
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,RedChannel,&min,&max,&image->exception);
-      min+=black_value;
-      max-=white_value;
+      min+=black;
+      max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         {
-          SetPixelComponentMap(stretch_image,RedChannel);
-          status&=LevelImage(stretch_image,min,max,1.0);
+          PushPixelComponentMap(image,RedChannel);
+          status&=LevelImage(image,min,max,1.0);
+          PopPixelComponentMap(image);
         }
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,GreenChannel,&min,&max,
         &image->exception);
-      min+=black_value;
-      max-=white_value;
+      min+=black;
+      max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         {
-          SetPixelComponentMap(stretch_image,GreenChannel);
-          status&=LevelImage(stretch_image,min,max,1.0);
+          PushPixelComponentMap(image,GreenChannel);
+          status&=LevelImage(image,min,max,1.0);
+          PopPixelComponentMap(image);
         }
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,BlueChannel,&min,&max,
         &image->exception);
-      min+=black_value;
-      max-=white_value;
+      min+=black;
+      max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         {
-          SetPixelComponentMap(stretch_image,BlueChannel);
-          status&=LevelImage(stretch_image,min,max,1.0);
+          PushPixelComponentMap(image,BlueChannel);
+          status&=LevelImage(image,min,max,1.0);
+          PopPixelComponentMap(image);
         }
     }
   if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
@@ -1051,12 +1045,13 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     {
       (void) GetImageChannelRange(image,BlackChannel,&min,&max,
         &image->exception);
-      min+=black_value;
-      max-=white_value;
+      min+=black;
+      max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         {
-          SetPixelComponentMap(stretch_image,BlackChannel);
-          status&=LevelImage(stretch_image,min,max,1.0);
+          PushPixelComponentMap(image,BlackChannel);
+          status&=LevelImage(image,min,max,1.0);
+          PopPixelComponentMap(image);
         }
     }
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
@@ -1064,15 +1059,15 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     {
       (void) GetImageChannelRange(image,OpacityChannel,&min,&max,
         &image->exception);
-      min+=black_value;
-      max-=white_value;
+      min+=black;
+      max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         {
-          SetPixelComponentMap(stretch_image,AlphaChannel);
-          status&=LevelImage(stretch_image,min,max,1.0);
+          PushPixelComponentMap(image,AlphaChannel);
+          status&=LevelImage(image,min,max,1.0);
+          PopPixelComponentMap(image);
         }
     }
-  stretch_image=DestroyImage(stretch_image);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 

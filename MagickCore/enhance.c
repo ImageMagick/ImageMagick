@@ -107,9 +107,6 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
     mean,
     sans;
 
-  Image
-    *level_image;
-
   log_mean=log(0.5);
   if (image->sync != MagickFalse)
     {
@@ -125,32 +122,32 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
     Auto-gamma each channel separately.
   */
   status=MagickTrue;
-  level_image=CloneImage(image,0,0,MagickTrue,&image->exception);
-  if (level_image == (Image *) NULL)
-    return(MagickFalse);
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelMean(image,RedChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      SetPixelComponentMap(level_image,RedChannel);
-      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
+      PushPixelComponentMap(image,RedChannel);
+      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
+      PopPixelComponentMap(image);
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelMean(image,GreenChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      SetPixelComponentMap(level_image,GreenChannel);
-      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
+      PushPixelComponentMap(image,GreenChannel);
+      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
+      PopPixelComponentMap(image);
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelMean(image,BlueChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      SetPixelComponentMap(level_image,BlueChannel);
-      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
+      PushPixelComponentMap(image,BlueChannel);
+      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
+      PopPixelComponentMap(image);
     }
   if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace))
@@ -158,8 +155,9 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (void) GetImageChannelMean(image,BlackChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      SetPixelComponentMap(level_image,BlackChannel);
-      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
+      PushPixelComponentMap(image,BlackChannel);
+      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
+      PopPixelComponentMap(image);
     }
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
       (image->matte == MagickTrue))
@@ -167,10 +165,10 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (void) GetImageChannelMean(image,OpacityChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      SetPixelComponentMap(level_image,AlphaChannel);
-      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
+      PushPixelComponentMap(image,AlphaChannel);
+      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
+      PopPixelComponentMap(image);
     }
-  level_image=DestroyImage(level_image);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
@@ -199,7 +197,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
 */
 MagickExport MagickBooleanType AutoLevelImage(Image *image)
 {
-  return(MinMaxStretchImage(image,DefaultChannels,0.0,0.0));
+  return(MinMaxStretchImage(image,0.0,0.0));
 }
 
 /*
@@ -2609,7 +2607,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LevelImageColor() maps the given color to "black" and "white" values,
+%  LevelImageColors() maps the given color to "black" and "white" values,
 %  linearly spreading out the colors, and level values on a channel by channel
 %  bases, as per LevelImage().  The given colors allows you to specify
 %  different level ranges for each of the color channels separately.
@@ -2620,20 +2618,15 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %  appropriatally.  This effectivally maps a greyscale gradient into the given
 %  color gradient.
 %
-%  The format of the LevelColorsImageChannel method is:
+%  The format of the LevelImageColors method is:
 %
-%    MagickBooleanType LevelColorsImage(Image *image,
-%      const PixelInfo *black_color,
-%      const PixelInfo *white_color,const MagickBooleanType invert)
-%    MagickBooleanType LevelColorsImageChannel(Image *image,
-%      const ChannelType channel,const PixelInfo *black_color,
-%      const PixelInfo *white_color,const MagickBooleanType invert)
+%    MagickBooleanType LevelImageColors(Image *image,
+%      const PixelInfo *black_color,const PixelInfo *white_color,
+%      const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o black_color: The color to map black to/from
 %
@@ -2642,22 +2635,9 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %    o invert: if true map the colors (levelize), rather than from (level)
 %
 */
-
-MagickExport MagickBooleanType LevelColorsImage(Image *image,
+MagickExport MagickBooleanType LevelImageColors(Image *image,
   const PixelInfo *black_color,const PixelInfo *white_color,
   const MagickBooleanType invert)
-{
-  MagickBooleanType
-    status;
-
-  status=LevelColorsImageChannel(image,DefaultChannels,black_color,white_color,
-    invert);
-  return(status);
-}
-
-MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
-  const ChannelType channel,const PixelInfo *black_color,
-  const PixelInfo *white_color,const MagickBooleanType invert)
 {
   MagickStatusType
     status;
@@ -2674,66 +2654,75 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
     {
       if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
-          SetPixelComponentMap(image,RedChannel);
+          PushPixelComponentMap(image,RedChannel);
           status|=LevelImage(image,black_color->red,white_color->red,1.0);
+          PopPixelComponentMap(image);
         }
       if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
-          SetPixelComponentMap(image,GreenChannel);
+          PushPixelComponentMap(image,GreenChannel);
           status|=LevelImage(image,black_color->green,white_color->green,1.0);
+          PopPixelComponentMap(image);
         }
       if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
-          SetPixelComponentMap(image,BlueChannel);
+          PushPixelComponentMap(image,BlueChannel);
           status|=LevelImage(image,black_color->blue,white_color->blue,1.0);
+          PopPixelComponentMap(image);
         }
       if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          SetPixelComponentMap(image,BlackChannel);
+          PushPixelComponentMap(image,BlackChannel);
           status|=LevelImage(image,black_color->black,white_color->black,1.0);
+          PopPixelComponentMap(image);
         }
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
-          SetPixelComponentMap(image,AlphaChannel);
+          PushPixelComponentMap(image,AlphaChannel);
           status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0);
+          PopPixelComponentMap(image);
         }
     }
   else
     {
       if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
-          SetPixelComponentMap(image,RedChannel);
+          PushPixelComponentMap(image,RedChannel);
           status|=LevelizeImage(image,black_color->red,white_color->red,1.0);
+          PopPixelComponentMap(image);
         }
       if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
-          SetPixelComponentMap(image,GreenChannel);
+          PushPixelComponentMap(image,GreenChannel);
           status|=LevelizeImage(image,black_color->green,white_color->green,
             1.0);
+          PopPixelComponentMap(image);
         }
       if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
-          SetPixelComponentMap(image,BlueChannel);
+          PushPixelComponentMap(image,BlueChannel);
           status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0);
+          PopPixelComponentMap(image);
         }
       if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          SetPixelComponentMap(image,BlackChannel);
+          PushPixelComponentMap(image,BlackChannel);
           status|=LevelizeImage(image,black_color->black,white_color->black,
             1.0);
+          PopPixelComponentMap(image);
         }
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
-          SetPixelComponentMap(image,AlphaChannel);
+          PushPixelComponentMap(image,AlphaChannel);
           status|=LevelizeImage(image,black_color->alpha,white_color->alpha,
             1.0);
+          PopPixelComponentMap(image);
         }
     }
-  SetPixelComponentMap(image,DefaultChannels);
   return(status == 0 ? MagickFalse : MagickTrue);
 }
 

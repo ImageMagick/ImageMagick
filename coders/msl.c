@@ -736,8 +736,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          noise_image=AddNoiseImageChannel(msl_info->image[n],channel,noise,
+          PushPixelComponentMap(msl_info->image[n],channel);
+          noise_image=AddNoiseImage(msl_info->image[n],noise,
             &msl_info->image[n]->exception);
+          PopPixelComponentMap(msl_info->image[n]);
           if (noise_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -4031,8 +4033,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          SetPixelComponentMap(msl_info->image[n],channel);
+          PushPixelComponentMap(msl_info->image[n],channel);
           (void) NegateImage(msl_info->image[n],gray);
+          PopPixelComponentMap(msl_info->image[n]);
           break;
         }
       if (LocaleCompare((const char *) tag,"normalize") == 0)

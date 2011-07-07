@@ -38,14 +38,11 @@ typedef enum
 
 extern MagickExport Image
   *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
-  *AddNoiseImageChannel(const Image *,const ChannelType,const NoiseType,
-    ExceptionInfo *),
   *BlueShiftImage(const Image *,const double,ExceptionInfo *),
   *CharcoalImage(const Image *,const double,const double,ExceptionInfo *),
   *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
   *ColorMatrixImage(const Image *,const KernelInfo *kernel,ExceptionInfo *),
   *FxImage(const Image *,const char *,ExceptionInfo *),
-  *FxImageChannel(const Image *,const ChannelType,const char *,ExceptionInfo *),
   *ImplodeImage(const Image *,const double,ExceptionInfo *),
   *MorphImages(const Image *,const size_t,ExceptionInfo *),
   *PolaroidImage(const Image *,const DrawInfo *,const double,ExceptionInfo *),

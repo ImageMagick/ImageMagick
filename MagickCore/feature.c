@@ -94,13 +94,13 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l F e a t u r e s                             %
+%   G e t I m a g e F e a t u r e s                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelFeatures() returns features for each channel in the image in
+%  GetImageFeatures() returns features for each channel in the image in
 %  each of four directions (horizontal, vertical, left and right diagonals)
 %  for the specified distance.  The features include the angular second
 %  moment, contrast, correlation, sum of squares: variance, inverse difference
@@ -108,14 +108,14 @@
 %  measures of correlation 2, and maximum correlation coefficient.  You can
 %  access the red channel contrast, for example, like this:
 %
-%      channel_features=GetImageChannelFeatures(image,1,exception);
+%      channel_features=GetImageFeatures(image,1,exception);
 %      contrast=channel_features[RedChannel].contrast[0];
 %
 %  Use MagickRelinquishMemory() to free the features buffer.
 %
-%  The format of the GetImageChannelFeatures method is:
+%  The format of the GetImageFeatures method is:
 %
-%      ChannelFeatures *GetImageChannelFeatures(const Image *image,
+%      ChannelFeatures *GetImageFeatures(const Image *image,
 %        const size_t distance,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -135,7 +135,7 @@ static inline ssize_t MagickAbsoluteValue(const ssize_t x)
   return(x);
 }
 
-MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
+MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   const size_t distance,ExceptionInfo *exception)
 {
   typedef struct _ChannelStatistics

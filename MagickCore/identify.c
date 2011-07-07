@@ -430,7 +430,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (artifact != (const char *) NULL)
         {
           distance=StringToUnsignedLong(artifact);
-          channel_features=GetImageChannelFeatures(image,distance,
+          channel_features=GetImageFeatures(image,distance,
             &image->exception);
         }
       depth=GetImageDepth(image,&image->exception);

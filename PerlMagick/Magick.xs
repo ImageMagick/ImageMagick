@@ -3852,7 +3852,7 @@ Features(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      channel_features=GetImageChannelFeatures(image,distance,
+      channel_features=GetImageFeatures(image,distance,
         &image->exception);
       if (channel_features == (ChannelFeatures *) NULL)
         continue;
@@ -4150,7 +4150,9 @@ Fx(ref,...)
           }
         }
       }
-    image=FxImageChannel(image,channel,expression,exception);
+    PushPixelComponentMap(image,channel);
+    image=FxImage(image,expression,exception);
+    PopPixelComponentMap(image);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     for ( ; image; image=image->next)
@@ -7175,7 +7177,7 @@ Mogrify(ref,...)
     AutoLevel          = 255
     AutoLevelImage     = 256
     LevelColors        = 257
-    LevelColorsImage   = 258
+    LevelImageColors   = 258
     Clamp              = 259
     ClampImage         = 260
     Filter             = 261
@@ -7491,8 +7493,10 @@ Mogrify(ref,...)
             argument_list[0].integer_reference=UniformNoise;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          image=AddNoiseImageChannel(image,channel,(NoiseType)
+          PushPixelComponentMap(image,channel);
+          image=AddNoiseImage(image,(NoiseType)
             argument_list[0].integer_reference,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 4:  /* Colorize */
@@ -8624,11 +8628,10 @@ Mogrify(ref,...)
         case 39:  /* Equalize */
         {
           if (attribute_flag[0] != 0)
-            {
-              channel=(ChannelType) argument_list[0].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[0].integer_reference;
+          PushPixelComponentMap(image,channel);
           EqualizeImage(image);
+          PopPixelComponentMap(image);
           break;
         }
         case 40:  /* Gamma */
@@ -8712,9 +8715,10 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
-          SetPixelComponentMap(image,AlphaChannel);
+          PushPixelComponentMap(image,AlphaChannel);
           (void) FloodfillPaintImage(image,AlphaChannel,draw_info,&target,
             geometry.x,geometry.y,invert);
+          PopPixelComponentMap(image);
           StandardPixelComponentMap(image);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -8764,22 +8768,20 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].integer_reference=0;
           if (attribute_flag[1] != 0)
-            {
-              channel=(ChannelType) argument_list[1].integer_reference;
-	      SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[1].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) NegateImage(image,argument_list[0].integer_reference != 0 ?
             MagickTrue : MagickFalse);
+          PopPixelComponentMap(image);
           break;
         }
         case 45:  /* Normalize */
         {
           if (attribute_flag[0] != 0)
-            {
-              channel=(ChannelType) argument_list[0].integer_reference;
-	      SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[0].integer_reference;
+          PushPixelComponentMap(image,channel);
           NormalizeImage(image);
+          PopPixelComponentMap(image);
           break;
         }
         case 46:  /* NumberColors */
@@ -9314,16 +9316,15 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             gamma=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
-            {
-              channel=(ChannelType) argument_list[4].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[4].integer_reference;
           if (attribute_flag[5] != 0)
             {
               argument_list[0].real_reference=argument_list[5].real_reference;
               attribute_flag[0]=attribute_flag[5];
             }
+          PushPixelComponentMap(image,channel);
           (void) LevelImage(image,black_point,white_point,gamma);
+          PopPixelComponentMap(image);
           break;
         }
         case 74:  /* Clip */
@@ -9715,16 +9716,15 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            {
-              channel=(ChannelType) argument_list[3].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[3].integer_reference;
           sharpen=MagickTrue;
           if (attribute_flag[4] != 0)
             sharpen=argument_list[4].integer_reference != 0 ? MagickTrue :
               MagickFalse;
+          PushPixelComponentMap(image,channel);
           (void) SigmoidalContrastImage(image,sharpen,geometry_info.rho,
             geometry_info.sigma);
+          PopPixelComponentMap(image);
           break;
         }
         case 93:  /* Extent */
@@ -9818,11 +9818,10 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             white_point=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
-            {
-              channel=(ChannelType) argument_list[4].integer_reference;
-	      SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[4].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) ContrastStretchImage(image,black_point,white_point);
+          PopPixelComponentMap(image);
           break;
         }
         case 96:  /* Sans0 */
@@ -10161,11 +10160,10 @@ Mogrify(ref,...)
               goto PerlException;
             }
           if (attribute_flag[1] != 0)
-            {
-              channel=(ChannelType) argument_list[1].integer_reference;
-	      SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[1].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) ClutImage(image,argument_list[0].image_reference);
+          PopPixelComponentMap(image);
           break;
         }
         case 114:  /* LiquidRescale */
@@ -10357,11 +10355,10 @@ Mogrify(ref,...)
               goto PerlException;
             }
           if (attribute_flag[1] != 0)
-            {
-              channel=(ChannelType) argument_list[1].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[1].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) HaldClutImage(image,argument_list[0].image_reference);
+          PopPixelComponentMap(image);
           break;
         }
         case 123:  /* BlueShift */
@@ -10397,21 +10394,19 @@ Mogrify(ref,...)
         case 127:  /* AutoGamma */
         {
           if (attribute_flag[0] != 0)
-            {
-              channel=(ChannelType) argument_list[0].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[0].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) AutoGammaImage(image);
+          PopPixelComponentMap(image);
           break;
         }
         case 128:  /* AutoLevel */
         {
           if (attribute_flag[0] != 0)
-            {
-              channel=(ChannelType) argument_list[0].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[0].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) AutoLevelImage(image);
+          PopPixelComponentMap(image);
           break;
         }
         case 129:  /* LevelColors */
@@ -10430,9 +10425,10 @@ Mogrify(ref,...)
                &white_point,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          (void) LevelColorsImageChannel(image,channel,&black_point,
-            &white_point,argument_list[0].integer_reference != 0 ? MagickTrue :
-            MagickFalse);
+          PushPixelComponentMap(image,channel);
+          (void) LevelImageColors(image,&black_point,&white_point,
+            argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse);
+          PopPixelComponentMap(image);
           break;
         }
         case 130:  /* Clamp */
@@ -10482,11 +10478,10 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             contrast=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
-            {
-              channel=(ChannelType) argument_list[4].integer_reference;
-              SetPixelComponentMap(image,channel);
-            }
+            channel=(ChannelType) argument_list[4].integer_reference;
+          PushPixelComponentMap(image,channel);
           (void) BrightnessContrastImage(image,brightness,contrast);
+          PopPixelComponentMap(image);
           break;
         }
         case 133:  /* Morphology */
@@ -13228,6 +13223,7 @@ SetPixel(ref,...)
     region.height=1;
     if (items == 1)
       (void) ParseAbsoluteGeometry(SvPV(ST(1),na),&region);
+    channel=DefaultChannels;
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -13335,7 +13331,7 @@ SetPixel(ref,...)
       }
     }
     (void) SetImageStorageClass(image,DirectClass);
-    SetPixelComponentMap(image,channel);
+    PushPixelComponentMap(image,channel);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
     if ((q == (const Quantum *) NULL) || (av == (AV *) NULL) ||
         (SvTYPE(av) != SVt_PVAV))
@@ -13389,6 +13385,7 @@ SetPixel(ref,...)
           }
         (void) SyncAuthenticPixels(image,exception);
       }
+    PopPixelComponentMap(image);
 
   PerlException:
     InheritPerlException(exception,perl_exception);

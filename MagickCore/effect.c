@@ -5128,7 +5128,8 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         r+=(image->columns+StatisticWidth)*GetPixelChannels(image);
       }
       GetPixelInfo(image,&pixel);
-      SetPixelInfo(image,p+StatisticWidth*StatisticHeight/2,&pixel);
+      SetPixelInfo(image,p+(StatisticWidth*StatisticHeight/2)*
+        GetPixelChannels(image),&pixel);
       switch (type)
       {
         case GradientStatistic:
@@ -5185,22 +5186,17 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         }
       }
       if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
-        SetPixelRed(statistic_image,
-          ClampToQuantum(pixel.red),q);
+        SetPixelRed(statistic_image,ClampToQuantum(pixel.red),q);
       if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
-        SetPixelGreen(statistic_image,
-          ClampToQuantum(pixel.green),q);
+        SetPixelGreen(statistic_image,ClampToQuantum(pixel.green),q);
       if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
-        SetPixelBlue(statistic_image,
-          ClampToQuantum(pixel.blue),q);
+        SetPixelBlue(statistic_image,ClampToQuantum(pixel.blue),q);
       if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelBlack(statistic_image,
-          ClampToQuantum(pixel.black),q);
+        SetPixelBlack(statistic_image,ClampToQuantum(pixel.black),q);
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte != MagickFalse))
-        SetPixelAlpha(statistic_image,
-          ClampToQuantum(pixel.alpha),q);
+        SetPixelAlpha(statistic_image,ClampToQuantum(pixel.alpha),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(statistic_image);
     }

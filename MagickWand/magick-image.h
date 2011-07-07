@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 extern WandExport ChannelFeatures
-  *MagickGetImageChannelFeatures(MagickWand *,const size_t);
+  *MagickGetImageFeatures(MagickWand *,const size_t);
 
 extern WandExport ChannelStatistics
   *MagickGetImageChannelStatistics(MagickWand *);
@@ -82,7 +82,6 @@ extern WandExport MagickBooleanType
     const ssize_t),
   MagickAddImage(MagickWand *,const MagickWand *),
   MagickAddNoiseImage(MagickWand *,const NoiseType),
-  MagickAddNoiseImageChannel(MagickWand *,const ChannelType,const NoiseType),
   MagickAffineTransformImage(MagickWand *,const DrawingWand *),
   MagickAnnotateImage(MagickWand *,const DrawingWand *,const double,
     const double,const double,const char *),
@@ -360,7 +359,6 @@ extern WandExport MagickWand
   *MagickDeconstructImages(MagickWand *),
   *MagickEvaluateImages(MagickWand *,const MagickEvaluateOperator),
   *MagickFxImage(MagickWand *,const char *),
-  *MagickFxImageChannel(MagickWand *,const ChannelType,const char *),
   *MagickGetImage(MagickWand *),
   *MagickGetImageClipMask(MagickWand *),
   *MagickGetImageRegion(MagickWand *,const size_t,const size_t,const ssize_t,

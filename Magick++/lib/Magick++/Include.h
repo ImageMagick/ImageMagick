@@ -534,7 +534,7 @@ namespace Magick
   using MagickCore::AdaptiveBlurImage;
   using MagickCore::AdaptiveThresholdImage;
   using MagickCore::AddNoiseImage;
-  using MagickCore::AddNoiseImageChannel;
+  using MagickCore::AddNoiseImage;
   using MagickCore::AffineMatrix;
   using MagickCore::AffineTransformImage;
   using MagickCore::AnnotateImage;
@@ -706,7 +706,7 @@ namespace Magick
   using MagickCore::ForwardFourierTransformImage;
   using MagickCore::FrameImage;
   using MagickCore::FrameInfo;
-  using MagickCore::FxImageChannel;
+  using MagickCore::FxImage;
   using MagickCore::GammaImage;
   using MagickCore::GammaImage;
   using MagickCore::GaussianBlurImage;
@@ -806,12 +806,14 @@ namespace Magick
   using MagickCore::PingBlob;
   using MagickCore::PingImage;
   using MagickCore::PixelSetQuantumPacket;
-	using MagickCore::PixelWand;
+  using MagickCore::PixelWand;
   using MagickCore::PointInfo;
   using MagickCore::PopDrawingWand;
+  using MagickCore::PopPixelComponentMap;
   using MagickCore::ProfileImage;
   using MagickCore::ProfileInfo;
   using MagickCore::PushDrawingWand;
+  using MagickCore::PushPixelComponentMap;
   using MagickCore::QuantizeImage;
   using MagickCore::QuantizeInfo;
   using MagickCore::QuantumInfo;

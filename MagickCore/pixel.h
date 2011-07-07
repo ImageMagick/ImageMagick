@@ -25,6 +25,9 @@ extern "C" {
 #include <MagickCore/colorspace.h>
 #include <MagickCore/constitute.h>
 
+#define MaxPixelComponents  16
+#define MaxPixelComponentMaps  16
+
 typedef enum
 {
   UndefinedInterpolatePixel,
@@ -150,9 +153,9 @@ extern MagickExport MagickBooleanType
     const PixelPacket *);
 
 extern MagickExport PixelComponentMap
-  *AcquirePixelComponentMap(void),
-  *ClonePixelComponentMap(const PixelComponentMap *),
-  *DestroyPixelComponentMap(PixelComponentMap *);
+  **AcquirePixelComponentMap(void),
+  **ClonePixelComponentMap(PixelComponentMap **),
+  **DestroyPixelComponentMap(PixelComponentMap **);
 
 extern MagickExport PixelInfo
   *ClonePixelInfo(const PixelInfo *);
@@ -160,6 +163,8 @@ extern MagickExport PixelInfo
 extern MagickExport void
   StandardPixelComponentMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),
+  PopPixelComponentMap(Image *),
+  PushPixelComponentMap(Image *,const ChannelType),
   SetPixelComponentMap(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

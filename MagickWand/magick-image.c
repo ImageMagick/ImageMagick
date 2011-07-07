@@ -491,32 +491,17 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
 %        const NoiseType noise_type)
-%      MagickBooleanType MagickAddNoiseImageChannel(MagickWand *wand,
-%        const ChannelType channel,const NoiseType noise_type)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
 %      Impulse, Laplacian, or Poisson.
 %
 */
-
 WandExport MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
   const NoiseType noise_type)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickAddNoiseImageChannel(wand,DefaultChannels,noise_type);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickAddNoiseImageChannel(MagickWand *wand,
-  const ChannelType channel,const NoiseType noise_type)
 {
   Image
     *noise_image;
@@ -527,8 +512,7 @@ WandExport MagickBooleanType MagickAddNoiseImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  noise_image=AddNoiseImageChannel(wand->images,channel,noise_type,
-    wand->exception);
+  noise_image=AddNoiseImage(wand->images,noise_type,wand->exception);
   if (noise_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,noise_image);
@@ -3501,30 +3485,15 @@ WandExport MagickBooleanType MagickFunctionImageChannel(MagickWand *wand,
 %  The format of the MagickFxImage method is:
 %
 %      MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
-%      MagickWand *MagickFxImageChannel(MagickWand *wand,
-%        const ChannelType channel,const char *expression)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 %    o expression: the expression.
 %
 */
-
 WandExport MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
-{
-  MagickWand
-    *fx_wand;
-
-  fx_wand=MagickFxImageChannel(wand,DefaultChannels,expression);
-  return(fx_wand);
-}
-
-WandExport MagickWand *MagickFxImageChannel(MagickWand *wand,
-  const ChannelType channel,const char *expression)
 {
   Image
     *fx_image;
@@ -3535,7 +3504,7 @@ WandExport MagickWand *MagickFxImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  fx_image=FxImageChannel(wand->images,channel,expression,wand->exception);
+  fx_image=FxImage(wand->images,expression,wand->exception);
   if (fx_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,fx_image));
@@ -4004,7 +3973,7 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageChannelFeatures() returns features for each channel in the
+%  MagickGetImageFeatures() returns features for each channel in the
 %  image in each of four directions (horizontal, vertical, left and right
 %  diagonals) for the specified distance.  The features include the angular
 %  second moment, contrast, correlation, sum of squares: variance, inverse
@@ -4014,14 +3983,14 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %  correlation coefficient.  You can access the red channel contrast, for
 %  example, like this:
 %
-%      channel_features=MagickGetImageChannelFeatures(wand,1);
+%      channel_features=MagickGetImageFeatures(wand,1);
 %      contrast=channel_features[RedChannel].contrast[0];
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
 %
-%  The format of the MagickGetImageChannelFeatures method is:
+%  The format of the MagickGetImageFeatures method is:
 %
-%      ChannelFeatures *MagickGetImageChannelFeatures(MagickWand *wand,
+%      ChannelFeatures *MagickGetImageFeatures(MagickWand *wand,
 %        const size_t distance)
 %
 %  A description of each parameter follows:
@@ -4031,7 +4000,7 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %    o distance: the distance.
 %
 */
-WandExport ChannelFeatures *MagickGetImageChannelFeatures(MagickWand *wand,
+WandExport ChannelFeatures *MagickGetImageFeatures(MagickWand *wand,
   const size_t distance)
 {
   assert(wand != (MagickWand *) NULL);
@@ -4044,7 +4013,7 @@ WandExport ChannelFeatures *MagickGetImageChannelFeatures(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((ChannelFeatures *) NULL);
     }
-  return(GetImageChannelFeatures(wand->images,distance,wand->exception));
+  return(GetImageFeatures(wand->images,distance,wand->exception));
 }
 
 /*
