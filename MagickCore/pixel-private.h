@@ -119,9 +119,10 @@ static inline void SetPixelPacket(const Image *image,
   SetPixelRed(color,ClampToQuantum(pixel->red));
   SetPixelGreen(color,ClampToQuantum(pixel->green));
   SetPixelBlue(color,ClampToQuantum(pixel->blue));
-  SetPixelOpacity(color,ClampToQuantum(pixel->opacity));
-  if ((image->colorspace == CMYKColorspace) ||
-      (image->storage_class == PseudoClass))
+  if (image->colorspace == CMYKColorspace)
+    SetPixelBlack(index,ClampToQuantum(pixel->black));
+  SetPixelAlpha(color,ClampToQuantum(pixel->alpha));
+  if (image->storage_class == PseudoClass)
     SetPixelIndex(index,ClampToQuantum(pixel->index));
 }
 
