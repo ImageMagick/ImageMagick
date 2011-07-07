@@ -676,7 +676,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*yy++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*c1++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*c2++),q);
-            q+=GetPixelChannels(image);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -784,7 +784,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelRed(image,ScaleCharToQuantum(*yy++),q);
       SetPixelGreen(image,ScaleCharToQuantum(*c1++),q);
       SetPixelBlue(image,ScaleCharToQuantum(*c2++),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -1027,7 +1027,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     for (x=0; x < (ssize_t) (tile_image->columns << 1); x++)
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(tile_image,p)));
-      p+=GetPixelChannels(tile_image);
+      p+=GetPixelComponents(tile_image);
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,
       1,&downsample_image->exception);

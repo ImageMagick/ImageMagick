@@ -434,7 +434,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
               *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
               *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -452,7 +452,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
               *q++=ScaleQuantumToChar(GetPixelRed(image,p));
               *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -470,7 +470,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
               *q++=ScaleQuantumToChar(GetPixelRed(image,p));
               *q++=ScaleQuantumToChar((Quantum) 0);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -485,7 +485,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -502,7 +502,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetPixelRed(image,p));
               *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
               *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -520,7 +520,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
               *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
               *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -538,7 +538,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
               *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
               *q++=ScaleQuantumToChar((Quantum) 0);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -599,7 +599,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -622,7 +622,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(double) (QuantumScale*GetPixelBlue(image,p));
               *q++=(double) (QuantumScale*GetPixelGreen(image,p));
               *q++=(double) (QuantumScale*GetPixelRed(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -640,7 +640,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(double) (QuantumScale*GetPixelGreen(image,p));
               *q++=(double) (QuantumScale*GetPixelRed(image,p));
               *q++=(double) (QuantumScale*GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -658,7 +658,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(double) (QuantumScale*GetPixelGreen(image,p));
               *q++=(double) (QuantumScale*GetPixelRed(image,p));
               *q++=0.0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -673,7 +673,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(double) (QuantumScale*GetPixelIntensity(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -690,7 +690,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(double) (QuantumScale*GetPixelRed(image,p));
               *q++=(double) (QuantumScale*GetPixelGreen(image,p));
               *q++=(double) (QuantumScale*GetPixelBlue(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -708,7 +708,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(double) (QuantumScale*GetPixelGreen(image,p));
               *q++=(double) (QuantumScale*GetPixelBlue(image,p));
               *q++=(double) (QuantumScale*GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -726,7 +726,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(double) (QuantumScale*GetPixelGreen(image,p));
               *q++=(double) (QuantumScale*GetPixelBlue(image,p));
               *q++=0.0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -788,7 +788,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -811,7 +811,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetPixelBlue(image,p));
               *q++=(float) (QuantumScale*GetPixelGreen(image,p));
               *q++=(float) (QuantumScale*GetPixelRed(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -829,7 +829,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetPixelGreen(image,p));
               *q++=(float) (QuantumScale*GetPixelRed(image,p));
               *q++=(float) (QuantumScale*GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -847,7 +847,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetPixelGreen(image,p));
               *q++=(float) (QuantumScale*GetPixelRed(image,p));
               *q++=0.0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -862,7 +862,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=(float) (QuantumScale*GetPixelIntensity(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -879,7 +879,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetPixelRed(image,p));
               *q++=(float) (QuantumScale*GetPixelGreen(image,p));
               *q++=(float) (QuantumScale*GetPixelBlue(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -897,7 +897,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetPixelGreen(image,p));
               *q++=(float) (QuantumScale*GetPixelBlue(image,p));
               *q++=(float) (QuantumScale*GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -915,7 +915,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(float) (QuantumScale*GetPixelGreen(image,p));
               *q++=(float) (QuantumScale*GetPixelBlue(image,p));
               *q++=0.0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -976,7 +976,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -999,7 +999,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1017,7 +1017,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1035,7 +1035,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
               *q++=0U;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1051,7 +1051,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             {
               *q++=(unsigned int) ScaleQuantumToLong(
                 GetPixelIntensity(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1068,7 +1068,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1086,7 +1086,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1104,7 +1104,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
               *q++=0U;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1166,7 +1166,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -1189,7 +1189,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
               *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=ScaleQuantumToLong(GetPixelRed(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1207,7 +1207,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=ScaleQuantumToLong(GetPixelRed(image,p));
               *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1225,7 +1225,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=ScaleQuantumToLong(GetPixelRed(image,p));
               *q++=0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1240,7 +1240,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToLong(GetPixelIntensity(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1257,7 +1257,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetPixelRed(image,p));
               *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1275,7 +1275,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
               *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1293,7 +1293,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
               *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
               *q++=0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1354,7 +1354,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -1377,7 +1377,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetPixelBlue(image,p);
               *q++=GetPixelGreen(image,p);
               *q++=GetPixelRed(image,p);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1395,7 +1395,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetPixelGreen(image,p);
               *q++=GetPixelRed(image,p);
               *q++=(Quantum) (GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1413,7 +1413,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetPixelGreen(image,p);
               *q++=GetPixelRed(image,p);
               *q++=(Quantum) 0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1428,7 +1428,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=GetPixelIntensity(image,p);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1445,7 +1445,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetPixelRed(image,p);
               *q++=GetPixelGreen(image,p);
               *q++=GetPixelBlue(image,p);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1463,7 +1463,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetPixelGreen(image,p);
               *q++=GetPixelBlue(image,p);
               *q++=(Quantum) (GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1481,7 +1481,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=GetPixelGreen(image,p);
               *q++=GetPixelBlue(image,p);
               *q++=(Quantum) 0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1542,7 +1542,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -1565,7 +1565,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
               *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
               *q++=ScaleQuantumToShort(GetPixelRed(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1583,7 +1583,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
               *q++=ScaleQuantumToShort(GetPixelRed(image,p));
               *q++=ScaleQuantumToShort(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1601,7 +1601,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
               *q++=ScaleQuantumToShort(GetPixelRed(image,p));
               *q++=0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1616,7 +1616,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             for (x=0; x < (ssize_t) columns; x++)
             {
               *q++=ScaleQuantumToShort(GetPixelIntensity(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1633,7 +1633,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetPixelRed(image,p));
               *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
               *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1651,7 +1651,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
               *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
               *q++=ScaleQuantumToShort(GetPixelAlpha(image,p));
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1669,7 +1669,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
               *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
               *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
               *q++=0;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
           break;
@@ -1730,7 +1730,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
             }
             q++;
           }
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
       break;
@@ -1992,7 +1992,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2012,7 +2012,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2032,7 +2032,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2052,7 +2052,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2071,7 +2071,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2090,7 +2090,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2110,7 +2110,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2130,7 +2130,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2150,7 +2150,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
               SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2213,7 +2213,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -2244,7 +2244,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2272,7 +2272,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2298,7 +2298,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
                 (*p)),q);
               p++;
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2319,7 +2319,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2344,7 +2344,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2372,7 +2372,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2397,7 +2397,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2467,7 +2467,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -2498,7 +2498,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2526,7 +2526,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2552,7 +2552,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
                 (*p)),q);
               p++;
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2573,7 +2573,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2598,7 +2598,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2626,7 +2626,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2651,7 +2651,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
                 (*p)),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2721,7 +2721,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -2746,7 +2746,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2766,7 +2766,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2786,7 +2786,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2805,7 +2805,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2824,7 +2824,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2844,7 +2844,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2864,7 +2864,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2927,7 +2927,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -2952,7 +2952,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2972,7 +2972,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -2992,7 +2992,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3011,7 +3011,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3030,7 +3030,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleLongToQuantum(*p++),q);
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3050,7 +3050,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleLongToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3070,7 +3070,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
               SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3133,7 +3133,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -3158,7 +3158,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,*p++,q);
               SetPixelGreen(image,*p++,q);
               SetPixelRed(image,*p++,q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3178,7 +3178,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,*p++,q);
               SetPixelRed(image,*p++,q);
               SetPixelAlpha(image,*p++,q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3198,7 +3198,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,*p++,q);
               SetPixelRed(image,*p++,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3217,7 +3217,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,*p++,q);
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3236,7 +3236,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,*p++,q);
               SetPixelGreen(image,*p++,q);
               SetPixelBlue(image,*p++,q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3256,7 +3256,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,*p++,q);
               SetPixelBlue(image,*p++,q);
               SetPixelAlpha(image,*p++,q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3276,7 +3276,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,*p++,q);
               SetPixelBlue(image,*p++,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3339,7 +3339,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -3364,7 +3364,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
               SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
               SetPixelRed(image,ScaleShortToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3384,7 +3384,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
               SetPixelRed(image,ScaleShortToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3404,7 +3404,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
               SetPixelRed(image,ScaleShortToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3423,7 +3423,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleShortToQuantum(*p++),q);
               SetPixelGreen(image,GetPixelRed(image,q),q);
               SetPixelBlue(image,GetPixelRed(image,q),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3442,7 +3442,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelRed(image,ScaleShortToQuantum(*p++),q);
               SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
               SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3462,7 +3462,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
               SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
               SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3482,7 +3482,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
               SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
               SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3545,7 +3545,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
             }
             p++;
           }
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -3748,24 +3748,24 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
-      AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
-      AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
-      AlphaBlendPixelInfo(image,p+4*GetPixelChannels(image),pixels+4,alpha+4);
-      AlphaBlendPixelInfo(image,p+5*GetPixelChannels(image),pixels+5,alpha+5);
-      AlphaBlendPixelInfo(image,p+6*GetPixelChannels(image),pixels+6,alpha+6);
-      AlphaBlendPixelInfo(image,p+7*GetPixelChannels(image),pixels+7,alpha+7);
-      AlphaBlendPixelInfo(image,p+8*GetPixelChannels(image),pixels+8,alpha+8);
-      AlphaBlendPixelInfo(image,p+9*GetPixelChannels(image),pixels+9,alpha+9);
-      AlphaBlendPixelInfo(image,p+10*GetPixelChannels(image),pixels+10,
+      AlphaBlendPixelInfo(image,p+1*GetPixelComponents(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+2*GetPixelComponents(image),pixels+2,alpha+2);
+      AlphaBlendPixelInfo(image,p+3*GetPixelComponents(image),pixels+3,alpha+3);
+      AlphaBlendPixelInfo(image,p+4*GetPixelComponents(image),pixels+4,alpha+4);
+      AlphaBlendPixelInfo(image,p+5*GetPixelComponents(image),pixels+5,alpha+5);
+      AlphaBlendPixelInfo(image,p+6*GetPixelComponents(image),pixels+6,alpha+6);
+      AlphaBlendPixelInfo(image,p+7*GetPixelComponents(image),pixels+7,alpha+7);
+      AlphaBlendPixelInfo(image,p+8*GetPixelComponents(image),pixels+8,alpha+8);
+      AlphaBlendPixelInfo(image,p+9*GetPixelComponents(image),pixels+9,alpha+9);
+      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,
         alpha+10);
-      AlphaBlendPixelInfo(image,p+11*GetPixelChannels(image),pixels+11,
+      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,
         alpha+11);
-      AlphaBlendPixelInfo(image,p+12*GetPixelChannels(image),pixels+12,
+      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,
         alpha+12);
-      AlphaBlendPixelInfo(image,p+13*GetPixelChannels(image),pixels+13,
+      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,
         alpha+13);
-      AlphaBlendPixelInfo(image,p+14*GetPixelChannels(image),pixels+14,
+      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,
         alpha+14);
       AlphaBlendPixelInfo(image,p+15,pixels+15,alpha+15);
       pixel->red=0.0;
@@ -3801,26 +3801,26 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
-      AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
-      AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
-      AlphaBlendPixelInfo(image,p+4*GetPixelChannels(image),pixels+4,alpha+4);
-      AlphaBlendPixelInfo(image,p+5*GetPixelChannels(image),pixels+5,alpha+5);
-      AlphaBlendPixelInfo(image,p+6*GetPixelChannels(image),pixels+6,alpha+6);
-      AlphaBlendPixelInfo(image,p+7*GetPixelChannels(image),pixels+7,alpha+7);
-      AlphaBlendPixelInfo(image,p+8*GetPixelChannels(image),pixels+8,alpha+8);
-      AlphaBlendPixelInfo(image,p+9*GetPixelChannels(image),pixels+9,alpha+9);
-      AlphaBlendPixelInfo(image,p+10*GetPixelChannels(image),pixels+10,
+      AlphaBlendPixelInfo(image,p+1*GetPixelComponents(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+2*GetPixelComponents(image),pixels+2,alpha+2);
+      AlphaBlendPixelInfo(image,p+3*GetPixelComponents(image),pixels+3,alpha+3);
+      AlphaBlendPixelInfo(image,p+4*GetPixelComponents(image),pixels+4,alpha+4);
+      AlphaBlendPixelInfo(image,p+5*GetPixelComponents(image),pixels+5,alpha+5);
+      AlphaBlendPixelInfo(image,p+6*GetPixelComponents(image),pixels+6,alpha+6);
+      AlphaBlendPixelInfo(image,p+7*GetPixelComponents(image),pixels+7,alpha+7);
+      AlphaBlendPixelInfo(image,p+8*GetPixelComponents(image),pixels+8,alpha+8);
+      AlphaBlendPixelInfo(image,p+9*GetPixelComponents(image),pixels+9,alpha+9);
+      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,
         alpha+10);
-      AlphaBlendPixelInfo(image,p+11*GetPixelChannels(image),pixels+11,
+      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,
         alpha+11);
-      AlphaBlendPixelInfo(image,p+12*GetPixelChannels(image),pixels+12,
+      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,
         alpha+12);
-      AlphaBlendPixelInfo(image,p+13*GetPixelChannels(image),pixels+13,
+      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,
         alpha+13);
-      AlphaBlendPixelInfo(image,p+14*GetPixelChannels(image),pixels+14,
+      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,
         alpha+14);
-      AlphaBlendPixelInfo(image,p+15*GetPixelChannels(image),pixels+15,
+      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,
         alpha+15);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
@@ -3843,9 +3843,9 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
-      AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
-      AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
+      AlphaBlendPixelInfo(image,p+1*GetPixelComponents(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+2*GetPixelComponents(image),pixels+2,alpha+2);
+      AlphaBlendPixelInfo(image,p+3*GetPixelComponents(image),pixels+3,alpha+3);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
       epsilon.x=1.0-delta.x;
@@ -3930,9 +3930,9 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
-      AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
-      AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
+      AlphaBlendPixelInfo(image,p+1*GetPixelComponents(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+2*GetPixelComponents(image),pixels+2,alpha+2);
+      AlphaBlendPixelInfo(image,p+3*GetPixelComponents(image),pixels+3,alpha+3);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
       luminance.x=GetPixelInfoLuminance(pixels+0)-(double)
@@ -4066,26 +4066,26 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
-      AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
-      AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
-      AlphaBlendPixelInfo(image,p+4*GetPixelChannels(image),pixels+4,alpha+4);
-      AlphaBlendPixelInfo(image,p+5*GetPixelChannels(image),pixels+5,alpha+5);
-      AlphaBlendPixelInfo(image,p+6*GetPixelChannels(image),pixels+6,alpha+6);
-      AlphaBlendPixelInfo(image,p+7*GetPixelChannels(image),pixels+7,alpha+7);
-      AlphaBlendPixelInfo(image,p+8*GetPixelChannels(image),pixels+8,alpha+8);
-      AlphaBlendPixelInfo(image,p+9*GetPixelChannels(image),pixels+9,alpha+9);
-      AlphaBlendPixelInfo(image,p+10*GetPixelChannels(image),pixels+10,
+      AlphaBlendPixelInfo(image,p+1*GetPixelComponents(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+2*GetPixelComponents(image),pixels+2,alpha+2);
+      AlphaBlendPixelInfo(image,p+3*GetPixelComponents(image),pixels+3,alpha+3);
+      AlphaBlendPixelInfo(image,p+4*GetPixelComponents(image),pixels+4,alpha+4);
+      AlphaBlendPixelInfo(image,p+5*GetPixelComponents(image),pixels+5,alpha+5);
+      AlphaBlendPixelInfo(image,p+6*GetPixelComponents(image),pixels+6,alpha+6);
+      AlphaBlendPixelInfo(image,p+7*GetPixelComponents(image),pixels+7,alpha+7);
+      AlphaBlendPixelInfo(image,p+8*GetPixelComponents(image),pixels+8,alpha+8);
+      AlphaBlendPixelInfo(image,p+9*GetPixelComponents(image),pixels+9,alpha+9);
+      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,
         alpha+10);
-      AlphaBlendPixelInfo(image,p+11*GetPixelChannels(image),pixels+11,
+      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,
         alpha+11);
-      AlphaBlendPixelInfo(image,p+12*GetPixelChannels(image),pixels+12,
+      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,
         alpha+12);
-      AlphaBlendPixelInfo(image,p+13*GetPixelChannels(image),pixels+13,
+      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,
         alpha+13);
-      AlphaBlendPixelInfo(image,p+14*GetPixelChannels(image),pixels+14,
+      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,
         alpha+14);
-      AlphaBlendPixelInfo(image,p+15*GetPixelChannels(image),pixels+15,
+      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,
         alpha+15);
       pixel->red=0.0;
       pixel->green=0.0;
@@ -4576,7 +4576,7 @@ MagickExport void SetPixelComponentMap(Image *image,
 */
 MagickExport void StandardPixelComponentMap(Image *image)
 {
-  image->pixel_channels=4;
+  image->pixel_components=4;
   SetPixelComponent(image,RedPixelComponent,RedPixelComponent);
   SetPixelComponentTraits(image,RedPixelComponent,ActivePixelTrait);
   SetPixelComponent(image,GreenPixelComponent,GreenPixelComponent);
@@ -4587,13 +4587,13 @@ MagickExport void StandardPixelComponentMap(Image *image)
   SetPixelComponentTraits(image,AlphaPixelComponent,ActivePixelTrait);
   if (image->colorspace == CMYKColorspace)
     {
-      image->pixel_channels++;
+      image->pixel_components++;
       SetPixelComponent(image,BlackPixelComponent,BlackPixelComponent);
       SetPixelComponentTraits(image,BlackPixelComponent,ActivePixelTrait);
     }
   if (image->storage_class == PseudoClass)
     {
-      image->pixel_channels++;
+      image->pixel_components++;
       SetPixelComponent(image,IndexPixelComponent,IndexPixelComponent);
       SetPixelComponentTraits(image,IndexPixelComponent,ActivePixelTrait);
     }

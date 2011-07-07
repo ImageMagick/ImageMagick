@@ -8230,7 +8230,7 @@ Mogrify(ref,...)
                     {
                       if (GetPixelAlpha(image,q) == OpaqueAlpha)
                         SetPixelAlpha(composite_image,ClampToQuantum(opacity),q);
-                      q+=GetPixelChannels(composite_image);
+                      q+=GetPixelComponents(composite_image);
                     }
                     sync=SyncCacheViewAuthenticPixels(composite_view,exception);
                     if (sync == MagickFalse)

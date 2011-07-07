@@ -562,7 +562,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   SetPixelAlpha(image,ScaleShortToQuantum((unsigned short)
                     ((*(p+6) << 8) | (*(p+7)))),q);
                 p+=8;
-                q+=GetPixelChannels(image);
+                q+=GetPixelComponents(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -591,7 +591,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->matte != MagickFalse)
                 SetPixelAlpha(image,ScaleCharToQuantum(*(p+3)),q);
               p+=4;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -628,7 +628,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 quantum|=(*(p+1));
                 SetPixelIndex(image,quantum,q);
                 p+=8;
-                q+=GetPixelChannels(image);
+                q+=GetPixelComponents(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -652,7 +652,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               SetPixelIndex(image,*p,q);
               p+=4;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -986,7 +986,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
           *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
           *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       else
         for (x=0; x < (ssize_t) image->columns; x++)
@@ -1000,7 +1000,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToShort(GetPixelGreen(image,p));
           *q++=ScaleQuantumToShort(GetPixelBlue(image,p));
           *q++=ScaleQuantumToShort(GetPixelAlpha(image,p));
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       if (image->previous == (Image *) NULL)
         {

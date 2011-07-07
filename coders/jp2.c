@@ -541,7 +541,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
           SetPixelGreen(image,GetPixelRed(image,q),q);
           SetPixelBlue(image,GetPixelRed(image,q),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         break;
       }
@@ -558,7 +558,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelGreen(image,ScaleAnyToQuantum((QuantumAny) pixel,range[1]),q);
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
           SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) pixel,range[2]),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         break;
       }
@@ -577,7 +577,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) pixel,range[2]),q);
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
           SetPixelAlpha(image,ScaleAnyToQuantum((QuantumAny) pixel,range[3]),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         break;
       }
@@ -939,7 +939,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
             jas_matrix_setv(pixels[3],x,(jas_seqent_t) ScaleQuantumToAny(
               GetPixelAlpha(image,p),range));
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     for (i=0; i < (ssize_t) number_components; i++)
       (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,

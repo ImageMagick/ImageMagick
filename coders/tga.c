@@ -446,7 +446,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelBlue(image,pixel.blue,q);
       if (image->matte != MagickFalse)
         SetPixelAlpha(image,pixel.alpha,q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
       offset+=4;
@@ -791,7 +791,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
             if (image->matte != MagickFalse)
               *q++=(unsigned char) ScaleQuantumToChar(GetPixelAlpha(image,p));
           }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     (void) WriteBlob(image,(size_t) (q-targa_pixels),targa_pixels);
     if (image->previous == (Image *) NULL)

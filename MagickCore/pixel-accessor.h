@@ -67,15 +67,15 @@ static inline PixelTrait GetPixelCbTraits(const Image *image)
   return(image->component_map[image->map][CbPixelComponent].traits);
 }
 
-static inline size_t GetPixelChannels(const Image *image)
-{
-  return(image->pixel_channels);
-}
-
 static inline Quantum GetPixelComponent(const Image *image,
   const PixelComponent component)
 {
   return(image->component_map[image->map][component].component);
+}
+
+static inline size_t GetPixelComponents(const Image *image)
+{
+  return(image->pixel_components);
 }
 
 static inline Quantum GetPixelCr(const Image *image,const Quantum *pixel)
@@ -453,15 +453,15 @@ static inline void SetPixelCbTraits(Image *image,const PixelTrait traits)
   image->component_map[image->map][CbPixelComponent].traits=traits;
 }
 
-static inline void SetPixelChannels(Image *image,const size_t channels)
-{
-  image->pixel_channels=channels;
-}
-
 static inline void SetPixelComponent(const Image *image,
   const PixelComponent component,const PixelComponent components)
 {
   image->component_map[image->map][component].component=components;
+}
+
+static inline void SetPixelComponents(Image *image,const size_t channels)
+{
+  image->pixel_components=channels;
 }
 
 static inline void SetPixelComponentTraits(Image *image,

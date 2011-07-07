@@ -494,7 +494,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        q=pixels+y*width*GetPixelChannels(image);;
+        q=pixels+y*width*GetPixelComponents(image);;
         number_pixels=bytes_per_line;
         count=ReadBlob(blob,(size_t) number_pixels,scanline);
         (void) count;
@@ -1219,7 +1219,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                         }
                   }
                 p++;
-                q+=GetPixelChannels(tile_image);
+                q+=GetPixelComponents(tile_image);
               }
               if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
                 break;
@@ -1878,7 +1878,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         scanline[x]=(unsigned char) GetPixelIndex(image,p);
-        p+=GetPixelChannels(image);
+        p+=GetPixelComponents(image);
       }
       count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
         packed_scanline);
@@ -1932,7 +1932,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             *blue++=ScaleQuantumToChar(GetPixelBlue(image,p));
             if (image->matte != MagickFalse)
               *opacity++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
-            p+=GetPixelChannels(image);
+            p+=GetPixelComponents(image);
           }
           count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,
             packed_scanline);

@@ -280,7 +280,7 @@ struct _Image
     ping;
 
   size_t
-    pixel_channels,
+    pixel_components,
     metacontent_extent;
 
   MagickBooleanType

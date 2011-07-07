@@ -244,14 +244,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          pixel.red+=GetPixelAlpha(image,r+u*GetPixelChannels(image));
-          pixel.green+=GetPixelGreen(image,r+u*GetPixelChannels(image));
-          pixel.blue+=GetPixelBlue(image,r+u*GetPixelChannels(image));
+          pixel.red+=GetPixelAlpha(image,r+u*GetPixelComponents(image));
+          pixel.green+=GetPixelGreen(image,r+u*GetPixelComponents(image));
+          pixel.blue+=GetPixelBlue(image,r+u*GetPixelComponents(image));
           if (image->colorspace == CMYKColorspace)
-            pixel.black+=GetPixelBlack(image,r+u*GetPixelChannels(image));
-          pixel.alpha+=GetPixelAlpha(image,r+u*GetPixelChannels(image));
+            pixel.black+=GetPixelBlack(image,r+u*GetPixelComponents(image));
+          pixel.alpha+=GetPixelAlpha(image,r+u*GetPixelComponents(image));
         }
-        r+=(image->columns+width)*GetPixelChannels(image);
+        r+=(image->columns+width)*GetPixelComponents(image);
       }
       mean.red=(MagickRealType) (pixel.red/number_pixels+offset);
       mean.green=(MagickRealType) (pixel.green/number_pixels+offset);
@@ -270,8 +270,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           q);
       SetPixelAlpha(threshold_image,(Quantum) (((MagickRealType)
         GetPixelAlpha(threshold_image,q) <= mean.alpha) ? 0 : QuantumRange),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(threshold_image);
+      p+=GetPixelComponents(image);
+      q+=GetPixelComponents(threshold_image);
     }
     sync=SyncCacheViewAuthenticPixels(threshold_view,exception);
     if (sync == MagickFalse)
@@ -409,7 +409,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
             GetPixelIntensity(image,q) <= threshold ? 0 : QuantumRange),q);
           SetPixelGreen(image,GetPixelRed(image,q),q);
           SetPixelBlue(image,GetPixelRed(image,q),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
       }
     else
@@ -438,7 +438,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
                 GetPixelAlpha(image,q) >= threshold ? OpaqueAlpha :
                 TransparentAlpha),q);
           }
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
       }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -618,7 +618,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
               ((MagickRealType) GetPixelAlpha(image,q) < threshold.alpha))
             SetPixelAlpha(image,0,q);
         }
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -771,7 +771,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
         SetPixelBlack(image,ClampToUnsignedQuantum(GetPixelBlack(image,q)),q);
       if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(image,ClampToUnsignedQuantum(GetPixelAlpha(image,q)),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1493,7 +1493,7 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
           SetPixelBlack(image,RoundToQuantum((MagickRealType)
             ((l+(t>=threshold))*(MagickRealType) QuantumRange/levels.black)),q);
         }
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
       }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         status=MagickFalse;
@@ -1686,7 +1686,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
           index=(Quantum) (intensity <= threshold.black ? 0 : 1);
           SetPixelIndex(image,index,q);
           SetPixelPacket(image,image->colormap+(ssize_t) index,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1812,7 +1812,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
         SetPixelAlpha(image,(Quantum) ((MagickRealType)
           GetPixelAlpha(image,q) <= threshold.alpha ? 0 : QuantumRange),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1993,7 +1993,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
               ((MagickRealType) GetPixelAlpha(image,q) > threshold.alpha))
             SetPixelAlpha(image,QuantumRange,q);
         }
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

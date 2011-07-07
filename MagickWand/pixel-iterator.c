@@ -512,7 +512,7 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
-    pixels+=GetPixelChannels(iterator->image);
+    pixels+=GetPixelComponents(iterator->image);
   }
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -696,7 +696,7 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
-    pixels+=GetPixelChannels(iterator->image);
+    pixels+=GetPixelComponents(iterator->image);
   }
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -767,7 +767,7 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
-    pixels+=GetPixelChannels(iterator->image);
+    pixels+=GetPixelComponents(iterator->image);
   }
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -959,7 +959,7 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelGetQuantumPixel(iterator->image,iterator->pixel_wands[x],pixels);
-    pixels+=GetPixelChannels(iterator->image);
+    pixels+=GetPixelComponents(iterator->image);
   }
   if (SyncCacheViewAuthenticPixels(iterator->view,exception) == MagickFalse)
     {

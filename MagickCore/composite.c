@@ -1698,8 +1698,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           SetPixelAlpha(image,GetPixelAlpha(composite_image,p),q);
           if (image->colorspace == CMYKColorspace)
             SetPixelBlack(image,GetPixelBlack(composite_image,p),q);
-          p+=GetPixelChannels(composite_image);
-          q+=GetPixelChannels(image);
+          p+=GetPixelComponents(composite_image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1837,7 +1837,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelChannels(composite_image);
+              p+=GetPixelComponents(composite_image);
               continue;
             }
           if (fabs(angle_range) > MagickEpsilon)
@@ -1860,8 +1860,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
           SetPixelPixelInfo(destination_image,&pixel,q);
-          p+=GetPixelChannels(composite_image);
-          q+=GetPixelChannels(destination_image);
+          p+=GetPixelComponents(composite_image);
+          q+=GetPixelComponents(destination_image);
         }
         sync=SyncCacheViewAuthenticPixels(destination_view,exception);
         if (sync == MagickFalse)
@@ -2009,7 +2009,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelChannels(composite_image);
+              p+=GetPixelComponents(composite_image);
               continue;
             }
           /*
@@ -2033,8 +2033,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             pixel.alpha)*(1.0-QuantumScale*
             GetPixelAlpha(composite_image,p)));
           SetPixelPixelInfo(destination_image,&pixel,q);
-          p+=GetPixelChannels(composite_image);
-          q+=GetPixelChannels(destination_image);
+          p+=GetPixelComponents(composite_image);
+          q+=GetPixelComponents(destination_image);
         }
         sync=SyncCacheViewAuthenticPixels(destination_view,exception);
         if (sync == MagickFalse)
@@ -2209,7 +2209,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=x_offset*GetPixelChannels(composite_image);
+          p-=x_offset*GetPixelComponents(composite_image);
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (const Quantum *) NULL)
@@ -2228,7 +2228,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         {
           if (x < x_offset)
             {
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
               continue;
             }
           if ((x-x_offset) >= (ssize_t) composite_image->columns)
@@ -2302,7 +2302,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
           if (image->colorspace == CMYKColorspace)
             SetPixelBlack(image,ClampToQuantum(composite.black),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
           continue;
         }
       /*
@@ -2717,10 +2717,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(image,ClampToQuantum(composite.black),q);
       SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
-      p+=GetPixelChannels(composite_image);
-      if (p >= (pixels+composite_image->columns*GetPixelChannels(composite_image)))
+      p+=GetPixelComponents(composite_image);
+      if (p >= (pixels+composite_image->columns*GetPixelComponents(composite_image)))
         p=pixels;
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2902,8 +2902,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
         if ((image->colorspace == CMYKColorspace)  &&
             (texture->colorspace == CMYKColorspace))
           SetPixelBlack(image,GetPixelBlack(texture,p),q);
-        p+=GetPixelChannels(texture);
-        q+=GetPixelChannels(image);
+        p+=GetPixelComponents(texture);
+        q+=GetPixelComponents(image);
       }
     }
     sync=SyncCacheViewAuthenticPixels(image_view,exception);

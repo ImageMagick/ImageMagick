@@ -339,7 +339,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         }
       }
       i++;
-      q+=GetPixelChannels(magnitude_image);
+      q+=GetPixelComponents(magnitude_image);
     }
     status=SyncCacheViewAuthenticPixels(magnitude_view,exception);
     if (status == MagickFalse)
@@ -395,7 +395,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         }
       }
       i++;
-      q+=GetPixelChannels(phase_image);
+      q+=GetPixelComponents(phase_image);
     }
     status=SyncCacheViewAuthenticPixels(phase_view,exception);
     if (status == MagickFalse)
@@ -492,7 +492,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         }
       }
       i++;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -913,7 +913,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
       }
       i++;
-      p+=GetPixelChannels(magnitude_image);
+      p+=GetPixelComponents(magnitude_image);
     }
   }
   i=0L;
@@ -961,7 +961,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         }
       }
       i++;
-      p+=GetPixelChannels(phase_image);
+      p+=GetPixelComponents(phase_image);
     }
   }
   if (fourier_info->modulus != MagickFalse)
@@ -1125,7 +1125,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         }
       }
       i++;
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;

@@ -288,7 +288,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
           node_info->number_unique++;
           cube_info->colors++;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     proceed=SetImageProgress(image,EvaluateImageTag,(MagickOffsetType) y,
       image->rows);
@@ -761,7 +761,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
           if (cube_info->colors > MaximumUniqueColors)
             break;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -921,7 +921,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
           if (cube_info->colors > 256)
             break;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (x < (ssize_t) image->columns)
       break;

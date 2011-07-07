@@ -1202,7 +1202,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
       (void) InterpolatePixelInfo(image,image_view,
         MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
       SetPixelPixelInfo(resize_image,&pixel,q);
-      q+=GetPixelChannels(resize_image);
+      q+=GetPixelComponents(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       continue;
@@ -2164,17 +2164,17 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
               (contribution[i].pixel-contribution[0].pixel);
             alpha=contribution[i].weight;
             pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             if ((image->colorspace == CMYKColorspace) &&
                 (resize_image->colorspace == CMYKColorspace))
               pixel.black+=alpha*GetPixelBlue(image,p+j*
-                GetPixelChannels(image));
+                GetPixelComponents(image));
             pixel.alpha+=alpha*GetPixelAlpha(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
           }
           SetPixelRed(resize_image,ClampToQuantum(pixel.red),q);
           SetPixelGreen(resize_image,ClampToQuantum(pixel.green),q);
@@ -2195,19 +2195,19 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
               (contribution[i].pixel-contribution[0].pixel);
             alpha=contribution[i].weight*QuantumScale*
-              GetPixelAlpha(image,p+j*GetPixelChannels(image));
+              GetPixelAlpha(image,p+j*GetPixelComponents(image));
             pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             if ((image->colorspace == CMYKColorspace) &&
                 (resize_image->colorspace == CMYKColorspace))
               pixel.black+=alpha*GetPixelBlack(image,p+j*
-                GetPixelChannels(image));
+                GetPixelComponents(image));
             pixel.alpha+=contribution[i].weight*
-              GetPixelAlpha(image,p+j*GetPixelChannels(image));
+              GetPixelAlpha(image,p+j*GetPixelComponents(image));
             gamma+=alpha;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
@@ -2227,9 +2227,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
             (contribution[i-start].pixel-contribution[0].pixel);
           SetPixelIndex(resize_image,GetPixelIndex(image,p+j*
-            GetPixelChannels(image)),q);
+            GetPixelComponents(image)),q);
         }
-      q+=GetPixelChannels(resize_image);
+      q+=GetPixelComponents(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2396,17 +2396,17 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
               image->columns+x);
             alpha=contribution[i].weight;
             pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             if ((image->colorspace == CMYKColorspace) &&
                 (resize_image->colorspace == CMYKColorspace))
               pixel.black+=alpha*GetPixelBlack(image,p+j*
-                GetPixelChannels(image));
+                GetPixelComponents(image));
             pixel.alpha+=alpha*GetPixelAlpha(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
           }
           SetPixelRed(resize_image,ClampToQuantum(pixel.red),q);
           SetPixelGreen(resize_image,ClampToQuantum(pixel.green),q);
@@ -2427,19 +2427,19 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
               image->columns+x);
             alpha=contribution[i].weight*QuantumScale*
-              GetPixelAlpha(image,p+j*GetPixelChannels(image));
+              GetPixelAlpha(image,p+j*GetPixelComponents(image));
             pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
+              GetPixelComponents(image));
             if ((image->colorspace == CMYKColorspace) &&
                 (resize_image->colorspace == CMYKColorspace))
               pixel.black+=alpha*GetPixelBlack(image,p+j*
-                GetPixelChannels(image));
+                GetPixelComponents(image));
             pixel.alpha+=contribution[i].weight*GetPixelAlpha(image,p+j*
-             GetPixelChannels(image));
+             GetPixelComponents(image));
             gamma+=alpha;
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
@@ -2459,9 +2459,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           j=(ssize_t) ((contribution[i-start].pixel-contribution[0].pixel)*
             image->columns+x);
           SetPixelIndex(resize_image,GetPixelIndex(image,p+j*
-            GetPixelChannels(image)),q);
+            GetPixelComponents(image)),q);
         }
-      q+=GetPixelChannels(resize_image);
+      q+=GetPixelComponents(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2712,21 +2712,21 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     for (x=0; x < (ssize_t) sample_image->columns; x++)
     {
       SetPixelRed(sample_image,GetPixelRed(image,p+x_offset[x]*
-        GetPixelChannels(image)),q);
+        GetPixelComponents(image)),q);
       SetPixelGreen(sample_image,GetPixelGreen(image,p+x_offset[x]*
-        GetPixelChannels(image)),q);
+        GetPixelComponents(image)),q);
       SetPixelBlue(sample_image,GetPixelBlue(image,p+x_offset[x]*
-        GetPixelChannels(image)),q);
+        GetPixelComponents(image)),q);
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(sample_image,GetPixelBlack(image,p+x_offset[x]*
-          GetPixelChannels(image)),q);
+          GetPixelComponents(image)),q);
       if (image->matte != MagickFalse)
         SetPixelAlpha(sample_image,GetPixelAlpha(image,p+x_offset[x]*
-          GetPixelChannels(image)),q);
+          GetPixelComponents(image)),q);
       if (image->storage_class == PseudoClass)
         SetPixelIndex(sample_image,GetPixelIndex(image,p+x_offset[x]*
-          GetPixelChannels(image)),q);
-      q+=GetPixelChannels(sample_image);
+          GetPixelComponents(image)),q);
+      q+=GetPixelComponents(sample_image);
     }
     if (SyncCacheViewAuthenticPixels(sample_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2915,7 +2915,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             x_vector[x].alpha=(MagickRealType) GetPixelAlpha(image,p);
           if (image->colorspace == CMYKColorspace)
             x_vector[x].black=(MagickRealType) (alpha*GetPixelBlack(image,p));
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
     else
@@ -2952,7 +2952,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 if (image->matte != MagickFalse)
                   x_vector[x].alpha=(MagickRealType)
                     GetPixelAlpha(image,p);
-                p+=GetPixelChannels(image);
+                p+=GetPixelComponents(image);
               }
               number_rows++;
             }
@@ -2991,7 +2991,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                   GetPixelBlack(image,p));
               if (image->matte != MagickFalse)
                 x_vector[x].alpha=(MagickRealType) GetPixelAlpha(image,p);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
             number_rows++;
             next_row=MagickFalse;
@@ -3042,7 +3042,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             SetPixelBlack(scale_image,ClampToQuantum(alpha*s->black),q);
           if (scale_image->matte != MagickFalse)
             SetPixelAlpha(scale_image,ClampToQuantum(s->alpha),q);
-          q+=GetPixelChannels(scale_image);
+          q+=GetPixelComponents(scale_image);
           s++;
         }
       }
@@ -3142,7 +3142,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         if (scale_image->matte != MagickFalse)
           SetPixelAlpha(scale_image,ClampToQuantum(t->alpha),q);
         t++;
-        q+=GetPixelChannels(scale_image);
+        q+=GetPixelComponents(scale_image);
       }
     }
     if (SyncCacheViewAuthenticPixels(scale_view,exception) == MagickFalse)

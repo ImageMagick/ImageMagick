@@ -588,7 +588,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             {
               if (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)
                 break;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
             if (x < (ssize_t) image->columns)
               break;

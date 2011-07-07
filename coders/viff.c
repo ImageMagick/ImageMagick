@@ -632,7 +632,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   quantum|=0x01;
                   SetPixelIndex(image,quantum,q);
                 }
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             p++;
           }
@@ -644,7 +644,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                     quantum=(size_t) GetPixelIndex(image,q);
                     quantum|=0x01;
                     SetPixelIndex(image,quantum,q);
-                    q+=GetPixelChannels(image);
+                    q+=GetPixelComponents(image);
                   }
               p++;
             }
@@ -669,7 +669,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelIndex(image,*p++,q);
-            q+=GetPixelChannels(image);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -709,7 +709,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               SetPixelAlpha(image,image->matte != MagickFalse ?
                 ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueAlpha,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -1104,7 +1104,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             if (image->matte != MagickFalse)
               *(q+number_pixels*3)=ScaleQuantumToChar((Quantum)
                 (GetPixelAlpha(image,p)));
-            p+=GetPixelChannels(image);
+            p+=GetPixelComponents(image);
             q++;
           }
           if (image->previous == (Image *) NULL)
@@ -1150,7 +1150,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               *q++=(unsigned char) GetPixelIndex(image,p);
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
             if (image->previous == (Image *) NULL)
               {
@@ -1196,7 +1196,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(image);
+                p+=GetPixelComponents(image);
               }
               if (bit != 0)
                 *q++=byte >> (8-bit);
@@ -1223,7 +1223,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 *q++=(unsigned char) GetPixelIntensity(image,p);
-                p+=GetPixelChannels(image);
+                p+=GetPixelComponents(image);
               }
               if (image->previous == (Image *) NULL)
                 {

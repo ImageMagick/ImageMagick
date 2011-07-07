@@ -251,7 +251,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
               if (matte_image[i] != 0)
                 transparent=MagickTrue;
               i++;
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
             }
           }
         }
@@ -273,7 +273,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
               if (matte_image[i] != 0)
                 SetPixelIndex(image,image->colors,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
           }
         }
@@ -360,7 +360,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? ");" : ","));

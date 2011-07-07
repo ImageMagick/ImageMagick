@@ -407,7 +407,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelIndex(image,j,r);
           SetPixelPacket(image,image->colormap+j,r);
           p+=width;
-          r+=GetPixelChannels(image);
+          r+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -683,7 +683,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
                 transparent=MagickTrue;
               else
                 SetPixelAlpha(picon,OpaqueAlpha,q);
-              q+=GetPixelChannels(picon);
+              q+=GetPixelComponents(picon);
             }
             if (SyncAuthenticPixels(picon,exception) == MagickFalse)
               break;
@@ -708,7 +708,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
         {
           if (GetPixelAlpha(image,q) == (Quantum) TransparentAlpha)
             SetPixelIndex(picon,picon->colors,q);
-          q+=GetPixelChannels(picon);
+          q+=GetPixelComponents(picon);
         }
         if (SyncAuthenticPixels(picon,exception) == MagickFalse)
           break;
@@ -787,7 +787,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
       y == (ssize_t) (picon->rows-1) ? "" : ",");
@@ -1015,7 +1015,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     (void) FormatLocaleString(buffer,MaxTextExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? "" : ","));

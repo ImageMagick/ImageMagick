@@ -750,7 +750,7 @@ static MagickBooleanType RadonTransform(const Image *image,
           bit=0;
           byte=0;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (bit != 0)
       {
@@ -801,7 +801,7 @@ static MagickBooleanType RadonTransform(const Image *image,
           bit=0;
           byte=0;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (bit != 0)
       {
@@ -861,7 +861,7 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
       background.blue+=QuantumScale*GetPixelBlue(image,p);
       background.alpha+=QuantumScale*GetPixelAlpha(image,p);
       count++;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -1140,15 +1140,15 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                 status=MagickFalse;
                 break;
               }
-            tile_pixels=p+((height-1)*width+y)*GetPixelChannels(image);
+            tile_pixels=p+((height-1)*width+y)*GetPixelComponents(image);
             for (x=0; x < (ssize_t) height; x++)
             {
               SetPixelRed(rotate_image,GetPixelRed(image,tile_pixels),q);
               SetPixelGreen(rotate_image,GetPixelGreen(image,tile_pixels),q);
               SetPixelBlue(rotate_image,GetPixelBlue(image,tile_pixels),q);
               SetPixelAlpha(rotate_image,GetPixelAlpha(image,tile_pixels),q);
-              tile_pixels-=width*GetPixelChannels(image);
-              q+=GetPixelChannels(rotate_image);
+              tile_pixels-=width*GetPixelComponents(image);
+              q+=GetPixelComponents(rotate_image);
             }
             sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
             if (sync == MagickFalse)
@@ -1207,15 +1207,15 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             status=MagickFalse;
             continue;
           }
-        q+=GetPixelChannels(rotate_image)*image->columns;
+        q+=GetPixelComponents(rotate_image)*image->columns;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          q-=GetPixelChannels(rotate_image);
+          q-=GetPixelComponents(rotate_image);
           SetPixelRed(rotate_image,GetPixelRed(image,p),q);
           SetPixelGreen(rotate_image,GetPixelGreen(image,p),q);
           SetPixelBlue(rotate_image,GetPixelBlue(image,p),q);
           SetPixelAlpha(rotate_image,GetPixelAlpha(image,p),q);
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
         if (sync == MagickFalse)
@@ -1308,15 +1308,15 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                 status=MagickFalse;
                 break;
               }
-            tile_pixels=p+((width-1)-y)*GetPixelChannels(image);
+            tile_pixels=p+((width-1)-y)*GetPixelComponents(image);
             for (x=0; x < (ssize_t) height; x++)
             {
               SetPixelRed(rotate_image,GetPixelRed(image,tile_pixels),q);
               SetPixelGreen(rotate_image,GetPixelGreen(image,tile_pixels),q);
               SetPixelBlue(rotate_image,GetPixelBlue(image,tile_pixels),q);
               SetPixelAlpha(rotate_image,GetPixelAlpha(image,tile_pixels),q);
-              tile_pixels+=width*GetPixelChannels(image);
-              q+=GetPixelChannels(rotate_image);
+              tile_pixels+=width*GetPixelComponents(image);
+              q+=GetPixelComponents(rotate_image);
             }
             sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
             if (sync == MagickFalse)
@@ -1465,7 +1465,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
         status=MagickFalse;
         continue;
       }
-    p+=x_offset*GetPixelChannels(image);
+    p+=x_offset*GetPixelComponents(image);
     displacement=degrees*(MagickRealType) (y-height/2.0);
     if (displacement == 0.0)
       continue;
@@ -1491,14 +1491,14 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
         */
         if (step > x_offset)
           break;
-        q=p-step*GetPixelChannels(image);
+        q=p-step*GetPixelComponents(image);
         for (i=0; i < (ssize_t) width; i++)
         {
           if ((x_offset+i) < step)
             {
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
               SetPixelInfo(image,p,&pixel);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
               continue;
             }
           SetPixelInfo(image,p,&source);
@@ -1507,17 +1507,17 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
             &destination);
           SetPixelPixelInfo(image,&destination,q);
           SetPixelInfo(image,p,&pixel);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
+          q+=GetPixelComponents(image);
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
         SetPixelPixelInfo(image,&destination,q);
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
         for (i=0; i < (step-1); i++)
         {
           SetPixelPixelInfo(image,&background,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         break;
       }
@@ -1526,12 +1526,12 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
         /*
           Transfer pixels right-to-left.
         */
-        p+=width*GetPixelChannels(image);
-        q=p+step*GetPixelChannels(image);
+        p+=width*GetPixelComponents(image);
+        q=p+step*GetPixelComponents(image);
         for (i=0; i < (ssize_t) width; i++)
         {
-          p-=GetPixelChannels(image);
-          q-=GetPixelChannels(image);
+          p-=GetPixelComponents(image);
+          q-=GetPixelComponents(image);
           if ((size_t) (x_offset+width+step-i) >= image->columns)
             continue;
           SetPixelInfo(image,p,&source);
@@ -1543,11 +1543,11 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
-        q-=GetPixelChannels(image);
+        q-=GetPixelComponents(image);
         SetPixelPixelInfo(image,&destination,q);
         for (i=0; i < (step-1); i++)
         {
-          q-=GetPixelChannels(image);
+          q-=GetPixelComponents(image);
           SetPixelPixelInfo(image,&background,q);
         }
         break;
@@ -1685,7 +1685,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
         status=MagickFalse;
         continue;
       }
-    p+=y_offset*GetPixelChannels(image);
+    p+=y_offset*GetPixelComponents(image);
     displacement=degrees*(MagickRealType) (x-width/2.0);
     if (displacement == 0.0)
       continue;
@@ -1711,14 +1711,14 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
         */
         if (step > y_offset)
           break;
-        q=p-step*GetPixelChannels(image);
+        q=p-step*GetPixelComponents(image);
         for (i=0; i < (ssize_t) height; i++)
         {
           if ((y_offset+i) < step)
             {
-              p+=GetPixelChannels(image);
+              p+=GetPixelComponents(image);
               SetPixelInfo(image,p,&pixel);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
               continue;
             }
           SetPixelInfo(image,p,&source);
@@ -1727,17 +1727,17 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
             &destination);
           SetPixelPixelInfo(image,&destination,q);
           SetPixelInfo(image,p,&pixel);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
+          q+=GetPixelComponents(image);
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
         SetPixelPixelInfo(image,&destination,q);
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
         for (i=0; i < (step-1); i++)
         {
           SetPixelPixelInfo(image,&background,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         break;
       }
@@ -1746,12 +1746,12 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
         /*
           Transfer pixels bottom-to-top.
         */
-        p+=height*GetPixelChannels(image);
-        q=p+step*GetPixelChannels(image);
+        p+=height*GetPixelComponents(image);
+        q=p+step*GetPixelComponents(image);
         for (i=0; i < (ssize_t) height; i++)
         {
-          p-=GetPixelChannels(image);
-          q-=GetPixelChannels(image);
+          p-=GetPixelComponents(image);
+          q-=GetPixelComponents(image);
           if ((size_t) (y_offset+height+step-i) >= image->rows)
             continue;
           SetPixelInfo(image,p,&source);
@@ -1763,11 +1763,11 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
-        q-=GetPixelChannels(image);
+        q-=GetPixelComponents(image);
         SetPixelPixelInfo(image,&destination,q);
         for (i=0; i < (step-1); i++)
         {
-          q-=GetPixelChannels(image);
+          q-=GetPixelComponents(image);
           SetPixelPixelInfo(image,&background,q);
         }
         break;

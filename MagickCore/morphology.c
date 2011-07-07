@@ -2632,14 +2632,14 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
         * This removes need for 'cloning' a new image every iteration
         */
         SetPixelRed(morphology_image,GetPixelRed(image,p+r*
-          GetPixelChannels(image)),q);
+          GetPixelComponents(image)),q);
         SetPixelGreen(morphology_image,GetPixelGreen(image,p+r*
-          GetPixelChannels(image)),q);
+          GetPixelComponents(image)),q);
         SetPixelBlue(morphology_image,GetPixelBlue(image,p+r*
-          GetPixelChannels(image)),q);
+          GetPixelComponents(image)),q);
         if (image->colorspace == CMYKColorspace)
           SetPixelBlack(morphology_image,GetPixelBlack(image,p+r*
-            GetPixelChannels(image)),q);
+            GetPixelComponents(image)),q);
 
         /* Set the bias of the weighted average output */
         result.red     =
@@ -2732,8 +2732,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
             || ((image->colorspace == CMYKColorspace) &&
                 (GetPixelBlack(image,p+r) != GetPixelBlack(morphology_image,q))))
           changed++;  /* The pixel was changed in some way! */
-        p+=GetPixelChannels(image);
-        q+=GetPixelChannels(morphology_image);
+        p+=GetPixelComponents(image);
+        q+=GetPixelComponents(morphology_image);
       } /* y */
       if ( SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
         status=MagickFalse;
@@ -2813,14 +2813,14 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
        * This removes need for 'cloning' a new image every iteration
        */
       SetPixelRed(morphology_image,GetPixelRed(image,p+r*
-        GetPixelChannels(image)),q);
+        GetPixelComponents(image)),q);
       SetPixelGreen(morphology_image,GetPixelGreen(image,p+r*
-        GetPixelChannels(image)),q);
+        GetPixelComponents(image)),q);
       SetPixelBlue(morphology_image,GetPixelBlue(image,p+r*
-        GetPixelChannels(image)),q);
+        GetPixelComponents(image)),q);
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(morphology_image,GetPixelBlack(image,p+r*
-          GetPixelChannels(image)),q);
+          GetPixelComponents(image)),q);
 
       /* Defaults */
       min.red     =
@@ -2891,18 +2891,18 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
                     result.red     += (*k)*
-                      GetPixelRed(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelRed(image,k_pixels+u*GetPixelComponents(image));
                     result.green   += (*k)*
-                      GetPixelGreen(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelGreen(image,k_pixels+u*GetPixelComponents(image));
                     result.blue    += (*k)*
-                      GetPixelBlue(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelBlue(image,k_pixels+u*GetPixelComponents(image));
                     if (image->colorspace == CMYKColorspace)
                       result.black += (*k)*
-                        GetPixelBlack(image,k_pixels+u*GetPixelChannels(image));
+                        GetPixelBlack(image,k_pixels+u*GetPixelComponents(image));
                     result.alpha += (*k)*
-                      GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image));
                   }
-                  k_pixels += virt_width*GetPixelChannels(image);
+                  k_pixels += virt_width*GetPixelComponents(image);
                 }
                 if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
                   SetPixelRed(morphology_image,ClampToQuantum(result.red),
@@ -2936,21 +2936,21 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
                     alpha=(*k)*(QuantumScale*
-                      GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                      GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
                     gamma += alpha;
                     result.red     += alpha*
-                      GetPixelRed(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelRed(image,k_pixels+u*GetPixelComponents(image));
                     result.green   += alpha*
-                      GetPixelGreen(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelGreen(image,k_pixels+u*GetPixelComponents(image));
                     result.blue    += alpha*
-                      GetPixelBlue(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelBlue(image,k_pixels+u*GetPixelComponents(image));
                     if (image->colorspace == CMYKColorspace)
                       result.black+=alpha*
-                        GetPixelBlack(image,k_pixels+u*GetPixelChannels(image));
+                        GetPixelBlack(image,k_pixels+u*GetPixelComponents(image));
                     result.alpha += (*k)*
-                      GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image));
+                      GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image));
                   }
-                  k_pixels += virt_width*GetPixelChannels(image);
+                  k_pixels += virt_width*GetPixelComponents(image);
                 }
                 /* Sync'ed channels, all channels are modified */
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
@@ -2982,18 +2982,18 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 Minimize(min.red,     (double)
-                  GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(min.green,   (double) 
-                  GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(min.blue,    (double)
-                  GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 if (image->colorspace == CMYKColorspace)
                   Minimize(min.black,(double)
-                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(min.alpha,(double)
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             break;
 
@@ -3015,18 +3015,18 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 Maximize(max.red,     (double)
-                  GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                 Maximize(max.green,   (double) 
-                  GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                 Maximize(max.blue,    (double) 
-                  GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 if (image->colorspace == CMYKColorspace)
                   Maximize(max.black,   (double)
-                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                 Maximize(max.alpha,(double) 
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             break;
 
@@ -3052,33 +3052,33 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                 if ( (*k) > 0.7 )
                 { /* minimim of foreground pixels */
                   Minimize(min.red,     (double)
-                    GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                   Minimize(min.green,   (double)
-                    GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                   Minimize(min.blue,    (double)
-                    GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                   if ( image->colorspace == CMYKColorspace)
                     Minimize(min.black,(double)
-                      GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                      GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                   Minimize(min.alpha,(double)
-                    GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
                 }
                 else if ( (*k) < 0.3 )
                 { /* maximum of background pixels */
                   Maximize(max.red,     (double)
-                    GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                   Maximize(max.green,   (double)
-                    GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                   Maximize(max.blue,    (double)
-                    GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                   if (image->colorspace == CMYKColorspace)
                     Maximize(max.black,   (double)
-                      GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                      GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                   Maximize(max.alpha,(double)
-                    GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
                 }
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             /* Pattern Match if difference is positive */
             min.red     -= max.red;     Maximize( min.red,     0.0 );
@@ -3110,7 +3110,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                   result.red = 1.0;
                 }
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             break;
 
@@ -3138,7 +3138,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                   result.red = 1.0;
                 }
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             break;
 #if 0
@@ -3172,7 +3172,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.black,(*k)+GetPixelBlack(p_image,k_indexes+u));
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             break;
 #endif
@@ -3245,8 +3245,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
           ((image->colorspace == CMYKColorspace) &&
            (GetPixelBlack(image,p+r) != GetPixelBlack(morphology_image,q))))
         changed++;  /* The pixel was changed in some way! */
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(morphology_image);
+      p+=GetPixelComponents(image);
+      q+=GetPixelComponents(morphology_image);
     } /* x */
     if ( SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3405,18 +3405,18 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) ) continue;
                 Minimize(result.red,     (*k)+
-                  GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.green,   (*k)+
-                  GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.blue,    (*k)+
-                  GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 if (image->colorspace == CMYKColorspace)
                   Minimize(result.black,(*k)+
-                    GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.alpha, (*k)+
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
@@ -3425,16 +3425,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 if ( x+u-offx < 0 ) continue;  /* off the edge! */
                 if ( IsNan(*k) ) continue;
                 Minimize(result.red,     (*k)+
-                  GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.green,   (*k)+
-                  GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.blue,    (*k)+
-                  GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 if (image->colorspace == CMYKColorspace)
                   Minimize(result.black,(*k)+
-                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.alpha,(*k)+
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
               }
             break;
         case VoronoiMorphology:
@@ -3448,14 +3448,14 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             for (v=0; v <= (ssize_t) offy; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) ) continue;
-                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
+                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    SetPixelInfo(image,k_pixels+u*GetPixelComponents(image),
                       &result);
                     result.alpha += *k;
                   }
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
@@ -3463,9 +3463,9 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               for (u=0; u < (ssize_t) offx; u++, k--) {
                 if ( x+u-offx < 0 ) continue;  /* off the edge! */
                 if ( IsNan(*k) ) continue;
-                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
+                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    SetPixelInfo(image,k_pixels+u*GetPixelComponents(image),
                       &result);
                     result.alpha += *k;
                   }
@@ -3504,8 +3504,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
            (GetPixelBlack(image,p+r) != GetPixelBlack(image,q))))
         changed++;  /* The pixel was changed in some way! */
 
-      p+=GetPixelChannels(image); /* increment pixel buffers */
-      q+=GetPixelChannels(image);
+      p+=GetPixelComponents(image); /* increment pixel buffers */
+      q+=GetPixelComponents(image);
     } /* x */
 
     if ( SyncCacheViewAuthenticPixels(auth_view,exception) == MagickFalse)
@@ -3589,18 +3589,18 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) ) continue;
                 Minimize(result.red,     (*k)+
-                  GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.green,   (*k)+
-                  GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.blue,    (*k)+
-                  GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.black,(*k)+
-                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.alpha, (*k)+
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y)+kernel->x-1 ];
@@ -3609,16 +3609,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
                 if ( IsNan(*k) ) continue;
                 Minimize(result.red,     (*k)+
-                  GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelRed(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.green,   (*k)+
-                  GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelGreen(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.blue,    (*k)+
-                  GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelBlue(image,k_pixels+u*GetPixelComponents(image)));
                 if ( image->colorspace == CMYKColorspace)
                   Minimize(result.black,   (*k)+
-                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
+                    GetPixelBlack(image,k_pixels+u*GetPixelComponents(image)));
                 Minimize(result.alpha, (*k)+
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                  GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
               }
             break;
         case VoronoiMorphology:
@@ -3632,14 +3632,14 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             for (v=offy; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) ) continue;
-                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
+                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    SetPixelInfo(image,k_pixels+u*GetPixelComponents(image),
                       &result);
                     result.alpha += *k;
                   }
               }
-              k_pixels += virt_width*GetPixelChannels(image);
+              k_pixels += virt_width*GetPixelComponents(image);
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y)+kernel->x-1 ];
@@ -3647,9 +3647,9 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
                 if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
                 if ( IsNan(*k) ) continue;
-                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
+                if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    SetPixelInfo(image,k_pixels+u*GetPixelComponents(image),
                       &result);
                     result.alpha += *k;
                   }

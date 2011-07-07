@@ -697,7 +697,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
           &image->exception);
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");
-        p+=GetPixelChannels(image);
+        p+=GetPixelComponents(image);
       }
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
         image->rows);

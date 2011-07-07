@@ -618,7 +618,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       SetPixelBlue(image,ScaleCharToQuantum(pBits->rgbBlue),q);
       SetPixelAlpha(image,OpaqueAlpha,q);
       pBits++;
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

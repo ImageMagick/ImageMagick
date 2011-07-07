@@ -262,7 +262,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         }
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;

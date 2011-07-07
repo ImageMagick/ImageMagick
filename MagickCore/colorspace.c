@@ -276,7 +276,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             GetPixelGreen(image,q))),q);
           SetPixelBlue(image,ClampToQuantum((MagickRealType) (QuantumRange-
             GetPixelBlue(image,q))),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -333,7 +333,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           SetPixelInfo(image,q,&pixel);
           ConvertRGBToCMYK(&pixel);
           SetPixelPixelInfo(image,&pixel,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -395,7 +395,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             saturation),q);
           SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
             brightness),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -455,7 +455,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             saturation),q);
           SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
             lightness),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -515,7 +515,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             whiteness),q);
           SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
             blackness),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -582,7 +582,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             a),q);
           SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
             b),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -676,7 +676,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             GetPixelGreen(image,q))],q);
           SetPixelBlue(image,logmap[ScaleQuantumToMap(
             GetPixelBlue(image,q))],q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1098,7 +1098,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           SetPixelRed(image,ScaleMapToQuantum(pixel.red),q);
           SetPixelGreen(image,ScaleMapToQuantum(pixel.green),q);
           SetPixelBlue(image,ScaleMapToQuantum(pixel.blue),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1700,7 +1700,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             GetPixelGreen(image,q))),q);
           SetPixelBlue(image,ClampToQuantum((MagickRealType) (QuantumRange-
             GetPixelBlue(image,q))),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1760,7 +1760,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           SetPixelInfo(image,q,&pixel);
           ConvertCMYKToRGB(&pixel);
           SetPixelPixelInfo(image,&pixel,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1826,7 +1826,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           SetPixelRed(image,red,q);
           SetPixelGreen(image,green,q);
           SetPixelBlue(image,blue,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1892,7 +1892,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           SetPixelRed(image,red,q);
           SetPixelGreen(image,green,q);
           SetPixelBlue(image,blue,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1958,7 +1958,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           SetPixelRed(image,red,q);
           SetPixelGreen(image,green,q);
           SetPixelBlue(image,blue,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -2031,7 +2031,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           SetPixelRed(image,red,q);
           SetPixelGreen(image,green,q);
           SetPixelBlue(image,blue,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -2128,7 +2128,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             GetPixelGreen(image,q))],q);
           SetPixelBlue(image,logmap[ScaleQuantumToMap(
             GetPixelBlue(image,q))],q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -2548,7 +2548,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             QuantumScale*pixel.green),q);
           SetPixelBlue(image,ScaleMapToQuantum((MagickRealType) MaxMap*
             QuantumScale*pixel.blue),q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)

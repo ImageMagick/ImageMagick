@@ -394,7 +394,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             cluster->count++;
             break;
           }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -633,7 +633,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
               }
           }
         }
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1126,7 +1126,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
             cluster->count++;
             break;
           }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     proceed=SetImageProgress(image,SegmentImageTag,(MagickOffsetType) y,
       2*image->rows);
@@ -1267,7 +1267,7 @@ static void InitializeHistogram(const Image *image,ssize_t **histogram,
       histogram[Red][(ssize_t) ScaleQuantumToChar(GetPixelRed(image,p))]++;
       histogram[Green][(ssize_t) ScaleQuantumToChar(GetPixelGreen(image,p))]++;
       histogram[Blue][(ssize_t) ScaleQuantumToChar(GetPixelBlue(image,p))]++;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
   }
 }

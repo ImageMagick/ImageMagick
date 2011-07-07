@@ -412,7 +412,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               index=(Quantum) ((pixel >> blue_shift) & blue_mask);
               SetPixelBlue(image,ScaleShortToQuantum(
                 colors[(ssize_t) index].blue),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -442,7 +442,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               color=(color*65535UL)/blue_mask;
               SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
                 color),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -477,7 +477,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (int) y));
             SetPixelIndex(image,index,q);
             SetPixelPacket(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -765,7 +765,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           *q++=(unsigned char) GetPixelIndex(image,p);
-          p+=GetPixelChannels(image);
+          p+=GetPixelComponents(image);
         }
       }
     else
@@ -774,7 +774,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
         *q++=ScaleQuantumToChar(GetPixelRed(image,p));
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        p+=GetPixelChannels(image);
+        p+=GetPixelComponents(image);
       }
     for (x=0; x < (ssize_t) scanline_pad; x++)
       *q++='\0';
