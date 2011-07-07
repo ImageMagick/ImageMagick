@@ -1430,7 +1430,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
       pixel=bias;
       k=normal_kernel;
       kernel_pixels=p;
-      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) ||
+          (image->matte == MagickFalse))
         {
           for (v=0; v < (ssize_t) width; v++)
           {
@@ -1470,8 +1471,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                     GetPixelComponents(image));
                   k++;
                 }
-                kernel_pixels+=(image->columns+width)*
-                  GetPixelComponents(image);
+                kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
               }
               SetPixelAlpha(convolve_image,ClampToQuantum(pixel.alpha),q);
             }
@@ -1524,8 +1524,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                   pixel.alpha+=(*k)*GetPixelAlpha(image,kernel_pixels+u);
                   k++;
                 }
-                kernel_pixels+=(image->columns+width)*
-                  GetPixelComponents(image);
+                kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
               }
               SetPixelAlpha(convolve_image,ClampToQuantum(pixel.alpha),q);
             }
