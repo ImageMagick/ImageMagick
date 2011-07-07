@@ -1363,8 +1363,6 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
 %
 %      MagickBooleanType MagickClutImage(MagickWand *wand,
 %        const MagickWand *clut_wand)
-%      MagickBooleanType MagickClutImageChannel(MagickWand *wand,
-%        const ChannelType channel,const MagickWand *clut_wand)
 %
 %  A description of each parameter follows:
 %
@@ -1373,19 +1371,8 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
 %    o clut_image: the clut image.
 %
 */
-
 WandExport MagickBooleanType MagickClutImage(MagickWand *wand,
   const MagickWand *clut_wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickClutImageChannel(wand,DefaultChannels,clut_wand);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickClutImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickWand *clut_wand)
 {
   MagickBooleanType
     status;
@@ -1396,7 +1383,7 @@ WandExport MagickBooleanType MagickClutImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->images == (Image *) NULL) || (clut_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ClutImageChannel(wand->images,channel,clut_wand->images);
+  status=ClutImage(wand->images,clut_wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -5997,8 +5984,6 @@ WandExport double MagickGetImageTotalInkDensity(MagickWand *wand)
 %
 %      MagickBooleanType MagickHaldClutImage(MagickWand *wand,
 %        const MagickWand *hald_wand)
-%      MagickBooleanType MagickHaldClutImageChannel(MagickWand *wand,
-%        const ChannelType channel,const MagickWand *hald_wand)
 %
 %  A description of each parameter follows:
 %
@@ -6007,19 +5992,8 @@ WandExport double MagickGetImageTotalInkDensity(MagickWand *wand)
 %    o hald_image: the hald CLUT image.
 %
 */
-
 WandExport MagickBooleanType MagickHaldClutImage(MagickWand *wand,
   const MagickWand *hald_wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickHaldClutImageChannel(wand,DefaultChannels,hald_wand);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickHaldClutImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickWand *hald_wand)
 {
   MagickBooleanType
     status;
@@ -6030,7 +6004,7 @@ WandExport MagickBooleanType MagickHaldClutImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->images == (Image *) NULL) || (hald_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=HaldClutImageChannel(wand->images,channel,hald_wand->images);
+  status=HaldClutImage(wand->images,hald_wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -6415,7 +6389,7 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickLevelImage(MagickWand *wand,
 %        const double black_point,const double gamma,const double white_point)
-%      MagickBooleanType MagickLevelImageChannel(MagickWand *wand,
+%      MagickBooleanType MagickLevelImage(MagickWand *wand,
 %        const ChannelType channel,const double black_point,const double gamma,
 %        const double white_point)
 %
@@ -6432,21 +6406,8 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
 %    o white_point: the white point.
 %
 */
-
 WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
   const double black_point,const double gamma,const double white_point)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickLevelImageChannel(wand,DefaultChannels,black_point,gamma,
-    white_point);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickLevelImageChannel(MagickWand *wand,
-  const ChannelType channel,const double black_point,const double gamma,
-  const double white_point)
 {
   MagickBooleanType
     status;
@@ -6457,7 +6418,7 @@ WandExport MagickBooleanType MagickLevelImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=LevelImageChannel(wand->images,channel,black_point,white_point,gamma);
+  status=LevelImage(wand->images,black_point,white_point,gamma);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);

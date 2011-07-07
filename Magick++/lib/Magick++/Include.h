@@ -767,7 +767,7 @@ namespace Magick
   using MagickCore::KernelInfo;
   using MagickCore::LessValue;
   using MagickCore::LevelImage;
-  using MagickCore::LevelImageChannel;
+  using MagickCore::LevelImage;
   using MagickCore::LocaleCompare;
   using MagickCore::LogMagickEvent;
   using MagickCore::MagickCoreTerminus;

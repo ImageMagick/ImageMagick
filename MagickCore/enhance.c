@@ -107,6 +107,9 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
     mean,
     sans;
 
+  Image
+    *level_image;
+
   log_mean=log(0.5);
   if (image->sync != MagickFalse)
     {
@@ -116,35 +119,38 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (void) GetImageChannelMean(image,DefaultChannels,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      return(LevelImageChannel(image,DefaultChannels,0.0,(double) QuantumRange,gamma));
+      return(LevelImage(image,0.0,(double) QuantumRange,gamma));
     }
   /*
     Auto-gamma each channel separately.
   */
   status=MagickTrue;
+  level_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  if (level_image == (Image *) NULL)
+    return(MagickFalse);
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelMean(image,RedChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImageChannel(image,RedChannel,0.0,(double)
-        QuantumRange,gamma);
+      SetPixelComponentMap(level_image,RedChannel);
+      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelMean(image,GreenChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImageChannel(image,GreenChannel,0.0,(double)
-        QuantumRange,gamma);
+      SetPixelComponentMap(level_image,GreenChannel);
+      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelMean(image,BlueChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImageChannel(image,BlueChannel,0.0,(double)
-        QuantumRange,gamma);
+      SetPixelComponentMap(level_image,BlueChannel);
+      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
     }
   if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace))
@@ -152,8 +158,8 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (void) GetImageChannelMean(image,BlackChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImageChannel(image,BlackChannel,0.0,(double)
-        QuantumRange,gamma);
+      SetPixelComponentMap(level_image,BlackChannel);
+      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
     }
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
       (image->matte == MagickTrue))
@@ -161,9 +167,10 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (void) GetImageChannelMean(image,OpacityChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImageChannel(image,OpacityChannel,0.0,(double)
-        QuantumRange,gamma);
+      SetPixelComponentMap(level_image,AlphaChannel);
+      status=status && LevelImage(level_image,0.0,(double) QuantumRange,gamma);
     }
+  level_image=DestroyImage(level_image);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
@@ -676,8 +683,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %  The format of the ClutImage method is:
 %
 %      MagickBooleanType ClutImage(Image *image,Image *clut_image)
-%      MagickBooleanType ClutImageChannel(Image *image,
-%        const ChannelType channel,Image *clut_image)
 %
 %  A description of each parameter follows:
 %
@@ -688,14 +693,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %    o channel: the channel.
 %
 */
-
 MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image)
-{
-  return(ClutImageChannel(image,DefaultChannels,clut_image));
-}
-
-MagickExport MagickBooleanType ClutImageChannel(Image *image,
-  const ChannelType channel,const Image *clut_image)
 {
 #define ClampAlphaPixelComponent(pixel) ClampToQuantum((pixel)->alpha)
 #define ClampBlackPixelComponent(pixel) ClampToQuantum((pixel)->black)
@@ -822,7 +820,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ClutImageChannel)
+  #pragma omp critical (MagickCore_ClutImage)
 #endif
         proceed=SetImageProgress(image,ClutImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2203,16 +2201,12 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
 %  The format of the HaldClutImage method is:
 %
 %      MagickBooleanType HaldClutImage(Image *image,Image *hald_image)
-%      MagickBooleanType HaldClutImageChannel(Image *image,
-%        const ChannelType channel,Image *hald_image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image, which is replaced by indexed CLUT values
 %
 %    o hald_image: the color lookup table image for replacement color values.
-%
-%    o channel: the channel.
 %
 */
 
@@ -2225,12 +2219,6 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 
 MagickExport MagickBooleanType HaldClutImage(Image *image,
   const Image *hald_image)
-{
-  return(HaldClutImageChannel(image,DefaultChannels,hald_image));
-}
-
-MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
-  const ChannelType channel,const Image *hald_image)
 {
 #define HaldClutImageTag  "Clut/Image"
 
@@ -2384,7 +2372,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_HaldClutImageChannel)
+  #pragma omp critical (MagickCore_HaldClutImage)
 #endif
         proceed=SetImageProgress(image,HaldClutImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2436,96 +2424,8 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
 %      A '!' flag inverts the re-mapping.
 %
 */
-
-MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
-{
-  double
-    black_point,
-    gamma,
-    white_point;
-
-  GeometryInfo
-    geometry_info;
-
-  MagickBooleanType
-    status;
-
-  MagickStatusType
-    flags;
-
-  /*
-    Parse levels.
-  */
-  if (levels == (char *) NULL)
-    return(MagickFalse);
-  flags=ParseGeometry(levels,&geometry_info);
-  black_point=geometry_info.rho;
-  white_point=(double) QuantumRange;
-  if ((flags & SigmaValue) != 0)
-    white_point=geometry_info.sigma;
-  gamma=1.0;
-  if ((flags & XiValue) != 0)
-    gamma=geometry_info.xi;
-  if ((flags & PercentValue) != 0)
-    {
-      black_point*=(double) image->columns*image->rows/100.0;
-      white_point*=(double) image->columns*image->rows/100.0;
-    }
-  if ((flags & SigmaValue) == 0)
-    white_point=(double) QuantumRange-black_point;
-  if ((flags & AspectValue ) == 0)
-    status=LevelImageChannel(image,DefaultChannels,black_point,white_point,
-      gamma);
-  else
-    status=LevelizeImage(image,black_point,white_point,gamma);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     L e v e l i z e I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LevelizeImage() applies the normal level operation to the image, spreading
-%  out the values between the black and white points over the entire range of
-%  values.  Gamma correction is also applied after the values has been mapped.
-%
-%  It is typically used to improve image contrast, or to provide a controlled
-%  linear threshold for the image. If the black and white points are set to
-%  the minimum and maximum values found in the image, the image can be
-%  normalized.  or by swapping black and white values, negate the image.
-%
-%  The format of the LevelizeImage method is:
-%
-%      MagickBooleanType LevelizeImage(Image *image,const double black_point,
-%        const double white_point,const double gamma)
-%      MagickBooleanType LevelizeImageChannel(Image *image,
-%        const ChannelType channel,const double black_point,
-%        const double white_point,const double gamma)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel: the channel.
-%
-%    o black_point: The level which is to be mapped to zero (black)
-%
-%    o white_point: The level which is to be mapped to QuantiumRange (white)
-%
-%    o gamma: adjust gamma by this factor before mapping values.
-%             use 1.0 for purely linear stretching of image color values
-%
-*/
-MagickExport MagickBooleanType LevelImageChannel(Image *image,
-  const ChannelType channel,const double black_point,const double white_point,
-  const double gamma)
+MagickExport MagickBooleanType LevelImage(Image *image,
+  const double black_point,const double white_point,const double gamma)
 {
 #define LevelImageTag  "Level/Image"
 #define LevelQuantum(x) (ClampToQuantum((MagickRealType) QuantumRange* \
@@ -2633,7 +2533,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_LevelImageChannel)
+  #pragma omp critical (MagickCore_LevelImage)
 #endif
         proceed=SetImageProgress(image,LevelImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2886,43 +2786,69 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
   if (invert == MagickFalse)
     {
       if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
-        status|=LevelImageChannel(image,RedChannel,
-          black_color->red,white_color->red,(double) 1.0);
+        {
+          SetPixelComponentMap(image,RedChannel);
+          status|=LevelImage(image,black_color->red,white_color->red,1.0);
+        }
       if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
-        status|=LevelImageChannel(image,GreenChannel,
-          black_color->green,white_color->green,(double) 1.0);
+        {
+          SetPixelComponentMap(image,GreenChannel);
+          status|=LevelImage(image,black_color->green,white_color->green,1.0);
+        }
       if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
-        status|=LevelImageChannel(image,BlueChannel,
-          black_color->blue,white_color->blue,(double) 1.0);
+        {
+          SetPixelComponentMap(image,BlueChannel);
+          status|=LevelImage(image,black_color->blue,white_color->blue,1.0);
+        }
       if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
-        status|=LevelImageChannel(image,BlackChannel,
-          black_color->black,white_color->black,(double) 1.0);
+        {
+          SetPixelComponentMap(image,BlackChannel);
+          status|=LevelImage(image,black_color->black,white_color->black,1.0);
+        }
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte == MagickTrue))
-        status|=LevelImageChannel(image,OpacityChannel,
-          black_color->alpha,white_color->alpha,(double) 1.0);
+        {
+          SetPixelComponentMap(image,AlphaChannel);
+          status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0);
+        }
     }
   else
     {
       if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
-        status|=LevelizeImageChannel(image,RedChannel,
-          black_color->red,white_color->red,(double) 1.0);
+        {
+          SetPixelComponentMap(image,RedChannel);
+          status|=LevelizeImageChannel(image,RedChannel,
+            black_color->red,white_color->red,(double) 1.0);
+        }
       if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
-        status|=LevelizeImageChannel(image,GreenChannel,
-          black_color->green,white_color->green,(double) 1.0);
+        {
+          SetPixelComponentMap(image,GreenChannel);
+          status|=LevelizeImageChannel(image,GreenChannel,
+            black_color->green,white_color->green,(double) 1.0);
+        }
       if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
-        status|=LevelizeImageChannel(image,BlueChannel,
-          black_color->blue,white_color->blue,(double) 1.0);
+        {
+          SetPixelComponentMap(image,BlueChannel);
+          status|=LevelizeImageChannel(image,BlueChannel,
+            black_color->blue,white_color->blue,(double) 1.0);
+        }
       if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
-        status|=LevelizeImageChannel(image,BlackChannel,
-          black_color->black,white_color->black,(double) 1.0);
+        {
+          SetPixelComponentMap(image,BlackChannel);
+          status|=LevelizeImageChannel(image,BlackChannel,
+            black_color->black,white_color->black,(double) 1.0);
+        }
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte == MagickTrue))
-        status|=LevelizeImageChannel(image,OpacityChannel,
-          black_color->alpha,white_color->alpha,(double) 1.0);
+        {
+          SetPixelComponentMap(image,AlphaChannel);
+          status|=LevelizeImageChannel(image,OpacityChannel,
+            black_color->alpha,white_color->alpha,(double) 1.0);
+        }
     }
+  SetPixelComponentMap(image,DefaultChannels);
   return(status == 0 ? MagickFalse : MagickTrue);
 }
 
@@ -3024,8 +2950,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
   }
   histogram=(MagickRealType *) RelinquishMagickMemory(histogram);
-  status=LevelImageChannel(image,DefaultChannels,(double) black,(double) white,
-    1.0);
+  status=LevelImage(image,(double) black,(double) white,1.0);
   return(status);
 }
 

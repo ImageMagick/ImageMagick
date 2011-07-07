@@ -3509,13 +3509,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
 
         /* process image */
-        {
-          char level[MaxTextExtent + 1];
-          (void) FormatLocaleString(level,MaxTextExtent,"%3.6f/%3.6f/%3.6f/",
-            levelBlack,levelGamma,levelWhite);
-          LevelImage ( msl_info->image[n], level );
-          break;
-        }
+        LevelImage(msl_info->image[n],levelBlack,levelWhite,levelGamma);
+        break;
       }
     }
     case 'M':

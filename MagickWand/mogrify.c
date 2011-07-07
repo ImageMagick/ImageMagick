@@ -1892,8 +1892,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               (void) LevelizeImageChannel(*image,channel,black_point,
                 white_point,gamma);
             else
-              (void) LevelImageChannel(*image,channel,black_point,white_point,
-                gamma);
+              (void) LevelImage(*image,black_point,white_point,gamma);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -7372,7 +7371,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 status=MagickFalse;
                 break;
               }
-            (void) ClutImageChannel(image,channel,clut_image);
+            (void) ClutImage(image,clut_image);
             clut_image=DestroyImage(clut_image);
             InheritException(exception,&image->exception);
             *images=DestroyImageList(*images);
@@ -7653,7 +7652,7 @@ This has been merged completely into MogrifyImage()
                 status=MagickFalse;
                 break;
               }
-            (void) HaldClutImageChannel(image,channel,hald_image);
+            (void) HaldClutImage(image,hald_image);
             hald_image=DestroyImage(hald_image);
             InheritException(exception,&image->exception);
             if (*images != (Image *) NULL)

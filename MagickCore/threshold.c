@@ -335,7 +335,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 %    o threshold: define the threshold values.
 %
-%  Aside: You can get the same results as operator using LevelImageChannels()
+%  Aside: You can get the same results as operator using LevelImages()
 %  with the 'threshold' value for both the black_point and the white_point.
 %
 */
