@@ -1233,11 +1233,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (colorspace == UndefinedColorspace)
-    {
-      if (SetImageColorspace(image,colorspace) == MagickFalse)
-        return(MagickFalse);
-      return(MagickTrue);
-    }
+    return(SetImageColorspace(image,colorspace));
   if (image->colorspace == colorspace)
     return(MagickTrue);
   if ((colorspace == RGBColorspace) ||
