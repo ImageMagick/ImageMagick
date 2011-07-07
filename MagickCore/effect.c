@@ -2897,7 +2897,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image == (Image *) NULL)
           break;
         gamma+=0.4f;
-        (void) GammaImageChannel(preview_image,DefaultChannels,gamma);
+        (void) GammaImage(preview_image,gamma);
         (void) FormatLocaleString(label,MaxTextExtent,"gamma %g",gamma);
         break;
       }

@@ -757,7 +757,11 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             }
           if ((montage_info->frame != (char *) NULL) &&
               (image->compose == DstOutCompositeOp))
-            (void) NegateImageChannel(image,OpacityChannel,MagickFalse);
+            {
+              SetPixelComponentMap(image,AlphaChannel);
+              (void) NegateImage(image,MagickFalse);
+              SetPixelComponentMap(image,DefaultChannels);
+            }
         }
       /*
         Gravitate as specified by the tile gravity.

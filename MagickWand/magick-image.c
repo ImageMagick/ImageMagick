@@ -1938,35 +1938,18 @@ WandExport MagickBooleanType MagickContrastImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
 %        const double black_point,const double white_point)
-%      MagickBooleanType MagickContrastStretchImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double black_point,
-%        const double white_point)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o black_point: the black point.
 %
 %    o white_point: the white point.
 %
 */
-
 WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
   const double black_point,const double white_point)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickContrastStretchImageChannel(wand,DefaultChannels,black_point,
-    white_point);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickContrastStretchImageChannel(MagickWand *wand,
-  const ChannelType channel,const double black_point,const double white_point)
 {
   MagickBooleanType
     status;
@@ -1977,8 +1960,7 @@ WandExport MagickBooleanType MagickContrastStretchImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ContrastStretchImageChannel(wand->images,channel,black_point,
-    white_point);
+  status=ContrastStretchImage(wand->images,black_point,white_point);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -2837,8 +2819,6 @@ WandExport MagickBooleanType MagickEnhanceImage(MagickWand *wand)
 %  The format of the MagickEqualizeImage method is:
 %
 %      MagickBooleanType MagickEqualizeImage(MagickWand *wand)
-%      MagickBooleanType MagickEqualizeImageChannel(MagickWand *wand,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
@@ -2847,18 +2827,7 @@ WandExport MagickBooleanType MagickEnhanceImage(MagickWand *wand)
 %    o channel: the image channel(s).
 %
 */
-
 WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickEqualizeImageChannel(wand,DefaultChannels);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickEqualizeImageChannel(MagickWand *wand,
-  const ChannelType channel)
 {
   MagickBooleanType
     status;
@@ -2869,7 +2838,7 @@ WandExport MagickBooleanType MagickEqualizeImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=EqualizeImageChannel(wand->images,channel);
+  status=EqualizeImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -3595,31 +3564,16 @@ WandExport MagickWand *MagickFxImageChannel(MagickWand *wand,
 %  The format of the MagickGammaImage method is:
 %
 %      MagickBooleanType MagickGammaImage(MagickWand *wand,const double gamma)
-%      MagickBooleanType MagickGammaImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double gamma)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the channel.
-%
 %    o level: Define the level of gamma correction.
 %
 */
-
 WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
   const double gamma)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickGammaImageChannel(wand,DefaultChannels,gamma);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickGammaImageChannel(MagickWand *wand,
-  const ChannelType channel,const double gamma)
 {
   MagickBooleanType
     status;
@@ -3630,7 +3584,7 @@ WandExport MagickBooleanType MagickGammaImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GammaImageChannel(wand->images,channel,gamma);
+  status=GammaImage(wand->images,gamma);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -7048,31 +7002,16 @@ WandExport MagickBooleanType MagickMotionBlurImageChannel(MagickWand *wand,
 %
 %      MagickBooleanType MagickNegateImage(MagickWand *wand,
 %        const MagickBooleanType gray)
-%      MagickBooleanType MagickNegateImage(MagickWand *wand,
-%        const ChannelType channel,const MagickBooleanType gray)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 %    o gray: If MagickTrue, only negate grayscale pixels within the image.
 %
 */
-
 WandExport MagickBooleanType MagickNegateImage(MagickWand *wand,
   const MagickBooleanType gray)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickNegateImageChannel(wand,DefaultChannels,gray);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickNegateImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickBooleanType gray)
 {
   MagickBooleanType
     status;
@@ -7083,7 +7022,7 @@ WandExport MagickBooleanType MagickNegateImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=NegateImageChannel(wand->images,channel,gray);
+  status=NegateImage(wand->images,gray);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -7208,28 +7147,13 @@ WandExport MagickBooleanType MagickNextImage(MagickWand *wand)
 %  The format of the MagickNormalizeImage method is:
 %
 %      MagickBooleanType MagickNormalizeImage(MagickWand *wand)
-%      MagickBooleanType MagickNormalizeImageChannel(MagickWand *wand,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 */
-
 WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickNormalizeImageChannel(wand,DefaultChannels);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickNormalizeImageChannel(MagickWand *wand,
-  const ChannelType channel)
 {
   MagickBooleanType
     status;
@@ -7240,7 +7164,7 @@ WandExport MagickBooleanType MagickNormalizeImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=NormalizeImageChannel(wand->images,channel);
+  status=NormalizeImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);

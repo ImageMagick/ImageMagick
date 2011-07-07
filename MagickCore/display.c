@@ -7762,7 +7762,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for gamma value.
       */
       (void) XDialogWidget(display,windows,"Gamma",
-        "Enter gamma value (e.g. 1.0,1.0,1.6):",factor);
+        "Enter gamma value (e.g. 1.2):",factor);
       if (*factor == '\0')
         break;
       /*
@@ -7770,7 +7770,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) GammaImage(*image,factor);
+      (void) GammaImage(*image,atof(factor));
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7838,8 +7838,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           white_point*=(double) (*image)->columns*(*image)->rows/100.0;
         }
       white_point=(MagickRealType) (*image)->columns*(*image)->rows-white_point;
-      (void) ContrastStretchImageChannel(*image,DefaultChannels,black_point,
-        white_point);
+      (void) ContrastStretchImage(*image,black_point,white_point);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;

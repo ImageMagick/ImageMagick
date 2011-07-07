@@ -3226,31 +3226,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           if (*gamma == '\0')
             (void) FormatLocaleString(gamma,MaxTextExtent,"%g,%g,%g",
               (double) pixel.red,(double) pixel.green,(double) pixel.blue);
-          switch (channel)
-          {
-            default:
-            {
-              (void) GammaImage(msl_info->image[n],gamma);
-              break;
-            }
-            case RedChannel:
-            {
-              (void) GammaImageChannel(msl_info->image[n],RedChannel,pixel.red);
-              break;
-            }
-            case GreenChannel:
-            {
-              (void) GammaImageChannel(msl_info->image[n],GreenChannel,
-                pixel.green);
-              break;
-            }
-            case BlueChannel:
-            {
-              (void) GammaImageChannel(msl_info->image[n],BlueChannel,
-                pixel.blue);
-              break;
-            }
-          }
+          (void) GammaImage(msl_info->image[n],atof(gamma));
           break;
         }
       else if (LocaleCompare((const char *) tag,"get") == 0)
@@ -4055,7 +4031,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) NegateImageChannel(msl_info->image[n],channel,gray);
+          SetPixelComponentMap(msl_info->image[n],channel);
+          (void) NegateImage(msl_info->image[n],gray);
           break;
         }
       if (LocaleCompare((const char *) tag,"normalize") == 0)
@@ -4102,7 +4079,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) NormalizeImageChannel(msl_info->image[n],channel);
+          (void) NormalizeImage(msl_info->image[n]);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

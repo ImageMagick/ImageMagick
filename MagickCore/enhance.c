@@ -1013,15 +1013,10 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 %
 %      MagickBooleanType ContrastStretchImage(Image *image,
 %        const char *levels)
-%      MagickBooleanType ContrastStretchImageChannel(Image *image,
-%        const size_t channel,const double black_point,
-%        const double white_point)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o black_point: the black point.
 %
@@ -1031,47 +1026,8 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 %      range of 0 to number-of-pixels (e.g. 1%, 10x90%, etc.).
 %
 */
-
 MagickExport MagickBooleanType ContrastStretchImage(Image *image,
-  const char *levels)
-{
-  double
-    black_point,
-    white_point;
-
-  GeometryInfo
-    geometry_info;
-
-  MagickBooleanType
-    status;
-
-  MagickStatusType
-    flags;
-
-  /*
-    Parse levels.
-  */
-  if (levels == (char *) NULL)
-    return(MagickFalse);
-  flags=ParseGeometry(levels,&geometry_info);
-  black_point=geometry_info.rho;
-  white_point=(double) image->columns*image->rows;
-  if ((flags & SigmaValue) != 0)
-    white_point=geometry_info.sigma;
-  if ((flags & PercentValue) != 0)
-    {
-      black_point*=(double) QuantumRange/100.0;
-      white_point*=(double) QuantumRange/100.0;
-    }
-  if ((flags & SigmaValue) == 0)
-    white_point=(double) image->columns*image->rows-black_point;
-  status=ContrastStretchImageChannel(image,DefaultChannels,black_point,
-    white_point);
-  return(status);
-}
-
-MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
-  const ChannelType channel,const double black_point,const double white_point)
+  const double black_point,const double white_point)
 {
 #define MaxRange(color)  ((MagickRealType) ScaleQuantumToMap((Quantum) (color)))
 #define ContrastStretchImageTag  "ContrastStretch/Image"
@@ -1141,7 +1097,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
         status=MagickFalse;
         continue;
       }
-    if (channel == DefaultChannels)
+    if (image->sync != MagickFalse)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         Quantum
@@ -1464,7 +1420,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ContrastStretchImageChannel)
+  #pragma omp critical (MagickCore_ContrastStretchImage)
 #endif
         proceed=SetImageProgress(image,ContrastStretchImageTag,progress++,
           image->rows);
@@ -1690,8 +1646,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %  The format of the EqualizeImage method is:
 %
 %      MagickBooleanType EqualizeImage(Image *image)
-%      MagickBooleanType EqualizeImageChannel(Image *image,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
@@ -1700,14 +1654,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %    o channel: the channel.
 %
 */
-
 MagickExport MagickBooleanType EqualizeImage(Image *image)
-{
-  return(EqualizeImageChannel(image,DefaultChannels));
-}
-
-MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
-  const ChannelType channel)
 {
 #define EqualizeImageTag  "Equalize/Image"
 
@@ -1933,7 +1880,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_EqualizeImageChannel)
+  #pragma omp critical (MagickCore_EqualizeImage)
 #endif
         proceed=SetImageProgress(image,EqualizeImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -1967,63 +1914,18 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 %
 %  The format of the GammaImage method is:
 %
-%      MagickBooleanType GammaImage(Image *image,const char *level)
-%      MagickBooleanType GammaImageChannel(Image *image,
-%        const ChannelType channel,const double gamma)
+%      MagickBooleanType GammaImage(Image *image,const double gamma)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o level: the image gamma as a string (e.g. 1.6,1.2,1.0).
 %
 %    o gamma: the image gamma.
 %
 */
-MagickExport MagickBooleanType GammaImage(Image *image,const char *level)
-{
-  GeometryInfo
-    geometry_info;
-
-  PixelInfo
-    gamma;
-
-  MagickStatusType
-    flags,
-    status;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (level == (char *) NULL)
-    return(MagickFalse);
-  flags=ParseGeometry(level,&geometry_info);
-  gamma.red=geometry_info.rho;
-  gamma.green=geometry_info.sigma;
-  if ((flags & SigmaValue) == 0)
-    gamma.green=gamma.red;
-  gamma.blue=geometry_info.xi;
-  if ((flags & XiValue) == 0)
-    gamma.blue=gamma.red;
-  if ((gamma.red == 1.0) && (gamma.green == 1.0) && (gamma.blue == 1.0))
-    return(MagickTrue);
-  if ((gamma.red == gamma.green) && (gamma.green == gamma.blue))
-    status=GammaImageChannel(image,(const ChannelType) (RedChannel |
-      GreenChannel | BlueChannel),(double) gamma.red);
-  else
-    {
-      status=GammaImageChannel(image,RedChannel,(double) gamma.red);
-      status|=GammaImageChannel(image,GreenChannel,(double) gamma.green);
-      status|=GammaImageChannel(image,BlueChannel,(double) gamma.blue);
-    }
-  return(status != 0 ? MagickTrue : MagickFalse);
-}
-
-MagickExport MagickBooleanType GammaImageChannel(Image *image,
-  const ChannelType channel,const double gamma)
+MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
 {
 #define GammaCorrectImageTag  "GammaCorrect/Image"
 
@@ -2121,12 +2023,12 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel == DefaultChannels)
+      if (image->sync != MagickFalse)
         {
-          SetPixelRed(image,gamma_map[
-            ScaleQuantumToMap(GetPixelRed(image,q))],q);
-          SetPixelGreen(image,gamma_map[
-            ScaleQuantumToMap(GetPixelGreen(image,q))],q);
+          SetPixelRed(image,gamma_map[ScaleQuantumToMap(
+            GetPixelRed(image,q))],q);
+          SetPixelGreen(image,gamma_map[ScaleQuantumToMap(
+            GetPixelGreen(image,q))],q);
           SetPixelBlue(image,gamma_map[ScaleQuantumToMap(
             GetPixelBlue(image,q))],q);
         }
@@ -2166,7 +2068,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_GammaImageChannel)
+  #pragma omp critical (MagickCore_GammaImage)
 #endif
         proceed=SetImageProgress(image,GammaCorrectImageTag,progress++,
           image->rows);
@@ -2407,7 +2309,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %
 %  If a '!' flag is given, map black and white colors to the given levels
 %  rather than mapping those levels to black and white.  See
-%  LevelizeImageChannel() and LevelizeImageChannel(), below.
+%  LevelizeImage() below.
 %
 %  Gamma specifies a gamma correction to apply to the image.
 %
@@ -2555,12 +2457,12 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LevelizeImageChannel() applies the reversed LevelImage() operation to just
+%  LevelizeImage() applies the reversed LevelImage() operation to just
 %  the specific channels specified.  It compresses the full range of color
 %  values, so that they lie between the given black and white points. Gamma is
 %  applied before the values are mapped.
 %
-%  LevelizeImageChannel() can be called with by using a +level command line
+%  LevelizeImage() can be called with by using a +level command line
 %  API option, or using a '!' on a -level or LevelImage() geometry string.
 %
 %  It can be used for example de-contrast a greyscale image to the exact
@@ -2568,16 +2470,14 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 %  you can convert a gray-scale image to any linear color gradient, according
 %  to those levels.
 %
-%  The format of the LevelizeImageChannel method is:
+%  The format of the LevelizeImage method is:
 %
-%      MagickBooleanType LevelizeImageChannel(Image *image,
-%        const ChannelType channel,const char *levels)
+%      MagickBooleanType LevelizeImage(Image *image,const double black_point,
+%        const double white_point,const double gamma)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o black_point: The level to map zero (black) to.
 %
@@ -2586,25 +2486,12 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 %    o gamma: adjust gamma by this factor before mapping values.
 %
 */
-
 MagickExport MagickBooleanType LevelizeImage(Image *image,
   const double black_point,const double white_point,const double gamma)
 {
-  MagickBooleanType
-    status;
-
-  status=LevelizeImageChannel(image,DefaultChannels,black_point,white_point,
-    gamma);
-  return(status);
-}
-
-MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
-  const ChannelType channel,const double black_point,const double white_point,
-  const double gamma)
-{
 #define LevelizeImageTag  "Levelize/Image"
 #define LevelizeValue(x) (ClampToQuantum(((MagickRealType) \
-  pow((double)(QuantumScale*(x)),1.0/gamma))*(white_point-black_point)+ \
+  pow((double) (QuantumScale*(x)),1.0/gamma))*(white_point-black_point)+ \
   black_point))
 
   CacheView
@@ -2700,7 +2587,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_LevelizeImageChannel)
+  #pragma omp critical (MagickCore_LevelizeImage)
 #endif
         proceed=SetImageProgress(image,LevelizeImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2818,34 +2705,32 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
       if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           SetPixelComponentMap(image,RedChannel);
-          status|=LevelizeImageChannel(image,RedChannel,
-            black_color->red,white_color->red,(double) 1.0);
+          status|=LevelizeImage(image,black_color->red,white_color->red,1.0);
         }
       if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           SetPixelComponentMap(image,GreenChannel);
-          status|=LevelizeImageChannel(image,GreenChannel,
-            black_color->green,white_color->green,(double) 1.0);
+          status|=LevelizeImage(image,black_color->green,white_color->green,
+            1.0);
         }
       if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           SetPixelComponentMap(image,BlueChannel);
-          status|=LevelizeImageChannel(image,BlueChannel,
-            black_color->blue,white_color->blue,(double) 1.0);
+          status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0);
         }
       if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           SetPixelComponentMap(image,BlackChannel);
-          status|=LevelizeImageChannel(image,BlackChannel,
-            black_color->black,white_color->black,(double) 1.0);
+          status|=LevelizeImage(image,black_color->black,white_color->black,
+            1.0);
         }
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
           SetPixelComponentMap(image,AlphaChannel);
-          status|=LevelizeImageChannel(image,OpacityChannel,
-            black_color->alpha,white_color->alpha,(double) 1.0);
+          status|=LevelizeImage(image,black_color->alpha,white_color->alpha,
+            1.0);
         }
     }
   SetPixelComponentMap(image,DefaultChannels);
@@ -3252,35 +3137,20 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 %  NegateImage() negates the colors in the reference image.  The grayscale
 %  option means that only grayscale values within the image are negated.
 %
-%  The format of the NegateImageChannel method is:
+%  The format of the NegateImage method is:
 %
 %      MagickBooleanType NegateImage(Image *image,
 %        const MagickBooleanType grayscale)
-%      MagickBooleanType NegateImageChannel(Image *image,
-%        const ChannelType channel,const MagickBooleanType grayscale)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel.
-%
 %    o grayscale: If MagickTrue, only negate grayscale pixels within the image.
 %
 */
-
 MagickExport MagickBooleanType NegateImage(Image *image,
   const MagickBooleanType grayscale)
-{
-  MagickBooleanType
-    status;
-
-  status=NegateImageChannel(image,DefaultChannels,grayscale);
-  return(status);
-}
-
-MagickExport MagickBooleanType NegateImageChannel(Image *image,
-  const ChannelType channel,const MagickBooleanType grayscale)
 {
 #define NegateImageTag  "Negate/Image"
 
@@ -3393,7 +3263,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_NegateImageChannel)
+  #pragma omp critical (MagickCore_NegateImage)
 #endif
             proceed=SetImageProgress(image,NegateImageTag,progress++,
               image->rows);
@@ -3449,7 +3319,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_NegateImageChannel)
+  #pragma omp critical (MagickCore_NegateImage)
 #endif
         proceed=SetImageProgress(image,NegateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -3478,28 +3348,13 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
 %  The format of the NormalizeImage method is:
 %
 %      MagickBooleanType NormalizeImage(Image *image)
-%      MagickBooleanType NormalizeImageChannel(Image *image,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel.
-%
 */
-
 MagickExport MagickBooleanType NormalizeImage(Image *image)
-{
-  MagickBooleanType
-    status;
-
-  status=NormalizeImageChannel(image,DefaultChannels);
-  return(status);
-}
-
-MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
-  const ChannelType channel)
 {
   double
     black_point,
@@ -3507,7 +3362,7 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 
   black_point=(double) image->columns*image->rows*0.0015;
   white_point=(double) image->columns*image->rows*0.9995;
-  return(ContrastStretchImageChannel(image,channel,black_point,white_point));
+  return(ContrastStretchImage(image,black_point,white_point));
 }
 
 /*
