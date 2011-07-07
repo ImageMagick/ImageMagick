@@ -1133,11 +1133,8 @@ void Magick::Image::fx ( const std::string expression,
 // Gamma correct image
 void Magick::Image::gamma ( const double gamma_ )
 {
-  char gamma[MaxTextExtent + 1];
-  FormatLocaleString( gamma, MaxTextExtent, "%3.6f", gamma_);
-
   modifyImage();
-  GammaImage ( image(), gamma );
+  GammaImage ( image(), gamma_ );
 }
 
 void Magick::Image::gamma ( const double gammaRed_,
@@ -1149,7 +1146,7 @@ void Magick::Image::gamma ( const double gammaRed_,
 		gammaRed_, gammaGreen_, gammaBlue_);
 
   modifyImage();
-  GammaImage ( image(), gamma );
+  GammaImage ( image(), atof(gamma) );
   throwImageException();
 }
 

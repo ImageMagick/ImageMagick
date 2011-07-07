@@ -8624,8 +8624,11 @@ Mogrify(ref,...)
         case 39:  /* Equalize */
         {
           if (attribute_flag[0] != 0)
-            channel=(ChannelType) argument_list[0].integer_reference;
-          EqualizeImageChannel(image,channel);
+            {
+              channel=(ChannelType) argument_list[0].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
+          EqualizeImage(image);
           break;
         }
         case 40:  /* Gamma */
@@ -8646,11 +8649,8 @@ Mogrify(ref,...)
                 (double) argument_list[4].real_reference);
               argument_list[0].string_reference=message;
             }
-          if (strchr(argument_list[0].string_reference,',') != (char *) NULL)
-            (void) GammaImage(image,argument_list[0].string_reference);
-          else
-            (void) GammaImageChannel(image,channel,InterpretLocaleValue(
-              argument_list[0].string_reference,(char **) NULL));
+          (void) GammaImage(image,InterpretLocaleValue(
+            argument_list[0].string_reference,(char **) NULL));
           break;
         }
         case 41:  /* Map */
@@ -8764,16 +8764,22 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].integer_reference=0;
           if (attribute_flag[1] != 0)
-            channel=(ChannelType) argument_list[1].integer_reference;
-          (void) NegateImageChannel(image,channel,
-            argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse);
+            {
+              channel=(ChannelType) argument_list[1].integer_reference;
+	      SetPixelComponentMap(image,channel);
+            }
+          (void) NegateImage(image,argument_list[0].integer_reference != 0 ?
+            MagickTrue : MagickFalse);
           break;
         }
         case 45:  /* Normalize */
         {
           if (attribute_flag[0] != 0)
-            channel=(ChannelType) argument_list[0].integer_reference;
-          NormalizeImageChannel(image,channel);
+            {
+              channel=(ChannelType) argument_list[0].integer_reference;
+	      SetPixelComponentMap(image,channel);
+            }
+          NormalizeImage(image);
           break;
         }
         case 46:  /* NumberColors */
@@ -9812,9 +9818,11 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             white_point=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
-            channel=(ChannelType) argument_list[4].integer_reference;
-          (void) ContrastStretchImageChannel(image,channel,black_point,
-            white_point);
+            {
+              channel=(ChannelType) argument_list[4].integer_reference;
+	      SetPixelComponentMap(image,channel);
+            }
+          (void) ContrastStretchImage(image,black_point,white_point);
           break;
         }
         case 96:  /* Sans0 */
@@ -10153,9 +10161,11 @@ Mogrify(ref,...)
               goto PerlException;
             }
           if (attribute_flag[1] != 0)
-            channel=(ChannelType) argument_list[1].integer_reference;
-          (void) ClutImage(image,channel,
-            argument_list[0].image_reference);
+            {
+              channel=(ChannelType) argument_list[1].integer_reference;
+	      SetPixelComponentMap(image,channel);
+            }
+          (void) ClutImage(image,argument_list[0].image_reference);
           break;
         }
         case 114:  /* LiquidRescale */
@@ -13211,7 +13221,6 @@ SetPixel(ref,...)
         goto PerlException;
       }
     av=(AV *) NULL;
-    channel=DefaultChannels;
     normalize=MagickTrue;
     region.x=0;
     region.y=0;
@@ -13239,7 +13248,7 @@ SetPixel(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-               channel=(ChannelType) option;
+              channel=(ChannelType) option;
               break;
             }
           if (LocaleCompare(attribute,"color") == 0)
@@ -13326,6 +13335,7 @@ SetPixel(ref,...)
       }
     }
     (void) SetImageStorageClass(image,DirectClass);
+    SetPixelComponentMap(image,channel);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
     if ((q == (const Quantum *) NULL) || (av == (AV *) NULL) ||
         (SvTYPE(av) != SVt_PVAV))
@@ -13342,19 +13352,22 @@ SetPixel(ref,...)
         scale=1.0;
         if (normalize != MagickFalse)
           scale=QuantumRange;
-        if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
+        if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
+            (i <= av_len(av)))
           {
             SetPixelRed(image,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))),q);
             i++;
           }
-        if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
+        if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
+            (i <= av_len(av)))
           {
             SetPixelGreen(image,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))),q);
             i++;
           }
-        if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
+        if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
+            (i <= av_len(av)))
           {
             SetPixelBlue(image,ClampToQuantum(scale*SvNV(*(
               av_fetch(av,i,0)))),q);
@@ -13367,7 +13380,8 @@ SetPixel(ref,...)
               SvNV(*(av_fetch(av,i,0)))),q);
             i++;
           }
-        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) && (i <= av_len(av)))
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+            (i <= av_len(av)))
           {
             SetPixelAlpha(image,ClampToQuantum(scale*
               SvNV(*(av_fetch(av,i,0)))),q);

@@ -1186,8 +1186,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               }
             white_point=(MagickRealType) (*image)->columns*(*image)->rows-
               white_point;
-            (void) ContrastStretchImageChannel(*image,channel,black_point,
-              white_point);
+            (void) ContrastStretchImage(*image,black_point,white_point);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -1484,7 +1483,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Equalize image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) EqualizeImageChannel(*image,channel);
+            (void) EqualizeImage(*image);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -1712,11 +1711,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               (*image)->gamma=InterpretLocaleValue(argv[i+1],(char **) NULL);
             else
               {
-                if (strchr(argv[i+1],',') != (char *) NULL)
-                  (void) GammaImage(*image,argv[i+1]);
-                else
-                  (void) GammaImageChannel(*image,channel,
-                    InterpretLocaleValue(argv[i+1],(char **) NULL));
+                (void) GammaImage(*image,InterpretLocaleValue(argv[i+1],
+                  (char **) NULL));
                 InheritException(exception,&(*image)->exception);
               }
             break;
@@ -1889,8 +1885,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               white_point=(MagickRealType) QuantumRange-black_point;
             if ((*option == '+') || ((flags & AspectValue) != 0))
-              (void) LevelizeImageChannel(*image,channel,black_point,
-                white_point,gamma);
+              (void) LevelizeImage(*image,black_point,white_point,gamma);
             else
               (void) LevelImage(*image,black_point,white_point,gamma);
             InheritException(exception,&(*image)->exception);
@@ -2152,8 +2147,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("negate",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) NegateImageChannel(*image,channel,*option == '+' ?
-              MagickTrue : MagickFalse);
+            (void) NegateImage(*image,*option == '+' ? MagickTrue :
+              MagickFalse);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -2182,7 +2177,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("normalize",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) NormalizeImageChannel(*image,channel);
+            (void) NormalizeImage(*image);
             InheritException(exception,&(*image)->exception);
             break;
           }
