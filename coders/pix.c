@@ -189,7 +189,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelGreen(image,green,q);
         SetPixelRed(image,red,q);
         length--;
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;

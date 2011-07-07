@@ -172,7 +172,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
       if (bit == 8)
         bit=0;
       byte>>=1;
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -340,7 +340,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
           bit=0;
           byte=0;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (bit != 0)
       (void) WriteBlobByte(image,(unsigned char) (byte >> (8-bit)));

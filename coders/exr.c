@@ -233,7 +233,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ImfHalfToFloat(scanline[x].b)),q);
       SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
         ImfHalfToFloat(scanline[x].a)),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -443,7 +443,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
       else
         ImfFloatToHalf(QuantumScale*GetPixelAlpha(image,p),&half_quantum);
       scanline[x].a=half_quantum;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     ImfOutputSetFrameBuffer(file,scanline-(y*image->columns),1,image->columns);
     ImfOutputWritePixels(file,1);

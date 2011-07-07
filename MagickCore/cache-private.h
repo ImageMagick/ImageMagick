@@ -120,7 +120,7 @@ typedef struct _CacheInfo
 
   size_t
     metacontent_extent,
-    pixel_channels;
+    pixel_components;
 
   CacheType
     type;

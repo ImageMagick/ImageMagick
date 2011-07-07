@@ -554,7 +554,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
               SetPixelAlpha(image,ScaleCharToQuantum(colors.a[code]),q);
               if (colors.a[code] && (image->matte == MagickFalse))
                 image->matte=MagickTrue;  /* Correct matte */
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
         }
       }
@@ -643,7 +643,7 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
               else
                 alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
         }
       }
@@ -747,7 +747,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
               else
                 alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelChannels(image);
+              q+=GetPixelComponents(image);
             }
         }
       }
@@ -791,7 +791,7 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
         ReadBlobByte(image)),q);
       if (dds_info->pixelformat.rgb_bitcount == 32)
         (void) ReadBlobByte(image);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -832,7 +832,7 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
         ReadBlobByte(image)),q);
       SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
         ReadBlobByte(image)),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

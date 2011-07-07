@@ -177,7 +177,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
       if (GetPixelAlpha(image,q) != OpaqueAlpha)
         image->matte=MagickTrue;
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -378,7 +378,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       if (image->matte != MagickFalse)
         *q++=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
           GetPixelAlpha(image,p) : OpaqueAlpha));
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);

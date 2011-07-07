@@ -300,13 +300,13 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
     {
       number_pixels=GetImageExtent(image);
       q=GetAuthenticPixelQueue(image);
-      channels=GetPixelChannels(image);
+      channels=GetPixelComponents(image);
     }
   else
     {
       number_pixels=GetCacheViewExtent(image_view);
       q=GetCacheViewAuthenticPixelQueue(image_view);
-      channels=GetPixelChannels(image);
+      channels=GetPixelComponents(image);
     }
   InitializeQuantumState(quantum_info,image->endian,&quantum_state);
   extent=GetQuantumExtent(image,quantum_info,quantum_type);

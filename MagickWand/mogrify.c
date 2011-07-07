@@ -1076,7 +1076,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
                 SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
                 SetPixelBlue(mask_image,GetPixelAlpha(mask_image,q),q);
-                q+=GetPixelChannels(mask_image);
+                q+=GetPixelComponents(mask_image);
               }
               if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
                 break;

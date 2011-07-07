@@ -1365,7 +1365,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
       SetPixelBlue(image,ScaleCharToQuantum(Pixel.blue & 0xff),q);
       if (image->storage_class == PseudoClass)
         SetPixelIndex(image,Color2Index(&Pixel),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

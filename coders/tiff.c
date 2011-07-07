@@ -1414,7 +1414,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 (TIFFGetA(*p))),q);
             p++;
-            q+=GetPixelChannels(image);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1506,7 +1506,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                     TIFFGetA(*p)),q);
                   p++;
-                  q+=GetPixelChannels(image);
+                  q+=GetPixelComponents(image);
                 }
               else
                 for (column=columns_remaining; column > 0; column--)
@@ -1518,10 +1518,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
                     TIFFGetB(*p)),q);
                   p++;
-                  q+=GetPixelChannels(image);
+                  q+=GetPixelComponents(image);
                 }
               p+=columns-columns_remaining;
-              q-=GetPixelChannels(image)*(image->columns+columns_remaining);
+              q-=GetPixelComponents(image)*(image->columns+columns_remaining);
             }
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1580,7 +1580,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (const Quantum *) NULL)
             break;
-          q+=GetPixelChannels(image)*(image->columns-1);
+          q+=GetPixelComponents(image)*(image->columns-1);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelRed(image,ScaleCharToQuantum((unsigned char)
@@ -1593,7 +1593,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)),q);
             p--;
-            q-=GetPixelChannels(image);;
+            q-=GetPixelComponents(image);;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

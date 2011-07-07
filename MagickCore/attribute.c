@@ -211,7 +211,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       if ((y > (ssize_t) bounding_box.height) &&
           (IsFuzzyEquivalencePixelInfo(&pixel,&target[2]) == MagickFalse))
         bounding_box.height=(size_t) y;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
@@ -402,7 +402,7 @@ MagickExport size_t GetImageDepth(const Image *image,
           break;
         current_depth[id]++;
       }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (current_depth[id] == MAGICKCORE_QUANTUM_DEPTH)
       status=MagickFalse;
@@ -608,7 +608,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
       if ((type == BilevelType) &&
           (IsPixelMonochrome(image,p) == MagickFalse))
         type=GrayscaleType;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (type == UndefinedType)
       break;
@@ -689,7 +689,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
           type=UndefinedType;
           break;
         }
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (type == UndefinedType)
       break;
@@ -761,7 +761,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
     {
       if (GetPixelAlpha(image,p) != OpaqueAlpha)
         break;
-      p+=GetPixelChannels(image);
+      p+=GetPixelComponents(image);
     }
     if (x < (ssize_t) image->columns)
      break;
@@ -872,7 +872,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           (image->matte != MagickFalse))
         SetPixelAlpha(image,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelAlpha(image,q),range),range),q);
-      q+=GetPixelChannels(image);
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       {

@@ -152,7 +152,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
           (cube_size-1.0)),q);
         SetPixelBlue(image,ClampToQuantum(QuantumRange*blue/(cube_size-1.0)),q);
         SetPixelAlpha(image,OpaqueAlpha,q);
-        q+=GetPixelChannels(image);
+        q+=GetPixelComponents(image);
       }
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

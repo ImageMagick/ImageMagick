@@ -228,8 +228,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             SetPixelRed(image,GetPixelRed(canvas_image,p),q);
             SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
             SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-            p+=GetPixelChannels(canvas_image);
-            q+=GetPixelChannels(image);
+            p+=GetPixelComponents(canvas_image);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

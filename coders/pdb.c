@@ -442,7 +442,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=(Quantum) (*p & (0x80 >> bit) ? 0x00 : 0x01);
             SetPixelIndex(image,index,q);
-            q+=GetPixelChannels(image);
+            q+=GetPixelComponents(image);
           }
           p++;
         }
@@ -470,17 +470,17 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03));
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
           index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03));
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
           index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03));
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
           index=ConstrainColormapIndex(image,3UL-((*p) & 0x03));
           SetPixelIndex(image,index,q);
           p++;
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -506,11 +506,11 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f));
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
           index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f));
           SetPixelIndex(image,index,q);
           p++;
-          q+=GetPixelChannels(image);
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
