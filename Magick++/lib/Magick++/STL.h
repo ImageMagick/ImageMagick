@@ -668,24 +668,6 @@ namespace Magick
     double _mid_point;
   };
 
-  // Level image channel
-  class MagickDLLDecl levelChannelImage : public std::unary_function<Image&,void>
-  {
-  public:
-    levelChannelImage( const Magick::ChannelType channel,
-                       const double black_point,
-                       const double white_point,
-                       const double mid_point=1.0 );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    Magick::ChannelType _channel;
-    double _black_point;
-    double _white_point;
-    double _mid_point;
-  };
-
   // Magnify image by integral size
   class MagickDLLDecl magnifyImage : public std::unary_function<Image&,void>
   {

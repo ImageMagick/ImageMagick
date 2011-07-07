@@ -639,22 +639,6 @@ void Magick::levelImage::operator()( Magick::Image &image_ ) const
   image_.level( _black_point, _white_point, _mid_point );
 }
 
-// Level image channel
-Magick::levelChannelImage::levelChannelImage( const Magick::ChannelType channel,                                              const double black_point,
-                                              const double white_point,
-                                              const double mid_point )
-  : _channel(channel),
-    _black_point(black_point),
-    _white_point(white_point),
-    _mid_point(mid_point)
-{
-}
-
-void Magick::levelChannelImage::operator()( Magick::Image &image_ ) const
-{
-  image_.levelChannel( _channel, _black_point, _white_point, _mid_point );
-}
-
 // Magnify image by integral size
 Magick::magnifyImage::magnifyImage( void )
 {

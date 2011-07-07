@@ -9308,13 +9308,16 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             gamma=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
-            channel=(ChannelType) argument_list[4].integer_reference;
+            {
+              channel=(ChannelType) argument_list[4].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
           if (attribute_flag[5] != 0)
             {
               argument_list[0].real_reference=argument_list[5].real_reference;
               attribute_flag[0]=attribute_flag[5];
             }
-          (void) LevelImageChannel(image,channel,black_point,white_point,gamma);
+          (void) LevelImage(image,black_point,white_point,gamma);
           break;
         }
         case 74:  /* Clip */
@@ -10151,7 +10154,7 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          (void) ClutImageChannel(image,channel,
+          (void) ClutImage(image,channel,
             argument_list[0].image_reference);
           break;
         }
@@ -10344,9 +10347,11 @@ Mogrify(ref,...)
               goto PerlException;
             }
           if (attribute_flag[1] != 0)
-            channel=(ChannelType) argument_list[1].integer_reference;
-          (void) HaldClutImageChannel(image,channel,
-            argument_list[0].image_reference);
+            {
+              channel=(ChannelType) argument_list[1].integer_reference;
+              SetPixelComponentMap(image,channel);
+            }
+          (void) HaldClutImage(image,argument_list[0].image_reference);
           break;
         }
         case 123:  /* BlueShift */

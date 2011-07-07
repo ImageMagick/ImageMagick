@@ -418,22 +418,6 @@ namespace Magick
                             const double white_point,
                             const double mid_point=1.0 );
 
-    // Level image channel. Adjust the levels of the image channel by
-    // scaling the values falling between specified white and black
-    // points to the full available quantum range. The parameters
-    // provided represent the black, mid (gamma), and white points.
-    // The black point specifies the darkest color in the
-    // image. Colors darker than the black point are set to zero. Mid
-    // point (gamma) specifies a gamma correction to apply to the
-    // image. White point specifies the lightest color in the image.
-    // Colors brighter than the white point are set to the maximum
-    // quantum value. The black and white point have the valid range 0
-    // to QuantumRange while mid (gamma) has a useful range of 0 to ten.
-    void            levelChannel ( const ChannelType channel,
-                                   const double black_point,
-                                   const double white_point,
-                                   const double mid_point=1.0 );
-
     // Magnify image by integral size
     void            magnify ( void );
     

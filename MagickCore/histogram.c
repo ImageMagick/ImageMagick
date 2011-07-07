@@ -979,13 +979,15 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %      from the minimum and maximum points by this color value.
 %
 */
-
 MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   const ChannelType channel,const double black_value,const double white_value)
 {
   double
     min,
     max;
+
+  Image
+    *stretch_image;
 
   MagickStatusType
     status;
@@ -1000,19 +1002,25 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black_value;
       max-=white_value;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImageChannel(image,channel,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0);
       return(status != 0 ? MagickTrue : MagickFalse);
     }
   /*
     Auto-level each channel separately.
   */
+  stretch_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  if (stretch_image == (Image *) NULL)
+    return(MagickFalse);
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       (void) GetImageChannelRange(image,RedChannel,&min,&max,&image->exception);
       min+=black_value;
       max-=white_value;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImageChannel(image,RedChannel,min,max,1.0);
+        {
+          SetPixelComponentMap(stretch_image,RedChannel);
+          status&=LevelImage(stretch_image,min,max,1.0);
+        }
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
@@ -1021,7 +1029,10 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black_value;
       max-=white_value;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImageChannel(image,GreenChannel,min,max,1.0);
+        {
+          SetPixelComponentMap(stretch_image,GreenChannel);
+          status&=LevelImage(stretch_image,min,max,1.0);
+        }
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
@@ -1030,7 +1041,10 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black_value;
       max-=white_value;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImageChannel(image,BlueChannel,min,max,1.0);
+        {
+          SetPixelComponentMap(stretch_image,BlueChannel);
+          status&=LevelImage(stretch_image,min,max,1.0);
+        }
     }
   if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
        (image->colorspace == CMYKColorspace))
@@ -1040,7 +1054,10 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black_value;
       max-=white_value;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImageChannel(image,BlackChannel,min,max,1.0);
+        {
+          SetPixelComponentMap(stretch_image,BlackChannel);
+          status&=LevelImage(stretch_image,min,max,1.0);
+        }
     }
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
        (image->matte == MagickTrue))
@@ -1050,8 +1067,12 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black_value;
       max-=white_value;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImageChannel(image,OpacityChannel,min,max,1.0);
+        {
+          SetPixelComponentMap(stretch_image,AlphaChannel);
+          status&=LevelImage(stretch_image,min,max,1.0);
+        }
     }
+  stretch_image=DestroyImage(stretch_image);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
