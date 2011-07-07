@@ -1133,8 +1133,8 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               x;
 
             q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
-              (rotate_image->columns-(tile_y+height)),y+tile_x,height,
-              1,exception);
+              (rotate_image->columns-(tile_y+height)),y+tile_x,height,1,
+              exception);
             if (q == (const Quantum *) NULL)
               {
                 status=MagickFalse;
