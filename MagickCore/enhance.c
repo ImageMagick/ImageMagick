@@ -3330,9 +3330,8 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The NormalizeImage() method enhances the contrast of a color image by
-%  mapping the darkest 2 percent of all pixel to black and the brightest
-%  1 percent to white.
+%  NormalizeImage() enhances the contrast of a color image by mapping the
+%  darkest 2 percent of all pixel to black and the brightest 1 percent to white.
 %
 %  The format of the NormalizeImage method is:
 %
