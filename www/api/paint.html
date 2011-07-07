@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
+   <a rel="follow" title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -226,7 +226,7 @@
 <pre class="code">
   MagickBooleanType FloodfillPaintImage(Image *image,
     const ChannelType channel,const DrawInfo *draw_info,
-    const MagickPixelPacket target,const ssize_t x_offset,
+    const PixelInfo target,const ssize_t x_offset,
     const ssize_t y_offset,const MagickBooleanType invert)
 </pre>
 
@@ -322,7 +322,7 @@
 
 <pre class="code">
   MagickBooleanType TransparentPaintImage(Image *image,
-    const MagickPixelPacket *target,const Quantum opacity,
+    const PixelInfo *target,const Quantum opacity,
     const MagickBooleanType invert)
 </pre>
 
@@ -352,7 +352,7 @@
 
 <pre class="code">
   MagickBooleanType TransparentPaintImage(Image *image,
-    const MagickPixelPacket *low,const MagickPixelPacket *hight,
+    const PixelInfo *low,const PixelInfo *hight,
     const Quantum opacity,const MagickBooleanType invert)
 </pre>
 

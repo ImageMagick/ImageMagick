@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
 </div>
 </div>
 </div>
@@ -389,13 +389,13 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryMagickColorCompliance">QueryMagickColorCompliance</a></h2>
 <div class="doc-section">
 
-<p>QueryMagickColorCompliance() returns the red, green, blue, and opacity intensities for a given color name and standards compliance.</p>
+<p>QueryMagickColorCompliance() returns the red, green, blue, and alpha intensities for a given color name and standards compliance.</p>
 
 <p>The format of the QueryMagickColor method is:</p>
 
 <pre class="code">
   MagickBooleanType QueryMagickColor(const char *name,
-    const ComplianceType compliance,MagickPixelPacket *color,
+    const ComplianceType compliance,PixelInfo *color,
     ExceptionInfo *exception)
 </pre>
 
@@ -423,7 +423,7 @@
 
 <pre class="code">
   MagickBooleanType QueryMagickColor(const char *name,
-    MagickPixelPacket *color,ExceptionInfo *exception)
+    PixelInfo *color,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>

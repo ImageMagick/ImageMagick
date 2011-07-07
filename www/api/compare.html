@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011090100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -212,18 +212,17 @@
 <div class="main">
 
 <h1>Module compare Methods</h1>
-<p class="navigation-index">[<a href="#CompareImageChannels">CompareImageChannels</a> &bull; <a href="#GetImageChannelDistortion">GetImageChannelDistortion</a> &bull; <a href="#GetImageChannelDistrortion">GetImageChannelDistrortion</a> &bull; <a href="#IsImagesEqual">IsImagesEqual</a> &bull; <a href="#SimilarityImage">SimilarityImage</a>]</p>
+<p class="navigation-index">[<a href="#CompareImages">CompareImages</a> &bull; <a href="#GetImageDistortion">GetImageDistortion</a> &bull; <a href="#GetImageDistrortion">GetImageDistrortion</a> &bull; <a href="#IsImagesEqual">IsImagesEqual</a> &bull; <a href="#SimilarityImage">SimilarityImage</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="CompareImageChannels">CompareImageChannels</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="CompareImages">CompareImages</a></h2>
 <div class="doc-section">
 
-<p>CompareImageChannels() compares one or more image channels of an image to a reconstructed image and returns the difference image.</p>
+<p>CompareImages() compares one or more pixel channels of an image to a  reconstructed image and returns the difference image.</p>
 
-<p>The format of the CompareImageChannels method is:</p>
+<p>The format of the CompareImages method is:</p>
 
 <pre class="code">
-  Image *CompareImageChannels(const Image *image,
-    const Image *reconstruct_image,const ChannelType channel,
+  Image *CompareImages(const Image *image,const Image *reconstruct_image,
     const MetricType metric,double *distortion,ExceptionInfo *exception)
 </pre>
 
@@ -235,9 +234,6 @@
 <h5>reconstruct_image</h5>
 <p>the reconstruct image.</p>
 
-<h5>channel</h5>
-<p>the channel.</p>
-
 <h5>metric</h5>
 <p>the metric.</p>
 
@@ -248,17 +244,17 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageChannelDistortion">GetImageChannelDistortion</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageDistortion">GetImageDistortion</a></h2>
 <div class="doc-section">
 
-<p>GetImageChannelDistortion() compares one or more image channels of an image to a reconstructed image and returns the specified distortion metric.</p>
+<p>GetImageDistortion() compares one or more pixel channels of an image to a  reconstructed image and returns the specified distortion metric.</p>
 
-<p>The format of the CompareImageChannels method is:</p>
+<p>The format of the CompareImages method is:</p>
 
 <pre class="code">
-  MagickBooleanType GetImageChannelDistortion(const Image *image,
-    const Image *reconstruct_image,const ChannelType channel,
-    const MetricType metric,double *distortion,ExceptionInfo *exception)
+  MagickBooleanType GetImageDistortion(const Image *image,
+    const Image *reconstruct_image,const MetricType metric,
+    double *distortion,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -269,9 +265,6 @@
 <h5>reconstruct_image</h5>
 <p>the reconstruct image.</p>
 
-<h5>channel</h5>
-<p>the channel.</p>
-
 <h5>metric</h5>
 <p>the metric.</p>
 
@@ -282,15 +275,15 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageChannelDistrortion">GetImageChannelDistrortion</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageDistrortion">GetImageDistrortion</a></h2>
 <div class="doc-section">
 
-<p>GetImageChannelDistrortion() compares the image channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p>
+<p>GetImageDistrortion() compares the pixel channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p>
 
-<p>The format of the CompareImageChannels method is:</p>
+<p>The format of the CompareImages method is:</p>
 
 <pre class="code">
-  double *GetImageChannelDistortions(const Image *image,
+  double *GetImageDistortions(const Image *image,
     const Image *reconstruct_image,const MetricType metric,
     ExceptionInfo *exception)
 </pre>

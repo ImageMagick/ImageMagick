@@ -197,7 +197,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -212,7 +212,7 @@
 <div class="main">
 
 <h1>Module cache-view Methods</h1>
-<p class="navigation-index">[<a href="#AcquireCacheView">AcquireCacheView</a> &bull; <a href="#CloneCacheView">CloneCacheView</a> &bull; <a href="#DestroyCacheView">DestroyCacheView</a> &bull; <a href="#GetCacheViewChannels">GetCacheViewChannels</a> &bull; <a href="#GetCacheViewColorspace">GetCacheViewColorspace</a> &bull; <a href="#GetCacheViewException">GetCacheViewException</a> &bull; <a href="#GetCacheViewStorageClass">GetCacheViewStorageClass</a> &bull; <a href="#GetCacheViewAuthenticPixels">GetCacheViewAuthenticPixels</a> &bull; <a href="#GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a> &bull; <a href="#GetCacheViewAuthenticIndexQueue">GetCacheViewAuthenticIndexQueue</a> &bull; <a href="#GetCacheViewAuthenticPixelQueue">GetCacheViewAuthenticPixelQueue</a> &bull; <a href="#GetCacheViewVirtualIndexQueue">GetCacheViewVirtualIndexQueue</a> &bull; <a href="#GetCacheViewVirtualPixelQueue">GetCacheViewVirtualPixelQueue</a> &bull; <a href="#GetCacheViewVirtualPixels">GetCacheViewVirtualPixels</a> &bull; <a href="#GetOneCacheViewVirtualPixel">GetOneCacheViewVirtualPixel</a> &bull; <a href="#GetOneCacheViewVirtualMethodPixel">GetOneCacheViewVirtualMethodPixel</a> &bull; <a href="#QueueCacheViewAuthenticPixels">QueueCacheViewAuthenticPixels</a> &bull; <a href="#SetCacheViewStorageClass">SetCacheViewStorageClass</a> &bull; <a href="#SetCacheViewVirtualPixelMethod">SetCacheViewVirtualPixelMethod</a> &bull; <a href="#SyncCacheViewAuthenticPixels">SyncCacheViewAuthenticPixels</a>]</p>
+<p class="navigation-index">[<a href="#AcquireCacheView">AcquireCacheView</a> &bull; <a href="#CloneCacheView">CloneCacheView</a> &bull; <a href="#DestroyCacheView">DestroyCacheView</a> &bull; <a href="#GetCacheViewColorspace">GetCacheViewColorspace</a> &bull; <a href="#GetCacheViewException">GetCacheViewException</a> &bull; <a href="#GetCacheViewStorageClass">GetCacheViewStorageClass</a> &bull; <a href="#GetCacheViewAuthenticPixels">GetCacheViewAuthenticPixels</a> &bull; <a href="#GetCacheViewAuthenticMetacontent">GetCacheViewAuthenticMetacontent</a> &bull; <a href="#GetCacheViewAuthenticPixelQueue">GetCacheViewAuthenticPixelQueue</a> &bull; <a href="#GetCacheViewVirtualMetacontent">GetCacheViewVirtualMetacontent</a> &bull; <a href="#GetCacheViewVirtualPixelQueue">GetCacheViewVirtualPixelQueue</a> &bull; <a href="#GetCacheViewVirtualPixels">GetCacheViewVirtualPixels</a> &bull; <a href="#GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a> &bull; <a href="#GetOneCacheViewVirtualPixel">GetOneCacheViewVirtualPixel</a> &bull; <a href="#GetOneCacheViewVirtualMethodPixel">GetOneCacheViewVirtualMethodPixel</a> &bull; <a href="#QueueCacheViewAuthenticPixels">QueueCacheViewAuthenticPixels</a> &bull; <a href="#SetCacheViewStorageClass">SetCacheViewStorageClass</a> &bull; <a href="#SetCacheViewVirtualPixelMethod">SetCacheViewVirtualPixelMethod</a> &bull; <a href="#SyncCacheViewAuthenticPixels">SyncCacheViewAuthenticPixels</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="AcquireCacheView">AcquireCacheView</a></h2>
 <div class="doc-section">
@@ -257,23 +257,6 @@
 
 <pre class="code">
   CacheView *DestroyCacheView(CacheView *cache_view)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>cache_view</h5>
-<p>the cache view.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetCacheViewChannels">GetCacheViewChannels</a></h2>
-<div class="doc-section">
-
-<p>GetCacheViewChannels() returns the image pixel channels associated with the specified view.</p>
-
-<p>The format of the GetCacheViewChannels method is:</p>
-
-<pre class="code">
-  size_t GetCacheViewChannels(const CacheView *cache_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -341,7 +324,7 @@
 <p>The format of the GetCacheViewAuthenticPixels method is:</p>
 
 <pre class="code">
-  PixelPacket *GetCacheViewAuthenticPixels(CacheView *cache_view,
+  Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,
     const ssize_t x,const ssize_t y,const size_t columns,
     const size_t rows,ExceptionInfo *exception)
 </pre>
@@ -355,43 +338,15 @@
 <p>These values define the perimeter of a region of pixels.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetCacheViewAuthenticMetacontent">GetCacheViewAuthenticMetacontent</a></h2>
 <div class="doc-section">
 
-<p>GetOneCacheViewAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p>
+<p>GetCacheViewAuthenticMetacontent() returns the meta-content corresponding with the last call to SetCacheViewIndexes() or GetCacheViewAuthenticMetacontent().  The meta-content are authentic and can be updated.</p>
 
-<p>The format of the GetOneCacheViewAuthenticPixel method is:</p>
-
-<pre class="code">
-  MagickBooleaNType GetOneCacheViewAuthenticPixel(
-    const CacheView *cache_view,const ssize_t x,const ssize_t y,
-    Pixelpacket *pixel,ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>cache_view</h5>
-<p>the cache view.</p>
-
-<h5>x,y</h5>
-<p>These values define the offset of the pixel.</p>
-
-<h5>pixel</h5>
-<p>return a pixel at the specified (x,y) location.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetCacheViewAuthenticIndexQueue">GetCacheViewAuthenticIndexQueue</a></h2>
-<div class="doc-section">
-
-<p>GetCacheViewAuthenticIndexQueue() returns the indexes associated with the last call to SetCacheViewIndexes() or GetCacheViewAuthenticIndexQueue().  The indexes are authentic and can be updated.</p>
-
-<p>The format of the GetCacheViewAuthenticIndexQueue() method is:</p>
+<p>The format of the GetCacheViewAuthenticMetacontent() method is:</p>
 
 <pre class="code">
-  IndexPacket *GetCacheViewAuthenticIndexQueue(CacheView *cache_view)
+  void *GetCacheViewAuthenticMetacontent(CacheView *cache_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -408,7 +363,7 @@
 <p>The format of the GetCacheViewAuthenticPixelQueue() method is:</p>
 
 <pre class="code">
-  PixelPacket *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
+  Quantum *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -417,15 +372,15 @@
 <p>the cache view.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetCacheViewVirtualIndexQueue">GetCacheViewVirtualIndexQueue</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetCacheViewVirtualMetacontent">GetCacheViewVirtualMetacontent</a></h2>
 <div class="doc-section">
 
-<p>GetCacheViewVirtualIndexQueue() returns the indexes associated with the last call to GetCacheViewVirtualIndexQueue().  The indexes are virtual and therefore cannot be updated.</p>
+<p>GetCacheViewVirtualMetacontent() returns the meta-content corresponding with the last call to GetCacheViewVirtualMetacontent().  The meta-content is virtual and therefore cannot be updated.</p>
 
-<p>The format of the GetCacheViewVirtualIndexQueue() method is:</p>
+<p>The format of the GetCacheViewVirtualMetacontent() method is:</p>
 
 <pre class="code">
-  const IndexPacket *GetCacheViewVirtualIndexQueue(
+  const void *GetCacheViewVirtualMetacontent(
     const CacheView *cache_view)
 </pre>
 
@@ -443,7 +398,7 @@
 <p>The format of the GetCacheViewVirtualPixelQueue() method is:</p>
 
 <pre class="code">
-  const PixelPacket *GetCacheViewVirtualPixelQueue(
+  const Quantum *GetCacheViewVirtualPixelQueue(
     const CacheView *cache_view)
 </pre>
 
@@ -461,7 +416,7 @@
 <p>The format of the GetCacheViewVirtualPixels method is:</p>
 
 <pre class="code">
-  const PixelPacket *GetCacheViewVirtualPixels(
+  const Quantum *GetCacheViewVirtualPixels(
     const CacheView *cache_view,const ssize_t x,const ssize_t y,
     const size_t columns,const size_t rows,ExceptionInfo *exception)
 </pre>
@@ -473,6 +428,34 @@
 
 <h5>x,y,columns,rows</h5>
 <p>These values define the perimeter of a region of pixels.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a></h2>
+<div class="doc-section">
+
+<p>GetOneCacheViewAuthenticPixel() returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</p>
+
+<p>The format of the GetOneCacheViewAuthenticPixel method is:</p>
+
+<pre class="code">
+  MagickBooleaNType GetOneCacheViewAuthenticPixel(
+    const CacheView *cache_view,const ssize_t x,const ssize_t y,
+    PixelPacket *pixel,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>cache_view</h5>
+<p>the cache view.</p>
+
+<h5>x,y</h5>
+<p>These values define the offset of the pixel.</p>
+
+<h5>pixel</h5>
+<p>return a pixel at the specified (x,y) location.</p>
 
 <h5>exception</h5>
 <p>return any errors or warnings in this structure.</p>
@@ -546,7 +529,7 @@
 <p>The format of the QueueCacheViewAuthenticPixels method is:</p>
 
 <pre class="code">
-  PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
+  Quantum *QueueCacheViewAuthenticPixels(CacheView *cache_view,
     const ssize_t x,const ssize_t y,const size_t columns,
     const size_t rows,ExceptionInfo *exception)
 </pre>
