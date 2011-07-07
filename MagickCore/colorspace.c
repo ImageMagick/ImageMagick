@@ -853,7 +853,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     case sRGBColorspace:
     {
       /*
-        Linear sRGB to nonlinear RGB (http://www.w3.org/Graphics/Color/sRGB):
+        Nonlinear sRGB to linear RGB (http://www.w3.org/Graphics/Color/sRGB):
 
           R = 1.0*R+0.0*G+0.0*B
           G = 0.0*R+0.1*G+0.0*B
