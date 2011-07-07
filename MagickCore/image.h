@@ -286,8 +286,11 @@ struct _Image
   MagickBooleanType
     sync;
 
+  size_t
+    map;  
+
   PixelComponentMap
-    *component_map;
+    **component_map;
 
   void
     *cache;

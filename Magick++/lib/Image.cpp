@@ -345,11 +345,12 @@ void Magick::Image::addNoiseChannel( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_);
   MagickCore::Image* newImage =
-    AddNoiseImageChannel ( image(),
-                           channel_,
+    AddNoiseImage ( image(),
                            noiseType_,
                            &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1113,7 +1114,7 @@ void Magick::Image::fx ( const std::string expression )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    FxImageChannel ( image(), DefaultChannels, expression.c_str(), &exceptionInfo );
+    FxImage ( image(), expression.c_str(), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1123,8 +1124,10 @@ void Magick::Image::fx ( const std::string expression,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel );
   MagickCore::Image* newImage =
-    FxImageChannel ( image(), channel, expression.c_str(), &exceptionInfo );
+    FxImage ( image(), expression.c_str(), &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

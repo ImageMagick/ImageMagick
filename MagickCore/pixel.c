@@ -83,25 +83,35 @@
 %
 %  The format of the AcquirePixelComponentMap() method is:
 %
-%      PixelComponentMap *AcquirePixelComponentMap(void)
+%      PixelComponentMap **AcquirePixelComponentMap(void)
 %
 */
-MagickExport PixelComponentMap *AcquirePixelComponentMap(void)
+MagickExport PixelComponentMap **AcquirePixelComponentMap(void)
 {
   PixelComponentMap
-    *component_map;
+    **component_map;
 
   register ssize_t
     i;
 
-  component_map=(PixelComponentMap *) AcquireAlignedMemory(MaxPixelComponents,
-    sizeof(*component_map));
-  if (component_map == (PixelComponentMap *) NULL)
+  component_map=(PixelComponentMap **) AcquireAlignedMemory(
+    MaxPixelComponentMaps,sizeof(**component_map));
+  if (component_map == (PixelComponentMap **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(component_map,0,MaxPixelComponents*
-    sizeof(*component_map));
-  for (i=0; i < MaxPixelComponents; i++)
-    component_map[i].component=(PixelComponent) i;
+  for (i=0; i < MaxPixelComponentMaps; i++)
+  {
+    register ssize_t
+      j;
+
+    component_map[i]=(PixelComponentMap *) AcquireQuantumMemory(
+      MaxPixelComponents,sizeof(*component_map[i]));
+    if (component_map[i] == (PixelComponentMap *) NULL)
+      ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    (void) ResetMagickMemory(component_map[i],0,MaxPixelComponents*
+      sizeof(*component_map[i]));
+    for (j=0; j < MaxPixelComponents; j++)
+      component_map[i][j].component=(PixelComponent) j;
+  }
   return(component_map);
 }
 
@@ -120,26 +130,30 @@ MagickExport PixelComponentMap *AcquirePixelComponentMap(void)
 %
 %  The format of the ClonePixelComponentMap() method is:
 %
-%      PixelComponentMap *ClonePixelComponentMap(
-%        const PixelComponentMap *component_map)
+%      PixelComponentMap **ClonePixelComponentMap(
+%        PixelComponentMap **component_map)
 %
 %  A description of each parameter follows:
 %
 %    o component_map: the pixel component map.
 %
 */
-MagickExport PixelComponentMap *ClonePixelComponentMap(
-  const PixelComponentMap *component_map)
+MagickExport PixelComponentMap **ClonePixelComponentMap(
+  PixelComponentMap **component_map)
 {
   PixelComponentMap
-    *clone_map;
+    **clone_map;
 
-  assert(component_map != (const PixelComponentMap *) NULL);
+  register ssize_t
+    i;
+
+  assert(component_map != (PixelComponentMap **) NULL);
   clone_map=AcquirePixelComponentMap();
-  if (clone_map == (PixelComponentMap *) NULL)
-    return((PixelComponentMap *) NULL);
-  (void) CopyMagickMemory(clone_map,component_map,MaxPixelComponents*
-    sizeof(*component_map));
+  if (clone_map == (PixelComponentMap **) NULL)
+    return((PixelComponentMap **) NULL);
+  for (i=0; i < MaxPixelComponentMaps; i++)
+    (void) CopyMagickMemory(clone_map[i],component_map[i],MaxPixelComponents*
+      sizeof(*component_map[i]));
   return(clone_map);
 }
 
@@ -194,19 +208,25 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 %
 %  The format of the DestroyPixelComponentMap() method is:
 %
-%      PixelComponentMap *DestroyPixelComponentMap(
-%        PixelComponentMap *component_map)
+%      PixelComponentMap **DestroyPixelComponentMap(
+%        PixelComponentMap **component_map)
 %
 %  A description of each parameter follows:
 %
 %    o component_map: the pixel component map.
 %
 */
-MagickExport PixelComponentMap *DestroyPixelComponentMap(
-  PixelComponentMap *component_map)
+MagickExport PixelComponentMap **DestroyPixelComponentMap(
+  PixelComponentMap **component_map)
 {
-  assert(component_map != (PixelComponentMap *) NULL);
-  return((PixelComponentMap *) RelinquishMagickMemory(component_map));
+  register ssize_t
+    i;
+
+  assert(component_map != (PixelComponentMap **) NULL);
+  for (i=0; i < MaxPixelComponentMaps; i++)
+    component_map[i]=(PixelComponentMap *) RelinquishMagickMemory(
+      component_map[i]);
+  return((PixelComponentMap **) RelinquishMagickMemory(component_map));
 }
 
 /*
@@ -4428,6 +4448,69 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   P o p P i x e l C o m p o n e n t M a p                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PopPixelComponentMap() pops the pixel component map.
+%
+%  The format of the PopPixelComponentMap method is:
+%
+%      void PopPixelComponentMap(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport void PopPixelComponentMap(Image *image)
+{
+  if (image->map == 0)
+    ThrowFatalException(ResourceLimitFatalError,"PixelComponentMapStack");
+  image->map--;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P u s h P i x e l C o m p o n e n t M a p                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PushPixelComponentMap() pushes the pixel component map from the specified
+%  channel mask.
+%
+%  The format of the PushPixelComponentMap method is:
+%
+%      void PushPixelComponentMap(Image *image,const ChannelType channel_mask)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel_mask: the channel mask.
+%
+*/
+MagickExport void PushPixelComponentMap(Image *image,
+  const ChannelType channel_mask)
+{
+  if (image->map >= MaxPixelComponentMaps)
+    ThrowFatalException(ResourceLimitFatalError,"PixelComponentMapStack");
+  image->map++;
+  SetPixelComponentMap(image,channel_mask);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t P i x e l C o m p o n e n t M a p                                   %
 %                                                                             %
 %                                                                             %
@@ -4439,32 +4522,33 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 %
 %  The format of the SetPixelComponentMap method is:
 %
-%      void SetPixelComponentMap(Image *image,const ChannelType channel)
+%      void SetPixelComponentMap(Image *image,const ChannelType channel_mask)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel mask.
+%    o channel_mask: the channel mask.
 %
 */
-MagickExport void SetPixelComponentMap(Image *image,const ChannelType channel)
+MagickExport void SetPixelComponentMap(Image *image,
+  const ChannelType channel_mask)
 {
   register ssize_t
     i;
 
   for (i=0; i < MaxPixelComponents; i++)
-    image->component_map[i].traits=UndefinedPixelTrait;
-  image->sync=(channel & SyncChannels) != 0 ? MagickTrue : MagickFalse;
-  if ((channel & RedChannel) != 0)
+     SetPixelComponentTraits(image,(PixelComponent) i,UndefinedPixelTrait);
+  image->sync=(channel_mask & SyncChannels) != 0 ? MagickTrue : MagickFalse;
+  if ((channel_mask & RedChannel) != 0)
     SetPixelRedTraits(image,ActivePixelTrait);
-  if ((channel & GreenChannel) != 0)
+  if ((channel_mask & GreenChannel) != 0)
     SetPixelGreenTraits(image,ActivePixelTrait);
-  if ((channel & BlueChannel) != 0)
+  if ((channel_mask & BlueChannel) != 0)
     SetPixelBlueTraits(image,ActivePixelTrait);
-  if ((channel & BlackChannel) != 0)
+  if ((channel_mask & BlackChannel) != 0)
     SetPixelBlackTraits(image,ActivePixelTrait);
-  if ((channel & AlphaChannel) != 0)
+  if ((channel_mask & AlphaChannel) != 0)
     SetPixelAlphaTraits(image,ActivePixelTrait);
 }
 

@@ -289,8 +289,6 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
 %
 %      Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 %        ExceptionInfo *exception)
-%      Image *AddNoiseImageChannel(const Image *image,const ChannelType channel,
-%        const NoiseType noise_type,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -304,18 +302,7 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
-  ExceptionInfo *exception)
-{
-  Image
-    *noise_image;
-
-  noise_image=AddNoiseImageChannel(image,DefaultChannels,noise_type,exception);
-  return(noise_image);
-}
-
-MagickExport Image *AddNoiseImageChannel(const Image *image,
-  const ChannelType channel,const NoiseType noise_type,ExceptionInfo *exception)
+MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,  ExceptionInfo *exception)
 {
 #define AddNoiseImageTag  "AddNoise/Image"
 
@@ -2848,14 +2835,10 @@ MagickExport MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
 %
 %      Image *FxImage(const Image *image,const char *expression,
 %        ExceptionInfo *exception)
-%      Image *FxImageChannel(const Image *image,const ChannelType channel,
-%        const char *expression,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o expression: A mathematical expression.
 %
@@ -2916,16 +2899,6 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
 
 MagickExport Image *FxImage(const Image *image,const char *expression,
   ExceptionInfo *exception)
-{
-  Image
-    *fx_image;
-
-  fx_image=FxImageChannel(image,GrayChannel,expression,exception);
-  return(fx_image);
-}
-
-MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
-  const char *expression,ExceptionInfo *exception)
 {
 #define FxImageTag  "Fx/Image"
 
@@ -3056,7 +3029,7 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_FxImageChannel)
+  #pragma omp critical (MagickCore_FxImage)
 #endif
         proceed=SetImageProgress(image,FxImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
