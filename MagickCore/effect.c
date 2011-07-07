@@ -2192,7 +2192,8 @@ MagickExport Image *FilterImageChannel(const Image *image,
       pixel=bias;
       k=kernel->values;
       kernel_pixels=p;
-      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) ||
+          (image->matte == MagickFalse))
         {
           for (v=0; v < (ssize_t) kernel->width; v++)
           {
@@ -2264,7 +2265,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               gamma+=(*k)*alpha;
               k++;
             }
-            kernel_pixels+=(image->columns+kernel->width);
+            kernel_pixels+=(image->columns+kernel->width)*
               GetPixelChannels(image);
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
