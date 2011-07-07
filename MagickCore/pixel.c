@@ -4538,7 +4538,7 @@ MagickExport void SetPixelComponentMap(Image *image,
     i;
 
   for (i=0; i < MaxPixelComponents; i++)
-     SetPixelComponentTraits(image,(PixelComponent) i,UndefinedPixelTrait);
+    SetPixelComponentTraits(image,(PixelComponent) i,UndefinedPixelTrait);
   image->sync=(channel_mask & SyncChannels) != 0 ? MagickTrue : MagickFalse;
   if ((channel_mask & RedChannel) != 0)
     SetPixelRedTraits(image,ActivePixelTrait);
