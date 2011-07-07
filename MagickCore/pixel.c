@@ -3747,7 +3747,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      AlphaBlendPixelInfo(image,p+0*GetPixelChannels(image),pixels+0,alpha+0);
+      AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
@@ -3800,7 +3800,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      AlphaBlendPixelInfo(image,p+0*GetPixelChannels(image),pixels+0,alpha+0);
+      AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
@@ -3842,7 +3842,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      AlphaBlendPixelInfo(image,p+0*GetPixelChannels(image),pixels+0,alpha+0);
+      AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
@@ -3929,7 +3929,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      AlphaBlendPixelInfo(image,p+0*GetPixelChannels(image),pixels+0,alpha+0);
+      AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
@@ -4065,7 +4065,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      AlphaBlendPixelInfo(image,p+0*GetPixelChannels(image),pixels+0,alpha+0);
+      AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);

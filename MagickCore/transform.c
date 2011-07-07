@@ -638,7 +638,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     register Quantum
       *restrict q;
 
-    register size_t
+    register ssize_t
       x;
 
     if (status == MagickFalse)
