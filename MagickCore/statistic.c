@@ -106,7 +106,7 @@
 %  an image, to increase or decrease contrast in an image, or to produce the
 %  "negative" of an image.
 %
-%  The format of the EvaluateImageChannel method is:
+%  The format of the EvaluateImage method is:
 %
 %      MagickBooleanType EvaluateImage(Image *image,
 %        const MagickEvaluateOperator op,const double value,
@@ -114,15 +114,10 @@
 %      MagickBooleanType EvaluateImages(Image *images,
 %        const MagickEvaluateOperator op,const double value,
 %        ExceptionInfo *exception)
-%      MagickBooleanType EvaluateImageChannel(Image *image,
-%        const ChannelType channel,const MagickEvaluateOperator op,
-%        const double value,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o op: A channel op.
 %
@@ -401,16 +396,6 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
   }
   return(result);
-}
-
-MagickExport MagickBooleanType EvaluateImage(Image *image,
-  const MagickEvaluateOperator op,const double value,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=EvaluateImageChannel(image,CompositeChannels,op,value,exception);
-  return(status);
 }
 
 MagickExport Image *EvaluateImages(const Image *images,
@@ -717,9 +702,8 @@ MagickExport Image *EvaluateImages(const Image *images,
   return(evaluate_image);
 }
 
-MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
-  const ChannelType channel,const MagickEvaluateOperator op,const double value,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType EvaluateImage(Image *image,
+  const MagickEvaluateOperator op,const double value,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -807,7 +791,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_EvaluateImageChannel)
+  #pragma omp critical (MagickCore_EvaluateImage)
 #endif
         proceed=SetImageProgress(image,EvaluateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -835,21 +819,15 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
 %  an image, to increase or decrease contrast in an image, or to produce the
 %  "negative" of an image.
 %
-%  The format of the FunctionImageChannel method is:
+%  The format of the FunctionImage method is:
 %
 %      MagickBooleanType FunctionImage(Image *image,
 %        const MagickFunction function,const ssize_t number_parameters,
 %        const double *parameters,ExceptionInfo *exception)
-%      MagickBooleanType FunctionImageChannel(Image *image,
-%        const ChannelType channel,const MagickFunction function,
-%        const ssize_t number_parameters,const double *argument,
-%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o function: A channel function.
 %
@@ -945,19 +923,6 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
   const MagickFunction function,const size_t number_parameters,
   const double *parameters,ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
-
-  status=FunctionImageChannel(image,CompositeChannels,function,number_parameters,
-    parameters,exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType FunctionImageChannel(Image *image,
-  const ChannelType channel,const MagickFunction function,
-  const size_t number_parameters,const double *parameters,
-  ExceptionInfo *exception)
-{
 #define FunctionImageTag  "Function/Image "
 
   CacheView
@@ -1039,7 +1004,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_FunctionImageChannel)
+  #pragma omp critical (MagickCore_FunctionImage)
 #endif
         proceed=SetImageProgress(image,FunctionImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -1055,25 +1020,22 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t I m a g e C h a n n e l E x t r e m a                               %
+%   G e t I m a g e E x t r e m a                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelExtrema() returns the extrema of one or more image channels.
+%  GetImageExtrema() returns the extrema of one or more image channels.
 %
-%  The format of the GetImageChannelExtrema method is:
+%  The format of the GetImageExtrema method is:
 %
-%      MagickBooleanType GetImageChannelExtrema(const Image *image,
-%        const ChannelType channel,size_t *minima,size_t *maxima,
-%        ExceptionInfo *exception)
+%      MagickBooleanType GetImageExtrema(const Image *image,size_t *minima,
+%        size_t *maxima,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o minima: the minimum value in the channel.
 %
@@ -1082,16 +1044,8 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport MagickBooleanType GetImageExtrema(const Image *image,
   size_t *minima,size_t *maxima,ExceptionInfo *exception)
-{
-  return(GetImageChannelExtrema(image,CompositeChannels,minima,maxima,exception));
-}
-
-MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
-  const ChannelType channel,size_t *minima,size_t *maxima,
-  ExceptionInfo *exception)
 {
   double
     max,
@@ -1104,7 +1058,7 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=GetImageChannelRange(image,channel,&min,&max,exception);
+  status=GetImageRange(image,&min,&max,exception);
   *minima=(size_t) ceil(min-0.5);
   *maxima=(size_t) floor(max+0.5);
   return(status);
@@ -1115,26 +1069,23 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l M e a n                                     %
+%   G e t I m a g e M e a n                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelMean() returns the mean and standard deviation of one or more
+%  GetImageMean() returns the mean and standard deviation of one or more
 %  image channels.
 %
-%  The format of the GetImageChannelMean method is:
+%  The format of the GetImageMean method is:
 %
-%      MagickBooleanType GetImageChannelMean(const Image *image,
-%        const ChannelType channel,double *mean,double *standard_deviation,
-%        ExceptionInfo *exception)
+%      MagickBooleanType GetImageMean(const Image *image,double *mean,
+%        double *standard_deviation,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o mean: the average value in the channel.
 %
@@ -1143,21 +1094,8 @@ MagickExport MagickBooleanType GetImageChannelExtrema(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   double *standard_deviation,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=GetImageChannelMean(image,CompositeChannels,mean,standard_deviation,
-    exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
-  const ChannelType channel,double *mean,double *standard_deviation,
-  ExceptionInfo *exception)
 {
   ChannelStatistics
     *channel_statistics;
@@ -1169,7 +1107,7 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  channel_statistics=GetImageChannelStatistics(image,exception);
+  channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
   channels=0;
@@ -1242,26 +1180,23 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l K u r t o s i s                             %
+%   G e t I m a g e K u r t o s i s                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelKurtosis() returns the kurtosis and skewness of one or more
+%  GetImageKurtosis() returns the kurtosis and skewness of one or more
 %  image channels.
 %
-%  The format of the GetImageChannelKurtosis method is:
+%  The format of the GetImageKurtosis method is:
 %
-%      MagickBooleanType GetImageChannelKurtosis(const Image *image,
-%        const ChannelType channel,double *kurtosis,double *skewness,
-%        ExceptionInfo *exception)
+%      MagickBooleanType GetImageKurtosis(const Image *image,double *kurtosis,
+%        double *skewness,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o kurtosis: the kurtosis of the channel.
 %
@@ -1270,21 +1205,8 @@ MagickExport MagickBooleanType GetImageChannelMean(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   double *kurtosis,double *skewness,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=GetImageChannelKurtosis(image,CompositeChannels,kurtosis,skewness,
-    exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
-  const ChannelType channel,double *kurtosis,double *skewness,
-  ExceptionInfo *exception)
 {
   double
     area,
@@ -1408,25 +1330,22 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l R a n g e                                   %
+%   G e t I m a g e R a n g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelRange() returns the range of one or more image channels.
+%  GetImageRange() returns the range of one or more image channels.
 %
-%  The format of the GetImageChannelRange method is:
+%  The format of the GetImageRange method is:
 %
-%      MagickBooleanType GetImageChannelRange(const Image *image,
-%        const ChannelType channel,double *minima,double *maxima,
-%        ExceptionInfo *exception)
+%      MagickBooleanType GetImageRange(const Image *image,double *minima,
+%        double *maxima,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel.
 %
 %    o minima: the minimum value in the channel.
 %
@@ -1435,16 +1354,8 @@ MagickExport MagickBooleanType GetImageChannelKurtosis(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport MagickBooleanType GetImageRange(const Image *image,
-  double *minima,double *maxima,ExceptionInfo *exception)
-{
-  return(GetImageChannelRange(image,CompositeChannels,minima,maxima,exception));
-}
-
-MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
-  const ChannelType channel,double *minima,double *maxima,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
+  double *maxima,ExceptionInfo *exception)
 {
   PixelInfo
     pixel;
@@ -1520,25 +1431,25 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C h a n n e l S t a t i s t i c s                         %
+%   G e t I m a g e S t a t i s t i c s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelStatistics() returns statistics for each channel in the
+%  GetImageStatistics() returns statistics for each channel in the
 %  image.  The statistics include the channel depth, its minima, maxima, mean,
 %  standard deviation, kurtosis and skewness.  You can access the red channel
 %  mean, for example, like this:
 %
-%      channel_statistics=GetImageChannelStatistics(image,exception);
+%      channel_statistics=GetImageStatistics(image,exception);
 %      red_mean=channel_statistics[RedChannel].mean;
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
 %
-%  The format of the GetImageChannelStatistics method is:
+%  The format of the GetImageStatistics method is:
 %
-%      ChannelStatistics *GetImageChannelStatistics(const Image *image,
+%      ChannelStatistics *GetImageStatistics(const Image *image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1548,7 +1459,7 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
+MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   ExceptionInfo *exception)
 {
   ChannelStatistics

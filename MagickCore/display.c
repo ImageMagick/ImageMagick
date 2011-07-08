@@ -3801,9 +3801,9 @@ static MagickBooleanType XColorEditImage(Display *display,
               (DrawInfo *) NULL);
             (void) QueryColorDatabase(resource_info->pen_colors[pen_id],
               &draw_info->fill,exception);
-            (void) FloodfillPaintImage(*image,DefaultChannels,draw_info,&target,
-              (ssize_t) x_offset,(ssize_t) y_offset,
-              method == FloodfillMethod ? MagickFalse : MagickTrue);
+            (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
+              x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
+              MagickFalse : MagickTrue);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }
@@ -10077,9 +10077,11 @@ static MagickBooleanType XMatteEditImage(Display *display,
               (DrawInfo *) NULL);
             draw_info->fill.alpha=ClampToQuantum(InterpretLocaleValue(matte,
               (char **) NULL));
-            (void) FloodfillPaintImage(*image,OpacityChannel,draw_info,&target,
-              (ssize_t) x_offset,(ssize_t) y_offset,
-              method == FloodfillMethod ? MagickFalse : MagickTrue);
+            PushPixelComponentMap(*image,AlphaChannel); 
+            (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
+              x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
+              MagickFalse : MagickTrue);
+            PopPixelComponentMap(*image);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }

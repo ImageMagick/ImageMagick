@@ -1714,9 +1714,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FloodfillPaintImage(msl_info->image[n],DefaultChannels,
-            draw_info,&target,geometry.x,geometry.y,
-            paint_method == FloodfillMethod ? MagickFalse : MagickTrue);
+          (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
+            geometry.x,geometry.y,paint_method == FloodfillMethod ?
+            MagickFalse : MagickTrue);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -3735,9 +3735,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
           draw_info->fill.alpha=ClampToQuantum(opacity);
-          (void) FloodfillPaintImage(msl_info->image[n],OpacityChannel,
-            draw_info,&target,geometry.x,geometry.y,
-            paint_method == FloodfillMethod ? MagickFalse : MagickTrue);
+          PushPixelComponentMap(msl_info->image[n],AlphaChannel);
+          (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
+            geometry.x,geometry.y,paint_method == FloodfillMethod ?
+            MagickFalse : MagickTrue);
+          PopPixelComponentMap(msl_info->image[n]);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -4224,8 +4226,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) OpaquePaintImageChannel(msl_info->image[n],channel,
-            &target,&fill_color,MagickFalse);
+          PushPixelComponentMap(msl_info->image[n],channel);
+          (void) OpaquePaintImage(msl_info->image[n],&target,&fill_color,
+            MagickFalse);
+          PopPixelComponentMap(msl_info->image[n]);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

@@ -1179,8 +1179,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         kurtosis,
         skewness;
 
-      (void) GetImageChannelKurtosis(image,channel,&kurtosis,&skewness,
-        exception);
+      (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",kurtosis);
     }
   if (LocaleNCompare(symbol,"maxima",6) == 0)
@@ -1189,7 +1188,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         maxima,
         minima;
 
-      (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
+      (void) GetImageRange(image,&minima,&maxima,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",maxima);
     }
   if (LocaleNCompare(symbol,"mean",4) == 0)
@@ -1198,8 +1197,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         mean,
         standard_deviation;
 
-      (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
-        exception);
+      (void) GetImageMean(image,&mean,&standard_deviation,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",mean);
     }
   if (LocaleNCompare(symbol,"minima",6) == 0)
@@ -1208,7 +1206,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         maxima,
         minima;
 
-      (void) GetImageChannelRange(image,channel,&minima,&maxima,exception);
+      (void) GetImageRange(image,&minima,&maxima,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",minima);
     }
   if (LocaleNCompare(symbol,"skewness",8) == 0)
@@ -1217,8 +1215,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         kurtosis,
         skewness;
 
-      (void) GetImageChannelKurtosis(image,channel,&kurtosis,&skewness,
-        exception);
+      (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",skewness);
     }
   if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
@@ -1227,8 +1224,7 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
         mean,
         standard_deviation;
 
-      (void) GetImageChannelMean(image,channel,&mean,&standard_deviation,
-        exception);
+      (void) GetImageMean(image,&mean,&standard_deviation,exception);
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",
         standard_deviation);
     }

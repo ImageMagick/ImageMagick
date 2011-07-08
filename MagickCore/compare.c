@@ -906,8 +906,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   /*
     Normalize to account for variation due to lighting and exposure condition.
   */
-  image_statistics=GetImageChannelStatistics(image,exception);
-  reconstruct_statistics=GetImageChannelStatistics(reconstruct_image,exception);
+  image_statistics=GetImageStatistics(image,exception);
+  reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
   status=MagickTrue;
   progress=0;
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
@@ -1646,7 +1646,7 @@ static double GetNCCDistortion(const Image *image,
   /*
     Normalize to account for variation due to lighting and exposure condition.
   */
-  image_statistics=GetImageChannelStatistics(image,exception);
+  image_statistics=GetImageStatistics(image,exception);
   status=MagickTrue;
   distortion=0.0;
   area=1.0/((MagickRealType) image->columns*image->rows);
@@ -1797,7 +1797,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   */
   status=MagickTrue;
   progress=0;
-  reference_statistics=GetImageChannelStatistics(reference,exception);
+  reference_statistics=GetImageStatistics(reference,exception);
   similarity_view=AcquireCacheView(similarity_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)

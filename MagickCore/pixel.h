@@ -25,8 +25,8 @@ extern "C" {
 #include <MagickCore/colorspace.h>
 #include <MagickCore/constitute.h>
 
-#define MaxPixelComponents  16
-#define MaxPixelComponentMaps  16
+#define MaxPixelComponents  32
+#define MaxPixelComponentMaps  8
 
 typedef enum
 {

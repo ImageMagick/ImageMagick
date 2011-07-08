@@ -180,9 +180,6 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
 {
 #define HistogramDensity  "256x200"
 
-  ChannelType
-    channel;
-
   char
     filename[MaxTextExtent];
 
@@ -262,7 +259,6 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram count arrays.
   */
-  channel=image_info->channel;
   (void) ResetMagickMemory(histogram,0,length*sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {

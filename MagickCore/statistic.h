@@ -86,7 +86,7 @@ typedef enum
 } MagickFunction;
 
 extern MagickExport ChannelStatistics
-  *GetImageChannelStatistics(const Image *,ExceptionInfo *);
+  *GetImageStatistics(const Image *,ExceptionInfo *);
 
 extern MagickExport Image
   *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *);
@@ -94,24 +94,12 @@ extern MagickExport Image
 extern MagickExport MagickBooleanType
   EvaluateImage(Image *,const MagickEvaluateOperator,const double,
     ExceptionInfo *),
-  EvaluateImageChannel(Image *,const ChannelType,const MagickEvaluateOperator,
-    const double,ExceptionInfo *),
   FunctionImage(Image *,const MagickFunction,const size_t,const double *,
     ExceptionInfo *),
-  FunctionImageChannel(Image *,const ChannelType,const MagickFunction,
-    const size_t,const double *,ExceptionInfo *),
-  GetImageChannelExtrema(const Image *,const ChannelType,size_t *,size_t *,
-    ExceptionInfo *),
-  GetImageChannelMean(const Image *,const ChannelType,double *,double *,
-    ExceptionInfo *),
-  GetImageChannelKurtosis(const Image *,const ChannelType,double *,double *,
-    ExceptionInfo *),
-  GetImageChannelRange(const Image *,const ChannelType,double *,double *,
-    ExceptionInfo *),
   GetImageExtrema(const Image *,size_t *,size_t *,ExceptionInfo *),
-  GetImageRange(const Image *,double *,double *,ExceptionInfo *),
   GetImageMean(const Image *,double *,double *,ExceptionInfo *),
-  GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *);
+  GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *),
+  GetImageRange(const Image *,double *,double *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -4243,8 +4243,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               target.green=(MagickRealType) draw_info->border_color.green;
               target.blue=(MagickRealType) draw_info->border_color.blue;
             }
-          (void) FloodfillPaintImage(image,DefaultChannels,draw_info,&target,x,
-            y,primitive_info->method == FloodfillMethod ? MagickFalse :
+          (void) FloodfillPaintImage(image,draw_info,&target,x,y,
+            primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue);
           break;
         }
@@ -4359,9 +4359,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               target.green=(MagickRealType) draw_info->border_color.green;
               target.blue=(MagickRealType) draw_info->border_color.blue;
             }
-          (void) FloodfillPaintImage(image,OpacityChannel,draw_info,&target,x,y,
+          PushPixelComponentMap(image,AlphaChannel);
+          (void) FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue);
+          PopPixelComponentMap(image);
           break;
         }
         case ResetMethod:

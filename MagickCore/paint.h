@@ -29,15 +29,12 @@ extern MagickExport Image
   *OilPaintImage(const Image *,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  FloodfillPaintImage(Image *,const ChannelType,const DrawInfo *,
-    const PixelInfo *,const ssize_t,const ssize_t,
-    const MagickBooleanType),
+  FloodfillPaintImage(Image *,const DrawInfo *,const PixelInfo *,const ssize_t,
+    const ssize_t,const MagickBooleanType),
   GradientImage(Image *,const GradientType,const SpreadMethod,
     const PixelPacket *,const PixelPacket *),
   OpaquePaintImage(Image *,const PixelInfo *,const PixelInfo *,
     const MagickBooleanType),
-  OpaquePaintImageChannel(Image *,const ChannelType,const PixelInfo *,
-    const PixelInfo *,const MagickBooleanType),
   TransparentPaintImage(Image *,const PixelInfo *,
     const Quantum,const MagickBooleanType),
   TransparentPaintImageChroma(Image *,const PixelInfo *,

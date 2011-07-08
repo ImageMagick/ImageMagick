@@ -27,7 +27,7 @@ extern WandExport ChannelFeatures
   *MagickGetImageFeatures(MagickWand *,const size_t);
 
 extern WandExport ChannelStatistics
-  *MagickGetImageChannelStatistics(MagickWand *);
+  *MagickGetImageStatistics(MagickWand *);
 
 extern WandExport char
   *MagickGetImageFilename(MagickWand *),
@@ -134,8 +134,6 @@ extern WandExport MagickBooleanType
   MagickEnhanceImage(MagickWand *),
   MagickEqualizeImage(MagickWand *),
   MagickEvaluateImage(MagickWand *,const MagickEvaluateOperator,const double),
-  MagickEvaluateImageChannel(MagickWand *,const ChannelType,
-    const MagickEvaluateOperator,const double),
   MagickExportImagePixels(MagickWand *,const ssize_t,const ssize_t,
     const size_t,const size_t,const char *,const StorageType,void *),
   MagickExtentImage(MagickWand *,const size_t,const size_t,const ssize_t,
@@ -143,17 +141,14 @@ extern WandExport MagickBooleanType
   MagickFilterImage(MagickWand *,const KernelInfo *),
   MagickFilterImageChannel(MagickWand *,const ChannelType,const KernelInfo *),
   MagickFlipImage(MagickWand *),
-  MagickFloodfillPaintImage(MagickWand *,const ChannelType,const PixelWand *,
-    const double,const PixelWand *,const ssize_t,const ssize_t,
-    const MagickBooleanType),
+  MagickFloodfillPaintImage(MagickWand *,const PixelWand *,const double,
+    const PixelWand *,const ssize_t,const ssize_t,const MagickBooleanType),
   MagickFlopImage(MagickWand *),
   MagickForwardFourierTransformImage(MagickWand *,const MagickBooleanType),
   MagickFrameImage(MagickWand *,const PixelWand *,const size_t,const size_t,
     const ssize_t,const ssize_t),
   MagickFunctionImage(MagickWand *,const MagickFunction,const size_t,
     const double *),
-  MagickFunctionImageChannel(MagickWand *,const ChannelType,
-    const MagickFunction,const size_t,const double *),
   MagickGammaImage(MagickWand *,const double),
   MagickGaussianBlurImage(MagickWand *,const double,const double),
   MagickGaussianBlurImageChannel(MagickWand *,const ChannelType,const double,
@@ -162,10 +157,9 @@ extern WandExport MagickBooleanType
   MagickGetImageBackgroundColor(MagickWand *,PixelWand *),
   MagickGetImageBluePrimary(MagickWand *,double *,double *),
   MagickGetImageBorderColor(MagickWand *,PixelWand *),
-  MagickGetImageChannelKurtosis(MagickWand *,const ChannelType,double *,
-    double *),
-  MagickGetImageChannelMean(MagickWand *,const ChannelType,double *,double *),
-  MagickGetImageChannelRange(MagickWand *,const ChannelType,double *,double *),
+  MagickGetImageKurtosis(MagickWand *,double *,double *),
+  MagickGetImageMean(MagickWand *,double *,double *),
+  MagickGetImageRange(MagickWand *,double *,double *),
   MagickGetImageColormapColor(MagickWand *,const size_t,PixelWand *),
   MagickGetImageDistortion(MagickWand *,const MagickWand *,const MetricType,
     double *),
@@ -212,8 +206,6 @@ extern WandExport MagickBooleanType
   MagickOilPaintImage(MagickWand *,const double),
   MagickOpaquePaintImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double,const MagickBooleanType),
-  MagickOpaquePaintImageChannel(MagickWand *,const ChannelType,
-    const PixelWand *,const PixelWand *,const double,const MagickBooleanType),
   MagickOrderedPosterizeImage(MagickWand *,const char *),
   MagickTransparentPaintImage(MagickWand *,const PixelWand *,
     const double,const double,const MagickBooleanType invert),

@@ -508,8 +508,8 @@ int main(int argc,char **argv)
   border=NewPixelWand();
   (void) PixelSetColor(background,"green");
   (void) PixelSetColor(border,"black");
-  status=MagickFloodfillPaintImage(magick_wand,CompositeChannels,background,
-    0.01*QuantumRange,border,0,0,MagickFalse);
+  status=MagickFloodfillPaintImage(magick_wand,background,0.01*QuantumRange,
+    border,0,0,MagickFalse);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   background=DestroyPixelWand(background);

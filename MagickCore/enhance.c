@@ -113,8 +113,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       /*
         Apply gamma correction equally accross all given channels
       */
-      (void) GetImageChannelMean(image,DefaultChannels,&mean,&sans,
-        &image->exception);
+      (void) GetImageMean(image,&mean,&sans,&image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
       return(LevelImage(image,0.0,(double) QuantumRange,gamma));
     }
@@ -124,48 +123,43 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
   status=MagickTrue;
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
-      (void) GetImageChannelMean(image,RedChannel,&mean,&sans,
-        &image->exception);
-      gamma=log(mean*QuantumScale)/log_mean;
       PushPixelComponentMap(image,RedChannel);
+      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelComponentMap(image);
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
-      (void) GetImageChannelMean(image,GreenChannel,&mean,&sans,
-        &image->exception);
-      gamma=log(mean*QuantumScale)/log_mean;
       PushPixelComponentMap(image,GreenChannel);
+      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelComponentMap(image);
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
-      (void) GetImageChannelMean(image,BlueChannel,&mean,&sans,
-        &image->exception);
-      gamma=log(mean*QuantumScale)/log_mean;
       PushPixelComponentMap(image,BlueChannel);
+      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelComponentMap(image);
     }
   if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace))
     {
-      (void) GetImageChannelMean(image,BlackChannel,&mean,&sans,
-        &image->exception);
-      gamma=log(mean*QuantumScale)/log_mean;
       PushPixelComponentMap(image,BlackChannel);
+      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelComponentMap(image);
     }
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
       (image->matte == MagickTrue))
     {
-      (void) GetImageChannelMean(image,OpacityChannel,&mean,&sans,
-        &image->exception);
-      gamma=log(mean*QuantumScale)/log_mean;
       PushPixelComponentMap(image,AlphaChannel);
+      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelComponentMap(image);
     }
@@ -257,8 +251,8 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
   coefficients[0]=slope;
   coefficients[1]=intercept;
-  status=FunctionImageChannel(image,DefaultChannels,PolynomialFunction,2,
-    coefficients,&image->exception);
+  status=FunctionImage(image,PolynomialFunction,2,coefficients,
+    &image->exception);
   return(status);
 }
 

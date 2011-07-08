@@ -2846,39 +2846,16 @@ WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
 %        const MagickEvaluateOperator operator,const double value)
 %      MagickBooleanType MagickEvaluateImages(MagickWand *wand,
 %        const MagickEvaluateOperator operator)
-%      MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,
-%        const ChannelType channel,const MagickEvaluateOperator op,
-%        const double value)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the channel(s).
 %
 %    o op: A channel operator.
 %
 %    o value: A value value.
 %
 */
-
-WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
-  const MagickEvaluateOperator op,const double value)
-{
-  MagickBooleanType
-    status;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=EvaluateImage(wand->images,op,value,&wand->images->exception);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
-  return(status);
-}
 
 WandExport MagickWand *MagickEvaluateImages(MagickWand *wand,
   const MagickEvaluateOperator op)
@@ -2898,8 +2875,8 @@ WandExport MagickWand *MagickEvaluateImages(MagickWand *wand,
   return(CloneMagickWandFromImages(wand,evaluate_image));
 }
 
-WandExport MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickEvaluateOperator op,const double value)
+WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
+  const MagickEvaluateOperator op,const double value)
 {
   MagickBooleanType
     status;
@@ -2910,8 +2887,7 @@ WandExport MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=EvaluateImageChannel(wand->images,channel,op,value,
-    &wand->images->exception);
+  status=EvaluateImage(wand->images,op,value,&wand->images->exception);
   return(status);
 }
 
@@ -3169,15 +3145,12 @@ WandExport MagickBooleanType MagickFlipImage(MagickWand *wand)
 %  The format of the MagickFloodfillPaintImage method is:
 %
 %      MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
-%        const ChannelType channel,const PixelWand *fill,const double fuzz,
-%        const PixelWand *bordercolor,const ssize_t x,const ssize_t y,
-%        const MagickBooleanType invert)
+%        const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
+%        const ssize_t x,const ssize_t y,const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the channel(s).
 %
 %    o fill: the floodfill color pixel wand.
 %
@@ -3196,9 +3169,8 @@ WandExport MagickBooleanType MagickFlipImage(MagickWand *wand)
 %
 */
 WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
-  const ChannelType channel,const PixelWand *fill,const double fuzz,
-  const PixelWand *bordercolor,const ssize_t x,const ssize_t y,
-  const MagickBooleanType invert)
+  const PixelWand *fill,const double fuzz,const PixelWand *bordercolor,
+  const ssize_t x,const ssize_t y,const MagickBooleanType invert)
 {
   DrawInfo
     *draw_info;
@@ -3222,8 +3194,7 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   if (bordercolor != (PixelWand *) NULL)
     PixelGetMagickColor(bordercolor,&target);
   wand->images->fuzz=fuzz;
-  status=FloodfillPaintImage(wand->images,channel,draw_info,&target,x,y,
-    invert);
+  status=FloodfillPaintImage(wand->images,draw_info,&target,x,y,invert);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
@@ -3409,15 +3380,10 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
 %      MagickBooleanType MagickFunctionImage(MagickWand *wand,
 %        const MagickFunction function,const size_t number_arguments,
 %        const double *arguments)
-%      MagickBooleanType MagickFunctionImageChannel(MagickWand *wand,
-%        const ChannelType channel,const MagickFunction function,
-%        const size_t number_arguments,const double *arguments)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the channel(s).
 %
 %    o function: the image function.
 %
@@ -3426,7 +3392,6 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
 %    o arguments: the function arguments.
 %
 */
-
 WandExport MagickBooleanType MagickFunctionImage(MagickWand *wand,
   const MagickFunction function,const size_t number_arguments,
   const double *arguments)
@@ -3442,26 +3407,6 @@ WandExport MagickBooleanType MagickFunctionImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=FunctionImage(wand->images,function,number_arguments,arguments,
     &wand->images->exception);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickFunctionImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickFunction function,
-  const size_t number_arguments,const double *arguments)
-{
-  MagickBooleanType
-    status;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=FunctionImageChannel(wand->images,channel,function,number_arguments,
-    arguments,&wand->images->exception);
   return(status);
 }
 
@@ -3963,7 +3908,7 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l F e a t u r e s                 %
+%   M a g i c k G e t I m a g e F e a t u r e s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4017,33 +3962,31 @@ WandExport ChannelFeatures *MagickGetImageFeatures(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l K u r t o s i s                 %
+%   M a g i c k G e t I m a g e K u r t o s i s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageChannelKurtosis() gets the kurtosis and skewness of one or
+%  MagickGetImageKurtosis() gets the kurtosis and skewness of one or
 %  more image channels.
 %
-%  The format of the MagickGetImageChannelKurtosis method is:
+%  The format of the MagickGetImageKurtosis method is:
 %
-%      MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
-%        const ChannelType channel,double *kurtosis,double *skewness)
+%      MagickBooleanType MagickGetImageKurtosis(MagickWand *wand,
+%        double *kurtosis,double *skewness)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o kurtosis:  The kurtosis for the specified channel(s).
 %
 %    o skewness:  The skewness for the specified channel(s).
 %
 */
-WandExport MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
-  const ChannelType channel,double *kurtosis,double *skewness)
+WandExport MagickBooleanType MagickGetImageKurtosis(MagickWand *wand,
+  double *kurtosis,double *skewness)
 {
   MagickBooleanType
     status;
@@ -4054,8 +3997,7 @@ WandExport MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GetImageChannelKurtosis(wand->images,channel,kurtosis,skewness,
-    wand->exception);
+  status=GetImageKurtosis(wand->images,kurtosis,skewness,wand->exception);
   return(status);
 }
 
@@ -4064,19 +4006,19 @@ WandExport MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l M e a n                         %
+%   M a g i c k G e t I m a g e M e a n                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageChannelMean() gets the mean and standard deviation of one or
-%  more image channels.
+%  MagickGetImageMean() gets the mean and standard deviation of one or more
+%  image channels.
 %
-%  The format of the MagickGetImageChannelMean method is:
+%  The format of the MagickGetImageMean method is:
 %
-%      MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
-%        const ChannelType channel,double *mean,double *standard_deviation)
+%      MagickBooleanType MagickGetImageMean(MagickWand *wand,double *mean,
+%        double *standard_deviation)
 %
 %  A description of each parameter follows:
 %
@@ -4089,8 +4031,8 @@ WandExport MagickBooleanType MagickGetImageChannelKurtosis(MagickWand *wand,
 %    o standard_deviation:  The standard deviation for the specified channel(s).
 %
 */
-WandExport MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
-  const ChannelType channel,double *mean,double *standard_deviation)
+WandExport MagickBooleanType MagickGetImageMean(MagickWand *wand,double *mean,
+  double *standard_deviation)
 {
   MagickBooleanType
     status;
@@ -4101,8 +4043,7 @@ WandExport MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GetImageChannelMean(wand->images,channel,mean,standard_deviation,
-    wand->exception);
+  status=GetImageMean(wand->images,mean,standard_deviation,wand->exception);
   return(status);
 }
 
@@ -4111,32 +4052,30 @@ WandExport MagickBooleanType MagickGetImageChannelMean(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l R a n g e                       %
+%   M a g i c k G e t I m a g e R a n g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageChannelRange() gets the range for one or more image channels.
+%  MagickGetImageRange() gets the range for one or more image channels.
 %
-%  The format of the MagickGetImageChannelRange method is:
+%  The format of the MagickGetImageRange method is:
 %
-%      MagickBooleanType MagickGetImageChannelRange(MagickWand *wand,
-%        const ChannelType channel,double *minima,double *maxima)
+%      MagickBooleanType MagickGetImageRange(MagickWand *wand,double *minima,
+%        double *maxima)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o minima:  The minimum pixel value for the specified channel(s).
 %
 %    o maxima:  The maximum pixel value for the specified channel(s).
 %
 */
-WandExport MagickBooleanType MagickGetImageChannelRange(MagickWand *wand,
-  const ChannelType channel,double *minima,double *maxima)
+WandExport MagickBooleanType MagickGetImageRange(MagickWand *wand,
+  double *minima,double *maxima)
 {
   MagickBooleanType
     status;
@@ -4147,8 +4086,7 @@ WandExport MagickBooleanType MagickGetImageChannelRange(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GetImageChannelRange(wand->images,channel,minima,maxima,
-    wand->exception);
+  status=GetImageRange(wand->images,minima,maxima,wand->exception);
   return(status);
 }
 
@@ -4157,32 +4095,32 @@ WandExport MagickBooleanType MagickGetImageChannelRange(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e C h a n n e l S t a t i s t i c s             %
+%   M a g i c k G e t I m a g e S t a t i s t i c s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageChannelStatistics() returns statistics for each channel in the
+%  MagickGetImageStatistics() returns statistics for each channel in the
 %  image.  The statistics include the channel depth, its minima and
 %  maxima, the mean, the standard deviation, the kurtosis and the skewness.
 %  You can access the red channel mean, for example, like this:
 %
-%      channel_statistics=MagickGetImageChannelStatistics(wand);
+%      channel_statistics=MagickGetImageStatistics(wand);
 %      red_mean=channel_statistics[RedChannel].mean;
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
 %
-%  The format of the MagickGetImageChannelStatistics method is:
+%  The format of the MagickGetImageStatistics method is:
 %
-%      ChannelStatistics *MagickGetImageChannelStatistics(MagickWand *wand)
+%      ChannelStatistics *MagickGetImageStatistics(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport ChannelStatistics *MagickGetImageChannelStatistics(MagickWand *wand)
+WandExport ChannelStatistics *MagickGetImageStatistics(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -4194,7 +4132,7 @@ WandExport ChannelStatistics *MagickGetImageChannelStatistics(MagickWand *wand)
         "ContainsNoImages","`%s'",wand->name);
       return((ChannelStatistics *) NULL);
     }
-  return(GetImageChannelStatistics(wand->images,wand->exception));
+  return(GetImageStatistics(wand->images,wand->exception));
 }
 
 /*
@@ -5279,49 +5217,6 @@ WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
   PixelSetQuantumPixel(wand->images,p,color);
   image_view=DestroyCacheView(image_view);
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   M a g i c k G e t I m a g e R a n g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickGetImageRange() gets the pixel range for the image.
-%
-%  The format of the MagickGetImageRange method is:
-%
-%      MagickBooleanType MagickGetImageRange(MagickWand *wand,double *minima,
-%        double *maxima)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o minima:  The minimum pixel value for the specified channel(s).
-%
-%    o maxima:  The maximum pixel value for the specified channel(s).
-%
-*/
-WandExport MagickBooleanType MagickGetImageRange(MagickWand *wand,
-  double *minima,double *maxima)
-{
-  MagickBooleanType
-    status;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=GetImageRange(wand->images,minima,maxima,wand->exception);
-  return(status);
 }
 
 /*
@@ -7200,15 +7095,10 @@ WandExport MagickBooleanType MagickOilPaintImage(MagickWand *wand,
 %      MagickBooleanType MagickOpaquePaintImage(MagickWand *wand,
 %        const PixelWand *target,const PixelWand *fill,const double fuzz,
 %        const MagickBooleanType invert)
-%      MagickBooleanType MagickOpaquePaintImageChannel(MagickWand *wand,
-%        const ChannelType channel,const PixelWand *target,
-%        const PixelWand *fill,const double fuzz,const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the channel(s).
 %
 %    o target: Change this target color to the fill color within the image.
 %
@@ -7224,22 +7114,9 @@ WandExport MagickBooleanType MagickOilPaintImage(MagickWand *wand,
 %    o invert: paint any pixel that does not match the target color.
 %
 */
-
 WandExport MagickBooleanType MagickOpaquePaintImage(MagickWand *wand,
   const PixelWand *target,const PixelWand *fill,const double fuzz,
   const MagickBooleanType invert)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickOpaquePaintImageChannel(wand,DefaultChannels,target,fill,fuzz,
-    invert);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickOpaquePaintImageChannel(MagickWand *wand,
-  const ChannelType channel,const PixelWand *target,const PixelWand *fill,
-  const double fuzz,const MagickBooleanType invert)
 {
   MagickBooleanType
     status;
@@ -7257,8 +7134,7 @@ WandExport MagickBooleanType MagickOpaquePaintImageChannel(MagickWand *wand,
   PixelGetMagickColor(target,&target_pixel);
   PixelGetMagickColor(fill,&fill_pixel);
   wand->images->fuzz=fuzz;
-  status=OpaquePaintImageChannel(wand->images,channel,&target_pixel,
-    &fill_pixel,invert);
+  status=OpaquePaintImage(wand->images,&target_pixel,&fill_pixel,invert);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);

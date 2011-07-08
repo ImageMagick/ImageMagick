@@ -2261,8 +2261,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             kurtosis,
             skewness;
 
-          (void) GetImageChannelKurtosis(image,image_info->channel,&kurtosis,
-            &skewness,&image->exception);
+          (void) GetImageKurtosis(image,&kurtosis,&skewness,&image->exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),kurtosis);
           break;
@@ -2282,8 +2281,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             maximum,
             minimum;
 
-          (void) GetImageChannelRange(image,image_info->channel,&minimum,
-            &maximum,&image->exception);
+          (void) GetImageRange(image,&minimum,&maximum,&image->exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),maximum);
           break;
@@ -2294,8 +2292,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             mean,
             standard_deviation;
 
-          (void) GetImageChannelMean(image,image_info->channel,&mean,
-            &standard_deviation,&image->exception);
+          (void) GetImageMean(image,&mean,&standard_deviation,
+             &image->exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),mean);
           break;
@@ -2306,8 +2304,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             maximum,
             minimum;
 
-          (void) GetImageChannelRange(image,image_info->channel,&minimum,
-            &maximum,&image->exception);
+          (void) GetImageRange(image,&minimum,&maximum,&image->exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),minimum);
           break;
@@ -2384,21 +2381,19 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             kurtosis,
             skewness;
 
-          (void) GetImageChannelKurtosis(image,image_info->channel,&kurtosis,
-            &skewness,&image->exception);
+          (void) GetImageKurtosis(image,&kurtosis,&skewness,&image->exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),skewness);
           break;
         }
-      if ((LocaleNCompare("standard-deviation",property,18) == 0) ||
-          (LocaleNCompare("standard_deviation",property,18) == 0))
+      if (LocaleNCompare("standard-deviation",property,18) == 0)
         {
           double
             mean,
             standard_deviation;
 
-          (void) GetImageChannelMean(image,image_info->channel,&mean,
-            &standard_deviation,&image->exception);
+          (void) GetImageMean(image,&mean,&standard_deviation,
+            &image->exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),standard_deviation);
           break;
