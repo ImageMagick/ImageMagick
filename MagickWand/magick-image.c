@@ -7326,14 +7326,10 @@ WandExport MagickWand *MagickOptimizeImageLayers(MagickWand *wand)
 %
 %      MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
 %        const char *threshold_map)
-%      MagickBooleanType MagickOrderedPosterizeImageChannel(MagickWand *wand,
-%        const ChannelType channel,const char *threshold_map)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel or channels to be thresholded.
 %
 %    o threshold_map: A string containing the name of the threshold dither
 %      map to use, followed by zero or more numbers representing the number of
@@ -7355,19 +7351,8 @@ WandExport MagickWand *MagickOptimizeImageLayers(MagickWand *wand)
 %      minimim of dithering.
 %
 */
-
 WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
   const char *threshold_map)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickOrderedPosterizeImageChannel(wand,DefaultChannels,threshold_map);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickOrderedPosterizeImageChannel(
-  MagickWand *wand,const ChannelType channel,const char *threshold_map)
 {
   MagickBooleanType
     status;
@@ -7378,8 +7363,7 @@ WandExport MagickBooleanType MagickOrderedPosterizeImageChannel(
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=OrderedPosterizeImageChannel(wand->images,channel,threshold_map,
-    wand->exception);
+  status=OrderedPosterizeImage(wand->images,threshold_map,wand->exception);
   return(status);
 }
 

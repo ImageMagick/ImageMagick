@@ -9268,8 +9268,10 @@ Mogrify(ref,...)
             argument_list[0].string_reference="o8x8";
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          (void) OrderedPosterizeImageChannel(image,channel,
-            argument_list[0].string_reference,exception);
+          PushPixelComponentMap(image,channel);
+          (void) OrderedPosterizeImage(image,argument_list[0].string_reference,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 72:  /* Shave */
