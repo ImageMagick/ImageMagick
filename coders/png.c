@@ -11563,7 +11563,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
 
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
-      status=SeparateImageChannel(jpeg_image,AlphaChannel);
+      PushPixelComponentMap(jpeg_image,AlphaChannel);
+      status=SeparateImage(jpeg_image);
+      PopPixelComponentMap(jpeg_image);
       jpeg_image->matte=MagickFalse;
 
       if (jng_quality >= 1000)

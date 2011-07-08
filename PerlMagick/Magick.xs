@@ -9047,7 +9047,9 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          (void) SeparateImageChannel(image,channel);
+          PushPixelComponentMap(image,channel);
+          (void) SeparateImage(image,channel);
+          PopPixelComponentMap(image);
           break;
         }
         case 63:  /* Stereo */
@@ -9612,7 +9614,9 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          (void) SeparateImageChannel(image,channel);
+          PushPixelComponentMap(image,channel);
+          (void) SeparateImage(image,channel);
+          PopPixelComponentMap(image);
           break;
         }
         case 87:  /* Splice */

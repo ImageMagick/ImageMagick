@@ -843,7 +843,7 @@ namespace Magick
   using MagickCore::SampleImage;
   using MagickCore::ScaleImage;
   using MagickCore::SegmentImage;
-  using MagickCore::SeparateImageChannel;
+  using MagickCore::SeparateImage;
   using MagickCore::SetClientName;
   using MagickCore::SetGeometry;
   using MagickCore::SetImageBackgroundColor;

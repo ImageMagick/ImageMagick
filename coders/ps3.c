@@ -515,7 +515,9 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   mask_image=CloneImage(image,0,0,MagickTrue,&image->exception);
   if (mask_image == (Image *) NULL)
     ThrowWriterException(CoderError,image->exception.reason);
-  status=SeparateImageChannel(mask_image,OpacityChannel);
+  PushPixelComponentMap(mask_image,AlphaChannel);
+  status=SeparateImage(mask_image);
+  PopPixelComponentMap(mask_image);
   if (status == MagickFalse)
     {
       mask_image=DestroyImage(mask_image);

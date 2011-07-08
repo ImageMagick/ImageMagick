@@ -1608,18 +1608,14 @@ WandExport MagickBooleanType MagickColorMatrixImage(MagickWand *wand,
 %
 %  The format of the MagickCombineImages method is:
 %
-%      MagickWand *MagickCombineImages(MagickWand *wand,
-%        const ChannelType channel)
+%      MagickWand *MagickCombineImages(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the channel.
-%
 */
-WandExport MagickWand *MagickCombineImages(MagickWand *wand,
-  const ChannelType channel)
+WandExport MagickWand *MagickCombineImages(MagickWand *wand)
 {
   Image
     *combine_image;
@@ -1630,7 +1626,7 @@ WandExport MagickWand *MagickCombineImages(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  combine_image=CombineImages(wand->images,channel,wand->exception);
+  combine_image=CombineImages(wand->images,wand->exception);
   if (combine_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,combine_image));
@@ -8805,24 +8801,20 @@ WandExport MagickBooleanType MagickSelectiveBlurImageChannel(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSeparateImageChannel() separates a channel from the image and returns a
+%  MagickSeparateImage() separates a channel from the image and returns a
 %  grayscale image.  A channel is a particular color component of each pixel
 %  in the image.
 %
-%  The format of the MagickSeparateImageChannel method is:
+%  The format of the MagickSeparateImage method is:
 %
-%      MagickBooleanType MagickSeparateImageChannel(MagickWand *wand,
-%        const ChannelType channel)
+%      MagickBooleanType MagickSeparateImage(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 */
-WandExport MagickBooleanType MagickSeparateImageChannel(MagickWand *wand,
-  const ChannelType channel)
+WandExport MagickBooleanType MagickSeparateImage(MagickWand *wand)
 {
   MagickBooleanType
     status;
@@ -8833,7 +8825,7 @@ WandExport MagickBooleanType MagickSeparateImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SeparateImageChannel(wand->images,channel);
+  status=SeparateImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);

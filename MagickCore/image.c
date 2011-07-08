@@ -990,8 +990,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %  The format of the CombineImages method is:
 %
-%      Image *CombineImages(const Image *image,const ChannelType channel,
-%        ExceptionInfo *exception)
+%      Image *CombineImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1000,8 +999,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
-  ExceptionInfo *exception)
+MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
 {
 #define CombineImageTag  "Combine/Image"
 
@@ -1097,7 +1095,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         {
           SetPixelRed(image,GetPixelIntensity(image,p),q);
           p+=GetPixelComponents(image);
-          q++;
+          q+=GetPixelComponents(combine_image);
         }
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
@@ -1114,7 +1112,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         {
           SetPixelGreen(image,GetPixelIntensity(image,p),q);
           p+=GetPixelComponents(image);
-          q++;
+          q+=GetPixelComponents(combine_image);
         }
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
@@ -1131,7 +1129,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         {
           SetPixelBlue(image,GetPixelIntensity(image,p),q);
           p+=GetPixelComponents(image);
-          q++;
+          q+=GetPixelComponents(combine_image);
         }
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
@@ -1148,7 +1146,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         {
           SetPixelBlack(image,GetPixelIntensity(image,p),q);
           p+=GetPixelComponents(image);
-          q++;
+          q+=GetPixelComponents(combine_image);
         }
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
@@ -1165,7 +1163,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         {
           SetPixelAlpha(image,GetPixelIntensity(image,p),q);
           p+=GetPixelComponents(image);
-          q++;
+          q+=GetPixelComponents(combine_image);
         }
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
@@ -2280,26 +2278,20 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SeparateImageChannel() separates a channel from the image and returns it as
+%  SeparateImage() separates a channel from the image and returns it as
 %  a grayscale image.  A channel is a particular color component of each pixel
 %  in the image.
 %
-%  The format of the SeparateImageChannel method is:
+%  The format of the SeparateImage method is:
 %
-%      MagickBooleanType SeparateImageChannel(Image *image,
-%        const ChannelType channel)
+%      MagickBooleanType SeparateImage(Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
-%      BlueChannel, AlphaChannel, CyanChannel, MagentaChannel,
-%      YellowChannel, or BlackChannel.
-%
 */
-MagickExport MagickBooleanType SeparateImageChannel(Image *image,
-  const ChannelType channel)
+MagickExport MagickBooleanType SeparateImage(Image *image)
 {
 #define SeparateImageTag  "Separate/Image"
 
@@ -2328,8 +2320,6 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     Separate image channels.
   */
   status=MagickTrue;
-  if (channel == GrayChannels)
-    image->matte=MagickTrue;
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
@@ -2352,85 +2342,38 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
         status=MagickFalse;
         continue;
       }
-    switch (channel)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      case RedChannel:
-      {
-        for (x=0; x < (ssize_t) image->columns; x++)
+      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
         {
           SetPixelGreen(image,GetPixelRed(image,q),q);
           SetPixelBlue(image,GetPixelRed(image,q),q);
-          q+=GetPixelComponents(image);
         }
-        break;
-      }
-      case GreenChannel:
-      {
-        for (x=0; x < (ssize_t) image->columns; x++)
+      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
         {
           SetPixelRed(image,GetPixelGreen(image,q),q);
           SetPixelBlue(image,GetPixelGreen(image,q),q);
-          q+=GetPixelComponents(image);
         }
-        break;
-      }
-      case BlueChannel:
-      {
-        for (x=0; x < (ssize_t) image->columns; x++)
+      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
         {
           SetPixelRed(image,GetPixelBlue(image,q),q);
           SetPixelGreen(image,GetPixelBlue(image,q),q);
-          q+=GetPixelComponents(image);
         }
-        break;
-      }
-      case AlphaChannel:
-      {
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          SetPixelRed(image,GetPixelAlpha(image,q),q);
-          SetPixelGreen(image,GetPixelAlpha(image,q),q);
-          SetPixelBlue(image,GetPixelAlpha(image,q),q);
-          q+=GetPixelComponents(image);
-        }
-        break;
-      }
-      case BlackChannel:
-      {
-        if ((image->storage_class != PseudoClass) &&
-            (image->colorspace != CMYKColorspace))
-          break;
-        for (x=0; x < (ssize_t) image->columns; x++)
+      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+          (image->colorspace == CMYKColorspace))
         {
           SetPixelRed(image,GetPixelBlack(image,q),q);
           SetPixelGreen(image,GetPixelBlack(image,q),q);
           SetPixelBlue(image,GetPixelBlack(image,q),q);
-          q+=GetPixelComponents(image);
         }
-        break;
-      }
-      case TrueAlphaChannel:
-      {
-        for (x=0; x < (ssize_t) image->columns; x++)
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+          (image->matte != MagickFalse))
         {
           SetPixelRed(image,GetPixelAlpha(image,q),q);
           SetPixelGreen(image,GetPixelAlpha(image,q),q);
           SetPixelBlue(image,GetPixelAlpha(image,q),q);
-          q+=GetPixelComponents(image);
         }
-        break;
-      }
-      case GrayChannels:
-      {
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          SetPixelAlpha(image,GetPixelIntensity(image,q),q);
-          q+=GetPixelComponents(image);
-        }
-        break;
-      }
-      default:
-        break;
+      q+=GetPixelComponents(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2440,7 +2383,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SeparateImageChannel)
+        #pragma omp critical (MagickCore_SeparateImage)
 #endif
         proceed=SetImageProgress(image,SeparateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2448,8 +2391,6 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (channel != GrayChannels)
-    image->matte=MagickFalse;
   (void) SetImageColorspace(image,RGBColorspace);
   return(status);
 }
@@ -2471,21 +2412,16 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
 %  The format of the SeparateImages method is:
 %
 %      MagickBooleanType SeparateImages(const Image *image,
-%        const ChannelType channel,ExceptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: Identify which channels to extract: RedChannel, GreenChannel,
-%      BlueChannel, AlphaChannel, CyanChannel, MagentaChannel,
-%      YellowChannel, or BlackChannel.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SeparateImages(const Image *image,const ChannelType channel,
-  ExceptionInfo *exception)
+MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 {
   Image
     *images,
@@ -2499,31 +2435,42 @@ MagickExport Image *SeparateImages(const Image *image,const ChannelType channel,
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      (void) SeparateImageChannel(separate_image,RedChannel);
+      PushPixelComponentMap(separate_image,RedChannel);
+      (void) SeparateImage(separate_image);
+      PopPixelComponentMap(separate_image);
       AppendImageToList(&images,separate_image);
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      (void) SeparateImageChannel(separate_image,GreenChannel);
+      PushPixelComponentMap(separate_image,GreenChannel);
+      (void) SeparateImage(separate_image);
+      PopPixelComponentMap(separate_image);
       AppendImageToList(&images,separate_image);
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      (void) SeparateImageChannel(separate_image,BlueChannel);
+      PushPixelComponentMap(separate_image,BlueChannel);
+      (void) SeparateImage(separate_image);
+      PopPixelComponentMap(separate_image);
       AppendImageToList(&images,separate_image);
     }
-  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) && (image->colorspace == CMYKColorspace))
+  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      (image->colorspace == CMYKColorspace))
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      (void) SeparateImageChannel(separate_image,BlackChannel);
+      PushPixelComponentMap(separate_image,BlackChannel);
+      (void) SeparateImage(separate_image);
+      PopPixelComponentMap(separate_image);
       AppendImageToList(&images,separate_image);
     }
   if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      (void) SeparateImageChannel(separate_image,AlphaChannel);
+      PushPixelComponentMap(separate_image,AlphaChannel);
+      (void) SeparateImage(separate_image);
+      PopPixelComponentMap(separate_image);
       AppendImageToList(&images,separate_image);
     }
   return(images);
@@ -2658,10 +2605,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case CopyAlphaChannel:
     {
       /*
-        Special usage case for SeparateImageChannel(): copy grayscale color to
+        Special usage case for SeparateImage(): copy grayscale color to
         the alpha channel.
       */
-      status=SeparateImageChannel(image,GrayChannels);
+      PushPixelComponentMap(image,GrayChannel);
+      status=SeparateImage(image);
+      PopPixelComponentMap(image);
       image->matte=MagickTrue; /* make sure transparency is now on! */
       if (alpha_type == ShapeAlphaChannel)
         {
@@ -2679,7 +2628,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case ExtractAlphaChannel:
     {
-      status=SeparateImageChannel(image,TrueAlphaChannel);
+      PushPixelComponentMap(image,AlphaChannel);
+      status=SeparateImage(image);
+      PopPixelComponentMap(image);
       image->matte=MagickFalse;
       break;
     }

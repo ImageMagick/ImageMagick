@@ -1042,7 +1042,7 @@ extern "C" {
 #define SelectiveBlurImage  PrependMagickMethod(SelectiveBlurImage)
 #define SemaphoreComponentGenesis  PrependMagickMethod(SemaphoreComponentGenesis)
 #define SemaphoreComponentTerminus  PrependMagickMethod(SemaphoreComponentTerminus)
-#define SeparateImageChannel  PrependMagickMethod(SeparateImageChannel)
+#define SeparateImage  PrependMagickMethod(SeparateImage)
 #define SeparateImages  PrependMagickMethod(SeparateImages)
 #define SepiaToneImage  PrependMagickMethod(SepiaToneImage)
 #define SetBlobExempt  PrependMagickMethod(SetBlobExempt)
