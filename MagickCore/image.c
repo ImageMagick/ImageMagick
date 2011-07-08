@@ -3602,7 +3602,9 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
         status=TransformImageColorspace(image,RGBColorspace);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-      (void) BilevelImageChannel(image,AlphaChannel,(double) QuantumRange/2.0);
+      PushPixelComponentMap(image,AlphaChannel);
+      (void) BilevelImage(image,(double) QuantumRange/2.0);
+      PopPixelComponentMap(image);
       quantize_info=AcquireQuantizeInfo(image_info);
       status=QuantizeImage(quantize_info,image);
       quantize_info=DestroyQuantizeInfo(quantize_info);

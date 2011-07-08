@@ -122,6 +122,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   assert(exception != (ExceptionInfo *) NULL);
   status=MagickTrue;
+  PushPixelComponentMap(composite_image,composite_options->channel);
   if (composite_image != (Image *) NULL)
     {
       assert(composite_image->signature == MagickSignature);
@@ -189,8 +190,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               columns=composite_image->columns;
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
-                  status&=CompositeImageChannel(*image,
-                    composite_options->channel,composite_options->compose,
+                  status&=CompositeImage(*image,composite_options->compose,
                     composite_image,x,y);
               GetImageException(*image,exception);
             }
@@ -213,12 +213,12 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               /*
                 Digitally composite image.
               */
-              status&=CompositeImageChannel(*image,composite_options->channel,
-                composite_options->compose,composite_image,geometry.x,
-                geometry.y);
+              status&=CompositeImage(*image,composite_options->compose,
+                composite_image,geometry.x,geometry.y);
               GetImageException(*image,exception);
             }
     }
+  PopPixelComponentMap(composite_image);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 

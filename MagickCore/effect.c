@@ -106,15 +106,10 @@
 %
 %      Image *AdaptiveBlurImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
-%      Image *AdaptiveBlurImageChannel(const Image *image,
-%        const ChannelType channel,double radius,const double sigma,
-%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -124,17 +119,6 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
-{
-  Image
-    *blur_image;
-
-  blur_image=AdaptiveBlurImageChannel(image,DefaultChannels,radius,sigma,
-    exception);
-  return(blur_image);
-}
 
 MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   const char *levels)
@@ -180,9 +164,8 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   return(status);
 }
 
-MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
+MagickExport Image *AdaptiveBlurImage(const Image *image,
+  const double radius,const double sigma,ExceptionInfo *exception)
 {
 #define AdaptiveBlurImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -418,7 +401,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_AdaptiveBlurImageChannel)
+  #pragma omp critical (MagickCore_AdaptiveBlurImage)
 #endif
         proceed=SetImageProgress(image,AdaptiveBlurImageTag,progress++,
           image->rows);
@@ -460,15 +443,10 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
 %
 %      Image *AdaptiveSharpenImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
-%      Image *AdaptiveSharpenImageChannel(const Image *image,
-%        const ChannelType channel,double radius,const double sigma,
-%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -478,21 +456,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
-{
-  Image
-    *sharp_image;
-
-  sharp_image=AdaptiveSharpenImageChannel(image,DefaultChannels,radius,sigma,
-    exception);
-  return(sharp_image);
-}
-
-MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
 {
 #define AdaptiveSharpenImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -728,7 +693,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_AdaptiveSharpenImageChannel)
+  #pragma omp critical (MagickCore_AdaptiveSharpenImage)
 #endif
         proceed=SetImageProgress(image,AdaptiveSharpenImageTag,progress++,
           image->rows);
@@ -773,14 +738,10 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 %
 %      Image *BlurImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
-%      Image *BlurImageChannel(const Image *image,const ChannelType channel,
-%        const double radius,const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -790,16 +751,6 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *BlurImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
-{
-  Image
-    *blur_image;
-
-  blur_image=BlurImageChannel(image,DefaultChannels,radius,sigma,exception);
-  return(blur_image);
-}
 
 static double *GetBlurKernel(const size_t width,const double sigma)
 {
@@ -836,9 +787,8 @@ static double *GetBlurKernel(const size_t width,const double sigma)
   return(kernel);
 }
 
-MagickExport Image *BlurImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
+MagickExport Image *BlurImage(const Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
 {
 #define BlurImageTag  "Blur/Image"
 
@@ -973,7 +923,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
       pixel=bias;
       k=kernel;
       kernel_pixels=p;
-      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) ||
+          (image->matte == MagickFalse))
         {
           for (i=0; i < (ssize_t) width; i++)
           {
@@ -1061,7 +1012,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BlurImageChannel)
+  #pragma omp critical (MagickCore_BlurImage)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,blur_image->rows+
           blur_image->columns);
@@ -1117,7 +1068,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
       pixel=bias;
       k=kernel;
       kernel_pixels=p;
-      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) || (blur_image->matte == MagickFalse))
+      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) ||
+          (blur_image->matte == MagickFalse))
         {
           for (i=0; i < (ssize_t) width; i++)
           {
@@ -1205,7 +1157,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BlurImageChannel)
+  #pragma omp critical (MagickCore_BlurImage)
 #endif
         proceed=SetImageProgress(blur_image,BlurImageTag,progress++,
           blur_image->rows+blur_image->columns);
@@ -1239,14 +1191,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %
 %      Image *ConvolveImage(const Image *image,const size_t order,
 %        const double *kernel,ExceptionInfo *exception)
-%      Image *ConvolveImageChannel(const Image *image,const ChannelType channel,
-%        const size_t order,const double *kernel,ExceptionInfo *exception)
-%
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o order: the number of columns and rows in the filter kernel.
 %
@@ -1255,21 +1202,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *ConvolveImage(const Image *image,const size_t order,
   const double *kernel,ExceptionInfo *exception)
-{
-  Image
-    *convolve_image;
-
-  convolve_image=ConvolveImageChannel(image,DefaultChannels,order,kernel,
-    exception);
-  return(convolve_image);
-}
-
-MagickExport Image *ConvolveImageChannel(const Image *image,
-  const ChannelType channel,const size_t order,const double *kernel,
-  ExceptionInfo *exception)
 {
 #define ConvolveImageTag  "Convolve/Image"
 
@@ -1541,7 +1475,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ConvolveImageChannel)
+  #pragma omp critical (MagickCore_ConvolveImage)
 #endif
         proceed=SetImageProgress(image,ConvolveImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2029,33 +1963,18 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %      Image *FilterImage(const Image *image,const KernelInfo *kernel,
 %        ExceptionInfo *exception)
-%      Image *FilterImageChannel(const Image *image,const ChannelType channel,
-%        const KernelInfo *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o kernel: the filtering kernel.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *FilterImage(const Image *image,const KernelInfo *kernel,
-  ExceptionInfo *exception)
-{
-  Image
-    *filter_image;
-
-  filter_image=FilterImageChannel(image,DefaultChannels,kernel,exception);
-  return(filter_image);
-}
-
-MagickExport Image *FilterImageChannel(const Image *image,
-  const ChannelType channel,const KernelInfo *kernel,ExceptionInfo *exception)
+MagickExport Image *FilterImage(const Image *image,
+  const KernelInfo *kernel,ExceptionInfo *exception)
 {
 #define FilterImageTag  "Filter/Image"
 
@@ -2307,7 +2226,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_FilterImageChannel)
+  #pragma omp critical (MagickCore_FilterImage)
 #endif
         proceed=SetImageProgress(image,FilterImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -2342,15 +2261,10 @@ MagickExport Image *FilterImageChannel(const Image *image,
 %
 %      Image *GaussianBlurImage(const Image *image,onst double radius,
 %        const double sigma,ExceptionInfo *exception)
-%      Image *GaussianBlurImageChannel(const Image *image,
-%        const ChannelType channel,const double radius,const double sigma,
-%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -2360,21 +2274,8 @@ MagickExport Image *FilterImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
-{
-  Image
-    *blur_image;
-
-  blur_image=GaussianBlurImageChannel(image,DefaultChannels,radius,sigma,
-    exception);
-  return(blur_image);
-}
-
-MagickExport Image *GaussianBlurImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
+MagickExport Image *GaussianBlurImage(const Image *image,
+  const double radius,const double sigma,ExceptionInfo *exception)
 {
   double
     *kernel;
@@ -2411,7 +2312,7 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
       kernel[i++]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
         MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
   }
-  blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
+  blur_image=ConvolveImage(image,width,kernel,exception);
   kernel=(double *) RelinquishMagickMemory(kernel);
   return(blur_image);
 }
@@ -2439,17 +2340,11 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
 %
 %    Image *MotionBlurImage(const Image *image,const double radius,
 %      const double sigma,const double angle,ExceptionInfo *exception)
-%    Image *MotionBlurImageChannel(const Image *image,const ChannelType channel,
-%      const double radius,const double sigma,const double angle,
-%      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel type.
-%
-%    o radius: the radius of the Gaussian, in pixels, not counting the center
 %    o radius: the radius of the Gaussian, in pixels, not counting
 %      the center pixel.
 %
@@ -2489,20 +2384,9 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
   return(kernel);
 }
 
-MagickExport Image *MotionBlurImage(const Image *image,const double radius,
-  const double sigma,const double angle,ExceptionInfo *exception)
-{
-  Image
-    *motion_blur;
-
-  motion_blur=MotionBlurImageChannel(image,DefaultChannels,radius,sigma,angle,
-    exception);
-  return(motion_blur);
-}
-
-MagickExport Image *MotionBlurImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double angle,ExceptionInfo *exception)
+MagickExport Image *MotionBlurImage(const Image *image,
+  const double radius,const double sigma,const double angle,
+  ExceptionInfo *exception)
 {
   CacheView
     *blur_view,
@@ -2700,7 +2584,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_MotionBlurImageChannel)
+  #pragma omp critical (MagickCore_MotionBlurImage)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -3257,33 +3141,18 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %
 %    Image *RadialBlurImage(const Image *image,const double angle,
 %      ExceptionInfo *exception)
-%    Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
-%      const double angle,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o angle: the angle of the radial blur.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *RadialBlurImage(const Image *image,const double angle,
-  ExceptionInfo *exception)
-{
-  Image
-    *blur_image;
-
-  blur_image=RadialBlurImageChannel(image,DefaultChannels,angle,exception);
-  return(blur_image);
-}
-
-MagickExport Image *RadialBlurImageChannel(const Image *image,
-  const ChannelType channel,const double angle,ExceptionInfo *exception)
+MagickExport Image *RadialBlurImage(const Image *image,
+  const double angle,ExceptionInfo *exception)
 {
   CacheView
     *blur_view,
@@ -3513,7 +3382,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_RadialBlurImageChannel)
+  #pragma omp critical (MagickCore_RadialBlurImage)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -3548,15 +3417,10 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 %
 %      Image *SelectiveBlurImage(const Image *image,const double radius,
 %        const double sigma,const double threshold,ExceptionInfo *exception)
-%      Image *SelectiveBlurImageChannel(const Image *image,
-%        const ChannelType channel,const double radius,const double sigma,
-%        const double threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -3569,21 +3433,9 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
-  const double sigma,const double threshold,ExceptionInfo *exception)
-{
-  Image
-    *blur_image;
-
-  blur_image=SelectiveBlurImageChannel(image,DefaultChannels,radius,sigma,
-    threshold,exception);
-  return(blur_image);
-}
-
-MagickExport Image *SelectiveBlurImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double threshold,ExceptionInfo *exception)
+MagickExport Image *SelectiveBlurImage(const Image *image,
+  const double radius,const double sigma,const double threshold,
+  ExceptionInfo *exception)
 {
 #define SelectiveBlurImageTag  "SelectiveBlur/Image"
 
@@ -3896,7 +3748,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_SelectiveBlurImageChannel)
+  #pragma omp critical (MagickCore_SelectiveBlurImage)
 #endif
         proceed=SetImageProgress(image,SelectiveBlurImageTag,progress++,
           image->rows);
@@ -4143,14 +3995,10 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 %
 %    Image *SharpenImage(const Image *image,const double radius,
 %      const double sigma,ExceptionInfo *exception)
-%    Image *SharpenImageChannel(const Image *image,const ChannelType channel,
-%      const double radius,const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -4160,20 +4008,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
-{
-  Image
-    *sharp_image;
-
-  sharp_image=SharpenImageChannel(image,DefaultChannels,radius,sigma,exception);
-  return(sharp_image);
-}
-
-MagickExport Image *SharpenImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  ExceptionInfo *exception)
 {
   double
     *kernel,
@@ -4217,7 +4053,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
     }
   }
   kernel[i/2]=(double) ((-2.0)*normalize);
-  sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
+  sharp_image=ConvolveImage(image,width,kernel,exception);
   kernel=(double *) RelinquishMagickMemory(kernel);
   return(sharp_image);
 }
@@ -4384,15 +4220,10 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 %
 %      Image *StatisticImage(const Image *image,const StatisticType type,
 %        const size_t width,const size_t height,ExceptionInfo *exception)
-%      Image *StatisticImageChannel(const Image *image,
-%        const ChannelType channel,const StatisticType type,
-%        const size_t width,const size_t height,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the image channel.
 %
 %    o type: the statistic type (median, mode, etc.).
 %
@@ -5010,18 +4841,6 @@ static void ResetPixelList(PixelList *pixel_list)
 MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   const size_t width,const size_t height,ExceptionInfo *exception)
 {
-  Image
-    *statistic_image;
-
-  statistic_image=StatisticImageChannel(image,DefaultChannels,type,width,
-    height,exception);
-  return(statistic_image);
-}
-
-MagickExport Image *StatisticImageChannel(const Image *image,
-  const ChannelType channel,const StatisticType type,const size_t width,
-  const size_t height,ExceptionInfo *exception)
-{
 #define StatisticWidth \
   (width == 0 ? GetOptimalKernelWidth2D((double) width,0.5) : width)
 #define StatisticHeight \
@@ -5243,15 +5062,10 @@ MagickExport Image *StatisticImageChannel(const Image *image,
 %    Image *UnsharpMaskImage(const Image *image,const double radius,
 %      const double sigma,const double amount,const double threshold,
 %      ExceptionInfo *exception)
-%    Image *UnsharpMaskImageChannel(const Image *image,
-%      const ChannelType channel,const double radius,const double sigma,
-%      const double amount,const double threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -5266,22 +5080,9 @@ MagickExport Image *StatisticImageChannel(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
-  const double sigma,const double amount,const double threshold,
-  ExceptionInfo *exception)
-{
-  Image
-    *sharp_image;
-
-  sharp_image=UnsharpMaskImageChannel(image,DefaultChannels,radius,sigma,amount,
-    threshold,exception);
-  return(sharp_image);
-}
-
-MagickExport Image *UnsharpMaskImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double amount,const double threshold,ExceptionInfo *exception)
+MagickExport Image *UnsharpMaskImage(const Image *image,
+  const double radius,const double sigma,const double amount,
+  const double threshold,ExceptionInfo *exception)
 {
 #define SharpenImageTag  "Sharpen/Image"
 
@@ -5312,7 +5113,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  unsharp_image=BlurImageChannel(image,channel,radius,sigma,exception);
+  unsharp_image=BlurImage(image,radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
   quantum_threshold=(MagickRealType) QuantumRange*threshold;
@@ -5429,7 +5230,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_UnsharpMaskImageChannel)
+  #pragma omp critical (MagickCore_UnsharpMaskImage)
 #endif
         proceed=SetImageProgress(image,SharpenImageTag,progress++,image->rows);
         if (proceed == MagickFalse)

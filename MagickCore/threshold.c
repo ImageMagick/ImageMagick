@@ -321,17 +321,13 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %  If the default channel setting is given the image is thresholded using just
 %  the gray 'intensity' of the image, rather than the individual channels.
 %
-%  The format of the BilevelImageChannel method is:
+%  The format of the BilevelImage method is:
 %
 %      MagickBooleanType BilevelImage(Image *image,const double threshold)
-%      MagickBooleanType BilevelImageChannel(Image *image,
-%        const ChannelType channel,const double threshold)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 %    o threshold: define the threshold values.
 %
@@ -339,18 +335,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %  with the 'threshold' value for both the black_point and the white_point.
 %
 */
-
-MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold)
-{
-  MagickBooleanType
-    status;
-
-  status=BilevelImageChannel(image,DefaultChannels,threshold);
-  return(status);
-}
-
-MagickExport MagickBooleanType BilevelImageChannel(Image *image,
-  const ChannelType channel,const double threshold)
+MagickExport MagickBooleanType BilevelImage(Image *image,
+  const double threshold)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
@@ -401,7 +387,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
         status=MagickFalse;
         continue;
       }
-    if (channel == DefaultChannels)
+    if (image->sync != MagickFalse)
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
@@ -448,7 +434,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BilevelImageChannel)
+  #pragma omp critical (MagickCore_BilevelImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);
@@ -477,16 +463,12 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
 %
 %  The format of the BlackThresholdImage method is:
 %
-%      MagickBooleanType BlackThresholdImage(Image *image,const char *threshold)
-%      MagickBooleanType BlackThresholdImageChannel(Image *image,
-%        const ChannelType channel,const char *threshold,
-%        ExceptionInfo *exception)
+%      MagickBooleanType BlackThresholdImage(Image *image,
+%        const char *threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel or channels to be thresholded.
 %
 %    o threshold: Define the threshold value.
 %
@@ -494,18 +476,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
 %
 */
 MagickExport MagickBooleanType BlackThresholdImage(Image *image,
-  const char *threshold)
-{
-  MagickBooleanType
-    status;
-
-  status=BlackThresholdImageChannel(image,DefaultChannels,threshold,
-    &image->exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
-  const ChannelType channel,const char *thresholds,ExceptionInfo *exception)
+  const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
@@ -588,7 +559,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel != DefaultChannels)
+      if (image->sync != MagickFalse)
         {
           if (GetPixelIntensity(image,q) < GetPixelInfoIntensity(&threshold))
             {
@@ -628,7 +599,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BlackThresholdImageChannel)
+  #pragma omp critical (MagickCore_BlackThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);
@@ -653,17 +624,13 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 %
 %  ClampImage() restricts the color range from 0 to the quantum depth.
 %
-%  The format of the ClampImageChannel method is:
+%  The format of the ClampImage method is:
 %
 %      MagickBooleanType ClampImage(Image *image)
-%      MagickBooleanType ClampImageChannel(Image *image,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel type.
 %
 */
 
@@ -681,16 +648,6 @@ static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 }
 
 MagickExport MagickBooleanType ClampImage(Image *image)
-{
-  MagickBooleanType
-    status;
-
-  status=ClampImageChannel(image,DefaultChannels);
-  return(status);
-}
-
-MagickExport MagickBooleanType ClampImageChannel(Image *image,
-  const ChannelType channel)
 {
 #define ClampImageTag  "Clamp/Image"
 
@@ -781,7 +738,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ClampImageChannel)
+  #pragma omp critical (MagickCore_ClampImage)
 #endif
         proceed=SetImageProgress(image,ClampImageTag,progress++,
           image->rows);
@@ -1528,17 +1485,12 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
 %
 %  The format of the RandomThresholdImage method is:
 %
-%      MagickBooleanType RandomThresholdImageChannel(Image *image,
+%      MagickBooleanType RandomThresholdImage(Image *image,
 %        const char *thresholds,ExceptionInfo *exception)
-%      MagickBooleanType RandomThresholdImageChannel(Image *image,
-%        const ChannelType channel,const char *thresholds,
-%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel or channels to be thresholded.
 %
 %    o thresholds: a geometry string containing low,high thresholds.  If the
 %      string contains 2x2, 3x3, or 4x4, an ordered dither of order 2, 3, or 4
@@ -1547,20 +1499,8 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   const char *thresholds,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=RandomThresholdImageChannel(image,DefaultChannels,thresholds,
-    exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
-  const ChannelType channel,const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
@@ -1613,22 +1553,12 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       max_threshold*=(MagickRealType) (0.01*QuantumRange);
       min_threshold*=(MagickRealType) (0.01*QuantumRange);
     }
-  else
-    if (((max_threshold == min_threshold) || (max_threshold == 1)) &&
-        (min_threshold <= 8))
-      {
-        /*
-          Backward Compatibility -- ordered-dither -- IM v 6.2.9-6.
-        */
-        status=OrderedPosterizeImage(image,thresholds,exception);
-        return(status);
-      }
   /*
     Random threshold image.
   */
   status=MagickTrue;
   progress=0;
-  if (channel == CompositeChannels)
+  if (image->sync != MagickFalse)
     {
       if (AcquireImageColormap(image,2) == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -1692,7 +1622,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_RandomThresholdImageChannel)
+  #pragma omp critical (MagickCore_RandomThresholdImage)
 #endif
             proceed=SetImageProgress(image,ThresholdImageTag,progress++,
               image->rows);
@@ -1817,7 +1747,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_RandomThresholdImageChannel)
+  #pragma omp critical (MagickCore_RandomThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);
@@ -1847,16 +1777,12 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 %
 %  The format of the WhiteThresholdImage method is:
 %
-%      MagickBooleanType WhiteThresholdImage(Image *image,const char *threshold)
-%      MagickBooleanType WhiteThresholdImageChannel(Image *image,
-%        const ChannelType channel,const char *threshold,
-%        ExceptionInfo *exception)
+%      MagickBooleanType WhiteThresholdImage(Image *image,
+%        const char *threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel or channels to be thresholded.
 %
 %    o threshold: Define the threshold value.
 %
@@ -1864,18 +1790,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 %
 */
 MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
-  const char *threshold)
-{
-  MagickBooleanType
-    status;
-
-  status=WhiteThresholdImageChannel(image,DefaultChannels,threshold,
-    &image->exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
-  const ChannelType channel,const char *thresholds,ExceptionInfo *exception)
+  const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
@@ -1958,7 +1873,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel != DefaultChannels)
+      if (image->sync != MagickFalse)
         {
           if (GetPixelIntensity(image,q) > GetPixelInfoIntensity(&threshold))
             {
@@ -1998,7 +1913,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_WhiteThresholdImageChannel)
+  #pragma omp critical (MagickCore_WhiteThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);

@@ -2443,12 +2443,12 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  MorphologyApply() applies a morphological method, multiple times using
 %  a list of multiple kernels.
 %
-%  It is basically equivalent to as MorphologyImageChannel() (see below) but
+%  It is basically equivalent to as MorphologyImage() (see below) but
 %  without any user controls.  This allows internel programs to use this
 %  function, to actually perform a specific task without possible interference
 %  by any API user supplied settings.
 %
-%  It is MorphologyImageChannel() task to extract any such user controls, and
+%  It is MorphologyImage() task to extract any such user controls, and
 %  pass them to this function for processing.
 %
 %  More specifically kernels are not normalized/scaled/blended by the
@@ -2459,19 +2459,15 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  The format of the MorphologyApply method is:
 %
 %      Image *MorphologyApply(const Image *image,MorphologyMethod method,
-%        const ChannelType channel, const ssize_t iterations,
-%        const KernelInfo *kernel, const CompositeMethod compose,
-%        const double bias, ExceptionInfo *exception)
+%        const ssize_t iterations,const KernelInfo *kernel,
+%        const CompositeMethod compose,const double bias,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the source image
 %
 %    o method: the morphology method to be applied.
-%
-%    o channel: the channels to which the operations are applied
-%               The channel 'sync' flag determines if 'alpha weighting' is
-%               applied for convolution style operations.
 %
 %    o iterations: apply the operation this many times (or no change).
 %                  A value of -1 means loop until no change found.
@@ -2498,9 +2494,9 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 ** It returns the number of pixels that changed between the images
 ** for result convergence determination.
 */
-static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
-     const MorphologyMethod method, const ChannelType channel,
-     const KernelInfo *kernel,const double bias,ExceptionInfo *exception)
+static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
+  const MorphologyMethod method,const KernelInfo *kernel,const double bias,
+  ExceptionInfo *exception)
 {
 #define MorphologyTag  "Morphology/Image"
 
@@ -2657,8 +2653,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
         */
         k = &kernel->values[ kernel->height-1 ];
         k_pixels = p;
-        if ( ((channel & SyncChannels) == 0 ) ||
-                             (image->matte == MagickFalse) )
+        if ( (image->sync == MagickFalse) ||
+             (image->matte == MagickFalse) )
           { /* No 'Sync' involved.
             ** Convolution is simple greyscale channel operation
             */
@@ -2882,8 +2878,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            if ( ((channel & SyncChannels) == 0 ) ||
-                                 (image->matte == MagickFalse) )
+            if ( (image->sync == MagickFalse) ||
+                 (image->matte == MagickFalse) )
               { /* No 'Sync' involved.
                 ** Convolution is simple greyscale channel operation
                 */
@@ -3279,8 +3275,8 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *morphology_image,
 ** of multi-threaded, parellel processing.
 */
 static ssize_t MorphologyPrimitiveDirect(Image *image,
-     const MorphologyMethod method, const ChannelType channel,
-     const KernelInfo *kernel,ExceptionInfo *exception)
+  const MorphologyMethod method,const KernelInfo *kernel,
+  ExceptionInfo *exception)
 {
   CacheView
     *auth_view,
@@ -3713,10 +3709,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 ** Basically this provides the complex grue between the requested morphology
 ** method and raw low-level implementation (above).
 */
-MagickExport Image *MorphologyApply(const Image *image, const ChannelType
-     channel,const MorphologyMethod method, const ssize_t iterations,
-     const KernelInfo *kernel, const CompositeOperator compose,
-     const double bias, ExceptionInfo *exception)
+MagickExport Image *MorphologyApply(const Image *image,
+  const MorphologyMethod method, const ssize_t iterations,
+  const KernelInfo *kernel, const CompositeOperator compose,const double bias,
+  ExceptionInfo *exception)
 {
   CompositeOperator
     curr_compose;
@@ -3838,7 +3834,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
         }
 
       changed = MorphologyPrimitiveDirect(rslt_image, method,
-                      channel, kernel, exception);
+         kernel, exception);
 
       if ( verbose == MagickTrue )
         (void) (void) FormatLocaleFile(stderr,
@@ -3852,8 +3848,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       if ( method == VoronoiMorphology ) {
         /* Preserve the alpha channel of input image - but turned off */
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
-        (void) CompositeImageChannel(rslt_image, DefaultChannels,
-          CopyOpacityCompositeOp, image, 0, 0);
+        (void) CompositeImage(rslt_image, CopyOpacityCompositeOp, image, 0, 0);
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
       }
       goto exit_cleanup;
@@ -4023,7 +4018,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
           changed = MorphologyPrimitive(curr_image, work_image, primitive,
-                       channel, this_kernel, bias, exception);
+                       this_kernel, bias, exception);
 
           if ( verbose == MagickTrue ) {
             if ( kernel_loop > 1 )
@@ -4080,17 +4075,16 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, "\n%s: Difference with original image",
                  CommandOptionToMnemonic(MagickMorphologyOptions, method) );
-          (void) CompositeImageChannel(curr_image,
-                  (ChannelType) (channel & ~SyncChannels),
-                  DifferenceCompositeOp, image, 0, 0);
+          curr_image->sync=MagickFalse;
+          (void) CompositeImage(curr_image,DifferenceCompositeOp,image,0,0);
           break;
         case EdgeMorphology:
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, "\n%s: Difference of Dilate and Erode",
                  CommandOptionToMnemonic(MagickMorphologyOptions, method) );
-          (void) CompositeImageChannel(curr_image,
-                  (ChannelType) (channel & ~SyncChannels),
-                  DifferenceCompositeOp, save_image, 0, 0);
+          curr_image->sync=MagickFalse;
+          (void) CompositeImage(curr_image,DifferenceCompositeOp,save_image,0,
+            0);
           save_image = DestroyImage(save_image); /* finished with save image */
           break;
         default:
@@ -4126,9 +4120,8 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
                  CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
-          (void) CompositeImageChannel(rslt_image,
-               (ChannelType) (channel & ~SyncChannels), rslt_compose,
-               curr_image, 0, 0);
+          rslt_image->sync=MagickFalse;
+          (void) CompositeImage(rslt_image, rslt_compose, curr_image, 0, 0);
           curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */
         }
@@ -4172,13 +4165,13 @@ exit_cleanup:
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     M o r p h o l o g y I m a g e C h a n n e l                             %
+%     M o r p h o l o g y I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MorphologyImageChannel() applies a user supplied kernel to the image
+%  MorphologyImage() applies a user supplied kernel to the image
 %  according to the given mophology method.
 %
 %  This function applies any and all user defined settings before calling
@@ -4195,7 +4188,7 @@ exit_cleanup:
 %      Image *MorphologyImage(const Image *image,MorphologyMethod method,
 %        const ssize_t iterations,KernelInfo *kernel,ExceptionInfo *exception)
 %
-%      Image *MorphologyImageChannel(const Image *image, const ChannelType
+%      Image *MorphologyImage(const Image *image, const ChannelType
 %        channel,MorphologyMethod method,const ssize_t iterations,
 %        KernelInfo *kernel,ExceptionInfo *exception)
 %
@@ -4210,18 +4203,15 @@ exit_cleanup:
 %                  How this is applied may depend on the morphology method.
 %                  Typically this is a value of 1.
 %
-%    o channel: the channel type.
-%
 %    o kernel: An array of double representing the morphology kernel.
 %              Warning: kernel may be normalized for the Convolve method.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-MagickExport Image *MorphologyImageChannel(const Image *image,
-  const ChannelType channel,const MorphologyMethod method,
-  const ssize_t iterations,const KernelInfo *kernel,ExceptionInfo *exception)
+MagickExport Image *MorphologyImage(const Image *image,
+  const MorphologyMethod method,const ssize_t iterations,
+  const KernelInfo *kernel,ExceptionInfo *exception)
 {
   KernelInfo
     *curr_kernel;
@@ -4275,24 +4265,12 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
                              MagickComposeOptions,MagickFalse,artifact);
   }
   /* Apply the Morphology */
-  morphology_image = MorphologyApply(image, channel, method, iterations,
-                         curr_kernel, compose, image->bias, exception);
+  morphology_image = MorphologyApply(image, method, iterations,
+    curr_kernel, compose, image->bias, exception);
 
   /* Cleanup and Exit */
   if ( curr_kernel != kernel )
     curr_kernel=DestroyKernelInfo(curr_kernel);
-  return(morphology_image);
-}
-
-MagickExport Image *MorphologyImage(const Image *image, const MorphologyMethod
-  method, const ssize_t iterations,const KernelInfo *kernel, ExceptionInfo
-  *exception)
-{
-  Image
-    *morphology_image;
-
-  morphology_image=MorphologyImageChannel(image,DefaultChannels,method,
-    iterations,kernel,exception);
   return(morphology_image);
 }
 

@@ -133,9 +133,7 @@ extern MagickExport KernelInfo
 
 extern MagickExport Image
   *MorphologyImage(const Image *,const MorphologyMethod,const ssize_t,
-    const KernelInfo *,ExceptionInfo *),
-  *MorphologyImageChannel(const Image *,const ChannelType,
-    const MorphologyMethod,const ssize_t,const KernelInfo *,ExceptionInfo *);
+    const KernelInfo *,ExceptionInfo *);
 
 extern MagickExport void
   ScaleGeometryKernelInfo(KernelInfo *,const char *),

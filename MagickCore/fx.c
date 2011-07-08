@@ -4188,7 +4188,9 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
       }
   }
   border_view=DestroyCacheView(border_view);
-  shadow_image=BlurImageChannel(border_image,AlphaChannel,0.0,sigma,exception);
+  PushPixelComponentMap(border_image,AlphaChannel);
+  shadow_image=BlurImage(border_image,0.0,sigma,exception);
+  PopPixelComponentMap(border_image);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);

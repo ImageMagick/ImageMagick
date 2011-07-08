@@ -97,8 +97,6 @@ typedef enum
 extern MagickExport MagickBooleanType
   CompositeImage(Image *,const CompositeOperator,const Image *,const ssize_t,
     const ssize_t),
-  CompositeImageChannel(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const ssize_t,const ssize_t),
   TextureImage(Image *,const Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

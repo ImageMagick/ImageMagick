@@ -548,7 +548,7 @@ namespace Magick
   using MagickCore::BlobToImage;
   using MagickCore::BlobWarning;
   using MagickCore::BlurImage;
-  using MagickCore::BlurImageChannel;
+  using MagickCore::BlurImage;
   using MagickCore::BorderImage;
   using MagickCore::CacheError;
   using MagickCore::CacheFatalError;
@@ -711,7 +711,7 @@ namespace Magick
   using MagickCore::GammaImage;
   using MagickCore::GammaImage;
   using MagickCore::GaussianBlurImage;
-  using MagickCore::GaussianBlurImageChannel;
+  using MagickCore::GaussianBlurImage;
   using MagickCore::GetAffineMatrix;
   using MagickCore::GetAuthenticMetacontent;
   using MagickCore::GetBlobSize;
@@ -823,7 +823,7 @@ namespace Magick
   using MagickCore::QueueAuthenticPixels;
   using MagickCore::QueueCacheViewAuthenticPixels;
   using MagickCore::RaiseImage;
-  using MagickCore::RandomThresholdImageChannel;
+  using MagickCore::RandomThresholdImage;
   using MagickCore::ReadImage;
   using MagickCore::RectangleInfo;
   using MagickCore::RegisterMagickInfo;
@@ -867,7 +867,7 @@ namespace Magick
   using MagickCore::SetImageVirtualPixelMethod;
   using MagickCore::ShadeImage;
   using MagickCore::SharpenImage;
-  using MagickCore::SharpenImageChannel;
+  using MagickCore::SharpenImage;
   using MagickCore::ShaveImage;
   using MagickCore::ShearImage;
   using MagickCore::SigmoidalContrastImage;
@@ -902,7 +902,7 @@ namespace Magick
   using MagickCore::UndefinedRegistryType;
   using MagickCore::UnregisterMagickInfo;
   using MagickCore::UnsharpMaskImage;
-  using MagickCore::UnsharpMaskImageChannel;
+  using MagickCore::UnsharpMaskImage;
   using MagickCore::CacheView;
   using MagickCore::WaveImage;
   using MagickCore::WidthValue;
