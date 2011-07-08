@@ -1237,15 +1237,10 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %
 %      MagickBooleanType OrderedPosterizeImage(Image *image,
 %        const char *threshold_map,ExceptionInfo *exception)
-%      MagickBooleanType OrderedPosterizeImageChannel(Image *image,
-%        const ChannelType channel,const char *threshold_map,
-%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel or channels to be thresholded.
 %
 %    o threshold_map: A string containing the name of the threshold dither
 %      map to use, followed by zero or more numbers representing the number
@@ -1271,17 +1266,6 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 */
 MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   const char *threshold_map,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  status=OrderedPosterizeImageChannel(image,DefaultChannels,threshold_map,
-    exception);
-  return(status);
-}
-
-MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
-  const ChannelType channel,const char *threshold_map,ExceptionInfo *exception)
 {
 #define DitherImageTag  "Dither/Image"
 
@@ -1346,17 +1330,28 @@ MagickExport MagickBooleanType OrderedPosterizeImageChannel(Image *image,
     char *p;
 
     p = strchr((char *) threshold_map,',');
+    levels.red=0;
+    levels.green=0;
+    levels.blue=0;
+    levels.black=0;
+    levels.alpha=0;
     if ( p != (char *)NULL && isdigit((int) ((unsigned char) *(++p))) )
       levels.black = (unsigned int) strtoul(p, &p, 10);
     else
       levels.black = 2;
 
-    levels.red     = ((channel & RedChannel  )   != 0) ? levels.black : 0;
-    levels.green   = ((channel & GreenChannel)   != 0) ? levels.black : 0;
-    levels.blue    = ((channel & BlueChannel)    != 0) ? levels.black : 0;
-    levels.black   = ((channel & BlackChannel)   != 0 &&
-      (image->colorspace == CMYKColorspace)) ? levels.black : 0;
-    levels.alpha = ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) ? levels.black : 0;
+    if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      levels.red=levels.black;
+    if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      levels.green=levels.black;
+    if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      levels.blue=levels.black;
+    if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+        (image->colorspace == CMYKColorspace))
+      levels.black=levels.black;
+    if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+        (image->matte != MagickFalse))
+      levels.alpha=levels.black;
 
     /* if more than a single number, each channel has a separate value */
     if ( p != (char *) NULL && *p == ',' ) {
@@ -1503,7 +1498,7 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_OrderedPosterizeImageChannel)
+  #pragma omp critical (MagickCore_OrderedPosterizeImage)
 #endif
           proceed=SetImageProgress(image,DitherImageTag,progress++,image->rows);
           if (proceed == MagickFalse)
@@ -1625,7 +1620,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
         /*
           Backward Compatibility -- ordered-dither -- IM v 6.2.9-6.
         */
-        status=OrderedPosterizeImageChannel(image,channel,thresholds,exception);
+        status=OrderedPosterizeImage(image,thresholds,exception);
         return(status);
       }
   /*

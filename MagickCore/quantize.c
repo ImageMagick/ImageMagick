@@ -2279,9 +2279,6 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %      MagickBooleanType PosterizeImage(Image *image,const size_t levels,
 %        const MagickBooleanType dither)
-%      MagickBooleanType PosterizeImageChannel(Image *image,
-%        const ChannelType channel,const size_t levels,
-%        const MagickBooleanType dither)
 %
 %  A description of each parameter follows:
 %
@@ -2307,16 +2304,6 @@ static inline ssize_t MagickRound(MagickRealType x)
 
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   const MagickBooleanType dither)
-{
-  MagickBooleanType
-    status;
-
-  status=PosterizeImageChannel(image,DefaultChannels,levels,dither);
-  return(status);
-}
-
-MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
-  const ChannelType channel,const size_t levels,const MagickBooleanType dither)
 {
 #define PosterizeImageTag  "Posterize/Image"
 #define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
@@ -2415,7 +2402,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_PosterizeImageChannel)
+        #pragma omp critical (MagickCore_PosterizeImage)
 #endif
         proceed=SetImageProgress(image,PosterizeImageTag,progress++,
           image->rows);

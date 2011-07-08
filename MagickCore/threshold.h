@@ -43,8 +43,6 @@ extern MagickExport MagickBooleanType
   ClampImageChannel(Image *,const ChannelType),
   ListThresholdMaps(FILE *,ExceptionInfo *),
   OrderedPosterizeImage(Image *,const char *,ExceptionInfo *),
-  OrderedPosterizeImageChannel(Image *,const ChannelType,const char *,
-    ExceptionInfo *),
   RandomThresholdImage(Image *,const char *,ExceptionInfo *),
   RandomThresholdImageChannel(Image *,const ChannelType,const char *,
     ExceptionInfo *),

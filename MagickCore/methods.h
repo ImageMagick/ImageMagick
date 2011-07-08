@@ -789,7 +789,7 @@ extern "C" {
 #define OptimizePlusImageLayers  PrependMagickMethod(OptimizePlusImageLayers)
 #define OrderedDitherImageChannel  PrependMagickMethod(OrderedDitherImageChannel)
 #define OrderedDitherImage  PrependMagickMethod(OrderedDitherImage)
-#define OrderedPosterizeImageChannel  PrependMagickMethod(OrderedPosterizeImageChannel)
+#define OrderedPosterizeImage  PrependMagickMethod(OrderedPosterizeImage)
 #define OrderedPosterizeImage  PrependMagickMethod(OrderedPosterizeImage)
 #define PackbitsEncodeImage  PrependMagickMethod(PackbitsEncodeImage)
 #define PaintFloodfillImage  PrependMagickMethod(PaintFloodfillImage)
