@@ -1496,10 +1496,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               op;
 
             (void) SyncImageSettings(mogrify_info,*image);
-            op=(MagickEvaluateOperator) ParseCommandOption(MagickEvaluateOptions,
-              MagickFalse,argv[i+1]);
+            op=(MagickEvaluateOperator) ParseCommandOption(
+              MagickEvaluateOptions,MagickFalse,argv[i+1]);
             constant=SiPrefixToDouble(argv[i+2],QuantumRange);
-            (void) EvaluateImageChannel(*image,channel,op,constant,exception);
+            (void) EvaluateImage(*image,op,constant,exception);
             break;
           }
         if (LocaleCompare("extent",option+1) == 0)
@@ -1584,8 +1584,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParsePageGeometry(*image,argv[i+1],&geometry,exception);
             (void) QueryMagickColor(argv[i+2],&target,exception);
-            (void) FloodfillPaintImage(*image,channel,draw_info,&target,
-              geometry.x,geometry.y,*option == '-' ? MagickFalse : MagickTrue);
+            (void) FloodfillPaintImage(*image,draw_info,&target,geometry.x,
+              geometry.y,*option == '-' ? MagickFalse : MagickTrue);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -1692,8 +1692,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               parameters[x]=InterpretLocaleValue(token,(char **) NULL);
             }
             arguments=DestroyString(arguments);
-            (void) FunctionImageChannel(*image,channel,function,
-              number_parameters,parameters,exception);
+            (void) FunctionImage(*image,function,number_parameters,parameters,
+              exception);
             parameters=(double *) RelinquishMagickMemory(parameters);
             break;
           }
@@ -2191,8 +2191,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
             (void) SyncImageSettings(mogrify_info,*image);
             (void) QueryMagickColor(argv[i+1],&target,exception);
-            (void) OpaquePaintImageChannel(*image,channel,&target,&fill,
-              *option == '-' ? MagickFalse : MagickTrue);
+            (void) OpaquePaintImage(*image,&target,&fill,*option == '-' ?
+              MagickFalse : MagickTrue);
             break;
           }
         if (LocaleCompare("ordered-dither",option+1) == 0)

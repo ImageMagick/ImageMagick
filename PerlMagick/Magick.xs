@@ -8157,8 +8157,8 @@ Mogrify(ref,...)
               QuantumRange);
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
-          (void) FloodfillPaintImage(image,DefaultChannels,draw_info,&target,
-            geometry.x,geometry.y,invert);
+          (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
+            geometry.y,invert);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8716,8 +8716,8 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
           PushPixelComponentMap(image,AlphaChannel);
-          (void) FloodfillPaintImage(image,AlphaChannel,draw_info,&target,
-            geometry.x,geometry.y,invert);
+          (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
+            geometry.y,invert);
           PopPixelComponentMap(image);
           StandardPixelComponentMap(image);
           draw_info=DestroyDrawInfo(draw_info);
@@ -8811,8 +8811,9 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[4] != 0)
             invert=(MagickBooleanType) argument_list[4].integer_reference;
-          (void) OpaquePaintImageChannel(image,channel,&target,&fill_color,
-            invert);
+          PushPixelComponentMap(image,channel);
+          (void) OpaquePaintImage(image,&target,&fill_color,invert);
+          PopPixelComponentMap(image);
           break;
         }
         case 48:  /* Quantize */
@@ -8949,8 +8950,10 @@ Mogrify(ref,...)
             op=(MagickEvaluateOperator) argument_list[1].integer_reference;
           if (attribute_flag[2] != MagickFalse)
             channel=(ChannelType) argument_list[2].integer_reference;
-          (void) EvaluateImageChannel(image,channel,op,
-            argument_list[0].real_reference,exception);
+          PushPixelComponentMap(image,channel);
+          (void) EvaluateImage(image,op,argument_list[0].real_reference,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 56:  /* Transparent */
@@ -10106,8 +10109,10 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[7] != 0)
             invert=(MagickBooleanType) argument_list[7].integer_reference;
-          (void) FloodfillPaintImage(image,channel,draw_info,&target,geometry.x,
+          PushPixelComponentMap(image,channel);
+          (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
             geometry.y,invert);
+          PopPixelComponentMap(image);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -13651,7 +13656,7 @@ Statistics(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      channel_statistics=GetImageChannelStatistics(image,&image->exception);
+      channel_statistics=GetImageStatistics(image,&image->exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         continue;
       count++;

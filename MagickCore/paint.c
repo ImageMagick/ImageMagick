@@ -83,15 +83,13 @@
 %  The format of the FloodfillPaintImage method is:
 %
 %      MagickBooleanType FloodfillPaintImage(Image *image,
-%        const ChannelType channel,const DrawInfo *draw_info,
-%        const PixelInfo target,const ssize_t x_offset,
-%        const ssize_t y_offset,const MagickBooleanType invert)
+%        const DrawInfo *draw_info,const PixelInfo target,
+%        const ssize_t x_offset,const ssize_t y_offset,
+%        const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel(s).
 %
 %    o draw_info: the draw info.
 %
@@ -103,9 +101,8 @@
 %
 */
 MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
-  const ChannelType channel,const DrawInfo *draw_info,
-  const PixelInfo *target,const ssize_t x_offset,const ssize_t y_offset,
-  const MagickBooleanType invert)
+  const DrawInfo *draw_info,const PixelInfo *target,const ssize_t x_offset,
+  const ssize_t y_offset,const MagickBooleanType invert)
 {
 #define MaxStacksize  (1UL << 15)
 #define PushSegmentStack(up,left,right,delta) \
@@ -727,15 +724,10 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %      MagickBooleanType OpaquePaintImage(Image *image,
 %        const PixelPacket *target,const PixelPacket *fill,
 %        const MagickBooleanType invert)
-%      MagickBooleanType OpaquePaintImageChannel(Image *image,
-%        const ChannelType channel,const PixelPacket *target,
-%        const PixelPacket *fill,const MagickBooleanType invert)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
-%
-%    o channel: the channel(s).
 %
 %    o target: the RGB value of the target color.
 %
@@ -744,17 +736,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %    o invert: paint any pixel that does not match the target color.
 %
 */
-
 MagickExport MagickBooleanType OpaquePaintImage(Image *image,
-  const PixelInfo *target,const PixelInfo *fill,
-  const MagickBooleanType invert)
-{
-  return(OpaquePaintImageChannel(image,CompositeChannels,target,fill,invert));
-}
-
-MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
-  const ChannelType channel,const PixelInfo *target,
-  const PixelInfo *fill,const MagickBooleanType invert)
+  const PixelInfo *target,const PixelInfo *fill,const MagickBooleanType invert)
 {
 #define OpaquePaintImageTag  "Opaque/Image"
 
@@ -842,7 +825,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_OpaquePaintImageChannel)
+  #pragma omp critical (MagickCore_OpaquePaintImage)
 #endif
         proceed=SetImageProgress(image,OpaquePaintImageTag,progress++,
           image->rows);

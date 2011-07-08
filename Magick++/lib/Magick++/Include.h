@@ -136,6 +136,7 @@ namespace Magick
   // Channel types
   using MagickCore::ChannelType;
   using MagickCore::UndefinedChannel;
+  using MagickCore::AlphaChannel;
   using MagickCore::RedChannel;
   using MagickCore::CyanChannel;
   using MagickCore::GreenChannel;
@@ -690,7 +691,7 @@ namespace Magick
   using MagickCore::EnhanceImage;
   using MagickCore::EqualizeImage;
   using MagickCore::EvaluateImage;
-  using MagickCore::EvaluateImageChannel;
+  using MagickCore::EvaluateImage;
   using MagickCore::ExceptionInfo;
   using MagickCore::ExceptionType;
   using MagickCore::ExportImagePixels;
@@ -723,9 +724,9 @@ namespace Magick
   using MagickCore::GetGeometry;
   using MagickCore::GetImageBoundingBox;
   using MagickCore::GetImageDepth;
-  using MagickCore::GetImageChannelMean;
-  using MagickCore::GetImageChannelKurtosis;
-  using MagickCore::GetImageChannelRange;
+  using MagickCore::GetImageMean;
+  using MagickCore::GetImageKurtosis;
+  using MagickCore::GetImageRange;
   using MagickCore::GetImageClipMask;
   using MagickCore::GetImageDepth;
   using MagickCore::GetImageInfo;

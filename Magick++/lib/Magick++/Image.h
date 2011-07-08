@@ -1007,7 +1007,7 @@ typedef struct _ImageStatistics
    ImageChannelStatistics alpha;
  } ImageStatistics;
 
-    void            statistics ( ImageStatistics *statistics ) const;
+    void            statistics ( ImageStatistics *statistics ) ;
 
     // Stroke width for drawing vector objects (default one)
     // This method is now deprecated. Please use strokeWidth instead.

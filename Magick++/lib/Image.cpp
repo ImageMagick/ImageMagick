@@ -975,7 +975,6 @@ void Magick::Image::floodFillOpacity( const ssize_t x_,
   target.blue=pixel.blue;
   target.alpha=alpha_;
   FloodfillPaintImage ( image(),
-                        DefaultChannels,
                         options()->drawInfo(), // const DrawInfo *draw_info
                         &target,
                   			static_cast<ssize_t>(x_), static_cast<ssize_t>(y_),
@@ -1006,7 +1005,6 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   target.blue=GetPixelBlue(constImage(),p);
   if (p)
     FloodfillPaintImage ( image(), // Image *image
-                          DefaultChannels,
                           options()->drawInfo(), // const DrawInfo *draw_info
                           &target, // const MagickPacket target
                           static_cast<ssize_t>(x_), // const ssize_t x_offset
@@ -1041,7 +1039,6 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   target.green=static_cast<PixelPacket>(borderColor_).green;
   target.blue=static_cast<PixelPacket>(borderColor_).blue;
   FloodfillPaintImage ( image(),
-                        DefaultChannels,
                         options()->drawInfo(),
                         &target,
                         static_cast<ssize_t>(x_),
@@ -1281,8 +1278,10 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   target.green=static_cast<PixelPacket>(target_).green;
   target.blue=static_cast<PixelPacket>(target_).blue;
   target.alpha=alpha_;
-  FloodfillPaintImage ( image(), OpacityChannel, options()->drawInfo(), &target,
-    x_, y_, method_ == FloodfillMethod ? MagickFalse : MagickTrue);
+  PushPixelComponentMap( image(), AlphaChannel );
+  FloodfillPaintImage ( image(), options()->drawInfo(), &target, x_, y_,
+    method_ == FloodfillMethod ? MagickFalse : MagickTrue);
+  PopPixelComponentMap( image() );
   throwImageException();
 }
 
@@ -1483,7 +1482,9 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  EvaluateImageChannel( image(), channel_, operator_, rvalue_, &exceptionInfo);
+  PushPixelComponentMap( image(), channel_ );
+  EvaluateImage( image(), operator_, rvalue_, &exceptionInfo);
+  PopPixelComponentMap( image() );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1504,8 +1505,9 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
   geometry.y = y_;
   MagickCore::Image *crop_image = CropImage( image(), &geometry,
     &exceptionInfo );
-  EvaluateImageChannel( crop_image, channel_, operator_, rvalue_,
-    &exceptionInfo );
+  PushPixelComponentMap( image(), channel_);
+  EvaluateImage( crop_image, operator_, rvalue_, &exceptionInfo );
+  PopPixelComponentMap( image() );
   (void) CompositeImage( image(), image()->matte != MagickFalse ?
     OverCompositeOp : CopyCompositeOp, crop_image, geometry.x, geometry.y );
   crop_image = DestroyImageList(crop_image);
@@ -3551,7 +3553,7 @@ void Magick::Image::splice( const Geometry &geometry_ )
 // Obtain image statistics. Statistics are normalized to the range of
 // 0.0 to 1.0 and are output to the specified ImageStatistics
 // structure.
-void Magick::Image::statistics ( ImageStatistics *statistics ) const
+void Magick::Image::statistics ( ImageStatistics *statistics ) 
 {
   double
     maximum,
@@ -3559,40 +3561,47 @@ void Magick::Image::statistics ( ImageStatistics *statistics ) const
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) GetImageChannelRange(constImage(),RedChannel,&minimum,&maximum,
-    &exceptionInfo);
+
+  PushPixelComponentMap( image(), RedChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->red.minimum=minimum;
-	statistics->red.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),RedChannel,
-    &statistics->red.mean,&statistics->red.standard_deviation,&exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),RedChannel,
-    &statistics->red.kurtosis,&statistics->red.skewness,&exceptionInfo);
-  (void) GetImageChannelRange(constImage(),GreenChannel,&minimum,&maximum,
-    &exceptionInfo);
+  statistics->red.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->red.mean,
+    &statistics->red.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->red.kurtosis,
+    &statistics->red.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
+  PushPixelComponentMap( image(), GreenChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->green.minimum=minimum;
-	statistics->green.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),GreenChannel,
-    &statistics->green.mean,&statistics->green.standard_deviation,
-    &exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),GreenChannel,
-    &statistics->green.kurtosis,&statistics->green.skewness,&exceptionInfo);
-  (void) GetImageChannelRange(constImage(),BlueChannel,&minimum,&maximum,
-    &exceptionInfo);
+  statistics->green.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->green.mean,
+    &statistics->green.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->green.kurtosis,
+    &statistics->green.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
+  PushPixelComponentMap( image(), GreenChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->blue.minimum=minimum;
-	statistics->blue.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),BlueChannel,
-    &statistics->blue.mean,&statistics->blue.standard_deviation,&exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),BlueChannel,
-    &statistics->blue.kurtosis,&statistics->blue.skewness,&exceptionInfo);
-  (void) GetImageChannelRange(constImage(),OpacityChannel,&minimum,&maximum,
-    &exceptionInfo);
+  statistics->blue.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->blue.mean,
+    &statistics->blue.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->blue.kurtosis,
+    &statistics->blue.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
+  PushPixelComponentMap( image(), AlphaChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->alpha.minimum=minimum;
   statistics->alpha.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),OpacityChannel,
-    &statistics->alpha.mean,&statistics->alpha.standard_deviation,
-    &exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),OpacityChannel,
-    &statistics->alpha.kurtosis,&statistics->alpha.skewness,&exceptionInfo);
+  (void) GetImageMean( image(),&statistics->alpha.mean,
+    &statistics->alpha.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->alpha.kurtosis,
+    &statistics->alpha.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }

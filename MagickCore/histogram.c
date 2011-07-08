@@ -991,8 +991,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       /*
         Auto-level all channels equally.
       */
-      (void) GetImageChannelRange(image,DefaultChannels,&min,&max,
-        &image->exception);
+      (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -1004,69 +1003,55 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   */
   if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     {
-      (void) GetImageChannelRange(image,RedChannel,&min,&max,&image->exception);
+      PushPixelComponentMap(image,RedChannel);
+      (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        {
-          PushPixelComponentMap(image,RedChannel);
-          status&=LevelImage(image,min,max,1.0);
-          PopPixelComponentMap(image);
-        }
+        status&=LevelImage(image,min,max,1.0);
+      PopPixelComponentMap(image);
     }
   if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     {
-      (void) GetImageChannelRange(image,GreenChannel,&min,&max,
-        &image->exception);
+      PushPixelComponentMap(image,GreenChannel);
+      (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        {
-          PushPixelComponentMap(image,GreenChannel);
-          status&=LevelImage(image,min,max,1.0);
-          PopPixelComponentMap(image);
-        }
+        status&=LevelImage(image,min,max,1.0);
+      PopPixelComponentMap(image);
     }
   if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     {
-      (void) GetImageChannelRange(image,BlueChannel,&min,&max,
-        &image->exception);
+      PushPixelComponentMap(image,BlueChannel);
+      (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        {
-          PushPixelComponentMap(image,BlueChannel);
-          status&=LevelImage(image,min,max,1.0);
-          PopPixelComponentMap(image);
-        }
+        status&=LevelImage(image,min,max,1.0);
+      PopPixelComponentMap(image);
     }
   if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
        (image->colorspace == CMYKColorspace))
     {
-      (void) GetImageChannelRange(image,BlackChannel,&min,&max,
-        &image->exception);
+      PushPixelComponentMap(image,BlackChannel);
+      (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        {
-          PushPixelComponentMap(image,BlackChannel);
-          status&=LevelImage(image,min,max,1.0);
-          PopPixelComponentMap(image);
-        }
+        status&=LevelImage(image,min,max,1.0);
+      PopPixelComponentMap(image);
     }
   if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
        (image->matte == MagickTrue))
     {
-      (void) GetImageChannelRange(image,OpacityChannel,&min,&max,
-        &image->exception);
+      PushPixelComponentMap(image,AlphaChannel);
+      (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        {
-          PushPixelComponentMap(image,AlphaChannel);
-          status&=LevelImage(image,min,max,1.0);
-          PopPixelComponentMap(image);
-        }
+        status&=LevelImage(image,min,max,1.0);
+      PopPixelComponentMap(image);
     }
   return(status != 0 ? MagickTrue : MagickFalse);
 }

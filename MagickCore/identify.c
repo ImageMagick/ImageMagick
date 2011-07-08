@@ -425,7 +425,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       size_t
         depth;
 
-      channel_statistics=GetImageChannelStatistics(image,&image->exception);
+      channel_statistics=GetImageStatistics(image,&image->exception);
       artifact=GetImageArtifact(image,"identify:features");
       if (artifact != (const char *) NULL)
         {
