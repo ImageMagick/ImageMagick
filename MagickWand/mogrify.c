@@ -384,13 +384,10 @@ static MagickBooleanType MonitorProgress(const char *text,
 ** needed to represent a color varies depending on the current channel
 ** setting.
 */
-static Image *SparseColorOption(const Image *image,const ChannelType channel,
+static Image *SparseColorOption(const Image *image,
   const SparseColorMethod method,const char *arguments,
   const MagickBooleanType color_from_image,ExceptionInfo *exception)
 {
-  ChannelType
-    channels;
-
   char
     token[MaxTextExtent];
 
@@ -425,21 +422,18 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
   /*
     Limit channels according to image - and add up number of color channel.
   */
-  channels=channel;
-  if (image->colorspace != CMYKColorspace)
-    channels=(ChannelType) (channels & ~BlackChannel);  /* no black channel */
-  if (image->matte == MagickFalse)
-    channels=(ChannelType) (channels & ~OpacityChannel);  /* no alpha channel */
   number_colors=0;
-  if ((channels & RedChannel) != 0)
+  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
     number_colors++;
-  if ((channels & GreenChannel) != 0)
+  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
     number_colors++;
-  if ((channels & BlueChannel) != 0)
+  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
     number_colors++;
-  if ((channels & BlackChannel) != 0)
+  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      (image->colorspace == CMYKColorspace))
     number_colors++;
-  if ((channels & OpacityChannel) != 0)
+  if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+      (image->matte != MagickFalse))
     number_colors++;
 
   /*
@@ -532,49 +526,58 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
         (void) QueryMagickColor(token,&color,exception);
-        if (channels & RedChannel)
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.red;
-        if (channels & GreenChannel)
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.green;
-        if (channels & BlueChannel)
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.blue;
-        if (channels & BlackChannel)
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+            (image->colorspace == CMYKColorspace))
           sparse_arguments[x++] = QuantumScale*color.black;
-        if (channels & OpacityChannel)
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+            (image->matte != MagickFalse))
           sparse_arguments[x++] = QuantumScale*color.alpha;
       }
       else {
         /* Colors given as a set of floating point values - experimental */
         /* NB: token contains the first floating point value to use! */
-        if ( channels & RedChannel ) {
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+          {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if ( channels & GreenChannel ) {
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+          {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if ( channels & BlueChannel ) {
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+          {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if (channels & BlackChannel) {
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+            (image->colorspace == CMYKColorspace))
+          {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if ( channels & OpacityChannel ) {
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+            (image->matte != MagickFalse))
+          {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
@@ -594,8 +597,8 @@ static Image *SparseColorOption(const Image *image,const ChannelType channel,
     return( (Image *)NULL);
 
   /* Call the Interpolation function with the parsed arguments */
-  sparse_image=SparseColorImage(image,channels,method,number_arguments,
-    sparse_arguments,exception);
+  sparse_image=SparseColorImage(image,method,number_arguments,sparse_arguments,
+    exception);
   sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
   return( sparse_image );
 }
@@ -2779,7 +2782,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             InheritException(exception,&(*image)->exception);
             if (arguments == (char *) NULL)
               break;
-            mogrify_image=SparseColorOption(*image,channel,method,arguments,
+            mogrify_image=SparseColorOption(*image,method,arguments,
               option[0] == '+' ? MagickTrue : MagickFalse,exception);
             arguments=DestroyString(arguments);
             break;

@@ -10736,8 +10736,8 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
 %  The format of the MagickSparseColorImage method is:
 %
 %      MagickBooleanType MagickSparseColorImage(MagickWand *wand,
-%        const ChannelType channel,const SparseColorMethod method,
-%        const size_t number_arguments,const double *arguments)
+%        const SparseColorMethod method,const size_t number_arguments,
+%        const double *arguments)
 %
 %  A description of each parameter follows:
 %
@@ -10770,8 +10770,8 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickSparseColorImage(MagickWand *wand,
-  const ChannelType channel,const SparseColorMethod method,
-  const size_t number_arguments,const double *arguments)
+  const SparseColorMethod method,const size_t number_arguments,
+  const double *arguments)
 {
   Image
     *sparse_image;
@@ -10782,8 +10782,8 @@ WandExport MagickBooleanType MagickSparseColorImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sparse_image=SparseColorImage(wand->images,channel,method,number_arguments,
-    arguments,wand->exception);
+  sparse_image=SparseColorImage(wand->images,method,number_arguments,arguments,
+    wand->exception);
   if (sparse_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sparse_image);

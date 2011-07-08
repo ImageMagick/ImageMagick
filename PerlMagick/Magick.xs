@@ -10309,8 +10309,10 @@ Mogrify(ref,...)
               argument_list[2].integer_reference);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=SparseColorImage(image,channel,method,number_coordinates,
-            coordinates,exception);
+          PushPixelComponentMap(image,channel);
+          image=SparseColorImage(image,method,number_coordinates,coordinates,
+            exception);
+          PopPixelComponentMap(image);
           if ((attribute_flag[2] != 0) && (image != (Image *) NULL))
             virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel);
           coordinates=(double *) RelinquishMagickMemory(coordinates);
