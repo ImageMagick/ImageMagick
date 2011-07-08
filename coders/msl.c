@@ -1231,9 +1231,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          blur_image=BlurImageChannel(msl_info->image[n],channel,
-            geometry_info.rho,geometry_info.sigma,
-            &msl_info->image[n]->exception);
+          PushPixelComponentMap(msl_info->image[n],channel);
+          blur_image=BlurImage(msl_info->image[n],geometry_info.rho,
+            geometry_info.sigma,&msl_info->image[n]->exception);
+          PopPixelComponentMap(msl_info->image[n]);
           if (blur_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -2054,9 +2055,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             &exception);
+          PushPixelComponentMap(image,channel);
           if (rotate_image == (Image *) NULL)
-            CompositeImageChannel(image,channel,compose,composite_image,
-              geometry.x,geometry.y);
+            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
           else
             {
               /*
@@ -2065,10 +2066,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               geometry.x-=(ssize_t) (rotate_image->columns-
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-composite_image->rows)/2;
-              CompositeImageChannel(image,channel,compose,rotate_image,
-                geometry.x,geometry.y);
+              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
+          PopPixelComponentMap(image);
           composite_image=DestroyImage(composite_image);
           break;
         }
@@ -7070,9 +7071,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           process image.
         */
         {
-        BilevelImageChannel(msl_info->image[n],
-          (ChannelType) ((ssize_t) (CompositeChannels &~ (ssize_t) OpacityChannel)),
-          threshold);
+          BilevelImage(msl_info->image[n],threshold);
         break;
         }
       }

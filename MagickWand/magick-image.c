@@ -178,14 +178,10 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %
 %      MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
 %        const double radius,const double sigma)
-%      MagickBooleanType MagickAdaptiveBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -193,19 +189,8 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-
 WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
   const double radius,const double sigma)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickAdaptiveBlurImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickAdaptiveBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma)
 {
   Image
     *sharp_image;
@@ -216,8 +201,7 @@ WandExport MagickBooleanType MagickAdaptiveBlurImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=AdaptiveBlurImageChannel(wand->images,channel,radius,sigma,
-    wand->exception);
+  sharp_image=AdaptiveBlurImage(wand->images,radius,sigma,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -291,14 +275,10 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
 %        const double radius,const double sigma)
-%      MagickBooleanType MagickAdaptiveSharpenImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -306,19 +286,8 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-
 WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
   const double radius,const double sigma)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickAdaptiveSharpenImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickAdaptiveSharpenImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma)
 {
   Image
     *sharp_image;
@@ -329,8 +298,7 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=AdaptiveSharpenImageChannel(wand->images,channel,radius,sigma,
-    wand->exception);
+  sharp_image=AdaptiveSharpenImage(wand->images,radius,sigma,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -854,7 +822,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
-  status=BlackThresholdImage(wand->images,thresholds);
+  status=BlackThresholdImage(wand->images,thresholds,&wand->images->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -925,14 +893,10 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickBlurImage(MagickWand *wand,const double radius,
 %        const double sigma)
-%      MagickBooleanType MagickBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the , in pixels, not counting the center
 %      pixel.
@@ -940,19 +904,8 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %    o sigma: the standard deviation of the , in pixels.
 %
 */
-
 WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
   const double radius,const double sigma)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickBlurImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma)
 {
   Image
     *blur_image;
@@ -963,8 +916,7 @@ WandExport MagickBooleanType MagickBlurImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=BlurImageChannel(wand->images,channel,radius,sigma,
-    wand->exception);
+  blur_image=BlurImage(wand->images,radius,sigma,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -1202,8 +1154,6 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %  The format of the MagickClampImage method is:
 %
 %      MagickBooleanType MagickClampImage(MagickWand *wand)
-%      MagickBooleanType MagickClampImageChannel(MagickWand *wand,
-%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
@@ -1212,18 +1162,7 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %    o channel: the channel.
 %
 */
-
 WandExport MagickBooleanType MagickClampImage(MagickWand *wand)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickClampImageChannel(wand,DefaultChannels);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickClampImageChannel(MagickWand *wand,
-  const ChannelType channel)
 {
   MagickBooleanType
     status;
@@ -1234,7 +1173,7 @@ WandExport MagickBooleanType MagickClampImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ClampImageChannel(wand->images,channel);
+  status=ClampImage(wand->images);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -1794,9 +1733,6 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %      MagickBooleanType MagickCompositeImage(MagickWand *wand,
 %        const MagickWand *composite_wand,const CompositeOperator compose,
 %        const ssize_t x,const ssize_t y)
-%      MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
-%        const ChannelType channel,const MagickWand *composite_wand,
-%        const CompositeOperator compose,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -1818,22 +1754,9 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %    o y: the row offset of the composited image.
 %
 */
-
 WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
-  const MagickWand *composite_wand,const CompositeOperator compose,const ssize_t x,
-  const ssize_t y)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickCompositeImageChannel(wand,DefaultChannels,composite_wand,
-    compose,x,y);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
-  const ChannelType channel,const MagickWand *composite_wand,
-  const CompositeOperator compose,const ssize_t x,const ssize_t y)
+  const MagickWand *composite_wand,const CompositeOperator compose,
+  const ssize_t x,const ssize_t y)
 {
   MagickBooleanType
     status;
@@ -1845,8 +1768,7 @@ WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
   if ((wand->images == (Image *) NULL) ||
       (composite_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=CompositeImageChannel(wand->images,channel,compose,
-    composite_wand->images,x,y);
+  status=CompositeImage(wand->images,compose,composite_wand->images,x,y);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -1963,34 +1885,18 @@ WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickConvolveImage(MagickWand *wand,
 %        const size_t order,const double *kernel)
-%      MagickBooleanType MagickConvolveImageChannel(MagickWand *wand,
-%        const ChannelType channel,const size_t order,
-%        const double *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o order: the number of columns and rows in the filter kernel.
 %
 %    o kernel: An array of doubles representing the convolution kernel.
 %
 */
-
 WandExport MagickBooleanType MagickConvolveImage(MagickWand *wand,
   const size_t order,const double *kernel)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickConvolveImageChannel(wand,DefaultChannels,order,kernel);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickConvolveImageChannel(MagickWand *wand,
-  const ChannelType channel,const size_t order,const double *kernel)
 {
   Image
     *convolve_image;
@@ -2003,8 +1909,7 @@ WandExport MagickBooleanType MagickConvolveImageChannel(MagickWand *wand,
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  convolve_image=ConvolveImageChannel(wand->images,channel,order,kernel,
-    wand->exception);
+  convolve_image=ConvolveImage(wand->images,order,kernel,wand->exception);
   if (convolve_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,convolve_image);
@@ -3041,31 +2946,16 @@ WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickFilterImage(MagickWand *wand,
 %        const KernelInfo *kernel)
-%      MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
-%        const ChannelType channel,const KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 %    o kernel: An array of doubles representing the convolution kernel.
 %
 */
-
 WandExport MagickBooleanType MagickFilterImage(MagickWand *wand,
   const KernelInfo *kernel)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickFilterImageChannel(wand,DefaultChannels,kernel);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
-  const ChannelType channel,const KernelInfo *kernel)
 {
   Image
     *filter_image;
@@ -3078,7 +2968,7 @@ WandExport MagickBooleanType MagickFilterImageChannel(MagickWand *wand,
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  filter_image=FilterImageChannel(wand->images,channel,kernel,wand->exception);
+  filter_image=FilterImage(wand->images,kernel,wand->exception);
   if (filter_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,filter_image);
@@ -3520,14 +3410,10 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
 %        const double radius,const double sigma)
-%      MagickBooleanType MagickGaussianBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -3535,19 +3421,8 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-
 WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
   const double radius,const double sigma)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickGaussianBlurImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickGaussianBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma)
 {
   Image
     *blur_image;
@@ -3558,8 +3433,7 @@ WandExport MagickBooleanType MagickGaussianBlurImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=GaussianBlurImageChannel(wand->images,channel,radius,sigma,
-    wand->exception);
+  blur_image=GaussianBlurImage(wand->images,radius,sigma,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -6715,15 +6589,10 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
 %
 %      MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 %        MorphologyMethod method,const ssize_t iterations,KernelInfo *kernel)
-%      MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
-%        ChannelType channel,MorphologyMethod method,const ssize_t iterations,
-%        KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o method: the morphology method to be applied.
 %
@@ -6734,21 +6603,8 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
 %    o kernel: An array of doubles representing the morphology kernel.
 %
 */
-
 WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
   MorphologyMethod method,const ssize_t iterations,KernelInfo *kernel)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickMorphologyImageChannel(wand,DefaultChannels,method,iterations,
-    kernel);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
-  const ChannelType channel,MorphologyMethod method,const ssize_t iterations,
-  KernelInfo *kernel)
 {
   Image
     *morphology_image;
@@ -6761,8 +6617,8 @@ WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  morphology_image=MorphologyImageChannel(wand->images,channel,method,
-    iterations,kernel,wand->exception);
+  morphology_image=MorphologyImage(wand->images,method,iterations,kernel,
+    wand->exception);
   if (morphology_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,morphology_image);
@@ -6790,15 +6646,10 @@ WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
 %
 %      MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
 %        const double radius,const double sigma,const double angle)
-%      MagickBooleanType MagickMotionBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma,
-%        const double angle)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting
 %      the center pixel.
@@ -6808,20 +6659,8 @@ WandExport MagickBooleanType MagickMorphologyImageChannel(MagickWand *wand,
 %    o angle: Apply the effect along this angle.
 %
 */
-
 WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
   const double radius,const double sigma,const double angle)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickMotionBlurImageChannel(wand,DefaultChannels,radius,sigma,angle);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickMotionBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma,
-  const double angle)
 {
   Image
     *blur_image;
@@ -6832,8 +6671,7 @@ WandExport MagickBooleanType MagickMotionBlurImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=MotionBlurImageChannel(wand->images,channel,radius,sigma,angle,
-    wand->exception);
+  blur_image=MotionBlurImage(wand->images,radius,sigma,angle,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -7758,30 +7596,16 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %
 %      MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
 %        const double angle)
-%      MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double angle)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o angle: the angle of the blur in degrees.
 %
 */
 WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
   const double angle)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickRadialBlurImageChannel(wand,DefaultChannels,angle);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double angle)
 {
   Image
     *blur_image;
@@ -7792,8 +7616,7 @@ WandExport MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=RadialBlurImageChannel(wand->images,channel,angle,
-    wand->exception);
+  blur_image=RadialBlurImage(wand->images,angle,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -7877,33 +7700,17 @@ WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
 %        const double low,const double high)
-%      MagickBooleanType MagickRandomThresholdImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double low,const double high)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o channel: the image channel(s).
-%
 %    o low,high: Specify the high and low thresholds.  These values range from
 %      0 to QuantumRange.
 %
 */
-
 WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
   const double low,const double high)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickRandomThresholdImageChannel(wand,DefaultChannels,low,high);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickRandomThresholdImageChannel(
-  MagickWand *wand,const ChannelType channel,const double low,
-  const double high)
 {
   char
     threshold[MaxTextExtent];
@@ -7918,8 +7725,7 @@ WandExport MagickBooleanType MagickRandomThresholdImageChannel(
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(threshold,MaxTextExtent,"%gx%g",low,high);
-  status=RandomThresholdImageChannel(wand->images,channel,threshold,
-    wand->exception);
+  status=RandomThresholdImage(wand->images,threshold,wand->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -8598,15 +8404,10 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
 %        const double radius,const double sigma,const double threshold)
-%      MagickBooleanType MagickSelectiveBlurImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma,
-%        const double threshold)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the gaussian, in pixels, not counting the center
 %      pixel.
@@ -8617,21 +8418,8 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %      in the blur operation.
 %
 */
-
 WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
   const double radius,const double sigma,const double threshold)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickSelectiveBlurImageChannel(wand,DefaultChannels,radius,sigma,
-    threshold);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickSelectiveBlurImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma,
-  const double threshold)
 {
   Image
     *blur_image;
@@ -8642,8 +8430,8 @@ WandExport MagickBooleanType MagickSelectiveBlurImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=SelectiveBlurImageChannel(wand->images,channel,radius,sigma,
-    threshold,wand->exception);
+  blur_image=SelectiveBlurImage(wand->images,radius,sigma,threshold,
+    wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -10531,14 +10319,10 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickSharpenImage(MagickWand *wand,
 %        const double radius,const double sigma)
-%      MagickBooleanType MagickSharpenImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -10546,19 +10330,8 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-
 WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
   const double radius,const double sigma)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickSharpenImageChannel(wand,DefaultChannels,radius,sigma);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickSharpenImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma)
 {
   Image
     *sharp_image;
@@ -10569,8 +10342,7 @@ WandExport MagickBooleanType MagickSharpenImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=SharpenImageChannel(wand->images,channel,radius,sigma,
-    wand->exception);
+  sharp_image=SharpenImage(wand->images,radius,sigma,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -11139,15 +10911,10 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickStatisticImage(MagickWand *wand,
 %        const StatisticType type,const double width,const size_t height)
-%      MagickBooleanType MagickStatisticImageChannel(MagickWand *wand,
-%        const ChannelType channel,const StatisticType type,const double width,
-%        const size_t height)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o type: the statistic type (e.g. median, mode, etc.).
 %
@@ -11157,8 +10924,7 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
-  const ChannelType channel,const StatisticType type,const size_t width,
-  const size_t height)
+  const StatisticType type,const size_t width,const size_t height)
 {
   Image
     *statistic_image;
@@ -11169,7 +10935,7 @@ WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  statistic_image=StatisticImageChannel(wand->images,channel,type,width,height,
+  statistic_image=StatisticImage(wand->images,type,width,height,
     wand->exception);
   if (statistic_image == (Image *) NULL)
     return(MagickFalse);
@@ -11477,7 +11243,7 @@ WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=BilevelImageChannel(wand->images,channel,threshold);
+  status=BilevelImage(wand->images,threshold);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -11950,15 +11716,10 @@ WandExport MagickBooleanType MagickUniqueImageColors(MagickWand *wand)
 %      MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
 %        const double radius,const double sigma,const double amount,
 %        const double threshold)
-%      MagickBooleanType MagickUnsharpMaskImageChannel(MagickWand *wand,
-%        const ChannelType channel,const double radius,const double sigma,
-%        const double amount,const double threshold)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
-%
-%    o channel: the image channel(s).
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -11971,22 +11732,9 @@ WandExport MagickBooleanType MagickUniqueImageColors(MagickWand *wand)
 %    o threshold: the threshold in pixels needed to apply the diffence amount.
 %
 */
-
 WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
   const double radius,const double sigma,const double amount,
   const double threshold)
-{
-  MagickBooleanType
-    status;
-
-  status=MagickUnsharpMaskImageChannel(wand,DefaultChannels,radius,sigma,
-    amount,threshold);
-  return(status);
-}
-
-WandExport MagickBooleanType MagickUnsharpMaskImageChannel(MagickWand *wand,
-  const ChannelType channel,const double radius,const double sigma,
-  const double amount,const double threshold)
 {
   Image
     *unsharp_image;
@@ -11997,8 +11745,8 @@ WandExport MagickBooleanType MagickUnsharpMaskImageChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  unsharp_image=UnsharpMaskImageChannel(wand->images,channel,radius,sigma,
-    amount,threshold,wand->exception);
+  unsharp_image=UnsharpMaskImage(wand->images,radius,sigma,amount,threshold,
+    wand->exception);
   if (unsharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,unsharp_image);
@@ -12148,7 +11896,7 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
-  status=WhiteThresholdImage(wand->images,thresholds);
+  status=WhiteThresholdImage(wand->images,thresholds,&wand->images->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);

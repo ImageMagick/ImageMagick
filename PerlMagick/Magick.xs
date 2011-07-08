@@ -7558,8 +7558,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=BlurImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=BlurImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 7:  /* Chop */
@@ -7715,8 +7717,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=StatisticImageChannel(image,channel,MedianStatistic,
-            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=StatisticImage(image,MedianStatistic,(size_t) geometry_info.rho,
+            (size_t) geometry_info.sigma,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 19:  /* Minify */
@@ -7747,8 +7751,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=StatisticImageChannel(image,channel,NonpeakStatistic,
-            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=StatisticImage(image,NonpeakStatistic,(size_t)
+            geometry_info.rho,(size_t) geometry_info.sigma,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 22:  /* Roll */
@@ -7836,8 +7842,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=SharpenImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=SharpenImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 28:  /* Shear */
@@ -8343,9 +8351,9 @@ Mogrify(ref,...)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             exception);
+          PushPixelComponentMap(image,channel);
           if (attribute_flag[8] == 0) /* no rotate */
-            CompositeImageChannel(image,channel,compose,composite_image,
-              geometry.x,geometry.y);
+            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
           else
             {
               /*
@@ -8355,8 +8363,7 @@ Mogrify(ref,...)
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-
                 composite_image->rows)/2;
-              CompositeImageChannel(image,channel,compose,rotate_image,
-                geometry.x,geometry.y);
+              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
           if (attribute_flag[10] != 0) /* mask */
@@ -8367,6 +8374,7 @@ Mogrify(ref,...)
               else
                 image->mask=DestroyImage(image->mask);
             }
+          PopPixelComponentMap(image);
           break;
         }
         case 36:  /* Contrast */
@@ -8998,7 +9006,9 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[1].integer_reference;
           threshold=SiPrefixToDouble(argument_list[0].string_reference,
             QuantumRange);
-          (void) BilevelImageChannel(image,channel,threshold);
+          PushPixelComponentMap(image,channel);
+          (void) BilevelImage(image,threshold);
+          PopPixelComponentMap(image);
           break;
         }
         case 58:  /* Charcoal */
@@ -9105,8 +9115,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=GaussianBlurImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=GaussianBlurImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 67:  /* Convolve */
@@ -9140,7 +9152,9 @@ Mogrify(ref,...)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (ssize_t) (order*order); j++)
             kernel[j]=0.0;
-          image=ConvolveImageChannel(image,channel,order,kernel,exception);
+          PushPixelComponentMap(image,channel);
+          image=ConvolveImage(image,order,kernel,exception);
+          PopPixelComponentMap(image);
           kernel=(double *) RelinquishMagickMemory(kernel);
           break;
         }
@@ -9238,8 +9252,10 @@ Mogrify(ref,...)
             geometry_info.psi=argument_list[4].real_reference;
           if (attribute_flag[5] != 0)
             channel=(ChannelType) argument_list[5].integer_reference;
-          image=UnsharpMaskImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
+          PushPixelComponentMap(image,channel);
+          image=UnsharpMaskImage(image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,geometry_info.psi,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 70:  /* MotionBlur */
@@ -9261,8 +9277,10 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          image=MotionBlurImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,exception);
+          PushPixelComponentMap(image,channel);
+          image=MotionBlurImage(image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 71:  /* OrderedDither */
@@ -9552,8 +9570,10 @@ Mogrify(ref,...)
             argument_list[0].string_reference="50%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          BlackThresholdImageChannel(image,channel,
-            argument_list[0].string_reference,exception);
+          PushPixelComponentMap(image,channel);
+          BlackThresholdImage(image,argument_list[0].string_reference,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 81:  /* WhiteThreshold */
@@ -9562,8 +9582,10 @@ Mogrify(ref,...)
             argument_list[0].string_reference="50%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          WhiteThresholdImageChannel(image,channel,
-            argument_list[0].string_reference,exception);
+          PushPixelComponentMap(image,channel);
+          WhiteThresholdImage(image,argument_list[0].string_reference,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 82:  /* RadialBlur */
@@ -9579,8 +9601,9 @@ Mogrify(ref,...)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          image=RadialBlurImageChannel(image,channel,geometry_info.rho,
-            exception);
+          PushPixelComponentMap(image,channel);
+          image=RadialBlurImage(image,geometry_info.rho,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 83:  /* Thumbnail */
@@ -9856,8 +9879,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=AdaptiveSharpenImageChannel(image,channel,geometry_info.rho,
+          PushPixelComponentMap(image,channel);
+          image=AdaptiveSharpenImage(image,geometry_info.rho,
             geometry_info.sigma,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 99:  /* Transpose */
@@ -9929,8 +9954,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=AdaptiveBlurImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=AdaptiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 103:  /* Sketch */
@@ -10353,8 +10380,10 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          image=SelectiveBlurImageChannel(image,channel,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,exception);
+          PushPixelComponentMap(image,channel);
+          image=SelectiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
+            geometry_info.xi,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 122:  /* HaldClut */
@@ -10446,7 +10475,9 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          (void) ClampImageChannel(image,channel);
+          PushPixelComponentMap(image,channel);
+          (void) ClampImage(image);
+          PopPixelComponentMap(image);
           break;
         }
         case 131:  /* Filter */
@@ -10464,7 +10495,9 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             image->bias=SiPrefixToDouble(argument_list[2].string_reference,
               QuantumRange);
-          image=FilterImageChannel(image,channel,kernel,exception);
+          PushPixelComponentMap(image,channel);
+          image=FilterImage(image,kernel,exception);
+          PopPixelComponentMap(image);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
@@ -10519,8 +10552,9 @@ Mogrify(ref,...)
           iterations=1;
           if (attribute_flag[3] != 0)
             iterations=argument_list[4].integer_reference;
-          image=MorphologyImageChannel(image,channel,method,iterations,kernel,
-            exception);
+          PushPixelComponentMap(image,channel);
+          image=MorphologyImage(image,method,iterations,kernel,exception);
+          PopPixelComponentMap(image);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
@@ -10594,8 +10628,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          image=StatisticImageChannel(image,channel,ModeStatistic,
-            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=StatisticImage(image,ModeStatistic,(size_t) geometry_info.rho,
+            (size_t) geometry_info.sigma,exception);
+          PopPixelComponentMap(image);
           break;
         }
         case 137:  /* Statistic */
@@ -10619,8 +10655,10 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             statistic=(StatisticType) argument_list[4].integer_reference;
-          image=StatisticImageChannel(image,channel,statistic,
-            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
+          PushPixelComponentMap(image,channel);
+          image=StatisticImage(image,statistic,(size_t) geometry_info.rho,
+            (size_t) geometry_info.sigma,exception);
+          PopPixelComponentMap(image);
           break;
         }
       }
@@ -10630,7 +10668,7 @@ Mogrify(ref,...)
         {
           /*
             Composite region.
-          */
+          */ 
           status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
           (void) status;

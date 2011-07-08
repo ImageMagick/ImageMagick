@@ -495,8 +495,10 @@ void Magick::Image::blurChannel( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    BlurImageChannel( image(), channel_,radius_, sigma_, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, &exceptionInfo);
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1173,8 +1175,10 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    GaussianBlurImageChannel( image(), channel_, width_, sigma_, &exceptionInfo );
+    GaussianBlurImage( image(), width_, sigma_, &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1547,10 +1551,11 @@ void Magick::Image::randomThresholdChannel( const Geometry &thresholds_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  (void) RandomThresholdImageChannel( image(),
-                                      channel_,
+  PushPixelComponentMap( image(), channel_);
+  (void) RandomThresholdImage( image(),
                                       static_cast<std::string>(thresholds_).c_str(),
                                       &exceptionInfo );
+  PopPixelComponentMap( image() );
   throwImageException();
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1863,12 +1868,13 @@ void Magick::Image::sharpenChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    SharpenImageChannel( image(),
-                         channel_,
+    SharpenImage( image(),
                          radius_,
                          sigma_,
                          &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2123,14 +2129,15 @@ void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    UnsharpMaskImageChannel( image(),
-                             channel_,
+    UnsharpMaskImage( image(),
                              radius_,
                              sigma_,
                              amount_,
                              threshold_,
                              &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

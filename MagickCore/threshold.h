@@ -35,20 +35,12 @@ extern MagickExport ThresholdMap
 
 extern MagickExport MagickBooleanType
   BilevelImage(Image *,const double),
-  BilevelImageChannel(Image *,const ChannelType,const double),
-  BlackThresholdImage(Image *,const char *),
-  BlackThresholdImageChannel(Image *,const ChannelType,const char *,
-    ExceptionInfo *),
+  BlackThresholdImage(Image *,const char *,ExceptionInfo *),
   ClampImage(Image *),
-  ClampImageChannel(Image *,const ChannelType),
   ListThresholdMaps(FILE *,ExceptionInfo *),
   OrderedPosterizeImage(Image *,const char *,ExceptionInfo *),
   RandomThresholdImage(Image *,const char *,ExceptionInfo *),
-  RandomThresholdImageChannel(Image *,const ChannelType,const char *,
-    ExceptionInfo *),
-  WhiteThresholdImage(Image *,const char *),
-  WhiteThresholdImageChannel(Image *,const ChannelType,const char *,
-    ExceptionInfo *);
+  WhiteThresholdImage(Image *,const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
