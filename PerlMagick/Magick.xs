@@ -9048,7 +9048,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           PushPixelComponentMap(image,channel);
-          (void) SeparateImage(image,channel);
+          (void) SeparateImage(image);
           PopPixelComponentMap(image);
           break;
         }
@@ -9615,7 +9615,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           PushPixelComponentMap(image,channel);
-          (void) SeparateImage(image,channel);
+          (void) SeparateImage(image);
           PopPixelComponentMap(image);
           break;
         }
