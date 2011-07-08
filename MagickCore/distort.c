@@ -2713,16 +2713,13 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
 %
 %  The format of the SparseColorImage() method is:
 %
-%      Image *SparseColorImage(const Image *image,const ChannelType channel,
+%      Image *SparseColorImage(const Image *image,
 %        const SparseColorMethod method,const size_t number_arguments,
 %        const double *arguments,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image to be filled in.
-%
-%    o channel: Specify which color values (in RGBKA sequence) are being set.
-%        This also determines the number of color_values in above.
 %
 %    o method: the method to fill in the gradient between the control points.
 %
@@ -2740,9 +2737,8 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
 %
 */
 MagickExport Image *SparseColorImage(const Image *image,
-  const ChannelType channel,const SparseColorMethod method,
-  const size_t number_arguments,const double *arguments,
-  ExceptionInfo *exception)
+  const SparseColorMethod method,const size_t number_arguments,
+  const double *arguments,ExceptionInfo *exception)
 {
 #define SparseColorTag  "Distort/SparseColor"
 
@@ -2767,11 +2763,18 @@ MagickExport Image *SparseColorImage(const Image *image,
 
   /* Determine number of color values needed per control point */
   number_colors=0;
-  if ( channel & RedChannel     ) number_colors++;
-  if ( channel & GreenChannel   ) number_colors++;
-  if ( channel & BlueChannel    ) number_colors++;
-  if ( channel & AlphaChannel ) number_colors++;
-  if ( channel & BlackChannel   ) number_colors++;
+  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+    number_colors++;
+  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+    number_colors++;
+  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+    number_colors++;
+  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      (image->colorspace == CMYKColorspace))
+    number_colors++;
+  if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+      (image->matte != MagickFalse))
+    number_colors++;
 
   /*
     Convert input arguments into mapping coefficients, this this case
@@ -2806,19 +2809,21 @@ MagickExport Image *SparseColorImage(const Image *image,
       {
         register ssize_t x=0;
         (void) FormatLocaleFile(stderr, "Barycentric Sparse Color:\n");
-        if ( channel & RedChannel )
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
           (void) FormatLocaleFile(stderr, "  -channel R -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
-        if ( channel & GreenChannel )
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
           (void) FormatLocaleFile(stderr, "  -channel G -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
-        if ( channel & BlueChannel )
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
           (void) FormatLocaleFile(stderr, "  -channel B -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
-        if ( channel & BlackChannel )
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+            (image->colorspace == CMYKColorspace))
           (void) FormatLocaleFile(stderr, "  -channel K -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
-        if ( channel & AlphaChannel )
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+            (image->matte != MagickFalse))
           (void) FormatLocaleFile(stderr, "  -channel A -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         break;
@@ -2827,23 +2832,25 @@ MagickExport Image *SparseColorImage(const Image *image,
       {
         register ssize_t x=0;
         (void) FormatLocaleFile(stderr, "Bilinear Sparse Color\n");
-        if ( channel & RedChannel )
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
           (void) FormatLocaleFile(stderr, "   -channel R -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
-        if ( channel & GreenChannel )
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
           (void) FormatLocaleFile(stderr, "   -channel G -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
-        if ( channel & BlueChannel )
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
           (void) FormatLocaleFile(stderr, "   -channel B -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
-        if ( channel & BlackChannel )
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+            (image->colorspace == CMYKColorspace))
           (void) FormatLocaleFile(stderr, "   -channel K -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
-        if ( channel & AlphaChannel )
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+            (image->matte != MagickFalse))
           (void) FormatLocaleFile(stderr, "   -channel A -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
@@ -2919,40 +2926,44 @@ MagickExport Image *SparseColorImage(const Image *image,
           case BarycentricColorInterpolate:
           {
             register ssize_t x=0;
-            if ( channel & RedChannel )
+            if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
               pixel.red     = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
-            if ( channel & GreenChannel )
+            if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
               pixel.green   = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
-            if ( channel & BlueChannel )
+            if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
               pixel.blue    = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
-            if ( channel & AlphaChannel )
-              pixel.alpha = coeff[x]*i +coeff[x+1]*j
-                              +coeff[x+2], x+=3;
-            if ( channel & BlackChannel )
+            if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+                (image->colorspace == CMYKColorspace))
               pixel.black   = coeff[x]*i +coeff[x+1]*j
+                              +coeff[x+2], x+=3;
+            if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+                (image->matte != MagickFalse))
+              pixel.alpha = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
             break;
           }
           case BilinearColorInterpolate:
           {
             register ssize_t x=0;
-            if ( channel & RedChannel )
+            if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
               pixel.red     = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
-            if ( channel & GreenChannel )
+            if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
               pixel.green   = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
-            if ( channel & BlueChannel )
+            if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
               pixel.blue    = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
-            if ( channel & AlphaChannel )
-              pixel.alpha = coeff[x]*i     + coeff[x+1]*j +
-                              coeff[x+2]*i*j + coeff[x+3], x+=4;
-            if ( channel & BlackChannel )
+            if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+                (image->colorspace == CMYKColorspace))
               pixel.black   = coeff[x]*i     + coeff[x+1]*j +
+                              coeff[x+2]*i*j + coeff[x+3], x+=4;
+            if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+                (image->matte != MagickFalse))
+              pixel.alpha = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
             break;
           }
@@ -2964,11 +2975,18 @@ MagickExport Image *SparseColorImage(const Image *image,
             double
               denominator;
 
-            if ( channel & RedChannel     ) pixel.red     = 0.0;
-            if ( channel & GreenChannel   ) pixel.green   = 0.0;
-            if ( channel & BlueChannel    ) pixel.blue    = 0.0;
-            if ( channel & BlackChannel   ) pixel.black   = 0.0;
-            if ( channel & AlphaChannel ) pixel.alpha = 0.0;
+            if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+              pixel.red=0.0;
+            if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+              pixel.green=0.0;
+            if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+              pixel.blue=0.0;
+            if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+                (image->colorspace == CMYKColorspace))
+              pixel.black=0.0;
+            if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+                (image->matte != MagickFalse))
+              pixel.alpha=0.0;
             denominator = 0.0;
             for(k=0; k<number_arguments; k+=2+number_colors) {
               register ssize_t x=(ssize_t) k+2;
@@ -2978,23 +2996,32 @@ MagickExport Image *SparseColorImage(const Image *image,
               if ( method == InverseColorInterpolate )
                 weight = sqrt(weight);  /* inverse, not inverse squared */
               weight = ( weight < 1.0 ) ? 1.0 : 1.0/weight;
-              if ( channel & RedChannel )
+              if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
                 pixel.red     += arguments[x++]*weight;
-              if ( channel & GreenChannel )
+              if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
                 pixel.green   += arguments[x++]*weight;
-              if ( channel & BlueChannel )
+              if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
                 pixel.blue    += arguments[x++]*weight;
-              if ( channel & AlphaChannel )
-                pixel.alpha += arguments[x++]*weight;
-              if ( channel & BlackChannel )
+              if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+                  (image->colorspace == CMYKColorspace))
                 pixel.black   += arguments[x++]*weight;
+              if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+                  (image->matte != MagickFalse))
+                pixel.alpha += arguments[x++]*weight;
               denominator += weight;
             }
-            if ( channel & RedChannel     ) pixel.red     /= denominator;
-            if ( channel & GreenChannel   ) pixel.green   /= denominator;
-            if ( channel & BlueChannel    ) pixel.blue    /= denominator;
-            if ( channel & AlphaChannel ) pixel.alpha /= denominator;
-            if ( channel & BlackChannel   ) pixel.black   /= denominator;
+            if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+              pixel.red/=denominator;
+            if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+              pixel.green/=denominator;
+            if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+              pixel.blue/=denominator;
+            if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+                (image->colorspace == CMYKColorspace))
+              pixel.black/=denominator;
+            if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+                (image->matte != MagickFalse))
+              pixel.alpha/=denominator;
             break;
           }
           case VoronoiColorInterpolate:
@@ -3011,11 +3038,18 @@ MagickExport Image *SparseColorImage(const Image *image,
                 + ((double)j-arguments[k+1])*((double)j-arguments[k+1]);
               if ( distance < minimum ) {
                 register ssize_t x=(ssize_t) k+2;
-                if ( channel & RedChannel     ) pixel.red     = arguments[x++];
-                if ( channel & GreenChannel   ) pixel.green   = arguments[x++];
-                if ( channel & BlueChannel    ) pixel.blue    = arguments[x++];
-                if ( channel & AlphaChannel ) pixel.alpha = arguments[x++];
-                if ( channel & BlackChannel   ) pixel.black   = arguments[x++];
+                if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+                  pixel.red=arguments[x++];
+                if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+                  pixel.green=arguments[x++];
+                if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+                  pixel.blue=arguments[x++];
+                if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+                    (image->colorspace == CMYKColorspace))
+                  pixel.black=arguments[x++];
+                if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+                    (image->matte != MagickFalse))
+                  pixel.alpha=arguments[x++];
                 minimum = distance;
               }
             }
@@ -3023,11 +3057,18 @@ MagickExport Image *SparseColorImage(const Image *image,
           }
         }
         /* set the color directly back into the source image */
-        if ( channel & RedChannel     ) pixel.red     *= QuantumRange;
-        if ( channel & GreenChannel   ) pixel.green   *= QuantumRange;
-        if ( channel & BlueChannel    ) pixel.blue    *= QuantumRange;
-        if ( channel & BlackChannel   ) pixel.black   *= QuantumRange;
-        if ( channel & AlphaChannel ) pixel.alpha *= QuantumRange;
+        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+          pixel.red*=QuantumRange;
+        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+          pixel.green*=QuantumRange;
+        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+          pixel.blue*=QuantumRange;
+        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+            (image->colorspace == CMYKColorspace))
+          pixel.black*=QuantumRange;
+        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+            (image->matte != MagickFalse))
+          pixel.alpha*=QuantumRange;
         SetPixelPixelInfo(sparse_image,&pixel,q);
         q+=GetPixelComponents(sparse_image);
       }

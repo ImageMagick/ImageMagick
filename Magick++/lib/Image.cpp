@@ -1938,8 +1938,11 @@ void Magick::Image::sparseColor ( const ChannelType channel,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage = SparseColorImage ( image(), channel, method,
+
+  PushPixelComponentMap( image(), channel );
+  MagickCore::Image* newImage = SparseColorImage ( image(), method,
     number_arguments, arguments, &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
