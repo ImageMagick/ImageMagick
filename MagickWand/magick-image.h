@@ -256,7 +256,7 @@ extern WandExport MagickBooleanType
   MagickSelectiveBlurImage(MagickWand *,const double,const double,const double),
   MagickSelectiveBlurImageChannel(MagickWand *,const ChannelType,const double,
     const double,const double),
-  MagickSeparateImageChannel(MagickWand *,const ChannelType),
+  MagickSeparateImage(MagickWand *),
   MagickSepiaToneImage(MagickWand *,const double),
   MagickSetImage(MagickWand *,const MagickWand *),
   MagickSetImageAlphaChannel(MagickWand *,const AlphaChannelType),
@@ -352,7 +352,7 @@ WandExport MagickProgressMonitor
 extern WandExport MagickWand
   *MagickAppendImages(MagickWand *,const MagickBooleanType),
   *MagickCoalesceImages(MagickWand *),
-  *MagickCombineImages(MagickWand *,const ChannelType),
+  *MagickCombineImages(MagickWand *),
   *MagickCompareImages(MagickWand *,const MagickWand *,const MetricType,
     double *),
   *MagickCompareImagesLayers(MagickWand *,const ImageLayerMethod),

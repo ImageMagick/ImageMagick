@@ -1469,12 +1469,14 @@ MagickExport Image *DistortResizeImage(const Image *image,
         *resize_alpha;
 
       /* distort alpha channel separately */
-      (void) SeparateImageChannel(tmp_image,TrueAlphaChannel);
+      PushPixelComponentMap(tmp_image,AlphaChannel);
+      (void) SeparateImage(tmp_image);
+      PopPixelComponentMap(tmp_image);
       (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel);
       resize_alpha=DistortImage(tmp_image,AffineDistortion,12,distort_args,
-            MagickTrue,exception),
+        MagickTrue,exception),
       tmp_image=DestroyImage(tmp_image);
-      if ( resize_alpha == (Image *) NULL )
+      if (resize_alpha == (Image *) NULL)
         return((Image *) NULL);
 
       /* distort the actual image containing alpha + VP alpha */
@@ -1482,16 +1484,15 @@ MagickExport Image *DistortResizeImage(const Image *image,
       if ( tmp_image == (Image *) NULL )
         return((Image *) NULL);
       (void) SetImageVirtualPixelMethod(tmp_image,
-                   TransparentVirtualPixelMethod);
+        TransparentVirtualPixelMethod);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
-            MagickTrue,exception),
+        MagickTrue,exception),
       tmp_image=DestroyImage(tmp_image);
       if ( resize_image == (Image *) NULL)
         {
           resize_alpha=DestroyImage(resize_alpha);
           return((Image *) NULL);
         }
-
       /* replace resize images alpha with the separally distorted alpha */
       (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel);
       (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel);

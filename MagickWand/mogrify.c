@@ -2585,10 +2585,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             /*
               Break channels into separate images.
-              WARNING: This can generate multiple images!
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            mogrify_image=SeparateImages(*image,channel,exception);
+            mogrify_image=SeparateImages(*image,exception);
             break;
           }
         if (LocaleCompare("sepia-tone",option+1) == 0)
@@ -7394,7 +7393,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               *combine_image;
 
             (void) SyncImagesSettings(mogrify_info,*images);
-            combine_image=CombineImages(*images,channel,exception);
+            combine_image=CombineImages(*images,exception);
             if (combine_image == (Image *) NULL)
               {
                 status=MagickFalse;

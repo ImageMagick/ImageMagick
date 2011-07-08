@@ -422,7 +422,8 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 %  The format of the WriteXTRNImage method is:
 %
-%      MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows.
 %

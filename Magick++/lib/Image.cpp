@@ -520,7 +520,9 @@ void Magick::Image::border( const Geometry &geometry_ )
 void Magick::Image::channel ( const ChannelType channel_ )
 {
   modifyImage();
-  SeparateImageChannel ( image(), channel_ );
+  PushPixelComponentMap( image(), channel_ );
+  SeparateImage ( image() );
+  PopPixelComponentMap( image() );
   throwImageException();
 }
 
