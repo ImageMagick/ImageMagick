@@ -4293,7 +4293,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         return(MagickFalse);
       /*
         Generate a alpha scaling factor to generate a 4D cone on colorspace.
-        Note that if one color is transparent, distance has no color component
+        Note that if one color is transparent, distance has no color component.
       */
       if (p->matte != MagickFalse)
         scale=(QuantumScale*p->alpha);
@@ -4467,9 +4467,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 */
 MagickExport void PopPixelComponentMap(Image *image)
 {
-  if (image->map == 0)
-    ThrowFatalException(ResourceLimitFatalError,"PixelComponentMapStack");
   image->map--;
+  if (image->map < 0)
+    ThrowFatalException(ResourceLimitFatalError,"PixelComponentMapStack");
 }
 
 /*
@@ -4500,9 +4500,9 @@ MagickExport void PopPixelComponentMap(Image *image)
 MagickExport void PushPixelComponentMap(Image *image,
   const ChannelType channel_mask)
 {
+  image->map++;
   if (image->map >= MaxPixelComponentMaps)
     ThrowFatalException(ResourceLimitFatalError,"PixelComponentMapStack");
-  image->map++;
   SetPixelComponentMap(image,channel_mask);
 }
 
