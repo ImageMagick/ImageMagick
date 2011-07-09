@@ -39,7 +39,7 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
+#include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
 #  if defined(__CYGWIN__)
 #    include <windows.h>
@@ -48,21 +48,21 @@
 #    include <wingdi.h>
 #  endif
 #endif
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/nt-feature.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/nt-feature.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -109,7 +109,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   ssize_t
@@ -209,16 +209,16 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(q,ScaleCharToQuantum(pBits->rgbRed));
-          SetPixelGreen(q,ScaleCharToQuantum(pBits->rgbGreen));
-          SetPixelBlue(q,ScaleCharToQuantum(pBits->rgbBlue));
-          SetPixelOpacity(q,OpaqueOpacity);
+          SetPixelRed(image,ScaleCharToQuantum(pBits->rgbRed),q);
+          SetPixelGreen(image,ScaleCharToQuantum(pBits->rgbGreen),q);
+          SetPixelBlue(image,ScaleCharToQuantum(pBits->rgbBlue),q);
+          SetPixelAlpha(image,OpaqueAlpha,q);
           pBits++;
-          q++;
+          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;

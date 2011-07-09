@@ -39,28 +39,29 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/utility.h"
 
 /*
   Forward declarations.
@@ -171,14 +172,11 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register IndexPacket
-    *indexes;
-
   register ssize_t
     i,
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register unsigned char
@@ -355,20 +353,20 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
-    indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (bit == 0)
         byte=(size_t) (*p++);
-      SetPixelIndex(indexes+x,(byte & 0x01) != 0 ? 0x01 : 0x00);
+      SetPixelIndex(image,(byte & 0x01) != 0 ? 0x01 : 0x00,q);
       bit++;
       byte>>=1;
       if (bit == 8)
         bit=0;
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -481,7 +479,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -538,12 +536,12 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
-      if (PixelIntensity(p) < ((MagickRealType) QuantumRange/2.0))
+      if (GetPixelIntensity(image,p) < ((MagickRealType) QuantumRange/2.0))
         byte|=0x80;
       bit++;
       if (bit == 8)
@@ -564,7 +562,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
           bit=0;
           byte=0;
         }
-        p++;
+        p+=GetPixelComponents(image);
       }
     if (bit != 0)
       {

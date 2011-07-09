@@ -45,9 +45,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include "wand/MagickWand.h"
-#include "magick/colorspace-private.h"
-#include "magick/string-private.h"
+#include "MagickWand/MagickWand.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/string-private.h"
 #include "validate.h"
 
 /*
@@ -121,7 +121,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
         (*fail)++;
         continue;
       }
-    status=CompareImageCommand(image_info,number_arguments,arguments,
+    status=CompareImagesCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
     for (j=0; j < number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
@@ -613,8 +613,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       if (IsRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
-      difference_image=CompareImageChannels(reference_image,reconstruct_image,
-        CompositeChannels,MeanSquaredErrorMetric,&distortion,exception);
+      difference_image=CompareImages(reference_image,reconstruct_image,
+        MeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
@@ -829,8 +829,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       if (IsRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
-      difference_image=CompareImageChannels(reference_image,reconstruct_image,
-        CompositeChannels,MeanSquaredErrorMetric,&distortion,exception);
+      difference_image=CompareImages(reference_image,reconstruct_image,
+        MeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)
@@ -1007,8 +1007,8 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       /*
         Compare reference to reconstruct image.
       */
-      difference_image=CompareImageChannels(reference_image,reconstruct_image,
-        CompositeChannels,MeanSquaredErrorMetric,&distortion,exception);
+      difference_image=CompareImages(reference_image,reconstruct_image,
+        MeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
       if (difference_image == (Image *) NULL)

@@ -8,7 +8,6 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
-#include "Magick++/Include.h"
 #include <cstdlib>
 #include <string>
 #include <string.h>
@@ -17,6 +16,7 @@
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <strings.h>
 #endif
+#include "Magick++/Include.h"
 
 using namespace std;
 
@@ -27,7 +27,6 @@ using namespace std;
 #include "Magick++/ImageRef.h"
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 
 MagickDLLDeclExtern const char *Magick::borderGeometryDefault = "6x6+0+0";
@@ -346,11 +345,12 @@ void Magick::Image::addNoiseChannel( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_);
   MagickCore::Image* newImage =
-    AddNoiseImageChannel ( image(),
-                           channel_,
+    AddNoiseImage ( image(),
                            noiseType_,
                            &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -495,8 +495,10 @@ void Magick::Image::blurChannel( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    BlurImageChannel( image(), channel_,radius_, sigma_, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, &exceptionInfo);
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -520,26 +522,26 @@ void Magick::Image::border( const Geometry &geometry_ )
 void Magick::Image::channel ( const ChannelType channel_ )
 {
   modifyImage();
-  SeparateImageChannel ( image(), channel_ );
+  PushPixelComponentMap( image(), channel_ );
+  SeparateImage ( image() );
+  PopPixelComponentMap( image() );
   throwImageException();
 }
 
 // Set or obtain modulus channel depth
-void Magick::Image::channelDepth ( const ChannelType channel_,
-                                   const size_t depth_)
+void Magick::Image::channelDepth ( const size_t depth_ )
 {
   modifyImage();
-  SetImageChannelDepth( image(), channel_, depth_);
+  SetImageDepth( image(), depth_);
   throwImageException();
 }
-size_t Magick::Image::channelDepth ( const ChannelType channel_ )
+size_t Magick::Image::channelDepth ( )
 {
   size_t channel_depth;
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  channel_depth=GetImageChannelDepth( constImage(), channel_,
-                                      &exceptionInfo );
+  channel_depth=GetImageDepth( constImage(), &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
   return channel_depth;
@@ -581,9 +583,9 @@ void Magick::Image::cdl ( const std::string &cdl_ )
 }
 
 // Colorize
-void Magick::Image::colorize ( const unsigned int opacityRed_,
-                               const unsigned int opacityGreen_,
-                               const unsigned int opacityBlue_,
+void Magick::Image::colorize ( const unsigned int alphaRed_,
+                               const unsigned int alphaGreen_,
+                               const unsigned int alphaBlue_,
 			       const Color &penColor_ )
 {
   if ( !penColor_.isValid() )
@@ -592,22 +594,22 @@ void Magick::Image::colorize ( const unsigned int opacityRed_,
 			    "Pen color argument is invalid");
   }
 
-  char opacity[MaxTextExtent];
-  FormatLocaleString(opacity,MaxTextExtent,"%u/%u/%u",opacityRed_,opacityGreen_,opacityBlue_);
+  char alpha[MaxTextExtent];
+  FormatLocaleString(alpha,MaxTextExtent,"%u/%u/%u",alphaRed_,alphaGreen_,alphaBlue_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-  ColorizeImage ( image(), opacity,
+  ColorizeImage ( image(), alpha,
 		  penColor_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
-void Magick::Image::colorize ( const unsigned int opacity_,
+void Magick::Image::colorize ( const unsigned int alpha_,
 			       const Color &penColor_ )
 {
-  colorize( opacity_, opacity_, opacity_, penColor_ );
+  colorize( alpha_, alpha_, alpha_, penColor_ );
 }
 
 // Apply a color matrix to the image channels.  The user supplied
@@ -960,22 +962,21 @@ void Magick::Image::floodFillColor( const Geometry &point_,
 }
 
 // Floodfill pixels matching color (within fuzz factor) of target
-// pixel(x,y) with replacement opacity value using method.
+// pixel(x,y) with replacement alpha value using method.
 void Magick::Image::floodFillOpacity( const ssize_t x_,
                                       const ssize_t y_,
-                                      const unsigned int opacity_,
+                                      const unsigned int alpha_,
                                       const PaintMethod method_ )
 {
   modifyImage();
-  MagickPixelPacket target;
-  GetMagickPixelPacket(image(),&target);
+  PixelInfo target;
+  GetPixelInfo(image(),&target);
   PixelPacket pixel=static_cast<PixelPacket>(pixelColor(x_,y_));
   target.red=pixel.red;
   target.green=pixel.green;
   target.blue=pixel.blue;
-  target.opacity=opacity_;
+  target.alpha=alpha_;
   FloodfillPaintImage ( image(),
-                        DefaultChannels,
                         options()->drawInfo(), // const DrawInfo *draw_info
                         &target,
                   			static_cast<ssize_t>(x_), static_cast<ssize_t>(y_),
@@ -998,15 +999,14 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   // Get pixel view
   Pixels pixels(*this);
   // Fill image
-  PixelPacket *p = pixels.get(x_, y_, 1, 1 );
-  MagickPixelPacket target;
-  GetMagickPixelPacket(constImage(),&target);
-  target.red=p->red;
-  target.green=p->green;
-  target.blue=p->blue;
+  Quantum *p = pixels.get(x_, y_, 1, 1 );
+  PixelInfo target;
+  GetPixelInfo(constImage(),&target);
+  target.red=GetPixelRed(constImage(),p);
+  target.green=GetPixelGreen(constImage(),p);
+  target.blue=GetPixelBlue(constImage(),p);
   if (p)
     FloodfillPaintImage ( image(), // Image *image
-                          DefaultChannels,
                           options()->drawInfo(), // const DrawInfo *draw_info
                           &target, // const MagickPacket target
                           static_cast<ssize_t>(x_), // const ssize_t x_offset
@@ -1035,13 +1035,12 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   // Set drawing fill pattern
   options()->fillPattern(texture_.constImage());
 
-  MagickPixelPacket target;
-  GetMagickPixelPacket(constImage(),&target);
+  PixelInfo target;
+  GetPixelInfo(constImage(),&target);
   target.red=static_cast<PixelPacket>(borderColor_).red;
   target.green=static_cast<PixelPacket>(borderColor_).green;
   target.blue=static_cast<PixelPacket>(borderColor_).blue;
   FloodfillPaintImage ( image(),
-                        DefaultChannels,
                         options()->drawInfo(),
                         &target,
                         static_cast<ssize_t>(x_),
@@ -1116,7 +1115,7 @@ void Magick::Image::fx ( const std::string expression )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    FxImageChannel ( image(), DefaultChannels, expression.c_str(), &exceptionInfo );
+    FxImage ( image(), expression.c_str(), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1126,8 +1125,10 @@ void Magick::Image::fx ( const std::string expression,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel );
   MagickCore::Image* newImage =
-    FxImageChannel ( image(), channel, expression.c_str(), &exceptionInfo );
+    FxImage ( image(), expression.c_str(), &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1136,11 +1137,8 @@ void Magick::Image::fx ( const std::string expression,
 // Gamma correct image
 void Magick::Image::gamma ( const double gamma_ )
 {
-  char gamma[MaxTextExtent + 1];
-  FormatLocaleString( gamma, MaxTextExtent, "%3.6f", gamma_);
-
   modifyImage();
-  GammaImage ( image(), gamma );
+  GammaImage ( image(), gamma_ );
 }
 
 void Magick::Image::gamma ( const double gammaRed_,
@@ -1152,7 +1150,7 @@ void Magick::Image::gamma ( const double gammaRed_,
 		gammaRed_, gammaGreen_, gammaBlue_);
 
   modifyImage();
-  GammaImage ( image(), gamma );
+  GammaImage ( image(), atof(gamma) );
   throwImageException();
 }
 
@@ -1177,8 +1175,10 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    GaussianBlurImageChannel( image(), channel_, width_, sigma_, &exceptionInfo );
+    GaussianBlurImage( image(), width_, sigma_, &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1244,31 +1244,7 @@ void Magick::Image::level ( const double black_point,
                             const double gamma )
 {
   modifyImage();
-  char levels[MaxTextExtent];
-  FormatLocaleString( levels, MaxTextExtent, "%g,%g,%g",black_point,white_point,gamma);
-  (void) LevelImage( image(), levels );
-  throwImageException();
-}
-
-// Level image channel. Adjust the levels of the image channel by
-// scaling the values falling between specified white and black points
-// to the full available quantum range. The parameters provided
-// represent the black, mid (gamma), and white points.  The black
-// point specifies the darkest color in the image. Colors darker than
-// the black point are set to zero. Mid point (gamma) specifies a
-// gamma correction to apply to the image. White point specifies the
-// lightest color in the image.  Colors brighter than the white point
-// are set to the maximum quantum value. The black and white point
-// have the valid range 0 to QuantumRange while gamma has a useful range of
-// 0 to ten.
-void  Magick::Image::levelChannel ( const Magick::ChannelType channel,
-                                    const double black_point,
-                                    const double white_point,
-                                    const double gamma )
-{
-  modifyImage();
-  (void) LevelImageChannel( image(), channel, black_point, white_point,
-                            gamma );
+  (void) LevelImage( image(), black_point, white_point, gamma );
   throwImageException();
 }
 
@@ -1293,21 +1269,23 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
              mapImage_.constImage());
   throwImageException();
 }
-// Floodfill designated area with replacement opacity value
+// Floodfill designated area with replacement alpha value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
-				     const unsigned int opacity_,
+				     const unsigned int alpha_,
 				     const ssize_t x_, const ssize_t y_,
 				     const Magick::PaintMethod method_ )
 {
   modifyImage();
-  MagickPixelPacket target;
-  GetMagickPixelPacket(constImage(),&target);
+  PixelInfo target;
+  GetPixelInfo(constImage(),&target);
   target.red=static_cast<PixelPacket>(target_).red;
   target.green=static_cast<PixelPacket>(target_).green;
   target.blue=static_cast<PixelPacket>(target_).blue;
-  target.opacity=opacity_;
-  FloodfillPaintImage ( image(), OpacityChannel, options()->drawInfo(), &target,
-    x_, y_, method_ == FloodfillMethod ? MagickFalse : MagickTrue);
+  target.alpha=alpha_;
+  PushPixelComponentMap( image(), AlphaChannel );
+  FloodfillPaintImage ( image(), options()->drawInfo(), &target, x_, y_,
+    method_ == FloodfillMethod ? MagickFalse : MagickTrue);
+  PopPixelComponentMap( image() );
   throwImageException();
 }
 
@@ -1399,16 +1377,16 @@ void Magick::Image::oilPaint ( const double radius_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-// Set or attenuate the opacity channel. If the image pixels are
-// opaque then they are set to the specified opacity value, otherwise
-// they are blended with the supplied opacity value.  The value of
-// opacity_ ranges from 0 (completely opaque) to QuantumRange. The defines
-// OpaqueOpacity and TransparentOpacity are available to specify
+// Set or attenuate the alpha channel. If the image pixels are
+// opaque then they are set to the specified alpha value, otherwise
+// they are blended with the supplied alpha value.  The value of
+// alpha_ ranges from 0 (completely opaque) to QuantumRange. The defines
+// OpaqueAlpha and TransparentAlpha are available to specify
 // completely opaque or completely transparent, respectively.
-void Magick::Image::opacity ( const unsigned int opacity_ )
+void Magick::Image::alpha ( const unsigned int alpha_ )
 {
   modifyImage();
-  SetImageOpacity( image(), opacity_ );
+  SetImageOpacity( image(), alpha_ );
 }
 
 // Change the color of an opaque pixel to the pen color.
@@ -1430,8 +1408,8 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
   std::string opaqueColor = opaqueColor_;
   std::string penColor = penColor_;
 
-  MagickPixelPacket opaque;
-  MagickPixelPacket pen;
+  PixelInfo opaque;
+  PixelInfo pen;
   (void) QueryMagickColor(std::string(opaqueColor_).c_str(),&opaque,&image()->exception);
   (void) QueryMagickColor(std::string(penColor_).c_str(),&pen,&image()->exception);
   OpaquePaintImage ( image(), &opaque, &pen, MagickFalse );
@@ -1508,7 +1486,9 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  EvaluateImageChannel( image(), channel_, operator_, rvalue_, &exceptionInfo);
+  PushPixelComponentMap( image(), channel_ );
+  EvaluateImage( image(), operator_, rvalue_, &exceptionInfo);
+  PopPixelComponentMap( image() );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1529,8 +1509,9 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
   geometry.y = y_;
   MagickCore::Image *crop_image = CropImage( image(), &geometry,
     &exceptionInfo );
-  EvaluateImageChannel( crop_image, channel_, operator_, rvalue_,
-    &exceptionInfo );
+  PushPixelComponentMap( image(), channel_);
+  EvaluateImage( crop_image, operator_, rvalue_, &exceptionInfo );
+  PopPixelComponentMap( image() );
   (void) CompositeImage( image(), image()->matte != MagickFalse ?
     OverCompositeOp : CopyCompositeOp, crop_image, geometry.x, geometry.y );
   crop_image = DestroyImageList(crop_image);
@@ -1570,10 +1551,11 @@ void Magick::Image::randomThresholdChannel( const Geometry &thresholds_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  (void) RandomThresholdImageChannel( image(),
-                                      channel_,
+  PushPixelComponentMap( image(), channel_);
+  (void) RandomThresholdImage( image(),
                                       static_cast<std::string>(thresholds_).c_str(),
                                       &exceptionInfo );
+  PopPixelComponentMap( image() );
   throwImageException();
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1886,12 +1868,13 @@ void Magick::Image::sharpenChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    SharpenImageChannel( image(),
-                         channel_,
+    SharpenImage( image(),
                          radius_,
                          sigma_,
                          &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1932,7 +1915,7 @@ void Magick::Image::shear ( const double xShearAngle_,
 void Magick::Image::sigmoidalContrast ( const size_t sharpen_, const double contrast, const double midpoint )
 {
   modifyImage();
-  (void) SigmoidalContrastImageChannel( image(), DefaultChannels, (MagickBooleanType) sharpen_, contrast, midpoint );
+  (void) SigmoidalContrastImage( image(), (MagickBooleanType) sharpen_, contrast, midpoint );
   throwImageException();
 }
 
@@ -1955,8 +1938,11 @@ void Magick::Image::sparseColor ( const ChannelType channel,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage = SparseColorImage ( image(), channel, method,
+
+  PushPixelComponentMap( image(), channel );
+  MagickCore::Image* newImage = SparseColorImage ( image(), method,
     number_arguments, arguments, &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2062,10 +2048,10 @@ void Magick::Image::transparent ( const Color &color_ )
 
   std::string color = color_;
 
-  MagickPixelPacket target;
+  PixelInfo target;
   (void) QueryMagickColor(std::string(color_).c_str(),&target,&image()->exception);
   modifyImage();
-  TransparentPaintImage ( image(), &target, TransparentOpacity, MagickFalse );
+  TransparentPaintImage ( image(), &target, TransparentAlpha, MagickFalse );
   throwImageException();
 }
 
@@ -2082,15 +2068,15 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
   std::string colorLow = colorLow_;
   std::string colorHigh = colorHigh_;
 
-  MagickPixelPacket targetLow;
-  MagickPixelPacket targetHigh;
+  PixelInfo targetLow;
+  PixelInfo targetHigh;
   (void) QueryMagickColor(std::string(colorLow_).c_str(),&targetLow,
     &image()->exception);
   (void) QueryMagickColor(std::string(colorHigh_).c_str(),&targetHigh,
     &image()->exception);
   modifyImage();
   TransparentPaintImageChroma ( image(), &targetLow, &targetHigh,
-    TransparentOpacity, MagickFalse );
+    TransparentAlpha, MagickFalse );
   throwImageException();
 }
 
@@ -2146,14 +2132,15 @@ void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PushPixelComponentMap( image(), channel_ );
   MagickCore::Image* newImage =
-    UnsharpMaskImageChannel( image(),
-                             channel_,
+    UnsharpMaskImage( image(),
                              radius_,
                              sigma_,
                              amount_,
                              threshold_,
                              &exceptionInfo );
+  PopPixelComponentMap( image() );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -3205,7 +3192,7 @@ void Magick::Image::matte ( const bool matteFlag_ )
   // desired, then set the matte channel to opaque.
   if ((matteFlag_ && !constImage()->matte) ||
       (constImage()->matte && !matteFlag_))
-    SetImageOpacity(image(),OpaqueOpacity);
+    SetImageOpacity(image(),OpaqueAlpha);
 
   image()->matte = (MagickBooleanType) matteFlag_;
 }
@@ -3367,7 +3354,9 @@ void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
   // Get pixel view
   Pixels pixels(*this);
     // Set pixel value
-  *(pixels.get(x_, y_, 1, 1 )) = color_;
+  Quantum *pixel = pixels.get(x_, y_, 1, 1 );
+  PixelPacket packet = color_;
+  MagickCore::SetPixelPacket(constImage(),&packet,pixel);
   // Tell ImageMagick that pixels have been updated
   pixels.sync();
 
@@ -3381,19 +3370,12 @@ Magick::Color Magick::Image::pixelColor ( const ssize_t x_,
   ClassType storage_class;
   storage_class = classType();
   // DirectClass
-  const PixelPacket* pixel = getConstPixels( x_, y_, 1, 1 );
-  if ( storage_class == DirectClass )
+  const Quantum* pixel = getConstPixels( x_, y_, 1, 1 );
+  if ( pixel )
     {
-      if ( pixel )
-        return Color( *pixel );
-    }
-
-  // PseudoClass
-  if ( storage_class == PseudoClass )
-    {
-      const IndexPacket* indexes = getConstIndexes();
-      if ( indexes )
-        return colorMap( (size_t) *indexes );
+      PixelPacket packet;
+      MagickCore::GetPixelPacket(constImage(),pixel,&packet);
+      return Color( packet );
     }
 
   return Color(); // invalid
@@ -3581,7 +3563,7 @@ void Magick::Image::splice( const Geometry &geometry_ )
 // Obtain image statistics. Statistics are normalized to the range of
 // 0.0 to 1.0 and are output to the specified ImageStatistics
 // structure.
-void Magick::Image::statistics ( ImageStatistics *statistics ) const
+void Magick::Image::statistics ( ImageStatistics *statistics ) 
 {
   double
     maximum,
@@ -3589,40 +3571,47 @@ void Magick::Image::statistics ( ImageStatistics *statistics ) const
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) GetImageChannelRange(constImage(),RedChannel,&minimum,&maximum,
-    &exceptionInfo);
+
+  PushPixelComponentMap( image(), RedChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->red.minimum=minimum;
-	statistics->red.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),RedChannel,
-    &statistics->red.mean,&statistics->red.standard_deviation,&exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),RedChannel,
-    &statistics->red.kurtosis,&statistics->red.skewness,&exceptionInfo);
-  (void) GetImageChannelRange(constImage(),GreenChannel,&minimum,&maximum,
-    &exceptionInfo);
+  statistics->red.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->red.mean,
+    &statistics->red.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->red.kurtosis,
+    &statistics->red.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
+  PushPixelComponentMap( image(), GreenChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->green.minimum=minimum;
-	statistics->green.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),GreenChannel,
-    &statistics->green.mean,&statistics->green.standard_deviation,
-    &exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),GreenChannel,
-    &statistics->green.kurtosis,&statistics->green.skewness,&exceptionInfo);
-  (void) GetImageChannelRange(constImage(),BlueChannel,&minimum,&maximum,
-    &exceptionInfo);
+  statistics->green.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->green.mean,
+    &statistics->green.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->green.kurtosis,
+    &statistics->green.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
+  PushPixelComponentMap( image(), GreenChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
   statistics->blue.minimum=minimum;
-	statistics->blue.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),BlueChannel,
-    &statistics->blue.mean,&statistics->blue.standard_deviation,&exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),BlueChannel,
-    &statistics->blue.kurtosis,&statistics->blue.skewness,&exceptionInfo);
-  (void) GetImageChannelRange(constImage(),OpacityChannel,&minimum,&maximum,
-    &exceptionInfo);
-  statistics->opacity.minimum=minimum;
-	statistics->opacity.maximum=maximum;
-  (void) GetImageChannelMean(constImage(),OpacityChannel,
-    &statistics->opacity.mean,&statistics->opacity.standard_deviation,
-    &exceptionInfo);
-  (void) GetImageChannelKurtosis(constImage(),OpacityChannel,
-    &statistics->opacity.kurtosis,&statistics->opacity.skewness,&exceptionInfo);
+  statistics->blue.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->blue.mean,
+    &statistics->blue.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->blue.kurtosis,
+    &statistics->blue.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
+  PushPixelComponentMap( image(), AlphaChannel);
+  (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
+  statistics->alpha.minimum=minimum;
+  statistics->alpha.maximum=maximum;
+  (void) GetImageMean( image(),&statistics->alpha.mean,
+    &statistics->alpha.standard_deviation,&exceptionInfo);
+  (void) GetImageKurtosis( image(),&statistics->alpha.kurtosis,
+    &statistics->alpha.skewness,&exceptionInfo);
+  PopPixelComponentMap( image() );
+
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -3796,16 +3785,6 @@ void Magick::Image::textEncoding ( const std::string &encoding_ )
 std::string Magick::Image::textEncoding ( void ) const
 {
   return constOptions()->textEncoding( );
-}
-
-void Magick::Image::tileName ( const std::string &tileName_ )
-{
-  modifyImage();
-  options()->tileName( tileName_ );
-}
-std::string Magick::Image::tileName ( void ) const
-{
-  return constOptions()->tileName( );
 }
 
 size_t Magick::Image::totalColors ( void )
@@ -3983,14 +3962,14 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 
 // Transfers read-only pixels from the image to the pixel cache as
 // defined by the specified region
-const Magick::PixelPacket* Magick::Image::getConstPixels
+const Magick::Quantum* Magick::Image::getConstPixels
   ( const ssize_t x_, const ssize_t y_,
     const size_t columns_,
     const size_t rows_ ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  const PixelPacket* p = (*GetVirtualPixels)( constImage(),
+  const Quantum* p = (*GetVirtualPixels)( constImage(),
                                                 x_, y_,
                                                 columns_, rows_,
                                                 &exceptionInfo );
@@ -3999,10 +3978,10 @@ const Magick::PixelPacket* Magick::Image::getConstPixels
   return p;
 }
 
-// Obtain read-only pixel indexes (valid for PseudoClass images)
-const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
+// Obtain read-only pixel associated pixels channels
+const void* Magick::Image::getConstMetacontent ( void ) const
 {
-  const Magick::IndexPacket* result = GetVirtualIndexQueue( constImage() );
+  const void* result = GetVirtualMetacontent( constImage() );
 
   if( !result )
     throwImageException();
@@ -4010,10 +3989,10 @@ const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
   return result;
 }
 
-// Obtain image pixel indexes (valid for PseudoClass images)
-Magick::IndexPacket* Magick::Image::getIndexes ( void )
+// Obtain image pixel associated pixels channels
+void* Magick::Image::getMetacontent ( void )
 {
-  Magick::IndexPacket* result = GetAuthenticIndexQueue( image() );
+  void* result = GetAuthenticMetacontent( image() );
 
   if( !result )
     throwImageException();
@@ -4024,14 +4003,14 @@ Magick::IndexPacket* Magick::Image::getIndexes ( void )
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently
 // transferred back to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::getPixels ( const ssize_t x_, const ssize_t y_,
+Magick::Quantum* Magick::Image::getPixels ( const ssize_t x_, const ssize_t y_,
 						const size_t columns_,
 						const size_t rows_ )
 {
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  PixelPacket* result = (*GetAuthenticPixels)( image(),
+  Quantum* result = (*GetAuthenticPixels)( image(),
                                            x_, y_,
                                            columns_, rows_, &exceptionInfo );
   throwException( exceptionInfo );
@@ -4043,14 +4022,14 @@ Magick::PixelPacket* Magick::Image::getPixels ( const ssize_t x_, const ssize_t 
 // Allocates a pixel cache region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel cache to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::setPixels ( const ssize_t x_, const ssize_t y_,
+Magick::Quantum* Magick::Image::setPixels ( const ssize_t x_, const ssize_t y_,
 						const size_t columns_,
 						const size_t rows_ )
 {
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  PixelPacket* result = (*QueueAuthenticPixels)( image(),
+  Quantum* result = (*QueueAuthenticPixels)( image(),
                                            x_, y_,
                                            columns_, rows_, &exceptionInfo );
   throwException( exceptionInfo );

@@ -230,9 +230,6 @@ namespace Magick
     void            textEncoding ( const std::string &encoding_ );
     std::string     textEncoding ( void ) const;
     
-    void            tileName ( const std::string &tileName_ );
-    std::string     tileName ( void ) const;
-
     // Image representation type
     void            type ( const ImageType type_ );
     ImageType       type ( void ) const;

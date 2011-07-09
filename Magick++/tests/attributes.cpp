@@ -1362,32 +1362,6 @@ int main( int /*argc*/, char ** argv)
     image.subRange(0);
 
     //
-    // tileName
-    //
-    if ( image.tileName().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", tileName default is not empty string as expected" << endl;
-      }
-    
-    image.tileName("How now brown cow?");
-    if ( image.tileName() != "How now brown cow?" )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", tileName set/get failed" << endl;
-      }
-
-    image.tileName( string() );
-    if ( image.tileName().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-             << ", tileName failed to unset" << endl;
-      }
-
-    //
     // totalColors
     //
     if ( image.totalColors() != 2 )

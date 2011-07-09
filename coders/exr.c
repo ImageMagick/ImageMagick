@@ -39,24 +39,25 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/property.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/resource_.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/utility.h"
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
 #include <ImfCRgbaFile.h>
 
@@ -157,7 +158,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   ssize_t
@@ -217,22 +218,22 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
     ImfInputSetFrameBuffer(file,scanline-min_x-image->columns*(min_y+y),1,
       image->columns);
     ImfInputReadPixels(file,min_y+y,min_y+y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].r)));
-      SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].g)));
-      SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].b)));
-      SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*
-        ImfHalfToFloat(scanline[x].a)));
-      q++;
+      SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].r)),q);
+      SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].g)),q);
+      SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].b)),q);
+      SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+        ImfHalfToFloat(scanline[x].a)),q);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -362,7 +363,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -427,23 +428,22 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ImfFloatToHalf(QuantumScale*GetPixelRed(p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetPixelRed(image,p),&half_quantum);
       scanline[x].r=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetPixelGreen(p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetPixelGreen(image,p),&half_quantum);
       scanline[x].g=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetPixelBlue(p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*GetPixelBlue(image,p),&half_quantum);
       scanline[x].b=half_quantum;
       if (image->matte == MagickFalse)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(1.0-QuantumScale*GetPixelOpacity(p),
-          &half_quantum);
+        ImfFloatToHalf(QuantumScale*GetPixelAlpha(image,p),&half_quantum);
       scanline[x].a=half_quantum;
-      p++;
+      p+=GetPixelComponents(image);
     }
     ImfOutputSetFrameBuffer(file,scanline-(y*image->columns),1,image->columns);
     ImfOutputWritePixels(file,1);

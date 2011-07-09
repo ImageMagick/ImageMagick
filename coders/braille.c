@@ -37,28 +37,29 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color-private.h"
-#include "magick/colorspace.h"
-#include "magick/constitute.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/module.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/property.h"
-#include "magick/quantize.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantize.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/utility.h"
 
 /*
   Forward declarations.
@@ -175,9 +176,6 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   const char
     *value;
 
-  IndexPacket
-    polarity;
-
   int
     unicode = 0,
     iso_11548_1 = 0;
@@ -185,10 +183,10 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const IndexPacket
-    *indexes;
+  Quantum
+    polarity;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -250,11 +248,11 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   (void) SetImageType(image,BilevelType);
   polarity = 0;
   if (image->storage_class == PseudoClass) {
-    polarity=(IndexPacket) (PixelIntensityToQuantum(&image->colormap[0]) >=
+    polarity=(Quantum) (GetPixelPacketIntensity(&image->colormap[0]) >=
       (Quantum) (QuantumRange/2));
     if (image->colors == 2)
-      polarity=(IndexPacket) (PixelIntensityToQuantum(&image->colormap[0]) >=
-         PixelIntensityToQuantum(&image->colormap[1]));
+      polarity=(Quantum) (GetPixelPacketIntensity(&image->colormap[0]) >=
+        GetPixelPacketIntensity(&image->colormap[1]));
   }
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) cell_height)
   {
@@ -262,9 +260,8 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       cell_height = (size_t) (image->rows-y);
 
     p=GetVirtualPixels(image,0,y,image->columns,cell_height,&image->exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
-    indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x+=2)
     {
       unsigned char cell = 0;
@@ -274,9 +271,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       {
 #define do_cell(dx,dy,bit) do { \
         if (image->storage_class == PseudoClass) \
-          cell |= (GetPixelIndex(indexes+x+dx+dy*image->columns) == polarity) << bit; \
+          cell |= (GetPixelIndex(image,p+x+dx+dy*image->columns) == polarity) << bit; \
         else \
-          cell |= (GetPixelGreen(p+x+dx+dy*image->columns) == 0) << bit; \
+          cell |= (GetPixelGreen(image,p+x+dx+dy*image->columns) == 0) << bit; \
 } while (0) 
 
         do_cell(0,0,0);

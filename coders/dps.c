@@ -39,26 +39,27 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/client.h"
-#include "magick/colormap.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/utility.h"
-#include "magick/xwindow-private.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/client.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/utility.h"
+#include "MagickCore/xwindow-private.h"
 #if defined(MAGICKCORE_DPS_DELEGATE)
 #include <DPS/dpsXclient.h>
 #include <DPS/dpsXpreview.h>
@@ -120,13 +121,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Pixmap
     pixmap;
 
-  register IndexPacket
-    *indexes;
-
   register ssize_t
     i;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register size_t
@@ -376,18 +374,18 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
-            SetPixelRed(q,ScaleShortToQuantum(colors[index].red));
+            SetPixelRed(image,ScaleShortToQuantum(colors[index].red),q);
             index=(pixel >> green_shift) & green_mask;
-            SetPixelGreen(q,ScaleShortToQuantum(colors[index].green));
+            SetPixelGreen(image,ScaleShortToQuantum(colors[index].green),q);
             index=(pixel >> blue_shift) & blue_mask;
-            SetPixelBlue(q,ScaleShortToQuantum(colors[index].blue));
-            q++;
+            SetPixelBlue(image,ScaleShortToQuantum(colors[index].blue),q);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -398,23 +396,21 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (PixelPacket *) NULL)
+          if (q == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
             color=(color*65535L)/red_mask;
-            SetPixelRed(q,ScaleShortToQuantum((unsigned short) color));
+            SetPixelRed(image,ScaleShortToQuantum((unsigned short) color),q);
             color=(pixel >> green_shift) & green_mask;
             color=(color*65535L)/green_mask;
-            SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
-              color));
+            SetPixelGreen(image,ScaleShortToQuantum((unsigned short) color),q);
             color=(pixel >> blue_shift) & blue_mask;
             color=(color*65535L)/blue_mask;
-            SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
-              color));
-            q++;
+            SetPixelBlue(image,ScaleShortToQuantum((unsigned short) color),q);
+            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -451,12 +447,13 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
-        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-          SetPixelIndex(indexes+x,(unsigned short)
-            XGetPixel(dps_image,x,y));
+        {
+          SetPixelIndex(image,(unsigned short) XGetPixel(dps_image,x,y),q);
+          q+=GetPixelComponents(image);
+        }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
@@ -497,14 +494,14 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (y=0; y < (ssize_t) image->rows; y++)
               {
                 q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-                if (q == (PixelPacket *) NULL)
+                if (q == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  SetPixelOpacity(q,OpaqueOpacity);
+                  SetPixelAlpha(image,OpaqueAlpha,q);
                   if (XGetPixel(matte_image,x,y) == 0)
-                    SetPixelOpacity(q,TransparentOpacity);
-                  q++;
+                    SetPixelAlpha(image,TransparentAlpha,q);
+                  q+=GetPixelComponents(image);
                 }
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;

@@ -39,25 +39,26 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -99,7 +100,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register ssize_t
@@ -169,17 +170,17 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (PixelPacket *) NULL)
+      if (q == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelAlpha(q,ScaleCharToQuantum(*p++));
-        SetPixelRed(q,ScaleCharToQuantum(*p++));
-        SetPixelGreen(q,ScaleCharToQuantum(*p++));
-        SetPixelBlue(q,ScaleCharToQuantum(*p++));
-        if (q->opacity != OpaqueOpacity)
+        SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
+        SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+        SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+        SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+        if (GetPixelAlpha(image,q) != OpaqueAlpha)
           image->matte=MagickTrue;
-        q++;
+        q+=GetPixelComponents(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -320,7 +321,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  register const PixelPacket
+  register const Quantum
     *restrict p;
 
   register ssize_t
@@ -371,17 +372,17 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
       q=pixels;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar((Quantum) (QuantumRange-(image->matte !=
-          MagickFalse ? GetPixelOpacity(p) : OpaqueOpacity)));
-        *q++=ScaleQuantumToChar(GetPixelRed(p));
-        *q++=ScaleQuantumToChar(GetPixelGreen(p));
-        *q++=ScaleQuantumToChar(GetPixelBlue(p));
-        p++;
+        *q++=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
+          GetPixelAlpha(image,p) : OpaqueAlpha));
+        *q++=ScaleQuantumToChar(GetPixelRed(image,p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+        p+=GetPixelComponents(image);
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);
       if (count != (ssize_t) (q-pixels))

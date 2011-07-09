@@ -39,25 +39,26 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/colorspace.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -104,7 +105,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   ssize_t
@@ -150,7 +151,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) (image->columns >> 1); x++)
     {
@@ -158,14 +159,14 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       y1=(unsigned char) ReadBlobByte(image);
       v=(unsigned char) ReadBlobByte(image);
       y2=(unsigned char) ReadBlobByte(image);
-      SetPixelRed(q,ScaleCharToQuantum(y1));
-      SetPixelGreen(q,ScaleCharToQuantum(u));
-      SetPixelBlue(q,ScaleCharToQuantum(v));
-      q++;
-      SetPixelRed(q,ScaleCharToQuantum(y2));
-      SetPixelGreen(q,ScaleCharToQuantum(u));
-      SetPixelBlue(q,ScaleCharToQuantum(v));
-      q++;
+      SetPixelRed(image,ScaleCharToQuantum(y1),q);
+      SetPixelGreen(image,ScaleCharToQuantum(u),q);
+      SetPixelBlue(image,ScaleCharToQuantum(v),q);
+      q+=GetPixelComponents(image);
+      SetPixelRed(image,ScaleCharToQuantum(y2),q);
+      SetPixelGreen(image,ScaleCharToQuantum(u),q);
+      SetPixelBlue(image,ScaleCharToQuantum(v),q);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -287,7 +288,7 @@ ModuleExport void UnregisterUYVYImage(void)
 static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   Image *image)
 {
-  MagickPixelPacket
+  PixelInfo
     pixel;
 
   Image
@@ -297,7 +298,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     full,
     status;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -328,29 +329,29 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     ThrowWriterException(ResourceLimitError,image->exception.reason);
   (void) TransformImageColorspace(uyvy_image,YCbCrColorspace);
   full=MagickFalse;
-  (void) ResetMagickMemory(&pixel,0,sizeof(MagickPixelPacket));
+  (void) ResetMagickMemory(&pixel,0,sizeof(PixelInfo));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(uyvy_image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (full != MagickFalse)
         {
-          pixel.green=(pixel.green+GetPixelGreen(p))/2;
-          pixel.blue=(pixel.blue+GetPixelBlue(p))/2;
+          pixel.green=(pixel.green+GetPixelGreen(uyvy_image,p))/2;
+          pixel.blue=(pixel.blue+GetPixelBlue(uyvy_image,p))/2;
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.green));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.red));
           (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.blue));
           (void) WriteBlobByte(image,ScaleQuantumToChar(
-             GetPixelRed(p)));
+            GetPixelRed(uyvy_image,p)));
         }
-      pixel.red=(double) GetPixelRed(p);
-      pixel.green=(double) GetPixelGreen(p);
-      pixel.blue=(double) GetPixelBlue(p);
+      pixel.red=(double) GetPixelRed(uyvy_image,p);
+      pixel.green=(double) GetPixelGreen(uyvy_image,p);
+      pixel.blue=(double) GetPixelBlue(uyvy_image,p);
       full=full == MagickFalse ? MagickTrue : MagickFalse;
-      p++;
+      p+=GetPixelComponents(uyvy_image);
     }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);

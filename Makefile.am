@@ -33,12 +33,12 @@ MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -av
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
 
-DISTCLEANFILES = _configs.sed magick/magick-config.h
+DISTCLEANFILES = _configs.sed MagickCore/magick-config.h
 
 ## Make sure these will be cleaned even when they're not built by default.
 CLEANFILES = \
 	$(LTDL_CLEANFILES) \
-	$(WAND_CLEANFILES) \
+	$(MAGICKWAND_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES)
@@ -48,8 +48,8 @@ bin_PROGRAMS = \
 
 # Binary scripts
 bin_SCRIPTS = \
-	$(MAGICK_BIN_SCRPTS) \
-	$(WAND_BIN_SCRPTS) \
+	$(MAGICKCORE_BIN_SCRPTS) \
+	$(MAGICKWAND_BIN_SCRPTS) \
 	$(MAGICKPP_SCRPTS)
 
 include_HEADERS = \
@@ -58,7 +58,7 @@ include_HEADERS = \
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
 	$(LIBLTDL_NOINST_HDRS) \
-	$(MAGICK_NOINST_HDRS)
+	$(MAGICKCORE_NOINST_HDRS)
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
@@ -76,7 +76,7 @@ TESTS_ENVIRONMENT = \
 	IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify" \
 	MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" \
 	VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate" \
-	LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}" \
+	LD_LIBRARY_PATH="@abs_top_builddir@/MagickCore/.libs:${LD_LIBRARY_PATH}" \
 	MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@' \
 	MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@' \
 	MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@' \
@@ -93,7 +93,7 @@ TEST_EXTENSIONS = .sh
 TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
-	$(WAND_TESTS) \
+	$(MAGICKWAND_TESTS) \
 	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail
@@ -125,8 +125,8 @@ TOP_EXTRA_DIST = \
 EXTRA_DIST = \
 	$(TOP_EXTRA_DIST) \
 	$(CONFIG_EXTRA_DIST) \
-	$(MAGICK_EXTRA_DIST) \
-	$(WAND_EXTRA_DIST) \
+	$(MAGICKCORE_EXTRA_DIST) \
+	$(MAGICKWAND_EXTRA_DIST) \
 	$(MAGICKPP_EXTRA_DIST) \
 	$(UTILITIES_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST)
@@ -141,16 +141,16 @@ MOSTLYCLEANFILES =
 check_PROGRAMS = \
 	$(TESTS_CHECK_PGRMS) \
 	$(MAGICKPP_CHECK_PGRMS) \
-	$(WAND_CHECK_PGRMS)
+	$(MAGICKWAND_CHECK_PGRMS)
 
 include m4/Makefile.am
 include config/Makefile.am
 include ltdl/Makefile.inc
 include coders/Makefile.am
-include magick/Makefile.am
-include filters/Makefile.am
-include wand/Makefile.am
+include MagickCore/Makefile.am
+include MagickWand/Makefile.am
 include Magick++/Makefile.am
+include filters/Makefile.am
 include utilities/Makefile.am
 include tests/Makefile.am
 include PerlMagick/Makefile.am
@@ -160,14 +160,14 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 # Files to install in Pkgconfig directory
 pkgconfig_DATA = \
-	$(MAGICK_PKGCONFIG) \
-	$(WAND_PKGCONFIG) \
+	$(MAGICKCORE_PKGCONFIG) \
+	$(MAGICKWAND_PKGCONFIG) \
 	$(MAGICKPP_PKGCONFIG)
 
 # Manual pages to install
 man_MANS = \
-	$(MAGICK_MANS) \
-	$(WAND_MANS) \
+	$(MAGICKCORE_MANS) \
+	$(MAGICKWAND_MANS) \
 	$(MAGICKPP_MANS) \
 	$(UTILITIES_MANS)
 
@@ -262,16 +262,16 @@ uninstall-data-html:
 	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 
-# Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
-magick-version: magick/version.h
+# Ensure that version.h at $(srcdir)/MagickCore/version.h is kept up to date.
+magick-version: MagickCore/version.h
 	@if test -f "$(srcdir)/VisualMagick/installer/inc/version.isx.in" ; then \
 	  ./config.status --file="$(srcdir)/../VisualMagick/installer/inc/version.isx" 2> /dev/null ; \
 	fi
 	@if test -n "$(VPATH)" ; then \
-	  cmp magick/version.h $(srcdir)/magick/version.h > /dev/null ; \
+	  cmp MagickCore/version.h $(srcdir)/MagickCore/version.h > /dev/null ; \
           if test $$? -eq 1 ; then \
-	    echo "Updating $(srcdir)/magick/version.h ..."; \
-	    cp magick/version.h $(srcdir)/magick/version.h ; \
+	    echo "Updating $(srcdir)/MagickCore/version.h ..."; \
+	    cp MagickCore/version.h $(srcdir)/MagickCore/version.h ; \
 	  fi ; \
 	fi ; \
 	touch magick-version
@@ -364,4 +364,4 @@ snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
 	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
 	$(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /var/ftp/pub/ImageMagick/beta/
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /var/ftp/pub/ImageMagick/alpha/

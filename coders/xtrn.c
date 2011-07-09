@@ -172,50 +172,121 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
       CatchException(exception);
     }
-  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
+  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
     {
+#ifdef IMPLEMENT_THIS
+      MagickBooleanType
+        status;
+#endif
+
       char
-        *blob_data,
         filename[MaxTextExtent];
 
-      HRESULT
-        hr;
+      size_t
+        (*fifo)(const Image *,const void *,const size_t);
 
-      long
-        lBoundl,
-        lBoundu;
-
+      (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
+      fifo=(size_t (*)(const Image *,const void *,const size_t)) param1;
+      clone_info->client_data=param2;
+#ifdef IMPLEMENT_THIS
+      status=ReadStream(clone_info,fifo,exception);
+      CatchException(exception);
+#endif
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
+    {
       SAFEARRAY
         *pSafeArray;
+
+      char
+        *blob_data;
 
       size_t
         blob_length;
 
-      *filename='\0';
+                  ssize_t
+        lBoundl,
+        lBoundu;
+
+      HRESULT
+        hr;
+
+      char
+        filename[MaxTextExtent];
+
+      filename[0] = '\0';
       (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
-      hr=S_OK;
-      pSafeArray=(SAFEARRAY *) param1;
+            hr = S_OK;
+      pSafeArray = (SAFEARRAY *) param1;
       if (pSafeArray)
         {
-          hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+                      hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
           if (SUCCEEDED(hr))
-            hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+                        hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
           if (SUCCEEDED(hr))
             {
-              blob_length = lBoundu - lBoundl + 1;
-              hr = SafeArrayAccessData(pSafeArray,(void**) &blob_data);
-              if(SUCCEEDED(hr))
+                          blob_length = lBoundu - lBoundl + 1;
+              hr = SafeArrayAccessData(pSafeArray, (void**)&blob_data);
+                    if(SUCCEEDED(hr))
                 {
-                  *clone_info->filename='\0';
-                  *clone_info->magick='\0';
-                  if (*filename != '\0')
-                    (void) CopyMagickString(clone_info->filename,filename,
-                      MaxTextExtent);
+                  if (filename[0] != '\0')
+                    {
+                      (void) CopyMagickString(clone_info->filename,filename,
+                        MaxTextExtent);
+                      (void) CopyMagickString(clone_info->magick,filename,
+                        MaxTextExtent);
+                    }
+                  else
+                    {
+                      *clone_info->magick = '\0';
+                      clone_info->filename[0] = '\0';
+                    }
                   image=BlobToImage(clone_info,blob_data,blob_length,exception);
-                  hr=SafeArrayUnaccessData(pSafeArray);
+                  hr = SafeArrayUnaccessData(pSafeArray);
                   CatchException(exception);
                 }
             }
+        }
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNBSTR") == 0)
+    {
+      BSTR
+        bstr;
+
+      char
+        *blob_data;
+
+      size_t
+        blob_length;
+
+      HRESULT
+        hr;
+
+      char
+        filename[MaxTextExtent];
+
+      filename[0] = '\0';
+      (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
+      hr = S_OK;
+      bstr = (BSTR) param1;
+      blob_length = SysStringLen(bstr) * 2;
+      blob_data = (char *)bstr;
+      if ((blob_data != (char *)NULL) && (blob_length>0))
+        {
+          if (filename[0] != '\0')
+            {
+              (void) CopyMagickString(clone_info->filename,filename,
+                MaxTextExtent);
+              (void) CopyMagickString(clone_info->magick,filename,
+                MaxTextExtent);
+            }
+          else
+            {
+              *clone_info->magick = '\0';
+              clone_info->filename[0] = '\0';
+            }
+          image=BlobToImage(clone_info,blob_data,blob_length,exception);
+          CatchException(exception);
         }
     }
   clone_info=DestroyImageInfo(clone_info);
@@ -258,6 +329,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->description=ConstantString("External transfer of a file");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("XTRNIMAGE");
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
@@ -266,6 +338,7 @@ ModuleExport void RegisterXTRNImage(void)
   entry->description=ConstantString("External transfer of a image in memory");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("XTRNBLOB");
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
@@ -274,13 +347,31 @@ ModuleExport void RegisterXTRNImage(void)
   entry->description=ConstantString("IExternal transfer of a blob in memory");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNSTREAM");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=MagickFalse;
+  entry->stealth=MagickTrue;
+  entry->description=ConstantString("External transfer via a streaming interface");
+  entry->module=ConstantString("XTRN");
+  RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("XTRNARRAY");
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
   entry->adjoin=MagickFalse;
   entry->stealth=MagickTrue;
-  entry->description=ConstantString(
-    "External transfer via a smart array interface");
+  entry->description=ConstantString("External transfer via a smart array interface");
+  entry->module=ConstantString("XTRN");
+  RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNBSTR");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=MagickFalse;
+  entry->stealth=MagickTrue;
+  entry->description=ConstantString("External transfer via a smart array interface");
   entry->module=ConstantString("XTRN");
   RegisterMagickInfo(entry);
 }
@@ -309,7 +400,9 @@ ModuleExport void UnregisterXTRNImage(void)
   UnregisterMagickInfo("XTRNFILE");
   UnregisterMagickInfo("XTRNIMAGE");
   UnregisterMagickInfo("XTRNBLOB");
+  UnregisterMagickInfo("XTRNSTREAM");
   UnregisterMagickInfo("XTRNARRAY");
+  UnregisterMagickInfo("XTRNBSTR");
 }
 
 /*
@@ -347,32 +440,32 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
   SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
   if (pSafeArray != NULL)
   {
-    long lBoundl, lBoundu, lCount;
-    HRESULT hr = S_OK;
+                ssize_t lBoundl, lBoundu, lCount;
+          HRESULT hr = S_OK;
     /* First see how big the buffer currently is */
-    hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+                hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
     if (FAILED(hr))
       return MagickFalse;
-    hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+                hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
     if (FAILED(hr))
       return MagickFalse;
-    lCount = lBoundu - lBoundl + 1;
+                lCount = lBoundu - lBoundl + 1;
 
     if (length>0)
     {
-      unsigned char       *pReturnBuffer = NULL;
+            unsigned char       *pReturnBuffer = NULL;
       NewArrayBounds[0].lLbound = 0;   /* Start-Index 0 */
-      NewArrayBounds[0].cElements = (unsigned long) (length+lCount);  /* # Elemente */
+      NewArrayBounds[0].cElements = (size_t) (length+lCount);  /* # Elemente */
       hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
       if (FAILED(hr))
         return 0;
       hr = SafeArrayAccessData(pSafeArray, (void**)&pReturnBuffer);
-      if( FAILED(hr) )
-        return 0;
-      (void) memcpy(pReturnBuffer+lCount,(unsigned char *) data,length);
-      hr=SafeArrayUnaccessData(pSafeArray);
-      if(FAILED(hr))
-        return 0;
+            if( FAILED(hr) )
+                    return 0;
+            (void) CopyMagickMemory( pReturnBuffer+lCount, (unsigned char *)data, length );
+      hr = SafeArrayUnaccessData(pSafeArray);
+            if( FAILED(hr) )
+                    return 0;
     }
     else
     {
@@ -454,6 +547,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
 
           blob_data=(char **) param1;
           blob_length=(size_t *) param2;
+
           scene = 0;
           (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
           for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
@@ -476,22 +570,23 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
         }
       clone_info=DestroyImageInfo(clone_info);
     }
-  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
+  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
     {
+      size_t
+        (*fifo)(const Image *,const void *,const size_t);
+
       char
         filename[MaxTextExtent];
 
-      size_t
-        blob_length;
-
-      unsigned char
-        *blob_data;
-
       clone_info=CloneImageInfo(image_info);
-      if (*clone_info->filename != '\0')
+      if (clone_info->filename[0])
         {
-          (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
-          image->client_data=param1;
+          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
+            &param1,&param2,&filename);
+
+          fifo=(size_t (*)(const Image *,const void *,const size_t)) param1;
+          image->client_data=param2;
+
           scene=0;
           (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
           for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
@@ -502,12 +597,36 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
           SetImageInfo(clone_info,1,&image->exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
-          blob_data=ImageToBlob(clone_info,image,&blob_length,
-            &image->exception);
-          if (blob_data == (unsigned char *) NULL)
-            status=MagickFalse;
-          else
-            SafeArrayFifo(image,blob_data,blob_length);
+          status=WriteStream(clone_info,image,fifo);
+          if (status == MagickFalse)
+            CatchImageException(image);
+        }
+      clone_info=DestroyImageInfo(clone_info);
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
+    {
+      char
+        filename[MaxTextExtent];
+
+      clone_info=CloneImageInfo(image_info);
+      if (clone_info->filename[0])
+        {
+          (void) sscanf(clone_info->filename,"%lx,%s",
+            &param1,&filename);
+
+          image->client_data=param1;
+
+          scene = 0;
+          (void) CopyMagickString(clone_info->filename,filename,MaxTextExtent);
+          for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
+          {
+            (void) CopyMagickString(p->filename,filename,MaxTextExtent);
+            p->scene=scene++;
+          }
+          SetImageInfo(clone_info,1,&image->exception);
+          (void) CopyMagickString(image->magick,clone_info->magick,
+            MaxTextExtent);
+          status=WriteStream(clone_info,image,SafeArrayFifo);
           if (status == MagickFalse)
             CatchImageException(image);
         }
