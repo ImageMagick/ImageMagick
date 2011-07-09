@@ -46,6 +46,7 @@
 #include <ctype.h>
 #include <math.h>
 #include "wand/MagickWand.h"
+#include "magick/colorspace-private.h"
 #include "magick/string-private.h"
 #include "validate.h"
 
@@ -609,7 +610,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
       fuzz+=0.003;
 #endif
-      if (reference_image->colorspace != RGBColorspace)
+      if (IsRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
       difference_image=CompareImageChannels(reference_image,reconstruct_image,
@@ -825,7 +826,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
       fuzz+=0.003;
 #endif
-      if (reference_image->colorspace != RGBColorspace)
+      if (IsRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
       difference_image=CompareImageChannels(reference_image,reconstruct_image,

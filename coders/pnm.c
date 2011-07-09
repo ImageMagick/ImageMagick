@@ -46,6 +46,7 @@
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -1557,7 +1558,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     if (format != '7')
       {
-        if (image->colorspace != RGBColorspace)
+        if (IsRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,RGBColorspace);
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",
           (double) image->columns,(double) image->rows);
@@ -1611,7 +1612,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           image->depth=16;
         (void) FormatLocaleString(buffer,MaxTextExtent,
           "DEPTH %.20g\nMAXVAL %.20g\n",(double) packet_size,(double)
-          GetQuantumRange(image->depth));
+          ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MaxTextExtent,"TUPLTYPE %s\nENDHDR\n",
           type);
@@ -1838,7 +1839,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->depth > 8)
           image->depth=16;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
-          GetQuantumRange(image->depth));
+          ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
         if (quantum_info == (QuantumInfo *) NULL)
@@ -1921,7 +1922,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->depth > 8)
           image->depth=16;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
-          GetQuantumRange(image->depth));
+          ((MagickOffsetType) GetQuantumRange(image->depth)));
         (void) WriteBlobString(image,buffer);
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
         if (quantum_info == (QuantumInfo *) NULL)

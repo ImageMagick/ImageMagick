@@ -51,6 +51,7 @@
 #include "magick/color-private.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
@@ -7583,7 +7584,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
     }
 
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
 
   /*
@@ -11053,10 +11054,18 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
 
       else if (LocaleCompare(value,"3") == 0)
+#ifdef Z_RLE  /* Z_RLE was added to zlib-1.2.0 */
         mng_info->write_png_compression_strategy = Z_RLE+1;
+#else
+        mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
+#endif
 
       else if (LocaleCompare(value,"4") == 0)
+#ifdef Z_FIXED  /* Z_FIXED was added to zlib-1.2.2.2 */
         mng_info->write_png_compression_strategy = Z_FIXED+1;
+#else
+        mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
+#endif
 
       else
         (void) ThrowMagickException(&image->exception,

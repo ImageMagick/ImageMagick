@@ -888,6 +888,7 @@ namespace Magick
   using MagickCore::StreamFatalError;
   using MagickCore::StreamWarning;
   using MagickCore::StringInfo;
+  using MagickCore::StripImage;
   using MagickCore::SwirlImage;
   using MagickCore::SyncCacheViewAuthenticPixels;
   using MagickCore::SyncImage;

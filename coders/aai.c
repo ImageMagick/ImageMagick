@@ -44,6 +44,7 @@
 #include "magick/blob-private.h"
 #include "magick/cache.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -355,7 +356,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
     /*
       Write AAI header.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
     (void) WriteBlobLSBLong(image,(unsigned int) image->rows);

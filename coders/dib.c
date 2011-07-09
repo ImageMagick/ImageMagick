@@ -48,6 +48,7 @@
 #include "magick/colormap.h"
 #include "magick/colormap-private.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/draw.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -1006,7 +1007,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize DIB raster file header.
   */
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   if (image->storage_class == DirectClass)
     {

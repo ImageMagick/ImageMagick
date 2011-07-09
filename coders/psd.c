@@ -47,6 +47,7 @@
 #include "magick/cache.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
@@ -705,7 +706,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         }
         case 4:
         {
-          if ((image->colorspace == RGBColorspace) && (channels > 3))
+          if ((IsRGBColorspace(image->colorspace) == MagickTrue) && (channels > 3))
             break;
           SetPixelAlpha(q,pixel);
           break;
@@ -904,7 +905,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  reading image resource blocks - %.20g bytes",(double) length);
+          "  reading image resource blocks - %.20g bytes",(double)
+          ((MagickOffsetType) length));
       blocks=(unsigned char *) AcquireQuantumMemory((size_t) length,
         sizeof(*blocks));
       if (blocks == (unsigned char *) NULL)
@@ -1093,7 +1095,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         "      layer mask: offset(%.20g,%.20g), size(%.20g,%.20g), length=%.20g",
                         (double) layer_info[i].mask.x,(double) layer_info[i].mask.y,
                         (double) layer_info[i].mask.width,(double)
-                        layer_info[i].mask.height,(double) length-16);
+                        layer_info[i].mask.height,(double)
+                        ((MagickOffsetType) length)-16);
                     /*
                       Skip over the rest of the layer mask information.
                     */
@@ -1111,7 +1114,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (image->debug != MagickFalse)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "      layer blending ranges: length=%.20g",(double)
-                        length);
+                        ((MagickOffsetType) length));
                     /*
                       We read it, but don't use it...
                     */
@@ -1179,7 +1182,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image->debug != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "      unsupported data: length=%.20g",(double)
-                    (size-combinedlength));
+                    ((MagickOffsetType) (size-combinedlength)));
                 if (DiscardBlobBytes(image,size-combinedlength) == MagickFalse)
                   ThrowFileException(exception,CorruptImageError,
                     "UnexpectedEndOfFile",image->filename);
@@ -2124,8 +2127,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         (image->depth == 1) ? MagickTrue : MagickFalse;
       (void) WriteBlobMSBShort(image,(unsigned short)
         (monochrome != MagickFalse ? 1 : image->depth > 8 ? 16 : 8));
-      (void) WriteBlobMSBShort(image,monochrome != MagickFalse ? BitmapMode :
-        GrayscaleMode);
+      (void) WriteBlobMSBShort(image,(unsigned short)
+        (monochrome != MagickFalse ? BitmapMode : GrayscaleMode));
     }
   else
     {
@@ -2135,7 +2138,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
            (image->colorspace != CMYKColorspace)) &&
           (image_info->colorspace != CMYKColorspace))
         {
-          if (image->colorspace != RGBColorspace)
+          if (IsRGBColorspace(image->colorspace) == MagickFalse)
             (void) TransformImageColorspace(image,RGBColorspace);
           (void) WriteBlobMSBShort(image,(unsigned short)
             (image->storage_class == PseudoClass ? IndexedMode : RGBMode));

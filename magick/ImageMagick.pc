@@ -5,6 +5,6 @@ includedir=${prefix}/include/ImageMagick
 
 Name: ImageMagick
 Description: ImageMagick - Convert, Edit, and Compose Images
-Version: 6.7.0
+Version: 6.7.1
 Libs: -L${libdir} -lMagickCore
 Cflags: -I${includedir} -fopenmp

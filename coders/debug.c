@@ -213,8 +213,8 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "# ImageMagick pixel debugging: %.20g,%.20g,%.20g,%s\n",(double)
-      image->columns,(double) image->rows,(double)
-      GetQuantumRange(image->depth),colorspace);
+      image->columns,(double) image->rows,(double) ((MagickOffsetType)
+      GetQuantumRange(image->depth)),colorspace);
     (void) WriteBlobString(image,buffer);
     GetMagickPixelPacket(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)

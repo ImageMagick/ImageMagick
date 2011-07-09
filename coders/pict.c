@@ -47,6 +47,7 @@
 #include "magick/colormap.h"
 #include "magick/colormap-private.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
 #include "magick/exception.h"
@@ -1386,7 +1387,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) SetImageExtent(image,
           MagickMax(image->columns,tile_image->columns),
           MagickMax(image->rows,tile_image->rows));
-        if (image->colorspace != RGBColorspace)
+        if (IsRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,tile_image->colorspace);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
           frame.right);
@@ -1603,7 +1604,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Initialize image info.

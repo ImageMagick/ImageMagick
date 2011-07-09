@@ -87,6 +87,7 @@
 #include "magick/color.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -1824,7 +1825,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
           image->filename)
       }
   }
-  if (colorspace != RGBColorspace)
+  if (IsRGBColorspace(colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,colorspace);
   /*
     Initialize histogram.
@@ -1840,7 +1841,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
     Classify using the fuzzy c-Means technique.
   */
   status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose);
-  if (colorspace != RGBColorspace)
+  if (IsRGBColorspace(colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,colorspace);
   /*
     Relinquish resources.

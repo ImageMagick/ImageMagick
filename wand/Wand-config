@@ -37,7 +37,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '6.7.0 Q16 '
+      echo '6.7.1 Q16 '
       ;;
     --cflags)
       echo "-I${includedir} -fopenmp"
@@ -52,7 +52,7 @@ while test $# -gt 0; do
       echo '-L/usr/local/lib '
       ;;
     --libs)
-      echo "-L${libdir} -lMagickWand -lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"
+      echo "-L${libdir} -lMagickWand -lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng -ldjvulibre -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"
       ;;
     *)
       echo "${usage}" 1>&2
