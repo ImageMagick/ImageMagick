@@ -39,43 +39,40 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/compress.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/delegate.h"
-#include "MagickCore/delegate-private.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/resource_.h"
-#include "MagickCore/resize.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/transform.h"
-#include "MagickCore/utility.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/colorspace.h"
+#include "magick/compress.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
+#include "magick/delegate-private.h"
+#include "magick/draw.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/profile.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/resource_.h"
+#include "magick/resize.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
+#include "magick/module.h"
 
 /*
   Define declarations.
@@ -548,7 +545,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page.width=page.height;
       page.height=swap;
     }
-  if (IsRGBColorspace(image_info->colorspace) != MagickFalse)
+  if (image_info->colorspace == RGBColorspace)
     cmyk=MagickFalse;
   /*
     Create Ghostscript control file.
@@ -1010,7 +1007,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     media_info,
     page_info;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register unsigned char
@@ -1195,7 +1195,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       case FaxCompression:
       case Group4Compression:
       {
-        if ((IsImageMonochrome(image,&image->exception) == MagickFalse) ||
+        if ((IsMonochromeImage(image,&image->exception) == MagickFalse) ||
             (image->matte != MagickFalse))
           compression=RLECompression;
         break;
@@ -1247,7 +1247,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     }
     if (compression == JPEG2000Compression)
       {
-        if (IsRGBColorspace(image->colorspace) == MagickFalse)
+        if (image->colorspace != RGBColorspace)
           (void) TransformImageColorspace(image,RGBColorspace);
       }
     /*
@@ -1551,7 +1551,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsImageGray(image,&image->exception) != MagickFalse)))
+         (IsGrayImage(image,&image->exception) != MagickFalse)))
       {
         switch (compression)
         {
@@ -1600,12 +1600,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
-                p+=GetPixelComponents(image);
+                *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                p++;
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1641,13 +1641,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(
-                  GetPixelIntensity(image,p)));
-                p+=GetPixelComponents(image);
+                Ascii85Encode(image,
+                  ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+                p++;
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1703,16 +1703,17 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-                *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-                *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+                *q++=ScaleQuantumToChar(GetPixelRed(p));
+                *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                *q++=ScaleQuantumToChar(GetPixelBlue(p));
                 if (image->colorspace == CMYKColorspace)
-                  *q++=ScaleQuantumToChar(GetPixelBlack(image,p));
-                p+=GetPixelComponents(image);
+                  *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
+                p++;
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1748,17 +1749,21 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(GetPixelRed(image,p)));
-                Ascii85Encode(image,ScaleQuantumToChar(GetPixelGreen(image,p)));
-                Ascii85Encode(image,ScaleQuantumToChar(GetPixelBlue(image,p)));
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  GetPixelRed(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  GetPixelGreen(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(
+                  GetPixelBlue(p)));
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(
-                    GetPixelBlack(image,p)));
-                p+=GetPixelComponents(image);
+                    GetPixelIndex(indexes+x)));
+                p++;
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1799,13 +1804,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const Quantum *) NULL)
+                if (p == (const PixelPacket *) NULL)
                   break;
+                indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  *q++=(unsigned char) GetPixelIndex(image,p);
-                  p+=GetPixelComponents(image);
-                }
+                  *q++=(unsigned char) GetPixelIndex(indexes+x);
                 if (image->previous == (Image *) NULL)
                   {
                     status=SetImageProgress(image,SaveImageTag,
@@ -1841,13 +1844,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const Quantum *) NULL)
+                if (p == (const PixelPacket *) NULL)
                   break;
+                indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  Ascii85Encode(image,(unsigned char) GetPixelIndex(image,p));
-                  p+=GetPixelComponents(image);
-                }
+                  Ascii85Encode(image,(unsigned char)
+                    GetPixelIndex(indexes+x));
                 if (image->previous == (Image *) NULL)
                   {
                     status=SetImageProgress(image,SaveImageTag,
@@ -1888,7 +1890,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
           ((image_info->type != TrueColorType) &&
-           (IsImageGray(image,&image->exception) != MagickFalse)))
+           (IsGrayImage(image,&image->exception) != MagickFalse)))
           (void) CopyMagickString(buffer,"/DeviceGray\n",MaxTextExtent);
       else
         if ((image->storage_class == DirectClass) || (image->colors > 256) ||
@@ -1995,7 +1997,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     if ((compression == FaxCompression) ||
         (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsImageGray(tile_image,&image->exception) != MagickFalse)))
+         (IsGrayImage(tile_image,&image->exception) != MagickFalse)))
       {
         switch (compression)
         {
@@ -2049,12 +2051,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
                 &tile_image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelIntensity(tile_image,p));
-                p+=GetPixelComponents(tile_image);
+                *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                p++;
               }
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2084,13 +2086,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
                 &tile_image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 Ascii85Encode(image,
-                  ScaleQuantumToChar(GetPixelIntensity(tile_image,p)));
-                p+=GetPixelComponents(tile_image);
+                  ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+                p++;
               }
             }
             Ascii85Flush(image);
@@ -2144,16 +2146,17 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
                 &tile_image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(tile_image);
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelRed(tile_image,p));
-                *q++=ScaleQuantumToChar(GetPixelGreen(tile_image,p));
-                *q++=ScaleQuantumToChar(GetPixelBlue(tile_image,p));
+                *q++=ScaleQuantumToChar(GetPixelRed(p));
+                *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                *q++=ScaleQuantumToChar(GetPixelBlue(p));
                 if (image->colorspace == CMYKColorspace)
-                  *q++=ScaleQuantumToChar(GetPixelBlack(tile_image,p));
-                p+=GetPixelComponents(tile_image);
+                  *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
+                p++;
               }
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2183,20 +2186,21 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
                 &tile_image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(tile_image);
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetPixelRed(tile_image,p)));
+                  GetPixelRed(p)));
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetPixelGreen(tile_image,p)));
+                  GetPixelGreen(p)));
                 Ascii85Encode(image,ScaleQuantumToChar(
-                  GetPixelBlue(tile_image,p)));
+                  GetPixelBlue(p)));
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(
-                    GetPixelBlack(tile_image,p)));
-                p+=GetPixelComponents(tile_image);
+                    GetPixelIndex(indexes+x)));
+                p++;
               }
             }
             Ascii85Flush(image);
@@ -2233,13 +2237,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
                   &tile_image->exception);
-                if (p == (const Quantum *) NULL)
+                if (p == (const PixelPacket *) NULL)
                   break;
+                indexes=GetVirtualIndexQueue(tile_image);
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
-                {
-                  *q++=(unsigned char) GetPixelIndex(tile_image,p);
-                  q+=GetPixelComponents(image);
-                }
+                  *q++=(unsigned char) GetPixelIndex(indexes+x);
               }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
               if (compression == ZipCompression)
@@ -2268,14 +2270,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
                   &tile_image->exception);
-                if (p == (const Quantum *) NULL)
+                if (p == (const PixelPacket *) NULL)
                   break;
+                indexes=GetVirtualIndexQueue(tile_image);
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
-                {
                   Ascii85Encode(image,(unsigned char)
-                    GetPixelIndex(tile_image,p));
-                  p+=GetPixelComponents(image);
-                }
+                    GetPixelIndex(indexes+x));
               }
               Ascii85Flush(image);
               break;
@@ -2436,12 +2436,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-                p+=GetPixelComponents(image);
+                *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(p)));
+                p++;
               }
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2470,12 +2470,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
-                p+=GetPixelComponents(image);
+                Ascii85Encode(image,ScaleQuantumToChar((Quantum) (QuantumRange-
+                  GetPixelOpacity(p))));
+                p++;
               }
             }
             Ascii85Flush(image);

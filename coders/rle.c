@@ -39,27 +39,26 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/property.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/pixel.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/property.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colormap.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/pixel.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,10 +148,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickSizeType
     number_pixels;
 
+  register IndexPacket
+    *indexes;
+
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register ssize_t
@@ -438,16 +440,16 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-            SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
-            SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+            SetPixelRed(q,ScaleCharToQuantum(*p++));
+            SetPixelGreen(q,ScaleCharToQuantum(*p++));
+            SetPixelBlue(q,ScaleCharToQuantum(*p++));
             if (image->matte != MagickFalse)
-              SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-            q+=GetPixelComponents(image);
+              SetPixelAlpha(q,ScaleCharToQuantum(*p++));
+            q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -498,13 +500,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                SetPixelIndex(image,*p++,q);
-                q+=GetPixelComponents(image);
-              }
+                SetPixelIndex(indexes+x,*p++);
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -525,15 +525,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelRed(image,image->colormap[*p++].red,q);
-                SetPixelGreen(image,image->colormap[*p++].green,q);
-                SetPixelBlue(image,image->colormap[*p++].blue,q);
-                SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-                q+=GetPixelComponents(image);
+                SetPixelRed(q,image->colormap[*p++].red);
+                SetPixelGreen(q,image->colormap[*p++].green);
+                SetPixelBlue(q,image->colormap[*p++].blue);
+                SetPixelAlpha(q,ScaleCharToQuantum(*p++));
+                q++;
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;

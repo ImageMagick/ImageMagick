@@ -194,10 +194,13 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: alaTest.com" href="http://alatest.com">alaTest.com</a><!-- 20110801000300 -->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -212,19 +215,7 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl></dd>
-<dt>2011-07-01  6.7.1-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> Use zlib default compression strategy instead of Z_RLE and Z_FIXED    strategies when linking with zlib versions (prior to 1.2.0 and 1.2.2.2,    respectively) that don't support them.</dd>
-<dt>2011-06-30  6.7.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.0-10.</dd>
-<dt>2011-06-30  6.7.0-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> Added "-define PNG:compression-level|strategy|filter=value" options to    the PNG encoder.  If these options are used, they take precedence over    the -quality option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?&f=1&p=73548).</dd>
-<dt>2011-06-29  6.7.0-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> Handle "-quality 97" properly in the png encoder, i.e., use intrapixel    filtering when writing a MNG file and no filtering when writing a PNG file.</dd>
-  <dd> Added support for Z_RLE strategy in the png compressor, using    -quality 98 or 99.</dd>
-<dt>2011-06-28  6.7.0-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Properly allocate points when render text with large font size (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18997).</dd>
-<dt>2011-06-25  6.7.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-06-25  6.7.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.0-9.</dd>
 <dt>2011-06-18  6.7.0-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Defend against corrupt PSD resource blocks.</dd>
@@ -241,12 +232,12 @@
 <dt>2011-06-08  6.7.0-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.0-6.</dd>
 <dt>2011-06-08  6.7.0-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Fix transient error for composite 'Over' operator.</dd>
+  <dd> Fix transient error for composite over operator.</dd>
 <dt>2011-06-07  6.7.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.0-5.</dd>
 <dt>2011-06-07  6.7.0-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix one-off bug in option parser (reference    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=609177).</dd>
-  <dd> Transient bug with composite 'Over' in magick/composite-private.h.</dd>
+  <dd> Transient bug with composite over in magick/composite-private.h.</dd>
 <dt>2011-06-06  6.7.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.0-4.</dd>
 <dt>2011-06-03  6.7.0-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -277,7 +268,7 @@
   <dd> The PNG encoder now respects the -depth setting, including 1, 2, 4.    Previously settings other than 8 and 16 were ignored (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18412). </dd>
 <dt>2011-05-16  6.6.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Don't use comma as a separator for stroked text (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18742).</dd>
-  <dd> Use C locale when generating or interpreting SVG.</dd>
+  <dd> Use C locale when generating or interpretting SVG.</dd>
   <dd> Fix "unterminated macro" for Q32 build of coders/png.c.</dd>
 <dt>2011-05-15  6.6.9-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.9-9.</dd>
@@ -297,7 +288,7 @@
 <dt>2011-04-30  6.6.9-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Fix FX default for interpolation to Bilinear.</dd>
 <dt>2011-04-27  6.6.9-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Fix pixel interpolation for -draw 'image Over' (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18612).</dd>
+  <dd> Fix pixel interpolation for -draw image over (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18612).</dd>
 <dt>2011-04-26  6.6.9-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Write the proper bKGD chunk value in grayscale PNG images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18624).</dd>
 <dt>2011-04-25  6.6.9-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>

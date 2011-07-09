@@ -39,24 +39,23 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -163,13 +162,13 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   ssize_t
@@ -191,16 +190,16 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     q=QueueAuthenticPixels(matte_image,0,y,matte_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(matte_image,GetPixelAlpha(image,p),q);
-      SetPixelGreen(matte_image,GetPixelAlpha(image,p),q);
-      SetPixelBlue(matte_image,GetPixelAlpha(image,p),q);
-      SetPixelAlpha(matte_image,OpaqueAlpha,q);
-      p+=GetPixelComponents(image);
-      q+=GetPixelComponents(matte_image);
+      SetPixelRed(q,GetPixelOpacity(p));
+      SetPixelGreen(q,GetPixelOpacity(p));
+      SetPixelBlue(q,GetPixelOpacity(p));
+      SetPixelOpacity(q,OpaqueOpacity);
+      p++;
+      q++;
     }
     if (SyncAuthenticPixels(matte_image,exception) == MagickFalse)
       break;

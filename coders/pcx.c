@@ -39,30 +39,27 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/colormap.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Typedef declarations.
@@ -241,10 +238,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PCXInfo
     pcx_info;
 
+  register IndexPacket
+    *indexes;
+
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register ssize_t
@@ -478,8 +478,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       p=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (PixelPacket *) NULL)
         break;
+      indexes=GetAuthenticIndexQueue(image);
       r=scanline;
       if (image->storage_class == DirectClass)
         for (i=0; i < pcx_info.planes; i++)
@@ -601,16 +602,16 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (image->storage_class == PseudoClass)
-          SetPixelIndex(image,*r++,q);
+          SetPixelIndex(indexes+x,*r++);
         else
           {
-            SetPixelRed(image,ScaleCharToQuantum(*r++),q);
-            SetPixelGreen(image,ScaleCharToQuantum(*r++),q);
-            SetPixelBlue(image,ScaleCharToQuantum(*r++),q);
+            SetPixelRed(q,ScaleCharToQuantum(*r++));
+            SetPixelGreen(q,ScaleCharToQuantum(*r++));
+            SetPixelBlue(q,ScaleCharToQuantum(*r++));
             if (image->matte != MagickFalse)
-              SetPixelAlpha(image,ScaleCharToQuantum(*r++),q);
+              SetPixelAlpha(q,ScaleCharToQuantum(*r++));
           }
-        q+=GetPixelComponents(image);
+        q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -841,7 +842,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
   PCXInfo
     pcx_info;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -873,7 +877,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   page_table=(MagickOffsetType *) NULL;
   if ((LocaleCompare(image_info->magick,"DCX") == 0) ||
@@ -904,7 +908,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
     pcx_info.bits_per_pixel=8;
     if ((image->storage_class == PseudoClass) &&
-        (IsImageMonochrome(image,&image->exception) != MagickFalse))
+        (IsMonochromeImage(image,&image->exception) != MagickFalse))
       pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;
@@ -985,7 +989,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     q=pcx_pixels;
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
-        const Quantum
+        const PixelPacket
           *pixels;
 
         /*
@@ -995,7 +999,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
         {
           pixels=GetVirtualPixels(image,0,y,image->columns,1,
             &image->exception);
-          if (pixels == (const Quantum *) NULL)
+          if (pixels == (const PixelPacket *) NULL)
             break;
           q=pcx_pixels;
           for (i=0; i < pcx_info.planes; i++)
@@ -1007,8 +1011,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-                  p+=GetPixelComponents(image);
+                  *q++=ScaleQuantumToChar(GetPixelRed(p));
+                  p++;
                 }
                 break;
               }
@@ -1016,8 +1020,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-                  p+=GetPixelComponents(image);
+                  *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                  p++;
                 }
                 break;
               }
@@ -1025,8 +1029,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
-                  *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-                  p+=GetPixelComponents(image);
+                  *q++=ScaleQuantumToChar(GetPixelBlue(p));
+                  p++;
                 }
                 break;
               }
@@ -1035,8 +1039,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=(ssize_t) pcx_info.bytes_per_line; x != 0; x--)
                 {
-                  *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
-                  p+=GetPixelComponents(image);
+                  *q++=ScaleQuantumToChar((Quantum)
+                    (GetPixelAlpha(p)));
+                  p++;
                 }
                 break;
               }
@@ -1059,14 +1064,12 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const Quantum *) NULL)
+            if (p == (const PixelPacket *) NULL)
               break;
+            indexes=GetVirtualIndexQueue(image);
             q=pcx_pixels;
             for (x=0; x < (ssize_t) image->columns; x++)
-            {
-              *q++=(unsigned char) GetPixelIndex(image,p);
-              p+=GetPixelComponents(image);
-            }
+              *q++=(unsigned char) GetPixelIndex(indexes+x);
             if (PCXWritePixels(&pcx_info,pcx_pixels,image) == MagickFalse)
               break;
             if (image->previous == (Image *) NULL)
@@ -1079,7 +1082,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
           }
         else
           {
-            Quantum
+            IndexPacket
               polarity;
 
             register unsigned char
@@ -1089,24 +1092,26 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass image to a PCX monochrome image.
             */
-            polarity=(Quantum) (GetPixelPacketIntensity(
+            polarity=(IndexPacket) (PixelIntensityToQuantum(
               &image->colormap[0]) < ((Quantum) QuantumRange/2) ? 1 : 0);
             if (image->colors == 2)
-              polarity=(Quantum) (GetPixelPacketIntensity(&image->colormap[0]) <
-                GetPixelPacketIntensity(&image->colormap[1]) ? 1 : 0);
+              polarity=(IndexPacket) (
+                PixelIntensityToQuantum(&image->colormap[0]) <
+                PixelIntensityToQuantum(&image->colormap[1]) ? 1 : 0);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(image);
               bit=0;
               byte=0;
               q=pcx_pixels;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                if (GetPixelIndex(image,p) == polarity)
+                if (GetPixelIndex(indexes+x) == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
@@ -1115,7 +1120,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelComponents(image);
+                p++;
               }
               if (bit != 0)
                 *q++=byte << (8-bit);

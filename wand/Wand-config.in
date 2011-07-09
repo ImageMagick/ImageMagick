@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# Configure options script for re-calling MagickWand compilation options
+# required to use the MagickWand library.
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/ImageMagick
+
+usage="\
+Usage: Wand-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
+
+if test $# -eq 0; then
+      echo "${usage}" 1>&2
+      echo "Example: gcc \`Wand-config --cflags --cppflags\` -o wand wand.c \`Wand-config --ldflags --libs\`" 1>&2
+      exit 1
+fi
+
+while test $# -gt 0; do
+  case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+  esac
+  case $1 in
+    --prefix=*)
+      prefix=$optarg
+      ;;
+    --prefix)
+      echo $prefix
+      ;;
+    --exec-prefix=*)
+      exec_prefix=$optarg
+      ;;
+    --exec-prefix)
+      echo $exec_prefix
+      ;;
+    --version)
+      echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
+      ;;
+    --cflags)
+      echo "-I${includedir} @MAGICK_PCFLAGS@"
+      ;;
+    --cxxflags)
+      echo '@MAGICK_CXXFLAGS@'
+      ;;
+    --cppflags)
+      echo '@MAGICK_CPPFLAGS@'
+      ;;
+    --ldflags)
+      echo '@MAGICK_LDFLAGS@'
+      ;;
+    --libs)
+      echo "-L${libdir} -lMagickWand @MAGICK_LIBS@"
+      ;;
+    *)
+      echo "${usage}" 1>&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+

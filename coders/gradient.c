@@ -39,26 +39,26 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/paint.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/studio.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/draw.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/paint.h"
+#include "magick/pixel-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/studio.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,7 +114,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   image=AcquireImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  (void) SetImageOpacity(image,(Quantum) TransparentAlpha);
+  (void) SetImageOpacity(image,(Quantum) TransparentOpacity);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
@@ -124,7 +124,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) CopyMagickString(colorname,"white",MaxTextExtent);
-  if (GetPixelPacketIntensity(&start_color) > (Quantum) (QuantumRange/2))
+  if (PixelIntensityToQuantum(&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
   if (QueryColorDatabase(colorname,&stop_color,exception) == MagickFalse)

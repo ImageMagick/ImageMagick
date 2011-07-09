@@ -39,23 +39,23 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/type.h"
-#include "MagickWand/MagickWand.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/draw.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/type.h"
+#include "wand/MagickWand.h"
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 #if defined(MAGICKCORE_HAVE_FT2BUILD_H)
 #  include <ft2build.h>
@@ -197,7 +197,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   ssize_t
@@ -233,13 +233,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      SetPixelPacket(image,&background_color,q);
-      q+=GetPixelComponents(image);
-    }
+      *q++=background_color;
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
   }

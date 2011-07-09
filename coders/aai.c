@@ -39,27 +39,24 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -104,7 +101,7 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -171,19 +168,19 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-        SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
-        SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+        SetPixelBlue(q,ScaleCharToQuantum(*p++));
+        SetPixelGreen(q,ScaleCharToQuantum(*p++));
+        SetPixelRed(q,ScaleCharToQuantum(*p++));
         if (*p == 254)
           *p=255;
-        SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-        if (GetPixelAlpha(image,q) != OpaqueAlpha)
+        SetPixelAlpha(q,ScaleCharToQuantum(*p++));
+        if (q->opacity != OpaqueOpacity)
           image->matte=MagickTrue;
-        q+=GetPixelComponents(image);
+        q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -324,7 +321,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  register const Quantum
+  register const PixelPacket
     *restrict p;
 
   register ssize_t
@@ -358,7 +355,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
     /*
       Write AAI header.
     */
-    if (IsRGBColorspace(image->colorspace) == MagickFalse)
+    if (image->colorspace != RGBColorspace)
       (void) TransformImageColorspace(image,RGBColorspace);
     (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
     (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
@@ -375,19 +372,19 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (PixelPacket *) NULL)
         break;
       q=pixels;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-        *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-        *q=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
-          GetPixelAlpha(image,p) : OpaqueAlpha));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q=ScaleQuantumToChar((Quantum) (QuantumRange-(image->matte !=
+          MagickFalse ? GetPixelOpacity(p) : OpaqueOpacity)));
         if (*q == 255)
           *q=254;
-        p+=GetPixelComponents(image);
+        p++;
         q++;
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);

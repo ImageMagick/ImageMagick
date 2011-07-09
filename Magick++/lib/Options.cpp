@@ -10,15 +10,16 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
+#include "Magick++/Include.h"
 #include <string>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include "Magick++/Include.h"
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
 
+#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 
 // Constructor
@@ -640,6 +641,20 @@ std::string Magick::Options::textEncoding ( void ) const
   if ( _drawInfo->encoding && *_drawInfo->encoding )
     return std::string( _drawInfo->encoding );
   
+  return std::string();
+}
+
+void Magick::Options::tileName ( const std::string &tileName_ )
+{
+  if ( tileName_.length() == 0 )
+    _imageInfo->tile=(char *) RelinquishMagickMemory(_imageInfo->tile);
+  else
+    Magick::CloneString( &_imageInfo->tile, tileName_ );
+}
+std::string Magick::Options::tileName ( void ) const
+{
+  if ( _imageInfo->tile )
+    return std::string( _imageInfo->tile );
   return std::string();
 }
 

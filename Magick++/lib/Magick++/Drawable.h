@@ -896,12 +896,12 @@ private:
   FillRule _fillRule;
 };
 
-// Specify drawing fill alpha
+// Specify drawing fill opacity
 class MagickDLLDecl DrawableFillOpacity : public DrawableBase
 {
 public:
-  DrawableFillOpacity ( double alpha_ )
-    : _alpha(alpha_)
+  DrawableFillOpacity ( double opacity_ )
+    : _opacity(opacity_)
     {
     }
 
@@ -913,17 +913,17 @@ public:
   // Return polymorphic copy of object
   /*virtual*/ DrawableBase* copy() const;
 
-  void alpha( double alpha_ )
+  void opacity( double opacity_ )
     {
-      _alpha = alpha_;
+      _opacity = opacity_;
     }
-  double alpha( void ) const
+  double opacity( void ) const
     {
-      return _alpha;
+      return _opacity;
     }
 
 private:
-  double _alpha;
+  double _opacity;
 };
 
 // Specify text font
@@ -1807,12 +1807,12 @@ private:
   Color _color;
 };
 
-// Stroke alpha
+// Stroke opacity
 class MagickDLLDecl DrawableStrokeOpacity : public DrawableBase
 {
 public:
-  DrawableStrokeOpacity ( double alpha_ )
-    : _alpha(alpha_)
+  DrawableStrokeOpacity ( double opacity_ )
+    : _opacity(opacity_)
     {
     }
 
@@ -1824,17 +1824,17 @@ public:
   // Return polymorphic copy of object
   /*virtual*/ DrawableBase* copy() const;
 
-  void alpha( double alpha_ )
+  void opacity( double opacity_ )
     {
-      _alpha = alpha_;
+      _opacity = opacity_;
     }
-  double alpha( void ) const
+  double opacity( void ) const
     {
-      return _alpha;
+      return _opacity;
     }
 
 private:
-  double _alpha;
+  double _opacity;
 };
 
 // Stroke width

@@ -198,10 +198,13 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -1750,22 +1753,6 @@ available:</p>
     which can be 1, 2, 4, or 8.  In such files, the color samples always have
     8-bit depth.</dd>
 
-<dt>png:compression-filter=<em class="arg">value</em></dt>
-   <dd> valid values are 0 through 7. 0-4 are the corresponding PNG filters,
-   5 means adaptive filtering except for images with a colormap, 6 means
-   adaptive filtering for all images, 7 means MNG "loco" compression.</dd>  
-
-<dt>png:compression-level=<em class="arg">value</em></dt>
-   <dd> valid values are 0 through 9, with 0 providing the least but fastest
-       compression and 9 usually providing the best and always the slowest.</dd>
-
-<dt>png:compression-strategy=<em class="arg">value</em></dt>
-   <dd> valid values are 0 through 4, meaning default, filtered, huffman_only,
-   rle, and fixed ZLIB compression strategy. If you are using an old zlib
-   that does not support Z_RLE (before 1.2.0) or Z_FIXED (before 1.2.2.2),
-   values 3 and 4, respectively, will use the zlib default strategy
-   instead.</dd>
-
 <dt>png:exclude-chunk=<em class="arg">value</em></dt>
 <dt>png:include-chunk=<em class="arg">value</em></dt>
 <dd>ancillary chunks to be excluded from or included in PNG output.
@@ -1792,8 +1779,8 @@ available:</p>
 </pre>
 
     <p>The critical PNG chunks <kbd>IHDR</kbd>, <kbd>PLTE</kbd>,
-    <kbd>IDAT</kbd>, and <kbd>IEND</kbd> cannot be excluded.  Any such
-    entries appearing in the list will be ignored.</p>
+    <kbd>IDAT</kbd>, and <kbd>IEND</kbd> cannot be excluded.  Any of
+    these entries appearing in the list will be ignored.</p>
 
     <p>If the ancillary PNG <kbd>tRNS</kbd> chunk is excluded and the
     image has transparency, the PNG colortype is forced to be 4 or 6
@@ -1980,7 +1967,7 @@ the  <em class="arg">scale</em> bounds.  In other words each pixel can lookup
 any other nearby pixel, producing complex 2 dimensional displacements, rather
 than a simple 1 dimensional vector displacements. </p>
 
-<p>Alteratively rather than supplying two separate images, as of IM v6.4.4-0,
+<p>Alteratively rather than suppling two separate images, as of IM v6.4.4-0,
 you can use the 'red' channel of the overlay image to specify the horizontal
 or X displacement, and the 'green' channel for the vertical or Y displacement.
 </p>
@@ -4891,28 +4878,15 @@ CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&m
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>JPEG/MIFF/PNG compression level.</td><td style='text-align:right;'></td></tr></table>
 
-<p>For the JPEG and MPEG image formats, quality is 1 (lowest image quality and
-highest compression) to 100 (best quality but least effective compression).
-The default is to use the estimated quality of your input image if it can
-be determined, otherwise 92. When the quality is greater than 90, then the
-chroma channels are not downsampled.
-Use the <a href="#sampling-factor">-sampling-factor</a> option to specify the
-factors for chroma downsampling.</p>
+<p>For the JPEG and MPEG image formats, quality is 1 (lowest image quality and highest compression) to 100 (best quality but least effective compression). The default is to use the estimate quality of your input image otherwise 92. Use the <a href="#sampling-factor">-sampling-factor</a> option to specify the factors for chroma downsampling.</p>
 
 <p>For the MIFF image format, quality/10 is the zlib compression level, which is 0 (worst but fastest compression) to 9 (best but slowest). It has no effect on the image appearance, since the compression is always lossless.</p>
 
 <p>For the JPEG-2000 image format, quality is mapped using a non-linear equation to the compression ratio required by the Jasper library. This non-linear equation is intended to loosely approximate the quality provided by the JPEG v1 format. The default quality value 100, a request for non-lossy compression.  A quality of 75 results in a request for 16:1 compression.</p>
 
-<p>For the MNG and PNG image formats, the quality value sets the zlib
-compression level (quality / 10) and filter-type (quality % 10).  The default
-PNG "quality" is 75, which means compression level 7 with adaptive PNG
-filtering, unless the image has a color map, in which case it means
-compression level 7 with no PNG filtering.</p>
+<p>For the MNG and PNG image formats, the quality value sets the zlib compression level (quality / 10) and filter-type (quality % 10). For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.  The default PNG compression is 75.</p>
 
-<p>For compression level 0, the Huffman-only strategy is used, which is fastest but not necessarily the worst compression.</p>
-
-<p>If filter-type is 4 or less, the specified PNG filter-type is used for
-all scanlines:</p>
+<p>If filter-type is 4 or less, the specified filter-type is used for all scanlines:</p>
 
 <pre class="text">
    0: none
@@ -4922,35 +4896,15 @@ all scanlines:</p>
    4: Paeth
 </pre>
 
-<p>If filter-type is 5, adaptive filtering is used when quality is greater
-than 50 and the image does not have a color map, otherwise no filtering is
-used.</p>
+<p>If filter-type is 5, adaptive filtering is used when quality is greater than 50 and the image does not have a color map, otherwise no filtering is used.</p>
 
-<p>If filter-type is 6, adaptive filtering
-with <em class="arg">minimum-sum-of-absolute-values</em> is used.</p>
+<p>If filter-type is 6, adaptive filtering with <em class="arg">minimum-sum-of-absolute-values</em> is used.</p>
 
-<p>Only if the output is MNG, if filter-type is 7, the LOCO color
-transformation (intrapixel differencing) and adaptive filtering
-with <em class="arg">minimum-sum-of-absolute-values</em> are used.</p>
+<p>Only if the output is MNG, if filter-type is 7, the LOCO color transformation and adaptive filtering with <em class="arg">minimum-sum-of-absolute-values</em> are used.</p>
 
-<p>If the filter-type is 8 the zlib Z_RLE compression strategy is used with
- no PNG filtering.</p>
+<p>The quality setting has no effect on the appearance of PNG and MNG images, since the compression is always lossless.</p>
 
-<p>If the filter-type is 9 the zlib Z_RLE compression strategy is used with
- adaptive PNG filtering.</p>
-
-<p>The quality setting has no effect on the appearance or signature of PNG
-and MNG images, since the compression is always lossless.</p>
-
-<p>Not all combinations of compression level, strategy, and PNG filter type
-can be obtained using the -quality option.  For more precise control,
-you can use the PNG:compression-level=N, PNG:compression-strategy=N, and
-PNG:compression-filter=N defines, respectively, instead.
-See <a href="#define">-define</a>. Values from the defines take precedence
-over values from the -quality option.</p>
-
-<p>For further information, see
-the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
+<p>For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
 
 <div style="margin: auto;">
   <h4><a id="quantize"></a>-quantize <em class="arg">colorspace</em></h4>

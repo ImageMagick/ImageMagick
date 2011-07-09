@@ -39,36 +39,32 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colormap-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantize.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/colormap.h"
+#include "magick/colormap-private.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/profile.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/property.h"
+#include "magick/quantize.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Define declarations.
@@ -392,24 +388,24 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
   ExceptionInfo
     *exception;
 
-  int
-    c;
-
-  LZWInfo
-    *lzw_info;
-
-  Quantum
+  IndexPacket
     index;
 
-  size_t
-    pass;
+  int
+    c;
 
   ssize_t
     offset,
     y;
 
+  LZWInfo
+    *lzw_info;
+
   unsigned char
     data_size;
+
+  size_t
+    pass;
 
   /*
     Allocate decoder tables.
@@ -430,27 +426,31 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
   offset=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register IndexPacket
+      *restrict indexes;
+
     register ssize_t
       x;
 
-    register Quantum
+    register PixelPacket
       *restrict q;
 
     q=GetAuthenticPixels(image,0,offset,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetAuthenticIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; )
     {
       c=ReadBlobLZWByte(lzw_info);
       if (c < 0)
         break;
       index=ConstrainColormapIndex(image,(size_t) c);
-      SetPixelIndex(image,index,q);
-      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
-      SetPixelAlpha(image,(ssize_t) index == opacity ? TransparentAlpha :
-        OpaqueAlpha,q);
+      SetPixelIndex(indexes+x,index);
+      SetPixelRGBO(q,image->colormap+(ssize_t) index);
+      SetPixelOpacity(q,(ssize_t) index == opacity ?
+        TransparentOpacity : OpaqueOpacity);
       x++;
-      q+=GetPixelComponents(image);
+      q++;
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -574,7 +574,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     } \
 }
 
-  Quantum
+  IndexPacket
     index;
 
   register ssize_t
@@ -654,27 +654,28 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   waiting_code=0;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register const Quantum
+    register const IndexPacket
+      *restrict indexes;
+
+    register const PixelPacket
       *restrict p;
 
     register ssize_t
       x;
 
     p=GetVirtualPixels(image,0,offset,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
+    indexes=GetVirtualIndexQueue(image);
     if (y == 0)
-      {
-        waiting_code=(short) GetPixelIndex(image,p);
-        p+=GetPixelComponents(image);
-      }
+      waiting_code=(short) (*indexes);
     for (x=(ssize_t) (y == 0 ? 1 : 0); x < (ssize_t) image->columns; x++)
     {
       /*
         Probe hash table.
       */
-      index=(Quantum) ((size_t) GetPixelIndex(image,p) & 0xff);
-      p+=GetPixelComponents(image);
+      index=(IndexPacket) ((size_t) GetPixelIndex(indexes+x) & 0xff);
+      p++;
       k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+waiting_code);
       if (k >= MaxHashTable)
         k-=MaxHashTable;
@@ -1270,7 +1271,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].blue=ScaleCharToQuantum(*p++);
           if (i == opacity)
             {
-              image->colormap[i].alpha=(Quantum) TransparentAlpha;
+              image->colormap[i].opacity=(Quantum) TransparentOpacity;
               image->transparent_color=image->colormap[opacity];
             }
         }
@@ -1309,7 +1310,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=ScaleCharToQuantum(*p++);
           image->colormap[i].blue=ScaleCharToQuantum(*p++);
           if (i == opacity)
-            image->colormap[i].alpha=(Quantum) TransparentAlpha;
+            image->colormap[i].opacity=(Quantum) TransparentOpacity;
         }
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
@@ -1554,10 +1555,10 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
   one=1;
   do
   {
-    if (IsRGBColorspace(image->colorspace) == MagickFalse)
+    if (image->colorspace != RGBColorspace)
       (void) TransformImageColorspace(image,RGBColorspace);
     opacity=(-1);
-    if (IsImageOpaque(image,&image->exception) != MagickFalse)
+    if (IsOpaqueImage(image,&image->exception) != MagickFalse)
       {
         if ((image->storage_class == DirectClass) || (image->colors > 256))
           (void) SetImageType(image,PaletteType);
@@ -1574,17 +1575,17 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
         if ((image->storage_class == DirectClass) || (image->colors > 256))
           (void) SetImageType(image,PaletteBilevelMatteType);
         for (i=0; i < (ssize_t) image->colors; i++)
-          if (image->colormap[i].alpha != OpaqueAlpha)
+          if (image->colormap[i].opacity != OpaqueOpacity)
             {
               if (opacity < 0)
                 {
                   opacity=i;
                   continue;
                 }
-              alpha=(MagickRealType) TransparentAlpha-(MagickRealType)
-                image->colormap[i].alpha;
-              beta=(MagickRealType) TransparentAlpha-(MagickRealType)
-                image->colormap[opacity].alpha;
+              alpha=(MagickRealType) TransparentOpacity-(MagickRealType)
+                image->colormap[i].opacity;
+              beta=(MagickRealType) TransparentOpacity-(MagickRealType)
+                image->colormap[opacity].opacity;
               if (alpha < beta)
                 opacity=i;
             }
@@ -1592,17 +1593,17 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
           {
             (void) SetImageType(image,PaletteBilevelMatteType);
             for (i=0; i < (ssize_t) image->colors; i++)
-              if (image->colormap[i].alpha != OpaqueAlpha)
+              if (image->colormap[i].opacity != OpaqueOpacity)
                 {
                   if (opacity < 0)
                     {
                       opacity=i;
                       continue;
                     }
-                  alpha=(Quantum) TransparentAlpha-(MagickRealType)
-                    image->colormap[i].alpha;
-                  beta=(Quantum) TransparentAlpha-(MagickRealType)
-                    image->colormap[opacity].alpha;
+                  alpha=(Quantum) TransparentOpacity-(MagickRealType)
+                    image->colormap[i].opacity;
+                  beta=(Quantum) TransparentOpacity-(MagickRealType)
+                    image->colormap[opacity].opacity;
                   if (alpha < beta)
                     opacity=i;
                 }
@@ -1643,7 +1644,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) WriteBlobByte(image,(unsigned char) c);
         for (j=0; j < (ssize_t) image->colors; j++)
-          if (IsPixelPacketEquivalent(&image->background_color,image->colormap+j))
+          if (IsColorEqual(&image->background_color,image->colormap+j))
             break;
         (void) WriteBlobByte(image,(unsigned char)
           (j == (ssize_t) image->colors ? 0 : j));  /* background color */

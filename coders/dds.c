@@ -39,45 +39,44 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/log.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/transform.h"
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/compress.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/profile.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/transform.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/compress.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum.h"
+#include "magick/static.h"
+#include "magick/string_.h"
 
 /*
   Definitions
@@ -499,7 +498,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  register Quantum
+  PixelPacket
     *q;
   
   register ssize_t
@@ -529,7 +528,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
         Min(4, dds_info->height - y),exception);
       
-      if (q == (const Quantum *) NULL)
+      if (q == (PixelPacket *) NULL)
         return MagickFalse;
       
       /* Read 8 bytes of data from the image */
@@ -544,17 +543,17 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
       {
         for (i = 0; i < 4; i++)
         {
-          if ((x + i) < (ssize_t) dds_info->width &&
-              (y + j) < (ssize_t) dds_info->height)
+          if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (unsigned char) ((bits >> ((j*4+i)*2)) & 0x3);
-              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
-              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
-              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
-              SetPixelAlpha(image,ScaleCharToQuantum(colors.a[code]),q);
-              if (colors.a[code] && (image->matte == MagickFalse))
-                image->matte=MagickTrue;  /* Correct matte */
-              q+=GetPixelComponents(image);
+              SetPixelRed(q,ScaleCharToQuantum(colors.r[code]));
+              SetPixelGreen(q,ScaleCharToQuantum(colors.g[code]));
+              SetPixelBlue(q,ScaleCharToQuantum(colors.b[code]));
+              SetPixelOpacity(q,ScaleCharToQuantum(colors.a[code]));
+              if (colors.a[code] && image->matte == MagickFalse)
+                /* Correct matte */
+                image->matte = MagickTrue;
+              q++;
             }
         }
       }
@@ -577,7 +576,11 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
-  register Quantum
+  ssize_t
+    j,
+    y;
+
+  PixelPacket
     *q;
   
   register ssize_t
@@ -593,10 +596,6 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
     bits,
     code;
 
-  ssize_t
-    j,
-    y;
-
   unsigned short
     c0,
     c1;
@@ -610,7 +609,7 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
                          Min(4, dds_info->height - y),exception);
       
-      if (q == (Quantum *) NULL)
+      if (q == (PixelPacket *) NULL)
         return MagickFalse;
       
       /* Read alpha values (8 bytes) */
@@ -632,9 +631,9 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
           if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
-              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
-              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
-              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
+              SetPixelRed(q,ScaleCharToQuantum(colors.r[code]));
+              SetPixelGreen(q,ScaleCharToQuantum(colors.g[code]));
+              SetPixelBlue(q,ScaleCharToQuantum(colors.b[code]));
               /*
                 Extract alpha value: multiply 0..15 by 17 to get range 0..255
               */
@@ -642,8 +641,9 @@ static MagickBooleanType ReadDXT3(Image *image, DDSInfo *dds_info)
                 alpha = 17U * (unsigned char) ((a0 >> (4*(4*j+i))) & 0xf);
               else
                 alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
-              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelComponents(image);
+              SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+                alpha));
+              q++;
             }
         }
       }
@@ -666,10 +666,14 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
   ExceptionInfo
     *exception;
 
+  ssize_t
+    j,
+    y;
+
   MagickSizeType
     alpha_bits;
   
-  register Quantum
+  PixelPacket
     *q;
   
   register ssize_t
@@ -686,10 +690,6 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
     code,
     alpha_code;
 
-  ssize_t
-    j,
-    y;
-
   unsigned short
     c0,
     c1;
@@ -703,7 +703,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
                          Min(4, dds_info->height - y),exception);
       
-      if (q == (const Quantum *) NULL)
+      if (q == (PixelPacket *) NULL)
         return MagickFalse;
       
       /* Read alpha values (8 bytes) */
@@ -725,13 +725,12 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
       {
         for (i = 0; i < 4; i++)
         {
-          if ((x + i) < (ssize_t) dds_info->width &&
-              (y + j) < (ssize_t) dds_info->height)
+          if ((x + i) < (ssize_t) dds_info->width && (y + j) < (ssize_t) dds_info->height)
             {
               code = (bits >> ((4*j+i)*2)) & 0x3;
-              SetPixelRed(image,ScaleCharToQuantum(colors.r[code]),q);
-              SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
-              SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
+              SetPixelRed(q,ScaleCharToQuantum(colors.r[code]));
+              SetPixelGreen(q,ScaleCharToQuantum(colors.g[code]));
+              SetPixelBlue(q,ScaleCharToQuantum(colors.b[code]));
               /* Extract alpha value */
               alpha_code = (size_t) (alpha_bits >> (3*(4*j+i))) & 0x7;
               if (alpha_code == 0)
@@ -746,8 +745,9 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
                 alpha = 255;
               else
                 alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
-              SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelComponents(image);
+              SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+                alpha));
+              q++;
             }
         }
       }
@@ -770,7 +770,7 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
   ssize_t
     x, y;
   
-  register Quantum
+  PixelPacket
     *q;
   
   exception=(&image->exception);
@@ -778,20 +778,20 @@ static MagickBooleanType ReadUncompressedRGB(Image *image, DDSInfo *dds_info)
   {
     q = QueueAuthenticPixels(image, 0, y, dds_info->width, 1,exception);
     
-    if (q == (Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       return MagickFalse;
     
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
-      SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
-      SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
+      SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
       if (dds_info->pixelformat.rgb_bitcount == 32)
         (void) ReadBlobByte(image);
-      q+=GetPixelComponents(image);
+      q++;
     }
     
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -811,7 +811,7 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
   ssize_t
     x, y;
   
-  register Quantum
+  PixelPacket
     *q;
   
   exception=(&image->exception);
@@ -819,20 +819,20 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
   {
     q = QueueAuthenticPixels(image, 0, y, dds_info->width, 1,exception);
     
-    if (q == (Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       return MagickFalse;
     
     for (x = 0; x < (ssize_t) dds_info->width; x++)
     {
-      SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
-      SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
-      SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
-      SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-        ReadBlobByte(image)),q);
-      q+=GetPixelComponents(image);
+      SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)));
+      q++;
     }
     
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -849,11 +849,11 @@ static MagickBooleanType ReadUncompressedRGBA(Image *image, DDSInfo *dds_info)
 */
 static void SkipDXTMipmaps(Image *image, DDSInfo *dds_info, int texel_size)
 {
-  MagickOffsetType
-    offset;
-
   register ssize_t
     i;
+
+  MagickOffsetType
+    offset;
 
   size_t
     h,

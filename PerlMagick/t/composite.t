@@ -26,7 +26,7 @@ chdir 't' || die 'Cd failed';
 # Add
 #
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
-  'input.miff', q//, q/, gravity=>'Center', compose=>'ModulusAdd'/,
+  'input.miff', q//, q/, gravity=>'Center', compose=>'Add'/,
   'reference/composite/Add.miff', 0.1, 1.03);
 #
 # Atop
@@ -153,7 +153,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 #
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
-  'input.miff', q//, q/, gravity=>'Center', compose=>'ModulusSubtract'/,
+  'input.miff', q//, q/, gravity=>'Center', compose=>'Subtract'/,
   'reference/composite/Subtract.miff', 0.1, 1.03);
 
 #

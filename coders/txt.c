@@ -39,34 +39,34 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/annotate.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/statistic.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/annotate.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+#include "magick/draw.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/pixel-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/statistic.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -367,6 +367,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  IndexPacket
+    *indexes;
+
   long
     type,
     x_offset,
@@ -386,7 +389,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   ssize_t
@@ -455,31 +458,35 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->matte != MagickFalse)
               count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u,%u",&x_offset,
-                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black,
-                &pixel.alpha);
+                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index,
+                &pixel.opacity);
             else
               count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
-                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black);
+                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.index);
           }
         else
           if (image->matte != MagickFalse)
             count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
-              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.alpha);
+              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
           else
             count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u",&x_offset,
               &y_offset,&pixel.red,&pixel.green,&pixel.blue);
         if (count < 5)
           continue;
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (PixelPacket *) NULL)
           continue;
-        SetPixelRed(image,ScaleAnyToQuantum(pixel.red,range),q);
-        SetPixelGreen(image,ScaleAnyToQuantum(pixel.green,range),q);
-        SetPixelBlue(image,ScaleAnyToQuantum(pixel.blue,range),q);
+        SetPixelRed(q,ScaleAnyToQuantum(pixel.red,range));
+        SetPixelGreen(q,ScaleAnyToQuantum(pixel.green,range));
+        SetPixelBlue(q,ScaleAnyToQuantum(pixel.blue,range));
         if (image->colorspace == CMYKColorspace)
-          SetPixelBlack(image,ScaleAnyToQuantum(pixel.black,range),q);
+          {
+            indexes=GetAuthenticIndexQueue(image);
+            SetPixelIndex(indexes,ScaleAnyToQuantum(pixel.index,
+              range));
+          }
         if (image->matte != MagickFalse)
-          SetPixelAlpha(image,ScaleAnyToQuantum(pixel.alpha,range),q);
+          SetPixelAlpha(q,ScaleAnyToQuantum(pixel.opacity,range));
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
@@ -615,10 +622,13 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  PixelInfo
+  MagickPixelPacket
     pixel;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -653,38 +663,34 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
       image->columns,(double) image->rows,(double)
       GetQuantumRange(image->depth),colorspace);
     (void) WriteBlobString(image,buffer);
-    GetPixelInfo(image,&pixel);
+    GetMagickPixelPacket(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (const PixelPacket *) NULL)
         break;
+      indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
-        SetPixelInfo(image,p,&pixel);
+        SetMagickPixelPacket(image,p,indexes+x,&pixel);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,RedPixelComponent,X11Compliance,
-          tuple);
+        ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,GreenPixelComponent,X11Compliance,
-          tuple);
+        ConcatenateColorComponent(&pixel,GreenChannel,X11Compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,BluePixelComponent,X11Compliance,
-          tuple);
+        ConcatenateColorComponent(&pixel,BlueChannel,X11Compliance,tuple);
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BlackPixelComponent,X11Compliance,
-              tuple);
+            ConcatenateColorComponent(&pixel,IndexChannel,X11Compliance,tuple);
           }
         if (pixel.matte != MagickFalse)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,AlphaPixelComponent,X11Compliance,
-              tuple);
+            ConcatenateColorComponent(&pixel,AlphaChannel,X11Compliance,tuple);
           }
         (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
         (void) WriteBlobString(image,tuple);
@@ -697,7 +703,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
           &image->exception);
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");
-        p+=GetPixelComponents(image);
+        p++;
       }
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
         image->rows);

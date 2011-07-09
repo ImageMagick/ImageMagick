@@ -39,29 +39,28 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/statistic.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/pixel.h"
+#include "magick/pixel-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/statistic.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -191,13 +190,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       }
     for (y=0; y < (ssize_t) image->extract_info.height; y++)
     {
-      register const Quantum
+      register const PixelPacket
         *restrict p;
 
       register ssize_t
         x;
 
-      register Quantum
+      register PixelPacket
         *restrict q;
 
       if (count != (ssize_t) length)
@@ -207,7 +206,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           break;
         }
       q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (PixelPacket *) NULL)
         break;
       length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,quantum_info,
         quantum_type,pixels,exception);
@@ -220,16 +219,15 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             image->columns,1,exception);
           q=QueueAuthenticPixels(image,0,y-image->extract_info.y,image->columns,
             1,exception);
-          if ((p == (const Quantum *) NULL) ||
-              (q == (const Quantum *) NULL))
+          if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,GetPixelRed(canvas_image,p),q);
-            SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
-            SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-            p+=GetPixelComponents(canvas_image);
-            q+=GetPixelComponents(image);
+            SetPixelRed(q,GetPixelRed(p));
+            SetPixelGreen(q,GetPixelGreen(p));
+            SetPixelBlue(q,GetPixelBlue(p));
+            p++;
+            q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -408,7 +406,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     /*
       Write grayscale pixels.
     */
-    if (IsRGBColorspace(image->colorspace) == MagickFalse)
+    if (image->colorspace != RGBColorspace)
       (void) TransformImageColorspace(image,RGBColorspace);
     quantum_type=GrayQuantum;
     quantum_info=AcquireQuantumInfo(image_info,image);
@@ -417,13 +415,13 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     pixels=GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      register const PixelPacket
         *restrict p;
 
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (const PixelPacket *) NULL)
         break;
-      length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+      length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
         quantum_type,pixels,&image->exception);
       count=WriteBlob(image,length,pixels);
       if (count != (ssize_t) length)

@@ -61,7 +61,7 @@ extern "C" {
 #include "perl.h"
 #include "XSUB.h"
 #include <math.h>
-#include <MagickCore/MagickCore.h>
+#include <magick/MagickCore.h>
 #undef tainted
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -78,6 +78,7 @@ extern "C" {
 #endif
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define EndOf(array)  (&array[NumberOf(array)])
+#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define MaxArguments  33
 #ifndef na
 #define na  PL_na
@@ -721,7 +722,7 @@ static double constant(char *name,ssize_t sans)
     case 'O':
     {
       if (strEQ(name,"Opaque"))
-        return(OpaqueAlpha);
+        return(OpaqueOpacity);
       if (strEQ(name,"OptionError"))
         return(OptionError);
       if (strEQ(name,"OptionWarning"))
@@ -763,7 +764,7 @@ static double constant(char *name,ssize_t sans)
     case 'T':
     {
       if (strEQ(name,"Transparent"))
-        return(TransparentAlpha);
+        return(TransparentOpacity);
       if (strEQ(name,"TypeError"))
         return(TypeError);
       if (strEQ(name,"TypeWarning"))
@@ -1068,7 +1069,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     x,
     y;
 
-  PixelInfo
+  MagickPixelPacket
     pixel;
 
   MagickStatusType
@@ -1559,14 +1560,17 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleNCompare(attribute,"index",5) == 0)
         {
+          IndexPacket
+            *indexes;
+
           int
             items;
 
           long
             index;
 
-          register Quantum
-            *q;
+          register PixelPacket
+            *p;
 
           CacheView
             *image_view;
@@ -1580,12 +1584,13 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
             (void) items;
             image_view=AcquireCacheView(image);
-            q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
-            if (q != (Quantum *) NULL)
+            p=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
+            if (p != (PixelPacket *) NULL)
               {
+                indexes=GetCacheViewAuthenticIndexQueue(image_view);
                 items=sscanf(SvPV(sval,na),"%ld",&index);
                 if ((index >= 0) && (index < (ssize_t) image->colors))
-                  SetPixelIndex(image,index,q);
+                  SetPixelIndex(indexes,index);
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -1789,10 +1794,13 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           int
             items;
 
-          PixelInfo
+          MagickPixelPacket
             pixel;
 
-          register Quantum
+          register IndexPacket
+            *indexes;
+
+          register PixelPacket
             *q;
 
           CacheView
@@ -1808,14 +1816,15 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             (void) items;
             image_view=AcquireCacheView(image);
             q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
-            if (q != (Quantum *) NULL)
+            indexes=GetCacheViewAuthenticIndexQueue(image_view);
+            if (q != (PixelPacket *) NULL)
               {
                 if ((strchr(SvPV(sval,na),',') == 0) ||
                     (strchr(SvPV(sval,na),')') != 0))
                   QueryMagickColor(SvPV(sval,na),&pixel,exception);
                 else
                   {
-                    GetPixelInfo(image,&pixel);
+                    GetMagickPixelPacket(image,&pixel);
                     flags=ParseGeometry(SvPV(sval,na),&geometry_info);
                     pixel.red=geometry_info.rho;
                     if ((flags & SigmaValue) != 0)
@@ -1823,16 +1832,18 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                     if ((flags & XiValue) != 0)
                       pixel.blue=geometry_info.xi;
                     if ((flags & PsiValue) != 0)
-                      pixel.alpha=geometry_info.psi;
+                      pixel.opacity=geometry_info.psi;
                     if ((flags & ChiValue) != 0)
-                      pixel.black=geometry_info.chi;
+                      pixel.index=geometry_info.chi;
                   }
-                SetPixelRed(image,ClampToQuantum(pixel.red),q);
-                SetPixelGreen(image,ClampToQuantum(pixel.green),q);
-                SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
-                if (image->colorspace == CMYKColorspace)
-                  SetPixelBlack(image,ClampToQuantum(pixel.black),q);
-                SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
+                SetPixelRed(q,ClampToQuantum(pixel.red));
+                SetPixelGreen(q,ClampToQuantum(pixel.green));
+                SetPixelBlue(q,ClampToQuantum(pixel.blue));
+                SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
+                if (((image->colorspace == CMYKColorspace) ||
+                     (image->storage_class == PseudoClass)) &&
+                    (indexes != (IndexPacket *) NULL))
+                  SetPixelIndex(indexes,ClampToQuantum(pixel.index));
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -1983,6 +1994,18 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             image->scene=SvIV(sval);
           break;
         }
+      if (LocaleCompare(attribute,"subimage") == 0)
+        {
+          if (info)
+            info->image_info->subimage=SvIV(sval);
+          break;
+        }
+      if (LocaleCompare(attribute,"subrange") == 0)
+        {
+          if (info)
+            info->image_info->subrange=SvIV(sval);
+          break;
+        }
       if (LocaleCompare(attribute,"server") == 0)
         goto display;
       if (LocaleCompare(attribute,"size") == 0)
@@ -2029,6 +2052,12 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (LocaleCompare(SvPV(sval,na),"unlimited") != 0)
             limit=(MagickSizeType) SiPrefixToDouble(SvPV(sval,na),100.0);
           (void) SetMagickResourceLimit(ThreadResource,limit);
+          break;
+        }
+      if (LocaleCompare(attribute,"tile") == 0)
+        {
+          if (info)
+            (void) CloneString(&info->image_info->tile,SvPV(sval,na));
           break;
         }
       if (LocaleCompare(attribute,"tile-offset") == 0)
@@ -3065,7 +3094,7 @@ void
 Compare(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
-    CompareImages = 1
+    CompareImage = 1
     compare      = 2
     compareimage = 3
   PPCODE:
@@ -3075,6 +3104,9 @@ Compare(ref,...)
 
     char
       *attribute;
+
+    ChannelType
+      channel;
 
     double
       distortion;
@@ -3138,6 +3170,7 @@ Compare(ref,...)
     /*
       Get attribute.
     */
+    channel=DefaultChannels;
     reconstruct_image=image;
     metric=RootMeanSquaredErrorMetric;
     for (i=2; i < items; i+=2)
@@ -3160,7 +3193,7 @@ Compare(ref,...)
                     "UnrecognizedType",SvPV(ST(i),na));
                   return;
                 }
-              SetPixelComponentMap(image,(ChannelType) option);
+              channel=(ChannelType) option;
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -3220,8 +3253,8 @@ Compare(ref,...)
         }
       }
     }
-    difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
-      exception);
+    difference_image=CompareImageChannels(image,reconstruct_image,channel,
+      metric,&distortion,exception);
     if (difference_image != (Image *) NULL)
       {
         difference_image->error.mean_error_per_pixel=distortion;
@@ -3260,7 +3293,7 @@ void
 CompareLayers(ref)
   Image::Magick ref=NO_INIT
   ALIAS:
-    CompareImagesLayers   = 1
+    CompareImageLayers   = 1
     comparelayers        = 2
     compareimagelayers   = 3
   PPCODE:
@@ -3356,7 +3389,7 @@ CompareLayers(ref)
         }
       }
     }
-    image=CompareImagesLayers(image,method,exception);
+    image=CompareImageLayers(image,method,exception);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     for ( ; image; image=image->next)
@@ -3852,7 +3885,7 @@ Features(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      channel_features=GetImageFeatures(image,distance,
+      channel_features=GetImageChannelFeatures(image,distance,
         &image->exception);
       if (channel_features == (ChannelFeatures *) NULL)
         continue;
@@ -3864,9 +3897,9 @@ Features(ref,...)
         ChannelFeatures(GreenChannel,i);
         ChannelFeatures(BlueChannel,i);
         if (image->colorspace == CMYKColorspace)
-          ChannelFeatures(BlackChannel,i);
+          ChannelFeatures(IndexChannel,i);
         if (image->matte != MagickFalse)
-          ChannelFeatures(AlphaChannel,i);
+          ChannelFeatures(OpacityChannel,i);
       }
       channel_features=(ChannelFeatures *)
         RelinquishMagickMemory(channel_features);
@@ -4150,9 +4183,7 @@ Fx(ref,...)
           }
         }
       }
-    PushPixelComponentMap(image,channel);
-    image=FxImage(image,expression,exception);
-    PopPixelComponentMap(image);
+    image=FxImageChannel(image,channel,expression,exception);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     for ( ; image; image=image->next)
@@ -4302,7 +4333,7 @@ Get(ref,...)
               (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
                 QuantumFormat "," QuantumFormat "," QuantumFormat,
                 image->background_color.red,image->background_color.green,
-                image->background_color.blue,image->background_color.alpha);
+                image->background_color.blue,image->background_color.opacity);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4367,7 +4398,7 @@ Get(ref,...)
               (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
                 QuantumFormat "," QuantumFormat "," QuantumFormat,
                 image->border_color.red,image->border_color.green,
-                image->border_color.blue,image->border_color.alpha);
+                image->border_color.blue,image->border_color.opacity);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4493,7 +4524,7 @@ Get(ref,...)
               (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
                 QuantumFormat "," QuantumFormat "," QuantumFormat,
                 image->colormap[j].red,image->colormap[j].green,
-                image->colormap[j].blue,image->colormap[j].alpha);
+                image->colormap[j].blue,image->colormap[j].opacity);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4821,7 +4852,10 @@ Get(ref,...)
                 x,
                 y;
 
-              register const Quantum
+              register const IndexPacket
+                *indexes;
+
+              register const PixelPacket
                 *p;
 
               CacheView
@@ -4837,10 +4871,11 @@ Get(ref,...)
               (void) items;
               image_view=AcquireCacheView(image);
               p=GetCacheViewVirtualPixels(image_view,x,y,1,1,&image->exception);
-              if (p != (const Quantum *) NULL)
+              if (p != (const PixelPacket *) NULL)
                 {
+                  indexes=GetCacheViewVirtualIndexQueue(image_view);
                   (void) FormatLocaleString(name,MaxTextExtent,QuantumFormat,
-                    GetPixelIndex(image,p));
+                    GetPixelIndex(indexes));
                   s=newSVpv(name,0);
                   PUSHs(s ? sv_2mortal(s) : &sv_undef);
                 }
@@ -4965,7 +5000,7 @@ Get(ref,...)
               (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
                 QuantumFormat "," QuantumFormat "," QuantumFormat,
                 image->matte_color.red,image->matte_color.green,
-                image->matte_color.blue,image->matte_color.alpha);
+                image->matte_color.blue,image->matte_color.opacity);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5004,7 +5039,7 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 continue;
               j=info ? info->image_info->monochrome :
-                IsImageMonochrome(image,&image->exception);
+                IsMonochromeImage(image,&image->exception);
               s=newSViv(j);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5085,8 +5120,11 @@ Get(ref,...)
                 x,
                 y;
 
-              register const Quantum
+              register const PixelPacket
                 *p;
+
+              register const IndexPacket
+                *indexes;
 
               if (image == (Image *) NULL)
                 break;
@@ -5095,17 +5133,18 @@ Get(ref,...)
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
               (void) items;
               p=GetVirtualPixels(image,x,y,1,1,exception);
+              indexes=GetVirtualIndexQueue(image);
               if (image->colorspace != CMYKColorspace)
                 (void) FormatLocaleString(tuple,MaxTextExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat,
-                  GetPixelRed(image,p),GetPixelGreen(image,p),
-                  GetPixelBlue(image,p),GetPixelAlpha(image,p));
+                  GetPixelRed(p),GetPixelGreen(p),
+                  GetPixelBlue(p),GetPixelOpacity(p));
               else
                 (void) FormatLocaleString(tuple,MaxTextExtent,QuantumFormat ","
                   QuantumFormat "," QuantumFormat "," QuantumFormat ","
-                  QuantumFormat,GetPixelRed(image,p),GetPixelGreen(image,p),
-                  GetPixelBlue(image,p),GetPixelBlack(image,p),
-                  GetPixelAlpha(image,p));
+                  QuantumFormat,GetPixelRed(p),
+                  GetPixelGreen(p),GetPixelBlue(p),
+                  GetPixelIndex(indexes),GetPixelOpacity(p));
               s=newSVpv(tuple,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5197,6 +5236,20 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          if (LocaleCompare(attribute,"subimage") == 0)
+            {
+              if (info)
+                s=newSViv((ssize_t) info->image_info->subimage);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"subrange") == 0)
+            {
+              if (info)
+                s=newSViv((ssize_t) info->image_info->subrange);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"server") == 0)  /* same as display */
             {
               if (info && info->image_info->server_name)
@@ -5253,6 +5306,13 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          if (LocaleCompare(attribute,"tile") == 0)
+            {
+              if (info && info->image_info->tile)
+                s=newSVpv(info->image_info->tile,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"texture") == 0)
             {
               if (info && info->image_info->texture)
@@ -5275,7 +5335,7 @@ Get(ref,...)
               (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
                 QuantumFormat "," QuantumFormat "," QuantumFormat,
                 image->transparent_color.red,image->transparent_color.green,
-                image->transparent_color.blue,image->transparent_color.alpha);
+                image->transparent_color.blue,image->transparent_color.opacity);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5768,7 +5828,7 @@ GetVirtualPixels(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
-#   G e t A u t h e n t i c M e t a c o n t e n t                             #
+#   G e t A u t h e n t i c I n d e x Q u e u e                               #
 #                                                                             #
 #                                                                             #
 #                                                                             #
@@ -5776,12 +5836,12 @@ GetVirtualPixels(ref,...)
 #
 #
 void *
-GetAuthenticMetacontent(ref,...)
+GetAuthenticIndexQueue(ref,...)
   Image::Magick ref = NO_INIT
   ALIAS:
-    getauthenticmetacontent = 1
-    GetMetacontent = 2
-    getmetacontent = 3
+    getauthenticindexqueue = 1
+    GetIndexes = 2
+    getindexes = 3
   CODE:
   {
     ExceptionInfo
@@ -5820,7 +5880,7 @@ GetAuthenticMetacontent(ref,...)
         goto PerlException;
       }
 
-    blob=(void *) GetAuthenticMetacontent(image);
+    blob=(void *) GetAuthenticIndexQueue(image);
     if (blob != (void *) NULL)
       goto PerlEnd;
 
@@ -5840,7 +5900,7 @@ GetAuthenticMetacontent(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
-#   G e t V i r t u a l M e t a c o n t e n t                                 #
+#   G e t V i r t u a l I n d e x Q u e u e                                   #
 #                                                                             #
 #                                                                             #
 #                                                                             #
@@ -5848,10 +5908,10 @@ GetAuthenticMetacontent(ref,...)
 #
 #
 void *
-GetVirtualMetacontent(ref,...)
+GetVirtualIndexQueue(ref,...)
   Image::Magick ref = NO_INIT
   ALIAS:
-    getvirtualmetacontent = 1
+    getvirtualindexqueue = 1
   CODE:
   {
     ExceptionInfo
@@ -5890,7 +5950,7 @@ GetVirtualMetacontent(ref,...)
         goto PerlException;
       }
 
-    blob=(void *) GetVirtualMetacontent(image);
+    blob=(void *) GetVirtualIndexQueue(image);
     if (blob != (void *) NULL)
       goto PerlEnd;
 
@@ -5932,7 +5992,7 @@ Histogram(ref,...)
     char
       message[MaxTextExtent];
 
-    PixelPacket
+    ColorPacket
       *histogram;
 
     ExceptionInfo
@@ -5983,35 +6043,35 @@ Histogram(ref,...)
     for ( ; image; image=image->next)
     {
       histogram=GetImageHistogram(image,&number_colors,&image->exception);
-      if (histogram == (PixelPacket *) NULL)
+      if (histogram == (ColorPacket *) NULL)
         continue;
       count+=(ssize_t) number_colors;
       EXTEND(sp,6*count);
       for (i=0; i < (ssize_t) number_colors; i++)
       {
         (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
-          histogram[i].red);
+          histogram[i].pixel.red);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
-          histogram[i].green);
+          histogram[i].pixel.green);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
-          histogram[i].blue);
+          histogram[i].pixel.blue);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         if (image->colorspace == CMYKColorspace)
           {
             (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
-              histogram[i].black);
+              histogram[i].index);
             PUSHs(sv_2mortal(newSVpv(message,0)));
           }
         (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
-          histogram[i].alpha);
+          histogram[i].pixel.opacity);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         (void) FormatLocaleString(message,MaxTextExtent,"%.20g",(double)
           histogram[i].count);
         PUSHs(sv_2mortal(newSVpv(message,0)));
       }
-      histogram=(PixelPacket *) RelinquishMagickMemory(histogram);
+      histogram=(ColorPacket *) RelinquishMagickMemory(histogram);
     }
 
   PerlException:
@@ -6046,6 +6106,9 @@ GetPixel(ref,...)
     char
       *attribute;
 
+    ChannelType
+      channel;
+
     ExceptionInfo
       *exception;
 
@@ -6058,7 +6121,10 @@ GetPixel(ref,...)
     RectangleInfo
       region;
 
-    register const Quantum
+    register const IndexPacket
+      *indexes;
+
+    register const PixelPacket
       *p;
 
     register ssize_t
@@ -6089,6 +6155,7 @@ GetPixel(ref,...)
           PackageName);
         goto PerlException;
       }
+    channel=DefaultChannels;
     normalize=MagickTrue;
     region.x=0;
     region.y=0;
@@ -6116,7 +6183,7 @@ GetPixel(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-              SetPixelComponentMap(image,(ChannelType) option);
+               channel=(ChannelType) option;
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -6188,27 +6255,28 @@ GetPixel(ref,...)
       }
     }
     p=GetVirtualPixels(image,region.x,region.y,1,1,exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       PUSHs(&sv_undef);
     else
       {
         double
           scale;
 
+        indexes=GetVirtualIndexQueue(image);
         scale=1.0;
         if (normalize != MagickFalse)
           scale=1.0/QuantumRange;
-        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetPixelRed(image,p))));
-        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetPixelGreen(image,p))));
-        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetPixelBlue(image,p))));
-        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+        if ((channel & RedChannel) != 0)
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelRed(p))));
+        if ((channel & GreenChannel) != 0)
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelGreen(p))));
+        if ((channel & BlueChannel) != 0)
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelBlue(p))));
+        if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          PUSHs(sv_2mortal(newSVnv(scale*GetPixelBlack(image,p))));
-        if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
-          PUSHs(sv_2mortal(newSVnv(scale*GetPixelAlpha(image,p))));
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelIndex(indexes))));
+        if ((channel & OpacityChannel) != 0)
+          PUSHs(sv_2mortal(newSVnv(scale*GetPixelOpacity(p))));
       }
 
   PerlException:
@@ -6719,7 +6787,7 @@ Layers(ref,...)
       case CompareOverlayLayer:
       default:
       {
-        layers=CompareImagesLayers(image,method,exception);
+        layers=CompareImageLayers(image,method,exception);
         break;
       }
       case MergeLayer:
@@ -7177,7 +7245,7 @@ Mogrify(ref,...)
     AutoLevel          = 255
     AutoLevelImage     = 256
     LevelColors        = 257
-    LevelImageColors   = 258
+    LevelColorsImage   = 258
     Clamp              = 259
     ClampImage         = 260
     Filter             = 261
@@ -7493,10 +7561,8 @@ Mogrify(ref,...)
             argument_list[0].integer_reference=UniformNoise;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=AddNoiseImage(image,(NoiseType)
+          image=AddNoiseImageChannel(image,channel,(NoiseType)
             argument_list[0].integer_reference,exception);
-          PopPixelComponentMap(image);
           break;
         }
         case 4:  /* Colorize */
@@ -7558,10 +7624,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=BlurImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
-          PopPixelComponentMap(image);
+          image=BlurImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,exception);
           break;
         }
         case 7:  /* Chop */
@@ -7717,10 +7781,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=StatisticImage(image,MedianStatistic,(size_t) geometry_info.rho,
-            (size_t) geometry_info.sigma,exception);
-          PopPixelComponentMap(image);
+          image=StatisticImageChannel(image,channel,MedianStatistic,
+            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
         case 19:  /* Minify */
@@ -7751,10 +7813,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=StatisticImage(image,NonpeakStatistic,(size_t)
-            geometry_info.rho,(size_t) geometry_info.sigma,exception);
-          PopPixelComponentMap(image);
+          image=StatisticImageChannel(image,channel,NonpeakStatistic,
+            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
         case 22:  /* Roll */
@@ -7842,10 +7902,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=SharpenImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
-          PopPixelComponentMap(image);
+          image=SharpenImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,exception);
           break;
         }
         case 28:  /* Shear */
@@ -8136,7 +8194,7 @@ Mogrify(ref,...)
           MagickBooleanType
             invert;
 
-          PixelInfo
+          MagickPixelPacket
             target;
 
           draw_info=CloneDrawInfo(info ? info->image_info :
@@ -8165,8 +8223,8 @@ Mogrify(ref,...)
               QuantumRange);
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
-          (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
-            geometry.y,invert);
+          (void) FloodfillPaintImage(image,DefaultChannels,draw_info,&target,
+            geometry.x,geometry.y,invert);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8196,9 +8254,9 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0) /* opacity  */
             {
               if (compose != DissolveCompositeOp)
-                (void) SetImageOpacity(composite_image,(Quantum)
+                (void) SetImageOpacity(composite_image,(Quantum) (QuantumRange-
                   SiPrefixToDouble(argument_list[6].string_reference,
-                  QuantumRange));
+                  QuantumRange)));
               else
                 {
                   CacheView
@@ -8213,7 +8271,7 @@ Mogrify(ref,...)
                   register ssize_t
                     x;
 
-                  register Quantum
+                  register PixelPacket
                     *q;
 
                   ssize_t
@@ -8225,10 +8283,10 @@ Mogrify(ref,...)
                   */
                   (void) CloneString(&image->geometry,
                     argument_list[6].string_reference);
-                  opacity=(Quantum) SiPrefixToDouble(
-                    argument_list[6].string_reference,QuantumRange);
+                  opacity=(Quantum) (QuantumRange-SiPrefixToDouble(
+                    argument_list[6].string_reference,QuantumRange));
                   if (composite_image->matte != MagickTrue)
-                    (void) SetImageOpacity(composite_image,OpaqueAlpha);
+                    (void) SetImageOpacity(composite_image,OpaqueOpacity);
                   composite_view=AcquireCacheView(composite_image);
                   for (y=0; y < (ssize_t) composite_image->rows ; y++)
                   {
@@ -8236,9 +8294,9 @@ Mogrify(ref,...)
                       composite_image->columns,1,exception);
                     for (x=0; x < (ssize_t) composite_image->columns; x++)
                     {
-                      if (GetPixelAlpha(image,q) == OpaqueAlpha)
-                        SetPixelAlpha(composite_image,ClampToQuantum(opacity),q);
-                      q+=GetPixelComponents(composite_image);
+                      if (q->opacity == OpaqueOpacity)
+                        q->opacity=ClampToQuantum(opacity);
+                      q++;
                     }
                     sync=SyncCacheViewAuthenticPixels(composite_view,exception);
                     if (sync == MagickFalse)
@@ -8351,9 +8409,9 @@ Mogrify(ref,...)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             exception);
-          PushPixelComponentMap(image,channel);
           if (attribute_flag[8] == 0) /* no rotate */
-            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
+            CompositeImageChannel(image,channel,compose,composite_image,
+              geometry.x,geometry.y);
           else
             {
               /*
@@ -8363,7 +8421,8 @@ Mogrify(ref,...)
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-
                 composite_image->rows)/2;
-              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
+              CompositeImageChannel(image,channel,compose,rotate_image,
+                geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
           if (attribute_flag[10] != 0) /* mask */
@@ -8374,7 +8433,6 @@ Mogrify(ref,...)
               else
                 image->mask=DestroyImage(image->mask);
             }
-          PopPixelComponentMap(image);
           break;
         }
         case 36:  /* Contrast */
@@ -8637,9 +8695,7 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          EqualizeImage(image);
-          PopPixelComponentMap(image);
+          EqualizeImageChannel(image,channel);
           break;
         }
         case 40:  /* Gamma */
@@ -8660,8 +8716,11 @@ Mogrify(ref,...)
                 (double) argument_list[4].real_reference);
               argument_list[0].string_reference=message;
             }
-          (void) GammaImage(image,InterpretLocaleValue(
-            argument_list[0].string_reference,(char **) NULL));
+          if (strchr(argument_list[0].string_reference,',') != (char *) NULL)
+            (void) GammaImage(image,argument_list[0].string_reference);
+          else
+            (void) GammaImageChannel(image,channel,InterpretLocaleValue(
+              argument_list[0].string_reference,(char **) NULL));
           break;
         }
         case 41:  /* Map */
@@ -8695,11 +8754,12 @@ Mogrify(ref,...)
           MagickBooleanType
             invert;
 
-          PixelInfo
+          MagickPixelPacket
             target;
 
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
+          if (attribute_flag[0] != 0)
           if (attribute_flag[0] != 0)
             flags=ParsePageGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
@@ -8708,14 +8768,14 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.y=argument_list[2].integer_reference;
           if (image->matte == MagickFalse)
-            (void) SetImageOpacity(image,OpaqueAlpha);
+            (void) SetImageOpacity(image,OpaqueOpacity);
           (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,&target,
             exception);
           if (attribute_flag[4] != 0)
             QueryMagickColor(argument_list[4].string_reference,&target,
               exception);
           if (attribute_flag[3] != 0)
-            target.alpha=SiPrefixToDouble(argument_list[3].string_reference,
+            target.opacity=SiPrefixToDouble(argument_list[3].string_reference,
               QuantumRange);
           if (attribute_flag[5] != 0)
             image->fuzz=SiPrefixToDouble(argument_list[5].string_reference,
@@ -8723,11 +8783,8 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
-          PushPixelComponentMap(image,AlphaChannel);
-          (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
-            geometry.y,invert);
-          PopPixelComponentMap(image);
-          StandardPixelComponentMap(image);
+          (void) FloodfillPaintImage(image,OpacityChannel,draw_info,&target,
+            geometry.x,geometry.y,invert);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8777,19 +8834,15 @@ Mogrify(ref,...)
             argument_list[0].integer_reference=0;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) NegateImage(image,argument_list[0].integer_reference != 0 ?
-            MagickTrue : MagickFalse);
-          PopPixelComponentMap(image);
+          (void) NegateImageChannel(image,channel,
+            argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse);
           break;
         }
         case 45:  /* Normalize */
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          NormalizeImage(image);
-          PopPixelComponentMap(image);
+          NormalizeImageChannel(image,channel);
           break;
         }
         case 46:  /* NumberColors */
@@ -8799,7 +8852,7 @@ Mogrify(ref,...)
           MagickBooleanType
             invert;
 
-          PixelInfo
+          MagickPixelPacket
             fill_color,
             target;
 
@@ -8819,9 +8872,8 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[4] != 0)
             invert=(MagickBooleanType) argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) OpaquePaintImage(image,&target,&fill_color,invert);
-          PopPixelComponentMap(image);
+          (void) OpaquePaintImageChannel(image,channel,&target,&fill_color,
+            invert);
           break;
         }
         case 48:  /* Quantize */
@@ -8958,10 +9010,8 @@ Mogrify(ref,...)
             op=(MagickEvaluateOperator) argument_list[1].integer_reference;
           if (attribute_flag[2] != MagickFalse)
             channel=(ChannelType) argument_list[2].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) EvaluateImage(image,op,argument_list[0].real_reference,
-            exception);
-          PopPixelComponentMap(image);
+          (void) EvaluateImageChannel(image,channel,op,
+            argument_list[0].real_reference,exception);
           break;
         }
         case 56:  /* Transparent */
@@ -8972,14 +9022,14 @@ Mogrify(ref,...)
           MagickBooleanType
             invert;
 
-          PixelInfo
+          MagickPixelPacket
             target;
 
           (void) QueryMagickColor("none",&target,exception);
           if (attribute_flag[0] != 0)
             (void) QueryMagickColor(argument_list[0].string_reference,&target,
               exception);
-          opacity=TransparentAlpha;
+          opacity=TransparentOpacity;
           if (attribute_flag[1] != 0)
             opacity=SiPrefixToDouble(argument_list[1].string_reference,
               QuantumRange);
@@ -9006,9 +9056,7 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[1].integer_reference;
           threshold=SiPrefixToDouble(argument_list[0].string_reference,
             QuantumRange);
-          PushPixelComponentMap(image,channel);
-          (void) BilevelImage(image,threshold);
-          PopPixelComponentMap(image);
+          (void) BilevelImageChannel(image,channel,threshold);
           break;
         }
         case 58:  /* Charcoal */
@@ -9060,9 +9108,7 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) SeparateImage(image);
-          PopPixelComponentMap(image);
+          (void) SeparateImageChannel(image,channel);
           break;
         }
         case 63:  /* Stereo */
@@ -9097,7 +9143,7 @@ Mogrify(ref,...)
         }
         case 65:  /* Deconstruct */
         {
-          image=CompareImagesLayers(image,CompareAnyLayer,exception);
+          image=DeconstructImages(image,exception);
           break;
         }
         case 66:  /* GaussianBlur */
@@ -9115,10 +9161,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=GaussianBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
-          PopPixelComponentMap(image);
+          image=GaussianBlurImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,exception);
           break;
         }
         case 67:  /* Convolve */
@@ -9152,9 +9196,7 @@ Mogrify(ref,...)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (ssize_t) (order*order); j++)
             kernel[j]=0.0;
-          PushPixelComponentMap(image,channel);
-          image=ConvolveImage(image,order,kernel,exception);
-          PopPixelComponentMap(image);
+          image=ConvolveImageChannel(image,channel,order,kernel,exception);
           kernel=(double *) RelinquishMagickMemory(kernel);
           break;
         }
@@ -9252,10 +9294,8 @@ Mogrify(ref,...)
             geometry_info.psi=argument_list[4].real_reference;
           if (attribute_flag[5] != 0)
             channel=(ChannelType) argument_list[5].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=UnsharpMaskImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,geometry_info.psi,exception);
-          PopPixelComponentMap(image);
+          image=UnsharpMaskImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           break;
         }
         case 70:  /* MotionBlur */
@@ -9277,10 +9317,8 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=MotionBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
-          PopPixelComponentMap(image);
+          image=MotionBlurImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
         case 71:  /* OrderedDither */
@@ -9289,10 +9327,8 @@ Mogrify(ref,...)
             argument_list[0].string_reference="o8x8";
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) OrderedPosterizeImage(image,argument_list[0].string_reference,
-            exception);
-          PopPixelComponentMap(image);
+          (void) OrderedPosterizeImageChannel(image,channel,
+            argument_list[0].string_reference,exception);
           break;
         }
         case 72:  /* Shave */
@@ -9347,9 +9383,7 @@ Mogrify(ref,...)
               argument_list[0].real_reference=argument_list[5].real_reference;
               attribute_flag[0]=attribute_flag[5];
             }
-          PushPixelComponentMap(image,channel);
-          (void) LevelImage(image,black_point,white_point,gamma);
-          PopPixelComponentMap(image);
+          (void) LevelImageChannel(image,channel,black_point,white_point,gamma);
           break;
         }
         case 74:  /* Clip */
@@ -9570,10 +9604,8 @@ Mogrify(ref,...)
             argument_list[0].string_reference="50%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          PushPixelComponentMap(image,channel);
-          BlackThresholdImage(image,argument_list[0].string_reference,
-            exception);
-          PopPixelComponentMap(image);
+          BlackThresholdImageChannel(image,channel,
+            argument_list[0].string_reference,exception);
           break;
         }
         case 81:  /* WhiteThreshold */
@@ -9582,10 +9614,8 @@ Mogrify(ref,...)
             argument_list[0].string_reference="50%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          PushPixelComponentMap(image,channel);
-          WhiteThresholdImage(image,argument_list[0].string_reference,
-            exception);
-          PopPixelComponentMap(image);
+          WhiteThresholdImageChannel(image,channel,
+            argument_list[0].string_reference,exception);
           break;
         }
         case 82:  /* RadialBlur */
@@ -9601,9 +9631,8 @@ Mogrify(ref,...)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=RadialBlurImage(image,geometry_info.rho,exception);
-          PopPixelComponentMap(image);
+          image=RadialBlurImageChannel(image,channel,geometry_info.rho,
+            exception);
           break;
         }
         case 83:  /* Thumbnail */
@@ -9642,9 +9671,7 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) SeparateImage(image);
-          PopPixelComponentMap(image);
+          (void) SeparateImageChannel(image,channel);
           break;
         }
         case 87:  /* Splice */
@@ -9753,10 +9780,8 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             sharpen=argument_list[4].integer_reference != 0 ? MagickTrue :
               MagickFalse;
-          PushPixelComponentMap(image,channel);
-          (void) SigmoidalContrastImage(image,sharpen,geometry_info.rho,
-            geometry_info.sigma);
-          PopPixelComponentMap(image);
+          (void) SigmoidalContrastImageChannel(image,channel,sharpen,
+            geometry_info.rho,geometry_info.sigma);
           break;
         }
         case 93:  /* Extent */
@@ -9851,9 +9876,8 @@ Mogrify(ref,...)
             white_point=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) ContrastStretchImage(image,black_point,white_point);
-          PopPixelComponentMap(image);
+          (void) ContrastStretchImageChannel(image,channel,black_point,
+            white_point);
           break;
         }
         case 96:  /* Sans0 */
@@ -9879,10 +9903,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=AdaptiveSharpenImage(image,geometry_info.rho,
+          image=AdaptiveSharpenImageChannel(image,channel,geometry_info.rho,
             geometry_info.sigma,exception);
-          PopPixelComponentMap(image);
           break;
         }
         case 99:  /* Transpose */
@@ -9954,10 +9976,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=AdaptiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
-          PopPixelComponentMap(image);
+          image=AdaptiveBlurImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,exception);
           break;
         }
         case 103:  /* Sketch */
@@ -10108,7 +10128,7 @@ Mogrify(ref,...)
           MagickBooleanType
             invert;
 
-          PixelInfo
+          MagickPixelPacket
             target;
 
           draw_info=CloneDrawInfo(info ? info->image_info :
@@ -10136,10 +10156,8 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[7] != 0)
             invert=(MagickBooleanType) argument_list[7].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
+          (void) FloodfillPaintImage(image,channel,draw_info,&target,geometry.x,
             geometry.y,invert);
-          PopPixelComponentMap(image);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -10199,9 +10217,8 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) ClutImage(image,argument_list[0].image_reference);
-          PopPixelComponentMap(image);
+          (void) ClutImageChannel(image,channel,
+            argument_list[0].image_reference);
           break;
         }
         case 114:  /* LiquidRescale */
@@ -10309,10 +10326,8 @@ Mogrify(ref,...)
               argument_list[2].integer_reference);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=SparseColorImage(image,method,number_coordinates,coordinates,
-            exception);
-          PopPixelComponentMap(image);
+          image=SparseColorImage(image,channel,method,number_coordinates,
+            coordinates,exception);
           if ((attribute_flag[2] != 0) && (image != (Image *) NULL))
             virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel);
           coordinates=(double *) RelinquishMagickMemory(coordinates);
@@ -10382,10 +10397,8 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=SelectiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
-          PopPixelComponentMap(image);
+          image=SelectiveBlurImageChannel(image,channel,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
         case 122:  /* HaldClut */
@@ -10398,9 +10411,8 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) HaldClutImage(image,argument_list[0].image_reference);
-          PopPixelComponentMap(image);
+          (void) HaldClutImageChannel(image,channel,
+            argument_list[0].image_reference);
           break;
         }
         case 123:  /* BlueShift */
@@ -10437,23 +10449,19 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) AutoGammaImage(image);
-          PopPixelComponentMap(image);
+          (void) AutoGammaImageChannel(image,channel);
           break;
         }
         case 128:  /* AutoLevel */
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) AutoLevelImage(image);
-          PopPixelComponentMap(image);
+          (void) AutoLevelImageChannel(image,channel);
           break;
         }
         case 129:  /* LevelColors */
         {
-          PixelInfo
+          MagickPixelPacket
             black_point,
             white_point;
 
@@ -10467,19 +10475,16 @@ Mogrify(ref,...)
                &white_point,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) LevelImageColors(image,&black_point,&white_point,
-            argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse);
-          PopPixelComponentMap(image);
+          (void) LevelColorsImageChannel(image,channel,&black_point,
+            &white_point,argument_list[0].integer_reference != 0 ? MagickTrue :
+            MagickFalse);
           break;
         }
         case 130:  /* Clamp */
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) ClampImage(image);
-          PopPixelComponentMap(image);
+          (void) ClampImageChannel(image,channel);
           break;
         }
         case 131:  /* Filter */
@@ -10497,9 +10502,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             image->bias=SiPrefixToDouble(argument_list[2].string_reference,
               QuantumRange);
-          PushPixelComponentMap(image,channel);
-          image=FilterImage(image,kernel,exception);
-          PopPixelComponentMap(image);
+          image=FilterImageChannel(image,channel,kernel,exception);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
@@ -10525,9 +10528,8 @@ Mogrify(ref,...)
             contrast=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          (void) BrightnessContrastImage(image,brightness,contrast);
-          PopPixelComponentMap(image);
+          (void) BrightnessContrastImageChannel(image,channel,brightness,
+            contrast);
           break;
         }
         case 133:  /* Morphology */
@@ -10554,9 +10556,8 @@ Mogrify(ref,...)
           iterations=1;
           if (attribute_flag[3] != 0)
             iterations=argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=MorphologyImage(image,method,iterations,kernel,exception);
-          PopPixelComponentMap(image);
+          image=MorphologyImageChannel(image,channel,method,iterations,kernel,
+            exception);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
@@ -10605,7 +10606,7 @@ Mogrify(ref,...)
         }
         case 135:  /* Color */
         {
-          PixelInfo
+          MagickPixelPacket
             color;
 
           (void) QueryMagickColor("none",&color,exception);
@@ -10630,10 +10631,8 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=StatisticImage(image,ModeStatistic,(size_t) geometry_info.rho,
-            (size_t) geometry_info.sigma,exception);
-          PopPixelComponentMap(image);
+          image=StatisticImageChannel(image,channel,ModeStatistic,
+            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
         case 137:  /* Statistic */
@@ -10657,10 +10656,8 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             statistic=(StatisticType) argument_list[4].integer_reference;
-          PushPixelComponentMap(image,channel);
-          image=StatisticImage(image,statistic,(size_t) geometry_info.rho,
-            (size_t) geometry_info.sigma,exception);
-          PopPixelComponentMap(image);
+          image=StatisticImageChannel(image,channel,statistic,
+            (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
       }
@@ -10670,7 +10667,7 @@ Mogrify(ref,...)
         {
           /*
             Composite region.
-          */ 
+          */
           status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
           (void) status;
@@ -10741,7 +10738,7 @@ Montage(ref,...)
       *image,
       *next;
 
-    PixelInfo
+    MagickPixelPacket
       transparent_color;
 
     MontageInfo
@@ -11064,13 +11061,13 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"transparent") == 0)
             {
-              PixelInfo
+              MagickPixelPacket
                 transparent_color;
 
               QueryMagickColor(SvPV(ST(i),na),&transparent_color,exception);
               for (next=image; next; next=next->next)
                 (void) TransparentPaintImage(next,&transparent_color,
-                  TransparentAlpha,MagickFalse);
+                  TransparentOpacity,MagickFalse);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -11089,10 +11086,10 @@ Montage(ref,...)
     montage_info=DestroyMontageInfo(montage_info);
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
-    if (transparent_color.alpha != TransparentAlpha)
+    if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         (void) TransparentPaintImage(next,&transparent_color,
-          TransparentAlpha,MagickFalse);
+          TransparentOpacity,MagickFalse);
     for (  ; image; image=image->next)
     {
       AddImageToRegistry(sv,image);
@@ -11669,7 +11666,7 @@ QueryColor(ref,...)
     ExceptionInfo
       *exception;
 
-    PixelInfo
+    MagickPixelPacket
       color;
 
     register ssize_t
@@ -11712,10 +11709,10 @@ QueryColor(ref,...)
       PUSHs(sv_2mortal(newSViv((size_t) floor(color.red+0.5))));
       PUSHs(sv_2mortal(newSViv((size_t) floor(color.green+0.5))));
       PUSHs(sv_2mortal(newSViv((size_t) floor(color.blue+0.5))));
-      if (color.colorspace == CMYKColorspace)
-        PUSHs(sv_2mortal(newSViv((size_t) floor(color.black+0.5))));
       if (color.matte != MagickFalse)
-        PUSHs(sv_2mortal(newSViv((size_t) floor(color.alpha+0.5))));
+        PUSHs(sv_2mortal(newSViv((size_t) floor(color.opacity+0.5))));
+      if (color.colorspace == CMYKColorspace)
+        PUSHs(sv_2mortal(newSViv((size_t) floor(color.index+0.5))));
     }
 
   PerlException:
@@ -13235,10 +13232,13 @@ SetPixel(ref,...)
     RectangleInfo
       region;
 
+    register IndexPacket
+      *indexes;
+
     register ssize_t
       i;
 
-    register Quantum
+    register PixelPacket
       *q;
 
     ssize_t
@@ -13267,6 +13267,7 @@ SetPixel(ref,...)
         goto PerlException;
       }
     av=(AV *) NULL;
+    channel=DefaultChannels;
     normalize=MagickTrue;
     region.x=0;
     region.y=0;
@@ -13274,7 +13275,6 @@ SetPixel(ref,...)
     region.height=1;
     if (items == 1)
       (void) ParseAbsoluteGeometry(SvPV(ST(1),na),&region);
-    channel=DefaultChannels;
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -13295,7 +13295,7 @@ SetPixel(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-              channel=(ChannelType) option;
+               channel=(ChannelType) option;
               break;
             }
           if (LocaleCompare(attribute,"color") == 0)
@@ -13382,9 +13382,8 @@ SetPixel(ref,...)
       }
     }
     (void) SetImageStorageClass(image,DirectClass);
-    PushPixelComponentMap(image,channel);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
-    if ((q == (const Quantum *) NULL) || (av == (AV *) NULL) ||
+    if ((q == (PixelPacket *) NULL) || (av == (AV *) NULL) ||
         (SvTYPE(av) != SVt_PVAV))
       PUSHs(&sv_undef);
     else
@@ -13396,47 +13395,43 @@ SetPixel(ref,...)
           i;
 
         i=0;
+        indexes=GetAuthenticIndexQueue(image);
         scale=1.0;
         if (normalize != MagickFalse)
           scale=QuantumRange;
-        if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
-            (i <= av_len(av)))
+        if (((channel & RedChannel) != 0) && (i <= av_len(av)))
           {
-            SetPixelRed(image,ClampToQuantum(scale*SvNV(*(
-              av_fetch(av,i,0)))),q);
+            SetPixelRed(q,ClampToQuantum(scale*SvNV(*(
+              av_fetch(av,i,0)))));
             i++;
           }
-        if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
-            (i <= av_len(av)))
+        if (((channel & GreenChannel) != 0) && (i <= av_len(av)))
           {
-            SetPixelGreen(image,ClampToQuantum(scale*SvNV(*(
-              av_fetch(av,i,0)))),q);
+            SetPixelGreen(q,ClampToQuantum(scale*SvNV(*(
+              av_fetch(av,i,0)))));
             i++;
           }
-        if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
-            (i <= av_len(av)))
+        if (((channel & BlueChannel) != 0) && (i <= av_len(av)))
           {
-            SetPixelBlue(image,ClampToQuantum(scale*SvNV(*(
-              av_fetch(av,i,0)))),q);
+            SetPixelBlue(q,ClampToQuantum(scale*SvNV(*(
+              av_fetch(av,i,0)))));
             i++;
           }
-        if ((((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+        if ((((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace)) && (i <= av_len(av)))
           {
-            SetPixelBlack(image,ClampToQuantum(scale*
-              SvNV(*(av_fetch(av,i,0)))),q);
+            SetPixelIndex(indexes,ClampToQuantum(scale*
+              SvNV(*(av_fetch(av,i,0)))));
             i++;
           }
-        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
-            (i <= av_len(av)))
+        if (((channel & OpacityChannel) != 0) && (i <= av_len(av)))
           {
-            SetPixelAlpha(image,ClampToQuantum(scale*
-              SvNV(*(av_fetch(av,i,0)))),q);
+            SetPixelOpacity(q,ClampToQuantum(scale*
+              SvNV(*(av_fetch(av,i,0)))));
             i++;
           }
         (void) SyncAuthenticPixels(image,exception);
       }
-    PopPixelComponentMap(image);
 
   PerlException:
     InheritPerlException(exception,perl_exception);
@@ -13696,7 +13691,7 @@ Statistics(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      channel_statistics=GetImageStatistics(image,&image->exception);
+      channel_statistics=GetImageChannelStatistics(image,&image->exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         continue;
       count++;
@@ -13706,9 +13701,9 @@ Statistics(ref,...)
       ChannelStatistics(GreenChannel);
       ChannelStatistics(BlueChannel);
       if (image->colorspace == CMYKColorspace)
-        ChannelStatistics(BlackChannel);
+        ChannelStatistics(IndexChannel);
       if (image->matte != MagickFalse)
-        ChannelStatistics(AlphaChannel);
+        ChannelStatistics(OpacityChannel);
       channel_statistics=(ChannelStatistics *)
         RelinquishMagickMemory(channel_statistics);
     }

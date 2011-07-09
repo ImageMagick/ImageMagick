@@ -41,53 +41,52 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/annotate.h"
-#include "MagickCore/artifact.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/cache-view.h"
-#include "MagickCore/color.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/composite.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/decorate.h"
-#include "MagickCore/display.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/effect.h"
-#include "MagickCore/enhance.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/fx.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/log.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/option.h"
-#include "MagickCore/paint.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantize.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/registry.h"
-#include "MagickCore/resize.h"
-#include "MagickCore/resource_.h"
-#include "MagickCore/segment.h"
-#include "MagickCore/shear.h"
-#include "MagickCore/signature.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/string-private.h"
-#include "MagickCore/transform.h"
-#include "MagickCore/threshold.h"
-#include "MagickCore/utility.h"
+#include "magick/studio.h"
+#include "magick/annotate.h"
+#include "magick/artifact.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/cache-view.h"
+#include "magick/color.h"
+#include "magick/colormap.h"
+#include "magick/color-private.h"
+#include "magick/composite.h"
+#include "magick/constitute.h"
+#include "magick/decorate.h"
+#include "magick/display.h"
+#include "magick/draw.h"
+#include "magick/effect.h"
+#include "magick/enhance.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/fx.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/module.h"
+#include "magick/option.h"
+#include "magick/paint.h"
+#include "magick/profile.h"
+#include "magick/property.h"
+#include "magick/quantize.h"
+#include "magick/quantum-private.h"
+#include "magick/registry.h"
+#include "magick/resize.h"
+#include "magick/resource_.h"
+#include "magick/segment.h"
+#include "magick/shear.h"
+#include "magick/signature.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/string-private.h"
+#include "magick/transform.h"
+#include "magick/threshold.h"
+#include "magick/utility.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    if defined(__MINGW32__)
@@ -736,10 +735,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelComponentMap(msl_info->image[n],channel);
-          noise_image=AddNoiseImage(msl_info->image[n],noise,
+          noise_image=AddNoiseImageChannel(msl_info->image[n],channel,noise,
             &msl_info->image[n]->exception);
-          PopPixelComponentMap(msl_info->image[n]);
           if (noise_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -1231,10 +1228,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelComponentMap(msl_info->image[n],channel);
-          blur_image=BlurImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,&msl_info->image[n]->exception);
-          PopPixelComponentMap(msl_info->image[n]);
+          blur_image=BlurImageChannel(msl_info->image[n],channel,
+            geometry_info.rho,geometry_info.sigma,
+            &msl_info->image[n]->exception);
           if (blur_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -1605,7 +1601,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           PaintMethod
             paint_method;
 
-          PixelInfo
+          MagickPixelPacket
             target;
 
           /*
@@ -1715,9 +1711,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
-            geometry.x,geometry.y,paint_method == FloodfillMethod ?
-            MagickFalse : MagickTrue);
+          (void) FloodfillPaintImage(msl_info->image[n],DefaultChannels,
+            draw_info,&target,geometry.x,geometry.y,
+            paint_method == FloodfillMethod ? MagickFalse : MagickTrue);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -1918,13 +1914,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       register ssize_t
                         x;
 
-                      register Quantum
+                      register PixelPacket
                         *q;
 
                       CacheView
                         *composite_view;
 
-                      opacity=StringToLong(value);
+                      opacity=QuantumRange-StringToLong(value);
                       if (compose != DissolveCompositeOp)
                         {
                           (void) SetImageOpacity(composite_image,(Quantum)
@@ -1934,18 +1930,17 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       (void) SetImageArtifact(msl_info->image[n],
                                             "compose:args",value);
                       if (composite_image->matte != MagickTrue)
-                        (void) SetImageOpacity(composite_image,OpaqueAlpha);
+                        (void) SetImageOpacity(composite_image,OpaqueOpacity);
                       composite_view=AcquireCacheView(composite_image);
                       for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
-                        q=GetCacheViewAuthenticPixels(composite_view,0,y,
-                          (ssize_t) composite_image->columns,1,&exception);
+                        q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)
+                          composite_image->columns,1,&exception);
                         for (x=0; x < (ssize_t) composite_image->columns; x++)
                         {
-                          if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
-                            SetPixelAlpha(composite_image,
-                              ClampToQuantum(opacity),q);
-                          q+=GetPixelComponents(composite_image);
+                          if (q->opacity == OpaqueOpacity)
+                            q->opacity=ClampToQuantum(opacity);
+                          q++;
                         }
                         if (SyncCacheViewAuthenticPixels(composite_view,&exception) == MagickFalse)
                           break;
@@ -2055,9 +2050,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             &exception);
-          PushPixelComponentMap(image,channel);
           if (rotate_image == (Image *) NULL)
-            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
+            CompositeImageChannel(image,channel,compose,composite_image,
+              geometry.x,geometry.y);
           else
             {
               /*
@@ -2066,10 +2061,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               geometry.x-=(ssize_t) (rotate_image->columns-
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-composite_image->rows)/2;
-              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
+              CompositeImageChannel(image,channel,compose,rotate_image,
+                geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
-          PopPixelComponentMap(image);
           composite_image=DestroyImage(composite_image);
           break;
         }
@@ -3135,7 +3130,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           char
             gamma[MaxTextExtent];
 
-          PixelInfo
+          MagickPixelPacket
             pixel;
 
           /*
@@ -3229,7 +3224,31 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           if (*gamma == '\0')
             (void) FormatLocaleString(gamma,MaxTextExtent,"%g,%g,%g",
               (double) pixel.red,(double) pixel.green,(double) pixel.blue);
-          (void) GammaImage(msl_info->image[n],atof(gamma));
+          switch (channel)
+          {
+            default:
+            {
+              (void) GammaImage(msl_info->image[n],gamma);
+              break;
+            }
+            case RedChannel:
+            {
+              (void) GammaImageChannel(msl_info->image[n],RedChannel,pixel.red);
+              break;
+            }
+            case GreenChannel:
+            {
+              (void) GammaImageChannel(msl_info->image[n],GreenChannel,
+                pixel.green);
+              break;
+            }
+            case BlueChannel:
+            {
+              (void) GammaImageChannel(msl_info->image[n],BlueChannel,
+                pixel.blue);
+              break;
+            }
+          }
           break;
         }
       else if (LocaleCompare((const char *) tag,"get") == 0)
@@ -3488,8 +3507,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
 
         /* process image */
-        LevelImage(msl_info->image[n],levelBlack,levelWhite,levelGamma);
-        break;
+        {
+          char level[MaxTextExtent + 1];
+          (void) FormatLocaleString(level,MaxTextExtent,"%3.6f/%3.6f/%3.6f/",
+            levelBlack,levelGamma,levelWhite);
+          LevelImage ( msl_info->image[n], level );
+          break;
+        }
       }
     }
     case 'M':
@@ -3615,7 +3639,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           double
             opacity;
 
-          PixelInfo
+          MagickPixelPacket
             target;
 
           PaintMethod
@@ -3735,12 +3759,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
-          draw_info->fill.alpha=ClampToQuantum(opacity);
-          PushPixelComponentMap(msl_info->image[n],AlphaChannel);
-          (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
-            geometry.x,geometry.y,paint_method == FloodfillMethod ?
-            MagickFalse : MagickTrue);
-          PopPixelComponentMap(msl_info->image[n]);
+          draw_info->fill.opacity=ClampToQuantum(opacity);
+          (void) FloodfillPaintImage(msl_info->image[n],OpacityChannel,
+            draw_info,&target,geometry.x,geometry.y,
+            paint_method == FloodfillMethod ? MagickFalse : MagickTrue);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -4036,9 +4058,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelComponentMap(msl_info->image[n],channel);
-          (void) NegateImage(msl_info->image[n],gray);
-          PopPixelComponentMap(msl_info->image[n]);
+          (void) NegateImageChannel(msl_info->image[n],channel,gray);
           break;
         }
       if (LocaleCompare((const char *) tag,"normalize") == 0)
@@ -4085,7 +4105,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) NormalizeImage(msl_info->image[n]);
+          (void) NormalizeImageChannel(msl_info->image[n],channel);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
@@ -4161,7 +4181,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag,"opaque") == 0)
         {
-          PixelInfo
+          MagickPixelPacket
             fill_color,
             target;
 
@@ -4227,10 +4247,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelComponentMap(msl_info->image[n],channel);
-          (void) OpaquePaintImage(msl_info->image[n],&target,&fill_color,
-            MagickFalse);
-          PopPixelComponentMap(msl_info->image[n]);
+          (void) OpaquePaintImageChannel(msl_info->image[n],channel,
+            &target,&fill_color,MagickFalse);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
@@ -6019,7 +6037,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword, "opacity") == 0)
                 {
-                  ssize_t  opac = OpaqueAlpha,
+                  ssize_t  opac = OpaqueOpacity,
                   len = (ssize_t) strlen( value );
 
                   if (value[len-1] == '%') {
@@ -7071,7 +7089,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           process image.
         */
         {
-          BilevelImage(msl_info->image[n],threshold);
+        BilevelImageChannel(msl_info->image[n],
+          (ChannelType) ((ssize_t) (CompositeChannels &~ (ssize_t) OpacityChannel)),
+          threshold);
         break;
         }
       }
@@ -7096,12 +7116,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword,"color") == 0)
               {
-                PixelInfo
+                MagickPixelPacket
                   target;
 
                 (void) QueryMagickColor(value,&target,&exception);
                 (void) TransparentPaintImage(msl_info->image[n],&target,
-                  TransparentAlpha,MagickFalse);
+                  TransparentOpacity,MagickFalse);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);

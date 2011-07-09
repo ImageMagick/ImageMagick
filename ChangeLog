@@ -1,21 +1,16 @@
-
-2011-07-01  6.7.1-0 Glenn Randers-Pehrson <glennrp@image...>
-  * Use zlib default compression strategy instead of Z_RLE and Z_FIXED
-    strategies when linking with zlib versions (prior to 1.2.0 and 1.2.2.2,
-    respectively) that don't support them.
+2011-06-30  6.7.0-11 Glenn Randers-Pehrson <glennrp@image...>
+  * Added PNG:compression-level, compression-strategy, and compression-filter
+    defines to the PNG encoder.  If these defines are used, they take
+    precedence over the -quality option (reference.
+http://www.imagemagick.org/discourse-server/viewtopic.php?&f=1&p=73548).
 
 2011-06-30  6.7.0-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-10.
 
-2011-06-30  6.7.0-10 Glenn Randers-Pehrson <glennrp@image...>
-  * Added "-define PNG:compression-level|strategy|filter=value" options to
-    the PNG encoder.  If these options are used, they take precedence over
-    the -quality option (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?&f=1&p=73548).
-
 2011-06-29  6.7.0-7 Glenn Randers-Pehrson <glennrp@image...>
-  * Handle "-quality 97" properly in the png encoder, i.e., use intrapixel
-    filtering when writing a MNG file and no filtering when writing a PNG file.
+  * Handle "-quality 97" properly in the png encoder, .e., to use
+    intrapixel filtering when writing a MNG file. and no filtering when
+    writing a PNG file.
   * Added support for Z_RLE strategy in the png compressor, using
     -quality 98 or 99.
 
@@ -55,7 +50,7 @@
   * New version 6.7.0-6.
 
 2011-06-08  6.7.0-6 Cristy  <quetzlzacatenango@image...>
-  * Fix transient error for composite 'Over' operator.
+  * Fix transient error for composite over operator.
 
 2011-06-07  6.7.0-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-5.
@@ -63,7 +58,7 @@
 2011-06-07  6.7.0-5 Cristy  <quetzlzacatenango@image...>
   * Fix one-off bug in option parser (reference
     http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=609177).
-  * Transient bug with composite 'Over' in magick/composite-private.h.
+  * Transient bug with composite over in magick/composite-private.h.
 
 2011-06-06  6.7.0-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-4.
@@ -113,7 +108,7 @@
 2011-05-16  6.6.9-10 Cristy  <quetzlzacatenango@image...>
   * Don't use comma as a separator for stroked text (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18742).
-  * Use C locale when generating or interpreting SVG.
+  * Use C locale when generating or interpretting SVG.
   * Fix "unterminated macro" for Q32 build of coders/png.c.
 
 2011-05-15  6.6.9-9 Cristy  <quetzlzacatenango@image...>
@@ -147,7 +142,7 @@
   * Fix FX default for interpolation to Bilinear.
 
 2011-04-27  6.6.9-7 Cristy  <quetzlzacatenango@image...>
-  * Fix pixel interpolation for -draw 'image Over' (reference
+  * Fix pixel interpolation for -draw image over (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18612).
 
 2011-04-26  6.6.9-7 Glenn Randers-Pehrson <glennrp@image...>

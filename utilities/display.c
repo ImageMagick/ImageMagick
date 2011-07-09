@@ -55,8 +55,8 @@
 /*
   Include declarations.
 */
-#include "MagickWand/studio.h"
-#include "MagickWand/MagickWand.h"
+#include "wand/studio.h"
+#include "wand/MagickWand.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

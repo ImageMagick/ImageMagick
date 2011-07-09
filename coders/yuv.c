@@ -39,29 +39,28 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/resize.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/resize.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.
@@ -109,13 +108,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const PixelPacket
     *chroma_pixels;
 
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -222,7 +221,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register Quantum
+      register PixelPacket
         *chroma_pixels;
 
       if (interlace == NoInterlace)
@@ -231,52 +230,54 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count=ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
           chroma_pixels=QueueAuthenticPixels(chroma_image,0,y,
             chroma_image->columns,1,exception);
-          if (chroma_pixels == (Quantum *) NULL)
+          if (chroma_pixels == (PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x+=2)
           {
-            SetPixelRed(image,0,chroma_pixels);
+            SetPixelRed(chroma_pixels,0);
             if (quantum == 1)
-              SetPixelGreen(image,ScaleCharToQuantum(*p++),chroma_pixels);
+              SetPixelGreen(chroma_pixels,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelGreen(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),
-                  chroma_pixels);
+                SetPixelGreen(chroma_pixels,ScaleShortToQuantum(
+                  ((*p) << 8) | *(p+1)));
                 p+=2;
               }
             if (quantum == 1)
-              SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+              SetPixelRed(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
+                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
-            SetPixelGreen(image,0,q);
-            SetPixelBlue(image,0,q);
-            q+=GetPixelComponents(image);
-            SetPixelGreen(image,0,q);
-            SetPixelBlue(image,0,q);
+            SetPixelGreen(q,0);
+            SetPixelBlue(q,0);
+            q++;
+            SetPixelGreen(q,0);
+            SetPixelBlue(q,0);
             if (quantum == 1)
-              SetPixelBlue(image,ScaleCharToQuantum(*p++),chroma_pixels);
+              SetPixelBlue(chroma_pixels,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelBlue(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),
-                  chroma_pixels);
+                SetPixelBlue(chroma_pixels,ScaleShortToQuantum(
+                  ((*p) << 8) | *(p+1)));
                 p+=2;
               }
             if (quantum == 1)
-              SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+              SetPixelRed(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
+                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
             chroma_pixels++;
-            q+=GetPixelComponents(image);
+            q++;
           }
         }
       else
@@ -285,20 +286,21 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count=ReadBlob(image,(size_t) quantum*image->columns,scanline);
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if (quantum == 1)
-              SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+              SetPixelRed(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
+                SetPixelRed(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
-            SetPixelGreen(image,0,q);
-            SetPixelBlue(image,0,q);
-            q+=GetPixelComponents(image);
+            SetPixelGreen(q,0);
+            SetPixelBlue(q,0);
+            q++;
           }
         }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -333,21 +335,21 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=scanline;
           q=QueueAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
-            SetPixelRed(chroma_image,0,q);
+            SetPixelRed(q,0);
             if (quantum == 1)
-              SetPixelGreen(chroma_image,ScaleCharToQuantum(*p++),q);
+              SetPixelGreen(q,ScaleCharToQuantum(*p++));
             else
               {
-                SetPixelGreen(chroma_image,ScaleShortToQuantum(((*p) << 8) |
-                  *(p+1)),q);
+                SetPixelGreen(q,ScaleShortToQuantum(((*p) << 8) |
+                  *(p+1)));
                 p+=2;
               }
-            SetPixelBlue(chroma_image,0,q);
-            q+=GetPixelComponents(chroma_image);
+            SetPixelBlue(q,0);
+            q++;
           }
           if (SyncAuthenticPixels(chroma_image,exception) == MagickFalse)
             break;
@@ -369,19 +371,19 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=scanline;
         q=GetAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) chroma_image->columns; x++)
         {
           if (quantum == 1)
-            SetPixelBlue(chroma_image,ScaleCharToQuantum(*p++),q);
+            SetPixelBlue(q,ScaleCharToQuantum(*p++));
           else
             {
-              SetPixelBlue(chroma_image,ScaleShortToQuantum(((*p) << 8) |
-                *(p+1)),q);
+              SetPixelBlue(q,ScaleShortToQuantum(((*p) << 8) |
+                *(p+1)));
               p+=2;
             }
-          q+=GetPixelComponents(chroma_image);
+          q++;
         }
         if (SyncAuthenticPixels(chroma_image,exception) == MagickFalse)
           break;
@@ -400,15 +402,15 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       chroma_pixels=GetVirtualPixels(resize_image,0,y,resize_image->columns,1,
         &resize_image->exception);
-      if ((q == (const Quantum *) NULL) ||
-          (chroma_pixels == (const Quantum *) NULL))
+      if ((q == (PixelPacket *) NULL) ||
+          (chroma_pixels == (const PixelPacket *) NULL))
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelGreen(image,GetPixelGreen(image,chroma_pixels),q);
-        SetPixelBlue(image,GetPixelBlue(image,chroma_pixels),q);
+        SetPixelGreen(q,GetPixelGreen(chroma_pixels));
+        SetPixelBlue(q,GetPixelBlue(chroma_pixels));
         chroma_pixels++;
-        q+=GetPixelComponents(image);
+        q++;
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -561,7 +563,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  register const Quantum
+  register const PixelPacket
     *p,
     *s;
 
@@ -659,39 +661,39 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         {
           p=GetVirtualPixels(yuv_image,0,y,yuv_image->columns,1,
             &yuv_image->exception);
-          if (p == (const Quantum *) NULL)
+          if (p == (const PixelPacket *) NULL)
             break;
           s=GetVirtualPixels(chroma_image,0,y,chroma_image->columns,1,
             &chroma_image->exception);
-          if (s == (const Quantum *) NULL)
+          if (s == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) yuv_image->columns; x++)
           {
             if (quantum == 1)
               {
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
-                  GetPixelGreen(yuv_image,s)));
+                  GetPixelGreen(s)));
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
-                  GetPixelRed(yuv_image,p)));
-                p+=GetPixelComponents(yuv_image);
+                  GetPixelRed(p)));
+                p++;
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
-                  GetPixelBlue(yuv_image,s)));
+                  GetPixelBlue(s)));
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
-                  GetPixelRed(yuv_image,p)));
+                  GetPixelRed(p)));
               }
             else
               {
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
-                  GetPixelGreen(yuv_image,s)));
+                  GetPixelGreen(s)));
                 (void) WriteBlobShort(image,ScaleQuantumToShort(
-                  GetPixelRed(yuv_image,p)));
-                p+=GetPixelComponents(yuv_image);
+                  GetPixelRed(p)));
+                p++;
                 (void) WriteBlobByte(image,ScaleQuantumToChar(
-                  GetPixelBlue(yuv_image,s)));
+                  GetPixelBlue(s)));
                 (void) WriteBlobShort(image,ScaleQuantumToShort(
-                  GetPixelRed(yuv_image,p)));
+                  GetPixelRed(p)));
               }
-            p+=GetPixelComponents(yuv_image);
+            p++;
             s++;
             x++;
           }
@@ -714,17 +716,17 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         {
           p=GetVirtualPixels(yuv_image,0,y,yuv_image->columns,1,
             &yuv_image->exception);
-          if (p == (const Quantum *) NULL)
+          if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) yuv_image->columns; x++)
           {
             if (quantum == 1)
               (void) WriteBlobByte(image,ScaleQuantumToChar(
-                GetPixelRed(yuv_image,p)));
+                GetPixelRed(p)));
             else
               (void) WriteBlobShort(image,ScaleQuantumToShort(
-                GetPixelRed(yuv_image,p)));
-            p+=GetPixelComponents(yuv_image);
+                GetPixelRed(p)));
+            p++;
           }
           if (image->previous == (Image *) NULL)
             {
@@ -757,17 +759,17 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         {
           p=GetVirtualPixels(chroma_image,0,y,chroma_image->columns,1,
             &chroma_image->exception);
-          if (p == (const Quantum *) NULL)
+          if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
             if (quantum == 1)
               (void) WriteBlobByte(image,ScaleQuantumToChar(
-                GetPixelGreen(chroma_image,p)));
+                GetPixelGreen(p)));
             else
               (void) WriteBlobShort(image,ScaleQuantumToShort(
-                GetPixelGreen(chroma_image,p)));
-            p+=GetPixelComponents(chroma_image);
+                GetPixelGreen(p)));
+            p++;
           }
         }
         if (image->previous == (Image *) NULL)
@@ -792,17 +794,17 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
         {
           p=GetVirtualPixels(chroma_image,0,y,chroma_image->columns,1,
             &chroma_image->exception);
-          if (p == (const Quantum *) NULL)
+          if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
             if (quantum == 1)
               (void) WriteBlobByte(image,ScaleQuantumToChar(
-                GetPixelBlue(chroma_image,p)));
+                GetPixelBlue(p)));
             else
               (void) WriteBlobShort(image,ScaleQuantumToShort(
-                GetPixelBlue(chroma_image,p)));
-            p+=GetPixelComponents(chroma_image);
+                GetPixelBlue(p)));
+            p++;
           }
         }
         if (image->previous == (Image *) NULL)

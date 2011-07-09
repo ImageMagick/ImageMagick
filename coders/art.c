@@ -39,27 +39,26 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color-private.h"
+#include "magick/colormap.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -162,11 +161,11 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=GetQuantumExtent(image,quantum_info,quantum_type);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register Quantum
+    register PixelPacket
       *restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
     count=ReadBlob(image,length,pixels);
     if (count != (ssize_t) length)
@@ -283,7 +282,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   QuantumInfo
     *quantum_info;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   ssize_t
@@ -316,7 +315,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLSBShort(image,(unsigned short) image->columns);
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   length=(image->columns+7)/8;
   pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
@@ -330,9 +329,9 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
-    (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
       GrayQuantum,pixels,&image->exception);
     count=WriteBlob(image,length,pixels);
     if (count != (ssize_t) length)

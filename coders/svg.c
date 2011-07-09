@@ -40,37 +40,37 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/annotate.h"
-#include "MagickCore/artifact.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/composite-private.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/gem.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/log.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/property.h"
-#include "MagickCore/resource_.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/string-private.h"
-#include "MagickCore/token.h"
-#include "MagickCore/utility.h"
+#include "magick/studio.h"
+#include "magick/annotate.h"
+#include "magick/artifact.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/constitute.h"
+#include "magick/composite-private.h"
+#include "magick/draw.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/gem.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/module.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/pixel-private.h"
+#include "magick/property.h"
+#include "magick/resource_.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/string-private.h"
+#include "magick/token.h"
+#include "magick/utility.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #    if defined(__MINGW32__)
@@ -2823,7 +2823,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       register ssize_t
         x;
 
-      register Quantum
+      register PixelPacket
         *q;
 
       RsvgHandle
@@ -2910,7 +2910,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (PixelPacket *) NULL)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
@@ -2923,22 +2923,22 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               fill_color.green=ScaleCharToQuantum(*p++);
               fill_color.blue=ScaleCharToQuantum(*p++);
 #endif
-              fill_color.alpha=ScaleCharToQuantum(*p++);
+              fill_color.opacity=QuantumRange-ScaleCharToQuantum(*p++);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
               {
                 double
                   gamma;
     
-                gamma=1.0-QuantumScale*fill_color.alpha;
+                gamma=1.0-QuantumScale*fill_color.opacity;
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
                 fill_color.blue*=gamma;
                 fill_color.green*=gamma;
                 fill_color.red*=gamma;
               }
 #endif
-              CompositePixelOver(image,&fill_color,fill_color.alpha,q,
-                (MagickRealType) GetPixelAlpha(image,q),q);
-              q+=GetPixelComponents(image);
+              MagickCompositeOver(&fill_color,fill_color.opacity,q,
+                (MagickRealType) q->opacity,q);
+              q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3298,7 +3298,7 @@ static MagickBooleanType TraceSVGImage(Image *image)
   ssize_t
     y;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -3341,17 +3341,17 @@ static MagickBooleanType TraceSVGImage(Image *image)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (const PixelPacket *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        trace->bitmap[i++]=GetPixelRed(image,p);
+        trace->bitmap[i++]=GetPixelRed(p);
         if (number_planes == 3)
           {
-            trace->bitmap[i++]=GetPixelGreen(image,p);
-            trace->bitmap[i++]=GetPixelBlue(image,p);
+            trace->bitmap[i++]=GetPixelGreen(p);
+            trace->bitmap[i++]=GetPixelBlue(p);
           }
-        p+=GetPixelComponents(image);
+        p++;
       }
     }
     splines=at_splines_new_full(trace,fitting_options,NULL,NULL,NULL,NULL,NULL,
@@ -3373,8 +3373,11 @@ static MagickBooleanType TraceSVGImage(Image *image)
       message[MaxTextExtent],
       tuple[MaxTextExtent];
 
-    PixelInfo
+    MagickPixelPacket
       pixel;
+
+    register const IndexPacket
+      *indexes;
 
     (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
     (void) WriteBlobString(image,
@@ -3385,22 +3388,23 @@ static MagickBooleanType TraceSVGImage(Image *image)
       "<svg width=\"%.20g\" height=\"%.20g\">\n",(double) image->columns,
       (double) image->rows);
     (void) WriteBlobString(image,message);
-    GetPixelInfo(image,&pixel);
+    GetMagickPixelPacket(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (const PixelPacket *) NULL)
         break;
+      indexes=GetVirtualIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelInfo(image,p,&pixel);
+        SetMagickPixelPacket(image,p,indexes+x,&pixel);
         (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
           &image->exception);
         (void) FormatLocaleString(message,MaxTextExtent,
           "  <circle cx=\"%.20g\" cy=\"%.20g\" r=\"1\" fill=\"%s\"/>\n",
           (double) x,(double) y,tuple);
         (void) WriteBlobString(image,message);
-        p+=GetPixelComponents(image);
+        p++;
       }
     }
     (void) WriteBlobString(image,"</svg>\n");

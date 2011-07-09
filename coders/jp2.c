@@ -39,32 +39,30 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/statistic.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/profile.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/statistic.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 #if defined(MAGICKCORE_JP2_DELEGATE)
 #ifndef JAS_IMAGE_CM_GRAY
 #define JAS_IMAGE_CM_GRAY JAS_IMAGE_CS_GRAY
@@ -360,7 +358,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   size_t
@@ -522,7 +520,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
     for (i=0; i < (ssize_t) number_components; i++)
       (void) jas_image_readcmpt(jp2_image,(short) components[i],0,
@@ -538,10 +536,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
-          SetPixelGreen(image,GetPixelRed(image,q),q);
-          SetPixelBlue(image,GetPixelRed(image,q),q);
-          q+=GetPixelComponents(image);
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[0]));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          q++;
         }
         break;
       }
@@ -553,12 +552,15 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetPixelGreen(image,ScaleAnyToQuantum((QuantumAny) pixel,range[1]),q);
+          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) pixel,range[2]),q);
-          q+=GetPixelComponents(image);
+          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[2]));
+          q++;
         }
         break;
       }
@@ -570,14 +572,18 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetPixelGreen(image,ScaleAnyToQuantum((QuantumAny) pixel,range[1]),q);
+          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) pixel,range[2]),q);
+          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[2]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          SetPixelAlpha(image,ScaleAnyToQuantum((QuantumAny) pixel,range[3]),q);
-          q+=GetPixelComponents(image);
+          SetPixelAlpha(q,ScaleAnyToQuantum((QuantumAny) pixel,
+            range[3]));
+          q++;
         }
         break;
       }
@@ -821,7 +827,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   QuantumAny
     range;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -848,16 +854,16 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   /*
-    Initialize JPEG 2000 API.
+    Intialize JPEG 2000 API.
   */
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToManageJP2Stream");
   number_components=image->matte ? 4UL : 3UL;
   if ((image_info->type != TrueColorType) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
+      (IsGrayImage(image,&image->exception) != MagickFalse))
     number_components=1;
   if ((image->columns != (unsigned int) image->columns) ||
       (image->rows != (unsigned int) image->rows))
@@ -920,26 +926,26 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (number_components == 1)
         jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(
-          GetPixelIntensity(image,p),range));
+          PixelIntensityToQuantum(p),range));
       else
         {
-          jas_matrix_setv(pixels[0],x,(jas_seqent_t) ScaleQuantumToAny(
-            GetPixelRed(image,p),range));
-          jas_matrix_setv(pixels[1],x,(jas_seqent_t) ScaleQuantumToAny(
-            GetPixelGreen(image,p),range));
-          jas_matrix_setv(pixels[2],x,(jas_seqent_t) ScaleQuantumToAny(
-            GetPixelBlue(image,p),range));
+          jas_matrix_setv(pixels[0],x,(jas_seqent_t)
+            ScaleQuantumToAny(GetPixelRed(p),range));
+          jas_matrix_setv(pixels[1],x,(jas_seqent_t)
+            ScaleQuantumToAny(GetPixelGreen(p),range));
+          jas_matrix_setv(pixels[2],x,(jas_seqent_t)
+            ScaleQuantumToAny(GetPixelBlue(p),range));
           if (number_components > 3)
-            jas_matrix_setv(pixels[3],x,(jas_seqent_t) ScaleQuantumToAny(
-              GetPixelAlpha(image,p),range));
+            jas_matrix_setv(pixels[3],x,(jas_seqent_t)
+              ScaleQuantumToAny((Quantum) (GetPixelAlpha(p)),range));
         }
-      p+=GetPixelComponents(image);
+      p++;
     }
     for (i=0; i < (ssize_t) number_components; i++)
       (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,

@@ -42,7 +42,7 @@
 #include <time.h>
 #include <assert.h>
 #include <math.h>
-#include "MagickCore/MagickCore.h"
+#include "magick/MagickCore.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,7 +149,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const Quantum
+      register const PixelPacket
         *p;
 
       register ssize_t
@@ -158,15 +158,14 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
+      if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
           continue;
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        ConvertRGBToHSB(GetPixelRed(image,p),GetPixelGreen(image,p),
-          GetPixelBlue(image,p),&hue,&saturation,&brightness);
+        ConvertRGBToHSB(GetPixelRed(p),GetPixelGreen(p),GetPixelBlue(p),&hue,&saturation,&brightness);
         brightness*=QuantumRange;
         brightness_sum_x+=brightness;
         brightness_sum_x2+=brightness*brightness;
@@ -178,7 +177,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         saturation_sum_x3+=saturation*saturation*saturation;
         saturation_sum_x4+=saturation*saturation*saturation*saturation;
         area++;
-        p+=GetPixelComponents(image);
+        p++;
       }
     }
     image_view=DestroyCacheView(image_view);

@@ -39,25 +39,25 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/pixel.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/pixel.h"
+#include "magick/pixel-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,10 +93,14 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  IndexPacket
+    index,
+    *indexes;
+
   MagickBooleanType
     status;
 
-  PixelInfo
+  MagickPixelPacket
     color;
 
   PixelPacket
@@ -105,7 +109,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   ssize_t
@@ -135,20 +139,21 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->colorspace=color.colorspace;
   image->matte=color.matte;
-  pixel.black=0;
-  SetPacketPixelInfo(image,&color,&pixel);
+  index=0;
+  SetPixelPacket(image,&color,&pixel,&index);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      SetPixelPacket(image,&pixel,q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(image,pixel.black,q);
-      q+=GetPixelComponents(image);
-    }
+      *q++=pixel;
+    if (image->colorspace == CMYKColorspace)
+      {
+        indexes=GetAuthenticIndexQueue(image);
+        for (x=0; x < (ssize_t) image->columns; x++)
+          SetPixelIndex(indexes+x,index);
+      }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
   }

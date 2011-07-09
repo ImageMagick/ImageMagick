@@ -18,71 +18,71 @@
 codersdir = $(CODER_PATH)
 
 if DPS_DELEGATE
-MAGICKCORE_DPS_MODULES = coders/dps.la
-MAGICKCORE_DPS_SRCS = coders/dps.c
+MAGICK_DPS_MODULES = coders/dps.la
+MAGICK_DPS_SRCS = coders/dps.c
 endif
 
 if DJVU_DELEGATE
-MAGICKCORE_DJVU_MODULES = coders/djvu.la
-MAGICKCORE_DJVU_SRCS = coders/djvu.c
+MAGICK_DJVU_MODULES = coders/djvu.la
+MAGICK_DJVU_SRCS = coders/djvu.c
 endif
 
 if OPENEXR_DELEGATE
-MAGICKCORE_EXR_MODULES = coders/exr.la
-MAGICKCORE_EXR_SRCS = coders/exr.c
+MAGICK_EXR_MODULES = coders/exr.la
+MAGICK_EXR_SRCS = coders/exr.c
 endif
 
 if FPX_DELEGATE
-MAGICKCORE_FPX_MODULES = coders/fpx.la
-MAGICKCORE_FPX_SRCS = coders/fpx.c
+MAGICK_FPX_MODULES = coders/fpx.la
+MAGICK_FPX_SRCS = coders/fpx.c
 endif
 
 if JBIG_DELEGATE
-MAGICKCORE_JBIG_MODULES = coders/jbig.la
-MAGICKCORE_JBIG_SRCS = coders/jbig.c
+MAGICK_JBIG_MODULES = coders/jbig.la
+MAGICK_JBIG_SRCS = coders/jbig.c
 endif
 
 if JPEG_DELEGATE
-MAGICKCORE_JPEG_MODULES = coders/jpeg.la
-MAGICKCORE_JPEG_SRCS = coders/jpeg.c
+MAGICK_JPEG_MODULES = coders/jpeg.la
+MAGICK_JPEG_SRCS = coders/jpeg.c
 endif
 
 if JP2_DELEGATE
-MAGICKCORE_JP2_MODULES = coders/jp2.la
-MAGICKCORE_JP2_SRCS = coders/jp2.c
+MAGICK_JP2_MODULES = coders/jp2.la
+MAGICK_JP2_SRCS = coders/jp2.c
 endif
 
 if PNG_DELEGATE
-MAGICKCORE_PNG_MODULES = coders/png.la
-MAGICKCORE_PNG_SRCS = coders/png.c
+MAGICK_PNG_MODULES = coders/png.la
+MAGICK_PNG_SRCS = coders/png.c
 endif
 
 if TIFF_DELEGATE
-MAGICKCORE_TIFF_MODULES = coders/ept.la coders/tiff.la
-MAGICKCORE_TIFF_SRCS = coders/ept.c coders/tiff.c
+MAGICK_TIFF_MODULES = coders/ept.la coders/tiff.la
+MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
 endif
 
 if WEBP_DELEGATE
-MAGICKCORE_WEBP_MODULES = coders/webp.la
-MAGICKCORE_WEBP_SRCS = coders/webp.c
+MAGICK_WEBP_MODULES = coders/webp.la
+MAGICK_WEBP_SRCS = coders/webp.c
 endif
 
 if WINGDI32_DELEGATE
-MAGICKCORE_GDI32_MODULES = coders/clipboard.la coders/emf.la
-MAGICKCORE_GDI32_SRCS = coders/clipboard.c coders/emf.c
+MAGICK_GDI32_MODULES = coders/clipboard.la coders/emf.la
+MAGICK_GDI32_SRCS = coders/clipboard.c coders/emf.c
 endif
 
 if WMF_DELEGATE
-MAGICKCORE_WMF_MODULES = coders/wmf.la
-MAGICKCORE_WMF_SRCS = coders/wmf.c
+MAGICK_WMF_MODULES = coders/wmf.la
+MAGICK_WMF_SRCS = coders/wmf.c
 endif
 
 if X11_DELEGATE
-MAGICKCORE_X11_MODULES = coders/x.la coders/xwd.la
-MAGICKCORE_X11_SRCS = coders/x.c coders/xwd.c
+MAGICK_X11_MODULES = coders/x.la coders/xwd.la
+MAGICK_X11_SRCS = coders/x.c coders/xwd.c
 endif
 
-MAGICKCORE_CODER_SRCS = \
+MAGICK_CODER_SRCS = \
 	coders/aai.c \
 	coders/art.c \
 	coders/avs.c \
@@ -184,19 +184,19 @@ MAGICKCORE_CODER_SRCS = \
 	coders/xps.c \
 	coders/ycbcr.c \
 	coders/yuv.c \
-	$(MAGICKCORE_DPS_SRCS) \
-	$(MAGICKCORE_DJVU_SRCS) \
-	$(MAGICKCORE_EXR_SRCS) \
-	$(MAGICKCORE_FPX_SRCS) \
-	$(MAGICKCORE_GDI32_SRCS) \
-	$(MAGICKCORE_JBIG_SRCS) \
-	$(MAGICKCORE_JPEG_SRCS) \
-	$(MAGICKCORE_JP2_SRCS) \
-	$(MAGICKCORE_PNG_SRCS) \
-	$(MAGICKCORE_TIFF_SRCS) \
-	$(MAGICKCORE_WEBP_SRCS) \
-	$(MAGICKCORE_WMF_SRCS) \
-	$(MAGICKCORE_X11_SRCS)
+  $(MAGICK_DPS_SRCS) \
+  $(MAGICK_DJVU_SRCS) \
+  $(MAGICK_EXR_SRCS) \
+  $(MAGICK_FPX_SRCS) \
+  $(MAGICK_GDI32_SRCS) \
+  $(MAGICK_JBIG_SRCS) \
+  $(MAGICK_JPEG_SRCS) \
+  $(MAGICK_JP2_SRCS) \
+  $(MAGICK_PNG_SRCS) \
+  $(MAGICK_TIFF_SRCS) \
+  $(MAGICK_WEBP_SRCS) \
+  $(MAGICK_WMF_SRCS) \
+  $(MAGICK_X11_SRCS)
 
 if WITH_MODULES
 coders_LTLIBRARIES = \
@@ -301,19 +301,19 @@ coders_LTLIBRARIES = \
 	coders/xps.la \
 	coders/ycbcr.la \
 	coders/yuv.la \
-	$(MAGICKCORE_DPS_MODULES) \
-	$(MAGICKCORE_DJVU_MODULES) \
-	$(MAGICKCORE_EXR_MODULES) \
-	$(MAGICKCORE_FPX_MODULES) \
-	$(MAGICKCORE_GDI32_MODULES)  \
-	$(MAGICKCORE_JBIG_MODULES) \
-	$(MAGICKCORE_JPEG_MODULES) \
-	$(MAGICKCORE_JP2_MODULES) \
-	$(MAGICKCORE_PNG_MODULES) \
-	$(MAGICKCORE_TIFF_MODULES) \
-	$(MAGICKCORE_WEBP_MODULES) \
-	$(MAGICKCORE_WMF_MODULES) \
-	$(MAGICKCORE_X11_MODULES)
+  $(MAGICK_DPS_MODULES) \
+  $(MAGICK_DJVU_MODULES) \
+  $(MAGICK_EXR_MODULES) \
+  $(MAGICK_FPX_MODULES) \
+  $(MAGICK_GDI32_MODULES)  \
+  $(MAGICK_JBIG_MODULES) \
+  $(MAGICK_JPEG_MODULES) \
+  $(MAGICK_JP2_MODULES) \
+  $(MAGICK_PNG_MODULES) \
+  $(MAGICK_TIFF_MODULES) \
+  $(MAGICK_WEBP_MODULES) \
+  $(MAGICK_WMF_MODULES) \
+  $(MAGICK_X11_MODULES)
 else
 coders_LTLIBRARIES =
 endif # WITH_MODULES

@@ -39,29 +39,28 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/log.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/nt-feature.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantize.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colormap.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/nt-feature.h"
+#include "magick/quantize.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Define declarations.
@@ -184,11 +183,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  register IndexPacket
+    *indexes;
+
   register ssize_t
     i,
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -400,27 +402,22 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) (image->columns-7); x+=8)
               {
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
-                {
-                  SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
-                    0x00),q);
-                  q+=GetPixelComponents(image);
-                }
+                  SetPixelIndex(indexes+x+bit,
+                    ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00));
               }
               if ((image->columns % 8) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
-                  {
-                    SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
-                      0x00),q);
-                    q+=GetPixelComponents(image);
-                  }
+                    SetPixelIndex(indexes+x+bit,
+                      ((byte & (0x80 >> bit)) != 0 ? 0x01 : 0x00));
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -444,21 +441,19 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < ((ssize_t) image->columns-1); x+=2)
               {
                 byte=(size_t) ReadBlobByte(image);
-                SetPixelIndex(image,((byte >> 4) & 0xf),q);
-                q+=GetPixelComponents(image);
-                SetPixelIndex(image,((byte) & 0xf),q);
-                q+=GetPixelComponents(image);
+                SetPixelIndex(indexes+x,((byte >> 4) & 0xf));
+                SetPixelIndex(indexes+x+1,((byte) & 0xf));
               }
               if ((image->columns % 2) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
-                  SetPixelIndex(image,((byte >> 4) & 0xf),q);
-                  q+=GetPixelComponents(image);
+                  SetPixelIndex(indexes+x,((byte >> 4) & 0xf));
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -482,13 +477,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte=(size_t) ReadBlobByte(image);
-                SetPixelIndex(image,byte,q);
-                q+=GetPixelComponents(image);
+                SetPixelIndex(indexes+x,byte);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -512,14 +507,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetAuthenticIndexQueue(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte=(size_t) ReadBlobByte(image);
                 byte|=(size_t) (ReadBlobByte(image) << 8);
-                SetPixelIndex(image,byte,q);
-                q+=GetPixelComponents(image);
+                SetPixelIndex(indexes+x,byte);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -544,20 +539,20 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image)),q);
-                SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image)),q);
-                SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image)),q);
+                SetPixelBlue(q,ScaleCharToQuantum((unsigned char)
+                  ReadBlobByte(image)));
+                SetPixelGreen(q,ScaleCharToQuantum((unsigned char)
+                  ReadBlobByte(image)));
+                SetPixelRed(q,ScaleCharToQuantum((unsigned char)
+                  ReadBlobByte(image)));
                 if (icon_info.bits_per_pixel == 32)
-                  SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-                    ReadBlobByte(image)),q);
-                q+=GetPixelComponents(image);
+                  SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
+                    ReadBlobByte(image)));
+                q++;
               }
               if (icon_info.bits_per_pixel == 24)
                 for (x=0; x < (ssize_t) scanline_pad; x++)
@@ -588,27 +583,21 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
               q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < ((ssize_t) image->columns-7); x+=8)
               {
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
-                {
-                  SetPixelAlpha(image,(((byte & (0x80 >> bit)) != 0) ?
-                    TransparentAlpha : OpaqueAlpha),q);
-                  q+=GetPixelComponents(image);
-                }
+                  SetPixelOpacity(q+x+bit,(((byte & (0x80 >> bit)) !=
+                    0) ? TransparentOpacity : OpaqueOpacity));
               }
               if ((image->columns % 8) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
-                  {
-                    SetPixelAlpha(image,(((byte & (0x80 >> bit)) != 0) ?
-                      TransparentAlpha : OpaqueAlpha),q);
-                    q+=GetPixelComponents(image);
-                  }
+                    SetPixelOpacity(q+x+bit,(((byte & (0x80 >> bit)) !=
+                      0) ? TransparentOpacity : OpaqueOpacity));
                 }
               if ((image->columns % 32) != 0)
                 for (x=0; x < (ssize_t) ((32-(image->columns % 32))/8); x++)
@@ -779,7 +768,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     offset,
     scene;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -999,15 +991,16 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) next->rows; y++)
             {
               p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(next);
               q=pixels+(next->rows-y-1)*bytes_per_line;
               bit=0;
               byte=0;
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 byte<<=1;
-                byte|=GetPixelIndex(next,p) != 0 ? 0x01 : 0x00;
+                byte|=GetPixelIndex(indexes+x) != 0 ? 0x01 : 0x00;
                 bit++;
                 if (bit == 8)
                   {
@@ -1015,8 +1008,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelComponents(image);
-              }
+               }
               if (bit != 0)
                 *q++=(unsigned char) (byte << (8-bit));
               if (next->previous == (Image *) NULL)
@@ -1040,15 +1032,16 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) next->rows; y++)
             {
               p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(next);
               q=pixels+(next->rows-y-1)*bytes_per_line;
               nibble=0;
               byte=0;
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 byte<<=4;
-                byte|=((size_t) GetPixelIndex(next,p) & 0x0f);
+                byte|=((size_t) GetPixelIndex(indexes+x) & 0x0f);
                 nibble++;
                 if (nibble == 2)
                   {
@@ -1056,8 +1049,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                     nibble=0;
                     byte=0;
                   }
-                p+=GetPixelComponents(image);
-              }
+               }
               if (nibble != 0)
                 *q++=(unsigned char) (byte << 4);
               if (next->previous == (Image *) NULL)
@@ -1077,14 +1069,12 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) next->rows; y++)
             {
               p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
+              indexes=GetVirtualIndexQueue(next);
               q=pixels+(next->rows-y-1)*bytes_per_line;
               for (x=0; x < (ssize_t) next->columns; x++)
-              {
-                *q++=(unsigned char) GetPixelIndex(next,p);
-                p+=GetPixelComponents(image);
-              }
+                *q++=(unsigned char) GetPixelIndex(indexes+x);
               if (next->previous == (Image *) NULL)
                 {
                   status=SetImageProgress(next,SaveImageTag,y,next->rows);
@@ -1103,19 +1093,19 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             for (y=0; y < (ssize_t) next->rows; y++)
             {
               p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
-              if (p == (const Quantum *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               q=pixels+(next->rows-y-1)*bytes_per_line;
               for (x=0; x < (ssize_t) next->columns; x++)
               {
-                *q++=ScaleQuantumToChar(GetPixelBlue(next,p));
-                *q++=ScaleQuantumToChar(GetPixelGreen(next,p));
-                *q++=ScaleQuantumToChar(GetPixelRed(next,p));
+                *q++=ScaleQuantumToChar(GetPixelBlue(p));
+                *q++=ScaleQuantumToChar(GetPixelGreen(p));
+                *q++=ScaleQuantumToChar(GetPixelRed(p));
                 if (next->matte == MagickFalse)
                   *q++=ScaleQuantumToChar(QuantumRange);
                 else
-                  *q++=ScaleQuantumToChar(GetPixelAlpha(next,p));
-                p+=GetPixelComponents(next);
+                  *q++=ScaleQuantumToChar(GetPixelAlpha(p));
+                p++;
               }
               if (icon_info.bits_per_pixel == 24)
                 for (x=3L*(ssize_t) next->columns; x < (ssize_t) bytes_per_line; x++)
@@ -1194,7 +1184,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         for (y=((ssize_t) next->rows - 1); y >= 0; y--)
         {
           p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
-          if (p == (const Quantum *) NULL)
+          if (p == (const PixelPacket *) NULL)
             break;
           bit=0;
           byte=0;
@@ -1202,7 +1192,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           {
             byte<<=1;
             if ((next->matte == MagickTrue) &&
-                (GetPixelAlpha(next,p) == (Quantum) TransparentAlpha))
+                (GetPixelOpacity(p) == (Quantum) TransparentOpacity))
               byte|=0x01;
             bit++;
             if (bit == 8)
@@ -1211,7 +1201,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                 bit=0;
                 byte=0;
               }
-            p+=GetPixelComponents(next);
+            p++;
           }
           if (bit != 0)
             (void) WriteBlobByte(image,(unsigned char) (byte << (8-bit)));

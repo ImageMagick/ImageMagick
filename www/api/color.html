@@ -194,10 +194,13 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -389,13 +392,13 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryMagickColorCompliance">QueryMagickColorCompliance</a></h2>
 <div class="doc-section">
 
-<p>QueryMagickColorCompliance() returns the red, green, blue, and alpha intensities for a given color name and standards compliance.</p>
+<p>QueryMagickColorCompliance() returns the red, green, blue, and opacity intensities for a given color name and standards compliance.</p>
 
 <p>The format of the QueryMagickColor method is:</p>
 
 <pre class="code">
   MagickBooleanType QueryMagickColor(const char *name,
-    const ComplianceType compliance,PixelInfo *color,
+    const ComplianceType compliance,MagickPixelPacket *color,
     ExceptionInfo *exception)
 </pre>
 
@@ -423,7 +426,7 @@
 
 <pre class="code">
   MagickBooleanType QueryMagickColor(const char *name,
-    PixelInfo *color,ExceptionInfo *exception)
+    MagickPixelPacket *color,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>

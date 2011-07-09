@@ -39,30 +39,29 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/profile.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/string-private.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/module.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/profile.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/string-private.h"
 
 /*
   Typedef declaration.
@@ -1078,7 +1077,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickBooleanType
       sync;
 
-    register Quantum
+    register PixelPacket
       *q;
 
     size_t
@@ -1112,7 +1111,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count != (ssize_t) extent)
       status=MagickFalse;
     q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -1301,7 +1300,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   QuantumType
     quantum_type;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -1469,7 +1468,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
           if ((image_info->type != TrueColorType) &&
               (image->matte == MagickFalse) &&
-              (IsImageGray(image,&image->exception) != MagickFalse))
+              (IsGrayImage(image,&image->exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }
@@ -1801,7 +1800,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     image->depth,MagickTrue);
   if ((image_info->type != UndefinedType) &&
       (image_info->type != TrueColorType) && (image->matte == MagickFalse) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
+      (IsGrayImage(image,&image->exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;
       extent=GetBytesPerRow(image->columns,1UL,image->depth,MagickTrue);
@@ -1810,9 +1809,9 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
-    (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
     count=WriteBlob(image,extent,pixels);
     if (count != (ssize_t) extent)
