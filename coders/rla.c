@@ -39,25 +39,24 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/property.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/property.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,7 +172,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   ssize_t
@@ -297,7 +296,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
                 (ssize_t) (y % image->rows),1,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
               byte=(unsigned char) ReadBlobByte(image);
               length--;
@@ -305,23 +304,23 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case 0:
                 {
-                  SetPixelRed(image,ScaleCharToQuantum(byte),q);
+                  SetPixelRed(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 1:
                 {
-                  SetPixelGreen(image,ScaleCharToQuantum(byte),q);
+                  SetPixelGreen(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 2:
                 {
-                  SetPixelBlue(image,ScaleCharToQuantum(byte),q);
+                  SetPixelBlue(q,ScaleCharToQuantum(byte));
                   break;
                 }
                 case 3:
                 default:
                 {
-                  SetPixelAlpha(image,ScaleCharToQuantum(byte),q);
+                  SetPixelAlpha(q,ScaleCharToQuantum(byte));
                   break;
                 }
               }
@@ -339,29 +338,29 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
             (ssize_t) (y % image->rows),1,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
           switch (channel)
           {
             case 0:
             {
-              SetPixelRed(image,ScaleCharToQuantum(byte),q);
+              SetPixelRed(q,ScaleCharToQuantum(byte));
               break;
             }
             case 1:
             {
-              SetPixelGreen(image,ScaleCharToQuantum(byte),q);
+              SetPixelGreen(q,ScaleCharToQuantum(byte));
               break;
             }
             case 2:
             {
-              SetPixelBlue(image,ScaleCharToQuantum(byte),q);
+              SetPixelBlue(q,ScaleCharToQuantum(byte));
               break;
             }
             case 3:
             default:
             {
-              SetPixelAlpha(image,ScaleCharToQuantum(byte),q);
+              SetPixelAlpha(q,ScaleCharToQuantum(byte));
               break;
             }
           }

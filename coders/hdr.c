@@ -39,28 +39,26 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/string-private.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/string-private.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -153,7 +151,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status,
     value_expected;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -445,7 +443,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
     i=0;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -464,17 +462,17 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel[2]=pixels[i++];
           pixel[3]=pixels[i++];
         }
-      SetPixelRed(image,0,q);
-      SetPixelGreen(image,0,q);
-      SetPixelBlue(image,0,q);
+      SetPixelRed(q,0);
+      SetPixelGreen(q,0);
+      SetPixelBlue(q,0);
       if (pixel[3] != 0)
         {
           gamma=pow(2.0,pixel[3]-(128.0+8.0));
-          SetPixelRed(image,ClampToQuantum(QuantumRange*gamma*pixel[0]),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*gamma*pixel[1]),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*gamma*pixel[2]),q);
+          SetPixelRed(q,ClampToQuantum(QuantumRange*gamma*pixel[0]));
+          SetPixelGreen(q,ClampToQuantum(QuantumRange*gamma*pixel[1]));
+          SetPixelBlue(q,ClampToQuantum(QuantumRange*gamma*pixel[2]));
         }
-      q+=GetPixelComponents(image);
+      q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -653,7 +651,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -683,7 +681,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Write header.
@@ -732,7 +730,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     if ((image->columns >= 8) && (image->columns <= 0x7ffff))
       {
@@ -754,20 +752,22 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
       pixel[1]=0;
       pixel[2]=0;
       pixel[3]=0;
-      gamma=QuantumScale*GetPixelRed(image,p);
-      if ((QuantumScale*GetPixelGreen(image,p)) > gamma)
-        gamma=QuantumScale*GetPixelGreen(image,p);
-      if ((QuantumScale*GetPixelBlue(image,p)) > gamma)
-        gamma=QuantumScale*GetPixelBlue(image,p);
+      gamma=QuantumScale*GetPixelRed(p);
+      if ((QuantumScale*GetPixelGreen(p)) > gamma)
+        gamma=QuantumScale*GetPixelGreen(p);
+      if ((QuantumScale*GetPixelBlue(p)) > gamma)
+        gamma=QuantumScale*GetPixelBlue(p);
       if (gamma > MagickEpsilon)
         {
           int
             exponent;
 
           gamma=frexp(gamma,&exponent)*256.0/gamma;
-          pixel[0]=(unsigned char) (gamma*QuantumScale*GetPixelRed(image,p));
-          pixel[1]=(unsigned char) (gamma*QuantumScale*GetPixelGreen(image,p));
-          pixel[2]=(unsigned char) (gamma*QuantumScale*GetPixelBlue(image,p));
+          pixel[0]=(unsigned char) (gamma*QuantumScale*GetPixelRed(p));
+          pixel[1]=(unsigned char) (gamma*QuantumScale*
+            GetPixelGreen(p));
+          pixel[2]=(unsigned char) (gamma*QuantumScale*
+            GetPixelBlue(p));
           pixel[3]=(unsigned char) (exponent+128);
         }
       if ((image->columns >= 8) && (image->columns <= 0x7ffff))
@@ -784,7 +784,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
           pixels[i++]=pixel[2];
           pixels[i++]=pixel[3];
         }
-      p+=GetPixelComponents(image);
+      p++;
     }
     if ((image->columns >= 8) && (image->columns <= 0x7ffff))
       {

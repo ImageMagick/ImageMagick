@@ -5,7 +5,7 @@ includedir=${prefix}/include/ImageMagick
 
 
 Name: ImageMagick++
-Version: 7.0.0
+Version: 6.7.0
 Description: Magick++ - C++ API for ImageMagick
 Requires: ImageMagick
 Libs: -L${libdir} -lMagick++

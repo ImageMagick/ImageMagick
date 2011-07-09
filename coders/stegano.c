@@ -39,26 +39,25 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colormap.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,9 +100,9 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 {
 #define GetBit(alpha,i) MagickMin((((size_t) (alpha) >> (size_t) \
   (i)) & 0x01),16)
-#define SetBit(i,set) SetPixelIndex(image,((set) != 0 ? \
-  (size_t) GetPixelIndex(image,q) | (one << (size_t) (i)) : \
-  (size_t) GetPixelIndex(image,q) & ~(one << (size_t) (i))),q)
+#define SetBit(indexes,i,set) SetPixelIndex(indexes,((set) != 0 ? \
+  (size_t) GetPixelIndex(indexes) | (one << (size_t) (i)) : (size_t) \
+  GetPixelIndex(indexes) & ~(one << (size_t) (i))))
 
   Image
     *image,
@@ -121,7 +120,10 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   PixelPacket
     pixel;
 
-  register Quantum
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
     *q;
 
   register ssize_t
@@ -186,23 +188,24 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         (void) GetOneVirtualPixel(watermark,k % (ssize_t) watermark->columns,
           k/(ssize_t) watermark->columns,&pixel,exception);
         q=GetAuthenticPixels(image,x,y,1,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetAuthenticIndexQueue(image);
         switch (c)
         {
           case 0:
           {
-            SetBit(i,GetBit(pixel.red,j));
+            SetBit(indexes,i,GetBit(pixel.red,j));
             break;
           }
           case 1:
           {
-            SetBit(i,GetBit(pixel.green,j));
+            SetBit(indexes,i,GetBit(pixel.green,j));
             break;
           }
           case 2:
           {
-            SetBit(i,GetBit(pixel.blue,j));
+            SetBit(indexes,i,GetBit(pixel.blue,j));
             break;
           }
         }

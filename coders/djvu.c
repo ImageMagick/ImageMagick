@@ -39,24 +39,23 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colormap.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 #if defined(MAGICKCORE_DJVU_DELEGATE)
 #include <libdjvu/ddjvuapi.h>
 #endif
@@ -390,13 +389,15 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 #if DEBUG
                 printf("%s: expanding BITONAL page/image\n", __FUNCTION__);
 #endif
+                register IndexPacket *indexes;
                 size_t bit, byte;
 
                 for (y=0; y < (ssize_t) image->rows; y++)
                         {
-                                Quantum * o = QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
-                                if (o == (Quantum *) NULL)
+                                PixelPacket * o = QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
+                                if (o == (PixelPacket *) NULL)
                                         break;
+                                indexes=GetAuthenticIndexQueue(image);
                                 bit=0;
                                 byte=0;
 
@@ -405,12 +406,12 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                         {
                                                 if (bit == 0) byte= (size_t) q[(y * stride) + (x / 8)];
 
-                                                SetPixelIndex(image,(Quantum) (((byte & 0x01) != 0) ? 0x00 : 0x01),o);
+                                                if (indexes != (IndexPacket *) NULL)
+                                                  SetPixelIndex(indexes+x,(IndexPacket) (((byte & 0x01) != 0) ? 0x00 : 0x01));
                                                 bit++;
                                                 if (bit == 8)
                                                         bit=0;
                                                 byte>>=1;
-                                          o+=GetPixelComponents(image);
                                         }
                                 if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
                                         break;
@@ -427,7 +428,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                 /* old: */
                 char* r;
 #else
-                register Quantum *r;
+                register PixelPacket *r;
                 unsigned char *s;
 #endif
                 s=q;
@@ -437,14 +438,14 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                if (i % 1000 == 0) printf("%d\n",i);
 #endif
                                r = QueueAuthenticPixels(image,0,i,image->columns,1,&image->exception);
-                               if (r == (Quantum *) NULL)
+                               if (r == (PixelPacket *) NULL)
                                  break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetPixelRed(image,ScaleCharToQuantum(*s++),r);
-                    SetPixelGreen(image,ScaleCharToQuantum(*s++),r);
-                    SetPixelBlue(image,ScaleCharToQuantum(*s++),r);
-                    r+=GetPixelComponents(image);
+                    SetPixelRed(r,ScaleCharToQuantum(*s++));
+                    SetPixelGreen(r,ScaleCharToQuantum(*s++));
+                    SetPixelBlue(r,ScaleCharToQuantum(*s++));
+                    r++;
                   }
 
                               SyncAuthenticPixels(image,&image->exception);
@@ -580,7 +581,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
         /* Read one DJVU image */
         image = lc->image;
 
-        /* register Quantum *q; */
+        /* register PixelPacket *q; */
 
         logging=LogMagickEvent(CoderEvent,GetMagickModule(), "  enter ReadOneDJVUImage()");
         (void) logging;
@@ -694,6 +695,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 
         if (!image->ping)
           SyncImage(image);
+        /* indexes=GetAuthenticIndexQueue(image); */
         /* mmc: ??? Convert PNM pixels to runlength-encoded MIFF packets. */
         /* image->colors =  */
 

@@ -39,37 +39,35 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/property.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/client.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/decorate.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/gem.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/montage.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/resize.h"
-#include "MagickCore/shear.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/transform.h"
-#include "MagickCore/utility.h"
+#include "magick/studio.h"
+#include "magick/property.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/client.h"
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+#include "magick/decorate.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/gem.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/montage.h"
+#include "magick/resize.h"
+#include "magick/shear.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.
@@ -491,7 +489,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i,
     y;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -669,14 +667,14 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,ScaleCharToQuantum(*yy++),q);
-            SetPixelGreen(image,ScaleCharToQuantum(*c1++),q);
-            SetPixelBlue(image,ScaleCharToQuantum(*c2++),q);
-            q+=GetPixelComponents(image);
+            SetPixelRed(q,ScaleCharToQuantum(*yy++));
+            SetPixelGreen(q,ScaleCharToQuantum(*c1++));
+            SetPixelBlue(q,ScaleCharToQuantum(*c2++));
+            q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -777,14 +775,14 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(image,ScaleCharToQuantum(*yy++),q);
-      SetPixelGreen(image,ScaleCharToQuantum(*c1++),q);
-      SetPixelBlue(image,ScaleCharToQuantum(*c2++),q);
-      q+=GetPixelComponents(image);
+      SetPixelRed(q,ScaleCharToQuantum(*yy++));
+      SetPixelGreen(q,ScaleCharToQuantum(*c1++));
+      SetPixelBlue(q,ScaleCharToQuantum(*c2++));
+      q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -958,7 +956,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   RectangleInfo
     geometry;
 
-  register const Quantum
+  register const PixelPacket
     *p,
     *q;
 
@@ -1009,7 +1007,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       tile_image=bordered_image;
     }
   (void) TransformImage(&tile_image,(char *) NULL,tile_geometry);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(tile_image,YCCColorspace);
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,TriangleFilter,1.0,&image->exception);
@@ -1022,31 +1020,29 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   {
     p=GetVirtualPixels(tile_image,0,y,tile_image->columns,2,
       &tile_image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) (tile_image->columns << 1); x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(tile_image,p)));
-      p+=GetPixelComponents(tile_image);
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(p)));
+      p++;
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,
       1,&downsample_image->exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(
-        GetPixelGreen(tile_image,q)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(q)));
       q++;
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,
       1,&downsample_image->exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(
-        GetPixelBlue(tile_image,q)));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(q)));
       q++;
     }
     status=SetImageProgress(image,SaveImageTag,y,tile_image->rows);
@@ -1097,7 +1093,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(pcd_image,RGBColorspace);
   /*
     Write PCD image header.

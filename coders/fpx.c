@@ -39,30 +39,30 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/property.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/property.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/pixel.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 #if defined(MAGICKCORE_FPX_DELEGATE)
 #if !defined(vms) && !defined(macintosh) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <fpxlib.h>
@@ -166,17 +166,20 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   MagickBooleanType
     status;
 
-  Quantum
-    index;
+  register IndexPacket
+    *indexes;
 
   register ssize_t
     i,
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -421,8 +424,9 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetAuthenticIndexQueue(image);
     if ((y % tile_height) == 0)
       {
         /*
@@ -455,22 +459,22 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (fpx_info.numberOfComponents > 2)
         {
-          SetPixelRed(image,ScaleCharToQuantum(*r),q);
-          SetPixelGreen(image,ScaleCharToQuantum(*g),q);
-          SetPixelBlue(image,ScaleCharToQuantum(*b),q);
+          SetPixelRed(q,ScaleCharToQuantum(*r));
+          SetPixelGreen(q,ScaleCharToQuantum(*g));
+          SetPixelBlue(q,ScaleCharToQuantum(*b));
         }
       else
         {
           index=ScaleCharToQuantum(*r);
-          SetPixelBlack(image,index,q);
-          SetPixelRed(image,index,q);
-          SetPixelGreen(image,index,q);
-          SetPixelBlue(image,index,q);
+          SetPixelIndex(indexes+x,index);
+          SetPixelRed(q,index);
+          SetPixelGreen(q,index);
+          SetPixelBlue(q,index);
         }
-      SetPixelAlpha(image,OpaqueAlpha,q);
+      SetPixelOpacity(q,OpaqueOpacity);
       if (image->matte != MagickFalse)
-        SetPixelAlpha(image,ScaleCharToQuantum(*a),q);
-      q+=GetPixelComponents(image);
+        SetPixelAlpha(q,ScaleCharToQuantum(*a));
+      q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;
       b+=blue_component->columnStride;
@@ -810,7 +814,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   QuantumType
     quantum_type;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -847,7 +851,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     Initialize FPX toolkit.
   */
   image->depth=8;
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
@@ -859,7 +863,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   if (image->matte != MagickFalse)
     colorspace.numberOfComponents=4;
   if ((image_info->type != TrueColorType) &&
-      IsImageGray(image,&image->exception))
+      IsGrayImage(image,&image->exception))
     {
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;
@@ -986,9 +990,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
-    length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    length=ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
       quantum_type,pixels,&image->exception);
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)

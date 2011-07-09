@@ -39,32 +39,30 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colormap-private.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color-private.h"
+#include "magick/colormap.h"
+#include "magick/colormap-private.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 #if defined(MAGICKCORE_X11_DELEGATE)
-#include "MagickCore/xwindow-private.h"
+#include "magick/xwindow-private.h"
 #if !defined(vms)
 #include <X11/XWDFile.h>
 #else
@@ -158,6 +156,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     x_status;
 
@@ -167,13 +168,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickStatusType
     status;
 
-  Quantum
-    index;
+  register IndexPacket
+    *indexes;
 
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register ssize_t
@@ -398,21 +399,21 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (PixelPacket *) NULL)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
-              index=(Quantum) ((pixel >> red_shift) & red_mask);
-              SetPixelRed(image,ScaleShortToQuantum(
-                colors[(ssize_t) index].red),q);
-              index=(Quantum) ((pixel >> green_shift) & green_mask);
-              SetPixelGreen(image,ScaleShortToQuantum(
-                colors[(ssize_t) index].green),q);
-              index=(Quantum) ((pixel >> blue_shift) & blue_mask);
-              SetPixelBlue(image,ScaleShortToQuantum(
-                colors[(ssize_t) index].blue),q);
-              q+=GetPixelComponents(image);
+              index=(IndexPacket) ((pixel >> red_shift) & red_mask);
+              SetPixelRed(q,ScaleShortToQuantum(colors[(ssize_t)
+                index].red));
+              index=(IndexPacket) ((pixel >> green_shift) & green_mask);
+              SetPixelGreen(q,ScaleShortToQuantum(colors[(ssize_t)
+                index].green));
+              index=(IndexPacket) ((pixel >> blue_shift) & blue_mask);
+              SetPixelBlue(q,ScaleShortToQuantum(colors[(ssize_t)
+                index].blue));
+              q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -425,24 +426,24 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (PixelPacket *) NULL)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
               color=(color*65535UL)/red_mask;
-              SetPixelRed(image,ScaleShortToQuantum((unsigned short)
-                color),q);
+              SetPixelRed(q,ScaleShortToQuantum((unsigned short)
+                color));
               color=(pixel >> green_shift) & green_mask;
               color=(color*65535UL)/green_mask;
-              SetPixelGreen(image,ScaleShortToQuantum((unsigned short)
-                color),q);
+              SetPixelGreen(q,ScaleShortToQuantum((unsigned short)
+                color));
               color=(pixel >> blue_shift) & blue_mask;
               color=(color*65535UL)/blue_mask;
-              SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
-                color),q);
-              q+=GetPixelComponents(image);
+              SetPixelBlue(q,ScaleShortToQuantum((unsigned short)
+                color));
+              q++;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -469,15 +470,16 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetAuthenticIndexQueue(image);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             index=ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,
               (int) y));
-            SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelComponents(image);
+            SetPixelIndex(indexes+x,index);
+            SetPixelRGBO(q,image->colormap+(ssize_t) index);
+            q++;
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -603,7 +605,10 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -643,7 +648,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Initialize XWD file header.
@@ -757,24 +762,22 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     q=pixels;
     if (image->storage_class == PseudoClass)
       {
+        indexes=GetVirtualIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          *q++=(unsigned char) GetPixelIndex(image,p);
-          p+=GetPixelComponents(image);
-        }
+          *q++=(unsigned char) GetPixelIndex(indexes+x);
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-        *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-        *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        p+=GetPixelComponents(image);
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
+        p++;
       }
     for (x=0; x < (ssize_t) scanline_pad; x++)
       *q++='\0';

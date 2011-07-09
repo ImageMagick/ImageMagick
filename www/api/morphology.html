@@ -194,10 +194,13 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -212,7 +215,7 @@
 <div class="main">
 
 <h1>Module morphology Methods</h1>
-<p class="navigation-index">[<a href="#** This macro  IsNaN">** This macro  IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#MorphologyApply">MorphologyApply</a> &bull; <a href="#MorphologyImage">MorphologyImage</a> &bull; <a href="#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="#ZeroKernelNans">ZeroKernelNans</a>]</p>
+<p class="navigation-index">[<a href="#** This macro  IsNaN">** This macro  IsNaN</a> &bull; <a href="#AcquireKernelInfo">AcquireKernelInfo</a> &bull; <a href="#AcquireKernelBuiltIn">AcquireKernelBuiltIn</a> &bull; <a href="#CloneKernelInfo">CloneKernelInfo</a> &bull; <a href="#DestroyKernelInfo">DestroyKernelInfo</a> &bull; <a href="#MorphologyApply">MorphologyApply</a> &bull; <a href="#MorphologyImageChannel">MorphologyImageChannel</a> &bull; <a href="#ScaleGeometryKernelInfo">ScaleGeometryKernelInfo</a> &bull; <a href="#ScaleKernelInfo">ScaleKernelInfo</a> &bull; <a href="#ShowKernelInfo">ShowKernelInfo</a> &bull; <a href="#UnityAddKernelInfo">UnityAddKernelInfo</a> &bull; <a href="#ZeroKernelNans">ZeroKernelNans</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="**_This macro  IsNaN">** This macro  IsNaN</a></h2>
 <div class="doc-section">
@@ -300,7 +303,7 @@
 
 <p>DoG:{radius},{sigma1},{sigma2} "Difference of Gaussians" Kernel. As "Gaussian" but with a gaussian produced by 'sigma2' subtracted from the gaussian produced by 'sigma1'. Typically sigma2 > sigma1. The result is a zero-summing kernel.</p>
 
-<p>Blur:{radius},{sigma}[,{angle}] Generates a 1 dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p>
+<p>Blur:{radius},{sigma}[,{angle}] Generates a 1-dimensional or linear gaussian blur, at the angle given (current restricted to orthogonal angles).  If a 'radius' is given the kernel is clipped to a width of 2*radius+1.  Kernel can be rotated by a 90 degree angle.</p>
 
 <p>If 'sigma' is zero, you get a single pixel on a field of zeros.</p>
 
@@ -466,9 +469,9 @@
 
 <p>MorphologyApply() applies a morphological method, multiple times using a list of multiple kernels.</p>
 
-<p>It is basically equivalent to as MorphologyImage() (see below) but without any user controls.  This allows internel programs to use this function, to actually perform a specific task without possible interference by any API user supplied settings.</p>
+<p>It is basically equivalent to as MorphologyImageChannel() (see below) but without any user controls.  This allows internel programs to use this function, to actually perform a specific task without possible interference by any API user supplied settings.</p>
 
-<p>It is MorphologyImage() task to extract any such user controls, and pass them to this function for processing.</p>
+<p>It is MorphologyImageChannel() task to extract any such user controls, and pass them to this function for processing.</p>
 
 <p>More specifically kernels are not normalized/scaled/blended by the 'convolve:scale' Image Artifact (setting), nor is the convolve bias (-bias setting or image->bias) loooked at, but must be supplied from the function arguments.</p>
 
@@ -476,9 +479,9 @@
 
 <pre class="code">
   Image *MorphologyApply(const Image *image,MorphologyMethod method,
-    const ssize_t iterations,const KernelInfo *kernel,
-    const CompositeMethod compose,const double bias,
-    ExceptionInfo *exception)
+    const ChannelType channel, const ssize_t iterations,
+    const KernelInfo *kernel, const CompositeMethod compose,
+    const double bias, ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -488,6 +491,9 @@
 
 <h5>method</h5>
 <p>the morphology method to be applied.</p>
+
+<h5>channel</h5>
+<p>the channels to which the operations are applied The channel 'sync' flag determines if 'alpha weighting' is applied for convolution style operations.</p>
 
 <h5>iterations</h5>
 <p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p>
@@ -508,10 +514,10 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyImage">MorphologyImage</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/morphology_8c.html" id="MorphologyImageChannel">MorphologyImageChannel</a></h2>
 <div class="doc-section">
 
-<p>MorphologyImage() applies a user supplied kernel to the image according to the given mophology method.</p>
+<p>MorphologyImageChannel() applies a user supplied kernel to the image according to the given mophology method.</p>
 
 <p>This function applies any and all user defined settings before calling the above internal function MorphologyApply().</p>
 
@@ -524,7 +530,7 @@
     const ssize_t iterations,KernelInfo *kernel,ExceptionInfo *exception)
 </pre>
 
-<p>Image *MorphologyImage(const Image *image, const ChannelType channel,MorphologyMethod method,const ssize_t iterations, KernelInfo *kernel,ExceptionInfo *exception)</p>
+<p>Image *MorphologyImageChannel(const Image *image, const ChannelType channel,MorphologyMethod method,const ssize_t iterations, KernelInfo *kernel,ExceptionInfo *exception)</p>
 
 <p>A description of each parameter follows:</p>
 
@@ -536,6 +542,9 @@
 
 <h5>iterations</h5>
 <p>apply the operation this many times (or no change). A value of -1 means loop until no change found. How this is applied may depend on the morphology method. Typically this is a value of 1.</p>
+
+<h5>channel</h5>
+<p>the channel type.</p>
 
 <h5>kernel</h5>
 <p>An array of double representing the morphology kernel. Warning: kernel may be normalized for the Convolve method.</p>

@@ -40,37 +40,35 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/compress.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/draw.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/resource_.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/token.h"
-#include "MagickCore/utility.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/color-private.h"
+#include "magick/compress.h"
+#include "magick/constitute.h"
+#include "magick/draw.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/geometry.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/option.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/resource_.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
+#include "magick/token.h"
+#include "magick/utility.h"
+#include "magick/module.h"
 
 /*
   Define declarations.
@@ -238,7 +236,10 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -264,24 +265,25 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
+    indexes=GetVirtualIndexQueue(image);
     if (image->colorspace != CMYKColorspace)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-        *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-        *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        p+=GetPixelComponents(image);
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
+        p++;
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-        *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-        *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        *q++=ScaleQuantumToChar(GetPixelBlack(image,p));
-        p+=GetPixelComponents(image);
+        *q++=ScaleQuantumToChar(GetPixelRed(p));
+        *q++=ScaleQuantumToChar(GetPixelGreen(p));
+        *q++=ScaleQuantumToChar(GetPixelBlue(p));
+        *q++=ScaleQuantumToChar(GetPixelIndex(indexes+x));
+        p++;
       }
     if (image->previous == (Image *) NULL)
       {
@@ -302,7 +304,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -327,7 +329,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  pack=IsImageMonochrome(image,&image->exception) == MagickFalse ? 1UL : 8UL;
+  pack=IsMonochromeImage(image,&image->exception) == MagickFalse ? 1UL : 8UL;
   padded_columns=((image->columns+pack-1)/pack)*pack;
   *length=(size_t) padded_columns*image->rows/pack;
   *pixels=(unsigned char *) AcquireQuantumMemory(*length,sizeof(**pixels));
@@ -337,13 +339,13 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     if (pack == 1)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
-        p+=GetPixelComponents(image);
+        *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+        p++;
       }
     else
       {
@@ -352,15 +354,15 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
         {
           bit=(unsigned char) 0x00;
           if (x < (ssize_t) image->columns)
-            bit=(unsigned char) (GetPixelIntensity(image,p) == (Quantum)
-              TransparentAlpha ? 0x01 : 0x00);
+            bit=(unsigned char) (PixelIntensityToQuantum(p) == (Quantum)
+              TransparentOpacity ? 0x01 : 0x00);
           code=(code << 1)+bit;
           if (((x+1) % pack) == 0)
             {
               *q++=code;
               code='\0';
             }
-          p+=GetPixelComponents(image);
+          p++;
         }
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -379,7 +381,10 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const IndexPacket
+    *indexes;
+
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -404,13 +409,11 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
+    indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      *q++=(unsigned char) GetPixelIndex(image,p);
-      p+=GetPixelComponents(image);
-    }
+      *q++=(unsigned char) GetPixelIndex(indexes+x);
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -515,9 +518,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   mask_image=CloneImage(image,0,0,MagickTrue,&image->exception);
   if (mask_image == (Image *) NULL)
     ThrowWriterException(CoderError,image->exception.reason);
-  PushPixelComponentMap(mask_image,AlphaChannel);
-  status=SeparateImage(mask_image);
-  PopPixelComponentMap(mask_image);
+  status=SeparateImageChannel(mask_image,OpacityChannel);
   if (status == MagickFalse)
     {
       mask_image=DestroyImage(mask_image);
@@ -875,7 +876,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     case FaxCompression:
     case Group4Compression:
     { 
-      if ((IsImageMonochrome(image,&image->exception) == MagickFalse) ||
+      if ((IsMonochromeImage(image,&image->exception) == MagickFalse) ||
           (image->matte != MagickFalse))
         compression=RLECompression;
       break;
@@ -1019,7 +1020,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               (void) WriteBlobString(image,
                 "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
             else
-              if (IsImageGray(image,&image->exception) != MagickFalse)
+              if (IsGrayImage(image,&image->exception) != MagickFalse)
                 (void) WriteBlobString(image,
                   "%%DocumentProcessColors: Black\n");
           }
@@ -1102,7 +1103,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,
         "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
-      if (IsImageGray(image,&image->exception) != MagickFalse)
+      if (IsGrayImage(image,&image->exception) != MagickFalse)
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
     /*
       Adjust document bounding box to bound page bounding box.
@@ -1227,7 +1228,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     */
     option=GetImageOption(image_info,"ps3:imagemask");
     (void) WriteBlobString(image,((option != (const char *) NULL) &&
-      (IsImageMonochrome(image,&image->exception) != MagickFalse)) ?
+      (IsMonochromeImage(image,&image->exception) != MagickFalse)) ?
       "true\n" : "false\n");
     /*
       Output pixel data.
@@ -1239,8 +1240,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         (image_info->type != ColorSeparationType) &&
         (image_info->type != ColorSeparationMatteType) &&
         (image->colorspace != CMYKColorspace) &&
-        ((IsImageGray(image,&image->exception) != MagickFalse) ||
-         (IsImageMonochrome(image,&image->exception) != MagickFalse)))
+        ((IsGrayImage(image,&image->exception) != MagickFalse) ||
+         (IsMonochromeImage(image,&image->exception) != MagickFalse)))
       {
         /*
           Gray images.
@@ -1289,7 +1290,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
           1 bit or 8 bit components?
         */
         (void) FormatLocaleString(buffer,MaxTextExtent,"%d\n",
-          IsImageMonochrome(image,&image->exception) != MagickFalse ? 1 : 8);
+          IsMonochromeImage(image,&image->exception) != MagickFalse ? 1 : 8);
         (void) WriteBlobString(image,buffer);
         /*
           Image data.

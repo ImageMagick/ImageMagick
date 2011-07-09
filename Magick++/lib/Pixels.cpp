@@ -47,7 +47,7 @@ Magick::Pixels::~Pixels( void )
 // Transfer pixels from the image to the pixel view as defined by
 // the specified region. Modified pixels may be subsequently
 // transferred back to the image via sync.
-Magick::Quantum* Magick::Pixels::get ( const ssize_t x_,
+Magick::PixelPacket* Magick::Pixels::get ( const ssize_t x_,
 					   const ssize_t y_,
 					   const size_t columns_,
 					   const size_t rows_ )
@@ -57,7 +57,7 @@ Magick::Quantum* Magick::Pixels::get ( const ssize_t x_,
   _columns = columns_;
   _rows = rows_;
 
-  Quantum* pixels = GetCacheViewAuthenticPixels( _view, x_, y_, columns_, rows_,  &_exception);
+  PixelPacket* pixels = GetCacheViewAuthenticPixels( _view, x_, y_, columns_, rows_,  &_exception);
 
   if ( !pixels )
     throwException( _exception );
@@ -67,7 +67,7 @@ Magick::Quantum* Magick::Pixels::get ( const ssize_t x_,
 
 // Transfer read-only pixels from the image to the pixel view as
 // defined by the specified region.
-const Magick::Quantum* Magick::Pixels::getConst ( const ssize_t x_, const ssize_t y_,
+const Magick::PixelPacket* Magick::Pixels::getConst ( const ssize_t x_, const ssize_t y_,
                                                       const size_t columns_,
                                                       const size_t rows_ )
 {
@@ -76,7 +76,7 @@ const Magick::Quantum* Magick::Pixels::getConst ( const ssize_t x_, const ssize_
   _columns = columns_;
   _rows = rows_;
 
-  const Quantum* pixels =
+  const PixelPacket* pixels =
     GetCacheViewVirtualPixels(_view, x_, y_, columns_, rows_, &_exception );
 
   if ( !pixels )
@@ -95,7 +95,7 @@ void Magick::Pixels::sync ( void )
 // Allocate a pixel view region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel view to the image via 'sync'.
-Magick::Quantum* Magick::Pixels::set ( const ssize_t x_,
+Magick::PixelPacket* Magick::Pixels::set ( const ssize_t x_,
 					   const ssize_t y_,
 					   const size_t columns_,
 					   const size_t rows_ )
@@ -105,7 +105,7 @@ Magick::Quantum* Magick::Pixels::set ( const ssize_t x_,
   _columns = columns_;
   _rows = rows_;
 
-  Quantum* pixels = QueueCacheViewAuthenticPixels( _view, x_, y_,
+  PixelPacket* pixels = QueueCacheViewAuthenticPixels( _view, x_, y_,
                                       columns_, rows_,  &_exception );
   if ( !pixels )
     throwException( _exception );
@@ -114,14 +114,12 @@ Magick::Quantum* Magick::Pixels::set ( const ssize_t x_,
 }
 
 // Return pixel colormap index array
-/*
-Magick::void* Magick::Pixels::metacontent ( void )
+Magick::IndexPacket* Magick::Pixels::indexes ( void )
 {
-  void* pixel_metacontent = GetCacheViewAuthenticMetacontent( _view );
+  IndexPacket* pixel_indexes = GetCacheViewAuthenticIndexQueue( _view );
 
-  if ( !pixel_metacontent )
+  if ( !pixel_indexes )
     _image.throwImageException();
 
-  return pixel_metacontent;
+  return pixel_indexes;
 }
-*/

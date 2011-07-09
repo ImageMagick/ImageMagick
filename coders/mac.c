@@ -40,26 +40,25 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colormap.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,7 +94,10 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  register Quantum
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
     *q;
 
   register ssize_t
@@ -179,8 +181,9 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (offset >= (ssize_t) length)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetAuthenticIndexQueue(image);
               p=pixels;
               bit=0;
               byte=0;
@@ -188,12 +191,12 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (bit == 0)
                   byte=(*p++);
-                SetPixelIndex(image,((byte & 0x80) != 0 ? 0x01 : 0x00),q);
+                SetPixelIndex(indexes+x,((byte & 0x80) != 0 ?
+                  0x01 : 0x00));
                 bit++;
                 byte<<=1;
                 if (bit == 8)
                   bit=0;
-                q+=GetPixelComponents(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -214,8 +217,9 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (offset >= (ssize_t) length)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetAuthenticIndexQueue(image);
           p=pixels;
           bit=0;
           byte=0;
@@ -223,12 +227,12 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (bit == 0)
               byte=(*p++);
-            SetPixelIndex(image,((byte & 0x80) != 0 ? 0x01 : 0x00),q);
+            SetPixelIndex(indexes+x,((byte & 0x80) != 0 ?
+              0x01 : 0x00));
             bit++;
             byte<<=1;
             if (bit == 8)
               bit=0;
-            q+=GetPixelComponents(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

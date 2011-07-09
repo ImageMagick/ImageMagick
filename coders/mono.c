@@ -39,28 +39,26 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/color-private.h"
+#include "magick/colormap.h"
+#include "magick/colorspace.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Forward declarations.
@@ -104,7 +102,10 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register Quantum
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
     *q;
 
   register ssize_t
@@ -156,8 +157,9 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (PixelPacket *) NULL)
       break;
+    indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -165,19 +167,18 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
       if (bit == 0)
         byte=(size_t) ReadBlobByte(image);
       if (image_info->endian == LSBEndian)
-        SetPixelIndex(image,((byte & 0x01) != 0) ? 0x00 : 0x01,q);
+        SetPixelIndex(indexes+x,((byte & 0x01) != 0) ? 0x00 : 0x01);
       else
-        SetPixelIndex(image,((byte & 0x01) != 0) ? 0x01 : 0x00,q);
+        SetPixelIndex(indexes+x,((byte & 0x01) != 0) ? 0x01 : 0x00);
       bit++;
       if (bit == 8)
         bit=0;
       byte>>=1;
-      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-      image->rows);
+                image->rows);
     if (status == MagickFalse)
       break;
   }
@@ -284,7 +285,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -309,7 +310,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Convert image to a bi-level image.
@@ -318,7 +319,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     bit=0;
     byte=0;
@@ -327,11 +328,11 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
       byte>>=1;
       if (image->endian == LSBEndian)
         {
-          if (GetPixelIntensity(image,p) < ((Quantum) QuantumRange/2.0))
+          if (PixelIntensity(p) < ((Quantum) QuantumRange/2.0))
             byte|=0x80;
         }
       else
-        if (GetPixelIntensity(image,p) >= ((Quantum) QuantumRange/2.0))
+        if (PixelIntensity(p) >= ((Quantum) QuantumRange/2.0))
           byte|=0x80;
       bit++;
       if (bit == 8)
@@ -340,7 +341,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
           bit=0;
           byte=0;
         }
-      p+=GetPixelComponents(image);
+      p++;
     }
     if (bit != 0)
       (void) WriteBlobByte(image,(unsigned char) (byte >> (8-bit)));

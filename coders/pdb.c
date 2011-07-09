@@ -46,33 +46,31 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/attribute.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/cache.h"
-#include "MagickCore/colormap-private.h"
-#include "MagickCore/color-private.h"
-#include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/cache.h"
+#include "magick/colormap-private.h"
+#include "magick/color-private.h"
+#include "magick/colormap.h"
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/memory_.h"
+#include "magick/monitor.h"
+#include "magick/monitor-private.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#include "magick/module.h"
 
 /*
   Typedef declarations.
@@ -270,6 +268,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   MagickBooleanType
     status;
 
@@ -279,13 +280,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PDBInfo
     pdb_info;
 
-  Quantum
-    index;
+  register IndexPacket
+    *indexes;
 
   register ssize_t
     x;
 
-  register Quantum
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -434,15 +435,15 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < ((ssize_t) image->columns-7); x+=8)
         {
           for (bit=0; bit < 8; bit++)
           {
-            index=(Quantum) (*p & (0x80 >> bit) ? 0x00 : 0x01);
-            SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            index=(IndexPacket) (*p & (0x80 >> bit) ? 0x00 : 0x01);
+            SetPixelIndex(indexes+x+bit,index);
           }
           p++;
         }
@@ -464,23 +465,20 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x+=4)
         {
           index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03));
-          SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          SetPixelIndex(indexes+x,index);
           index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03));
-          SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          SetPixelIndex(indexes+x+1,index);
           index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03));
-          SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          SetPixelIndex(indexes+x+2,index);
           index=ConstrainColormapIndex(image,3UL-((*p) & 0x03));
-          SetPixelIndex(image,index,q);
+          SetPixelIndex(indexes+x+3,index);
           p++;
-          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -500,17 +498,16 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < (ssize_t) image->columns; x+=2)
         {
           index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f));
-          SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          SetPixelIndex(indexes+x,index);
           index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f));
-          SetPixelIndex(image,index,q);
+          SetPixelIndex(indexes+x+1,index);
           p++;
-          q+=GetPixelComponents(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -702,7 +699,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   QuantumInfo
     *quantum_info;
 
-  register const Quantum
+  register const PixelPacket
     *p;
 
   register ssize_t
@@ -738,7 +735,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
 
   if (image -> colors <= 2  ||  GetImageType( image, &image -> exception ) == BilevelType) { /* TS */
@@ -813,7 +810,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
     sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (image->colorspace != RGBColorspace)
     (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Convert to GRAY raster scanline.
@@ -829,9 +826,9 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const Quantum *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
-    (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
       GrayQuantum,scanline,&image->exception);
     for (x=0; x < pdb_image.width; x++)
     {
