@@ -3713,12 +3713,12 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   MagickBooleanType
     status;
 
-  PixelInfo
-    pixels[16];
-
   MagickRealType
     alpha[16],
     gamma;
+
+  PixelInfo
+    pixels[16];
 
   register const Quantum
     *p;
@@ -3757,31 +3757,32 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       AlphaBlendPixelInfo(image,p+7*GetPixelComponents(image),pixels+7,alpha+7);
       AlphaBlendPixelInfo(image,p+8*GetPixelComponents(image),pixels+8,alpha+8);
       AlphaBlendPixelInfo(image,p+9*GetPixelComponents(image),pixels+9,alpha+9);
-      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,
-        alpha+10);
-      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,
-        alpha+11);
-      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,
-        alpha+12);
-      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,
-        alpha+13);
-      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,
-        alpha+14);
-      AlphaBlendPixelInfo(image,p+15,pixels+15,alpha+15);
+      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,alpha+
+        10);
+      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,alpha+
+        11);
+      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,alpha+
+        12);
+      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,alpha+
+        13);
+      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,alpha+
+        14);
+      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,alpha+
+        15);
       pixel->red=0.0;
       pixel->green=0.0;
       pixel->blue=0.0;
-      pixel->alpha=0.0;
       pixel->black=0.0;
+      pixel->alpha=0.0;
       for (i=0; i < 16L; i++)
       {
         gamma=1.0/(fabs((double) alpha[i]) <= MagickEpsilon ? 1.0 : alpha[i]);
         pixel->red+=gamma*0.0625*pixels[i].red;
         pixel->green+=gamma*0.0625*pixels[i].green;
         pixel->blue+=gamma*0.0625*pixels[i].blue;
-        pixel->alpha+=0.0625*pixels[i].alpha;
         if (image->colorspace == CMYKColorspace)
           pixel->black+=gamma*0.0625*pixels[i].black;
+        pixel->alpha+=0.0625*pixels[i].alpha;
       }
       break;
     }
@@ -3810,18 +3811,18 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       AlphaBlendPixelInfo(image,p+7*GetPixelComponents(image),pixels+7,alpha+7);
       AlphaBlendPixelInfo(image,p+8*GetPixelComponents(image),pixels+8,alpha+8);
       AlphaBlendPixelInfo(image,p+9*GetPixelComponents(image),pixels+9,alpha+9);
-      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,
-        alpha+10);
-      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,
-        alpha+11);
-      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,
-        alpha+12);
-      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,
-        alpha+13);
-      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,
-        alpha+14);
-      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,
-        alpha+15);
+      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,alpha+
+        10);
+      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,alpha+
+        11);
+      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,alpha+
+        12);
+      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,alpha+
+        13);
+      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,alpha+
+        14);
+      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,alpha+
+        15);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
       for (i=0; i < 4L; i++)
@@ -3861,13 +3862,13 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       pixel->blue=gamma*(epsilon.y*(epsilon.x*pixels[0].blue+delta.x*
         pixels[1].blue)+delta.y*(epsilon.x*pixels[2].blue+delta.x*
         pixels[3].blue));
-      pixel->alpha=(epsilon.y*(epsilon.x*pixels[0].alpha+delta.x*
-        pixels[1].alpha)+delta.y*(epsilon.x*pixels[2].alpha+delta.x*
-        pixels[3].alpha));
       if (image->colorspace == CMYKColorspace)
         pixel->black=gamma*(epsilon.y*(epsilon.x*pixels[0].black+delta.x*
           pixels[1].black)+delta.y*(epsilon.x*pixels[2].black+delta.x*
           pixels[3].black));
+      pixel->alpha=(epsilon.y*(epsilon.x*pixels[0].alpha+delta.x*
+        pixels[1].alpha)+delta.y*(epsilon.x*pixels[2].alpha+delta.x*
+        pixels[3].alpha));
       break;
     }
     case FilterInterpolatePixel:
@@ -3958,11 +3959,11 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
                 pixels[3].green,pixels[0].green);
               pixel->blue=gamma*MeshInterpolate(&delta,pixels[2].blue,
                 pixels[3].blue,pixels[0].blue);
-              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[2].alpha,
-                pixels[3].alpha,pixels[0].alpha);
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[2].black,
                   pixels[3].black,pixels[0].black);
+              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[2].alpha,
+                pixels[3].alpha,pixels[0].alpha);
             }
           else
             {
@@ -3978,11 +3979,11 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
                 pixels[0].green,pixels[3].green);
               pixel->blue=gamma*MeshInterpolate(&delta,pixels[1].blue,
                 pixels[0].blue,pixels[3].blue);
-              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[1].alpha,
-                pixels[0].alpha,pixels[3].alpha);
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[1].black,
                   pixels[0].black,pixels[3].black);
+              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[1].alpha,
+                pixels[0].alpha,pixels[3].alpha);
             }
         }
       else
@@ -4003,11 +4004,11 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
                 pixels[1].green,pixels[2].green);
               pixel->blue=gamma*MeshInterpolate(&delta,pixels[0].blue,
                 pixels[1].blue,pixels[2].blue);
-              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[0].alpha,
-                pixels[1].alpha,pixels[2].alpha);
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[0].black,
                   pixels[1].black,pixels[2].black);
+              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[0].alpha,
+                pixels[1].alpha,pixels[2].alpha);
             }
           else
             {
@@ -4024,11 +4025,11 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
                 pixels[2].green,pixels[1].green);
               pixel->blue=gamma*MeshInterpolate(&delta,pixels[3].blue,
                 pixels[2].blue,pixels[1].blue);
-              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[3].alpha,
-                pixels[2].alpha,pixels[1].alpha);
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[3].black,
                   pixels[2].black,pixels[1].black);
+              pixel->alpha=gamma*MeshInterpolate(&delta,pixels[3].alpha,
+                pixels[2].alpha,pixels[1].alpha);
             }
         }
       break;
@@ -4075,23 +4076,23 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       AlphaBlendPixelInfo(image,p+7*GetPixelComponents(image),pixels+7,alpha+7);
       AlphaBlendPixelInfo(image,p+8*GetPixelComponents(image),pixels+8,alpha+8);
       AlphaBlendPixelInfo(image,p+9*GetPixelComponents(image),pixels+9,alpha+9);
-      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,
-        alpha+10);
-      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,
-        alpha+11);
-      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,
-        alpha+12);
-      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,
-        alpha+13);
-      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,
-        alpha+14);
-      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,
-        alpha+15);
+      AlphaBlendPixelInfo(image,p+10*GetPixelComponents(image),pixels+10,alpha+
+        10);
+      AlphaBlendPixelInfo(image,p+11*GetPixelComponents(image),pixels+11,alpha+
+        11);
+      AlphaBlendPixelInfo(image,p+12*GetPixelComponents(image),pixels+12,alpha+
+        12);
+      AlphaBlendPixelInfo(image,p+13*GetPixelComponents(image),pixels+13,alpha+
+        13);
+      AlphaBlendPixelInfo(image,p+14*GetPixelComponents(image),pixels+14,alpha+
+        14);
+      AlphaBlendPixelInfo(image,p+15*GetPixelComponents(image),pixels+15,alpha+
+        15);
       pixel->red=0.0;
       pixel->green=0.0;
       pixel->blue=0.0;
-      pixel->alpha=0.0;
       pixel->black=0.0;
+      pixel->alpha=0.0;
       delta.x=x-x_offset;
       delta.y=y-y_offset;
       n=0;
