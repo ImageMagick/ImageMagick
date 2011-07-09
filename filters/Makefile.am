@@ -17,7 +17,7 @@
 # Where filter modules get installed
 filtersdir = $(FILTER_PATH)
 
-MAGICK_FILTER_SRCS = \
+MAGICKCORE_FILTER_SRCS = \
 	filters/analyze.c
 
 if WITH_MODULES

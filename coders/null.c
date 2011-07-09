@@ -39,25 +39,25 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/color-private.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/pixel-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -99,16 +99,13 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   Image
     *image;
 
-  MagickPixelPacket
+  PixelInfo
     background;
-
-  register IndexPacket
-    *indexes;
 
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   ssize_t
@@ -130,21 +127,19 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   if (image->rows == 0)
     image->rows=1;
   image->matte=MagickTrue;
-  GetMagickPixelPacket(image,&background);
-  background.opacity=(MagickRealType) TransparentOpacity;
+  GetPixelInfo(image,&background);
+  background.alpha=(MagickRealType) TransparentAlpha;
   if (image->colorspace == CMYKColorspace)
     ConvertRGBToCMYK(&background);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
-    indexes=GetAuthenticIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPacket(image,&background,q,indexes);
-      q++;
-      indexes++;
+      SetPixelPixelInfo(image,&background,q);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

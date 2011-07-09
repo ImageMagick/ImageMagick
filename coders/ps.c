@@ -39,40 +39,41 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/color-private.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/constitute.h"
-#include "magick/delegate.h"
-#include "magick/delegate-private.h"
-#include "magick/draw.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/geometry.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/option.h"
-#include "magick/profile.h"
-#include "magick/resource_.h"
-#include "magick/pixel-private.h"
-#include "magick/property.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/token.h"
-#include "magick/transform.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/delegate.h"
+#include "MagickCore/delegate-private.h"
+#include "MagickCore/draw.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/token.h"
+#include "MagickCore/transform.h"
+#include "MagickCore/utility.h"
 
 /*
   Forward declarations.
@@ -1027,7 +1028,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if ((image->matte != MagickFalse) && \
-      (GetPixelOpacity(p) == (Quantum) TransparentOpacity)) \
+      (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)) \
     { \
       q=PopHexPixel(hex_digits,0xff,q); \
       q=PopHexPixel(hex_digits,0xff,q); \
@@ -1343,9 +1344,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
   GeometryInfo
     geometry_info;
 
-  IndexPacket
-    index;
-
   MagickBooleanType
     status;
 
@@ -1363,15 +1361,15 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     resolution,
     scale;
 
+  Quantum
+    index;
+
   RectangleInfo
     geometry,
     media_info,
     page_info;
 
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -1617,15 +1615,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(preview_image,0,y,preview_image->columns,1,
                 &preview_image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
-              indexes=GetVirtualIndexQueue(preview_image);
               bit=0;
               byte=0;
               for (x=0; x < (ssize_t) preview_image->columns; x++)
               {
                 byte<<=1;
-                pixel=PixelIntensityToQuantum(p);
+                pixel=GetPixelIntensity(preview_image,p);
                 if (pixel >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
@@ -1736,13 +1733,13 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
         labels=(char **) RelinquishMagickMemory(labels);
       }
     (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
-    pixel.opacity=(Quantum) TransparentOpacity;
-    index=(IndexPacket) 0;
+    pixel.alpha=(Quantum) TransparentAlpha;
+    index=0;
     x=0;
     if ((image_info->type != TrueColorType) &&
-        (IsGrayImage(image,&image->exception) != MagickFalse))
+        (IsImageGray(image,&image->exception) != MagickFalse))
       {
-        if (IsMonochromeImage(image,&image->exception) == MagickFalse)
+        if (IsImageMonochrome(image,&image->exception) == MagickFalse)
           {
             Quantum
               pixel;
@@ -1759,11 +1756,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                pixel=(Quantum) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                pixel=(Quantum) ScaleQuantumToChar(GetPixelIntensity(image,p));
                 q=PopHexPixel(hex_digits,(size_t) pixel,q);
                 i++;
                 if ((q-pixels+8) >= 80)
@@ -1772,7 +1769,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                     (void) WriteBlob(image,q-pixels,pixels);
                     q=pixels;
                   }
-                p++;
+                p+=GetPixelComponents(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1808,15 +1805,14 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,
                 &image->exception);
-              if (p == (const PixelPacket *) NULL)
+              if (p == (const Quantum *) NULL)
                 break;
-              indexes=GetVirtualIndexQueue(image);
               bit=0;
               byte=0;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte<<=1;
-                pixel=PixelIntensityToQuantum(p);
+                pixel=GetPixelIntensity(image,p);
                 if (pixel >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
@@ -1832,7 +1828,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                     bit=0;
                     byte=0;
                   }
-                p++;
+                p+=GetPixelComponents(image);
               }
               if (bit != 0)
                 {
@@ -1883,16 +1879,16 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const PixelPacket *) NULL)
+                if (p == (const Quantum *) NULL)
                   break;
-                pixel=(*p);
+                GetPixelPacket(image,p,&pixel);
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((GetPixelRed(p) == pixel.red) &&
-                      (GetPixelGreen(p) == pixel.green) &&
-                      (GetPixelBlue(p) == pixel.blue) &&
-                      (GetPixelOpacity(p) == pixel.opacity) &&
+                  if ((GetPixelRed(image,p) == pixel.red) &&
+                      (GetPixelGreen(image,p) == pixel.green) &&
+                      (GetPixelBlue(image,p) == pixel.blue) &&
+                      (GetPixelAlpha(image,p) == pixel.alpha) &&
                       (length < 255) && (x < (ssize_t) (image->columns-1)))
                     length++;
                   else
@@ -1909,8 +1905,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                         }
                       length=0;
                     }
-                  pixel=(*p);
-                  p++;
+                  GetPixelPacket(image,p,&pixel);
+                  p+=GetPixelComponents(image);
                 }
                 WriteRunlengthPacket(image,pixel,length,p);
                 if ((q-pixels+10) >= 80)
@@ -1945,12 +1941,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const PixelPacket *) NULL)
+                if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   if ((image->matte != MagickFalse) &&
-                      (GetPixelOpacity(p) == (Quantum) TransparentOpacity))
+                      (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha))
                     {
                       q=PopHexPixel(hex_digits,0xff,q);
                       q=PopHexPixel(hex_digits,0xff,q);
@@ -1959,11 +1955,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                   else
                     {
                       q=PopHexPixel(hex_digits,ScaleQuantumToChar(
-                        GetPixelRed(p)),q);
+                        GetPixelRed(image,p)),q);
                       q=PopHexPixel(hex_digits,ScaleQuantumToChar(
-                        GetPixelGreen(p)),q);
+                        GetPixelGreen(image,p)),q);
                       q=PopHexPixel(hex_digits,ScaleQuantumToChar(
-                        GetPixelBlue(p)),q);
+                        GetPixelBlue(image,p)),q);
                     }
                   if ((q-pixels+6) >= 80)
                     {
@@ -1971,7 +1967,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                       (void) WriteBlob(image,q-pixels,pixels);
                       q=pixels;
                     }
-                  p++;
+                  p+=GetPixelComponents(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {
@@ -2027,14 +2023,13 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const PixelPacket *) NULL)
+                if (p == (const Quantum *) NULL)
                   break;
-                indexes=GetVirtualIndexQueue(image);
-                index=GetPixelIndex(indexes);
+                index=GetPixelIndex(image,p);
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  if ((index == GetPixelIndex(indexes+x)) &&
+                  if ((index == GetPixelIndex(image,p)) &&
                       (length < 255) && (x < ((ssize_t) image->columns-1)))
                     length++;
                   else
@@ -2054,12 +2049,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                         }
                       length=0;
                     }
-                  index=GetPixelIndex(indexes+x);
-                  pixel.red=GetPixelRed(p);
-                  pixel.green=GetPixelGreen(p);
-                  pixel.blue=GetPixelBlue(p);
-                  pixel.opacity=GetPixelOpacity(p);
-                  p++;
+                  index=GetPixelIndex(image,p);
+                  pixel.red=GetPixelRed(image,p);
+                  pixel.green=GetPixelGreen(image,p);
+                  pixel.blue=GetPixelBlue(image,p);
+                  pixel.alpha=GetPixelAlpha(image,p);
+                  p+=GetPixelComponents(image);
                 }
                 q=PopHexPixel(hex_digits,(size_t) index,q);
                 q=PopHexPixel(hex_digits,(size_t)
@@ -2090,20 +2085,18 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               {
                 p=GetVirtualPixels(image,0,y,image->columns,1,
                   &image->exception);
-                if (p == (const PixelPacket *) NULL)
+                if (p == (const Quantum *) NULL)
                   break;
-                indexes=GetVirtualIndexQueue(image);
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  q=PopHexPixel(hex_digits,(size_t) GetPixelIndex(
-                    indexes+x),q);
+                  q=PopHexPixel(hex_digits,(size_t) GetPixelIndex(image,p),q);
                   if ((q-pixels+4) >= 80)
                     {
                       *q++='\n';
                       (void) WriteBlob(image,q-pixels,pixels);
                       q=pixels;
                     }
-                  p++;
+                  p+=GetPixelComponents(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {

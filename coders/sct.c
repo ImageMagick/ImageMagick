@@ -39,24 +39,25 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/module.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/string-private.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -136,14 +137,11 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     pixel;
 
-  register IndexPacket
-    *indexes;
-
   register ssize_t
     i,
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   ssize_t
@@ -231,9 +229,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=0; i < (ssize_t) separations; i++)
     {
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (PixelPacket *) NULL)
+      if (q == (const Quantum *) NULL)
         break;
-      indexes=GetAuthenticIndexQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=(Quantum) ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
@@ -243,29 +240,29 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           case 0:
           {
-            SetPixelRed(q,pixel);
-            SetPixelGreen(q,pixel);
-            SetPixelBlue(q,pixel);
+            SetPixelRed(image,pixel,q);
+            SetPixelGreen(image,pixel,q);
+            SetPixelBlue(image,pixel,q);
             break;
           }
           case 1:
           {
-            SetPixelGreen(q,pixel);
+            SetPixelGreen(image,pixel,q);
             break;
           }
           case 2:
           {
-            SetPixelBlue(q,pixel);
+            SetPixelBlue(image,pixel,q);
             break;
           }
           case 3: 
           {
             if (image->colorspace == CMYKColorspace)
-              SetPixelBlack(indexes+x,pixel);
+              SetPixelBlack(image,pixel,q);
             break;
           }
         }
-        q++;
+        q+=GetPixelComponents(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;

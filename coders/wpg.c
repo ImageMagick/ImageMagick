@@ -38,30 +38,31 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colormap-private.h"
-#include "magick/constitute.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/cache.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magic.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/resource_.h"
-#include "magick/quantum-private.h"
-#include "magick/shear.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/transform.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magic.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/shear.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/transform.h"
+#include "MagickCore/utility.h"
 
 typedef struct
    {
@@ -270,17 +271,14 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
   int
     bit;
 
-  ssize_t
-    x;
-
-  register PixelPacket
-    *q;
-
-  IndexPacket
+  Quantum
     index;
 
-  register IndexPacket
-    *indexes;
+  register Quantum
+    *q;
+
+  ssize_t
+    x;
 
   exception=(&image->exception);
   switch (bpp)
@@ -288,29 +286,28 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
     case 1:  /* Convert bitmap scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
-        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < ((ssize_t) image->columns-7); x+=8)
+        {
+          for (bit=0; bit < 8; bit++)
           {
-            for (bit=0; bit < 8; bit++)
-              {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                SetPixelIndex(indexes+x+bit,index);
-                SetPixelRGBO(q,image->colormap+(ssize_t) index);
-                q++;
-              }
-            p++;
+            index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            q+=GetPixelComponents(image);
           }
+          p++;
+        }
         if ((image->columns % 8) != 0)
           {
             for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
-              {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                SetPixelIndex(indexes+x+bit,index);
-                SetPixelRGBO(q,image->colormap+(ssize_t) index);
-                q++;
-              }
+            {
+              index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+              SetPixelIndex(image,index,q);
+              SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+              q+=GetPixelComponents(image);
+            }
             p++;
           }
         if (!SyncAuthenticPixels(image,exception))
@@ -320,49 +317,48 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
     case 2:  /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
-        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
-            q++;
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            q+=GetPixelComponents(image);
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
-            q++;
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            q+=GetPixelComponents(image);
             index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
-            q++;
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            q+=GetPixelComponents(image);
             index=ConstrainColormapIndex(image,(*p) & 0x3);
-            SetPixelIndex(indexes+x+1,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
             p++;
-            q++;
+            q+=GetPixelComponents(image);
         }
        if ((image->columns % 4) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
-            q++;
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            q+=GetPixelComponents(image);
             if ((image->columns % 4) >= 1)
 
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
-                SetPixelIndex(indexes+x,index);
-                SetPixelRGBO(q,image->colormap+(ssize_t) index);
-                q++;
+                SetPixelIndex(image,index,q);
+                SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+                q+=GetPixelComponents(image);
                 if ((image->columns % 4) >= 2)
 
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
-                    SetPixelIndex(indexes+x,index);
-                    SetPixelRGBO(q,image->colormap+(ssize_t) index);
-                    q++;
+                    SetPixelIndex(image,index,q);
+                    SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+                    q+=GetPixelComponents(image);
                   }
               }
             p++;
@@ -375,28 +371,27 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
     case 4:  /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
-        indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           { 
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
-            q++;
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            q+=GetPixelComponents(image);
             index=ConstrainColormapIndex(image,(*p) & 0x0f);
-            SetPixelIndex(indexes+x+1,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
             p++;
-            q++;
+            q+=GetPixelComponents(image);
           }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
             p++;
-            q++;
+            q+=GetPixelComponents(image);
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -405,16 +400,15 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
     case 8: /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL) break;
-        indexes=GetAuthenticIndexQueue(image);
+        if (q == (const Quantum *) NULL) break;
 
         for (x=0; x < (ssize_t) image->columns; x++)
           {
             index=ConstrainColormapIndex(image,*p);
-            SetPixelIndex(indexes+x,index);
-            SetPixelRGBO(q,image->colormap+(ssize_t) index);
+            SetPixelIndex(image,index,q);
+            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
             p++;
-            q++;
+            q+=GetPixelComponents(image);
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -423,14 +417,14 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
      
     case 24:     /*  Convert DirectColor scanline.  */
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (PixelPacket *) NULL)
+      if (q == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(q,ScaleCharToQuantum(*p++));
-          SetPixelGreen(q,ScaleCharToQuantum(*p++));
-          SetPixelBlue(q,ScaleCharToQuantum(*p++));
-          q++;
+          SetPixelRed(image,ScaleCharToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+          q+=GetPixelComponents(image);
         }
       if (!SyncAuthenticPixels(image,exception))
         break;

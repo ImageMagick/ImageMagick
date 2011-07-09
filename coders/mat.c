@@ -47,31 +47,33 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/option.h"
-#include "magick/pixel.h"
-#include "magick/resource_.h"
-#include "magick/shear.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/transform.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/option.h"
+#include "MagickCore/pixel.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/shear.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/transform.h"
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
  #include "zlib.h"
 #endif
@@ -183,7 +185,7 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 
   double f;
   int x;
-  register PixelPacket *q;
+  register Quantum *q;
 
   if (MinVal == 0)
     MinVal = -1;
@@ -192,48 +194,48 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 
   exception=(&image->exception);
   q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-  if (q == (PixelPacket *) NULL)
+  if (q == (const Quantum *) NULL)
     return;
   for (x = 0; x < (ssize_t) image->columns; x++)
   {
     if (*p > 0)
     {
-      f = (*p / MaxVal) * (QuantumRange - GetPixelRed(q));
-      if (f + GetPixelRed(q) > QuantumRange)
-        SetPixelRed(q,QuantumRange);
+      f = (*p / MaxVal) * (QuantumRange-GetPixelRed(image,q));
+      if (f + GetPixelRed(image,q) > QuantumRange)
+        SetPixelRed(image,QuantumRange,q);
       else
-        SetPixelRed(q,GetPixelRed(q)+(int) f);
-      if ((int) f / 2.0 > GetPixelGreen(q))
+        SetPixelRed(image,GetPixelRed(image,q)+(int) f,q);
+      if ((int) f / 2.0 > GetPixelGreen(image,q))
         {
-          SetPixelGreen(q,0);
-          SetPixelBlue(q,0);
+          SetPixelGreen(image,0,q);
+          SetPixelBlue(image,0,q);
         }
       else
         {
-          SetPixelBlue(q,GetPixelBlue(q)-(int) (f/2.0));
-          SetPixelGreen(q,GetPixelBlue(q));
+          SetPixelBlue(image,GetPixelBlue(image,q)-(int) (f/2.0),q);
+          SetPixelGreen(image,GetPixelBlue(image,q),q);
         }
     }
     if (*p < 0)
     {
-      f = (*p / MaxVal) * (QuantumRange - GetPixelBlue(q));
-      if (f + GetPixelBlue(q) > QuantumRange)
-        SetPixelBlue(q,QuantumRange);
+      f = (*p / MaxVal) * (QuantumRange-GetPixelBlue(image,q));
+      if (f+GetPixelBlue(image,q) > QuantumRange)
+        SetPixelBlue(image,QuantumRange,q);
       else
-        SetPixelBlue(q,GetPixelBlue(q)+(int) f);
-      if ((int) f / 2.0 > q->green)
+        SetPixelBlue(image,GetPixelBlue(image,q)+(int) f,q);
+      if ((int) f / 2.0 > GetPixelGreen(image,q))
         {
-          SetPixelRed(q,0);
-          SetPixelGreen(q,0);
+          SetPixelRed(image,0,q);
+          SetPixelGreen(image,0,q);
         }
       else
         {
-          SetPixelRed(q,GetPixelRed(q)-(int) (f/2.0));
-          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelRed(image,GetPixelRed(image,q)-(int) (f/2.0),q);
+          SetPixelGreen(image,GetPixelRed(image,q),q);
         }
     }
     p++;
-    q++;
+    q+=GetPixelComponents(image);
   }
   if (!SyncAuthenticPixels(image,exception))
     return;
@@ -249,7 +251,7 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
 
   double f;
   int x;
-  register PixelPacket *q;
+  register Quantum *q;
 
   if (MinVal == 0)
     MinVal = -1;
@@ -258,44 +260,45 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
 
   exception=(&image->exception);
   q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
-  if (q == (PixelPacket *) NULL)
+  if (q == (const Quantum *) NULL)
     return;
   for (x = 0; x < (ssize_t) image->columns; x++)
   {
     if (*p > 0)
     {
-      f = (*p / MaxVal) * (QuantumRange - GetPixelRed(q));
-      if (f + GetPixelRed(q) > QuantumRange)
-        SetPixelRed(q,QuantumRange);
+      f = (*p / MaxVal) * (QuantumRange-GetPixelRed(image,q));
+      if (f+GetPixelRed(image,q) > QuantumRange)
+        SetPixelRed(image,QuantumRange,q);
       else
-        SetPixelRed(q,GetPixelRed(q)+(int) f);
-      if ((int) f / 2.0 > GetPixelGreen(q))
+        SetPixelRed(image,GetPixelRed(image,q)+(int) f,q);
+      if ((int) f / 2.0 > GetPixelGreen(image,q))
         {
-          SetPixelGreen(q,0);
-          SetPixelBlue(q,0);
+          SetPixelGreen(image,0,q);
+          SetPixelBlue(image,0,q);
         }
       else
         {
-          SetPixelBlue(q,GetPixelBlue(q)-(int) (f/2.0));
-          SetPixelGreen(q,GetPixelBlue(q));
+          SetPixelBlue(image,GetPixelBlue(image,q)-(int) (f/2.0),q);
+          SetPixelGreen(image,GetPixelBlue(image,q),q);
         }
     }
     if (*p < 0)
     {
-      f = (*p / MaxVal) * (QuantumRange - GetPixelBlue(q));
-      if (f + GetPixelBlue(q) > QuantumRange)
-        SetPixelBlue(q,QuantumRange);
+      f = (*p / MaxVal) * (QuantumRange - GetPixelBlue(image,q));
+      if (f + GetPixelBlue(image,q) > QuantumRange)
+        SetPixelBlue(image,QuantumRange,q);
       else
-        SetPixelBlue(q,GetPixelBlue(q)+(int) f);
-      if ((int) f / 2.0 > q->green)
+        SetPixelBlue(image,GetPixelBlue(image,q)+
+          (int) f,q);
+      if ((int) f / 2.0 > GetPixelGreen(image,q))
         {
-          SetPixelGreen(q,0);
-          SetPixelRed(q,0);
+          SetPixelGreen(image,0,q);
+          SetPixelRed(image,0,q);
         }
       else
         {
-          SetPixelRed(q,GetPixelRed(q)-(int) (f/2.0));
-          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelRed(image,GetPixelRed(image,q)-(int) (f/2.0),q);
+          SetPixelGreen(image,GetPixelRed(image,q),q);
         }
     }
     p++;
@@ -418,16 +421,16 @@ float *fltrow;
 }
 
 
-static void FixSignedValues(PixelPacket *q, int y)
+static void FixSignedValues(const Image *image,Quantum *q, int y)
 {
   while(y-->0)
   {
      /* Please note that negative values will overflow
         Q=8; QuantumRange=255: <0;127> + 127+1 = <128; 255> 
            <-1;-128> + 127+1 = <0; 127> */
-    SetPixelRed(q,GetPixelRed(q)+QuantumRange/2+1);
-    SetPixelGreen(q,GetPixelGreen(q)+QuantumRange/2+1);
-    SetPixelBlue(q,GetPixelBlue(q)+QuantumRange/2+1);
+    SetPixelRed(image,GetPixelRed(image,q)+QuantumRange/2+1,q);
+    SetPixelGreen(image,GetPixelGreen(image,q)+QuantumRange/2+1,q);
+    SetPixelBlue(image,GetPixelBlue(image,q)+QuantumRange/2+1,q);
     q++;
   }
 }
@@ -605,7 +608,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image, *image2=NULL,
    *rotated_image;
-  PixelPacket *q;
+  register Quantum *q;
 
   unsigned int status;
   MATHeader MATLAB_HDR;
@@ -886,7 +889,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
       {
         q=QueueAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
-        if (q == (PixelPacket *)NULL)
+        if (q == (const Quantum *)NULL)
   {
     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
@@ -917,7 +920,7 @@ ImportQuantumPixelsFailed:
 
           if (z<=1 &&       /* fix only during a last pass z==0 || z==1 */
           (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
-      FixSignedValues(q,MATLAB_HDR.SizeX);
+      FixSignedValues(image,q,MATLAB_HDR.SizeX);
         }
 
         if (!SyncAuthenticPixels(image,exception))
@@ -1160,7 +1163,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
 
   ssize_t y;
   unsigned z;
-  const PixelPacket *p;
+  register const Quantum *p;
 
   unsigned int status;
   int logging;
@@ -1214,7 +1217,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
 
-    is_gray = IsGrayImage(image,&image->exception);
+    is_gray = IsImageGray(image,&image->exception);
     z = is_gray ? 0 : 3;
 
     /*
@@ -1258,9 +1261,9 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
       for (y=0; y < (ssize_t)image->columns; y++)
       {
         p=GetVirtualPixels(image,y,0,1,image->rows,&image->exception);
-        if (p == (const PixelPacket *) NULL)
+        if (p == (const Quantum *) NULL)
           break;
-        (void) ExportQuantumPixels(image,(const CacheView *) NULL,quantum_info,
+        (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           z2qtype[z],pixels,exception);
         (void) WriteBlob(image,image->rows,pixels);
       }    

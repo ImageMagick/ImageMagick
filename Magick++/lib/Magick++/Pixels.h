@@ -27,12 +27,12 @@ namespace Magick
     // Transfer pixels from the image to the pixel view as defined by
     // the specified region. Modified pixels may be subsequently
     // transferred back to the image via sync.
-    PixelPacket* get ( const ::ssize_t x_, const ::ssize_t y_,
+    Quantum* get ( const ::ssize_t x_, const ::ssize_t y_,
 		       const size_t columns_,const  size_t rows_ );
 
     // Transfer read-only pixels from the image to the pixel view as
     // defined by the specified region.
-    const PixelPacket* getConst ( const ::ssize_t x_, const ::ssize_t y_,
+    const Quantum* getConst ( const ::ssize_t x_, const ::ssize_t y_,
                                   const size_t columns_,
                                   const size_t rows_ );
     
@@ -42,11 +42,11 @@ namespace Magick
     // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel view to the image via sync.
-    PixelPacket* set ( const ::ssize_t x_, const ::ssize_t y_,
+    Quantum* set ( const ::ssize_t x_, const ::ssize_t y_,
 		       const size_t columns_, const size_t rows_ );
 
     // Return pixel colormap index array
-    IndexPacket* indexes ( void );
+    Quantum* metacontent ( void );
 
     // Left ordinate of view
     ::ssize_t x ( void ) const;

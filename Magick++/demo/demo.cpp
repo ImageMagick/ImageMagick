@@ -4,9 +4,6 @@
 //
 // Simple demo program for Magick++
 //
-// Concept and algorithms lifted from PerlMagick demo script written
-// by John Christy.
-//
 // Max run-time size 60MB (as compared with 95MB for PerlMagick) under SPARC Solaris
 //
 
@@ -250,12 +247,6 @@ int main( int /*argc*/, char ** argv)
       example = model;
       example.label( "Level" );
       example.level( 0.20*QuantumRange, 0.90*QuantumRange, 1.20 );
-      images.push_back( example );
-
-      cout << "  level red channel ..." << endl;
-      example = model;
-      example.label( "Level Channel\n(Red Channel)" );
-      example.levelChannel( RedChannel, 0.20*QuantumRange, 0.90*QuantumRange, 1.20 );
       images.push_back( example );
 
       cout << "  median filter ..." << endl;

@@ -39,25 +39,26 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Forward declarations.
@@ -102,7 +103,7 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register unsigned char
@@ -153,15 +154,15 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     p=pixels;
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,4*ScaleCharToQuantum(*p++));
-      SetPixelGreen(q,4*ScaleCharToQuantum(*p++));
-      SetPixelBlue(q,4*ScaleCharToQuantum(*p++));
-      SetPixelOpacity(q,OpaqueOpacity);
-      q++;
+      SetPixelRed(image,4*ScaleCharToQuantum(*p++),q);
+      SetPixelGreen(image,4*ScaleCharToQuantum(*p++),q);
+      SetPixelBlue(image,4*ScaleCharToQuantum(*p++),q);
+      SetPixelAlpha(image,OpaqueAlpha,q);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -269,7 +270,7 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -319,15 +320,15 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) hrz_image->rows; y++)
   {
     p=GetVirtualPixels(hrz_image,0,y,hrz_image->columns,1,&image->exception);
-    if (p == (PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
     q=pixels;
     for (x=0; x < (ssize_t) hrz_image->columns; x++)
     {
-      *q++=ScaleQuantumToChar(GetPixelRed(p))/4;
-      *q++=ScaleQuantumToChar(GetPixelGreen(p))/4;
-      *q++=ScaleQuantumToChar(GetPixelBlue(p))/4;
-      p++;
+      *q++=ScaleQuantumToChar(GetPixelRed(hrz_image,p))/4;
+      *q++=ScaleQuantumToChar(GetPixelGreen(hrz_image,p))/4;
+      *q++=ScaleQuantumToChar(GetPixelBlue(hrz_image,p))/4;
+      p+=GetPixelComponents(hrz_image);
     }
     count=WriteBlob(image,(size_t) (q-pixels),pixels);
     if (count != (ssize_t) (q-pixels))

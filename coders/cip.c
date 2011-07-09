@@ -38,30 +38,31 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color-private.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/constitute.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/property.h"
-#include "magick/quantize.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantize.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/utility.h"
 
 /*
   Forward declarations.
@@ -174,7 +175,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
   MagickBooleanType
     status;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -233,15 +234,15 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < ((ssize_t) image->columns-3); x+=4)
     {
       byte=(unsigned char)
-        ((((size_t) (4*PixelIntensityToQuantum(p+3)/QuantumRange) & 0x03) << 6) |
-         (((size_t) (4*PixelIntensityToQuantum(p+2)/QuantumRange) & 0x03) << 4) |
-         (((size_t) (4*PixelIntensityToQuantum(p+1)/QuantumRange) & 0x03) << 2) |
-         (((size_t) (4*PixelIntensityToQuantum(p+0)/QuantumRange) & 0x03) << 0));
+        ((((size_t) (4*GetPixelIntensity(image,p+3)/QuantumRange) & 0x03) << 6) |
+         (((size_t) (4*GetPixelIntensity(image,p+2)/QuantumRange) & 0x03) << 4) |
+         (((size_t) (4*GetPixelIntensity(image,p+1)/QuantumRange) & 0x03) << 2) |
+         (((size_t) (4*GetPixelIntensity(image,p+0)/QuantumRange) & 0x03) << 0));
       (void) FormatLocaleString(buffer,MaxTextExtent,"%02x",byte);
       (void) WriteBlobString(image,buffer);
       p+=4;
@@ -250,10 +251,10 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
       {
         i=(ssize_t) image->columns % 4;
         byte=(unsigned char)
-          ((((size_t) (4*PixelIntensityToQuantum(p+MagickMin(i,3))/QuantumRange) & 0x03) << 6) |
-           (((size_t) (4*PixelIntensityToQuantum(p+MagickMin(i,2))/QuantumRange) & 0x03) << 4) |
-           (((size_t) (4*PixelIntensityToQuantum(p+MagickMin(i,1))/QuantumRange) & 0x03) << 2) |
-           (((size_t) (4*PixelIntensityToQuantum(p+MagickMin(i,0))/QuantumRange) & 0x03) << 0));
+          ((((size_t) (4*GetPixelIntensity(image,p+MagickMin(i,3))/QuantumRange) & 0x03) << 6) |
+           (((size_t) (4*GetPixelIntensity(image,p+MagickMin(i,2))/QuantumRange) & 0x03) << 4) |
+           (((size_t) (4*GetPixelIntensity(image,p+MagickMin(i,1))/QuantumRange) & 0x03) << 2) |
+           (((size_t) (4*GetPixelIntensity(image,p+MagickMin(i,0))/QuantumRange) & 0x03) << 0));
         (void) FormatLocaleString(buffer,MaxTextExtent,"%02x",~byte);
         (void) WriteBlobString(image,buffer);
       }

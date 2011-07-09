@@ -16,20 +16,20 @@
 
 AC_PREREQ(2.64)
 
-m4_define([magick_major_version], [6])
-m4_define([magick_minor_version], [7])
-m4_define([magick_micro_version], [1])
+m4_define([magick_major_version], [7])
+m4_define([magick_minor_version], [0])
+m4_define([magick_micro_version], [0])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
 
 AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick-magick_version])
-AC_CONFIG_SRCDIR([magick/MagickCore.h])
+AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_LIBOBJ_DIR([ltdl])
 AC_CONFIG_HEADERS([config/config.h])
-AX_PREFIX_CONFIG_H([magick/magick-config.h],[MagickCore])
+AX_PREFIX_CONFIG_H([MagickCore/magick-config.h],[MagickCore])
 AC_CONFIG_FILES([\
     config/configure.xml \
     config/delegates.xml \
@@ -42,13 +42,12 @@ AC_CONFIG_FILES([\
     config/type.xml \
     ImageMagick.spec \
     Magick++/bin/Magick++-config \
-    magick/ImageMagick.pc \
+    MagickCore/ImageMagick.pc \
     Magick++/lib/ImageMagick++.pc \
     Magick++/lib/Magick++.pc \
-    magick/Magick-config \
-    magick/MagickCore-config \
-    magick/MagickCore.pc \
-    magick/version.h \
+    MagickCore/MagickCore-config \
+    MagickCore/MagickCore.pc \
+    MagickCore/version.h \
     Makefile \
     magick.sh \
     PerlMagick/Magick.pm \
@@ -66,10 +65,8 @@ AC_CONFIG_FILES([\
     utilities/mogrify.1 \
     utilities/montage.1 \
     utilities/stream.1 \
-    wand/MagickWand-config \
-    wand/MagickWand.pc \
-    wand/Wand-config \
-    wand/Wand.pc ])
+    MagickWand/MagickWand-config \
+    MagickWand/MagickWand.pc ])
 
 #
 # Save initial user-tunable values
@@ -3402,7 +3399,7 @@ if test $with_perl_static = 'yes'; then
     libtool_objdir=$objdir
 
     # Linker search path to library, followed by -lMagickCore
-    MAGICKCORE_PATH="${builddir}/magick/${libtool_objdir}"
+    MAGICKCORE_PATH="${builddir}/MagickCore/${libtool_objdir}"
 fi
 AC_SUBST(MAGICKCORE_PATH)
 
@@ -3548,10 +3545,10 @@ AC_SUBST(MAGICK_FEATURES)
 
 # Set configured scripts to executable.
 AC_CONFIG_COMMANDS([default],[],[])
-AC_CONFIG_COMMANDS([MagickCore-config.in],[chmod +x magick/MagickCore-config])
-AC_CONFIG_COMMANDS([Magick-config.in],[chmod +x magick/Magick-config])
-AC_CONFIG_COMMANDS([MagickWand-config.in],[chmod +x wand/MagickWand-config])
-AC_CONFIG_COMMANDS([Wand-config.in],[chmod +x wand/Wand-config])
+AC_CONFIG_COMMANDS([MagickCore-config.in],[chmod +x MagickCore/MagickCore-config])
+AC_CONFIG_COMMANDS([Magick-config.in],[chmod +x MagickCore/Magick-config])
+AC_CONFIG_COMMANDS([MagickWand-config.in],[chmod +x MagickWand/MagickWand-config])
+AC_CONFIG_COMMANDS([Wand-config.in],[chmod +x MagickWand/Wand-config])
 AC_CONFIG_COMMANDS([Magick++-config.in],[chmod +x Magick++/bin/Magick++-config])
 AC_CONFIG_COMMANDS([PerlMagick/check.sh.in],[chmod +x PerlMagick/check.sh])
 

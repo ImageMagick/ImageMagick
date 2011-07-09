@@ -39,25 +39,26 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/composite.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/pixel.h"
-#include "magick/quantize.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/composite.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/pixel.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantize.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /*
   Typedef declarations.
@@ -136,7 +137,7 @@ typedef struct
     width,
     height,
     type,
-    opacity,
+    alpha,
     visible,
     linked,
     preserve_trans,
@@ -166,7 +167,7 @@ typedef struct
     red,
     green,
     blue,
-    opacity;
+    alpha;
 } XCFPixelPacket;
 
 /*
@@ -242,8 +243,8 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
     case GIMP_SCREEN_MODE:    return( ScreenCompositeOp );
     case GIMP_OVERLAY_MODE:    return( OverlayCompositeOp );
     case GIMP_DIFFERENCE_MODE:  return( DifferenceCompositeOp );
-    case GIMP_ADDITION_MODE:  return( AddCompositeOp );
-    case GIMP_SUBTRACT_MODE:  return( SubtractCompositeOp );
+    case GIMP_ADDITION_MODE:  return( ModulusAddCompositeOp );
+    case GIMP_SUBTRACT_MODE:  return( ModulusSubtractCompositeOp );
     case GIMP_DARKEN_ONLY_MODE:  return( DarkenCompositeOp );
     case GIMP_LIGHTEN_ONLY_MODE:return( LightenCompositeOp );
     case GIMP_HUE_MODE:      return( HueCompositeOp );
@@ -252,7 +253,7 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
     case GIMP_DODGE_MODE:    return( ColorDodgeCompositeOp );
     case GIMP_BURN_MODE:    return( ColorBurnCompositeOp );
     case GIMP_HARDLIGHT_MODE:  return( HardLightCompositeOp );
-    case GIMP_DIVIDE_MODE:    return( DivideCompositeOp );
+    case GIMP_DIVIDE_MODE:    return( DivideDstCompositeOp );
     /* these are the ones we don't support...yet */
     case GIMP_BEHIND_MODE:    return( OverCompositeOp );
     case GIMP_VALUE_MODE:    return( OverCompositeOp );
@@ -341,7 +342,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   ssize_t
@@ -368,19 +369,19 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   for (y=0; y < (ssize_t) tile_image->rows; y++)
   {
     q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
     if (inDocInfo->image_type == GIMP_GRAY)
       {
         for (x=0; x < (ssize_t) tile_image->columns; x++)
         {
-          SetPixelRed(q,ScaleCharToQuantum(*graydata));
-          SetPixelGreen(q,GetPixelRed(q));
-          SetPixelBlue(q,GetPixelRed(q));
-          SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-            inLayerInfo->opacity));
+          SetPixelRed(tile_image,ScaleCharToQuantum(*graydata),q);
+          SetPixelGreen(tile_image,GetPixelRed(image,q),q);
+          SetPixelBlue(tile_image,GetPixelRed(image,q),q);
+          SetPixelAlpha(tile_image,ScaleCharToQuantum((unsigned char)
+            inLayerInfo->alpha),q);
           graydata++;
-          q++;
+          q+=GetPixelComponents(tile_image);
         }
       }
     else
@@ -388,13 +389,13 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
         {
           for (x=0; x < (ssize_t) tile_image->columns; x++)
           {
-            SetPixelRed(q,ScaleCharToQuantum(xcfdata->red));
-            SetPixelGreen(q,ScaleCharToQuantum(xcfdata->green));
-            SetPixelBlue(q,ScaleCharToQuantum(xcfdata->blue));
-            SetPixelAlpha(q,xcfdata->opacity == 0U ?  OpaqueOpacity :
-              ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
+            SetPixelRed(tile_image,ScaleCharToQuantum(xcfdata->red),q);
+            SetPixelGreen(tile_image,ScaleCharToQuantum(xcfdata->green),q);
+            SetPixelBlue(tile_image,ScaleCharToQuantum(xcfdata->blue),q);
+            SetPixelAlpha(tile_image,xcfdata->alpha == 0U ? OpaqueAlpha :
+              ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
             xcfdata++;
-            q++;
+            q+=GetPixelComponents(tile_image);
           }
         }
      if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
@@ -413,7 +414,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   MagickOffsetType
     size;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   size_t
@@ -474,41 +475,41 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetPixelRed(q,ScaleCharToQuantum(data));
+                  SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
-                      SetPixelGreen(q,ScaleCharToQuantum(data));
-                      SetPixelBlue(q,ScaleCharToQuantum(data));
-                      SetPixelAlpha(q,ScaleCharToQuantum(
-                        (unsigned char) inLayerInfo->opacity));
+                      SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
+                      SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
+                      SetPixelAlpha(tile_image,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->alpha),q);
                     }
                   else
                     {
-                      SetPixelGreen(q,GetPixelRed(q));
-                      SetPixelBlue(q,GetPixelRed(q));
-                      SetPixelAlpha(q,ScaleCharToQuantum(
-                        (unsigned char) inLayerInfo->opacity));
+                      SetPixelGreen(tile_image,GetPixelRed(image,q),q);
+                      SetPixelBlue(tile_image,GetPixelRed(image,q),q);
+                      SetPixelAlpha(tile_image,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->alpha),q);
                     }
                   break;
                 }
                 case 1:
                 {
-                  SetPixelGreen(q,ScaleCharToQuantum(data));
+                  SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
                   break;
                 }
                 case 2:
                 {
-                  SetPixelBlue(q,ScaleCharToQuantum(data));
+                  SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
                   break;
                 }
                 case 3:
                 {
-                  SetPixelAlpha(q,data == 0 ? OpaqueOpacity :
-                    ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
+                  SetPixelAlpha(tile_image,data == 0 ? OpaqueAlpha :
+                    ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
                   break;
                 }
               }
-              q++;
+              q+=GetPixelComponents(tile_image);
             }
           }
         else
@@ -534,41 +535,41 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetPixelRed(q,ScaleCharToQuantum(data));
+                  SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
                   if (inDocInfo->image_type == GIMP_GRAY)
                     {
-                      SetPixelGreen(q,ScaleCharToQuantum(data));
-                      SetPixelBlue(q,ScaleCharToQuantum(data));
-                      SetPixelAlpha(q,ScaleCharToQuantum(
-                        (unsigned char) inLayerInfo->opacity));
+                      SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
+                      SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
+                      SetPixelAlpha(tile_image,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->alpha),q);
                     }
                   else
                     {
-                      SetPixelGreen(q,GetPixelRed(q));
-                      SetPixelBlue(q,GetPixelRed(q));
-                      SetPixelAlpha(q,ScaleCharToQuantum(
-                        (unsigned char) inLayerInfo->opacity));
+                      SetPixelGreen(tile_image,GetPixelRed(image,q),q);
+                      SetPixelBlue(tile_image,GetPixelRed(image,q),q);
+                      SetPixelAlpha(tile_image,ScaleCharToQuantum(
+                        (unsigned char) inLayerInfo->alpha),q);
                     }
                   break;
                 }
                 case 1:
                 {
-                  SetPixelGreen(q,ScaleCharToQuantum(data));
+                  SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
                   break;
                 }
                 case 2:
                 {
-                  SetPixelBlue(q,ScaleCharToQuantum(data));
+                  SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
                   break;
                 }
                 case 3:
                 {
-                  SetPixelAlpha(q,data == 0 ? OpaqueOpacity :
-                    ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
+                  SetPixelAlpha(tile_image,data == 0 ? OpaqueAlpha :
+                    ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
                   break;
                 }
               }
-              q++;
+              q+=GetPixelComponents(tile_image);
             }
           }
       }
@@ -806,7 +807,7 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
       outLayer->floating_offset = ReadBlobMSBLong(image);
       break;
     case PROP_OPACITY:
-      outLayer->opacity = ReadBlobMSBLong(image);
+      outLayer->alpha = ReadBlobMSBLong(image);
       break;
     case PROP_VISIBLE:
       outLayer->visible = ReadBlobMSBLong(image);
@@ -882,8 +883,8 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
   if (foundPropEnd == MagickFalse)
     return(MagickFalse);
   /* clear the image based on the layer opacity */
-  outLayer->image->background_color.opacity=
-    ScaleCharToQuantum((unsigned char) (255-outLayer->opacity));    
+  outLayer->image->background_color.alpha=
+    ScaleCharToQuantum((unsigned char) (255-outLayer->alpha));    
   (void) SetImageBackgroundColor(outLayer->image);
 
   /* set the compositing mode */

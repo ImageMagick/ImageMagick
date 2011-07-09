@@ -213,24 +213,24 @@ namespace Magick
     std::string   _cdl;
   };
 
-  // Colorize image using pen color at specified percent opacity
+  // Colorize image using pen color at specified percent alpha
   class MagickDLLDecl colorizeImage : public std::unary_function<Image&,void>
   {
   public:
-    colorizeImage( const unsigned int opacityRed_,
-                   const unsigned int opacityGreen_,
-                   const unsigned int opacityBlue_,
+    colorizeImage( const unsigned int alphaRed_,
+                   const unsigned int alphaGreen_,
+                   const unsigned int alphaBlue_,
        const Color &penColor_ );
 
-    colorizeImage( const unsigned int opacity_,
+    colorizeImage( const unsigned int alpha_,
                    const Color &penColor_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    unsigned int _opacityRed;
-    unsigned int _opacityGreen;
-    unsigned int _opacityBlue;
+    unsigned int _alphaRed;
+    unsigned int _alphaGreen;
+    unsigned int _alphaBlue;
     Color _penColor;
   };
 
@@ -668,24 +668,6 @@ namespace Magick
     double _mid_point;
   };
 
-  // Level image channel
-  class MagickDLLDecl levelChannelImage : public std::unary_function<Image&,void>
-  {
-  public:
-    levelChannelImage( const Magick::ChannelType channel,
-                       const double black_point,
-                       const double white_point,
-                       const double mid_point=1.0 );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    Magick::ChannelType _channel;
-    double _black_point;
-    double _white_point;
-    double _mid_point;
-  };
-
   // Magnify image by integral size
   class MagickDLLDecl magnifyImage : public std::unary_function<Image&,void>
   {
@@ -807,22 +789,22 @@ namespace Magick
     double _radius;
   };
 
-  // Set or attenuate the image opacity channel. If the image pixels
-  // are opaque then they are set to the specified opacity value,
-  // otherwise they are blended with the supplied opacity value.  The
-  // value of opacity_ ranges from 0 (completely opaque) to
-  // QuantumRange. The defines OpaqueOpacity and TransparentOpacity are
+  // Set or attenuate the image alpha channel. If the image pixels
+  // are opaque then they are set to the specified alpha value,
+  // otherwise they are blended with the supplied alpha value.  The
+  // value of alpha_ ranges from 0 (completely opaque) to
+  // QuantumRange. The defines OpaqueAlpha and TransparentAlpha are
   // available to specify completely opaque or completely transparent,
   // respectively.
-  class MagickDLLDecl opacityImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl alphaImage : public std::unary_function<Image&,void>
   {
   public:
-    opacityImage( const unsigned int opacity_ );
+    alphaImage( const unsigned int alpha_ );
 
     void operator()( Image &image_ ) const;
 
   private:
-    unsigned int _opacity;
+    unsigned int _alpha;
   };
 
   // Change color of opaque pixel to specified pen color.
@@ -1776,18 +1758,6 @@ namespace Magick
     size_t _subRange;
   };
 
-  // Tile name
-  class MagickDLLDecl tileNameImage : public std::unary_function<Image&,void>
-  {
-  public:
-    tileNameImage( const std::string &tileName_ );
-
-    void operator()( Image &image_ ) const;
-
-  private:
-    std::string _tileName;
-  };
-
   // Image storage type
   class MagickDLLDecl typeImage : public std::unary_function<Image&,void>
   {
@@ -1968,7 +1938,7 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickCore::Image* image = MagickCore::EvaluateImages( first_->image(),
-       MagickCore::MeanEvaluateOperator, &exceptionInfo );
+      MagickCore::MeanEvaluateOperator, &exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
     throwException( exceptionInfo );
@@ -2130,7 +2100,7 @@ namespace Magick
 
     // Obtain histogram array
     size_t colors;
-    MagickCore::ColorPacket *histogram_array = 
+    MagickCore::PixelPacket *histogram_array = 
       MagickCore::GetImageHistogram( image.constImage(), &colors, &exceptionInfo );
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
@@ -2142,14 +2112,14 @@ namespace Magick
     for ( size_t i=0; i < colors; i++)
       {
         histogram_->insert(histogram_->end(),std::pair<const Color,size_t>
-                           ( Color(histogram_array[i].pixel.red,
-                                   histogram_array[i].pixel.green,
-                                   histogram_array[i].pixel.blue),
+                           ( Color(histogram_array[i].red,
+                                   histogram_array[i].green,
+                                   histogram_array[i].blue),
                                    (size_t) histogram_array[i].count) );
       }
     
     // Deallocate histogram array
-    histogram_array=(MagickCore::ColorPacket *)
+    histogram_array=(MagickCore::PixelPacket *)
       MagickCore::RelinquishMagickMemory(histogram_array);
   }
                       

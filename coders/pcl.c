@@ -39,38 +39,40 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/property.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color.h"
-#include "magick/color-private.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/constitute.h"
-#include "magick/delegate.h"
-#include "magick/draw.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/geometry.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/option.h"
-#include "magick/profile.h"
-#include "magick/resource_.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
-#include "magick/token.h"
-#include "magick/transform.h"
-#include "magick/utility.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/delegate.h"
+#include "MagickCore/draw.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/property.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/token.h"
+#include "MagickCore/transform.h"
+#include "MagickCore/utility.h"
 
 /*
   Forward declarations.
@@ -663,10 +665,15 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
 
-  register const IndexPacket
-    *indexes;
+  register const Quantum *p;
 
-  register const PixelPacket *p; register ssize_t i, x; register unsigned char *q; size_t density, length,
+  register ssize_t i, x;
+
+  register unsigned char *q;
+
+  size_t
+    density,
+    length,
     one,
     packets;
 
@@ -718,7 +725,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       density);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"\033&l0E");  /* top margin 0 */
-    if (IsMonochromeImage(image,&image->exception) != MagickFalse)
+    if (IsImageMonochrome(image,&image->exception) != MagickFalse)
       {
         /*
           Monochrome image: use default printer monochrome setup.
@@ -836,9 +843,8 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
-      indexes=GetAuthenticIndexQueue(image);
       q=pixels;
       switch (bits_per_pixel)
       {
@@ -856,7 +862,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            if (PixelIntensity(p) < ((MagickRealType) QuantumRange/2.0))
+            if (GetPixelIntensity(image,p) < ((MagickRealType) QuantumRange/2.0))
               byte|=0x01;
             bit++;
             if (bit == 8)
@@ -865,7 +871,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-            p++;
+            p+=GetPixelComponents(image);
           }
           if (bit != 0)
             *q++=byte << (8-bit);
@@ -877,7 +883,10 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
             Colormapped image.
           */
           for (x=0; x < (ssize_t) image->columns; x++)
-            *q++=(unsigned char) GetPixelIndex(indexes+x);
+          {
+            *q++=(unsigned char) GetPixelIndex(image,p);
+            p+=GetPixelComponents(image);
+          }
           break;
         }
         case 24:
@@ -888,10 +897,10 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
           */
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            *q++=ScaleQuantumToChar(GetPixelRed(p));
-            *q++=ScaleQuantumToChar(GetPixelGreen(p));
-            *q++=ScaleQuantumToChar(GetPixelBlue(p));
-            p++;
+            *q++=ScaleQuantumToChar(GetPixelRed(image,p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+            *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+            p+=GetPixelComponents(image);
           }
           break;
         }

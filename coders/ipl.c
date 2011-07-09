@@ -41,27 +41,27 @@
 /*
  Include declarations.
  */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/option.h"
-#include "magick/property.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 
 /* 
 Tyedef declarations
@@ -179,7 +179,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image *image;
 
   MagickBooleanType status;
-  register PixelPacket *q;
+  register Quantum *q;
   unsigned char magick[12], *pixels;
   ssize_t count;
   ssize_t y;
@@ -341,7 +341,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
                 break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GrayQuantum,pixels,exception);
@@ -353,7 +353,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
                 break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           RedQuantum,pixels,exception);  
@@ -363,7 +363,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GreenQuantum,pixels,exception);
@@ -373,7 +373,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (PixelPacket *) NULL)
+        if (q == (const Quantum *) NULL)
           break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           BlueQuantum,pixels,exception);
@@ -509,7 +509,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   MagickOffsetType
     scene;
   
-  register const PixelPacket
+  register const Quantum
     *p;
 
   QuantumInfo
@@ -622,10 +622,10 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   if(ipl_info.colors == 1){
   /* Red frame */
   for(y = 0; y < (ssize_t) ipl_info.height; y++){
-    p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (p == (PixelPacket *) NULL)
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
       break;
-      (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+      (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
         GrayQuantum, pixels,&image->exception);
       (void) WriteBlob(image, image->columns*image->depth/8, pixels);
   }
@@ -634,10 +634,10 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   if(ipl_info.colors == 3){
   /* Red frame */
   for(y = 0; y < (ssize_t) ipl_info.height; y++){
-    p=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (p == (PixelPacket *) NULL)
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
       break;
-      (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+      (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
         RedQuantum, pixels,&image->exception);
       (void) WriteBlob(image, image->columns*image->depth/8, pixels);
   }
@@ -645,18 +645,18 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
     /* Green frame */
     for(y = 0; y < (ssize_t) ipl_info.height; y++){
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
-        (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+        (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
           GreenQuantum, pixels,&image->exception);
         (void) WriteBlob(image, image->columns*image->depth/8, pixels);
     }
     /* Blue frame */
     for(y = 0; y < (ssize_t) ipl_info.height; y++){
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
-      (void) ExportQuantumPixels(image,(const CacheView *) NULL, quantum_info,
+      (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
         BlueQuantum, pixels,&image->exception);
       (void) WriteBlob(image, image->columns*image->depth/8, pixels);
       if (image->previous == (Image *) NULL)

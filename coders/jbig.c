@@ -39,30 +39,31 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/blob-private.h"
-#include "magick/cache.h"
-#include "magick/color-private.h"
-#include "magick/colormap.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/constitute.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/geometry.h"
-#include "magick/image.h"
-#include "magick/image-private.h"
-#include "magick/list.h"
-#include "magick/magick.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/nt-feature.h"
-#include "magick/quantum-private.h"
-#include "magick/static.h"
-#include "magick/string_.h"
-#include "magick/module.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/blob-private.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/nt-feature.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+#include "MagickCore/static.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/module.h"
 #if defined(MAGICKCORE_JBIG_DELEGATE)
 #include "jbig.h"
 #endif
@@ -109,26 +110,22 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   Image
     *image;
 
-  IndexPacket
-    index;
-
   MagickStatusType
     status;
 
-  register IndexPacket
-    *indexes;
+  Quantum
+    index;
 
   register ssize_t
     x;
 
-  register PixelPacket
+  register Quantum
     *q;
 
   register unsigned char
     *p;
 
   ssize_t
-    count,
     length,
     y;
 
@@ -182,7 +179,6 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     if (length == 0)
       break;
     p=buffer;
-    count=0;
     while ((length > 0) && ((status == JBG_EAGAIN) || (status == JBG_EOK)))
     {
       size_t
@@ -224,9 +220,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (PixelPacket *) NULL)
+    if (q == (const Quantum *) NULL)
       break;
-    indexes=GetAuthenticIndexQueue(image);
     bit=0;
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -238,9 +233,9 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       byte<<=1;
       if (bit == 8)
         bit=0;
-      SetPixelIndex(indexes+x,index);
-      SetPixelRGBO(q,image->colormap+(ssize_t) index);
-      q++;
+      SetPixelIndex(image,index,q);
+      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+      q+=GetPixelComponents(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -404,10 +399,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   MagickOffsetType
     scene;
 
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register ssize_t
@@ -464,15 +456,14 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         break;
-      indexes=GetVirtualIndexQueue(image);
       bit=0;
       byte=0;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         byte<<=1;
-        if (PixelIntensity(p) < (QuantumRange/2.0))
+        if (GetPixelIntensity(image,p) < (QuantumRange/2.0))
           byte|=0x01;
         bit++;
         if (bit == 8)
@@ -481,7 +472,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
             bit=0;
             byte=0;
           }
-        p++;
+        p+=GetPixelComponents(image);
       }
       if (bit != 0)
         *q++=byte << (8-bit);
@@ -507,12 +498,8 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
           x_resolution,
           y_resolution;
 
-        ssize_t
-          sans_offset;
-
         x_resolution=640;
         y_resolution=480;
-        sans_offset=0;
         if (image_info->density != (char *) NULL)
           {
             GeometryInfo
