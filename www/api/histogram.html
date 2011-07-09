@@ -194,13 +194,10 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
-</div>
-<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 </div>
 </div>
@@ -299,9 +296,8 @@
 <p>The format of the MinMaxStretchImage method is:</p>
 
 <pre class="code">
-  MagickBooleanType MinMaxStretchImage(Image *image,
-    const ChannelType channel, const double black_adjust,
-    const double white_adjust)
+  MagickBooleanType MinMaxStretchImage(Image *image,const double black,
+    const double white)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -309,11 +305,8 @@
 <h5>image</h5>
 <p>The image to auto-level</p>
 
-<h5>channel</h5>
-<p>The channels to auto-level.  If the special 'SyncChannels' flag is set, all the given channels are stretched by the same amount.</p>
-
-<h5>black_adjust, white_adjust</h5>
-<p>Move the Black/White Point inward from the minimum and maximum points by this color value.</p>
+<h5>black, white</h5>
+<p>move the black / white point inward from the minimum and maximum points by this color value.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/histogram_8c.html" id="GetNumberColors">GetNumberColors</a></h2>

@@ -47,6 +47,7 @@
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/draw.h"
@@ -703,7 +704,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   one=1;
   do
   {
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     /*
       Initialize the printer.

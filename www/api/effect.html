@@ -194,13 +194,10 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
-</div>
-<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fototapete" href=" http://www.allesdruck.de/Fototapete-Tapetendruck,category,8830.html">Fototapete</a><!-- 20110701000080 a-o.de -->
+   <a rel="follow" title="Sponsor: Autoteile Online Shop" href="http://www.autoteile-carparts.de">Autoteile Online Shop</a><!-- 2011080100030 autoteile-Carparts-->
 </div>
 </div>
 </div>
@@ -227,18 +224,12 @@
 <pre class="code">
   Image *AdaptiveBlurImage(const Image *image,const double radius,
     const double sigma,ExceptionInfo *exception)
-  Image *AdaptiveBlurImageChannel(const Image *image,
-    const ChannelType channel,double radius,const double sigma,
-    ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
@@ -260,18 +251,12 @@
 <pre class="code">
   Image *AdaptiveSharpenImage(const Image *image,const double radius,
     const double sigma,ExceptionInfo *exception)
-  Image *AdaptiveSharpenImageChannel(const Image *image,
-    const ChannelType channel,double radius,const double sigma,
-    ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
@@ -295,17 +280,12 @@
 <pre class="code">
   Image *BlurImage(const Image *image,const double radius,
     const double sigma,ExceptionInfo *exception)
-  Image *BlurImageChannel(const Image *image,const ChannelType channel,
-    const double radius,const double sigma,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
@@ -327,17 +307,11 @@
 <pre class="code">
   Image *ConvolveImage(const Image *image,const size_t order,
     const double *kernel,ExceptionInfo *exception)
-  Image *ConvolveImageChannel(const Image *image,const ChannelType channel,
-    const size_t order,const double *kernel,ExceptionInfo *exception)
+    A description of each parameter follows:
 </pre>
-
-<p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>order</h5>
 <p>the number of columns and rows in the filter kernel.</p>
@@ -430,17 +404,12 @@
 <pre class="code">
   Image *FilterImage(const Image *image,const KernelInfo *kernel,
     ExceptionInfo *exception)
-  Image *FilterImageChannel(const Image *image,const ChannelType channel,
-    const KernelInfo *kernel,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>kernel</h5>
 <p>the filtering kernel.</p>
@@ -459,18 +428,12 @@
 <pre class="code">
   Image *GaussianBlurImage(const Image *image,onst double radius,
     const double sigma,ExceptionInfo *exception)
-  Image *GaussianBlurImageChannel(const Image *image,
-    const ChannelType channel,const double radius,const double sigma,
-    ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
@@ -494,9 +457,6 @@
 <pre class="code">
       Image *MotionBlurImage(const Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
-      Image *MotionBlurImageChannel(const Image *image,const ChannelType channel,
-  const double radius,const double sigma,const double angle,
-  ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -504,11 +464,6 @@
 <h5>image</h5>
 <p>the image.</p>
 
-<h5>channel</h5>
-<p>the channel type.</p>
-
-<h5>radius</h5>
-<p>the radius of the Gaussian, in pixels, not counting the center</p>
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
 
@@ -558,17 +513,12 @@
 <pre class="code">
       Image *RadialBlurImage(const Image *image,const double angle,
   ExceptionInfo *exception)
-      Image *RadialBlurImageChannel(const Image *image,const ChannelType channel,
-  const double angle,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>angle</h5>
 <p>the angle of the radial blur.</p>
@@ -587,18 +537,12 @@
 <pre class="code">
   Image *SelectiveBlurImage(const Image *image,const double radius,
     const double sigma,const double threshold,ExceptionInfo *exception)
-  Image *SelectiveBlurImageChannel(const Image *image,
-    const ChannelType channel,const double radius,const double sigma,
-    const double threshold,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
@@ -652,17 +596,12 @@
 <pre class="code">
       Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
-      Image *SharpenImageChannel(const Image *image,const ChannelType channel,
-  const double radius,const double sigma,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>
@@ -708,18 +647,12 @@
 <pre class="code">
   Image *StatisticImage(const Image *image,const StatisticType type,
     const size_t width,const size_t height,ExceptionInfo *exception)
-  Image *StatisticImageChannel(const Image *image,
-    const ChannelType channel,const StatisticType type,
-    const size_t width,const size_t height,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the image channel.</p>
 
 <h5>type</h5>
 <p>the statistic type (median, mode, etc.).</p>
@@ -745,18 +678,12 @@
       Image *UnsharpMaskImage(const Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)
-      Image *UnsharpMaskImageChannel(const Image *image,
-  const ChannelType channel,const double radius,const double sigma,
-  const double amount,const double threshold,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel type.</p>
 
 <h5>radius</h5>
 <p>the radius of the Gaussian, in pixels, not counting the center pixel.</p>

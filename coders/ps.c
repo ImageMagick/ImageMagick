@@ -46,6 +46,7 @@
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/delegate-private.h"
@@ -672,7 +673,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   }
   (void) CloseBlob(image);
-  if (image_info->colorspace == RGBColorspace)
+  if (IsRGBColorspace(image_info->colorspace) != MagickFalse)
     cmyk=MagickFalse;
   /*
     Create Ghostscript control file.
@@ -1420,7 +1421,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Scale relative to dots-per-inch.
     */
-    if ((image->colorspace != RGBColorspace) &&
+    if ((IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYKColorspace))
       (void) TransformImageColorspace(image,RGBColorspace);
     delta.x=DefaultResolution;

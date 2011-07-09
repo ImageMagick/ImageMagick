@@ -194,13 +194,10 @@
   <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingmasters.com">Web Hosting Reviews</a><!-- 201107011500 affliatelabel -->
-</div>
-<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011090100025 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -215,14 +212,14 @@
 <div class="main">
 
 <h1>Module statistic Methods</h1>
-<p class="navigation-index">[<a href="#EvaluateImage">EvaluateImage</a> &bull; <a href="#FunctionImage">FunctionImage</a> &bull; <a href="#GetImageChannelMean">GetImageChannelMean</a> &bull; <a href="#GetImageChannelKurtosis">GetImageChannelKurtosis</a> &bull; <a href="#GetImageChannelRange">GetImageChannelRange</a> &bull; <a href="#GetImageChannelStatistics">GetImageChannelStatistics</a>]</p>
+<p class="navigation-index">[<a href="#EvaluateImage">EvaluateImage</a> &bull; <a href="#FunctionImage">FunctionImage</a> &bull; <a href="#GetImageExtrema">GetImageExtrema</a> &bull; <a href="#GetImageMean">GetImageMean</a> &bull; <a href="#GetImageKurtosis">GetImageKurtosis</a> &bull; <a href="#GetImageRange">GetImageRange</a> &bull; <a href="#GetImageStatistics">GetImageStatistics</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="EvaluateImage">EvaluateImage</a></h2>
 <div class="doc-section">
 
 <p>EvaluateImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p>
 
-<p>The format of the EvaluateImageChannel method is:</p>
+<p>The format of the EvaluateImage method is:</p>
 
 <pre class="code">
   MagickBooleanType EvaluateImage(Image *image,
@@ -231,18 +228,12 @@
   MagickBooleanType EvaluateImages(Image *images,
     const MagickEvaluateOperator op,const double value,
     ExceptionInfo *exception)
-  MagickBooleanType EvaluateImageChannel(Image *image,
-    const ChannelType channel,const MagickEvaluateOperator op,
-    const double value,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
 
 <h5>op</h5>
 <p>A channel op.</p>
@@ -259,25 +250,18 @@
 
 <p>FunctionImage() applies a value to the image with an arithmetic, relational, or logical operator to an image. Use these operations to lighten or darken an image, to increase or decrease contrast in an image, or to produce the "negative" of an image.</p>
 
-<p>The format of the FunctionImageChannel method is:</p>
+<p>The format of the FunctionImage method is:</p>
 
 <pre class="code">
   MagickBooleanType FunctionImage(Image *image,
     const MagickFunction function,const ssize_t number_parameters,
     const double *parameters,ExceptionInfo *exception)
-  MagickBooleanType FunctionImageChannel(Image *image,
-    const ChannelType channel,const MagickFunction function,
-    const ssize_t number_parameters,const double *argument,
-    ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
 
 <h5>function</h5>
 <p>A channel function.</p>
@@ -289,88 +273,22 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelMean">GetImageChannelMean</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageExtrema">GetImageExtrema</a></h2>
 <div class="doc-section">
 
-<p>GetImageChannelMean() returns the mean and standard deviation of one or more image channels.</p>
+<p>GetImageExtrema() returns the extrema of one or more image channels.</p>
 
-<p>The format of the GetImageChannelMean method is:</p>
+<p>The format of the GetImageExtrema method is:</p>
 
 <pre class="code">
-  MagickBooleanType GetImageChannelMean(const Image *image,
-    const ChannelType channel,double *mean,double *standard_deviation,
-    ExceptionInfo *exception)
+  MagickBooleanType GetImageExtrema(const Image *image,size_t *minima,
+    size_t *maxima,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
-
-<h5>mean</h5>
-<p>the average value in the channel.</p>
-
-<h5>standard_deviation</h5>
-<p>the standard deviation of the channel.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelKurtosis">GetImageChannelKurtosis</a></h2>
-<div class="doc-section">
-
-<p>GetImageChannelKurtosis() returns the kurtosis and skewness of one or more image channels.</p>
-
-<p>The format of the GetImageChannelKurtosis method is:</p>
-
-<pre class="code">
-  MagickBooleanType GetImageChannelKurtosis(const Image *image,
-    const ChannelType channel,double *kurtosis,double *skewness,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
-
-<h5>kurtosis</h5>
-<p>the kurtosis of the channel.</p>
-
-<h5>skewness</h5>
-<p>the skewness of the channel.</p>
-
-<h5>exception</h5>
-<p>return any errors or warnings in this structure.</p>
-
- </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelRange">GetImageChannelRange</a></h2>
-<div class="doc-section">
-
-<p>GetImageChannelRange() returns the range of one or more image channels.</p>
-
-<p>The format of the GetImageChannelRange method is:</p>
-
-<pre class="code">
-  MagickBooleanType GetImageChannelRange(const Image *image,
-    const ChannelType channel,double *minima,double *maxima,
-    ExceptionInfo *exception)
-</pre>
-
-<p>A description of each parameter follows:</p>
-
-<h5>image</h5>
-<p>the image.</p>
-
-<h5>channel</h5>
-<p>the channel.</p>
 
 <h5>minima</h5>
 <p>the minimum value in the channel.</p>
@@ -382,22 +300,103 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageChannelStatistics">GetImageChannelStatistics</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageMean">GetImageMean</a></h2>
 <div class="doc-section">
 
-<p>GetImageChannelStatistics() returns statistics for each channel in the image.  The statistics include the channel depth, its minima, maxima, mean, standard deviation, kurtosis and skewness.  You can access the red channel mean, for example, like this:</p>
+<p>GetImageMean() returns the mean and standard deviation of one or more image channels.</p>
+
+<p>The format of the GetImageMean method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetImageMean(const Image *image,double *mean,
+    double *standard_deviation,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>mean</h5>
+<p>the average value in the channel.</p>
+
+<h5>standard_deviation</h5>
+<p>the standard deviation of the channel.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageKurtosis">GetImageKurtosis</a></h2>
+<div class="doc-section">
+
+<p>GetImageKurtosis() returns the kurtosis and skewness of one or more image channels.</p>
+
+<p>The format of the GetImageKurtosis method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetImageKurtosis(const Image *image,double *kurtosis,
+    double *skewness,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>kurtosis</h5>
+<p>the kurtosis of the channel.</p>
+
+<h5>skewness</h5>
+<p>the skewness of the channel.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageRange">GetImageRange</a></h2>
+<div class="doc-section">
+
+<p>GetImageRange() returns the range of one or more image channels.</p>
+
+<p>The format of the GetImageRange method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetImageRange(const Image *image,double *minima,
+    double *maxima,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>minima</h5>
+<p>the minimum value in the channel.</p>
+
+<h5>maxima</h5>
+<p>the maximum value in the channel.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/statistic_8c.html" id="GetImageStatistics">GetImageStatistics</a></h2>
+<div class="doc-section">
+
+<p>GetImageStatistics() returns statistics for each channel in the image.  The statistics include the channel depth, its minima, maxima, mean, standard deviation, kurtosis and skewness.  You can access the red channel mean, for example, like this:</p>
 
 <pre class="text">
-  channel_statistics=GetImageChannelStatistics(image,exception);
+  channel_statistics=GetImageStatistics(image,exception);
   red_mean=channel_statistics[RedChannel].mean;
 </pre>
 
 <p>Use MagickRelinquishMemory() to free the statistics buffer.</p>
 
-<p>The format of the GetImageChannelStatistics method is:</p>
+<p>The format of the GetImageStatistics method is:</p>
 
 <pre class="code">
-  ChannelStatistics *GetImageChannelStatistics(const Image *image,
+  ChannelStatistics *GetImageStatistics(const Image *image,
     ExceptionInfo *exception)
 </pre>
 

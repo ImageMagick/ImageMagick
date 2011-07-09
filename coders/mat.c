@@ -53,6 +53,7 @@
 #include "magick/cache.h"
 #include "magick/color-private.h"
 #include "magick/colormap.h"
+#include "magick/colorspace-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -1210,7 +1211,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
 
     is_gray = IsGrayImage(image,&image->exception);

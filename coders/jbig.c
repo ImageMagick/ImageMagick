@@ -46,6 +46,7 @@
 #include "magick/color-private.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/constitute.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -448,7 +449,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     /*
       Allocate pixel data.
     */
-    if (image->colorspace != RGBColorspace)
+    if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     number_packets=(image->columns+7)/8;
     pixels=(unsigned char *) AcquireQuantumMemory(number_packets,

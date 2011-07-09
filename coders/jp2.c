@@ -45,6 +45,7 @@
 #include "magick/blob-private.h"
 #include "magick/cache.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/exception.h"
@@ -854,9 +855,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   /*
-    Intialize JPEG 2000 API.
+    Initialize JPEG 2000 API.
   */
-  if (image->colorspace != RGBColorspace)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
