@@ -2002,8 +2002,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->fill.alpha=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-factor*InterpretLocaleValue(token,
-              (char **) NULL)));
+              QuantumRange*factor*InterpretLocaleValue(token,
+              (char **) NULL));
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -2629,8 +2629,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->stroke.alpha=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-factor*InterpretLocaleValue(token,
-              (char **) NULL)));
+              QuantumRange*factor*InterpretLocaleValue(token,
+              (char **) NULL));
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
