@@ -2599,9 +2599,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
       if (status == MagickFalse)
         continue;
-      p=GetCacheViewVirtualPixels(image_view, x,  -offy,1,
-          image->rows+kernel->height-1, exception);
-      q=GetCacheViewAuthenticPixels(morphology_view,x,0,1,morphology_image->rows,exception);
+      p=GetCacheViewVirtualPixels(image_view,x,-offy,1,image->rows+
+        kernel->height-1,exception);
+      q=GetCacheViewAuthenticPixels(morphology_view,x,0,1,
+        morphology_image->rows,exception);
       if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
         {
           status=MagickFalse;
@@ -2653,8 +2654,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         */
         k = &kernel->values[ kernel->height-1 ];
         k_pixels = p;
-        if ( (image->sync == MagickFalse) ||
-             (image->matte == MagickFalse) )
+        if ( (image->sync == MagickFalse) || (image->matte == MagickFalse) )
           { /* No 'Sync' involved.
             ** Convolution is simple greyscale channel operation
             */
@@ -2721,12 +2721,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           }
 
         /* Count up changed pixels */
-        if ((GetPixelRed(image,p+r) != GetPixelRed(morphology_image,q))
-            || (GetPixelGreen(image,p+r) != GetPixelGreen(morphology_image,q))
-            || (GetPixelBlue(image,p+r) != GetPixelBlue(morphology_image,q))
-            || (GetPixelAlpha(image,p+r) != GetPixelAlpha(morphology_image,q))
+        if ((GetPixelRed(image,p+r*GetPixelComponents(image)) != GetPixelRed(morphology_image,q))
+            || (GetPixelGreen(image,p+r*GetPixelComponents(image)) != GetPixelGreen(morphology_image,q))
+            || (GetPixelBlue(image,p+r*GetPixelComponents(image)) != GetPixelBlue(morphology_image,q))
+            || (GetPixelAlpha(image,p+r*GetPixelComponents(image)) != GetPixelAlpha(morphology_image,q))
             || ((image->colorspace == CMYKColorspace) &&
-                (GetPixelBlack(image,p+r) != GetPixelBlack(morphology_image,q))))
+                (GetPixelBlack(image,p+r*GetPixelComponents(image)) != GetPixelBlack(morphology_image,q))))
           changed++;  /* The pixel was changed in some way! */
         p+=GetPixelComponents(image);
         q+=GetPixelComponents(morphology_image);
@@ -2775,9 +2775,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view, -offx, y-offy, virt_width,
-         kernel->height,  exception);
-    q=GetCacheViewAuthenticPixels(morphology_view,0,y,morphology_image->columns,1,
-         exception);
+      kernel->height,  exception);
+    q=GetCacheViewAuthenticPixels(morphology_view,0,y,
+      morphology_image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
@@ -2830,13 +2830,13 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       max.alpha =
       max.black   = (MagickRealType) 0;
       /* default result is the original pixel value */
-      result.red     = (MagickRealType) GetPixelRed(image,p+r);
-      result.green   = (MagickRealType) GetPixelGreen(image,p+r);
-      result.blue    = (MagickRealType) GetPixelBlue(image,p+r);
+      result.red     = (MagickRealType) GetPixelRed(image,p+r*GetPixelComponents(image));
+      result.green   = (MagickRealType) GetPixelGreen(image,p+r*GetPixelComponents(image));
+      result.blue    = (MagickRealType) GetPixelBlue(image,p+r*GetPixelComponents(image));
       result.black   = 0.0;
       if (image->colorspace == CMYKColorspace)
-         result.black = (MagickRealType) GetPixelBlack(image,p+r);
-      result.alpha=(MagickRealType) GetPixelAlpha(image,p+r);
+        result.black = (MagickRealType) GetPixelBlack(image,p+r*GetPixelComponents(image));
+      result.alpha=(MagickRealType) GetPixelAlpha(image,p+r*GetPixelComponents(image));
 
       switch (method) {
         case ConvolveMorphology:
@@ -2931,8 +2931,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 for (v=0; v < (ssize_t) kernel->height; v++) {
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
-                    alpha=(*k)*(QuantumScale*
-                      GetPixelAlpha(image,k_pixels+u*GetPixelComponents(image)));
+                    alpha=(*k)*(QuantumScale*GetPixelAlpha(image,k_pixels+u*
+                      GetPixelComponents(image)));
                     gamma += alpha;
                     result.red     += alpha*
                       GetPixelRed(image,k_pixels+u*GetPixelComponents(image));
@@ -3101,7 +3101,14 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 if ( result.red == 0.0 ||
                      GetPixelIntensity(image,&(k_pixels[u])) < GetPixelIntensity(morphology_image,q) ) {
                   /* copy the whole pixel - no channel selection */
-                  *q = k_pixels[u];
+                  SetPixelRed(morphology_image,GetPixelRed(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
+                  SetPixelGreen(morphology_image,GetPixelGreen(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
+                  SetPixelBlue(morphology_image,GetPixelBlue(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
+                  SetPixelAlpha(morphology_image,GetPixelAlpha(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
                   if ( result.red > 0.0 ) changed++;
                   result.red = 1.0;
                 }
@@ -3129,7 +3136,14 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 if ( result.red == 0.0 ||
                      GetPixelIntensity(image,&(k_pixels[u])) > GetPixelIntensity(morphology_image,q) ) {
                   /* copy the whole pixel - no channel selection */
-                  *q = k_pixels[u];
+                  SetPixelRed(morphology_image,GetPixelRed(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
+                  SetPixelGreen(morphology_image,GetPixelGreen(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
+                  SetPixelBlue(morphology_image,GetPixelBlue(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
+                  SetPixelAlpha(morphology_image,GetPixelAlpha(image,
+                    k_pixels+u*GetPixelComponents(image)),q);
                   if ( result.red > 0.0 ) changed++;
                   result.red = 1.0;
                 }
@@ -3234,12 +3248,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           break;
       }
       /* Count up changed pixels */
-      if ((GetPixelRed(image,p+r) != GetPixelRed(morphology_image,q)) ||
-          (GetPixelGreen(image,p+r) != GetPixelGreen(morphology_image,q)) ||
-          (GetPixelBlue(image,p+r) != GetPixelBlue(morphology_image,q)) ||
-          (GetPixelAlpha(image,p+r) != GetPixelAlpha(morphology_image,q)) ||
+      if ((GetPixelRed(image,p+r*GetPixelComponents(image)) != GetPixelRed(morphology_image,q)) ||
+          (GetPixelGreen(image,p+r*GetPixelComponents(image)) != GetPixelGreen(morphology_image,q)) ||
+          (GetPixelBlue(image,p+r*GetPixelComponents(image)) != GetPixelBlue(morphology_image,q)) ||
+          (GetPixelAlpha(image,p+r*GetPixelComponents(image)) != GetPixelAlpha(morphology_image,q)) ||
           ((image->colorspace == CMYKColorspace) &&
-           (GetPixelBlack(image,p+r) != GetPixelBlack(morphology_image,q))))
+           (GetPixelBlack(image,p+r*GetPixelComponents(image)) != GetPixelBlack(morphology_image,q))))
         changed++;  /* The pixel was changed in some way! */
       p+=GetPixelComponents(image);
       q+=GetPixelComponents(morphology_image);
@@ -3492,12 +3506,12 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           break;
       }
       /* Count up changed pixels */
-      if ((GetPixelRed(image,p+r) != GetPixelRed(image,q)) ||
-          (GetPixelGreen(image,p+r) != GetPixelGreen(image,q)) ||
-          (GetPixelBlue(image,p+r) != GetPixelBlue(image,q)) ||
-          (GetPixelAlpha(image,p+r) != GetPixelAlpha(image,q)) ||
+      if ((GetPixelRed(image,p+r*GetPixelComponents(image)) != GetPixelRed(image,q)) ||
+          (GetPixelGreen(image,p+r*GetPixelComponents(image)) != GetPixelGreen(image,q)) ||
+          (GetPixelBlue(image,p+r*GetPixelComponents(image)) != GetPixelBlue(image,q)) ||
+          (GetPixelAlpha(image,p+r*GetPixelComponents(image)) != GetPixelAlpha(image,q)) ||
           ((image->colorspace == CMYKColorspace) &&
-           (GetPixelBlack(image,p+r) != GetPixelBlack(image,q))))
+           (GetPixelBlack(image,p+r*GetPixelComponents(image)) != GetPixelBlack(image,q))))
         changed++;  /* The pixel was changed in some way! */
 
       p+=GetPixelComponents(image); /* increment pixel buffers */
@@ -3547,8 +3561,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       break;
 
     /* adjust positions to end of row */
-    p += image->columns-1;
-    q += image->columns-1;
+    p += (image->columns-1)*GetPixelComponents(image);
+    q += (image->columns-1)*GetPixelComponents(image);
 
     /* offset to origin in 'p'. while 'q' points to it directly */
     r = offx;
@@ -3600,7 +3614,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y)+kernel->x-1 ];
-            k_pixels = q-offx;
+            k_pixels = q-offx*GetPixelComponents(image);
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
                 if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
                 if ( IsNan(*k) ) continue;
@@ -3639,7 +3653,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y)+kernel->x-1 ];
-            k_pixels = q-offx;
+            k_pixels = q-offx*GetPixelComponents(image);
               for (u=offx+1; u < (ssize_t) kernel->width; u++, k--) {
                 if ( (x+u-offx) >= (ssize_t)image->columns ) continue;
                 if ( IsNan(*k) ) continue;
@@ -3676,16 +3690,16 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           break;
       }
       /* Count up changed pixels */
-      if (   (GetPixelRed(image,p+r) != GetPixelRed(image,q))
-          || (GetPixelGreen(image,p+r) != GetPixelGreen(image,q))
-          || (GetPixelBlue(image,p+r) != GetPixelBlue(image,q))
-          || (GetPixelAlpha(image,p+r) != GetPixelAlpha(image,q))
+      if (   (GetPixelRed(image,p+r*GetPixelComponents(image)) != GetPixelRed(image,q))
+          || (GetPixelGreen(image,p+r*GetPixelComponents(image)) != GetPixelGreen(image,q))
+          || (GetPixelBlue(image,p+r*GetPixelComponents(image)) != GetPixelBlue(image,q))
+          || (GetPixelAlpha(image,p+r*GetPixelComponents(image)) != GetPixelAlpha(image,q))
           || ((image->colorspace == CMYKColorspace) &&
-              (GetPixelBlack(image,p+r) != GetPixelBlack(image,q))))
+              (GetPixelBlack(image,p+r*GetPixelComponents(image)) != GetPixelBlack(image,q))))
         changed++;  /* The pixel was changed in some way! */
 
-      p--; /* go backward through pixel buffers */
-      q--;
+      p-=GetPixelComponents(image); /* go backward through pixel buffers */
+      q-=GetPixelComponents(image);
     } /* x */
     if ( SyncCacheViewAuthenticPixels(auth_view,exception) == MagickFalse)
       status=MagickFalse;
