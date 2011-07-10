@@ -208,7 +208,7 @@ static inline Quantum GetPixelPacketIntensity(const PixelPacket *pixel)
 #endif
 }
 
-static inline PixelTrait GetPixelComponentTraits(const Image *image,
+static inline PixelTrait GetPixelTraits(const Image *image,
   const PixelComponent component)
 {
   return(image->component_map[image->map][component].traits);
