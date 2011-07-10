@@ -1191,7 +1191,6 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %      Image *ConvolveImage(const Image *image,const size_t order,
 %        const double *kernel,ExceptionInfo *exception)
-%
 %  A description of each parameter follows:
 %
 %    o image: the image.
@@ -1224,6 +1223,9 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
   MagickOffsetType
     progress;
 
+  PixelInfo
+    bias;
+
   MagickRealType
     gamma;
 
@@ -1231,8 +1233,6 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
     i;
 
   size_t
-    convolve_components,
-    image_components,
     width;
 
   ssize_t
@@ -1312,15 +1312,18 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
   */
   status=MagickTrue;
   progress=0;
-  image_components=GetPixelComponents(image);
-  convolve_components=GetPixelComponents(convolve_image);
+  GetPixelInfo(image,&bias);
+  SetPixelInfoBias(image,&bias);
   image_view=AcquireCacheView(image);
   convolve_view=AcquireCacheView(convolve_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,8) shared(progress,status)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    MagickBooleanType
+      sync;
+
     register const Quantum
       *restrict p;
 
@@ -1343,14 +1346,14 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      const Quantum
-        *restrict kernel_pixels;
-
-      MagickRealType
-        pixel[MaxPixelComponents];
+      PixelInfo
+        pixel;
 
       register const double
         *restrict k;
+
+      register const Quantum
+        *restrict kernel_pixels;
 
       register ssize_t
         u;
@@ -1358,82 +1361,113 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
       ssize_t
         v;
 
-      for (i=0; i < (ssize_t) image_components; i++)
-        pixel[i]=image->bias;
-      kernel_pixels=p;
+      pixel=bias;
       k=normal_kernel;
+      kernel_pixels=p;
       if (((GetPixelAlphaTraits(image) & ActivePixelTrait) == 0) ||
           (image->matte == MagickFalse))
         {
-          /*
-            Convolve without blending alpha (optimization).
-          */
           for (v=0; v < (ssize_t) width; v++)
           {
             for (u=0; u < (ssize_t) width; u++)
             {
-              for (i=0; i < (ssize_t) image_components; i++)
-                if ((GetPixelTraits(image,i) & ActivePixelTrait) != 0)
-                  pixel[i]+=(*k)*kernel_pixels[u*image_components+i];
+              pixel.red+=(*k)*GetPixelRed(image,kernel_pixels+u*
+                GetPixelComponents(image));
+              pixel.green+=(*k)*GetPixelGreen(image,kernel_pixels+u*
+                GetPixelComponents(image));
+              pixel.blue+=(*k)*GetPixelBlue(image,kernel_pixels+u*
+                GetPixelComponents(image));
+              if (image->colorspace == CMYKColorspace)
+                pixel.black+=(*k)*GetPixelBlack(image,kernel_pixels+u*
+                  GetPixelComponents(image));
               k++;
             }
-            kernel_pixels+=(image->columns+width)*image_components;
+            kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
           }
-          for (i=0; i < (ssize_t) image_components; i++)
-          {
-            if (((GetPixelTraits(image,i) & ActivePixelTrait) != 0) &&
-                ((GetPixelTraits(convolve_image,i) & ActivePixelTrait) != 0))
-              q[i]=ClampToQuantum(pixel[i]);
-          }
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+            SetPixelRed(convolve_image,ClampToQuantum(pixel.red),q);
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+            SetPixelGreen(convolve_image,ClampToQuantum(pixel.green),q);
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+            SetPixelBlue(convolve_image,ClampToQuantum(pixel.blue),q);
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+              (image->colorspace == CMYKColorspace))
+            SetPixelBlack(convolve_image,ClampToQuantum(pixel.black),q);
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+            {
+              k=normal_kernel;
+              kernel_pixels=p;
+              for (v=0; v < (ssize_t) width; v++)
+              {
+                for (u=0; u < (ssize_t) width; u++)
+                {
+                  pixel.alpha+=(*k)*GetPixelAlpha(image,kernel_pixels+u*
+                    GetPixelComponents(image));
+                  k++;
+                }
+                kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
+              }
+              SetPixelAlpha(convolve_image,ClampToQuantum(pixel.alpha),q);
+            }
         }
       else
         {
           MagickRealType
+            alpha,
             gamma;
 
-          /*
-            Convolve while blending alpha.
-          */
           gamma=0.0;
           for (v=0; v < (ssize_t) width; v++)
           {
             for (u=0; u < (ssize_t) width; u++)
             {
-              MagickRealType
-                alpha;
-
               alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,
-                kernel_pixels+u*image_components));
-              for (i=0; i < (ssize_t) image_components; i++)
-                if ((GetPixelTraits(image,i) & ActivePixelTrait) != 0)
-                  {
-                    if ((GetPixelTraits(image,i) & BlendPixelTrait) == 0)
-                      pixel[i]+=(*k)*kernel_pixels[u*image_components+i];
-                    else
-                      pixel[i]+=(*k)*alpha*kernel_pixels[u*image_components+i];
-                  }
+                kernel_pixels+u*GetPixelComponents(image)));
+              pixel.red+=(*k)*alpha*GetPixelRed(image,kernel_pixels+u*
+                GetPixelComponents(image));
+              pixel.green+=(*k)*alpha*GetPixelGreen(image,kernel_pixels+u*
+                GetPixelComponents(image));
+              pixel.blue+=(*k)*alpha*GetPixelBlue(image,kernel_pixels+u*
+                GetPixelComponents(image));
+              if (image->colorspace == CMYKColorspace)
+                pixel.black+=(*k)*alpha*GetPixelBlack(image,kernel_pixels+u*
+                  GetPixelComponents(image));
               gamma+=(*k)*alpha;
               k++;
             }
-            kernel_pixels+=(image->columns+width)*image_components;
+            kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
           }
           gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          for (i=0; i < (ssize_t) image_components; i++)
-          {
-            if (((GetPixelTraits(image,i) & ActivePixelTrait) != 0) &&
-                ((GetPixelTraits(convolve_image,i) & ActivePixelTrait) != 0))
+          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+            SetPixelRed(convolve_image,ClampToQuantum(gamma*pixel.red),q);
+          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+            SetPixelGreen(convolve_image,ClampToQuantum(gamma*pixel.green),q);
+          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+            SetPixelBlue(convolve_image,ClampToQuantum(gamma*pixel.blue),q);
+          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+              (image->colorspace == CMYKColorspace))
+            SetPixelBlack(convolve_image,ClampToQuantum(gamma*pixel.black),q);
+          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+            {
+              k=normal_kernel;
+              kernel_pixels=p;
+              for (v=0; v < (ssize_t) width; v++)
               {
-                if ((GetPixelTraits(image,i) & BlendPixelTrait) != 0)
-                  q[i]=ClampToQuantum(gamma*pixel[i]);
-                else
-                  q[i]=ClampToQuantum(pixel[i]);
+                for (u=0; u < (ssize_t) width; u++)
+                {
+                  pixel.alpha+=(*k)*GetPixelAlpha(image,kernel_pixels+u);
+                  k++;
+                }
+                kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
               }
-          }
+              SetPixelAlpha(convolve_image,ClampToQuantum(pixel.alpha),q);
+            }
         }
-      p+=image_components;
-      q+=convolve_components;
+      p+=GetPixelComponents(image);
+      q+=GetPixelComponents(convolve_image);
     }
-    if (SyncCacheViewAuthenticPixels(convolve_view,exception) == MagickFalse)
+    sync=SyncCacheViewAuthenticPixels(convolve_view,exception);
+    if (sync == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
