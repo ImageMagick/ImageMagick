@@ -2613,6 +2613,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        PixelInfo
+          result;
+
         register ssize_t
           v;
 
@@ -2621,9 +2624,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
         register const Quantum
           *restrict k_pixels;
-
-        PixelInfo
-          result;
 
         /* Copy input image to the output image for unused channels
         * This removes need for 'cloning' a new image every iteration
@@ -2667,7 +2667,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 result.black+=(*k)*GetPixelBlack(image,k_pixels);
               result.alpha += (*k)*GetPixelAlpha(image,k_pixels);
               k--;
-              k_pixels++;
+              k_pixels+=GetPixelComponents(image);
             }
             if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
               SetPixelRed(morphology_image,ClampToQuantum(result.red),q);
@@ -2703,7 +2703,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 result.black += alpha*GetPixelBlack(image,k_pixels);
               result.alpha += (*k)*GetPixelAlpha(image,k_pixels);
               k--;
-              k_pixels++;
+              k_pixels+=GetPixelComponents(image);
             }
             /* Sync'ed channels, all channels are modified */
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
@@ -3080,8 +3080,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             min.red     -= max.red;     Maximize( min.red,     0.0 );
             min.green   -= max.green;   Maximize( min.green,   0.0 );
             min.blue    -= max.blue;    Maximize( min.blue,    0.0 );
-            min.alpha -= max.alpha; Maximize( min.alpha, 0.0 );
             min.black   -= max.black;   Maximize( min.black,   0.0 );
+            min.alpha -= max.alpha; Maximize( min.alpha, 0.0 );
             break;
 
         case ErodeIntensityMorphology:
@@ -3099,7 +3099,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 if ( result.red == 0.0 ||
-                     GetPixelIntensity(image,&(k_pixels[u])) < GetPixelIntensity(morphology_image,q) ) {
+                     GetPixelIntensity(image,k_pixels+u*GetPixelComponents(image)) < GetPixelIntensity(morphology_image,q) ) {
                   /* copy the whole pixel - no channel selection */
                   SetPixelRed(morphology_image,GetPixelRed(image,
                     k_pixels+u*GetPixelComponents(image)),q);
@@ -3134,7 +3134,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
                 if ( result.red == 0.0 ||
-                     GetPixelIntensity(image,&(k_pixels[u])) > GetPixelIntensity(morphology_image,q) ) {
+                     GetPixelIntensity(image,k_pixels+u*GetPixelComponents(image)) > GetPixelIntensity(morphology_image,q) ) {
                   /* copy the whole pixel - no channel selection */
                   SetPixelRed(morphology_image,GetPixelRed(image,
                     k_pixels+u*GetPixelComponents(image)),q);
@@ -3210,16 +3210,16 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           result.red     -= min.red;
           result.green   -= min.green;
           result.blue    -= min.blue;
-          result.alpha -= min.alpha;
           result.black   -= min.black;
+          result.alpha -= min.alpha;
           break;
         case ThickenMorphology:
           /* Add the pattern matchs to the original */
           result.red     += min.red;
           result.green   += min.green;
           result.blue    += min.blue;
-          result.alpha += min.alpha;
           result.black   += min.black;
+          result.alpha += min.alpha;
           break;
         default:
           /* result directly calculated or assigned */
@@ -3430,7 +3430,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
-            k_pixels = q-offx;
+            k_pixels = q-offx*GetPixelComponents(image);
               for (u=0; u < (ssize_t) offx; u++, k--) {
                 if ( x+u-offx < 0 ) continue;  /* off the edge! */
                 if ( IsNan(*k) ) continue;
@@ -3469,7 +3469,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             }
             /* repeat with the just processed pixels of this row */
             k = &kernel->values[ kernel->width*(kernel->y+1)-1 ];
-            k_pixels = q-offx;
+            k_pixels = q-offx*GetPixelComponents(image);
               for (u=0; u < (ssize_t) offx; u++, k--) {
                 if ( x+u-offx < 0 ) continue;  /* off the edge! */
                 if ( IsNan(*k) ) continue;
@@ -4275,8 +4275,8 @@ MagickExport Image *MorphologyImage(const Image *image,
     artifact = GetImageArtifact(image,"morphology:compose");
     compose = UndefinedCompositeOp;  /* use default for method */
     if ( artifact != (const char *) NULL)
-      compose = (CompositeOperator) ParseCommandOption(
-                             MagickComposeOptions,MagickFalse,artifact);
+      compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
+        MagickFalse,artifact);
   }
   /* Apply the Morphology */
   morphology_image = MorphologyApply(image, method, iterations,
