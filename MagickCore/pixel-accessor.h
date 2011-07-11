@@ -62,21 +62,15 @@ static inline Quantum GetPixelCb(const Image *image,const Quantum *pixel)
   return(pixel[image->component_map[image->map][CbPixelComponent].component]);
 }
 
+static inline PixelTrait GetPixelCbTraits(const Image *image)
+{
+  return(image->component_map[image->map][CbPixelComponent].traits);
+}
+
 static inline Quantum GetPixelComponent(const Image *image,
   const PixelComponent component,const Quantum *pixel)
 {
   return(pixel[image->component_map[image->map][component].component]);
-}
-
-static inline PixelTrait GetPixelComponentTraits(const Image *image,
-  const PixelComponent component)
-{
-  return(image->component_map[image->map][component].traits);
-}
-
-static inline PixelTrait GetPixelCbTraits(const Image *image)
-{
-  return(image->component_map[image->map][CbPixelComponent].traits);
 }
 
 static inline Quantum GetPixelComponentMapComponent(const Image *image,
@@ -94,6 +88,12 @@ static inline PixelTrait GetPixelComponentMapTraits(const Image *image,
 static inline size_t GetPixelComponents(const Image *image)
 {
   return(image->pixel_components);
+}
+
+static inline PixelTrait GetPixelComponentTraits(const Image *image,
+  const PixelComponent component)
+{
+  return(image->component_map[image->map][component].traits);
 }
 
 static inline Quantum GetPixelCr(const Image *image,const Quantum *pixel)
