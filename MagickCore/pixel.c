@@ -4539,7 +4539,7 @@ MagickExport void SetPixelComponentMap(Image *image,
     i;
 
   for (i=0; i < MaxPixelComponents; i++)
-    SetPixelComponentTraits(image,(PixelComponent) i,UndefinedPixelTrait);
+    SetPixelComponentMapTraits(image,(PixelComponent) i,UndefinedPixelTrait);
   image->sync=(channel_mask & SyncChannels) != 0 ? MagickTrue : MagickFalse;
   if ((channel_mask & RedChannel) != 0)
     SetPixelRedTraits(image,ActivePixelTrait);
@@ -4578,28 +4578,28 @@ MagickExport void SetPixelComponentMap(Image *image,
 MagickExport void StandardPixelComponentMap(Image *image)
 {
   image->pixel_components=4;
-  SetPixelComponent(image,RedPixelComponent,RedPixelComponent);
-  SetPixelComponentTraits(image,RedPixelComponent,ActivePixelTrait |
+  SetPixelComponentMapComponent(image,RedPixelComponent,RedPixelComponent);
+  SetPixelComponentMapTraits(image,RedPixelComponent,ActivePixelTrait |
     BlendPixelTrait);
-  SetPixelComponent(image,GreenPixelComponent,GreenPixelComponent);
-  SetPixelComponentTraits(image,GreenPixelComponent,ActivePixelTrait |
+  SetPixelComponentMapComponent(image,GreenPixelComponent,GreenPixelComponent);
+  SetPixelComponentMapTraits(image,GreenPixelComponent,ActivePixelTrait |
     BlendPixelTrait);
-  SetPixelComponent(image,BluePixelComponent,BluePixelComponent);
-  SetPixelComponentTraits(image,BluePixelComponent,ActivePixelTrait |
+  SetPixelComponentMapComponent(image,BluePixelComponent,BluePixelComponent);
+  SetPixelComponentMapTraits(image,BluePixelComponent,ActivePixelTrait |
     BlendPixelTrait);
-  SetPixelComponent(image,AlphaPixelComponent,AlphaPixelComponent);
-  SetPixelComponentTraits(image,AlphaPixelComponent,ActivePixelTrait);
+  SetPixelComponentMapComponent(image,AlphaPixelComponent,AlphaPixelComponent);
+  SetPixelComponentMapTraits(image,AlphaPixelComponent,ActivePixelTrait);
   if (image->colorspace == CMYKColorspace)
     {
       image->pixel_components++;
-      SetPixelComponent(image,BlackPixelComponent,BlackPixelComponent);
-      SetPixelComponentTraits(image,BlackPixelComponent,ActivePixelTrait |
+      SetPixelComponentMapComponent(image,BlackPixelComponent,BlackPixelComponent);
+      SetPixelComponentMapTraits(image,BlackPixelComponent,ActivePixelTrait |
         BlendPixelTrait);
     }
   if (image->storage_class == PseudoClass)
     {
       image->pixel_components++;
-      SetPixelComponent(image,IndexPixelComponent,IndexPixelComponent);
-      SetPixelComponentTraits(image,IndexPixelComponent,UndefinedPixelTrait);
+      SetPixelComponentMapComponent(image,IndexPixelComponent,IndexPixelComponent);
+      SetPixelComponentMapTraits(image,IndexPixelComponent,UndefinedPixelTrait);
     }
 }
