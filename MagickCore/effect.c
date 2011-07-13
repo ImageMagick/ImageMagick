@@ -1455,7 +1455,8 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  pixel.alpha+=(*k)*GetPixelAlpha(image,kernel_pixels+u);
+                  pixel.alpha+=(*k)*GetPixelAlpha(image,kernel_pixels+u*
+                    GetPixelComponents(image));
                   k++;
                 }
                 kernel_pixels+=(image->columns+width)*GetPixelComponents(image);
