@@ -1421,10 +1421,10 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
               {
                 alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,
                   kernel_pixels+u*channels));
-                if ((traits & BlendPixelTrait) != 0)
-                  pixel+=(*k)*alpha*kernel_pixels[u*channels+i];
-                else
+                if ((traits & BlendPixelTrait) == 0)
                   pixel+=(*k)*kernel_pixels[u*channels+i];
+                else
+                  pixel+=(*k)*alpha*kernel_pixels[u*channels+i];
                 gamma+=(*k)*alpha;
                 k++;
               }
