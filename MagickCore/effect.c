@@ -1384,7 +1384,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {
-            const size_t
+            size_t
               center;
 
             center=((image->columns+width)*width/2)*channels+i;
