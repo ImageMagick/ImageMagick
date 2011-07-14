@@ -1247,7 +1247,8 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
   width=order;
   if ((width % 2) == 0)
     ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
-  convolve_image=CloneImage(image,0,0,MagickTrue,exception);
+  convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(convolve_image,DirectClass) == MagickFalse)
@@ -1335,7 +1336,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
       (width/2L),image->columns+width,width,exception);
-    q=GetCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
