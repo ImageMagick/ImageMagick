@@ -1394,7 +1394,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
         k=normal_kernel;
         kernel_pixels=p;
         pixel=image->bias;
-        if ((GetPixelAlphaTraits(image) == UndefinedTrait) ||
+        if ((GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
             (image->matte == MagickFalse))
           {
             /*
