@@ -178,7 +178,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         saturation_sum_x3+=saturation*saturation*saturation;
         saturation_sum_x4+=saturation*saturation*saturation*saturation;
         area++;
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     }
     image_view=DestroyCacheView(image_view);
