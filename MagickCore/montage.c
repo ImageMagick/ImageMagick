@@ -758,9 +758,9 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           if ((montage_info->frame != (char *) NULL) &&
               (image->compose == DstOutCompositeOp))
             {
-              SetPixelComponentMap(image,AlphaChannel);
+              SetPixelChannelMap(image,AlphaChannel);
               (void) NegateImage(image,MagickFalse);
-              SetPixelComponentMap(image,DefaultChannels);
+              SetPixelChannelMap(image,DefaultChannels);
             }
         }
       /*

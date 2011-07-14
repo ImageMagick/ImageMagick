@@ -262,16 +262,16 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
             SetPixelIndex(image,(*p) & 0x0f,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             SetPixelIndex(image,(*p >> 4) & 0x0f,q);
             p++;
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if ((image->columns % 2) != 0)
             {
               SetPixelIndex(image,(*p >> 4) & 0x0f,q);
               p++;
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -299,7 +299,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelIndex(image,*p++,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -334,7 +334,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (1UL*word >> 5) & 0x1f)),q);
             SetPixelRed(image,ScaleCharToQuantum(ScaleColor5to8(
               (1UL*word >> 0) & 0x1f)),q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -364,7 +364,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*p++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

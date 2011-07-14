@@ -235,7 +235,7 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
         }
     }
     p++;
-    q+=GetPixelComponents(image);
+    q+=GetPixelChannels(image);
   }
   if (!SyncAuthenticPixels(image,exception))
     return;

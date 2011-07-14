@@ -1247,7 +1247,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             SetPixelIndex(image,index,q);
             SetPixelPacket(image,image->colormap+(ssize_t) index,q);
             p++;
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
         else
           if (image->colorspace != CMYKColorspace)
@@ -1260,7 +1260,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               SetPixelBlue(image,ScaleShortToQuantum((unsigned char)
                 (GETJSAMPLE(*p++) << 4)),q);
               SetPixelAlpha(image,OpaqueAlpha,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
           else
             for (x=0; x < (ssize_t) image->columns; x++)
@@ -1274,7 +1274,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               SetPixelBlack(image,QuantumRange-ScaleShortToQuantum(
                 (unsigned char) (GETJSAMPLE(*p++) << 4)),q);
               SetPixelAlpha(image,OpaqueAlpha,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
       }
     else
@@ -1285,7 +1285,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           SetPixelIndex(image,index,q);
           SetPixelPacket(image,image->colormap+(ssize_t) index,q);
           p++;
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
       else
         if (image->colorspace != CMYKColorspace)
@@ -1298,7 +1298,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
               GETJSAMPLE(*p++)),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
         else
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -1312,7 +1312,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             SetPixelBlack(image,QuantumRange-ScaleCharToQuantum(
               (unsigned char) GETJSAMPLE(*p++)),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -2227,7 +2227,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelBlue(image,p));
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2252,7 +2252,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               *q++=(JSAMPLE) ScaleQuantumToChar(GetPixelIntensity(image,p));
-              p+=GetPixelComponents(image);
+              p+=GetPixelChannels(image);
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2286,7 +2286,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
                 GetPixelBlue(image,p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
                 GetPixelBlack(image,p))));
-              p+=GetPixelComponents(image);
+              p+=GetPixelChannels(image);
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2313,7 +2313,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         {
           *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelIntensity(image,p)) >>
             4);
-          p+=GetPixelComponents(image);
+          p+=GetPixelChannels(image);
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2341,7 +2341,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelRed(image,p)) >> 4);
             *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelGreen(image,p)) >> 4);
             *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelBlue(image,p)) >> 4);
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2375,7 +2375,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
               GetPixelBlue(image,p)) >> 4));
             *q++=(JSAMPLE) (4095-(ScaleQuantumToShort(
               GetPixelBlack(image,p)) >> 4));
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

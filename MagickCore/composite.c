@@ -343,16 +343,16 @@ static inline void CompositeDarken(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=MagickMin(p->red,q->red);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=MagickMin(p->green,q->green);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=MagickMin(p->blue,q->blue);
-      if ((GetPixelBlackTraits(image) & ActivePixelTrait) != 0 &&
+      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0 &&
           (q->colorspace == CMYKColorspace))
         composite->black=MagickMin(p->black,q->black);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=MagickMax(p->alpha,q->alpha);
       return;
     }
@@ -385,16 +385,16 @@ static inline void CompositeDarkenIntensity(const Image *image,
 
       from_p=GetPixelInfoIntensity(p) < GetPixelInfoIntensity(q) ? MagickTrue :
         MagickFalse;
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=from_p != MagickFalse ? p->red : q->red;
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=from_p != MagickFalse ? p->green : q->green;
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=from_p != MagickFalse ? p->blue : q->blue;
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=from_p != MagickFalse ? p->black : q->black;
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=from_p != MagickFalse ? p->alpha : q->alpha;
       return;
     }
@@ -428,16 +428,16 @@ static inline void CompositeDifference(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=fabs((double) (p->red-q->red));
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=fabs((double) (p->green-q->green));
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=fabs((double) (p->blue-q->blue));
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=fabs((double) (p->black-q->black));
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=fabs((double) (p->alpha-q->alpha));
      return;
    }
@@ -486,20 +486,20 @@ static inline void CompositeDivide(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=QuantumRange*Divide(QuantumScale*p->red,1.0,
           QuantumScale*q->red,1.0);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=QuantumRange*Divide(QuantumScale*p->green,1.0,
           QuantumScale*q->green,1.0);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=QuantumRange*Divide(QuantumScale*p->blue,1.0,
           QuantumScale*q->blue,1.0);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Divide(QuantumScale*p->black,1.0,
           QuantumScale*q->black,1.0);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Divide(Sa,1.0,Da,1.0));
       return;
     }
@@ -538,20 +538,20 @@ static inline void CompositeExclusion(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=QuantumRange*Exclusion(QuantumScale*p->red,1.0,
           QuantumScale*q->red,1.0);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=QuantumRange*Exclusion(QuantumScale*p->green,1.0,
           QuantumScale*q->green,1.0);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=QuantumRange*Exclusion(QuantumScale*p->blue,1.0,
           QuantumScale*q->blue,1.0);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Exclusion(QuantumScale*p->black,1.0,
           QuantumScale*q->black,1.0);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Exclusion(Sa,1.0,Da,1.0));
       return;
     }
@@ -692,16 +692,16 @@ static inline void CompositeLighten(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=MagickMax(p->red,q->red);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=MagickMax(p->green,q->green);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=MagickMax(p->blue,q->blue);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=MagickMax(p->black,q->black);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=MagickMin(p->alpha,q->alpha);
       return;
     }
@@ -734,16 +734,16 @@ static inline void CompositeLightenIntensity(const Image *image,
 
       from_p=GetPixelInfoIntensity(p) > GetPixelInfoIntensity(q) ? MagickTrue :
         MagickFalse;
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=from_p != MagickFalse ? p->red : q->red;
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=from_p != MagickFalse ? p->green : q->green;
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=from_p != MagickFalse ? p->blue : q->blue;
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=from_p != MagickFalse ? p->black : q->black;
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=from_p != MagickFalse ? p->alpha : q->alpha;
       return;
     }
@@ -892,20 +892,20 @@ static inline void CompositeMathematics(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=QuantumRange*Mathematics(QuantumScale*p->red,1.0,
           QuantumScale*q->red,1.0,args);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=QuantumRange*Mathematics(QuantumScale*p->green,1.0,
           QuantumScale*q->green,1.0,args);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=QuantumRange*Mathematics(QuantumScale*p->blue,1.0,
           QuantumScale*q->blue,1.0,args);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Mathematics(QuantumScale*p->black,1.0,
           QuantumScale*q->black,1.0,args);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Mathematics(Sa,1.0,Da,1.0,args));
       return;
     }
@@ -946,16 +946,16 @@ static inline void CompositePlus(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=p->red+q->red;
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=p->green+q->green;
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=p->blue+q->blue;
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=p->black+q->black;
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=p->alpha+q->alpha-QuantumRange;
       return;
     }
@@ -989,16 +989,16 @@ static inline void CompositeMinus(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=p->red-q->red;
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=p->green-q->green;
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=p->blue-q->blue;
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=p->black-q->black;
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-(Sa-Da));
       return;
     }
@@ -1037,16 +1037,16 @@ static inline void CompositeModulusAdd(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=ModulusAdd(p->red,1.0,q->red,1.0);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=ModulusAdd(p->green,1.0,q->green,1.0);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=ModulusAdd(p->blue,1.0,q->blue,1.0);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=ModulusAdd(p->black,1.0,q->black,1.0);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=ModulusAdd(p->alpha,1.0,q->alpha,1.0);
       return;
     }
@@ -1087,16 +1087,16 @@ static inline void CompositeModulusSubtract(const Image *image,
       /*
         Handle channels as separate grayscale channels,
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=ModulusSubtract(p->red,1.0,q->red,1.0);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=ModulusSubtract(p->green,1.0,q->green,1.0);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=ModulusSubtract(p->blue,1.0,q->blue,1.0);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=ModulusSubtract(p->black,1.0,q->black,1.0);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=ModulusSubtract(p->alpha,1.0,q->alpha,1.0);
       return;
     }
@@ -1133,16 +1133,16 @@ static inline void CompositeMultiply(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=QuantumScale*p->red*q->red;
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=QuantumScale*p->green*q->green;
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=QuantumScale*p->blue*q->blue;
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumScale*p->black*q->black;
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Sa*Da);
       return;
     }
@@ -1291,20 +1291,20 @@ static inline void CompositeScreen(const Image *image,const PixelInfo *p,
       /*
         Handle channels as separate grayscale channels.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         composite->red=QuantumRange*Screen(QuantumScale*p->red,
           QuantumScale*q->red);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         composite->green=QuantumRange*Screen(QuantumScale*p->green,
           QuantumScale*q->green);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         composite->blue=QuantumRange*Screen(QuantumScale*p->blue,
           QuantumScale*q->blue);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (q->colorspace == CMYKColorspace))
         composite->black=QuantumRange*Screen(QuantumScale*p->black,
           QuantumScale*q->black);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         composite->alpha=QuantumRange*(1.0-Screen(Sa,Da));
       return;
     }
@@ -1677,8 +1677,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           SetPixelAlpha(image,GetPixelAlpha(composite_image,p),q);
           if (image->colorspace == CMYKColorspace)
             SetPixelBlack(image,GetPixelBlack(composite_image,p),q);
-          p+=GetPixelComponents(composite_image);
-          q+=GetPixelComponents(image);
+          p+=GetPixelChannels(composite_image);
+          q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1816,7 +1816,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelComponents(composite_image);
+              p+=GetPixelChannels(composite_image);
               continue;
             }
           if (fabs(angle_range) > MagickEpsilon)
@@ -1839,8 +1839,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
           SetPixelPixelInfo(destination_image,&pixel,q);
-          p+=GetPixelComponents(composite_image);
-          q+=GetPixelComponents(destination_image);
+          p+=GetPixelChannels(composite_image);
+          q+=GetPixelChannels(destination_image);
         }
         sync=SyncCacheViewAuthenticPixels(destination_view,exception);
         if (sync == MagickFalse)
@@ -1988,7 +1988,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelComponents(composite_image);
+              p+=GetPixelChannels(composite_image);
               continue;
             }
           /*
@@ -2012,8 +2012,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             pixel.alpha)*(1.0-QuantumScale*
             GetPixelAlpha(composite_image,p)));
           SetPixelPixelInfo(destination_image,&pixel,q);
-          p+=GetPixelComponents(composite_image);
-          q+=GetPixelComponents(destination_image);
+          p+=GetPixelChannels(composite_image);
+          q+=GetPixelChannels(destination_image);
         }
         sync=SyncCacheViewAuthenticPixels(destination_view,exception);
         if (sync == MagickFalse)
@@ -2188,7 +2188,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=x_offset*GetPixelComponents(composite_image);
+          p-=x_offset*GetPixelChannels(composite_image);
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (const Quantum *) NULL)
@@ -2207,7 +2207,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (x < x_offset)
             {
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
               continue;
             }
           if ((x-x_offset) >= (ssize_t) composite_image->columns)
@@ -2281,7 +2281,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
           if (image->colorspace == CMYKColorspace)
             SetPixelBlack(image,ClampToQuantum(composite.black),q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
           continue;
         }
       /*
@@ -2693,10 +2693,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(image,ClampToQuantum(composite.black),q);
       SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
-      p+=GetPixelComponents(composite_image);
-      if (p >= (pixels+composite_image->columns*GetPixelComponents(composite_image)))
+      p+=GetPixelChannels(composite_image);
+      if (p >= (pixels+composite_image->columns*GetPixelChannels(composite_image)))
         p=pixels;
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2878,8 +2878,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
         if ((image->colorspace == CMYKColorspace)  &&
             (texture->colorspace == CMYKColorspace))
           SetPixelBlack(image,GetPixelBlack(texture,p),q);
-        p+=GetPixelComponents(texture);
-        q+=GetPixelComponents(image);
+        p+=GetPixelChannels(texture);
+        q+=GetPixelChannels(image);
       }
     }
     sync=SyncCacheViewAuthenticPixels(image_view,exception);

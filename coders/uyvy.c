@@ -162,11 +162,11 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       SetPixelRed(image,ScaleCharToQuantum(y1),q);
       SetPixelGreen(image,ScaleCharToQuantum(u),q);
       SetPixelBlue(image,ScaleCharToQuantum(v),q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
       SetPixelRed(image,ScaleCharToQuantum(y2),q);
       SetPixelGreen(image,ScaleCharToQuantum(u),q);
       SetPixelBlue(image,ScaleCharToQuantum(v),q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -351,7 +351,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
       pixel.green=(double) GetPixelGreen(uyvy_image,p);
       pixel.blue=(double) GetPixelBlue(uyvy_image,p);
       full=full == MagickFalse ? MagickTrue : MagickFalse;
-      p+=GetPixelComponents(uyvy_image);
+      p+=GetPixelChannels(uyvy_image);
     }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);

@@ -272,7 +272,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
         *q++=ScaleQuantumToChar(GetPixelRed(image,p));
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -281,7 +281,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlack(image,p));
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     if (image->previous == (Image *) NULL)
       {
@@ -343,7 +343,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     else
       {
@@ -360,7 +360,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
               *q++=code;
               code='\0';
             }
-          p+=GetPixelComponents(image);
+          p+=GetPixelChannels(image);
         }
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -409,7 +409,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       *q++=(unsigned char) GetPixelIndex(image,p);
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (image->previous == (Image *) NULL)
       {
@@ -515,9 +515,9 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   mask_image=CloneImage(image,0,0,MagickTrue,&image->exception);
   if (mask_image == (Image *) NULL)
     ThrowWriterException(CoderError,image->exception.reason);
-  PushPixelComponentMap(mask_image,AlphaChannel);
+  PushPixelChannelMap(mask_image,AlphaChannel);
   status=SeparateImage(mask_image);
-  PopPixelComponentMap(mask_image);
+  PopPixelChannelMap(mask_image);
   if (status == MagickFalse)
     {
       mask_image=DestroyImage(mask_image);

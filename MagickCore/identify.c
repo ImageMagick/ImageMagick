@@ -588,7 +588,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             {
               if (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)
                 break;
-              p+=GetPixelComponents(image);
+              p+=GetPixelChannels(image);
             }
             if (x < (ssize_t) image->columns)
               break;
@@ -646,24 +646,24 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           {
             SetPixelInfoPacket(image,p,&pixel);
             (void) CopyMagickString(tuple,"(",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,RedPixelComponent,X11Compliance,
+            ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
               tuple);
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,GreenPixelComponent,X11Compliance,
+            ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,
               tuple);
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BluePixelComponent,X11Compliance,
+            ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,
               tuple);
             if (pixel.colorspace == CMYKColorspace)
               {
                 (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-                ConcatenateColorComponent(&pixel,BlackPixelComponent,
+                ConcatenateColorComponent(&pixel,BlackPixelChannel,
                   X11Compliance,tuple);
               }
             if (pixel.matte != MagickFalse)
               {
                 (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-                ConcatenateColorComponent(&pixel,AlphaPixelComponent,
+                ConcatenateColorComponent(&pixel,AlphaPixelChannel,
                   X11Compliance,tuple);
               }
             (void) ConcatenateMagickString(tuple,")",MaxTextExtent);

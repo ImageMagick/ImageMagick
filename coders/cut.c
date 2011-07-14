@@ -118,7 +118,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
           {
             index=(Quantum) ((((*p) & (0x80 >> bit)) != 0) ? 0x01 : 0x00);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           p++;
         }
@@ -128,7 +128,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
               {
                 index=(Quantum) ((((*p) & (0x80 >> bit)) != 0) ? 0x01 : 0x00);
                 SetPixelIndex(image,index,q);
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
               }
             p++;
           }
@@ -145,35 +145,35 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
         {
           index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
           SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
           index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
           SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
           index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
           SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
           index=ConstrainColormapIndex(image,(*p) & 0x3);
           SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
           p++;
         }
         if ((image->columns % 4) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             if ((image->columns % 4) >= 1)
 
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
                 SetPixelIndex(image,index,q);
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
                 if ((image->columns % 4) >= 2)
 
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
                     SetPixelIndex(image,index,q);
-                    q+=GetPixelComponents(image);
+                    q+=GetPixelChannels(image);
                   }
               }
             p++;
@@ -192,17 +192,17 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
         {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p) & 0xf);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             p++;
           }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             p++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -218,7 +218,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
           index=ConstrainColormapIndex(image,*p);
           SetPixelIndex(image,index,q);
           p++;
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -259,7 +259,7 @@ static int GetCutColors(Image *image)
         intensity=GetPixelRed(image,q);
       if (intensity >= scale_intensity)
         return(255);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
   }
   if (intensity < ScaleCharToQuantum(2))
@@ -589,7 +589,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           SetPixelGreen(image,QuantumRange,q);
                           SetPixelBlue(image,QuantumRange,q);
                         }
-                      q+=GetPixelComponents(image);
+                      q+=GetPixelChannels(image);
                     }
                   if (SyncAuthenticPixels(image,exception) == MagickFalse) goto Finish;
                 }

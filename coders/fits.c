@@ -448,7 +448,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           (pixel-fits_info.min_data)+fits_info.zero)),q);
         SetPixelGreen(image,GetPixelRed(image,q),q);
         SetPixelBlue(image,GetPixelRed(image,q),q);
-        q+=GetPixelComponents(image);
+        q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;

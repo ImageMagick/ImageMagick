@@ -1009,7 +1009,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=(Quantum) (((*p) & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
               SetPixelIndex(image,index,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             p++;
           }
@@ -1019,7 +1019,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 index=(Quantum) (((*p) & (0x80 >> bit)) != 0 ? 0x01 : 0x00);
                 SetPixelIndex(image,index,q);
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
               }
               p++;
             }
@@ -1051,17 +1051,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,*p & 0x0f);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
               index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
               SetPixelIndex(image,index,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
               p++;
             }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1095,7 +1095,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=ConstrainColormapIndex(image,*p++);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1165,7 +1165,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->matte != MagickFalse)
               SetPixelAlpha(image,
                 ScaleShortToQuantum((unsigned short) opacity),q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1198,7 +1198,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
             SetPixelRed(image,ScaleCharToQuantum(*p++),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1260,7 +1260,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->matte != MagickFalse)
               SetPixelAlpha(image,
                 ScaleShortToQuantum((unsigned short) opacity),q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -1658,7 +1658,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-             p+=GetPixelComponents(image);
+             p+=GetPixelChannels(image);
            }
            if (bit != 0)
              {
@@ -1707,7 +1707,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
                 nibble=0;
                 byte=0;
               }
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           if (nibble != 0)
             {
@@ -1741,7 +1741,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             *q++=(unsigned char) GetPixelIndex(image,p);
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           for ( ; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
@@ -1771,7 +1771,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           for (x=3L*(ssize_t) image->columns; x < (ssize_t) bytes_per_line; x++)
             *q++=0x00;
@@ -1802,7 +1802,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           if (image->previous == (Image *) NULL)
             {

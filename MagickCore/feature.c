@@ -255,7 +255,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->matte != MagickFalse)
         grays[ScaleQuantumToMap(GetPixelAlpha(image,p))].alpha=
           ScaleQuantumToMap(GetPixelAlpha(image,p));
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -419,7 +419,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         status=MagickFalse;
         continue;
       }
-    p+=distance*GetPixelComponents(image);;
+    p+=distance*GetPixelChannels(image);;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (i=0; i < 4; i++)
@@ -464,7 +464,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         v=0;
         while (grays[u].red != ScaleQuantumToMap(GetPixelRed(image,p)))
           u++;
-        while (grays[v].red != ScaleQuantumToMap(GetPixelRed(image,p+offset*GetPixelComponents(image))))
+        while (grays[v].red != ScaleQuantumToMap(GetPixelRed(image,p+offset*GetPixelChannels(image))))
           v++;
         cooccurrence[u][v].direction[i].red++;
         cooccurrence[v][u].direction[i].red++;
@@ -472,7 +472,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         v=0;
         while (grays[u].green != ScaleQuantumToMap(GetPixelGreen(image,p)))
           u++;
-        while (grays[v].green != ScaleQuantumToMap(GetPixelGreen(image,p+offset*GetPixelComponents(image))))
+        while (grays[v].green != ScaleQuantumToMap(GetPixelGreen(image,p+offset*GetPixelChannels(image))))
           v++;
         cooccurrence[u][v].direction[i].green++;
         cooccurrence[v][u].direction[i].green++;
@@ -480,7 +480,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         v=0;
         while (grays[u].blue != ScaleQuantumToMap(GetPixelBlue(image,p)))
           u++;
-        while (grays[v].blue != ScaleQuantumToMap(GetPixelBlue(image,p+offset*GetPixelComponents(image))))
+        while (grays[v].blue != ScaleQuantumToMap(GetPixelBlue(image,p+offset*GetPixelChannels(image))))
           v++;
         cooccurrence[u][v].direction[i].blue++;
         cooccurrence[v][u].direction[i].blue++;
@@ -490,7 +490,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             v=0;
             while (grays[u].black != ScaleQuantumToMap(GetPixelBlack(image,p)))
               u++;
-            while (grays[v].black != ScaleQuantumToMap(GetPixelBlack(image,p+offset*GetPixelComponents(image))))
+            while (grays[v].black != ScaleQuantumToMap(GetPixelBlack(image,p+offset*GetPixelChannels(image))))
               v++;
             cooccurrence[u][v].direction[i].black++;
             cooccurrence[v][u].direction[i].black++;
@@ -501,13 +501,13 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             v=0;
             while (grays[u].alpha != ScaleQuantumToMap(GetPixelAlpha(image,p)))
               u++;
-            while (grays[v].alpha != ScaleQuantumToMap(GetPixelAlpha(image,p+offset*GetPixelComponents(image))))
+            while (grays[v].alpha != ScaleQuantumToMap(GetPixelAlpha(image,p+offset*GetPixelChannels(image))))
               v++;
             cooccurrence[u][v].direction[i].alpha++;
             cooccurrence[v][u].direction[i].alpha++;
           }
       }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
   }
   grays=(LongPixelPacket *) RelinquishMagickMemory(grays);

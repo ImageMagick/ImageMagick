@@ -211,7 +211,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       if ((y > (ssize_t) bounding_box.height) &&
           (IsFuzzyEquivalencePixelInfo(&pixel,&target[2]) == MagickFalse))
         bounding_box.height=(size_t) y;
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
@@ -327,13 +327,13 @@ MagickExport size_t GetImageDepth(const Image *image,
 
           status=0;
           range=GetQuantumRange(current_depth[id]);
-          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
             status|=p->red != ScaleAnyToQuantum(ScaleQuantumToAny(p->red,
               range),range);
-          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
             status|=p->green != ScaleAnyToQuantum(ScaleQuantumToAny(p->green,
               range),range);
-          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
             status|=p->blue != ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,
               range),range);
           if (status == 0)
@@ -381,20 +381,20 @@ MagickExport size_t GetImageDepth(const Image *image,
 
         status=0;
         range=GetQuantumRange(current_depth[id]);
-        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           status|=GetPixelRed(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
             GetPixelRed(image,p),range),range);
-        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           status|=GetPixelGreen(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
             GetPixelGreen(image,p),range),range);
-        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           status|=GetPixelBlue(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
             GetPixelBlue(image,p),range),range);
-        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+        if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (image->matte != MagickFalse))
           status|=GetPixelAlpha(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
             GetPixelAlpha(image,p),range),range);
-        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+        if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
           status|=GetPixelBlack(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
             GetPixelBlack(image,p),range),range);
@@ -402,7 +402,7 @@ MagickExport size_t GetImageDepth(const Image *image,
           break;
         current_depth[id]++;
       }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (current_depth[id] == MAGICKCORE_QUANTUM_DEPTH)
       status=MagickFalse;
@@ -608,7 +608,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
       if ((type == BilevelType) &&
           (IsPixelMonochrome(image,p) == MagickFalse))
         type=GrayscaleType;
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (type == UndefinedType)
       break;
@@ -689,7 +689,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
           type=UndefinedType;
           break;
         }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (type == UndefinedType)
       break;
@@ -761,7 +761,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
     {
       if (GetPixelAlpha(image,p) != OpaqueAlpha)
         break;
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
      break;
@@ -855,24 +855,24 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         SetPixelRed(image,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelRed(image,q),range),range),q);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         SetPixelGreen(image,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelGreen(image,q),range),range),q);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         SetPixelBlue(image,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelBlue(image,q),range),range),q);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelBlack(image,q),range),range),q);
-      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte != MagickFalse))
         SetPixelAlpha(image,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelAlpha(image,q),range),range),q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       {
@@ -895,13 +895,13 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           p->red=ScaleAnyToQuantum(ScaleQuantumToAny(p->red,range),range);
-        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           p->green=ScaleAnyToQuantum(ScaleQuantumToAny(p->green,range),range);
-        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           p->blue=ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,range),range);
-        if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           p->alpha=ScaleAnyToQuantum(ScaleQuantumToAny(p->alpha,range),range);
         p++;
       }

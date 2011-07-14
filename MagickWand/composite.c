@@ -122,7 +122,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   assert(exception != (ExceptionInfo *) NULL);
   status=MagickTrue;
-  PushPixelComponentMap(composite_image,composite_options->channel);
+  PushPixelChannelMap(composite_image,composite_options->channel);
   if (composite_image != (Image *) NULL)
     {
       assert(composite_image->signature == MagickSignature);
@@ -218,7 +218,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               GetImageException(*image,exception);
             }
     }
-  PopPixelComponentMap(composite_image);
+  PopPixelChannelMap(composite_image);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 

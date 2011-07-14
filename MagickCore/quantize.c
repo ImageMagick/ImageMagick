@@ -594,7 +594,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
             PixelPacket
               packet;
 
-            GetPixelPacket(image,q+count*GetPixelComponents(image),&packet);
+            GetPixelPacket(image,q+count*GetPixelChannels(image),&packet);
             if (IsPixelEquivalent(image,q,&packet) == MagickFalse)
               break;
           }
@@ -627,7 +627,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
                 if (cube.associate_alpha != MagickFalse)
                   SetPixelAlpha(image,image->colormap[index].alpha,q);
               }
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -838,7 +838,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         PixelPacket
           packet;
 
-        GetPixelPacket(image,p+count*GetPixelComponents(image),&packet);
+        GetPixelPacket(image,p+count*GetPixelChannels(image),&packet);
         if (IsPixelEquivalent(image,p,&packet) == MagickFalse)
           break;
       }
@@ -892,7 +892,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       node_info->total_color.blue+=count*QuantumScale*pixel.blue;
       if (cube_info->associate_alpha != MagickFalse)
         node_info->total_color.alpha+=count*QuantumScale*pixel.alpha;
-      p+=count*GetPixelComponents(image);
+      p+=count*GetPixelChannels(image);
     }
     if (cube_info->colors > cube_info->maximum_colors)
       {
@@ -933,7 +933,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         PixelPacket
           packet;
 
-        GetPixelPacket(image,p+count*GetPixelComponents(image),&packet);
+        GetPixelPacket(image,p+count*GetPixelChannels(image),&packet);
         if (IsPixelEquivalent(image,p,&packet) == MagickFalse)
           break;
       }
@@ -987,7 +987,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
       node_info->total_color.blue+=count*QuantumScale*pixel.blue;
       if (cube_info->associate_alpha != MagickFalse)
         node_info->total_color.alpha+=count*QuantumScale*pixel.alpha;
-      p+=count*GetPixelComponents(image);
+      p+=count*GetPixelChannels(image);
     }
     proceed=SetImageProgress(image,ClassifyImageTag,(MagickOffsetType) y,
       image->rows);
@@ -1525,7 +1525,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
         status=MagickFalse;
         continue;
       }
-    q+=(y & 0x01)*image->columns*GetPixelComponents(image);
+    q+=(y & 0x01)*image->columns*GetPixelChannels(image);
     cube=(*cube_info);
     current=pixels[id]+(y & 0x01)*image->columns;
     previous=pixels[id]+((y+1) & 0x01)*image->columns;
@@ -1542,7 +1542,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
       ssize_t
         u;
 
-      q-=(y & 0x01)*GetPixelComponents(image);
+      q-=(y & 0x01)*GetPixelChannels(image);
       u=(y & 0x01) != 0 ? (ssize_t) image->columns-1-x : x;
       AssociateAlphaPixel(image,&cube,q,&pixel);
       if (x > 0)
@@ -1649,7 +1649,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
           if (proceed == MagickFalse)
             status=MagickFalse;
         }
-      q+=((y+1) & 0x01)*GetPixelComponents(image);
+      q+=((y+1) & 0x01)*GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -2215,7 +2215,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -2343,13 +2343,13 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
       /*
         Posterize colormap.
       */
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].red=PosterizePixel(image->colormap[i].red);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].green=PosterizePixel(image->colormap[i].green);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].blue=PosterizePixel(image->colormap[i].blue);
-      if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].alpha=PosterizePixel(image->colormap[i].alpha);
     }
   /*
@@ -2380,19 +2380,19 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         SetPixelRed(image,PosterizePixel(GetPixelRed(image,q)),q);
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         SetPixelGreen(image,PosterizePixel(GetPixelGreen(image,q)),q);
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         SetPixelBlue(image,PosterizePixel(GetPixelBlue(image,q)),q);
-      if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
-      if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+      if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3228,7 +3228,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
             }
           SetPixelIndex(image,(Quantum) 
             colormap_index[intensity],q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -3284,7 +3284,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
     {
       SetPixelIndex(image,(Quantum) colormap_index[ScaleQuantumToMap(
         GetPixelIndex(image,q))],q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

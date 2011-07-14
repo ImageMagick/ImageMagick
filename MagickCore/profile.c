@@ -1242,12 +1242,12 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   }
                 if (source_channels > 3)
                   *p++=ScaleQuantumToShort(GetPixelBlack(image,q));
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
               }
               cmsDoTransform(transform[id],source_pixels[id],target_pixels[id],
                 (unsigned int) image->columns);
               p=target_pixels[id];
-              q-=image->columns*GetPixelComponents(image);
+              q-=image->columns*GetPixelChannels(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelRed(image,ScaleShortToQuantum(*p),q);
@@ -1266,7 +1266,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                     SetPixelBlack(image,ScaleShortToQuantum(*p),q);
                     p++;
                   }
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
               }
               sync=SyncCacheViewAuthenticPixels(image_view,exception);
               if (sync == MagickFalse)

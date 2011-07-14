@@ -3752,7 +3752,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 default:
                   break;
               }
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3907,7 +3907,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,pixel.red,q);
             SetPixelGreen(image,pixel.green,q);
             SetPixelBlue(image,pixel.blue,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -4040,7 +4040,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (((size_t) pixel.green) << 8)),q);
               SetPixelBlue(image,(((size_t) GetPixelBlue(image,q)) |
                 (((size_t) pixel.blue) << 8)),q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;

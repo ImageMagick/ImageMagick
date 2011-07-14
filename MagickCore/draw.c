@@ -1208,7 +1208,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
         &composite);
       SetPixelPixelInfo(image,&composite,q);
       x_offset++;
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3439,7 +3439,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       CompositePixelInfoOver(&composite,composite.alpha,&pixel,pixel.alpha,
         &pixel);
       SetPixelPixelInfo(image,&pixel,q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3905,7 +3905,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
               (void) GetStrokeColor(draw_info,x,y,&pixel);
               SetPixelPacket(image,&pixel,q);
             }
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -3974,7 +3974,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       stroke_opacity=stroke_opacity*stroke_color.alpha;
       CompositePixelOver(image,&stroke_color,stroke_opacity,q,(MagickRealType)
         GetPixelAlpha(image,q),q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -4217,12 +4217,12 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               GetPixelPacket(image,q,&pixel);
               if (IsFuzzyEquivalencePixelPacket(image,&pixel,&target) == MagickFalse)
                 {
-                  q+=GetPixelComponents(image);
+                  q+=GetPixelChannels(image);
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel);
               SetPixelPacket(image,&pixel,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
             if (sync == MagickFalse)
@@ -4272,7 +4272,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             {
               (void) GetFillColor(draw_info,x,y,&pixel);
               SetPixelPacket(image,&pixel,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
             if (sync == MagickFalse)
@@ -4333,12 +4333,12 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               GetPixelPacket(image,q,&pixel);
               if (IsFuzzyEquivalencePixelPacket(image,&pixel,&target) == MagickFalse)
                 {
-                  q+=GetPixelComponents(image);
+                  q+=GetPixelChannels(image);
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel);
               SetPixelAlpha(image,pixel.alpha,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
             if (sync == MagickFalse)
@@ -4359,11 +4359,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               target.green=(MagickRealType) draw_info->border_color.green;
               target.blue=(MagickRealType) draw_info->border_color.blue;
             }
-          PushPixelComponentMap(image,AlphaChannel);
+          PushPixelChannelMap(image,AlphaChannel);
           (void) FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue);
-          PopPixelComponentMap(image);
+          PopPixelChannelMap(image);
           break;
         }
         case ResetMethod:
@@ -4390,7 +4390,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             {
               (void) GetFillColor(draw_info,x,y,&pixel);
               SetPixelAlpha(image,pixel.alpha,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
             if (sync == MagickFalse)

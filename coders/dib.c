@@ -656,7 +656,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             index=(Quantum) ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           p++;
         }
@@ -666,7 +666,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=(Quantum) ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
               SetPixelIndex(image,index,q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             p++;
           }
@@ -698,17 +698,17 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
           SetPixelIndex(image,index,q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
           index=ConstrainColormapIndex(image,*p & 0xf);
           SetPixelIndex(image,index,q);
           p++;
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         if ((image->columns % 2) != 0)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
             SetPixelIndex(image,index,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
             p++;
           }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -743,7 +743,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           index=ConstrainColormapIndex(image,*p);
           SetPixelIndex(image,index,q);
           p++;
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -797,7 +797,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelBlue(image,ScaleCharToQuantum(ScaleColor5to8(
                 (unsigned char) (word & 0x1f))),q);
             }
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -830,7 +830,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelRed(image,ScaleCharToQuantum(*p++),q);
           if (image->matte != MagickFalse)
             SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-          q+=GetPixelComponents(image);
+          q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -1092,7 +1092,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
               bit=0;
               byte=0;
             }
-           p+=GetPixelComponents(image);
+           p+=GetPixelChannels(image);
          }
          if (bit != 0)
            {
@@ -1122,7 +1122,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           *q++=(unsigned char) GetPixelIndex(image,p);
-          p+=GetPixelComponents(image);
+          p+=GetPixelChannels(image);
         }
         for ( ; x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
@@ -1155,7 +1155,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
             GetPixelBlue(image,p)) << 0)));
           *q++=(unsigned char)(word & 0xff);
           *q++=(unsigned char)(word >> 8);
-          p+=GetPixelComponents(image);
+          p+=GetPixelChannels(image);
         }
         for (x=(ssize_t) (2*image->columns); x < (ssize_t) bytes_per_line; x++)
           *q++=0x00;
@@ -1185,7 +1185,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToChar(GetPixelRed(image,p));
           if (image->matte != MagickFalse)
             *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-          p+=GetPixelComponents(image);
+          p+=GetPixelChannels(image);
         }
         if (dib_info.bits_per_pixel == 24)
           for (x=(ssize_t) (3*image->columns); x < (ssize_t) bytes_per_line; x++)

@@ -183,7 +183,7 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
         if (GetPixelAlpha(image,q) != OpaqueAlpha)
           image->matte=MagickTrue;
-        q+=GetPixelComponents(image);
+        q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -387,7 +387,7 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
           GetPixelAlpha(image,p) : OpaqueAlpha));
         if (*q == 255)
           *q=254;
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
         q++;
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);

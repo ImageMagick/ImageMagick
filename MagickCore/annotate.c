@@ -1393,7 +1393,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 (x_offset >= (ssize_t) image->columns))
               {
                 p++;
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
                 continue;
               }
             fill_opacity=(MagickRealType) (*p)/(bitmap->bitmap.num_grays-1);
@@ -1405,7 +1405,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             if (q == (const Quantum *) NULL)
               {
                 p++;
-                q+=GetPixelComponents(image);
+                q+=GetPixelChannels(image);
                 continue;
               }
             (void) GetFillColor(draw_info,x_offset,y_offset,&fill_color);
@@ -1419,7 +1419,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                   status=MagickFalse;
               }
             p++;
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           sync=SyncCacheViewAuthenticPixels(image_view,exception);
           if (sync == MagickFalse)
@@ -1798,7 +1798,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           SetPixelRed(annotate_image,fill_color.red,q);
           SetPixelGreen(annotate_image,fill_color.green,q);
           SetPixelBlue(annotate_image,fill_color.blue,q);
-          q+=GetPixelComponents(annotate_image);
+          q+=GetPixelChannels(annotate_image);
         }
         sync=SyncCacheViewAuthenticPixels(annotate_view,exception);
         if (sync == MagickFalse)

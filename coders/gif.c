@@ -450,7 +450,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
       SetPixelAlpha(image,(ssize_t) index == opacity ? TransparentAlpha :
         OpaqueAlpha,q);
       x++;
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -666,7 +666,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     if (y == 0)
       {
         waiting_code=(short) GetPixelIndex(image,p);
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     for (x=(ssize_t) (y == 0 ? 1 : 0); x < (ssize_t) image->columns; x++)
     {
@@ -674,7 +674,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
         Probe hash table.
       */
       index=(Quantum) ((size_t) GetPixelIndex(image,p) & 0xff);
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
       k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+waiting_code);
       if (k >= MaxHashTable)
         k-=MaxHashTable;

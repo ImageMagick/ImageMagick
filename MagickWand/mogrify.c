@@ -423,16 +423,16 @@ static Image *SparseColorOption(const Image *image,
     Limit channels according to image - and add up number of color channel.
   */
   number_colors=0;
-  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
     number_colors++;
-  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
     number_colors++;
-  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
     number_colors++;
-  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+  if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace))
     number_colors++;
-  if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
       (image->matte != MagickFalse))
     number_colors++;
 
@@ -526,23 +526,23 @@ static Image *SparseColorOption(const Image *image,
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
         (void) QueryMagickColor(token,&color,exception);
-        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.red;
-        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.green;
-        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.blue;
-        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+        if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
           sparse_arguments[x++] = QuantumScale*color.black;
-        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+        if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (image->matte != MagickFalse))
           sparse_arguments[x++] = QuantumScale*color.alpha;
       }
       else {
         /* Colors given as a set of floating point values - experimental */
         /* NB: token contains the first floating point value to use! */
-        if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
@@ -550,7 +550,7 @@ static Image *SparseColorOption(const Image *image,
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
@@ -558,7 +558,7 @@ static Image *SparseColorOption(const Image *image,
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
@@ -566,7 +566,7 @@ static Image *SparseColorOption(const Image *image,
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+        if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
           {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
@@ -575,7 +575,7 @@ static Image *SparseColorOption(const Image *image,
           sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
-        if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+        if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (image->matte != MagickFalse))
           {
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
@@ -979,7 +979,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               channel=DefaultChannels;
             else
               channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelComponentMap(*image,channel);
+            SetPixelChannelMap(*image,channel);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)
@@ -1078,7 +1078,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
                 SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
                 SetPixelBlue(mask_image,GetPixelAlpha(mask_image,q),q);
-                q+=GetPixelComponents(mask_image);
+                q+=GetPixelChannels(mask_image);
               }
               if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
                 break;
@@ -7344,7 +7344,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelComponentMap(*images,channel);
+            SetPixelChannelMap(*images,channel);
             break;
           }
         if (LocaleCompare("clut",option+1) == 0)

@@ -267,25 +267,25 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelRed(image,p))].red++;
-      if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelGreen(image,p))].green++;
-      if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelBlue(image,p))].blue++;
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
   }
   maximum=histogram[0].red;
   for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
-    if (((GetPixelRedTraits(image) & ActivePixelTrait) != 0) &&
+    if (((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) &&
         (maximum < histogram[x].red))
       maximum=histogram[x].red;
-    if (((GetPixelGreenTraits(image) & ActivePixelTrait) != 0) &&
+    if (((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) &&
         (maximum < histogram[x].green))
       maximum=histogram[x].green;
-    if (((GetPixelBlueTraits(image) & ActivePixelTrait) != 0) &&
+    if (((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) &&
         (maximum < histogram[x].blue))
       maximum=histogram[x].blue;
   }
@@ -302,7 +302,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     q=GetAuthenticPixels(histogram_image,x,0,1,histogram_image->rows,exception);
     if (q == (const Quantum *) NULL)
       break;
-    if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+    if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].red-0.5);
         r=q+y;
@@ -312,7 +312,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
           r++;
         }
       }
-    if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+    if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].green-0.5);
         r=q+y;
@@ -322,7 +322,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
           r++;
         }
       }
-    if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+    if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].blue-0.5);
         r=q+y;
