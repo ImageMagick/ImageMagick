@@ -1328,7 +1328,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
     register ssize_t
       x;
 
-    ssize_t
+    size_t
       channels,
       convolve_channels;
 
