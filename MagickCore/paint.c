@@ -229,8 +229,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       break;
-    p+=x1*GetPixelComponents(image);
-    q+=x1*GetPixelComponents(floodplane_image);
+    p+=x1*GetPixelChannels(image);
+    q+=x1*GetPixelChannels(floodplane_image);
     for (x=x1; x >= 0; x--)
     {
       if (GetPixelAlpha(image,q) == TransparentAlpha)
@@ -239,8 +239,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
         break;
       SetPixelAlpha(floodplane_image,TransparentAlpha,q);
-      p-=GetPixelComponents(image);
-      q-=GetPixelComponents(floodplane_image);
+      p-=GetPixelChannels(image);
+      q-=GetPixelChannels(floodplane_image);
     }
     if (SyncCacheViewAuthenticPixels(floodplane_view,exception) == MagickFalse)
       break;
@@ -274,8 +274,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
                   break;
                 SetPixelAlpha(floodplane_image,
                   TransparentAlpha,q);
-                p+=GetPixelComponents(image);
-                q+=GetPixelComponents(floodplane_image);
+                p+=GetPixelChannels(image);
+                q+=GetPixelChannels(floodplane_image);
               }
               if (SyncCacheViewAuthenticPixels(floodplane_view,exception) == MagickFalse)
                 break;
@@ -302,8 +302,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
             SetPixelInfo(image,p,&pixel);
             if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
               break;
-            p+=GetPixelComponents(image);
-            q+=GetPixelComponents(floodplane_image);
+            p+=GetPixelChannels(image);
+            q+=GetPixelChannels(floodplane_image);
           }
         }
       start=x;
@@ -336,20 +336,20 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
           SetPixelInfoPacket(image,&fill_color,&fill);
           if (image->colorspace == CMYKColorspace)
             ConvertRGBToCMYK(&fill);
-          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(fill.red),q);
-          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
             SetPixelGreen(image,ClampToQuantum(fill.green),q);
-          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
             SetPixelBlue(image,ClampToQuantum(fill.blue),q);
-          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+          if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(fill.black),q);
-          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
             SetPixelAlpha(image,ClampToQuantum(fill.alpha),q);
         }
-      p+=GetPixelComponents(floodplane_image);
-      q+=GetPixelComponents(image);
+      p+=GetPixelChannels(floodplane_image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
@@ -662,19 +662,19 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         i+=(ssize_t) (image->columns+width);
       }
       SetPixelRed(paint_image,GetPixelRed(image,p+j*
-        GetPixelComponents(image)),q);
+        GetPixelChannels(image)),q);
       SetPixelGreen(paint_image,GetPixelGreen(image,p+j*
-        GetPixelComponents(image)),q);
+        GetPixelChannels(image)),q);
       SetPixelBlue(paint_image,GetPixelBlue(image,p+j*
-        GetPixelComponents(image)),q);
+        GetPixelChannels(image)),q);
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(paint_image,GetPixelBlack(image,p+j*
-          GetPixelComponents(image)),q);
+          GetPixelChannels(image)),q);
       if (image->matte != MagickFalse)
         SetPixelAlpha(paint_image,GetPixelAlpha(image,p+j*
-          GetPixelComponents(image)),q);
-      p+=GetPixelComponents(image);
-      q+=GetPixelComponents(paint_image);
+          GetPixelChannels(image)),q);
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(paint_image);
     }
     if (SyncCacheViewAuthenticPixels(paint_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -803,19 +803,19 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
       SetPixelInfo(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
         {
-          if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(fill->red),q);
-          if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
             SetPixelGreen(image,ClampToQuantum(fill->green),q);
-          if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
             SetPixelBlue(image,ClampToQuantum(fill->blue),q);
-          if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+          if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(fill->black),q);
-          if ((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0)
+          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
             SetPixelAlpha(image,ClampToQuantum(fill->alpha),q);
         }
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -943,7 +943,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
       SetPixelInfo(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
         SetPixelAlpha(image,opacity,q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1078,7 +1078,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
         MagickTrue : MagickFalse;
       if (match != invert)
         SetPixelAlpha(image,opacity,q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

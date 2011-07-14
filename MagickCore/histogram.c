@@ -288,7 +288,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
           node_info->number_unique++;
           cube_info->colors++;
         }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     proceed=SetImageProgress(image,EvaluateImageTag,(MagickOffsetType) y,
       image->rows);
@@ -761,7 +761,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
           if (cube_info->colors > MaximumUniqueColors)
             break;
         }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -921,7 +921,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
           if (cube_info->colors > 256)
             break;
         }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -1001,57 +1001,57 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   /*
     Auto-level each channel separately.
   */
-  if ((GetPixelRedTraits(image) & ActivePixelTrait) != 0)
+  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
     {
-      PushPixelComponentMap(image,RedChannel);
+      PushPixelChannelMap(image,RedChannel);
       (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImage(image,min,max,1.0);
-      PopPixelComponentMap(image);
+      PopPixelChannelMap(image);
     }
-  if ((GetPixelGreenTraits(image) & ActivePixelTrait) != 0)
+  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
     {
-      PushPixelComponentMap(image,GreenChannel);
+      PushPixelChannelMap(image,GreenChannel);
       (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImage(image,min,max,1.0);
-      PopPixelComponentMap(image);
+      PopPixelChannelMap(image);
     }
-  if ((GetPixelBlueTraits(image) & ActivePixelTrait) != 0)
+  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
     {
-      PushPixelComponentMap(image,BlueChannel);
+      PushPixelChannelMap(image,BlueChannel);
       (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImage(image,min,max,1.0);
-      PopPixelComponentMap(image);
+      PopPixelChannelMap(image);
     }
-  if (((GetPixelBlackTraits(image) & ActivePixelTrait) != 0) &&
+  if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
        (image->colorspace == CMYKColorspace))
     {
-      PushPixelComponentMap(image,BlackChannel);
+      PushPixelChannelMap(image,BlackChannel);
       (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImage(image,min,max,1.0);
-      PopPixelComponentMap(image);
+      PopPixelChannelMap(image);
     }
-  if (((GetPixelAlphaTraits(image) & ActivePixelTrait) != 0) &&
+  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
        (image->matte == MagickTrue))
     {
-      PushPixelComponentMap(image,AlphaChannel);
+      PushPixelChannelMap(image,AlphaChannel);
       (void) GetImageRange(image,&min,&max,&image->exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
         status&=LevelImage(image,min,max,1.0);
-      PopPixelComponentMap(image);
+      PopPixelChannelMap(image);
     }
   return(status != 0 ? MagickTrue : MagickFalse);
 }
@@ -1161,21 +1161,21 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   {
     SetPixelInfoPacket(image,p,&pixel);
     (void) CopyMagickString(tuple,"(",MaxTextExtent);
-    ConcatenateColorComponent(&pixel,RedPixelComponent,X11Compliance,tuple);
+    ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,tuple);
     (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-    ConcatenateColorComponent(&pixel,GreenPixelComponent,X11Compliance,tuple);
+    ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,tuple);
     (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-    ConcatenateColorComponent(&pixel,BluePixelComponent,X11Compliance,tuple);
+    ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,tuple);
     if (pixel.colorspace == CMYKColorspace)
       {
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,BlackPixelComponent,X11Compliance,
+        ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
           tuple);
       }
     if (pixel.matte != MagickFalse)
       {
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,AlphaPixelComponent,X11Compliance,
+        ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,
           tuple);
       }
     (void) ConcatenateMagickString(tuple,")",MaxTextExtent);

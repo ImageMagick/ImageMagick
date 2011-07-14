@@ -120,7 +120,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds)
     for (x=0; x < (ssize_t) bounds->width; x++)
     {
       SetPixelAlpha(image,TransparentAlpha,q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -194,7 +194,7 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
       if ((GetPixelAlpha(image1,p) <= (Quantum) (QuantumRange/2)) &&
           (GetPixelAlpha(image1,q) > (Quantum) (QuantumRange/2)))
         break;
-      p+=GetPixelComponents(image1);
+      p+=GetPixelChannels(image1);
       q++;
     }
     if (x < (ssize_t) bounds->width)
@@ -633,7 +633,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       SetPixelInfo(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
-      p+=GetPixelComponents(image1);
+      p+=GetPixelChannels(image1);
       q++;
     }
     if (y < (ssize_t) image1->rows)
@@ -664,7 +664,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       SetPixelInfo(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
-      p+=GetPixelComponents(image1);
+      p+=GetPixelChannels(image1);
       q++;
     }
     if (y < (ssize_t) image1->rows)
@@ -684,7 +684,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       SetPixelInfo(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
-      p+=GetPixelComponents(image1);
+      p+=GetPixelChannels(image1);
       q++;
     }
     if (x < (ssize_t) image1->columns)
@@ -704,7 +704,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       SetPixelInfo(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
-      p+=GetPixelComponents(image1);
+      p+=GetPixelChannels(image1);
       q++;
     }
     if (x < (ssize_t) image1->columns)

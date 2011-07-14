@@ -1769,7 +1769,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                     (void) WriteBlob(image,q-pixels,pixels);
                     q=pixels;
                   }
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1828,7 +1828,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
               if (bit != 0)
                 {
@@ -1906,7 +1906,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                       length=0;
                     }
                   GetPixelPacket(image,p,&pixel);
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
                 WriteRunlengthPacket(image,pixel,length,p);
                 if ((q-pixels+10) >= 80)
@@ -1967,7 +1967,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                       (void) WriteBlob(image,q-pixels,pixels);
                       q=pixels;
                     }
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {
@@ -2054,7 +2054,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                   pixel.green=GetPixelGreen(image,p);
                   pixel.blue=GetPixelBlue(image,p);
                   pixel.alpha=GetPixelAlpha(image,p);
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
                 q=PopHexPixel(hex_digits,(size_t) index,q);
                 q=PopHexPixel(hex_digits,(size_t)
@@ -2096,7 +2096,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
                       (void) WriteBlob(image,q-pixels,pixels);
                       q=pixels;
                     }
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {

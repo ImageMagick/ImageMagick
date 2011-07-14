@@ -147,7 +147,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelPacket(image,&pixel,q);
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(image,pixel.black,q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

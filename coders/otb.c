@@ -186,7 +186,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bit++;
       if (bit == 8)
         bit=0;
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -367,7 +367,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
           bit=0;
           byte=0;
         }
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
     }
     if (bit != 0)
       (void) WriteBlobByte(image,byte);

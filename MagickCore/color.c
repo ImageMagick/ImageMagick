@@ -1004,7 +1004,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %  The format of the ConcatenateColorComponent() method is:
 %
 %      void ConcatenateColorComponent(const PixelInfo *pixel,
-%        const PixelComponent component,const ComplianceType compliance,
+%        const PixelChannel component,const ComplianceType compliance,
 %        char *tuple)
 %
 %  A description of each parameter follows.
@@ -1019,7 +1019,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %
 */
 MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
-  const PixelComponent component,const ComplianceType compliance,char *tuple)
+  const PixelChannel component,const ComplianceType compliance,char *tuple)
 {
   char
     text[MaxTextExtent];
@@ -1030,27 +1030,27 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   color=0.0;
   switch (component)
   {
-    case RedPixelComponent:
+    case RedPixelChannel:
     {
       color=pixel->red;
       break;
     }
-    case GreenPixelComponent:
+    case GreenPixelChannel:
     {
       color=pixel->green;
       break;
     }
-    case BluePixelComponent:
+    case BluePixelChannel:
     {
       color=pixel->blue;
       break;
     }
-    case AlphaPixelComponent:
+    case AlphaPixelChannel:
     {
       color=pixel->alpha;
       break;
     }
-    case BlackPixelComponent:
+    case BlackPixelChannel:
     {
       color=pixel->black;
       break;
@@ -1079,7 +1079,7 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
     }
-  if (component == AlphaPixelComponent)
+  if (component == AlphaPixelChannel)
     {
       (void) FormatLocaleString(text,MaxTextExtent,"%g",(double)
         (QuantumScale*color));
@@ -1446,20 +1446,20 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
   if (color.matte != MagickFalse)
     (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
-  ConcatenateColorComponent(&color,RedPixelComponent,SVGCompliance,tuple);
+  ConcatenateColorComponent(&color,RedPixelChannel,SVGCompliance,tuple);
   (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-  ConcatenateColorComponent(&color,GreenPixelComponent,SVGCompliance,tuple);
+  ConcatenateColorComponent(&color,GreenPixelChannel,SVGCompliance,tuple);
   (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-  ConcatenateColorComponent(&color,BluePixelComponent,SVGCompliance,tuple);
+  ConcatenateColorComponent(&color,BluePixelChannel,SVGCompliance,tuple);
   if (color.colorspace == CMYKColorspace)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-      ConcatenateColorComponent(&color,BlackPixelComponent,SVGCompliance,tuple);
+      ConcatenateColorComponent(&color,BlackPixelChannel,SVGCompliance,tuple);
     }
   if (color.matte != MagickFalse)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-      ConcatenateColorComponent(&color,AlphaPixelComponent,SVGCompliance,tuple);
+      ConcatenateColorComponent(&color,AlphaPixelChannel,SVGCompliance,tuple);
     }
   (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
   LocaleLower(tuple);

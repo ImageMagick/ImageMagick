@@ -235,7 +235,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
         bit=0;
       SetPixelIndex(image,index,q);
       SetPixelPacket(image,image->colormap+(ssize_t) index,q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -472,7 +472,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
             bit=0;
             byte=0;
           }
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
       if (bit != 0)
         *q++=byte << (8-bit);

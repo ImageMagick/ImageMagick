@@ -199,8 +199,8 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
       SetPixelGreen(matte_image,GetPixelAlpha(image,p),q);
       SetPixelBlue(matte_image,GetPixelAlpha(image,p),q);
       SetPixelAlpha(matte_image,OpaqueAlpha,q);
-      p+=GetPixelComponents(image);
-      q+=GetPixelComponents(matte_image);
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(matte_image);
     }
     if (SyncAuthenticPixels(matte_image,exception) == MagickFalse)
       break;

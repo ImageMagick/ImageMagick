@@ -366,7 +366,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       byte>>=1;
       if (bit == 8)
         bit=0;
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -562,7 +562,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
           bit=0;
           byte=0;
         }
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     if (bit != 0)
       {

@@ -669,7 +669,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                       (0x01 << (7-bit))) != 0 ? 0 : 255,q);
                     SetPixelPacket(image,image->colormap+(ssize_t)
                       GetPixelIndex(image,q),q);
-                    q+=GetPixelComponents(image);
+                    q+=GetPixelChannels(image);
                     x++;
                   }
                   q--;
@@ -712,7 +712,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         default:
           break;
       }
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -1317,7 +1317,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     SetPixelAlpha(layer_info[i].image,(Quantum)
                       (QuantumScale*(GetPixelAlpha(layer_info[i].image,q))*
                       layer_info[i].opacity),q);
-                    q+=GetPixelComponents(layer_info[i].image);
+                    q+=GetPixelChannels(layer_info[i].image);
                   }
                   if (SyncAuthenticPixels(layer_info[i].image,exception) == MagickFalse)
                     break;

@@ -381,7 +381,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
           SetPixelAlpha(tile_image,ScaleCharToQuantum((unsigned char)
             inLayerInfo->alpha),q);
           graydata++;
-          q+=GetPixelComponents(tile_image);
+          q+=GetPixelChannels(tile_image);
         }
       }
     else
@@ -395,7 +395,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
             SetPixelAlpha(tile_image,xcfdata->alpha == 0U ? OpaqueAlpha :
               ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
             xcfdata++;
-            q+=GetPixelComponents(tile_image);
+            q+=GetPixelChannels(tile_image);
           }
         }
      if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
@@ -509,7 +509,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                   break;
                 }
               }
-              q+=GetPixelComponents(tile_image);
+              q+=GetPixelChannels(tile_image);
             }
           }
         else
@@ -569,7 +569,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                   break;
                 }
               }
-              q+=GetPixelComponents(tile_image);
+              q+=GetPixelChannels(tile_image);
             }
           }
       }

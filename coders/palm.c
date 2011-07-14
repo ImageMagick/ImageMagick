@@ -477,7 +477,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             SetPixelGreen(image,(QuantumRange*((color16 >> 5) & 0x3f))/0x3f,q);
             SetPixelBlue(image,(QuantumRange*((color16 >> 0) & 0x1f))/0x1f,q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
         }
       else
@@ -497,7 +497,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 ptr++;
                 bit=8-bits_per_pixel;
               }
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -826,7 +826,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             {
               SetPixelIndex(image,FindColor(image,&image->colormap[(ssize_t)
                 GetPixelIndex(image,q)]),q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
           }
           affinity_image=DestroyImage(affinity_image);
@@ -868,7 +868,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
               }
             *ptr++=(unsigned char) ((color16 >> 8) & 0xff);
             *ptr++=(unsigned char) (color16 & 0xff);
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
         }
       else
@@ -891,7 +891,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
                 byte=0x00;
                 bit=(unsigned char) (8-bits_per_pixel);
               }
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           if ((image->columns % (8/bits_per_pixel)) != 0)
             *ptr++=byte;

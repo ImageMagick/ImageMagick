@@ -649,7 +649,7 @@ MagickExport void *ImageToHBITMAP(Image *image)
       q->rgbGreen=ScaleQuantumToChar(GetPixelGreen(image,p));
       q->rgbBlue=ScaleQuantumToChar(GetPixelBlue(image,p));
       q->rgbReserved=0;
-      p+=GetPixelComponents(image);
+      p+=GetPixelChannels(image);
       q++;
     }
   }

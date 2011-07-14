@@ -1412,7 +1412,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
             if (image->matte != MagickFalse)
               SetPixelAlpha(image,pixel.alpha,q);
-            q+=GetPixelComponents(image);
+            q+=GetPixelChannels(image);
           }
           break;
         }
@@ -2392,7 +2392,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         {
           length=0;
           SetPixelInfo(image,p,&pixel);
-          p+=GetPixelComponents(image);
+          p+=GetPixelChannels(image);
           for (x=1; x < (ssize_t) image->columns; x++)
           {
             SetPixelInfo(image,p,&target);
@@ -2405,7 +2405,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 length=0;
               }
             SetPixelInfo(image,p,&pixel);
-            p+=GetPixelComponents(image);
+            p+=GetPixelChannels(image);
           }
           q=PopRunlengthPacket(image,q,length,&pixel);
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);

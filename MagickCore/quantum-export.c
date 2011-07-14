@@ -280,13 +280,13 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
     {
       number_pixels=GetImageExtent(image);
       p=GetVirtualPixelQueue(image);
-      channels=GetPixelComponents(image);
+      channels=GetPixelChannels(image);
     }
   else
     {
       number_pixels=GetCacheViewExtent(image_view);
       p=GetCacheViewVirtualPixelQueue(image_view);
-      channels=GetPixelComponents(image);
+      channels=GetPixelChannels(image);
     }
   if (quantum_info->alpha_type == AssociatedQuantumAlpha)
     {

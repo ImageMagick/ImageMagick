@@ -708,7 +708,7 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
   number_pixels=(MagickSizeType) columns*rows;
-  length=(size_t) number_pixels*cache_info->pixel_components*sizeof(Quantum);
+  length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
@@ -736,7 +736,7 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
   cache_info->metacontent=(void *) NULL;
   if (cache_info->metacontent_extent != 0)
     cache_info->metacontent=(void *) (cache_info->pixels+number_pixels*
-      cache_info->pixel_components);
+      cache_info->number_channels);
   return(cache_info->pixels);
 }
 
@@ -867,7 +867,7 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   cache_info->columns=columns;
   cache_info->rows=rows;
   number_pixels=(MagickSizeType) columns*rows;
-  length=(size_t) number_pixels*cache_info->pixel_components*sizeof(Quantum);
+  length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
@@ -887,7 +887,7 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   cache_info->metacontent=(void *) NULL;
   if (cache_info->metacontent_extent != 0)
     cache_info->metacontent=(void *) (cache_info->pixels+number_pixels*
-      cache_info->pixel_components);
+      cache_info->number_channels);
   return(cache_info->pixels);
 }
 

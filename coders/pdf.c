@@ -1605,7 +1605,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 *q++=ScaleQuantumToChar(GetPixelIntensity(image,p));
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1647,7 +1647,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(
                   GetPixelIntensity(image,p)));
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1712,7 +1712,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
                 if (image->colorspace == CMYKColorspace)
                   *q++=ScaleQuantumToChar(GetPixelBlack(image,p));
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1758,7 +1758,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(
                     GetPixelBlack(image,p)));
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1804,7 +1804,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   *q++=(unsigned char) GetPixelIndex(image,p);
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {
@@ -1846,7 +1846,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   Ascii85Encode(image,(unsigned char) GetPixelIndex(image,p));
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {
@@ -2054,7 +2054,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {
                 *q++=ScaleQuantumToChar(GetPixelIntensity(tile_image,p));
-                p+=GetPixelComponents(tile_image);
+                p+=GetPixelChannels(tile_image);
               }
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2090,7 +2090,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 Ascii85Encode(image,
                   ScaleQuantumToChar(GetPixelIntensity(tile_image,p)));
-                p+=GetPixelComponents(tile_image);
+                p+=GetPixelChannels(tile_image);
               }
             }
             Ascii85Flush(image);
@@ -2153,7 +2153,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 *q++=ScaleQuantumToChar(GetPixelBlue(tile_image,p));
                 if (image->colorspace == CMYKColorspace)
                   *q++=ScaleQuantumToChar(GetPixelBlack(tile_image,p));
-                p+=GetPixelComponents(tile_image);
+                p+=GetPixelChannels(tile_image);
               }
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2196,7 +2196,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 if (image->colorspace == CMYKColorspace)
                   Ascii85Encode(image,ScaleQuantumToChar(
                     GetPixelBlack(tile_image,p)));
-                p+=GetPixelComponents(tile_image);
+                p+=GetPixelChannels(tile_image);
               }
             }
             Ascii85Flush(image);
@@ -2238,7 +2238,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
                 {
                   *q++=(unsigned char) GetPixelIndex(tile_image,p);
-                  q+=GetPixelComponents(image);
+                  q+=GetPixelChannels(image);
                 }
               }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2274,7 +2274,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
                 {
                   Ascii85Encode(image,(unsigned char)
                     GetPixelIndex(tile_image,p));
-                  p+=GetPixelComponents(image);
+                  p+=GetPixelChannels(image);
                 }
               }
               Ascii85Flush(image);
@@ -2441,7 +2441,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -2475,7 +2475,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 Ascii85Encode(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
-                p+=GetPixelComponents(image);
+                p+=GetPixelChannels(image);
               }
             }
             Ascii85Flush(image);

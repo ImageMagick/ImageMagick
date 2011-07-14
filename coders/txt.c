@@ -651,7 +651,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
       image->columns,(double) image->rows,(double)
-      ((MagickOffsetType) GetQuantumRange(image->depth)),colorspace);
+      GetQuantumRange(image->depth),colorspace);
     (void) WriteBlobString(image,buffer);
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -666,24 +666,24 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         SetPixelInfo(image,p,&pixel);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,RedPixelComponent,X11Compliance,
+        ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
           tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,GreenPixelComponent,X11Compliance,
+        ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,
           tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,BluePixelComponent,X11Compliance,
+        ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,
           tuple);
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,BlackPixelComponent,X11Compliance,
+            ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
               tuple);
           }
         if (pixel.matte != MagickFalse)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-            ConcatenateColorComponent(&pixel,AlphaPixelComponent,X11Compliance,
+            ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,
               tuple);
           }
         (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
@@ -697,7 +697,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
           &image->exception);
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
         image->rows);

@@ -2938,7 +2938,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
               CompositePixelOver(image,&fill_color,fill_color.alpha,q,
                 (MagickRealType) GetPixelAlpha(image,q),q);
-              q+=GetPixelComponents(image);
+              q+=GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -3351,7 +3351,7 @@ static MagickBooleanType TraceSVGImage(Image *image)
             trace->bitmap[i++]=GetPixelGreen(image,p);
             trace->bitmap[i++]=GetPixelBlue(image,p);
           }
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     }
     splines=at_splines_new_full(trace,fitting_options,NULL,NULL,NULL,NULL,NULL,
@@ -3400,7 +3400,7 @@ static MagickBooleanType TraceSVGImage(Image *image)
           "  <circle cx=\"%.20g\" cy=\"%.20g\" r=\"1\" fill=\"%s\"/>\n",
           (double) x,(double) y,tuple);
         (void) WriteBlobString(image,message);
-        p+=GetPixelComponents(image);
+        p+=GetPixelChannels(image);
       }
     }
     (void) WriteBlobString(image,"</svg>\n");

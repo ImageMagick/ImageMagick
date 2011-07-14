@@ -470,7 +470,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelAlpha(image,OpaqueAlpha,q);
       if (image->matte != MagickFalse)
         SetPixelAlpha(image,ScaleCharToQuantum(*a),q);
-      q+=GetPixelComponents(image);
+      q+=GetPixelChannels(image);
       r+=red_component->columnStride;
       g+=green_component->columnStride;
       b+=blue_component->columnStride;

@@ -25,8 +25,8 @@ extern "C" {
 #include <MagickCore/colorspace.h>
 #include <MagickCore/constitute.h>
 
-#define MaxPixelComponents  32
-#define MaxPixelComponentMaps  8
+#define MaxPixelChannels  32
+#define MaxPixelChannelMaps  8
 
 typedef enum
 {
@@ -43,37 +43,29 @@ typedef enum
 
 typedef enum
 {
-  RedPixelComponent = 0,
-  CyanPixelComponent = 0,
-  GrayPixelComponent = 0,
-  YPixelComponent = 0,
-  GreenPixelComponent = 1,
-  MagentaPixelComponent = 1,
-  CbPixelComponent = 1,
-  BluePixelComponent = 2,
-  YellowPixelComponent = 2,
-  CrPixelComponent = 2,
-  AlphaPixelComponent = 3,
-  BlackPixelComponent = 4,
-  IndexPixelComponent = 4,
-  MaskPixelComponent = 5
-} PixelComponent;
+  RedPixelChannel = 0,
+  CyanPixelChannel = 0,
+  GrayPixelChannel = 0,
+  YPixelChannel = 0,
+  GreenPixelChannel = 1,
+  MagentaPixelChannel = 1,
+  CbPixelChannel = 1,
+  BluePixelChannel = 2,
+  YellowPixelChannel = 2,
+  CrPixelChannel = 2,
+  AlphaPixelChannel = 3,
+  BlackPixelChannel = 4,
+  IndexPixelChannel = 4,
+  MaskPixelChannel = 5
+} PixelChannel;
 
 typedef enum
 {
   UndefinedPixelTrait = 0x000000,
-  ActivePixelTrait = 0x000001,
-  BlendPixelTrait = 0x000002
+  CopyPixelTrait = 0x000001,
+  UpdatePixelTrait = 0x000002,
+  BlendPixelTrait = 0x000004
 } PixelTrait;
-
-typedef struct _PixelComponentMap
-{
-  PixelComponent
-    component;
-
-  PixelTrait
-    traits;
-} PixelComponentMap;
 
 typedef struct _DoublePixelPacket
 {
@@ -94,6 +86,15 @@ typedef struct _LongPixelPacket
     alpha,
     black;
 } LongPixelPacket;
+
+typedef struct _PixelChannelMap
+{
+  PixelChannel
+    channel;
+
+  PixelTrait
+    traits;
+} PixelChannelMap;
 
 typedef struct _PixelInfo
 {
@@ -152,20 +153,20 @@ extern MagickExport MagickBooleanType
   IsFuzzyEquivalencePixelPacket(const Image *,const PixelPacket *,
     const PixelPacket *);
 
-extern MagickExport PixelComponentMap
-  **AcquirePixelComponentMap(void),
-  **ClonePixelComponentMap(PixelComponentMap **),
-  **DestroyPixelComponentMap(PixelComponentMap **);
+extern MagickExport PixelChannelMap
+  **AcquirePixelChannelMap(void),
+  **ClonePixelChannelMap(PixelChannelMap **),
+  **DestroyPixelChannelMap(PixelChannelMap **);
 
 extern MagickExport PixelInfo
   *ClonePixelInfo(const PixelInfo *);
 
 extern MagickExport void
-  StandardPixelComponentMap(Image *),
+  StandardPixelChannelMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),
-  PopPixelComponentMap(Image *),
-  PushPixelComponentMap(Image *,const ChannelType),
-  SetPixelComponentMap(Image *,const ChannelType);
+  PopPixelChannelMap(Image *),
+  PushPixelChannelMap(Image *,const ChannelType),
+  SetPixelChannelMap(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
