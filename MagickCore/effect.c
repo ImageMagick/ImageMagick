@@ -1384,11 +1384,11 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {
-            const Quantum
-              *restrict center;
+            const size_t
+              center;
 
-            center=p+((image->columns+width)*width/2)*channels+i;
-            SetPixelChannel(convolve_image,channel,*center,q);
+            center=((image->columns+width)*width/2)*channels+i;
+            SetPixelChannel(convolve_image,channel,p[center],q);
             continue;
           }
         k=normal_kernel;
