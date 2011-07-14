@@ -1265,8 +1265,10 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
       register const double
         *k;
 
+      register ssize_t
+        u;
+
       ssize_t
-        u,
         v;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -1325,7 +1327,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
     register ssize_t
       x;
 
-    size_t
+    ssize_t
       channels,
       convolve_channels;
 
@@ -1349,10 +1351,9 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
 
       for (i=0; i < (ssize_t) channels; i++)
       {
-        const Quantum
-          *restrict center;
-
         MagickRealType
+          alpha,
+          gamma,
           pixel;
 
         PixelChannel
@@ -1374,21 +1375,30 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
         ssize_t
           v;
 
-        channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,i);
-        convolve_traits=GetPixelChannelMapTraits(convolve_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (convolve_traits == UndefinedPixelTrait))
+        if (traits == UndefinedPixelTrait)
           continue;
-        pixel=image->bias;
+        channel=GetPixelChannelMapChannel(image,i);
+        convolve_traits=GetPixelChannelMapTraits(convolve_image,channel);
+        if (convolve_traits == UndefinedPixelTrait)
+          continue;
+        if ((convolve_traits & CopyPixelTrait) != 0)
+          {
+            const Quantum
+              *restrict center;
+
+            center=p+((image->columns+width)*width/2)*channels+i;
+            SetPixelChannel(convolve_image,channel,*center,q);
+            continue;
+          }
         k=normal_kernel;
         kernel_pixels=p;
-        center=p+((image->columns+width)*width/2)*channels+i;
-        if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) == 0) ||
+        pixel=image->bias;
+        if ((GetPixelAlphaTraits(image) == UndefinedTrait) ||
             (image->matte == MagickFalse))
           {
             /*
-              No alpha blending (optimized).
+              No alpha blending.
             */
             for (v=0; v < (ssize_t) width; v++)
             {
@@ -1399,50 +1409,35 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
               }
               kernel_pixels+=(image->columns+width)*channels;
             }
-            if ((convolve_traits & UpdatePixelTrait) != 0)
-              SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
-            else
-              if ((convolve_traits & CopyPixelTrait) != 0)
-                SetPixelChannel(convolve_image,channel,*center,q);
+            SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
+            continue;
           }
+        /*
+          Alpha blending.
+        */
+        gamma=0.0;
+        for (v=0; v < (ssize_t) width; v++)
+        {
+          for (u=0; u < (ssize_t) width; u++)
+          {
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,
+              kernel_pixels+u*channels));
+            if ((traits & BlendPixelTrait) == 0)
+              pixel+=(*k)*kernel_pixels[u*channels+i];
+            else
+              pixel+=(*k)*alpha*kernel_pixels[u*channels+i];
+            gamma+=(*k)*alpha;
+            k++;
+          }
+          kernel_pixels+=(image->columns+width)*channels;
+        }
+        if ((convolve_traits & BlendPixelTrait) == 0)
+          SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
         else
           {
-            MagickRealType
-              alpha,
-              gamma;
-
-            /*
-              Alpha blending (unoptimized).
-            */
-            gamma=0.0;
-            for (v=0; v < (ssize_t) width; v++)
-            {
-              for (u=0; u < (ssize_t) width; u++)
-              {
-                alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,
-                  kernel_pixels+u*channels));
-                if ((traits & BlendPixelTrait) == 0)
-                  pixel+=(*k)*kernel_pixels[u*channels+i];
-                else
-                  pixel+=(*k)*alpha*kernel_pixels[u*channels+i];
-                gamma+=(*k)*alpha;
-                k++;
-              }
-              kernel_pixels+=(image->columns+width)*channels;
-            }
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            if ((convolve_traits & UpdatePixelTrait) != 0)
-              {
-                if ((convolve_traits & BlendPixelTrait) == 0)
-                  SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),
-                    q);
-                else
-                  SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*
-                    pixel),q);
-              }
-            else
-              if ((convolve_traits & CopyPixelTrait) != 0)
-                SetPixelChannel(convolve_image,channel,*center,q);
+            SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*pixel),
+              q);
           }
       }
       p+=channels;
