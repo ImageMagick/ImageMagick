@@ -1194,27 +1194,18 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
-            double
-              gamma;
-
             KernelInfo
-              *kernel;
+              *kernel_info;
 
             register ssize_t
               j;
 
             (void) SyncImageSettings(mogrify_info,*image);
-            kernel=AcquireKernelInfo(argv[i+1]);
-            if (kernel == (KernelInfo *) NULL)
+            kernel_info=AcquireKernelInfo(argv[i+1]);
+            if (kernel_info == (KernelInfo *) NULL)
               break;
-            gamma=0.0;
-            for (j=0; j < (ssize_t) (kernel->width*kernel->height); j++)
-              gamma+=kernel->values[j];
-            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            for (j=0; j < (ssize_t) (kernel->width*kernel->height); j++)
-              kernel->values[j]*=gamma;
-            mogrify_image=FilterImage(*image,kernel,exception);
-            kernel=DestroyKernelInfo(kernel);
+            mogrify_image=FilterImage(*image,kernel_info,exception);
+            kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
         if (LocaleCompare("crop",option+1) == 0)

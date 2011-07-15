@@ -116,7 +116,8 @@ typedef struct KernelInfo
     maximum,
     negative_range,
     positive_range,
-    angle;
+    angle,
+    bias;
 
   struct KernelInfo
     *next;
