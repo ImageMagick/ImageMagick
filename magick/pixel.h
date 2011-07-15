@@ -73,7 +73,7 @@ extern "C" {
 #define SetPixelOpacity(pixel,value) \
   ((pixel)->opacity=(Quantum) (value))
 #define SetPixelRed(pixel,value) ((pixel)->red=(Quantum) (value))
-#define SetPixelRGB(pixel,packet) \
+#define SetPixelRgb(pixel,packet) \
 { \
   SetPixelRed(pixel,(packet)->red); \
   SetPixelGreen(pixel,(packet)->green); \

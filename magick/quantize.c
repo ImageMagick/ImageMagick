@@ -611,7 +611,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
               SetPixelIndex(indexes+x+i,index);
             if (cube.quantize_info->measure_error == MagickFalse)
               {
-                SetPixelRGB(q,image->colormap+index);
+                SetPixelRgb(q,image->colormap+index);
                 if (cube.associate_alpha != MagickFalse)
                   SetPixelOpacity(q,image->colormap[index].opacity);
               }
@@ -1599,7 +1599,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
         SetPixelIndex(indexes+u,index);
       if (cube.quantize_info->measure_error == MagickFalse)
         {
-          SetPixelRGB(q+u,image->colormap+index);
+          SetPixelRgb(q+u,image->colormap+index);
           if (cube.associate_alpha != MagickFalse)
             SetPixelOpacity(q+u,image->colormap[index].opacity);
         }
@@ -1820,7 +1820,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         *indexes=(IndexPacket) index;
       if (cube_info->quantize_info->measure_error == MagickFalse)
         {
-          SetPixelRGB(q,image->colormap+index);
+          SetPixelRgb(q,image->colormap+index);
           if (cube_info->associate_alpha != MagickFalse)
             SetPixelOpacity(q,image->colormap[index].opacity);
         }
