@@ -4297,7 +4297,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
       index=PushColormapIndex(image,(size_t) GetPixelIndex(indexes+x),
         &range_exception);
       if (image->matte == MagickFalse)
-        SetPixelRGB(q,image->colormap+(ssize_t) index)
+        SetPixelRgb(q,image->colormap+(ssize_t) index)
       else
         SetPixelRGBO(q,image->colormap+(ssize_t) index);
       q++;

@@ -8358,7 +8358,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
               if (GetPixelOpacity(r) > TransparentOpacity/2)
                 {
                   SetPixelOpacity(r,TransparentOpacity);
-                  SetPixelRGB(r,&image->background_color);
+                  SetPixelRgb(r,&image->background_color);
                 }
               else
                   SetPixelOpacity(r,OpaqueOpacity);
