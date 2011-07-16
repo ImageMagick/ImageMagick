@@ -386,7 +386,8 @@ static struct
       {"radius", RealReference}, {"sigma", RealReference},
       {"channel", MagickChannelOptions} } },
     { "Convolve", { {"coefficients", ArrayReference},
-      {"channel", MagickChannelOptions}, {"bias", StringReference} } },
+      {"channel", MagickChannelOptions}, {"bias", StringReference},
+      {"kernel", StringReference} } },
     { "Profile", { {"name", StringReference}, {"profile", StringReference},
       { "rendering-intent", MagickIntentOptions},
       { "black-point-compensation", MagickBooleanOptions} } },
@@ -525,8 +526,6 @@ static struct
       {"black-point", StringReference}, {"white-point", StringReference},
       {"channel", MagickChannelOptions}, {"invert", MagickBooleanOptions} } },
     { "Clamp", { {"channel", MagickChannelOptions} } },
-    { "Filter", { {"kernel", StringReference},
-      {"channel", MagickChannelOptions}, {"bias", StringReference} } },
     { "BrightnessContrast", { {"levels", StringReference},
       {"brightness", RealReference},{"contrast", RealReference},
       {"channel", MagickChannelOptions} } },
@@ -6958,7 +6957,7 @@ Mogrify(ref,...)
     Magnify            =  33
     MagnifyImage       =  34
     MedianFilter       =  35
-    MedianFilterImage  =  36
+    MedianConvolveImage  =  36
     Minify             =  37
     MinifyImage        =  38
     OilPaint           =  39
@@ -7181,8 +7180,6 @@ Mogrify(ref,...)
     LevelImageColors   = 258
     Clamp              = 259
     ClampImage         = 260
-    Filter             = 261
-    FilterImage        = 262
     BrightnessContrast = 263
     BrightnessContrastImage = 264
     Morphology         = 265
@@ -9130,40 +9127,56 @@ Mogrify(ref,...)
         }
         case 67:  /* Convolve */
         {
-          AV
-            *av;
-
-          double
+          KernelInfo
             *kernel;
 
-          size_t
-            order;
-
-          if (attribute_flag[0] == 0)
+          if ((attribute_flag[0] == 0) && (attribute_flag[3] == 0))
             break;
+          if (attribute_flag[0] != 0)
+            {
+              AV
+                *av;
+
+              size_t
+                order;
+
+              kernel=AcquireKernelInfo((const char *) NULL);
+              if (kernel == (KernelInfo *) NULL)
+                break;
+              av=(AV *) argument_list[0].array_reference;
+              order=(size_t) sqrt(av_len(av)+1);
+              kernel->width=order;
+              kernel->height=order;
+              kernel->values=(double *) AcquireQuantumMemory(order,order*
+                sizeof(*kernel->values));
+              if (kernel->values == (double *) NULL)
+                {
+                  kernel=DestroyKernelInfo(kernel);
+                  ThrowPerlException(exception,ResourceLimitFatalError,
+                    "MemoryAllocationFailed",PackageName);
+                  goto PerlException;
+                }
+              for (j=0; (j < (ssize_t) (order*order)) && (j < (av_len(av)+1)); j++)
+                kernel->values[j]=(double) SvNV(*(av_fetch(av,j,0)));
+              for ( ; j < (ssize_t) (order*order); j++)
+                kernel->values[j]=0.0;
+            }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
             image->bias=SiPrefixToDouble(argument_list[2].string_reference,
               QuantumRange);
-          av=(AV *) argument_list[0].array_reference;
-          order=(size_t) sqrt(av_len(av)+1);
-          kernel=(double *) AcquireQuantumMemory(order,order*sizeof(*kernel));
-          if (kernel == (double *) NULL)
+          if (attribute_flag[3] != 0)
             {
-              ThrowPerlException(exception,ResourceLimitFatalError,
-                "MemoryAllocationFailed",PackageName);
-              goto PerlException;
+              kernel=AcquireKernelInfo(argument_list[3].string_reference);
+              if (kernel == (KernelInfo *) NULL)
+                break;
             }
-          for (j=0; (j < (ssize_t) (order*order)) && (j < (av_len(av)+1)); j++)
-            kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
-          for ( ; j < (ssize_t) (order*order); j++)
-            kernel[j]=0.0;
           PushPixelChannelMap(image,channel);
-          image=ConvolveImage(image,order,kernel,exception);
+          image=ConvolveImage(image,kernel,exception);
           if (image != (Image *) NULL)
             PopPixelChannelMap(image);
-          kernel=(double *) RelinquishMagickMemory(kernel);
+          kernel=DestroyKernelInfo(kernel);
           break;
         }
         case 68:  /* Profile */
@@ -10497,28 +10510,6 @@ Mogrify(ref,...)
           PopPixelChannelMap(image);
           break;
         }
-        case 131:  /* Filter */
-        {
-          KernelInfo
-            *kernel;
-
-          if (attribute_flag[0] == 0)
-            break;
-          kernel=AcquireKernelInfo(argument_list[0].string_reference);
-          if (kernel == (KernelInfo *) NULL)
-            break;
-          if (attribute_flag[1] != 0)
-            channel=(ChannelType) argument_list[1].integer_reference;
-          if (attribute_flag[2] != 0)
-            image->bias=SiPrefixToDouble(argument_list[2].string_reference,
-              QuantumRange);
-          PushPixelChannelMap(image,channel);
-          image=FilterImage(image,kernel,exception);
-          if (image != (Image *) NULL)
-            PopPixelChannelMap(image);
-          kernel=DestroyKernelInfo(kernel);
-          break;
-        }
         case 132:  /* BrightnessContrast */
         {
           double
@@ -10608,7 +10599,7 @@ Mogrify(ref,...)
             color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (ssize_t) (order*order); j++)
             color_matrix[j]=0.0;
-          kernel_info=AcquireKernelInfo("1");
+          kernel_info=AcquireKernelInfo((const char *) NULL);
           if (kernel_info == (KernelInfo *) NULL)
             break;
           kernel_info->width=order;

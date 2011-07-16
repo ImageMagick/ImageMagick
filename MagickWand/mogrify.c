@@ -1197,14 +1197,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             KernelInfo
               *kernel_info;
 
-            register ssize_t
-              j;
-
             (void) SyncImageSettings(mogrify_info,*image);
             kernel_info=AcquireKernelInfo(argv[i+1]);
             if (kernel_info == (KernelInfo *) NULL)
               break;
-            mogrify_image=FilterImage(*image,kernel_info,exception);
+            mogrify_image=ConvolveImage(*image,kernel_info,exception);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }

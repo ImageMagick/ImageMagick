@@ -714,10 +714,10 @@ namespace Magick
 
   // Filter image by replacing each pixel component with the median
   // color in a circular neighborhood
-  class MagickDLLDecl medianFilterImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl medianConvolveImage : public std::unary_function<Image&,void>
   {
   public:
-    medianFilterImage( const double radius_ = 0.0 );
+    medianConvolveImage( const double radius_ = 0.0 );
 
     void operator()( Image &image_ ) const;
 

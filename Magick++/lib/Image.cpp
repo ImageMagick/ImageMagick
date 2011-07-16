@@ -622,7 +622,7 @@ void Magick::Image::colorMatrix (const size_t order_,
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-    kernel_info=AcquireKernelInfo("1");
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   kernel_info->width=order_;
   kernel_info->height=order_;
   kernel_info->values=(double *) color_matrix_;
@@ -716,11 +716,19 @@ void Magick::Image::contrast ( const size_t sharpen_ )
 void Magick::Image::convolve ( const size_t order_,
                                const double *kernel_ )
 {
+  KernelInfo
+    *kernel_info;
+
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  kernel_info=AcquireKernelInfo((const char *) NULL);
+  kernel_info->width=order_;
+  kernel_info->height=order_;
+  kernel_info->values=(double *) kernel_;
   MagickCore::Image* newImage =
-  ConvolveImage ( image(), order_,
-		  kernel_, &exceptionInfo );
+    ConvolveImage ( image(), kernel_info, &exceptionInfo );
+  kernel_info->values=(double *) NULL;
+  kernel_info=DestroyKernelInfo(kernel_info);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

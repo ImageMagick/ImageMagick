@@ -247,6 +247,8 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   kernel->type = UserDefinedKernel;
   kernel->next = (KernelInfo *) NULL;
   kernel->signature = MagickSignature;
+  if (kernel_string == (const char *) NULL)
+    return(kernel);
 
   /* find end of this specific kernel definition string */
   end = strchr(kernel_string, ';');
@@ -499,6 +501,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
   size_t
     kernel_number;
 
+  if (kernel_string == (const char *) NULL)
+    return(ParseKernelArray(kernel_string));
   p = kernel_string;
   kernel = NULL;
   kernel_number = 0;
