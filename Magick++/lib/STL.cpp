@@ -679,11 +679,11 @@ void Magick::matteFloodfillImage::operator()( Magick::Image &image_ ) const
 
 // Filter image by replacing each pixel component with the median
 // color in a circular neighborhood
-Magick::medianFilterImage::medianFilterImage( const double radius_  )
+Magick::medianConvolveImage::medianConvolveImage( const double radius_  )
   : _radius( radius_ )
 {
 }
-void Magick::medianFilterImage::operator()( Magick::Image &image_ ) const
+void Magick::medianConvolveImage::operator()( Magick::Image &image_ ) const
 {
   image_.medianFilter( _radius );
 }

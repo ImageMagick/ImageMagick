@@ -1884,35 +1884,33 @@ WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
 %  The format of the MagickConvolveImage method is:
 %
 %      MagickBooleanType MagickConvolveImage(MagickWand *wand,
-%        const size_t order,const double *kernel)
+%        const KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o order: the number of columns and rows in the filter kernel.
-%
 %    o kernel: An array of doubles representing the convolution kernel.
 %
 */
 WandExport MagickBooleanType MagickConvolveImage(MagickWand *wand,
-  const size_t order,const double *kernel)
+  const KernelInfo *kernel)
 {
   Image
-    *convolve_image;
+    *filter_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (kernel == (const double *) NULL)
+  if (kernel == (const KernelInfo *) NULL)
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  convolve_image=ConvolveImage(wand->images,order,kernel,wand->exception);
-  if (convolve_image == (Image *) NULL)
+  filter_image=ConvolveImage(wand->images,kernel,wand->exception);
+  if (filter_image == (Image *) NULL)
     return(MagickFalse);
-  ReplaceImageInList(&wand->images,convolve_image);
+  ReplaceImageInList(&wand->images,filter_image);
   return(MagickTrue);
 }
 
@@ -2926,52 +2924,6 @@ WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
   if (extent_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,extent_image);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k F i l t e r I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickFilterImage() applies a custom convolution kernel to the image.
-%
-%  The format of the MagickFilterImage method is:
-%
-%      MagickBooleanType MagickFilterImage(MagickWand *wand,
-%        const KernelInfo *kernel)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o kernel: An array of doubles representing the convolution kernel.
-%
-*/
-WandExport MagickBooleanType MagickFilterImage(MagickWand *wand,
-  const KernelInfo *kernel)
-{
-  Image
-    *filter_image;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (kernel == (const KernelInfo *) NULL)
-    return(MagickFalse);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  filter_image=FilterImage(wand->images,kernel,wand->exception);
-  if (filter_image == (Image *) NULL)
-    return(MagickFalse);
-  ReplaceImageInList(&wand->images,filter_image);
   return(MagickTrue);
 }
 

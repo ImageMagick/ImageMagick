@@ -1189,30 +1189,26 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %  The format of the ConvolveImage method is:
 %
-%      Image *ConvolveImage(const Image *image,const size_t order,
-%        const double *kernel,ExceptionInfo *exception)
+%      Image *ConvolveImage(const Image *image,const KernelInfo *kernel,
+%        ExceptionInfo *exception)
+%
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o order: the number of columns and rows in the filter kernel.
-%
-%    o kernel: An array of double representing the convolution kernel.
+%    o kernel: the filtering kernel.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ConvolveImage(const Image *image,const size_t order,
-  const double *kernel,ExceptionInfo *exception)
+MagickExport Image *ConvolveImage(const Image *image,
+  const KernelInfo *kernel_info,ExceptionInfo *exception)
 {
 #define ConvolveImageTag  "Convolve/Image"
 
   CacheView
     *convolve_view,
     *image_view;
-
-  double
-    *normal_kernel;
 
   Image
     *convolve_image;
@@ -1222,15 +1218,6 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
 
   MagickOffsetType
     progress;
-
-  MagickRealType
-    gamma;
-
-  register ssize_t
-    i;
-
-  size_t
-    width;
 
   ssize_t
     y;
@@ -1244,8 +1231,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=order;
-  if ((width % 2) == 0)
+  if ((kernel_info->width % 2) == 0)
     ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
   convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
@@ -1273,16 +1259,16 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
         v;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  ConvolveImage with %.20gx%.20g kernel:",(double) width,(double)
-        width);
+        "  ConvolveImage with %.20gx%.20g kernel:",(double) kernel_info->width,
+        (double) kernel_info->height);
       message=AcquireString("");
-      k=kernel;
-      for (v=0; v < (ssize_t) width; v++)
+      k=kernel_info->values;
+      for (v=0; v < (ssize_t) kernel_info->width; v++)
       {
         *message='\0';
         (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) v);
         (void) ConcatenateString(&message,format);
-        for (u=0; u < (ssize_t) width; u++)
+        for (u=0; u < (ssize_t) kernel_info->height; u++)
         {
           (void) FormatLocaleString(format,MaxTextExtent,"%g ",*k++);
           (void) ConcatenateString(&message,format);
@@ -1291,22 +1277,6 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
       }
       message=DestroyString(message);
     }
-  /*
-    Normalize kernel.
-  */
-  normal_kernel=(double *) AcquireQuantumMemory(width*width,
-    sizeof(*normal_kernel));
-  if (normal_kernel == (double *) NULL)
-    {
-      convolve_image=DestroyImage(convolve_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  gamma=0.0;
-  for (i=0; i < (ssize_t) (width*width); i++)
-    gamma+=kernel[i];
-  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-  for (i=0; i < (ssize_t) (width*width); i++)
-    normal_kernel[i]=gamma*kernel[i];
   /*
     Convolve image.
   */
@@ -1334,8 +1304,9 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel_info->width/2L),y-
+      (ssize_t) (kernel_info->height/2L),image->columns+kernel_info->width,
+      kernel_info->height,exception);
     q=QueueCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -1388,11 +1359,12 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
             size_t
               center;
 
-            center=((image->columns+width)*width/2)*channels+i;
+            center=((image->columns+kernel_info->width)*kernel_info->height/2)*
+              channels+i;
             SetPixelChannel(convolve_image,channel,p[center],q);
             continue;
           }
-        k=normal_kernel;
+        k=kernel_info->values;
         kernel_pixels=p;
         pixel=image->bias;
         if (((convolve_traits & BlendPixelTrait) == 0) ||
@@ -1402,14 +1374,14 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
             /*
               No alpha blending.
             */
-            for (v=0; v < (ssize_t) width; v++)
+            for (v=0; v < (ssize_t) kernel_info->width; v++)
             {
-              for (u=0; u < (ssize_t) width; u++)
+              for (u=0; u < (ssize_t) kernel_info->height; u++)
               {
                 pixel+=(*k)*kernel_pixels[u*channels+i];
                 k++;
               }
-              kernel_pixels+=(image->columns+width)*channels;
+              kernel_pixels+=(image->columns+kernel_info->width)*channels;
             }
             SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
             continue;
@@ -1418,9 +1390,9 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
           Alpha blending.
         */
         gamma=0.0;
-        for (v=0; v < (ssize_t) width; v++)
+        for (v=0; v < (ssize_t) kernel_info->width; v++)
         {
-          for (u=0; u < (ssize_t) width; u++)
+          for (u=0; u < (ssize_t) kernel_info->height; u++)
           {
             alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,
               kernel_pixels+u*channels));
@@ -1428,7 +1400,7 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
             gamma+=(*k)*alpha;
             k++;
           }
-          kernel_pixels+=(image->columns+width)*channels;
+          kernel_pixels+=(image->columns+kernel_info->width)*channels;
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
         SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*pixel),q);
@@ -1454,7 +1426,6 @@ MagickExport Image *ConvolveImage(const Image *image,const size_t order,
   convolve_image->type=image->type;
   convolve_view=DestroyCacheView(convolve_view);
   image_view=DestroyCacheView(image_view);
-  normal_kernel=(double *) RelinquishMagickMemory(normal_kernel);
   if (status == MagickFalse)
     convolve_image=DestroyImage(convolve_image);
   return(convolve_image);
@@ -1822,13 +1793,11 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,0.5);
-  kernel_info=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel_info));
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->signature=MagickSignature;
   kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
   if (kernel_info->values == (double *) NULL)
@@ -1847,7 +1816,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) (width*width-1.0);
-  edge_image=FilterImage(image,kernel_info,exception);
+  edge_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -1913,13 +1882,11 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel_info));
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->signature=MagickSignature;
   kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
   if (kernel_info->values == (double *) NULL)
@@ -1943,268 +1910,11 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     }
     k--;
   }
-  emboss_image=FilterImage(image,kernel_info,exception);
+  emboss_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image);
   return(emboss_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     F i l t e r I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FilterImage() applies a custom convolution kernel to the image.
-%
-%  The format of the FilterImage method is:
-%
-%      Image *FilterImage(const Image *image,const KernelInfo *kernel,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o kernel: the filtering kernel.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *FilterImage(const Image *image,
-  const KernelInfo *kernel_info,ExceptionInfo *exception)
-{
-#define ConvolveImageTag  "Convolve/Image"
-
-  CacheView
-    *convolve_view,
-    *image_view;
-
-  Image
-    *convolve_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  ssize_t
-    y;
-
-  /*
-    Initialize convolve image attributes.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if ((kernel_info->width % 2) == 0)
-    ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
-  convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
-  if (convolve_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(convolve_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&convolve_image->exception);
-      convolve_image=DestroyImage(convolve_image);
-      return((Image *) NULL);
-    }
-  if (image->debug != MagickFalse)
-    {
-      char
-        format[MaxTextExtent],
-        *message;
-
-      register const double
-        *k;
-
-      register ssize_t
-        u;
-
-      ssize_t
-        v;
-
-      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  ConvolveImage with %.20gx%.20g kernel:",(double) kernel_info->width,
-        (double) kernel_info->height);
-      message=AcquireString("");
-      k=kernel_info->values;
-      for (v=0; v < (ssize_t) kernel_info->width; v++)
-      {
-        *message='\0';
-        (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) v);
-        (void) ConcatenateString(&message,format);
-        for (u=0; u < (ssize_t) kernel_info->height; u++)
-        {
-          (void) FormatLocaleString(format,MaxTextExtent,"%g ",*k++);
-          (void) ConcatenateString(&message,format);
-        }
-        (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
-      }
-      message=DestroyString(message);
-    }
-  /*
-    Convolve image.
-  */
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireCacheView(image);
-  convolve_view=AcquireCacheView(convolve_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const Quantum
-      *restrict p;
-
-    register Quantum
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    size_t
-      channels,
-      convolve_channels;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel_info->width/2L),y-
-      (ssize_t) (kernel_info->height/2L),image->columns+kernel_info->width,
-      kernel_info->height,exception);
-    q=QueueCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
-      exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    channels=GetPixelChannels(image);
-    convolve_channels=GetPixelChannels(convolve_image);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) channels; i++)
-      {
-        MagickRealType
-          alpha,
-          gamma,
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          convolve_traits,
-          traits;
-
-        register const double
-          *restrict k;
-
-        register const Quantum
-          *restrict kernel_pixels;
-
-        register ssize_t
-          u;
-
-        ssize_t
-          v;
-
-        traits=GetPixelChannelMapTraits(image,i);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        channel=GetPixelChannelMapChannel(image,i);
-        convolve_traits=GetPixelChannelMapTraits(convolve_image,channel);
-        if (convolve_traits == UndefinedPixelTrait)
-          continue;
-        if ((convolve_traits & CopyPixelTrait) != 0)
-          {
-            size_t
-              center;
-
-            center=((image->columns+kernel_info->width)*kernel_info->height/2)*
-              channels+i;
-            SetPixelChannel(convolve_image,channel,p[center],q);
-            continue;
-          }
-        k=kernel_info->values;
-        kernel_pixels=p;
-        pixel=image->bias;
-        if (((convolve_traits & BlendPixelTrait) == 0) ||
-            (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-            (image->matte == MagickFalse))
-          {
-            /*
-              No alpha blending.
-            */
-            for (v=0; v < (ssize_t) kernel_info->width; v++)
-            {
-              for (u=0; u < (ssize_t) kernel_info->height; u++)
-              {
-                pixel+=(*k)*kernel_pixels[u*channels+i];
-                k++;
-              }
-              kernel_pixels+=(image->columns+kernel_info->width)*channels;
-            }
-            SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
-            continue;
-          }
-        /*
-          Alpha blending.
-        */
-        gamma=0.0;
-        for (v=0; v < (ssize_t) kernel_info->width; v++)
-        {
-          for (u=0; u < (ssize_t) kernel_info->height; u++)
-          {
-            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,
-              kernel_pixels+u*channels));
-            pixel+=(*k)*alpha*kernel_pixels[u*channels+i];
-            gamma+=(*k)*alpha;
-            k++;
-          }
-          kernel_pixels+=(image->columns+kernel_info->width)*channels;
-        }
-        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*pixel),q);
-      }
-      p+=channels;
-      q+=convolve_channels;
-    }
-    if (SyncCacheViewAuthenticPixels(convolve_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ConvolveImage)
-#endif
-        proceed=SetImageProgress(image,ConvolveImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  convolve_image->type=image->type;
-  convolve_view=DestroyCacheView(convolve_view);
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    convolve_image=DestroyImage(convolve_image);
-  return(convolve_image);
 }
 
 /*
@@ -2267,7 +1977,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel_info));
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
@@ -2292,7 +2002,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
       i++;
     }
   }
-  blur_image=FilterImage(image,kernel_info,exception);
+  blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
@@ -4018,7 +3728,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel_info=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel_info));
+  kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
@@ -4046,7 +3756,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
-  sharp_image=FilterImage(image,kernel_info,exception);
+  sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
