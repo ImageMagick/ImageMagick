@@ -3935,7 +3935,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
 static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
 {
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(Quantum *) AcquireMagickMemory((size_t)
+  cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,(size_t)
     cache_info->length);
   if (cache_info->pixels == (Quantum *) NULL)
     {
@@ -4999,7 +4999,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(CacheInfo *cache_info,
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
   nexus_info->mapped=MagickFalse;
-  nexus_info->cache=(Quantum *) AcquireMagickMemory((size_t)
+  nexus_info->cache=(Quantum *) AcquireAlignedMemory(1,(size_t)
     nexus_info->length);
   if (nexus_info->cache == (Quantum *) NULL)
     {
