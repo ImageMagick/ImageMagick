@@ -1366,7 +1366,7 @@ MagickExport Image *ConvolveImage(const Image *image,
           }
         k=kernel_info->values;
         kernel_pixels=p;
-        pixel=image->bias;
+        pixel=kernel_info->bias;
         if (((convolve_traits & BlendPixelTrait) == 0) ||
             (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
             (image->matte == MagickFalse))
@@ -1816,6 +1816,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) (width*width-1.0);
+  kernel_info->bias=image->bias;
   edge_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
@@ -1910,6 +1911,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     }
     k--;
   }
+  kernel_info->bias=image->bias;
   emboss_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
@@ -2002,6 +2004,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
       i++;
     }
   }
+  kernel_info->bias=image->bias;
   blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
@@ -3756,6 +3759,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
+  kernel_info->bias=image->bias;
   sharp_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);

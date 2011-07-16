@@ -1201,6 +1201,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             kernel_info=AcquireKernelInfo(argv[i+1]);
             if (kernel_info == (KernelInfo *) NULL)
               break;
+            kernel_info->bias=(*image)->bias;
             mogrify_image=ConvolveImage(*image,kernel_info,exception);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
@@ -1211,20 +1212,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Crop a image to a smaller size
             */
             (void) SyncImageSettings(mogrify_info,*image);
-#if 0
-            flags=ParseGravityGeometry(*image,argv[i+1],&geometry,exception);
-            if (((geometry.width != 0) || (geometry.height != 0)) &&
-                ((flags & XValue) == 0) && ((flags & YValue) == 0))
-              break;
-#endif
-#if 0
-            mogrify_image=CloneImage(*image,0,0,MagickTrue,&(*image)->exception);
-            mogrify_image->next = mogrify_image->previous = (Image *)NULL;
-            (void) TransformImage(&mogrify_image,argv[i+1],(char *) NULL);
-            InheritException(exception,&mogrify_image->exception);
-#else
             mogrify_image=CropImageToTiles(*image,argv[i+1],exception);
-#endif
             break;
           }
         if (LocaleCompare("cycle",option+1) == 0)

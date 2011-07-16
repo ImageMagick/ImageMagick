@@ -9173,6 +9173,7 @@ Mogrify(ref,...)
                 break;
             }
           PushPixelChannelMap(image,channel);
+          kernel->bias=image->bias;
           image=ConvolveImage(image,kernel,exception);
           if (image != (Image *) NULL)
             PopPixelChannelMap(image);

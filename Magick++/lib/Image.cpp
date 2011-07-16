@@ -725,6 +725,7 @@ void Magick::Image::convolve ( const size_t order_,
   kernel_info->width=order_;
   kernel_info->height=order_;
   kernel_info->values=(double *) kernel_;
+  kernel_info->bias=image()->bias;
   MagickCore::Image* newImage =
     ConvolveImage ( image(), kernel_info, &exceptionInfo );
   kernel_info->values=(double *) NULL;
