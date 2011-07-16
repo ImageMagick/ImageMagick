@@ -185,7 +185,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   CacheInfo
     *cache_info;
 
-  cache_info=(CacheInfo *) AcquireMagickMemory(sizeof(*cache_info));
+  cache_info=(CacheInfo *) AcquireAlignedMemory(1,sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
@@ -254,7 +254,7 @@ MagickExport NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   register ssize_t
     i;
 
-  nexus_info=(NexusInfo **) AcquireQuantumMemory(number_threads,
+  nexus_info=(NexusInfo **) AcquireAlignedMemory(number_threads,
     sizeof(*nexus_info));
   if (nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -782,7 +782,7 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
   */
   if (cache_info->debug != MagickFalse)
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
-  blob=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
+  blob=(unsigned char *) AcquireAlignedMemory(MagickMaxBufferExtent,
     sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
@@ -948,7 +948,7 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
   length=(size_t) MagickMax(MagickMax(cache_info->number_channels,
     clone_info->number_channels)*sizeof(Quantum),MagickMax(
     cache_info->metacontent_extent,clone_info->metacontent_extent));
-  blob=(unsigned char *) AcquireQuantumMemory(length,sizeof(*blob));
+  blob=(unsigned char *) AcquireAlignedMemory(length,sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1484,7 +1484,7 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
     if (nexus_info[i]->cache != (Quantum *) NULL)
       RelinquishCacheNexusPixels(nexus_info[i]);
     nexus_info[i]->signature=(~MagickSignature);
-    nexus_info[i]=(NexusInfo *) RelinquishAlignedMemory(nexus_info[i]);
+    nexus_info[i]=(NexusInfo *) RelinquishMagickMemory(nexus_info[i]);
   }
   nexus_info=(NexusInfo **) RelinquishMagickMemory(nexus_info);
   return(nexus_info);
@@ -3246,7 +3246,7 @@ MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
       /*
         Acquire virtual pixel and associated channels.
       */
-      virtual_pixel=(Quantum *) AcquireQuantumMemory(
+      virtual_pixel=(Quantum *) AcquireAlignedMemory(
         cache_info->number_channels,sizeof(*virtual_pixel));
       if (virtual_pixel == (Quantum *) NULL)
         {
@@ -3259,12 +3259,11 @@ MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
         sizeof(*virtual_pixel));
       if (cache_info->metacontent_extent != 0)
         {
-          virtual_associated_pixel=(void *) AcquireMagickMemory(
+          virtual_associated_pixel=(void *) AcquireAlignedMemory(1,
             cache_info->metacontent_extent);
           if (virtual_associated_pixel == (void *) NULL)
             {
-              virtual_pixel=(Quantum *) RelinquishMagickMemory(
-                virtual_pixel);
+              virtual_pixel=(Quantum *) RelinquishMagickMemory(virtual_pixel);
               virtual_nexus=DestroyPixelCacheNexus(virtual_nexus,1);
               (void) ThrowMagickException(exception,GetMagickModule(),
                 CacheError,"UnableToGetCacheNexus","`%s'",image->filename);
