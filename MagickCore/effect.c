@@ -1308,7 +1308,7 @@ MagickExport Image *ConvolveImage(const Image *image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    sliding_pixels=GetCacheViewVirtualPixels(image_view,-((ssize_t)
+    sliding_pixels=GetCacheViewVirtualPixels(sliding_view,-((ssize_t)
       kernel_info->width/2L),y-(ssize_t) (kernel_info->height/2L),
       image->columns+kernel_info->width,kernel_info->height,exception);
     q=QueueCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
