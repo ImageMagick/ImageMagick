@@ -125,9 +125,8 @@ struct _ThresholdMap
 %
 %  The format of the AdaptiveThresholdImage method is:
 %
-%      Image *AdaptiveThresholdImage(const Image *image,
-%        const size_t width,const size_t height,
-%        const ssize_t offset,ExceptionInfo *exception)
+%      Image *AdaptiveThresholdImage(const Image *image,const size_t width,
+%        const size_t height,const double bias,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -137,16 +136,16 @@ struct _ThresholdMap
 %
 %    o height: the height of the local neighborhood.
 %
-%    o offset: the mean offset.
+%    o bias: the mean bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
-  const size_t width,const size_t height,const ssize_t offset,
+  const size_t width,const size_t height,const double bias,
   ExceptionInfo *exception)
 {
-#define ThresholdImageTag  "Threshold/Image"
+#define AdaptiveThresholdImageTag  "AdaptiveThreshold/Image"
 
   CacheView
     *image_view,
@@ -161,22 +160,25 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    zero;
-
-  MagickRealType
+  MagickSizeType
     number_pixels;
 
   ssize_t
     y;
 
-  assert(image != (const Image *) NULL);
+  /*
+    Initialize threshold image attributes.
+  */
+  assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  threshold_image=CloneImage(image,0,0,MagickTrue,exception);
+  if ((width % 2) == 0)
+    ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
+  threshold_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(threshold_image,DirectClass) == MagickFalse)
@@ -186,12 +188,11 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       return((Image *) NULL);
     }
   /*
-    Local adaptive threshold.
+    Threshold image.
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(image,&zero);
-  number_pixels=(MagickRealType) width*height;
+  number_pixels=(MagickSizeType) width*height;
   image_view=AcquireCacheView(image);
   threshold_view=AcquireCacheView(threshold_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -199,82 +200,94 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    MagickBooleanType
-      sync;
-
     register const Quantum
       *restrict p;
-
-    register ssize_t
-      x;
 
     register Quantum
       *restrict q;
 
+    register ssize_t
+      x;
+
+    size_t
+      channels,
+      threshold_channels;
+
+    ssize_t
+      center;
+
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      height/2L,image->columns+width,height,exception);
-    q=GetCacheViewAuthenticPixels(threshold_view,0,y,threshold_image->columns,1,
-      exception);
+      (height/2L),image->columns+width,height,exception);
+    q=QueueCacheViewAuthenticPixels(threshold_view,0,y,threshold_image->columns,
+      1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
+    channels=GetPixelChannels(image);
+    threshold_channels=GetPixelChannels(threshold_image);
+    center=channels*(image->columns+width)*(height/2L)+channels*(width/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      PixelInfo
-        mean,
-        pixel;
-
-      register const Quantum
-        *r;
-
       register ssize_t
-        u;
+        i;
 
-      ssize_t
-        v;
-
-      pixel=zero;
-      mean=zero;
-      r=p;
-      for (v=0; v < (ssize_t) height; v++)
+      for (i=0; i < (ssize_t) channels; i++)
       {
-        for (u=0; u < (ssize_t) width; u++)
+        MagickRealType
+          mean,
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          threshold_traits,
+          traits;
+
+        register const Quantum
+          *restrict pixels;
+
+        register ssize_t
+          u;
+
+        ssize_t
+          v;
+
+        traits=GetPixelChannelMapTraits(image,i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(image,i);
+        threshold_traits=GetPixelChannelMapTraits(threshold_image,channel);
+        if (threshold_traits == UndefinedPixelTrait)
+          continue;
+        if ((threshold_traits & CopyPixelTrait) != 0)
+          {
+            SetPixelChannel(threshold_image,channel,p[center+i],q);
+            continue;
+          }
+        pixels=p;
+        pixel=0.0;
+        for (v=0; v < (ssize_t) height; v++)
         {
-          pixel.red+=GetPixelAlpha(image,r+u*GetPixelChannels(image));
-          pixel.green+=GetPixelGreen(image,r+u*GetPixelChannels(image));
-          pixel.blue+=GetPixelBlue(image,r+u*GetPixelChannels(image));
-          if (image->colorspace == CMYKColorspace)
-            pixel.black+=GetPixelBlack(image,r+u*GetPixelChannels(image));
-          pixel.alpha+=GetPixelAlpha(image,r+u*GetPixelChannels(image));
+          for (u=0; u < (ssize_t) width; u++)
+          {
+            pixel+=pixels[i];
+            pixels+=channels;
+          }
+          pixels+=image->columns*channels;
         }
-        r+=(image->columns+width)*GetPixelChannels(image);
+        mean=pixel/number_pixels+bias;
+        SetPixelChannel(threshold_image,channel,(Quantum) (((MagickRealType)
+          p[center+i] <= mean) ? 0 : QuantumRange),q);
       }
-      mean.red=(MagickRealType) (pixel.red/number_pixels+offset);
-      mean.green=(MagickRealType) (pixel.green/number_pixels+offset);
-      mean.blue=(MagickRealType) (pixel.blue/number_pixels+offset);
-      mean.black=(MagickRealType) (pixel.black/number_pixels+offset);
-      mean.alpha=(MagickRealType) (pixel.alpha/number_pixels+offset);
-      SetPixelRed(threshold_image,(Quantum) (((MagickRealType)
-        GetPixelRed(threshold_image,q) <= mean.red) ? 0 : QuantumRange),q);
-      SetPixelGreen(threshold_image,(Quantum) (((MagickRealType)
-        GetPixelGreen(threshold_image,q) <= mean.green) ? 0 : QuantumRange),q);
-      SetPixelBlue(threshold_image,(Quantum) (((MagickRealType)
-        GetPixelBlue(threshold_image,q) <= mean.blue) ? 0 : QuantumRange),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(threshold_image,(Quantum) (((MagickRealType)
-          GetPixelBlack(threshold_image,q) <= mean.black) ? 0 : QuantumRange),
-          q);
-      SetPixelAlpha(threshold_image,(Quantum) (((MagickRealType)
-        GetPixelAlpha(threshold_image,q) <= mean.alpha) ? 0 : QuantumRange),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(threshold_image);
+      p+=channels;
+      q+=threshold_channels;
     }
-    sync=SyncCacheViewAuthenticPixels(threshold_view,exception);
-    if (sync == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(threshold_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -284,12 +297,13 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_AdaptiveThresholdImage)
 #endif
-        proceed=SetImageProgress(image,ThresholdImageTag,progress++,
+        proceed=SetImageProgress(image,AdaptiveThresholdImageTag,progress++,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
+  threshold_image->type=image->type;
   threshold_view=DestroyCacheView(threshold_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
