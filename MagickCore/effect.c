@@ -1302,6 +1302,9 @@ MagickExport Image *ConvolveImage(const Image *image,
       channels,
       convolve_channels;
 
+    ssize_t
+      center;
+
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel_info->width/2L),y-
@@ -1316,6 +1319,8 @@ MagickExport Image *ConvolveImage(const Image *image,
       }
     channels=GetPixelChannels(image);
     convolve_channels=GetPixelChannels(convolve_image);
+    center=channels*(image->columns+kernel_info->width)*(kernel_info->height/
+      2L)+channels*(kernel_info->width/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -1356,11 +1361,6 @@ MagickExport Image *ConvolveImage(const Image *image,
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {
-            ssize_t
-              center;
-
-            center=channels*(image->columns+kernel_info->width)*
-              (kernel_info->height/2L)+channels*(kernel_info->width/2);
             SetPixelChannel(convolve_image,channel,p[center+i],q);
             continue;
           }
