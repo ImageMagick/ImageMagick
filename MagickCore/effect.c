@@ -1208,8 +1208,7 @@ MagickExport Image *ConvolveImage(const Image *image,
 
   CacheView
     *convolve_view,
-    *image_view,
-    *sliding_view;
+    *image_view;
 
   Image
     *convolve_image;
@@ -1284,7 +1283,6 @@ MagickExport Image *ConvolveImage(const Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
-  sliding_view=AcquireCacheView(image);
   convolve_view=AcquireCacheView(convolve_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -1292,8 +1290,7 @@ MagickExport Image *ConvolveImage(const Image *image,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
-      *restrict p,
-      *restrict sliding_pixels;
+      *restrict p;
 
     register Quantum
       *restrict q;
@@ -1307,14 +1304,12 @@ MagickExport Image *ConvolveImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    sliding_pixels=GetCacheViewVirtualPixels(sliding_view,-((ssize_t)
-      kernel_info->width/2L),y-(ssize_t) (kernel_info->height/2L),
-      image->columns+kernel_info->width,kernel_info->height,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel_info->width/2L),y-
+      (ssize_t) (kernel_info->height/2L),image->columns+kernel_info->width,
+      kernel_info->height,exception);
     q=QueueCacheViewAuthenticPixels(convolve_view,0,y,convolve_image->columns,1,
       exception);
-    if ((p == (const Quantum *) NULL) ||
-        (sliding_pixels == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -1361,11 +1356,16 @@ MagickExport Image *ConvolveImage(const Image *image,
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {
-            SetPixelChannel(convolve_image,channel,p[i],q);
+            ssize_t
+              center;
+
+            center=channels*(image->columns+kernel_info->width)*
+              (kernel_info->height/2L)+channels*(kernel_info->width/2);
+            SetPixelChannel(convolve_image,channel,p[center+i],q);
             continue;
           }
         k=kernel_info->values;
-        pixels=sliding_pixels;
+        pixels=p;
         pixel=kernel_info->bias;
         if (((convolve_traits & BlendPixelTrait) == 0) ||
             (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
@@ -1407,7 +1407,6 @@ MagickExport Image *ConvolveImage(const Image *image,
         SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=channels;
-      sliding_pixels+=channels;
       q+=convolve_channels;
     }
     if (SyncCacheViewAuthenticPixels(convolve_view,exception) == MagickFalse)
@@ -1427,7 +1426,6 @@ MagickExport Image *ConvolveImage(const Image *image,
   }
   convolve_image->type=image->type;
   convolve_view=DestroyCacheView(convolve_view);
-  sliding_view=DestroyCacheView(sliding_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     convolve_image=DestroyImage(convolve_image);
