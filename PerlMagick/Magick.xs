@@ -9130,6 +9130,7 @@ Mogrify(ref,...)
           KernelInfo
             *kernel;
 
+          kernel=(KernelInfo *) NULL;
           if ((attribute_flag[0] == 0) && (attribute_flag[3] == 0))
             break;
           if (attribute_flag[0] != 0)
