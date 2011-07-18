@@ -2934,8 +2934,8 @@ static const void *GetVirtualMetacontentFromCache(const Image *image)
 %    o nexus_info: the cache nexus to return the meta-content.
 %
 */
-MagickExport const void *GetVirtualMetacontentFromNexus(
-  const Cache cache,NexusInfo *nexus_info)
+MagickExport const void *GetVirtualMetacontentFromNexus(const Cache cache,
+  NexusInfo *nexus_info)
 {
   CacheInfo
     *cache_info;
@@ -3105,19 +3105,19 @@ static inline ssize_t RandomY(RandomInfo *random_info,const size_t rows)
   return((ssize_t) (rows*GetPseudoRandomValue(random_info)));
 }
 
-/*
-  VirtualPixelModulo() computes the remainder of dividing offset by extent.  It
-  returns not only the quotient (tile the offset falls in) but also the positive
-  remainer within that tile such that 0 <= remainder < extent.  This method is
-  essentially a ldiv() using a floored modulo division rather than the normal
-  default truncated modulo division.
-*/
 static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
   const size_t extent)
 {
   MagickModulo
     modulo;
 
+  /*
+    Compute the remainder of dividing offset by extent.  It returns not only
+    the quotient (tile the offset falls in) but also the positive remainer
+    within that tile such that 0 <= remainder < extent.  This method is
+    essentially a ldiv() using a floored modulo division rather than the
+    normal default truncated modulo division.
+  */
   modulo.quotient=offset/(ssize_t) extent;
   if (offset < 0L)
     modulo.quotient--;
@@ -3247,11 +3247,11 @@ MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
     case HorizontalTileVirtualPixelMethod:
     case VerticalTileVirtualPixelMethod:
     {
-      /*
-        Acquire virtual pixel and associated channels.
-      */
       if (cache_info->metacontent_extent != 0)
         {
+          /*
+            Acquire a metacontent buffer.
+          */
           virtual_metacontent=(void *) AcquireAlignedMemory(1,
             cache_info->metacontent_extent);
           if (virtual_metacontent == (void *) NULL)
@@ -3300,7 +3300,8 @@ MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
           SetPixelRed(image,image->background_color.red,virtual_pixel);
           SetPixelGreen(image,image->background_color.green,virtual_pixel);
           SetPixelBlue(image,image->background_color.blue,virtual_pixel);
-          SetPixelBlack(image,image->background_color.black,virtual_pixel);
+          if (image->colorspace == CMYKColorspace)
+            SetPixelBlack(image,image->background_color.black,virtual_pixel);
           SetPixelAlpha(image,image->background_color.alpha,virtual_pixel);
           break;
         }
