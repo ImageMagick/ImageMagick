@@ -1829,7 +1829,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & PercentValue) != 0)
               geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
             mogrify_image=AdaptiveThresholdImage(*image,(size_t)
-              geometry_info.rho,(size_t) geometry_info.sigma,(ssize_t)
+              geometry_info.rho,(size_t) geometry_info.sigma,(double)
               geometry_info.xi,exception);
             break;
           }

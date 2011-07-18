@@ -414,7 +414,7 @@ static struct
     { "Difference", { {"image", ImageReference}, {"fuzz", StringReference} } },
     { "AdaptiveThreshold", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
-      {"offset", IntegerReference} } },
+      {"bias", RealReference} } },
     { "Resample", { {"density", StringReference}, {"x", RealReference},
       {"y", RealReference}, {"filter", MagickFilterOptions},
       {"support", RealReference }, {"blur", RealReference } } },
@@ -9535,8 +9535,7 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             geometry_info.xi=argument_list[3].integer_reference;;
           image=AdaptiveThresholdImage(image,(size_t) geometry_info.rho,
-            (size_t) geometry_info.sigma,(ssize_t) geometry_info.xi,
-            exception);
+            (size_t) geometry_info.sigma,(double) geometry_info.xi,exception);
           break;
         }
         case 78:  /* Resample */
