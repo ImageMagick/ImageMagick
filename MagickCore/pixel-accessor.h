@@ -73,7 +73,7 @@ static inline Quantum GetPixelChannel(const Image *image,
   return(pixel[image->channel_map[image->map][channel].channel]);
 }
 
-static inline Quantum GetPixelChannelMapChannel(const Image *image,
+static inline PixelChannel GetPixelChannelMapChannel(const Image *image,
   const PixelChannel channel)
 {
   return(image->channel_map[image->map][channel].channel);

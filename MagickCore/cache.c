@@ -3268,30 +3268,30 @@ MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
       {
         case BlackVirtualPixelMethod:
         {
-          for (i=0; i < cache_info->number_channels; i++)
-            SetPixelChannel(image,i,0,virtual_pixel);
+          for (i=0; i < (ssize_t) cache_info->number_channels; i++)
+            SetPixelChannel(image,(PixelChannel) i,0,virtual_pixel);
           SetPixelAlpha(image,OpaqueAlpha,virtual_pixel);
           break;
         }
         case GrayVirtualPixelMethod:
         {
-          for (i=0; i < cache_info->number_channels; i++)
-            SetPixelChannel(image,i,QuantumRange/2,virtual_pixel);
+          for (i=0; i < (ssize_t) cache_info->number_channels; i++)
+            SetPixelChannel(image,(PixelChannel) i,QuantumRange/2,virtual_pixel);
           SetPixelAlpha(image,OpaqueAlpha,virtual_pixel);
           break;
         }
         case TransparentVirtualPixelMethod:
         {
-          for (i=0; i < cache_info->number_channels; i++)
-            SetPixelChannel(image,i,0,virtual_pixel);
+          for (i=0; i < (ssize_t) cache_info->number_channels; i++)
+            SetPixelChannel(image,(PixelChannel) i,0,virtual_pixel);
           SetPixelAlpha(image,TransparentAlpha,virtual_pixel);
           break;
         }
         case MaskVirtualPixelMethod:
         case WhiteVirtualPixelMethod:
         {
-          for (i=0; i < cache_info->number_channels; i++)
-            SetPixelChannel(image,i,QuantumRange,virtual_pixel);
+          for (i=0; i < (ssize_t) cache_info->number_channels; i++)
+            SetPixelChannel(image,(PixelChannel) i,QuantumRange,virtual_pixel);
           SetPixelAlpha(image,OpaqueAlpha,virtual_pixel);
           break;
         }
