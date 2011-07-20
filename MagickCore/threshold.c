@@ -266,7 +266,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           continue;
         if ((threshold_traits & CopyPixelTrait) != 0)
           {
-            SetPixelChannel(threshold_image,channel,p[center+i],q);
+            q[channel]=p[center+i];
             continue;
           }
         pixels=p;
