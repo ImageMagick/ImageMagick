@@ -3194,6 +3194,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
+  channels=GetPixelChannels(image);
   if (grayscale != MagickFalse)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3221,24 +3222,25 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          register ssize_t
+            i;
+
           if ((GetPixelRed(image,q) != GetPixelGreen(image,q)) ||
               (GetPixelGreen(image,q) != GetPixelBlue(image,q)))
             {
-              q+=GetPixelChannels(image);
+              q+=channels;
               continue;
             }
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelRed(image,QuantumRange-GetPixelRed(image,q),q);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelGreen(image,QuantumRange-GetPixelGreen(image,q),q);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlue(image,QuantumRange-GetPixelBlue(image,q),q);
-          if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            SetPixelBlack(image,QuantumRange-GetPixelBlack(image,q),q);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelAlpha(image,QuantumRange-GetPixelAlpha(image,q),q);
-          q+=GetPixelChannels(image);
+          for (i=0; i < (ssize_t) channels; i++)
+          {
+            PixelTrait 
+              traits;
+
+            traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+            if ((traits & UpdatePixelTrait) != 0)
+              q[i]=QuantumRange-q[i];
+          }
+          q+=channels;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -3263,7 +3265,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   /*
     Negate image.
   */
-  channels=GetPixelChannels(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
