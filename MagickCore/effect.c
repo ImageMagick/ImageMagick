@@ -1361,7 +1361,7 @@ MagickExport Image *ConvolveImage(const Image *image,
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {
-            SetPixelChannel(convolve_image,channel,p[center+i],q);
+            q[channel]=p[center+i];
             continue;
           }
         k=kernel_info->values;
@@ -1384,7 +1384,7 @@ MagickExport Image *ConvolveImage(const Image *image,
               }
               pixels+=image->columns*channels;
             }
-            SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
+            q[channel]=ClampToQuantum(pixel);
             continue;
           }
         /*
