@@ -281,8 +281,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           pixels+=image->columns*channels;
         }
         mean=pixel/number_pixels+bias;
-        SetPixelChannel(threshold_image,channel,(Quantum) (((MagickRealType)
-          p[center+i] <= mean) ? 0 : QuantumRange),q);
+        q[channel]=(Quantum) (((MagickRealType) p[center+i] <= mean) ? 0 :
+          QuantumRange);
       }
       p+=channels;
       q+=threshold_channels;
