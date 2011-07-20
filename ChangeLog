@@ -3,6 +3,7 @@
   * Use zlib default compression strategy instead of Z_RLE and Z_FIXED
     strategies when linking with zlib versions (prior to 1.2.0 and 1.2.2.2,
     respectively) that don't support them.
+  * Exit test loop sooner in coders/png.c when a non-gray pixel is found.
 
 2011-06-30  6.7.0-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.0-10.

@@ -8094,25 +8094,25 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                if (q == (PixelPacket *) NULL)
                  break;
 
+               s=q;
+               for (x=0; x < (ssize_t) image->columns; x++)
+               {
+                 if (GetPixelRed(s) != GetPixelGreen(s) ||
+                     GetPixelRed(s) != GetPixelBlue(s))
+                   {
+                      ping_have_color=MagickTrue;
+                      ping_have_non_bw=MagickTrue;
+                      break;
+                   }
+                 s++;
+               }
+
+               if (ping_have_color != MagickFalse)
+                 break;
+
                /* Worst case is black-and-white; we are looking at every
                 * pixel twice.
                 */
-
-               if (ping_have_color == MagickFalse)
-                 {
-                   s=q;
-                   for (x=0; x < (ssize_t) image->columns; x++)
-                   {
-                     if (GetPixelRed(s) != GetPixelGreen(s)
-                        || GetPixelRed(s) != GetPixelBlue(s))
-                       {
-                          ping_have_color=MagickTrue;
-                          ping_have_non_bw=MagickTrue;
-                          break;
-                       }
-                     s++;
-                   }
-                 }
 
                if (ping_have_non_bw == MagickFalse)
                  {
@@ -8123,10 +8123,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                          GetPixelRed(s) != QuantumRange)
                        {
                          ping_have_non_bw=MagickTrue;
+                         break;
                        }
                      s++;
                    }
-                 }
+               }
              }
            }
        }
