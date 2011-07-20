@@ -1404,7 +1404,7 @@ MagickExport Image *ConvolveImage(const Image *image,
           pixels+=image->columns*channels;
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*pixel),q);
+        q[channel]=ClampToQuantum(gamma*pixel);
       }
       p+=channels;
       q+=convolve_channels;
