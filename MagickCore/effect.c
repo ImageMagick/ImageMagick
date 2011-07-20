@@ -401,7 +401,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_AdaptiveBlurImage)
+  #pragma omp critical (MagickCore_AdaptiveSharpenImage)
 #endif
         proceed=SetImageProgress(image,AdaptiveBlurImageTag,progress++,
           image->rows);
