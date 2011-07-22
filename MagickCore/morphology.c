@@ -2564,7 +2564,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       break;
   }
 
-
   if ( method == ConvolveMorphology && kernel->width == 1 )
   { /* Special handling (for speed) of vertical (blur) kernels.
     ** This performs its handling in columns rather than in rows.
@@ -3163,7 +3162,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   GrayErode    is equivalent but with kernel values subtracted from pixels
                without the kernel rotation
   GreyDilate   is equivalent but using Maximum() instead of Minimum()
-               useing kernel rotation
+               using kernel rotation
+
+  It has thus been preserved for future implementation of those methods.
 
         case DistanceMorphology:
             /* Add kernel Value and select the minimum value found.
@@ -4366,7 +4367,6 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     /* These only allows a +/-90 degree rotation (by transpose) */
     /* A 180 degree rotation is useless */
     case BlurKernel:
-    case RectangleKernel:
       if ( 135.0 < angle && angle <= 225.0 )
         return;
       if ( 225.0 < angle && angle <= 315.0 )
@@ -4376,7 +4376,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     default:
       break;
   }
-  /* Attempt rotations by 45 degrees */
+  /* Attempt rotations by 45 degrees  -- 3x3 kernels only */
   if ( 22.5 < fmod(angle,90.0) && fmod(angle,90.0) <= 67.5 )
     {
       if ( kernel->width == 3 && kernel->height == 3 )
@@ -4706,16 +4706,16 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %
 %  The format of the ShowKernel method is:
 %
-%      void ShowKernelInfo(KernelInfo *kernel)
+%      void ShowKernelInfo(const KernelInfo *kernel)
 %
 %  A description of each parameter follows:
 %
 %    o kernel: the Morphology/Convolution kernel
 %
 */
-MagickExport void ShowKernelInfo(KernelInfo *kernel)
+MagickExport void ShowKernelInfo(const KernelInfo *kernel)
 {
-  KernelInfo
+  const KernelInfo
     *k;
 
   size_t
