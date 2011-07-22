@@ -140,7 +140,7 @@ extern MagickExport Image
 
 extern MagickExport void
   ScaleGeometryKernelInfo(KernelInfo *,const char *),
-  ShowKernelInfo(KernelInfo *);
+  ShowKernelInfo(const KernelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
