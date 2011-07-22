@@ -1,3 +1,5 @@
+2011-07-21  6.7.1-0 Anthony Thyssen <A.Thyssen@griffith...>
+  * Removed a case that prevented rotations of rectangle kernels.
 
 2011-07-01  6.7.1-0 Glenn Randers-Pehrson <glennrp@image...>
   * Use zlib default compression strategy instead of Z_RLE and Z_FIXED
