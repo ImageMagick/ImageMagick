@@ -111,7 +111,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
   if (image->sync != MagickFalse)
     {
       /*
-        Apply gamma correction equally accross all given channels
+        Apply gamma correction equally accross all given channels.
       */
       (void) GetImageMean(image,&mean,&sans,&image->exception);
       gamma=log(mean*QuantumScale)/log_mean;
@@ -1939,9 +1939,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
   register ssize_t
     i;
 
-  size_t
-    channels;
-
   ssize_t
     y;
 
@@ -1997,7 +1994,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-  channels=GetPixelChannels(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
@@ -2022,7 +2018,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) channels; i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelTrait
           traits;
@@ -2031,7 +2027,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=gamma_map[ScaleQuantumToMap(q[i])];
       }
-      q+=channels;
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3136,9 +3132,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   ssize_t
     y;
 
-  size_t
-    channels;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -3175,7 +3168,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
-  channels=GetPixelChannels(image);
   if (grayscale != MagickFalse)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3208,10 +3200,10 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 
           if (IsPixelGray(image,q) != MagickFalse)
             {
-              q+=channels;
+              q+=GetPixelChannels(image);
               continue;
             }
-          for (i=0; i < (ssize_t) channels; i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelTrait 
               traits;
@@ -3220,7 +3212,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
             if ((traits & UpdatePixelTrait) != 0)
               q[i]=QuantumRange-q[i];
           }
-          q+=channels;
+          q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -3269,7 +3261,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) channels; i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelTrait 
           traits;
@@ -3278,7 +3270,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=QuantumRange-q[i];
       }
-      q+=channels;
+      q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

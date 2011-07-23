@@ -1298,10 +1298,6 @@ MagickExport Image *ConvolveImage(const Image *image,
     register ssize_t
       x;
 
-    size_t
-      channels,
-      convolve_channels;
-
     ssize_t
       center;
 
@@ -1317,16 +1313,14 @@ MagickExport Image *ConvolveImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    channels=GetPixelChannels(image);
-    convolve_channels=GetPixelChannels(convolve_image);
-    center=channels*(image->columns+kernel_info->width)*(kernel_info->height/
-      2L)+channels*(kernel_info->width/2);
+    center=GetPixelChannels(image)*(image->columns+kernel_info->width)*
+      (kernel_info->height/2L)+GetPixelChannels(image)*(kernel_info->width/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) channels; i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
           alpha,
@@ -1380,9 +1374,9 @@ MagickExport Image *ConvolveImage(const Image *image,
               {
                 pixel+=(*k)*pixels[i];
                 k++;
-                pixels+=channels;
+                pixels+=GetPixelChannels(image);
               }
-              pixels+=image->columns*channels;
+              pixels+=image->columns*GetPixelChannels(image);
             }
             q[channel]=ClampToQuantum(pixel);
             continue;
@@ -1399,15 +1393,15 @@ MagickExport Image *ConvolveImage(const Image *image,
             pixel+=(*k)*alpha*pixels[i];
             gamma+=(*k)*alpha;
             k++;
-            pixels+=channels;
+            pixels+=GetPixelChannels(image);
           }
-          pixels+=image->columns*channels;
+          pixels+=image->columns*GetPixelChannels(image);
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
         q[channel]=ClampToQuantum(gamma*pixel);
       }
-      p+=channels;
-      q+=convolve_channels;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(convolve_image);
     }
     if (SyncCacheViewAuthenticPixels(convolve_view,exception) == MagickFalse)
       status=MagickFalse;
