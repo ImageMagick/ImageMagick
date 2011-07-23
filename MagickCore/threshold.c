@@ -209,10 +209,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     register ssize_t
       x;
 
-    size_t
-      channels,
-      threshold_channels;
-
     ssize_t
       center;
 
@@ -227,15 +223,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    channels=GetPixelChannels(image);
-    threshold_channels=GetPixelChannels(threshold_image);
-    center=channels*(image->columns+width)*(height/2L)+channels*(width/2);
+    center=GetPixelChannels(image)*(image->columns+width)*(height/2L)+
+      GetPixelChannels(image)*(width/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) channels; i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
           mean,
@@ -276,16 +271,16 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           for (u=0; u < (ssize_t) width; u++)
           {
             pixel+=pixels[i];
-            pixels+=channels;
+            pixels+=GetPixelChannels(image);
           }
-          pixels+=image->columns*channels;
+          pixels+=image->columns*GetPixelChannels(image);
         }
         mean=pixel/number_pixels+bias;
         q[channel]=(Quantum) (((MagickRealType) p[center+i] <= mean) ? 0 :
           QuantumRange);
       }
-      p+=channels;
-      q+=threshold_channels;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(threshold_image);
     }
     if (SyncCacheViewAuthenticPixels(threshold_view,exception) == MagickFalse)
       status=MagickFalse;
