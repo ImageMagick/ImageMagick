@@ -1939,6 +1939,9 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
   register ssize_t
     i;
 
+  size_t
+    channels;
+
   ssize_t
     y;
 
@@ -1957,8 +1960,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
       image->filename);
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
   if (gamma != 0.0)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && (MaxMap > 256)
+  #pragma omp parallel for
 #endif
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
@@ -1994,6 +1997,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
   progress=0;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
+  channels=GetPixelChannels(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
@@ -2015,43 +2019,20 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (image->sync != MagickFalse)
-        {
-          SetPixelRed(image,gamma_map[ScaleQuantumToMap(
-            GetPixelRed(image,q))],q);
-          SetPixelGreen(image,gamma_map[ScaleQuantumToMap(
-            GetPixelGreen(image,q))],q);
-          SetPixelBlue(image,gamma_map[ScaleQuantumToMap(
-            GetPixelBlue(image,q))],q);
-        }
-      else
-        {
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelRed(image,gamma_map[ScaleQuantumToMap(
-              GetPixelRed(image,q))],q);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelGreen(image,gamma_map[
-              ScaleQuantumToMap(GetPixelGreen(image,q))],q);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlue(image,gamma_map[
-              ScaleQuantumToMap(GetPixelBlue(image,q))],q);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            {
-              if (image->matte == MagickFalse)
-                SetPixelAlpha(image,gamma_map[
-                  ScaleQuantumToMap(GetPixelAlpha(image,q))],q);
-              else
-                SetPixelAlpha(image,gamma_map[
-                  ScaleQuantumToMap(GetPixelAlpha(image,q))],q);
-            }
-        }
-      q+=GetPixelChannels(image);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) channels; i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+          q[i]=gamma_map[ScaleQuantumToMap(q[i])];
+      }
+      q+=channels;
     }
-    if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-        (image->colorspace == CMYKColorspace))
-      for (x=0; x < (ssize_t) image->columns; x++)
-        SetPixelBlack(image,gamma_map[ScaleQuantumToMap(
-          GetPixelBlack(image,q))],q);
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -3225,8 +3206,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           register ssize_t
             i;
 
-          if ((GetPixelRed(image,q) != GetPixelGreen(image,q)) ||
-              (GetPixelGreen(image,q) != GetPixelBlue(image,q)))
+          if (IsPixelGray(image,q) != MagickFalse)
             {
               q+=channels;
               continue;
