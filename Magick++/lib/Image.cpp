@@ -1146,8 +1146,12 @@ void Magick::Image::fx ( const std::string expression,
 // Gamma correct image
 void Magick::Image::gamma ( const double gamma_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  GammaImage ( image(), gamma_ );
+  GammaImage ( image(), gamma_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 void Magick::Image::gamma ( const double gammaRed_,
@@ -1158,9 +1162,12 @@ void Magick::Image::gamma ( const double gammaRed_,
   FormatLocaleString( gamma, MaxTextExtent, "%3.6f/%3.6f/%3.6f/",
 		gammaRed_, gammaGreen_, gammaBlue_);
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  GammaImage ( image(), atof(gamma) );
-  throwImageException();
+  GammaImage ( image(), atof(gamma), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Gaussian blur image
@@ -1361,9 +1368,13 @@ void            Magick::Image::motionBlur ( const double radius_,
 // only
 void Magick::Image::negate ( const bool grayscale_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  NegateImage ( image(), grayscale_ == true ? MagickTrue : MagickFalse );
-  throwImageException();
+  NegateImage ( image(), grayscale_ == true ? MagickTrue : MagickFalse, 
+    &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Normalize image

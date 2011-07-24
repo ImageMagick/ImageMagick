@@ -7770,7 +7770,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) GammaImage(*image,atof(factor));
+      (void) GammaImage(*image,atof(factor),&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7920,7 +7920,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) NegateImage(*image,MagickFalse);
+      (void) NegateImage(*image,MagickFalse,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;

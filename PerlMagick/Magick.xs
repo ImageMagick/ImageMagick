@@ -8340,7 +8340,7 @@ Mogrify(ref,...)
                   */
                   image->mask=CloneImage(argument_list[10].image_reference,0,0,
                     MagickTrue,&image->exception);
-                  (void) NegateImage(image->mask,MagickFalse);
+                  (void) NegateImage(image->mask,MagickFalse,exception);
                 }
             }
           if (attribute_flag[11] != 0) /* channel */
@@ -8664,7 +8664,7 @@ Mogrify(ref,...)
               argument_list[0].string_reference=message;
             }
           (void) GammaImage(image,InterpretLocaleValue(
-            argument_list[0].string_reference,(char **) NULL));
+            argument_list[0].string_reference,(char **) NULL),exception);
           break;
         }
         case 41:  /* Map */
@@ -8782,7 +8782,7 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[1].integer_reference;
           PushPixelChannelMap(image,channel);
           (void) NegateImage(image,argument_list[0].integer_reference != 0 ?
-            MagickTrue : MagickFalse);
+            MagickTrue : MagickFalse,exception);
           PopPixelChannelMap(image);
           break;
         }
@@ -10043,7 +10043,7 @@ Mogrify(ref,...)
             }
           image->clip_mask=CloneImage(argument_list[0].image_reference,0,0,
             MagickTrue,exception);
-          (void) NegateImage(image->clip_mask,MagickFalse);
+          (void) NegateImage(image->clip_mask,MagickFalse,exception);
           break;
         }
         case 107:  /* LinearStretch */
@@ -10085,7 +10085,7 @@ Mogrify(ref,...)
             }
           image->mask=CloneImage(argument_list[0].image_reference,0,0,
             MagickTrue,exception);
-          (void) NegateImage(image->mask,MagickFalse);
+          (void) NegateImage(image->mask,MagickFalse,exception);
           break;
         }
         case 110:  /* Polaroid */

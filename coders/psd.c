@@ -1324,7 +1324,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               }
             if (layer_info[i].image->colorspace == CMYKColorspace)
-              (void) NegateImage(layer_info[i].image,MagickFalse);
+              (void) NegateImage(layer_info[i].image,MagickFalse,exception);
             status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
               number_layers);
             if (status == MagickFalse)
@@ -1432,7 +1432,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (compression == 1)
     offsets=(MagickOffsetType *) RelinquishMagickMemory(offsets);
   if (image->colorspace == CMYKColorspace)
-    (void) NegateImage(image,MagickFalse);
+    (void) NegateImage(image,MagickFalse,exception);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
@@ -1835,7 +1835,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     else
       {
         if (next_image->colorspace == CMYKColorspace)
-          (void) NegateImage(next_image,MagickFalse);
+          (void) NegateImage(next_image,MagickFalse,&next_image->exception);
         if (next_image->compression == RLECompression)
           {
             /*
@@ -1879,7 +1879,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             MagickFalse);
         (void) SetImageProgress(image,SaveImagesTag,5,6);
         if (next_image->colorspace == CMYKColorspace)
-          (void) NegateImage(next_image,MagickFalse);
+          (void) NegateImage(next_image,MagickFalse,&next_image->exception);
       }
   if (next_image->compression == RLECompression)
     compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
