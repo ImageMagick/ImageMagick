@@ -3667,10 +3667,9 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
 %
 %  SetImageType() sets the type of image.  Choose from these types:
 %
-%        Bilevel        Grayscale       GrayscaleMatte
-%        Palette        PaletteMatte    TrueColor
-%        TrueColorMatte ColorSeparation ColorSeparationMatte
-%        OptimizeType
+%      BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType,
+%      PaletteMatteType, TrueColorType, TrueColorMatteType,
+%      ColorSeparationType, ColorSeparationMatteType, OptimizeType
 %
 %  The format of the SetImageType method is:
 %

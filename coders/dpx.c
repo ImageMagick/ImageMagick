@@ -636,7 +636,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dpx.file.timestamp);
   offset+=ReadBlob(image,sizeof(dpx.file.creator),(unsigned char *)
     dpx.file.creator);
-  if (*dpx.file.creator != '\0')
+  if (*dpx.file.creator == '\0')
+    {
+      (void) FormatImageProperty(image,"dpx:file.creator","%.100s",
+        GetMagickVersion((size_t *) NULL));
+      (void) FormatImageProperty(image,"software","%.100s",
+        GetMagickVersion((size_t *) NULL));
+    }
+  else
     {
       (void) FormatImageProperty(image,"dpx:file.creator","%.100s",
         dpx.file.creator);
