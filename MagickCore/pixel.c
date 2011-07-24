@@ -4533,16 +4533,22 @@ MagickExport void PushPixelChannelMap(Image *image,
 MagickExport void SetPixelChannelMap(Image *image,
   const ChannelType channel_mask)
 {
-#define IsChannelSet(mask,channel) \
-  ((((size_t) (channel) >> (size_t) (i)) & 0x01) != 0)
-
   register ssize_t
     i;
 
-  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
-    SetPixelChannelMapTraits(image,(PixelChannel) i,
-      IsChannelSet(channel_mask,i) ? UpdatePixelTrait : CopyPixelTrait);
+  for (i=0; i < MaxPixelChannels; i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
   image->sync=(channel_mask & SyncChannels) != 0 ? MagickTrue : MagickFalse;
+  if ((channel_mask & RedChannel) != 0)
+    SetPixelRedTraits(image,UpdatePixelTrait);
+  if ((channel_mask & GreenChannel) != 0)
+    SetPixelGreenTraits(image,UpdatePixelTrait);
+  if ((channel_mask & BlueChannel) != 0)
+    SetPixelBlueTraits(image,UpdatePixelTrait);
+  if ((channel_mask & BlackChannel) != 0)
+    SetPixelBlackTraits(image,UpdatePixelTrait);
+  if ((channel_mask & AlphaChannel) != 0)
+    SetPixelAlphaTraits(image,UpdatePixelTrait);
 }
 
 /*
