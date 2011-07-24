@@ -1688,11 +1688,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               (*image)->gamma=InterpretLocaleValue(argv[i+1],(char **) NULL);
             else
-              {
-                (void) GammaImage(*image,InterpretLocaleValue(argv[i+1],
-                  (char **) NULL));
-                InheritException(exception,&(*image)->exception);
-              }
+              (void) GammaImage(*image,InterpretLocaleValue(argv[i+1],
+                (char **) NULL),exception);
             break;
           }
         if ((LocaleCompare("gaussian-blur",option+1) == 0) ||
@@ -2126,8 +2123,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             (void) SyncImageSettings(mogrify_info,*image);
             (void) NegateImage(*image,*option == '+' ? MagickTrue :
-              MagickFalse);
-            InheritException(exception,&(*image)->exception);
+              MagickFalse,exception);
             break;
           }
         if (LocaleCompare("noise",option+1) == 0)
@@ -7420,7 +7416,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     */
                     /* POSIBLE ERROR; what if image->mask already set */
                     image->mask=mask_image;
-                    (void) NegateImage(image->mask,MagickFalse);
+                    (void) NegateImage(image->mask,MagickFalse,exception);
                   }
               }
             (void) CompositeImage(image,image->compose,composite_image,

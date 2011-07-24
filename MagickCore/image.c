@@ -699,7 +699,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
         return(MagickFalse);
     }
   if (inside == MagickFalse)
-    (void) NegateImage(clip_mask,MagickFalse);
+    (void) NegateImage(clip_mask,MagickFalse,&image->exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MaxTextExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
   (void) SetImageClipMask(image,clip_mask);

@@ -1431,7 +1431,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   (void) QueryColorDatabase("#ffffff",&clone_info->fill,&image->exception);
   clone_info->clip_mask=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info);
-  status|=NegateImage(image->clip_mask,MagickFalse);
+  status|=NegateImage(image->clip_mask,MagickFalse,&image->exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");

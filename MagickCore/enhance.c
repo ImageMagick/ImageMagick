@@ -1906,7 +1906,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image)
 %
 %  The format of the GammaImage method is:
 %
-%      MagickBooleanType GammaImage(Image *image,const double gamma)
+%      MagickBooleanType GammaImage(Image *image,const double gamma,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1917,15 +1918,13 @@ MagickExport MagickBooleanType EqualizeImage(Image *image)
 %    o gamma: the image gamma.
 %
 */
-MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
+MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
+  ExceptionInfo *exception)
 {
 #define GammaCorrectImageTag  "GammaCorrect/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1992,7 +1991,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma)
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -3100,7 +3098,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 %  The format of the NegateImage method is:
 %
 %      MagickBooleanType NegateImage(Image *image,
-%        const MagickBooleanType grayscale)
+%        const MagickBooleanType grayscale,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3108,17 +3106,16 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 %
 %    o grayscale: If MagickTrue, only negate grayscale pixels within the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType NegateImage(Image *image,
-  const MagickBooleanType grayscale)
+  const MagickBooleanType grayscale,ExceptionInfo *exception)
 {
 #define NegateImageTag  "Negate/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -3166,7 +3163,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   if (grayscale != MagickFalse)
     {
