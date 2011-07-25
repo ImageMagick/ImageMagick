@@ -2014,8 +2014,8 @@ MagickExport const char *GetImageProperty(const Image *image,
       if (LocaleNCompare("fx:",property,3) == 0)
         {
           fx_info=AcquireFxInfo(image,property+3);
-          status=FxEvaluateChannelExpression(fx_info,DefaultChannels,0,0,&alpha,
-            exception);
+          status=FxEvaluateChannelExpression(fx_info,DefaultPixelChannels,0,0,
+            &alpha,exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
             {
@@ -2060,23 +2060,23 @@ MagickExport const char *GetImageProperty(const Image *image,
 
           GetPixelInfo(image,&pixel);
           fx_info=AcquireFxInfo(image,property+6);
-          status=FxEvaluateChannelExpression(fx_info,RedChannel,0,0,&alpha,
-            exception);
+          status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
+            &alpha,exception);
           pixel.red=(MagickRealType) QuantumRange*alpha;
-          status|=FxEvaluateChannelExpression(fx_info,GreenChannel,0,0,&alpha,
-            exception);
+          status|=FxEvaluateChannelExpression(fx_info,GreenPixelChannel,0,0,
+            &alpha,exception);
           pixel.green=(MagickRealType) QuantumRange*alpha;
-          status|=FxEvaluateChannelExpression(fx_info,BlueChannel,0,0,&alpha,
-            exception);
+          status|=FxEvaluateChannelExpression(fx_info,BluePixelChannel,0,0,
+            &alpha,exception);
           pixel.blue=(MagickRealType) QuantumRange*alpha;
           if (image->colorspace == CMYKColorspace)
             {
-              status|=FxEvaluateChannelExpression(fx_info,BlackChannel,0,0,
+              status|=FxEvaluateChannelExpression(fx_info,BlackPixelChannel,0,0,
                 &alpha,exception);
               pixel.black=(MagickRealType) QuantumRange*alpha;
             }
-          status|=FxEvaluateChannelExpression(fx_info,OpacityChannel,0,0,&alpha,
-            exception);
+          status|=FxEvaluateChannelExpression(fx_info,AlphaPixelChannel,0,0,
+            &alpha,exception);
           pixel.alpha=(MagickRealType) QuantumRange*(1.0-alpha);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
