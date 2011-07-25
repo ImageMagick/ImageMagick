@@ -2014,7 +2014,7 @@ MagickExport const char *GetImageProperty(const Image *image,
       if (LocaleNCompare("fx:",property,3) == 0)
         {
           fx_info=AcquireFxInfo(image,property+3);
-          status=FxEvaluateChannelExpression(fx_info,DefaultPixelChannels,0,0,
+          status=FxEvaluateChannelExpression(fx_info,IntensityPixelChannel,0,0,
             &alpha,exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
