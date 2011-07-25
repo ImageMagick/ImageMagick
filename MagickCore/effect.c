@@ -1313,8 +1313,9 @@ MagickExport Image *ConvolveImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    center=GetPixelChannels(image)*(image->columns+kernel_info->width)*
-      (kernel_info->height/2L)+GetPixelChannels(image)*(kernel_info->width/2);
+    center=(ssize_t) GetPixelChannels(image)*(image->columns+
+      kernel_info->width)*(kernel_info->height/2L)+GetPixelChannels(image)*
+      (kernel_info->width/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t

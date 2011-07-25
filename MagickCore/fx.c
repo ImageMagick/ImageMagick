@@ -2899,7 +2899,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
 #define FxImageTag  "Fx/Image"
 
   CacheView
-    *fx_view;
+    *fx_view,
+    *image_view;
 
   FxInfo
     **restrict fx_info;
@@ -2923,7 +2924,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  fx_image=CloneImage(image,0,0,MagickTrue,exception);
+  fx_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (fx_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(fx_image,DirectClass) == MagickFalse)
@@ -2950,6 +2951,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   */
   status=MagickTrue;
   progress=0;
+  image_view=AcquireCacheView(image);
   fx_view=AcquireCacheView(fx_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2959,62 +2961,59 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     const int
       id = GetOpenMPThreadId();
 
-    MagickRealType
-      alpha;
-
-    register ssize_t
-      x;
+    register const Quantum
+      *restrict p;
 
     register Quantum
       *restrict q;
 
+    register ssize_t
+      x;
+
     if (status == MagickFalse)
       continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(fx_view,0,y,fx_image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    alpha=0.0;
     for (x=0; x < (ssize_t) fx_image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        {
-          (void) FxEvaluateChannelExpression(fx_info[id],RedChannel,x,y,
-            &alpha,exception);
-          SetPixelRed(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
-            alpha),q);
-        }
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        {
-          (void) FxEvaluateChannelExpression(fx_info[id],GreenChannel,x,y,
-            &alpha,exception);
-          SetPixelGreen(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
-            alpha),q);
-        }
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        {
-          (void) FxEvaluateChannelExpression(fx_info[id],BlueChannel,x,y,
-            &alpha,exception);
-          SetPixelBlue(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
-            alpha),q);
-        }
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (fx_image->colorspace == CMYKColorspace))
-        {
-          (void) FxEvaluateChannelExpression(fx_info[id],BlackChannel,x,y,
-            &alpha,exception);
-          SetPixelBlack(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
-            alpha),q);
-        }
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          (void) FxEvaluateChannelExpression(fx_info[id],AlphaChannel,x,y,
-            &alpha,exception);
-          SetPixelAlpha(fx_image,ClampToQuantum((MagickRealType) QuantumRange*
-            alpha),q);
-        }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          alpha;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          fx_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        fx_traits=GetPixelChannelMapTraits(fx_image,channel);
+        if (fx_traits == UndefinedPixelTrait)
+          continue;
+        if ((fx_traits & CopyPixelTrait) != 0)
+          {
+            q[channel]=p[i];
+            continue;
+          }
+        alpha=0.0;
+        (void) FxEvaluateChannelExpression(fx_info[id],(ChannelType) (1 << i),
+          x,y,&alpha,exception);
+        q[i]=ClampToQuantum((MagickRealType) QuantumRange*alpha);
+      }
+      p+=GetPixelChannels(image);
       q+=GetPixelChannels(fx_image);
     }
     if (SyncCacheViewAuthenticPixels(fx_view,exception) == MagickFalse)
@@ -3033,6 +3032,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
       }
   }
   fx_view=DestroyCacheView(fx_view);
+  image_view=DestroyCacheView(image_view);
   fx_info=DestroyFxThreadSet(fx_info);
   if (status == MagickFalse)
     fx_image=DestroyImage(fx_image);
