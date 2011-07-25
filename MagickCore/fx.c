@@ -1100,7 +1100,7 @@ MagickExport FxInfo *DestroyFxInfo(FxInfo *fx_info)
 %  The format of the FxEvaluateExpression method is:
 %
 %      MagickRealType FxEvaluateChannelExpression(FxInfo *fx_info,
-%        const ChannelType channel,const ssize_t x,const ssize_t y,
+%        const PixelChannel channel,const ssize_t x,const ssize_t y,
 %        MagickRealType *alpha,Exceptioninfo *exception)
 %      MagickRealType FxEvaluateExpression(FxInfo *fx_info,
 %        MagickRealType *alpha,Exceptioninfo *exception)
@@ -1134,7 +1134,7 @@ static inline double MagickMin(const double x,const double y)
 }
 
 static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
-  ChannelType channel,const char *symbol,ExceptionInfo *exception)
+  PixelChannel channel,const char *symbol,ExceptionInfo *exception)
 {
   char
     key[MaxTextExtent],
@@ -1234,10 +1234,10 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 }
 
 static MagickRealType
-  FxEvaluateSubexpression(FxInfo *,const ChannelType,const ssize_t,
+  FxEvaluateSubexpression(FxInfo *,const PixelChannel,const ssize_t,
     const ssize_t,const char *,MagickRealType *,ExceptionInfo *);
 
-static inline MagickRealType FxMax(FxInfo *fx_info,const ChannelType channel,
+static inline MagickRealType FxMax(FxInfo *fx_info,const PixelChannel channel,
   const ssize_t x,const ssize_t y,const char *expression,
   ExceptionInfo *exception)
 {
@@ -1249,7 +1249,7 @@ static inline MagickRealType FxMax(FxInfo *fx_info,const ChannelType channel,
   return((MagickRealType) MagickMax((double) alpha,(double) beta));
 }
 
-static inline MagickRealType FxMin(FxInfo *fx_info,ChannelType channel,
+static inline MagickRealType FxMin(FxInfo *fx_info,PixelChannel channel,
   const ssize_t x,const ssize_t y,const char *expression,
   ExceptionInfo *exception)
 {
@@ -1288,7 +1288,7 @@ static inline const char *FxSubexpression(const char *expression,
   return(subexpression);
 }
 
-static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
+static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   const ssize_t x,const ssize_t y,const char *expression,
   ExceptionInfo *exception)
 {
@@ -1488,10 +1488,10 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
     {
       switch (channel)
       {
-        case RedChannel: return(QuantumScale*pixel.red);
-        case GreenChannel: return(QuantumScale*pixel.green);
-        case BlueChannel: return(QuantumScale*pixel.blue);
-        case BlackChannel:
+        case RedPixelChannel: return(QuantumScale*pixel.red);
+        case GreenPixelChannel: return(QuantumScale*pixel.green);
+        case BluePixelChannel: return(QuantumScale*pixel.blue);
+        case BlackPixelChannel:
         {
           if (image->colorspace != CMYKColorspace)
             {
@@ -1502,7 +1502,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             }
           return(QuantumScale*pixel.black);
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           MagickRealType
             alpha;
@@ -1512,7 +1512,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           alpha=(MagickRealType) (QuantumScale*pixel.alpha);
           return(alpha);
         }
-        case DefaultChannels:
+        case DefaultPixelChannels:
         {
           return(QuantumScale*GetPixelInfoIntensity(&pixel));
         }
@@ -1554,31 +1554,31 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           if (image->colorspace == CMYKColorspace)
             switch (channel)
             {
-              case CyanChannel:
+              case CyanPixelChannel:
               {
                 if ((flags & RhoValue) == 0)
                   return(0.0);
                 return(channel_info.rho);
               }
-              case MagentaChannel:
+              case MagentaPixelChannel:
               {
                 if ((flags & SigmaValue) == 0)
                   return(0.0);
                 return(channel_info.sigma);
               }
-              case YellowChannel:
+              case YellowPixelChannel:
               {
                 if ((flags & XiValue) == 0)
                   return(0.0);
                 return(channel_info.xi);
               }
-              case BlackChannel:
+              case BlackPixelChannel:
               {
                 if ((flags & PsiValue) == 0)
                   return(0.0);
                 return(channel_info.psi);
               }
-              case AlphaChannel:
+              case AlphaPixelChannel:
               {
                 if ((flags & ChiValue) == 0)
                   return(0.0);
@@ -1589,31 +1589,31 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
             }
           switch (channel)
           {
-            case RedChannel:
+            case RedPixelChannel:
             {
               if ((flags & RhoValue) == 0)
                 return(0.0);
               return(channel_info.rho);
             }
-            case GreenChannel:
+            case GreenPixelChannel:
             {
               if ((flags & SigmaValue) == 0)
                 return(0.0);
               return(channel_info.sigma);
             }
-            case BlueChannel:
+            case BluePixelChannel:
             {
               if ((flags & XiValue) == 0)
                 return(0.0);
               return(channel_info.xi);
             }
-            case BlackChannel:
+            case BlackPixelChannel:
             {
               if ((flags & ChiValue) == 0)
                 return(0.0);
               return(channel_info.chi);
             }
-            case AlphaChannel:
+            case AlphaPixelChannel:
             {
               if ((flags & PsiValue) == 0)
                 return(0.0);
@@ -2072,7 +2072,7 @@ static const char *FxOperatorPrecedence(const char *expression,
 }
 
 static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
-  const ChannelType channel,const ssize_t x,const ssize_t y,
+  const PixelChannel channel,const ssize_t x,const ssize_t y,
   const char *expression,MagickRealType *beta,ExceptionInfo *exception)
 {
   char
@@ -2422,20 +2422,20 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (fx_info->images->colorspace == CMYKColorspace)
             switch (channel)
             {
-              case CyanChannel: type="cyan"; break;
-              case MagentaChannel: type="magenta"; break;
-              case YellowChannel: type="yellow"; break;
-              case AlphaChannel: type="opacity"; break;
-              case BlackChannel: type="black"; break;
+              case CyanPixelChannel: type="cyan"; break;
+              case MagentaPixelChannel: type="magenta"; break;
+              case YellowPixelChannel: type="yellow"; break;
+              case AlphaPixelChannel: type="opacity"; break;
+              case BlackPixelChannel: type="black"; break;
               default: type="unknown"; break;
             }
           else
             switch (channel)
             {
-              case RedChannel: type="red"; break;
-              case GreenChannel: type="green"; break;
-              case BlueChannel: type="blue"; break;
-              case AlphaChannel: type="opacity"; break;
+              case RedPixelChannel: type="red"; break;
+              case GreenPixelChannel: type="green"; break;
+              case BluePixelChannel: type="blue"; break;
+              case AlphaPixelChannel: type="opacity"; break;
               default: type="unknown"; break;
             }
           (void) CopyMagickString(subexpression,expression+6,MaxTextExtent);
@@ -2802,7 +2802,7 @@ MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
 }
 
 MagickExport MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
-  const ChannelType channel,const ssize_t x,const ssize_t y,
+  const PixelChannel channel,const ssize_t x,const ssize_t y,
   MagickRealType *alpha,ExceptionInfo *exception)
 {
   MagickRealType
@@ -3009,8 +3009,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
             continue;
           }
         alpha=0.0;
-        (void) FxEvaluateChannelExpression(fx_info[id],(ChannelType) (1 << i),
-          x,y,&alpha,exception);
+        (void) FxEvaluateChannelExpression(fx_info[id],(PixelChannel) i,x,y,
+          &alpha,exception);
         q[i]=ClampToQuantum((MagickRealType) QuantumRange*alpha);
       }
       p+=GetPixelChannels(image);
