@@ -56,7 +56,9 @@ typedef enum
   AlphaPixelChannel = 3,
   BlackPixelChannel = 4,
   IndexPixelChannel = 4,
-  MaskPixelChannel = 5
+  MaskPixelChannel = 5,
+  IntensityPixelChannel = MaxPixelChannels,
+  SyncPixelChannel = MaxPixelChannels+1
 } PixelChannel;
 
 typedef enum

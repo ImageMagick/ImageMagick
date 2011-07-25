@@ -1512,7 +1512,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           alpha=(MagickRealType) (QuantumScale*pixel.alpha);
           return(alpha);
         }
-        case DefaultPixelChannels:
+        case IntensityPixelChannel:
         {
           return(QuantumScale*GetPixelInfoIntensity(&pixel));
         }
