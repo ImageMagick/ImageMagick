@@ -340,7 +340,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  noise_image=CloneImage(image,0,0,MagickTrue,exception);
+  noise_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(noise_image,DirectClass) == MagickFalse)
@@ -393,22 +393,33 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelRed(image,p),noise_type,attenuate)),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelGreen(image,p),noise_type,attenuate)),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelBlue(image,p),noise_type,attenuate)),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelBlack(image,p),noise_type,attenuate)),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelAlpha(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelAlpha(image,p),noise_type,attenuate)),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          noise_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        noise_traits=GetPixelChannelMapTraits(noise_image,channel);
+        if (noise_traits == UndefinedPixelTrait)
+          continue;
+        if ((noise_traits & CopyPixelTrait) != 0)
+          {
+            q[channel]=p[i];
+            continue;
+          }
+        q[channel]=ClampToQuantum(GenerateDifferentialNoise(random_info[id],
+          p[i],noise_type,attenuate));
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(noise_image);
     }
@@ -1512,7 +1523,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           alpha=(MagickRealType) (QuantumScale*pixel.alpha);
           return(alpha);
         }
-        case IntensityPixelChannel:
+        case DefaultPixelChannels:
         {
           return(QuantumScale*GetPixelInfoIntensity(&pixel));
         }
@@ -3011,7 +3022,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
         alpha=0.0;
         (void) FxEvaluateChannelExpression(fx_info[id],(PixelChannel) i,x,y,
           &alpha,exception);
-        q[i]=ClampToQuantum((MagickRealType) QuantumRange*alpha);
+        q[channel]=ClampToQuantum((MagickRealType) QuantumRange*alpha);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(fx_image);
@@ -5181,7 +5192,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
 %  The format of the VignetteImage method is:
 %
 %      Image *VignetteImage(const Image *image,const double radius,
-%        const double sigma,const ssize_t x,const ssize_t y,ExceptionInfo *exception)
+%        const double sigma,const ssize_t x,const ssize_t y,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5227,8 +5239,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   canvas_image->matte=MagickTrue;
-  oval_image=CloneImage(canvas_image,canvas_image->columns,
-    canvas_image->rows,MagickTrue,exception);
+  oval_image=CloneImage(canvas_image,canvas_image->columns,canvas_image->rows,
+    MagickTrue,exception);
   if (oval_image == (Image *) NULL)
     {
       canvas_image=DestroyImage(canvas_image);
