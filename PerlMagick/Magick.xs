@@ -10587,6 +10587,8 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             break;
           av=(AV *) argument_list[0].array_reference;
+          if (av == (AV *) NULL)
+            break;
           order=(size_t) sqrt(av_len(av)+1);
           color_matrix=(double *) AcquireQuantumMemory(order,order*
             sizeof(*color_matrix));
