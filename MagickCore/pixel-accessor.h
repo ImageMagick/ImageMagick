@@ -176,6 +176,11 @@ static inline PixelTrait GetPixelMagentaTraits(const Image *image)
   return(image->channel_map[image->map][MagentaPixelChannel].traits);
 }
 
+static inline size_t GetPixelMetaChannels(const Image *image)
+{
+  return(image->number_meta_channels);
+}
+
 static inline size_t GetPixelMetacontentExtent(const Image *image)
 {
   return(image->metacontent_extent);
@@ -592,6 +597,12 @@ static inline void SetPixelMagenta(const Image *image,const Quantum magenta,
 static inline void SetPixelMagentaTraits(Image *image,const PixelTrait traits)
 {
   image->channel_map[image->map][MagentaPixelChannel].traits=traits;
+}
+
+static inline void SetPixelMetaChannels(Image *image,
+  const size_t number_meta_channels)
+{
+  image->number_meta_channels=number_meta_channels;
 }
 
 static inline void SetPixelMetacontentExtent(Image *image,const size_t extent)

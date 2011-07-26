@@ -281,6 +281,7 @@ struct _Image
 
   size_t
     number_channels,
+    number_meta_channels,
     metacontent_extent;
 
   MagickBooleanType
