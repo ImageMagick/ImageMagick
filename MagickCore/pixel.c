@@ -4581,6 +4581,12 @@ MagickExport void StandardPixelChannelMap(Image *image)
     (UpdatePixelTrait | BlendPixelTrait));
   SetPixelChannelMapComponent(image,AlphaPixelChannel,AlphaPixelChannel);
   SetPixelChannelMapTraits(image,AlphaPixelChannel,UpdatePixelTrait);
+  if (image->colorspace == GRAYColorspace)
+    {
+      image->number_channels=2;
+      SetPixelChannelMapComponent(image,GreenPixelChannel,RedPixelChannel);
+      SetPixelChannelMapComponent(image,BluePixelChannel,RedPixelChannel);
+    }
   if (image->colorspace == CMYKColorspace)
     {
       image->number_channels++;
@@ -4594,4 +4600,5 @@ MagickExport void StandardPixelChannelMap(Image *image)
       SetPixelChannelMapComponent(image,IndexPixelChannel,IndexPixelChannel);
       SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
     }
+  image->number_channels+=image->number_meta_channels;
 }

@@ -774,6 +774,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->signature=MagickSignature;
   clone_image->storage_class=image->storage_class;
   clone_image->number_channels=image->number_channels;
+  clone_image->number_meta_channels=image->number_meta_channels;
   clone_image->metacontent_extent=image->metacontent_extent;
   clone_image->colorspace=image->colorspace;
   clone_image->matte=image->matte;

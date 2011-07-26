@@ -375,11 +375,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->matte=MagickTrue;
                 }
               if (LocaleCompare(value,"GRAYSCALE") == 0)
-                quantum_type=GrayQuantum;
+                {
+                  image->colorspace=GRAYColorspace;
+                  quantum_type=GrayQuantum;
+                }
               if (LocaleCompare(value,"GRAYSCALE_ALPHA") == 0)
                 {
-                  quantum_type=GrayAlphaQuantum;
+                  image->colorspace=GRAYColorspace;
                   image->matte=MagickTrue;
+                  quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"RGB_ALPHA") == 0)
                 {
@@ -423,6 +427,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
+        image->colorspace=GRAYColorspace;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -462,6 +467,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM image to pixel packets.
         */
+        image->colorspace=GRAYColorspace;
         scale=(Quantum *) NULL;
         if (max_value != (1U*QuantumRange))
           {
@@ -484,7 +490,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -582,6 +588,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM raw image to pixel packets.
         */
+        image->colorspace=GRAYColorspace;
         quantum_type=GrayQuantum;
         if (image->storage_class == PseudoClass)
           quantum_type=IndexQuantum;
@@ -656,6 +663,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
+        image->colorspace=GRAYColorspace;
         range=GetQuantumRange(image->depth);
         quantum_type=GrayQuantum;
         extent=(image->depth <= 8 ? 1 : 2)*image->columns;
