@@ -1707,6 +1707,9 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   register const char
     *p;
 
+  size_t
+    length;
+
   canonical=MagickFalse;
   (void) CopyMagickString(filename,format,MaxTextExtent);
   for (p=strchr(format,'%'); p != (char *) NULL; p=strchr(p+1,'%'))
@@ -1796,8 +1799,9 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         q--;
         c=(*q);
         *q='\0';
-        (void) CopyMagickString(filename+(p-format),value,(size_t)
-          (MaxTextExtent-(p-format)));
+        (void) CopyMagickString(filename+(p-format-length),value,(size_t)
+          (MaxTextExtent-(p-format-length)));
+        length+=strlen(pattern)-1;
         *q=c;
         (void) ConcatenateMagickString(filename,r+1,MaxTextExtent);
         canonical=MagickTrue;
