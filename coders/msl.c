@@ -5950,8 +5950,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowMSLException(OptionError,"NoImagesDefined",
-            (const char *) tag);
+          ThrowMSLException(OptionError,"NoImagesDefined",(const char *) tag);
           break;
         }
 
@@ -6014,6 +6013,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   break;
                 }
               (void) SetMSLAttributes(msl_info,keyword,value);
+              (void) SetImageProperty(msl_info->image[n],keyword,value);
               break;
             }
             case 'D':
@@ -6030,6 +6030,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   break;
                 }
               (void) SetMSLAttributes(msl_info,keyword,value);
+              (void) SetImageProperty(msl_info->image[n],keyword,value);
               break;
             }
             case 'O':
@@ -6051,6 +6052,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   break;
               }
               (void) SetMSLAttributes(msl_info,keyword,value);
+              (void) SetImageProperty(msl_info->image[n],keyword,value);
               break;
             }
             case 'P':
@@ -6087,11 +6089,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 break;
               }
               (void) SetMSLAttributes(msl_info,keyword,value);
+              (void) SetImageProperty(msl_info->image[n],keyword,value);
               break;
             }
             default:
             {
               (void) SetMSLAttributes(msl_info,keyword,value);
+              (void) SetImageProperty(msl_info->image[n],keyword,value);
               break;
             }
           }
