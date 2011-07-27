@@ -2128,8 +2128,8 @@ MagickExport const char *GetImageProperty(const Image *image,
 %
 %  The format of the GetMagickProperty method is:
 %
-%      const char *GetMagickProperty(const ImageInfo *image_info,
-%        Image *image,const char *key)
+%      const char *GetMagickProperty(const ImageInfo *image_info,Image *image,
+%        const char *key)
 %
 %  A description of each parameter follows:
 %
@@ -2347,7 +2347,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleNCompare("page",property,4) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-              GetImageIndexInList(image)+1);
+            GetImageIndexInList(image)+1);
           break;
         }
       break;
@@ -2789,7 +2789,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Number of images in the list.
         */
         q+=FormatLocaleString(q,extent,"%.20g",(double)
-             GetImageListLength(image));
+          GetImageListLength(image));
         break;
       }
       case 'o':
