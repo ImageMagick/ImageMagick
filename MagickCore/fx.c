@@ -1901,7 +1901,17 @@ static const char *FxOperatorPrecedence(const char *expression,
       case 'A':
       case 'a':
       {
-        if (LocaleNCompare(expression,"atan2",5) == 0)
+        if (LocaleNCompare(expression,"acosh",5) == 0)
+          {
+            expression+=5;
+            break;
+          }
+        if (LocaleNCompare(expression,"asinh",5) == 0)
+          {
+            expression+=5;
+            break;
+          }
+        if (LocaleNCompare(expression,"atanh",5) == 0)
           {
             expression+=5;
             break;
@@ -2332,6 +2342,12 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) fabs((double) alpha));
         }
+      if (LocaleNCompare(expression,"acosh",5) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+            exception);
+          return((MagickRealType) acosh((double) alpha));
+        }
       if (LocaleNCompare(expression,"acos",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
@@ -2349,6 +2365,12 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           return(gamma*gamma);
         }
 #endif
+      if (LocaleNCompare(expression,"asinh",5) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+            exception);
+          return((MagickRealType) asinh((double) alpha));
+        }
       if (LocaleNCompare(expression,"asin",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
@@ -2366,6 +2388,12 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
             exception);
           return((MagickRealType) atan2((double) alpha,(double) *beta));
+        }
+      if (LocaleNCompare(expression,"atanh",5) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+            exception);
+          return((MagickRealType) atanh((double) alpha));
         }
       if (LocaleNCompare(expression,"atan",4) == 0)
         {
