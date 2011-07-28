@@ -46,6 +46,7 @@
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
+#include "magick/colorspace-private.h"
 #include "magick/client.h"
 #include "magick/configure.h"
 #include "magick/exception.h"
@@ -2848,6 +2849,8 @@ MagickExport MagickBooleanType QueryMagickColorname(const Image *image,
     }
   GetColorTuple(&pixel,compliance != SVGCompliance ? MagickTrue : MagickFalse,
     name);
+  if (IsRGBColorspace(pixel.colorspace) == MagickFalse)
+    return(MagickFalse);
   (void) GetColorInfo("*",exception);
   ResetLinkedListIterator(color_list);
   opacity=image->matte != MagickFalse ? color->opacity : OpaqueOpacity;
