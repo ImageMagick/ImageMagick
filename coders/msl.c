@@ -2149,10 +2149,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
-                      flags=ParsePageGeometry(msl_info->image[n],value,
+                      flags=ParseGravityGeometry(msl_info->image[n],value,
                         &geometry,&exception);
-                      if ((flags & HeightValue) == 0)
-                        geometry.height=geometry.width;
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
