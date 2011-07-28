@@ -1,3 +1,7 @@
+2011-08-01  6.7.1-1 Cristy  <quetzlzacatenango@image...>
+  * Support MSL 'set gravity' element.
+  * Don't report HSB colors as RGB colornames (e.g. hsb(0%,0%,100%)).
+
 2011-07-21  6.7.1-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Removed a case that prevented rotations of rectangle kernels.
 
