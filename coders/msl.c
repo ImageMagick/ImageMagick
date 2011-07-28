@@ -878,16 +878,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
-                      flags=ParsePageGeometry(msl_info->image[n],value,
+                      flags=ParseGravityGeometry(msl_info->image[n],value,
                         &geometry,&exception);
-                      if ((flags & HeightValue) == 0)
-                        geometry.height=geometry.width;
                       break;
                     }
                   if (LocaleCompare(keyword,"gravity") == 0)
                     {
-                      option=ParseCommandOption(MagickGravityOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickGravityOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedGravityType",
                           value);
@@ -2154,10 +2152,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"geometry") == 0)
                     {
-                      flags=ParsePageGeometry(msl_info->image[n],value,
+                      flags=ParseGravityGeometry(msl_info->image[n],value,
                         &geometry,&exception);
-                      if ((flags & HeightValue) == 0)
-                        geometry.height=geometry.width;
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
