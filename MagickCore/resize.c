@@ -1793,6 +1793,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
     "DelegateLibrarySupportNotBuiltIn","`%s' (LQR)",image->filename);
   return((Image *) NULL);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1944,7 +1945,6 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
     }
   return(resample_image);
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
