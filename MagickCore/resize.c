@@ -1211,7 +1211,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_AdaptiveResizeImage)
 #endif
         proceed=SetImageProgress(image,AdaptiveResizeImageTag,progress++,
@@ -2037,9 +2037,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   MagickBooleanType
     status;
 
-  PixelInfo
-    zero;
-
   MagickRealType
     scale,
     support;
@@ -2061,8 +2058,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   if (support < 0.5)
     {
       /*
-        Support too small even for nearest neighbour: Reduce to point
-        sampling.
+        Support too small even for nearest neighbour: Reduce to point sampling.
       */
       support=(MagickRealType) 0.5;
       scale=1.0;
@@ -2076,7 +2072,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
     }
   status=MagickTrue;
   scale=1.0/scale;
-  (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2085,9 +2080,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   for (x=0; x < (ssize_t) resize_image->columns; x++)
   {
     MagickRealType
-      center,
+      bisect,
       density;
-
 
     register const Quantum
       *restrict p;
@@ -2108,16 +2102,16 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 
     if (status == MagickFalse)
       continue;
-    center=(MagickRealType) (x+0.5)/x_factor;
-    start=(ssize_t) MagickMax(center-support+0.5,0.0);
-    stop=(ssize_t) MagickMin(center+support+0.5,(double) image->columns);
+    bisect=(MagickRealType) (x+0.5)/x_factor;
+    start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
+    stop=(ssize_t) MagickMin(bisect+support+0.5,(double) image->columns);
     density=0.0;
     contribution=contributions[GetOpenMPThreadId()];
     for (n=0; n < (stop-start); n++)
     {
       contribution[n].pixel=start+n;
       contribution[n].weight=GetResizeFilterWeight(resize_filter,scale*
-        ((MagickRealType) (start+n)-center+0.5));
+        ((MagickRealType) (start+n)-bisect+0.5));
       density+=contribution[n].weight;
     }
     if ((density != 0.0) && (density != 1.0))
@@ -2143,92 +2137,79 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       }
     for (y=0; y < (ssize_t) resize_image->rows; y++)
     {
-      PixelInfo
-        pixel;
-
-      MagickRealType
-        alpha;
-
       register ssize_t
         i;
 
-      ssize_t
-        j;
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          alpha,
+          gamma,
+          pixel;
 
-      pixel=zero;
-      if (image->matte == MagickFalse)
-        {
-          for (i=0; i < n; i++)
-          {
-            j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-              (contribution[i].pixel-contribution[0].pixel);
-            alpha=contribution[i].weight;
-            pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
-            pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
-            pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
-            if ((image->colorspace == CMYKColorspace) &&
-                (resize_image->colorspace == CMYKColorspace))
-              pixel.black+=alpha*GetPixelBlue(image,p+j*
-                GetPixelChannels(image));
-            pixel.alpha+=alpha*GetPixelAlpha(image,p+j*
-              GetPixelChannels(image));
-          }
-          SetPixelRed(resize_image,ClampToQuantum(pixel.red),q);
-          SetPixelGreen(resize_image,ClampToQuantum(pixel.green),q);
-          SetPixelBlue(resize_image,ClampToQuantum(pixel.blue),q);
-          if ((image->colorspace == CMYKColorspace) &&
-              (resize_image->colorspace == CMYKColorspace))
-            SetPixelBlack(resize_image,ClampToQuantum(pixel.black),q);
-          SetPixelAlpha(resize_image,ClampToQuantum(pixel.alpha),q);
-        }
-      else
-        {
-          MagickRealType
-            gamma;
+        PixelChannel
+          channel;
 
-          gamma=0.0;
-          for (i=0; i < n; i++)
+        PixelTrait
+          resize_traits,
+          traits;
+
+        register ssize_t
+          j;
+
+        ssize_t
+          k;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        resize_traits=GetPixelChannelMapTraits(resize_image,channel);
+        if (resize_traits == UndefinedPixelTrait)
+          continue;
+        if ((resize_traits & CopyPixelTrait) != 0)
           {
-            j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-              (contribution[i].pixel-contribution[0].pixel);
-            alpha=contribution[i].weight*QuantumScale*
-              GetPixelAlpha(image,p+j*GetPixelChannels(image));
-            pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
-            pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
-            pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
-            if ((image->colorspace == CMYKColorspace) &&
-                (resize_image->colorspace == CMYKColorspace))
-              pixel.black+=alpha*GetPixelBlack(image,p+j*
-                GetPixelChannels(image));
-            pixel.alpha+=contribution[i].weight*
-              GetPixelAlpha(image,p+j*GetPixelChannels(image));
-            gamma+=alpha;
+            j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
+              stop-1.0)+0.5);
+            k=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+              (contribution[j-start].pixel-contribution[0].pixel);
+            q[channel]=p[k*GetPixelChannels(image)+i];
+            continue;
           }
-          gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          SetPixelRed(resize_image,ClampToQuantum(gamma*pixel.red),q);
-          SetPixelGreen(resize_image,ClampToQuantum(gamma*pixel.green),q);
-          SetPixelBlue(resize_image,ClampToQuantum(gamma*pixel.blue),q);
-          if ((image->colorspace == CMYKColorspace) &&
-              (resize_image->colorspace == CMYKColorspace))
-            SetPixelBlack(resize_image,ClampToQuantum(gamma*pixel.black),q);
-          SetPixelAlpha(resize_image,ClampToQuantum(pixel.alpha),q);
-        }
-      if ((resize_image->storage_class == PseudoClass) &&
-          (image->storage_class == PseudoClass))
+        pixel=0.0;
+        if (((resize_traits & BlendPixelTrait) == 0) ||
+            (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
+            (image->matte == MagickFalse))
+          {
+            /*
+              No alpha blending.
+            */
+            for (j=0; j < n; j++)
+            {
+              k=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+                (contribution[j].pixel-contribution[0].pixel);
+              alpha=contribution[j].weight;
+              pixel+=alpha*p[k*GetPixelChannels(image)+i];
+            }
+            q[channel]=ClampToQuantum(pixel);
+            continue;
+          }
+        /*
+          Alpha blending.
+        */
+        gamma=0.0;
+        for (j=0; j < n; j++)
         {
-          i=(ssize_t) (MagickMin(MagickMax(center,(double) start),(double) stop-
-            1.0)+0.5);
-          j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-            (contribution[i-start].pixel-contribution[0].pixel);
-          SetPixelIndex(resize_image,GetPixelIndex(image,p+j*
-            GetPixelChannels(image)),q);
+          k=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+            (contribution[j].pixel-contribution[0].pixel);
+          alpha=contribution[j].weight*QuantumScale*
+            GetPixelAlpha(image,p+k*GetPixelChannels(image));
+          pixel+=alpha*p[k*GetPixelChannels(image)+i];
+          gamma+=alpha;
         }
+        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+        q[channel]=ClampToQuantum(gamma*pixel);
+      }
       q+=GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
@@ -2293,8 +2274,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   if (support < 0.5)
     {
       /*
-        Support too small even for nearest neighbour: Reduce to point
-        sampling.
+        Support too small even for nearest neighbour: Reduce to point sampling.
       */
       support=(MagickRealType) 0.5;
       scale=1.0;
@@ -2317,7 +2297,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
     MagickRealType
-      center,
+      bisect,
       density;
 
     register const Quantum
@@ -2339,16 +2319,16 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 
     if (status == MagickFalse)
       continue;
-    center=(MagickRealType) (y+0.5)/y_factor;
-    start=(ssize_t) MagickMax(center-support+0.5,0.0);
-    stop=(ssize_t) MagickMin(center+support+0.5,(double) image->rows);
+    bisect=(MagickRealType) (y+0.5)/y_factor;
+    start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
+    stop=(ssize_t) MagickMin(bisect+support+0.5,(double) image->rows);
     density=0.0;
     contribution=contributions[GetOpenMPThreadId()];
     for (n=0; n < (stop-start); n++)
     {
       contribution[n].pixel=start+n;
       contribution[n].weight=GetResizeFilterWeight(resize_filter,scale*
-        ((MagickRealType) (start+n)-center+0.5));
+        ((MagickRealType) (start+n)-bisect+0.5));
       density+=contribution[n].weight;
     }
     if ((density != 0.0) && (density != 1.0))
@@ -2375,92 +2355,76 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       }
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      PixelInfo
-        pixel;
-
-      MagickRealType
-        alpha;
-
       register ssize_t
         i;
 
-      ssize_t
-        j;
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          alpha,
+          gamma,
+          pixel;
 
-      pixel=zero;
-      if (image->matte == MagickFalse)
-        {
-          for (i=0; i < n; i++)
-          {
-            j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
-              image->columns+x);
-            alpha=contribution[i].weight;
-            pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
-            pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
-            pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
-            if ((image->colorspace == CMYKColorspace) &&
-                (resize_image->colorspace == CMYKColorspace))
-              pixel.black+=alpha*GetPixelBlack(image,p+j*
-                GetPixelChannels(image));
-            pixel.alpha+=alpha*GetPixelAlpha(image,p+j*
-              GetPixelChannels(image));
-          }
-          SetPixelRed(resize_image,ClampToQuantum(pixel.red),q);
-          SetPixelGreen(resize_image,ClampToQuantum(pixel.green),q);
-          SetPixelBlue(resize_image,ClampToQuantum(pixel.blue),q);
-          if ((image->colorspace == CMYKColorspace) &&
-              (resize_image->colorspace == CMYKColorspace))
-            SetPixelBlack(resize_image,ClampToQuantum(pixel.black),q);
-          SetPixelAlpha(resize_image,ClampToQuantum(pixel.alpha),q);
-        }
-      else
-        {
-          MagickRealType
-            gamma;
+        PixelChannel
+          channel;
 
-          gamma=0.0;
-          for (i=0; i < n; i++)
+        PixelTrait
+          resize_traits,
+          traits;
+
+        register ssize_t
+          j;
+
+        ssize_t
+          k;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        resize_traits=GetPixelChannelMapTraits(resize_image,channel);
+        if (resize_traits == UndefinedPixelTrait)
+          continue;
+        if ((resize_traits & CopyPixelTrait) != 0)
           {
-            j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
+            j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
+              stop-1.0)+0.5);
+            k=(ssize_t) ((contribution[j-start].pixel-contribution[0].pixel)*
               image->columns+x);
-            alpha=contribution[i].weight*QuantumScale*
-              GetPixelAlpha(image,p+j*GetPixelChannels(image));
-            pixel.red+=alpha*GetPixelRed(image,p+j*
-              GetPixelChannels(image));
-            pixel.green+=alpha*GetPixelGreen(image,p+j*
-              GetPixelChannels(image));
-            pixel.blue+=alpha*GetPixelBlue(image,p+j*
-              GetPixelChannels(image));
-            if ((image->colorspace == CMYKColorspace) &&
-                (resize_image->colorspace == CMYKColorspace))
-              pixel.black+=alpha*GetPixelBlack(image,p+j*
-                GetPixelChannels(image));
-            pixel.alpha+=contribution[i].weight*GetPixelAlpha(image,p+j*
-             GetPixelChannels(image));
-            gamma+=alpha;
+            q[channel]=p[k*GetPixelChannels(image)+i];
+            continue;
           }
-          gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-          SetPixelRed(resize_image,ClampToQuantum(gamma*pixel.red),q);
-          SetPixelGreen(resize_image,ClampToQuantum(gamma*pixel.green),q);
-          SetPixelBlue(resize_image,ClampToQuantum(gamma*pixel.blue),q);
-          if ((image->colorspace == CMYKColorspace) &&
-              (resize_image->colorspace == CMYKColorspace))
-            SetPixelBlack(resize_image,ClampToQuantum(gamma*pixel.black),q);
-          SetPixelAlpha(resize_image,ClampToQuantum(pixel.alpha),q);
-        }
-      if ((resize_image->storage_class == PseudoClass) &&
-          (image->storage_class == PseudoClass))
+        pixel=0.0;
+        if (((resize_traits & BlendPixelTrait) == 0) ||
+            (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
+            (image->matte == MagickFalse))
+          {
+            /*
+              No alpha blending.
+            */
+            for (j=0; j < n; j++)
+            {
+              k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
+                image->columns+x);
+              alpha=contribution[j].weight;
+              pixel+=alpha*p[k*GetPixelChannels(image)+i];
+            }
+            q[channel]=ClampToQuantum(pixel);
+            continue;
+          }
+        gamma=0.0;
+        for (j=0; j < n; j++)
         {
-          i=(ssize_t) (MagickMin(MagickMax(center,(double) start),(double) stop-
-            1.0)+0.5);
-          j=(ssize_t) ((contribution[i-start].pixel-contribution[0].pixel)*
+          k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
             image->columns+x);
-          SetPixelIndex(resize_image,GetPixelIndex(image,p+j*
-            GetPixelChannels(image)),q);
+          alpha=contribution[j].weight*QuantumScale*
+            GetPixelAlpha(image,p+k*GetPixelChannels(image));
+          pixel+=alpha*p[k*GetPixelChannels(image)+i];
+          gamma+=alpha;
         }
+        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+        q[channel]=ClampToQuantum(gamma*pixel);
+      }
       q+=GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)

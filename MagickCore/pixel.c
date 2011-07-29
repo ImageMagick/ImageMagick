@@ -4569,6 +4569,11 @@ MagickExport void SetPixelChannelMap(Image *image,
 */
 MagickExport void StandardPixelChannelMap(Image *image)
 {
+  register ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
   image->number_channels=4;
   SetPixelChannelMapComponent(image,RedPixelChannel,RedPixelChannel);
   SetPixelChannelMapTraits(image,RedPixelChannel,(PixelTrait)
