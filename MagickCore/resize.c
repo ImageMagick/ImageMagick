@@ -136,57 +136,50 @@ static MagickRealType
 
 #define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
 
-static MagickRealType Jinc(const MagickRealType x,
-  const ResizeFilter *magick_unused(resize_filter))
-{
-  /*
-    See Pratt "Digital Image Processing" p.97 for Jinc/Bessel functions.
-    http://mathworld.wolfram.com/JincFunction.html and page 11 of
-    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf
-
-    The original "zoom" program by Paul Heckbert called this "Bessel".
-    But really it is more accurately named "Jinc".
-  */
-  if (x == 0.0)
-    return(0.5*MagickPIL);
-  return(BesselOrderOne(MagickPIL*x)/x);
-}
-
 static MagickRealType Blackman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  MagickRealType
+    cosine;
+
   /*
     Blackman: 2nd order cosine windowing function:
       0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
-    Refactored by Chantal Racette and Nicolas Robidoux to one trig
-    call and five flops.
+
+    Refactored by Chantal Racette and Nicolas Robidoux to one trig call and
+    five flops.
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
-  return(0.34+cospix*(0.5+cospix*0.16));
+  cosine=cos((double) (MagickPIL*x));
+  return(0.34+cosine*(0.5+cosine*0.16));
 }
 
 static MagickRealType Bohman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  MagickRealType
+    cosine,
+    sine;
+
   /*
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
-    Refactored by Nicolas Robidoux to one trig call, one sqrt call,
-    and 7 flops, taking advantage of the fact that the support of
-    Bohman is 1 (so that we know that sin(pi x) >= 0).
+
+    Refactored by Nicolas Robidoux to one trig call, one sqrt call, and 7 flops,
+    taking advantage of the fact that the support of Bohman is 1.0 (so that we
+    know that sin(pi x) >= 0).
   */
-  const double cospix = cos((double) (MagickPIL*x));
-  const double sinpix = sqrt(1.0-cospix*cospix);
-  return((1.0-x)*cospix+(1.0/MagickPIL)*sinpix);
+  cosine=cos((double) (MagickPIL*x));
+  sine=sqrt(1.0-cosine*cosine);
+  return((1.0-x)*cosine+(1.0/MagickPIL)*sine);
 }
 
 static MagickRealType Box(const MagickRealType magick_unused(x),
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    A Box filter is a equal weighting function (all weights equal).
-    DO NOT LIMIT results by support or resize point sampling will work
-    as it requests points beyond its normal 0.0 support size.
+    A Box filter is a equal weighting function (all weights equal).  DO NOT
+    LIMIT results by support or resize point sampling will work as it requests
+    points beyond its normal 0.0 support size.
   */
   return(1.0);
 }
@@ -221,12 +214,11 @@ static MagickRealType CubicBC(const MagickRealType x,
        P0 + P1*x + P2*x^2 + P3*x^3      0 <= x < 1
        Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x < 2
 
-    which ensures function is continuous in value and derivative
-    (slope).
+    which ensures function is continuous in value and derivative (slope).
   */
   if (x < 1.0)
-    return(resize_filter->coefficient[0]+x*(x*
-      (resize_filter->coefficient[1]+x*resize_filter->coefficient[2])));
+    return(resize_filter->coefficient[0]+x*(x*(resize_filter->coefficient[1]+x*
+      resize_filter->coefficient[2])));
   if (x < 2.0)
     return(resize_filter->coefficient[3]+x*(resize_filter->coefficient[4]+x*
       (resize_filter->coefficient[5]+x*resize_filter->coefficient[6])));
@@ -240,20 +232,22 @@ static MagickRealType Gaussian(const MagickRealType x,
     Gaussian with a fixed sigma = 1/2
 
     Gaussian Formula (1D) ...
-        exp( -(x^2)/((2.0*sigma^2) ) / sqrt(2*PI)sigma^2))
+       exp( -(x^2)/((2.0*sigma^2) ) / sqrt(2*PI)sigma^2))
+
     The constants are pre-calculated...
-        exp( -coeff[0]*(x^2)) ) * coeff[1]
+       exp( -coeff[0]*(x^2)) ) * coeff[1]
+
     However the multiplier coefficent (1) is not needed and not used.
 
     Gaussian Formula (2D) ...
-        exp( -(x^2)/((2.0*sigma^2) ) / (PI*sigma^2) )
-    Note that it is only a change in the normalization multiplier
-    which is not needed or used when gausian is used as a filter.
+       exp( -(x^2)/((2.0*sigma^2) ) / (PI*sigma^2) )
+
+    Note that it is only a change in the normalization multiplier which is
+    not needed or used when gausian is used as a filter.
 
     This separates the gaussian 'sigma' value from the 'blur/support'
     settings allowing for its use in special 'small sigma' gaussians,
-    without the filter 'missing' pixels because the support becomes too
-    small.
+    without the filter 'missing' pixels because the support becomes too small.
   */
   return(exp((double)(-resize_filter->coefficient[0]*x*x)));
 }
@@ -261,23 +255,45 @@ static MagickRealType Gaussian(const MagickRealType x,
 static MagickRealType Hanning(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  MagickRealType
+    cosine;
+
   /*
     Cosine window function:
-      .5+.5cos(pi x).
+      0.5+0.5*cos(pi*x).
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
-  return(0.5+0.5*cospix);
+  cosine=cos((double) (MagickPIL*x));
+  return(0.5+0.5*cosine);
 }
 
 static MagickRealType Hamming(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
+  MagickRealType
+    cosine;
+
   /*
     Offset cosine window function:
      .54 + .46 cos(pi x).
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
-  return(0.54+0.46*cospix);
+  cosine=cos((double) (MagickPIL*x));
+  return(0.54+0.46*cosine);
+}
+
+static MagickRealType Jinc(const MagickRealType x,
+  const ResizeFilter *magick_unused(resize_filter))
+{
+  /*
+    See Pratt "Digital Image Processing" p.97 for Jinc/Bessel functions.
+    http://mathworld.wolfram.com/JincFunction.html and page 11 of
+    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf
+
+    The original "zoom" program by Paul Heckbert called this "Bessel".  But
+    really it is more accurately named "Jinc".
+  */
+  if (x == 0.0)
+    return(0.5*MagickPIL);
+  return(BesselOrderOne(MagickPIL*x)/x);
 }
 
 static MagickRealType Kaiser(const MagickRealType x,
@@ -287,9 +303,9 @@ static MagickRealType Kaiser(const MagickRealType x,
 #define I0A  (1.0/I0(Alpha))
 
   /*
-    Kaiser Windowing Function (bessel windowing): Alpha is a free
-    value from 5 to 8 (currently hardcoded to 6.5).
-    Future: make alpha the IOA pre-calculation, an 'expert' setting.
+    Kaiser Windowing Function (bessel windowing): Alpha is a free value
+    from 5 to 8 (currently hardcoded to 6.5).  Future: make alpha the IOA
+    pre-calculation, an 'expert' setting.
   */
   return(I0A*I0(Alpha*sqrt((double) (1.0-x*x))));
 }
@@ -308,22 +324,19 @@ static MagickRealType Lagrange(const MagickRealType x,
     order;
 
   /*
-    Lagrange piecewise polynomial fit of sinc: N is the 'order' of the
-    lagrange function and depends on the overall support window size
-    of the filter. That is: for a support of 2, it gives a lagrange-4
-    (piecewise cubic function).
+    Lagrange piecewise polynomial fit of sinc: N is the 'order' of the lagrange
+    function and depends on the overall support window size of the filter. That
+    is: for a support of 2, it gives a lagrange-4 (piecewise cubic function).
 
     "n" identifies the piece of the piecewise polynomial.
 
-    See Survey: Interpolation Methods, IEEE Transactions on Medical
-    Imaging, Vol 18, No 11, November 1999, p1049-1075, -- Equation 27
-    on p1064.
+    See Survey: Interpolation Methods, IEEE Transactions on Medical Imaging,
+    Vol 18, No 11, November 1999, p1049-1075, -- Equation 27 on p1064.
   */
   if (x > resize_filter->support)
     return(0.0);
   order=(ssize_t) (2.0*resize_filter->window_support);  /* number of pieces */
-  /*n=(ssize_t)((1.0*order)/2.0+x);   --  which piece does x belong to */
-  n = (ssize_t)(resize_filter->window_support + x);
+  n=(ssize_t) (resize_filter->window_support+x);
   value=1.0f;
   for (i=0; i < order; i++)
     if (i != n)
@@ -352,10 +365,13 @@ static MagickRealType Sinc(const MagickRealType x,
       sinc(x) == sin(pi x)/(pi x).
   */
   if (x != 0.0)
-  {
-    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
-    return(sin((double) pix)/pix);
-  }
+    {
+      MagickRealType
+        alpha;
+
+      alpha=(MagickRealType) (MagickPIL*x);
+      return(sin((double) alpha)/alpha);
+    }
   return((MagickRealType) 1.0);
 }
 
@@ -363,43 +379,40 @@ static MagickRealType SincFast(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Approximations of the sinc function sin(pi x)/(pi x) over the
-    interval [-4,4] constructed by Nicolas Robidoux and Chantal
-    Racette with funding from the Natural Sciences and Engineering
-    Research Council of Canada.
+    Approximations of the sinc function sin(pi x)/(pi x) over the interval
+    [-4,4] constructed by Nicolas Robidoux and Chantal Racette with funding
+    from the Natural Sciences and Engineering Research Council of Canada.
 
     Although the approximations are polynomials (for low order of
-    approximation) and quotients of polynomials (for higher order of
-    approximation) and consequently are similar in form to Taylor
-    polynomials/Pade approximants, the approximations are computed
-    with a completely different technique.
+    approximation) and quotients of polynomials (for higher order
+    of approximation) and consequently are similar in form to Taylor
+    polynomials/Pade approximants, the approximations are computed with a
+    completely different technique.
 
-    Summary: These approximations are "the best" in terms of bang
-    (accuracy) for the buck (flops). More specifically: Among the
-    polynomial quotients that can be computed using a fixed number of
-    flops (with a given "+ - * / budget"), the chosen polynomial
-    quotient is the one closest to the approximated function with
-    respect to maximum absolute relative error over the given
-    interval.
+    Summary: These approximations are "the best" in terms of bang (accuracy)
+    for the buck (flops). More specifically: Among the polynomial quotients
+    that can be computed using a fixed number of flops (with a given "+ -
+    * / budget"), the chosen polynomial quotient is the one closest to the
+    approximated function with respect to maximum absolute relative error
+    over the given interval.
 
-    The Remez algorithm, as implemented in the boost library's minimax
-    package, is the key to the construction:
-    http://www.boost.org/doc/libs/1_36_0/libs/math/doc/...
-    ...sf_and_dist/html/math_toolkit/backgrounders/remez.html
-  */
-  /*
-    If outside of the interval of approximation, use the standard trig
-    formula.
+    The Remez algorithm, as implemented in the boost library's minimax package,
+    is the key to the construction: http://www.boost.org/doc/libs/1_36_0/libs/
+    math/doc/sf_and_dist/html/math_toolkit/backgrounders/remez.html
+
+    If outside of the interval of approximation, use the standard trig formula.
   */
   if (x > 4.0)
     {
-      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
-      return(sin((double) pix)/pix);
+      MagickRealType
+        alpha;
+
+      alpha=(MagickRealType) (MagickPIL*x);
+      return(sin((double) alpha)/alpha);
     }
   {
     /*
-      The approximations only depend on x^2 (sinc is an even
-      function).
+      The approximations only depend on x^2 (sinc is an even function).
     */
     const MagickRealType xx = x*x;
 #if MAGICKCORE_QUANTUM_DEPTH <= 8
@@ -463,9 +476,9 @@ static MagickRealType Triangle(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    1st order (linear) B-Spline, bilinear interpolation, Tent 1D
-    filter, or a Bartlett 2D Cone filter.  Also used as a
-    Bartlett Windowing function for Sinc().
+    1st order (linear) B-Spline, bilinear interpolation, Tent 1D filter, or
+    a Bartlett 2D Cone filter.  Also used as a Bartlett Windowing function
+    for Sinc().
   */
   if (x < 1.0)
     return(1.0-x);
@@ -498,19 +511,16 @@ static MagickRealType Welsh(const MagickRealType x,
 %  these filters:
 %
 %  FIR (Finite impulse Response) Filters
-%      Box         Triangle   Quadratic
-%      Cubic       Hermite    Catrom
-%      Mitchell
+%      Box  Triangle Quadratic  Cubic  Hermite  Catrom  Mitchell
 %
 %  IIR (Infinite impulse Response) Filters
-%      Gaussian     Sinc        Jinc (Bessel)
+%      Gaussian  Sinc  Jinc (Bessel)
 %
 %  Windowed Sinc/Jinc Filters
-%      Blackman     Hanning     Hamming
-%      Kaiser       Lanczos
+%      Blackman  Hanning  Hamming  Kaiser Lanczos
 %
 %  Special purpose Filters
-%      SincFast  LanczosSharp  Lanczos2D Lanczos2DSharp  Robidoux
+%      SincFast  LanczosSharp  Lanczos2D  Lanczos2DSharp  Robidoux
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
 %  settings for that filter from a internal table.  However any provided
@@ -678,7 +688,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     *resize_filter;
 
   /*
-    Table Mapping given Filter, into Weighting and Windowing functions.  A
+    Table Mapping given Filter, into Weighting and Windowing functions. A
     'Box' windowing function means its a simble non-windowed filter.  An
     'SincFast' filter function could be upgraded to a 'Jinc' filter if a
     "cylindrical", unless a 'Sinc' or 'SincFast' filter was specifically
@@ -697,33 +707,33 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter,    BoxFilter      }, /* Undefined (default to Box)   */
-    { PointFilter,        BoxFilter      }, /* SPECIAL: Nearest neighbour   */
-    { BoxFilter,          BoxFilter      }, /* Box averaging filter         */
-    { TriangleFilter,     BoxFilter      }, /* Linear interpolation filter  */
-    { HermiteFilter,      BoxFilter      }, /* Hermite interpolation filter */
-    { SincFastFilter,     HanningFilter  }, /* Hanning -- cosine-sinc       */
-    { SincFastFilter,     HammingFilter  }, /* Hamming --      '' variation */
-    { SincFastFilter,     BlackmanFilter }, /* Blackman -- 2*cosine-sinc    */
-    { GaussianFilter,     BoxFilter      }, /* Gaussian blur filter         */
-    { QuadraticFilter,    BoxFilter      }, /* Quadratic Gaussian approx    */
-    { CubicFilter,        BoxFilter      }, /* Cubic B-Spline               */
-    { CatromFilter,       BoxFilter      }, /* Cubic-Keys interpolator      */
-    { MitchellFilter,     BoxFilter      }, /* 'Ideal' Cubic-Keys filter    */
-    { JincFilter,         BoxFilter      }, /* Raw 3-lobed Jinc function    */
-    { SincFilter,         BoxFilter      }, /* Raw 4-lobed Sinc function    */
-    { SincFastFilter,     BoxFilter      }, /* Raw fast sinc ("Pade"-type)  */
-    { SincFastFilter,     KaiserFilter   }, /* Kaiser -- square root-sinc   */
-    { SincFastFilter,     WelshFilter    }, /* Welsh -- parabolic-sinc      */
-    { SincFastFilter,     CubicFilter    }, /* Parzen -- cubic-sinc         */
-    { SincFastFilter,     BohmanFilter   }, /* Bohman -- 2*cosine-sinc      */
-    { SincFastFilter,     TriangleFilter }, /* Bartlett -- triangle-sinc    */
-    { LagrangeFilter,     BoxFilter      }, /* Lagrange self-windowing      */
-    { LanczosFilter,      LanczosFilter  }, /* Lanczos Sinc-Sinc filters    */
+    { UndefinedFilter,    BoxFilter      },  /* Undefined (default to Box)   */
+    { PointFilter,        BoxFilter      },  /* SPECIAL: Nearest neighbour   */
+    { BoxFilter,          BoxFilter      },  /* Box averaging filter         */
+    { TriangleFilter,     BoxFilter      },  /* Linear interpolation filter  */
+    { HermiteFilter,      BoxFilter      },  /* Hermite interpolation filter */
+    { SincFastFilter,     HanningFilter  },  /* Hanning -- cosine-sinc       */
+    { SincFastFilter,     HammingFilter  },  /* Hamming --      '' variation */
+    { SincFastFilter,     BlackmanFilter },  /* Blackman -- 2*cosine-sinc    */
+    { GaussianFilter,     BoxFilter      },  /* Gaussian blur filter         */
+    { QuadraticFilter,    BoxFilter      },  /* Quadratic Gaussian approx    */
+    { CubicFilter,        BoxFilter      },  /* Cubic B-Spline               */
+    { CatromFilter,       BoxFilter      },  /* Cubic-Keys interpolator      */
+    { MitchellFilter,     BoxFilter      },  /* 'Ideal' Cubic-Keys filter    */
+    { JincFilter,         BoxFilter      },  /* Raw 3-lobed Jinc function    */
+    { SincFilter,         BoxFilter      },  /* Raw 4-lobed Sinc function    */
+    { SincFastFilter,     BoxFilter      },  /* Raw fast sinc ("Pade"-type)  */
+    { SincFastFilter,     KaiserFilter   },  /* Kaiser -- square root-sinc   */
+    { SincFastFilter,     WelshFilter    },  /* Welsh -- parabolic-sinc      */
+    { SincFastFilter,     CubicFilter    },  /* Parzen -- cubic-sinc         */
+    { SincFastFilter,     BohmanFilter   },  /* Bohman -- 2*cosine-sinc      */
+    { SincFastFilter,     TriangleFilter },  /* Bartlett -- triangle-sinc    */
+    { LagrangeFilter,     BoxFilter      },  /* Lagrange self-windowing      */
+    { LanczosFilter,      LanczosFilter  },  /* Lanczos Sinc-Sinc filters    */
     { LanczosSharpFilter, LanczosSharpFilter }, /* | these require */
     { Lanczos2Filter,     Lanczos2Filter },     /* | special handling */
     { Lanczos2SharpFilter,Lanczos2SharpFilter },
-    { RobidouxFilter,     BoxFilter      }, /* Cubic Keys tuned for EWA     */
+    { RobidouxFilter,     BoxFilter      },  /* Cubic Keys tuned for EWA     */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -740,40 +750,40 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
     MagickRealType
       (*function)(const MagickRealType, const ResizeFilter*),
-      lobes, /* Default lobes/support size of the weighting filter. */
-      scale, /* Support when function used as a windowing function
-                Typically equal to the location of the first zero crossing. */
-      B,C;   /* BC-spline coefficients, ignored if not a CubicBC filter. */
+      lobes,  /* Default lobes/support size of the weighting filter. */
+      scale,  /* Support when function used as a windowing function
+                 Typically equal to the location of the first zero crossing. */
+      B,C;    /* BC-spline coefficients, ignored if not a CubicBC filter. */
   } const filters[SentinelFilter] =
   {
-    { Box,       0.5, 0.5,     0.0, 0.0 }, /* Undefined (default to Box)  */
-    { Box,       0.0, 0.5,     0.0, 0.0 }, /* Point (special handling)    */
-    { Box,       0.5, 0.5,     0.0, 0.0 }, /* Box                         */
-    { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Triangle                    */
-    { CubicBC,   1.0, 1.0,     0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
-    { Hanning,   1.0, 1.0,     0.0, 0.0 }, /* Hanning, cosine window      */
-    { Hamming,   1.0, 1.0,     0.0, 0.0 }, /* Hamming, '' variation       */
-    { Blackman,  1.0, 1.0,     0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  2.0, 1.5,     0.0, 0.0 }, /* Gaussian                    */
-    { Quadratic, 1.5, 1.5,     0.0, 0.0 }, /* Quadratic gaussian          */
-    { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
-    { CubicBC,   2.0, 1.0,     0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
+    { Box,       0.5, 0.5, 0.0, 0.0 }, /* Undefined (default to Box)  */
+    { Box,       0.0, 0.5, 0.0, 0.0 }, /* Point (special handling)    */
+    { Box,       0.5, 0.5, 0.0, 0.0 }, /* Box                         */
+    { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Triangle                    */
+    { CubicBC,   1.0, 1.0, 0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
+    { Hanning,   1.0, 1.0, 0.0, 0.0 }, /* Hanning, cosine window      */
+    { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
+    { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
+    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
+    { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
     { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3. }, /* Mitchell   (B=C=1/3)    */
     { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
-    { Sinc,      4.0, 1.0,     0.0, 0.0 }, /* Raw 4-lobed Sinc            */
-    { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Kaiser,    1.0, 1.0,     0.0, 0.0 }, /* Kaiser (square root window) */
-    { Welsh,     1.0, 1.0,     0.0, 0.0 }, /* Welsh (parabolic window)    */
-    { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Parzen (B-Spline window)    */
-    { Bohman,    1.0, 1.0,     0.0, 0.0 }, /* Bohman, 2*Cosine window     */
-    { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
-    { Lagrange,  2.0, 1.0,     0.0, 0.0 }, /* Lagrange sinc approximation */
-    { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
-    { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* lanczos, Sharpened          */
-    { SincFast,  2.0, 1.0,     0.0, 0.0 }, /* Lanczos, 2-lobed            */
-    { SincFast,  2.0, 1.0,     0.0, 0.0 }, /* Lanczos2, sharpened         */
-    { CubicBC,   2.0, 1.1685777620836932,
-                              0.37821575509399867, 0.31089212245300067 }
+    { Sinc,      4.0, 1.0, 0.0, 0.0 }, /* Raw 4-lobed Sinc            */
+    { SincFast,  4.0, 1.0, 0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
+    { Kaiser,    1.0, 1.0, 0.0, 0.0 }, /* Kaiser (square root window) */
+    { Welsh,     1.0, 1.0, 0.0, 0.0 }, /* Welsh (parabolic window)    */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Parzen (B-Spline window)    */
+    { Bohman,    1.0, 1.0, 0.0, 0.0 }, /* Bohman, 2*Cosine window     */
+    { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Bartlett (triangle window)  */
+    { Lagrange,  2.0, 1.0, 0.0, 0.0 }, /* Lagrange sinc approximation */
+    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
+    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* lanczos, Sharpened          */
+    { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos, 2-lobed            */
+    { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos2, sharpened         */
+    { CubicBC,   2.0, 1.1685777620836932, 0.37821575509399867,
+      0.31089212245300067 }
                      /* Robidoux: Keys cubic close to Lanczos2D sharpened */
   };
   /*
@@ -828,28 +838,33 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   window_type=mapping[filter].window;
   resize_filter->blur = blur;   /* function argument blur factor */
   sigma = 0.5;    /* guassian sigma of half a pixel by default */
-  /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
-  if (cylindrical != MagickFalse && filter_type == SincFastFilter
-       && filter != SincFastFilter )
-    filter_type=JincFilter;
-
-  /* Expert filter setting override */
+  if ((cylindrical != MagickFalse) && (filter_type == SincFastFilter) &&
+      (filter != SincFastFilter))
+    filter_type=JincFilter;  /* promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   artifact=GetImageArtifact(image,"filter:filter");
   if (artifact != (const char *) NULL)
     {
       ssize_t
         option;
 
+      /*
+        Expert filter setting override.
+      */
       option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
       if ((UndefinedFilter < option) && (option < SentinelFilter))
-        { /* Raw filter request - no window function. */
+        {
+          /*
+            Raw filter request - no window function.
+          */
           filter_type=(FilterTypes) option;
           window_type=BoxFilter;
         }
-      /* Filter override with a specific window function. */
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
+          /*
+            Filter override with a specific window function.
+          */
           option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             window_type=(FilterTypes) option;
@@ -857,127 +872,139 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     }
   else
     {
-      /* Window specified, but no filter function?  Assume Sinc/Jinc. */
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
           ssize_t
             option;
 
-          option=ParseCommandOption(MagickFilterOptions,MagickFalse,
-            artifact);
+          /*
+            Window specified, but no filter function?  Assume Sinc/Jinc.
+          */
+          option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
-              filter_type=cylindrical != MagickFalse ?
-                         JincFilter : SincFastFilter;
+              filter_type=cylindrical != MagickFalse ? JincFilter :
+                 SincFastFilter;
               window_type=(FilterTypes) option;
             }
         }
     }
-
-  /* Assign the real functions to use for the filters selected. */
+  /*
+    Assign the real functions to use for the filters selected.
+  */
   resize_filter->filter=filters[filter_type].function;
   resize_filter->support=filters[filter_type].lobes;
   resize_filter->window=filters[window_type].function;
   resize_filter->scale=filters[window_type].scale;
   resize_filter->signature=MagickSignature;
-
-  /* Filter Modifications for orthogonal/cylindrical usage */
+  /*
+    Filter Modifications for orthogonal/cylindrical usage.
+  */
   if (cylindrical != MagickFalse)
     switch (filter_type)
     {
       case BoxFilter:
-        /* Support for Cylindrical Box should be sqrt(2)/2 */
+      {
+        /*
+          Support for Cylindrical Box should be sqrt(2)/2.
+        */
         resize_filter->support=(MagickRealType) MagickSQ1_2;
         break;
+      }
       case LanczosFilter:
       case LanczosSharpFilter:
       case Lanczos2Filter:
       case Lanczos2SharpFilter:
+      {
+        /*
+          Number of lobes (support window size) remain unchanged.
+        */
         resize_filter->filter=filters[JincFilter].function;
         resize_filter->window=filters[JincFilter].function;
         resize_filter->scale=filters[JincFilter].scale;
-        /* number of lobes (support window size) remain unchanged */
         break;
+      }
       default:
         break;
     }
-  /* Global Sharpening (regardless of orthoginal/cylindrical) */
+  /*
+    Global Sharpening (regardless of orthoginal/cylindrical).
+  */
   switch (filter_type)
   {
     case LanczosSharpFilter:
-      resize_filter->blur *= 0.9812505644269356;
+    {
+      resize_filter->blur*=0.9812505644269356;
       break;
+    }
     case Lanczos2SharpFilter:
-      resize_filter->blur *= 0.9549963639785485;
+    {
+      resize_filter->blur*=0.9549963639785485;
       break;
+    }
     default:
       break;
   }
-
-  /*
-  ** Other Expert Option Modifications
-  */
-
-  /* User Sigma Override - no support change */
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
-    sigma=InterpretLocaleValue(artifact,(char **) NULL);
-  /* Define coefficents for Gaussian */
-  if ( GaussianFilter ) {
-    resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
-    resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*sigma*
-      sigma)); /* Normalization Multiplier - unneeded for filters */
-  }
-
-  /* Blur Override */
+    sigma=InterpretLocaleValue(artifact,(char **) NULL);  /* user sigma override - no support change */
+  if (GaussianFilter != (FilterTypes) NULL)
+    {
+      /*
+        Define coefficents for Gaussian.
+      */
+      resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
+      resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*sigma*
+        sigma)); /* normalization multiplier - unneeded for filters */
+    }
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur *= InterpretLocaleValue(artifact,(char **) NULL);
+    resize_filter->blur*=InterpretLocaleValue(artifact,(char **) NULL);  /* blur Override */
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
-
-  /* Support Overrides */
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
     {
       ssize_t
         lobes;
 
+      /*
+        Support overrides.
+      */
       lobes=(ssize_t) StringToLong(artifact);
       if (lobes < 1)
         lobes=1;
       resize_filter->support=(MagickRealType) lobes;
     }
-  /* Convert a Jinc function lobes value to a real support value */
   if (resize_filter->filter == Jinc)
     {
+      /*
+        Convert a Jinc function lobes value to a real support value.
+      */
       if (resize_filter->support > 16)
         resize_filter->support=jinc_zeros[15];  /* largest entry in table */
       else
-        resize_filter->support = jinc_zeros[((long)resize_filter->support)-1];
+        resize_filter->support=jinc_zeros[((long)resize_filter->support)-1];
     }
-  /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support=fabs(InterpretLocaleValue(artifact,(char **) NULL));
+    resize_filter->support=fabs(InterpretLocaleValue(artifact,(char **) NULL)); /* expert override of the support setting */
   /*
-    Scale windowing function separately to the support 'clipping'
-    window that calling operator is planning to actually use. (Expert
-    override)
+    Scale windowing function separately to the support 'clipping' window that
+    calling operator is planning to actually use (expert override).
   */
   resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
     resize_filter->window_support=fabs(InterpretLocaleValue(artifact,(char **) NULL));
   /*
-    Adjust window function scaling to match windowing support for
-    weighting function.  This avoids a division on every filter call.
+    Adjust window function scaling to match windowing support for weighting
+    function.  This avoids a division on every filter call.
   */
-  resize_filter->scale /= resize_filter->window_support;
-
+  resize_filter->scale/=resize_filter->window_support;
   /*
-   * Set Cubic Spline B,C values, calculate Cubic coefficients.
+    Set Cubic Spline B,C values, calculate cubic coefficients.
   */
   B=0.0;
   C=0.0;
@@ -1009,9 +1036,14 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
               B=1.0-2.0*C; /* Calculate B to get a Keys cubic filter. */
             }
         }
-      /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
       {
-        const double twoB = B+B;
+        double
+          twoB;
+
+        /*
+          Convert B,C values into Cubic Coefficents. See CubicBC().
+        */
+        twoB=B+B;
         resize_filter->coefficient[0]=1.0-(1.0/3.0)*B;
         resize_filter->coefficient[1]=-3.0+twoB+C;
         resize_filter->coefficient[2]=2.0-1.5*B-C;
@@ -1030,17 +1062,17 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   {
 #endif
     artifact=GetImageArtifact(image,"filter:verbose");
-    if (IsMagickTrue(artifact))
+    if (IsMagickTrue(artifact) != MagickFalse)
       {
         double
           support,
           x;
 
         /*
-          Set the weighting function properly when the weighting
-          function may not exactly match the filter of the same name.
-          EG: a Point filter is really uses a Box weighting function
-          with a different support than is typically used.
+          Set the weighting function properly when the weighting function
+          may not exactly match the filter of the same name.  EG: a Point
+          filter is really uses a Box weighting function with a different
+          support than is typically used.
         */
         if (resize_filter->filter == Box)       filter_type=BoxFilter;
         if (resize_filter->filter == Sinc)      filter_type=SincFilter;
@@ -1058,36 +1090,40 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         support=GetResizeFilterSupport(resize_filter); /* practical_support */
         (void) FormatLocaleFile(stdout,"# Resize Filter (for graphing)\n#\n");
         (void) FormatLocaleFile(stdout,"# filter = %s\n",
-             CommandOptionToMnemonic(MagickFilterOptions,filter_type));
+          CommandOptionToMnemonic(MagickFilterOptions,filter_type));
         (void) FormatLocaleFile(stdout,"# window = %s\n",
-             CommandOptionToMnemonic(MagickFilterOptions, window_type));
+          CommandOptionToMnemonic(MagickFilterOptions, window_type));
         (void) FormatLocaleFile(stdout,"# support = %.*g\n",
-             GetMagickPrecision(),(double) resize_filter->support);
+          GetMagickPrecision(),(double) resize_filter->support);
         (void) FormatLocaleFile(stdout,"# win-support = %.*g\n",
-             GetMagickPrecision(),(double) resize_filter->window_support);
+          GetMagickPrecision(),(double) resize_filter->window_support);
         (void) FormatLocaleFile(stdout,"# scale_blur = %.*g\n",
-             GetMagickPrecision(), (double)resize_filter->blur);
-        if ( filter_type == GaussianFilter )
+          GetMagickPrecision(), (double)resize_filter->blur);
+        if (filter_type == GaussianFilter)
           (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
-               GetMagickPrecision(), (double)sigma);
+             GetMagickPrecision(), (double)sigma);
         (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
-             GetMagickPrecision(), (double)support);
+           GetMagickPrecision(), (double)support);
         if ( filter_type == CubicFilter || window_type == CubicFilter )
           (void) FormatLocaleFile(stdout,"# B,C = %.*g,%.*g\n",
-               GetMagickPrecision(),(double)B, GetMagickPrecision(),(double)C);
+             GetMagickPrecision(),(double)B, GetMagickPrecision(),(double)C);
         (void) FormatLocaleFile(stdout,"\n");
         /*
-          Output values of resulting filter graph -- for graphing
-          filter result.
+          Output values of resulting filter graph -- for graphing filter result.
         */
         for (x=0.0; x <= support; x+=0.01f)
-          (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
-            (double) GetResizeFilterWeight(resize_filter,x));
-        /* A final value so gnuplot can graph the 'stop' properly. */
+          (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,
+            GetMagickPrecision(),(double) GetResizeFilterWeight(resize_filter,
+            x));
+        /*
+          A final value so gnuplot can graph the 'stop' properly.
+        */
         (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",support,
           GetMagickPrecision(),0.0);
       }
-      /* Output the above once only for each image - remove setting */
+    /*
+      Output the above once only for each image - remove setting.
+    */
     (void) DeleteImageArtifact((Image *) image,"filter:verbose");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   }
@@ -1552,157 +1588,6 @@ MagickExport MagickRealType GetResizeFilterWeight(
   weight=scale*resize_filter->filter(x_blur,resize_filter);
   return(weight);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g n i f y I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagnifyImage() is a convenience method that scales an image proportionally
-%  to twice its size.
-%
-%  The format of the MagnifyImage method is:
-%
-%      Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
-{
-  Image
-    *magnify_image;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
-    1.0,exception);
-  return(magnify_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M i n i f y I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MinifyImage() is a convenience method that scales an image proportionally
-%  to half its size.
-%
-%  The format of the MinifyImage method is:
-%
-%      Image *MinifyImage(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
-{
-  Image
-    *minify_image;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
-    exception);
-  return(minify_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e s a m p l e I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResampleImage() resize image in terms of its pixel size, so that when
-%  displayed at the given resolution it will be the same size in terms of
-%  real world units as the original image at the original resolution.
-%
-%  The format of the ResampleImage method is:
-%
-%      Image *ResampleImage(Image *image,const double x_resolution,
-%        const double y_resolution,const FilterTypes filter,const double blur,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image to be resized to fit the given resolution.
-%
-%    o x_resolution: the new image x resolution.
-%
-%    o y_resolution: the new image y resolution.
-%
-%    o filter: Image filter to use.
-%
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
-%
-*/
-MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
-  const double y_resolution,const FilterTypes filter,const double blur,
-  ExceptionInfo *exception)
-{
-#define ResampleImageTag  "Resample/Image"
-
-  Image
-    *resample_image;
-
-  size_t
-    height,
-    width;
-
-  /*
-    Initialize sampled image attributes.
-  */
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  width=(size_t) (x_resolution*image->columns/(image->x_resolution == 0.0 ?
-    72.0 : image->x_resolution)+0.5);
-  height=(size_t) (y_resolution*image->rows/(image->y_resolution == 0.0 ?
-    72.0 : image->y_resolution)+0.5);
-  resample_image=ResizeImage(image,width,height,filter,blur,exception);
-  if (resample_image != (Image *) NULL)
-    {
-      resample_image->x_resolution=x_resolution;
-      resample_image->y_resolution=y_resolution;
-    }
-  return(resample_image);
-}
 #if defined(MAGICKCORE_LQR_DELEGATE)
 
 /*
@@ -1907,6 +1792,157 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","`%s' (LQR)",image->filename);
   return((Image *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g n i f y I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagnifyImage() is a convenience method that scales an image proportionally
+%  to twice its size.
+%
+%  The format of the MagnifyImage method is:
+%
+%      Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+{
+  Image
+    *magnify_image;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
+    1.0,exception);
+  return(magnify_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M i n i f y I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MinifyImage() is a convenience method that scales an image proportionally to
+%  half its size.
+%
+%  The format of the MinifyImage method is:
+%
+%      Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+{
+  Image
+    *minify_image;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
+    exception);
+  return(minify_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e s a m p l e I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResampleImage() resize image in terms of its pixel size, so that when
+%  displayed at the given resolution it will be the same size in terms of
+%  real world units as the original image at the original resolution.
+%
+%  The format of the ResampleImage method is:
+%
+%      Image *ResampleImage(Image *image,const double x_resolution,
+%        const double y_resolution,const FilterTypes filter,const double blur,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image to be resized to fit the given resolution.
+%
+%    o x_resolution: the new image x resolution.
+%
+%    o y_resolution: the new image y resolution.
+%
+%    o filter: Image filter to use.
+%
+%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
+%
+*/
+MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
+  const double y_resolution,const FilterTypes filter,const double blur,
+  ExceptionInfo *exception)
+{
+#define ResampleImageTag  "Resample/Image"
+
+  Image
+    *resample_image;
+
+  size_t
+    height,
+    width;
+
+  /*
+    Initialize sampled image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=(size_t) (x_resolution*image->columns/(image->x_resolution == 0.0 ?
+    72.0 : image->x_resolution)+0.5);
+  height=(size_t) (y_resolution*image->rows/(image->y_resolution == 0.0 ?
+    72.0 : image->y_resolution)+0.5);
+  resample_image=ResizeImage(image,width,height,filter,blur,exception);
+  if (resample_image != (Image *) NULL)
+    {
+      resample_image->x_resolution=x_resolution;
+      resample_image->y_resolution=y_resolution;
+    }
+  return(resample_image);
 }
 #endif
 
