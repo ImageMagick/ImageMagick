@@ -1205,9 +1205,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
-    PixelInfo
-      pixel_info;
-
     PointInfo
       offset;
 
@@ -1228,15 +1225,12 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       continue;
     offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
-    GetPixelInfo(image,&pixel_info);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      register ssize_t
+      register PixelChannel
         i;
 
       offset.x=((MagickRealType) (x+0.5)*image->columns/resize_image->columns);
-      (void) InterpolatePixelInfo(image,interpolate_view,
-        MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel_info,exception);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -1261,19 +1255,8 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
             q[channel]=p[i];
             continue;
           }
-        status=InterpolatePixelChannel(image,interpolate_view,i,
+        status=InterpolatePixelChannel(image,interpolate_view,(PixelChannel) i,
           MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
-        if (status == MagickFalse)
-          continue;
-        switch (channel)
-        {
-          case RedPixelChannel: pixel=pixel_info.red; break;
-          case GreenPixelChannel: pixel=pixel_info.green; break;
-          case BluePixelChannel: pixel=pixel_info.blue; break;
-          case BlackPixelChannel: pixel=pixel_info.black; break;
-          case AlphaPixelChannel: pixel=pixel_info.alpha; break;
-          default: pixel=pixel_info.red; break;
-        }
         q[channel]=ClampToQuantum(pixel);
       }
       q+=GetPixelChannels(resize_image);
