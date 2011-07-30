@@ -3567,6 +3567,78 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I n t e r p o l a t e P i x e l C h a n n e l                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InterpolatePixelChannel() applies bi-linear or tri-linear interpolation
+%  between a floating point coordinate and the pixels surrounding that
+%  coordinate.  No pixel area resampling, or scaling of the result is
+%  performed.
+%
+%  The format of the InterpolatePixelChannel method is:
+%
+%      MagickBooleanType InterpolatePixelChannel(const Image *image,
+%        const PixelChannel channel,const CacheView *image_view,
+%        const InterpolatePixelMethod method,const double x,const double y,
+%        double *pixel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o image_view: the image view.
+%
+%    o channel: the pixel channel to interpolate.
+%
+%    o method: the pixel color interpolation method.
+%
+%    o x,y: A double representing the current (x,y) position of the pixel.
+%
+%    o pixel: return the interpolated pixel here.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
+  const CacheView *image_view,const PixelChannel channel,
+  const InterpolatePixelMethod method,const double x,const double y,
+  double *pixel,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  ssize_t
+    x_offset,
+    y_offset;
+
+  assert(image != (Image *) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image_view != (CacheView *) NULL);
+  status=MagickTrue;
+  *pixel=0;
+  x_offset=(ssize_t) floor(x);
+  y_offset=(ssize_t) floor(y);
+  switch (method == UndefinedInterpolatePixel ? image->interpolate : method)
+  {
+    case MeshInterpolatePixel:
+    {
+      break;
+    }
+    default:
+      break;
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I n t e r p o l a t e P i x e l I n f o                                   %
 %                                                                             %
 %                                                                             %
