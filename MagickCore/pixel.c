@@ -3602,6 +3602,13 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline double MeshInterpolate(const PointInfo *delta,const double p,
+  const double x,const double y)
+{
+  return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
+}
+
 MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   const CacheView *image_view,const PixelChannel channel,
   const InterpolatePixelMethod method,const double x,const double y,
@@ -3609,6 +3616,22 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
 {
   MagickBooleanType
     status;
+
+  MagickRealType
+    alpha[16],
+    gamma;
+
+  PixelTrait
+    traits;
+
+  Quantum
+    pixels[16];
+
+  register const Quantum
+    *p;
+
+  register ssize_t
+    i;
 
   ssize_t
     x_offset,
@@ -3620,16 +3643,105 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   assert(image_view != (CacheView *) NULL);
   status=MagickTrue;
   *pixel=0;
+  traits=GetPixelChannelMapTraits(image,channel);
+  if (traits == UndefinedPixelTrait)
+    return(MagickTrue);
   x_offset=(ssize_t) floor(x);
   y_offset=(ssize_t) floor(y);
   switch (method == UndefinedInterpolatePixel ? image->interpolate : method)
   {
     case MeshInterpolatePixel:
+    default:
     {
+      PointInfo
+        delta,
+        luminance;
+
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
+      luminance.x=GetPixelLuminance(image,p+0*GetPixelChannels(image))-(double)
+        GetPixelLuminance(image,p+3*GetPixelChannels(image));
+      luminance.y=GetPixelLuminance(image,p+1*GetPixelChannels(image))-(double)
+        GetPixelLuminance(image,p+2*GetPixelChannels(image));
+      if (((traits & BlendPixelTrait) == 0) ||
+          (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
+          (image->matte == MagickFalse))
+        for (i=0; i < 4; i++)
+        {
+          alpha[i]=1.0;
+          pixels[i]=p[i*GetPixelChannels(image)+channel];
+        }
+      else
+        for (i=0; i < 4; i++)
+        {
+          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+            GetPixelChannels(image));
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+        }
+      if (fabs(luminance.x) < fabs(luminance.y))
+        {
+          /*
+            Diagonal 0-3 NW-SE.
+          */
+          if (delta.x <= delta.y)
+            {
+              /*
+                Bottom-left triangle (pixel: 2, diagonal: 0-3).
+              */
+              delta.y=1.0-delta.y;
+              gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
+              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+              *pixel=gamma*MeshInterpolate(&delta,pixels[2],pixels[3],
+                pixels[0]);
+            }
+          else
+            {
+              /*
+                Top-right triangle (pixel: 1, diagonal: 0-3).
+              */
+              delta.x=1.0-delta.x;
+              gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
+              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+              *pixel=gamma*MeshInterpolate(&delta,pixels[1],pixels[0],
+                pixels[3]);
+            }
+        }
+      else
+        {
+          /*
+            Diagonal 1-2 NE-SW.
+          */
+          if (delta.x <= (1.0-delta.y))
+            {
+              /*
+                Top-left triangle (pixel: 0, diagonal: 1-2).
+              */
+              gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
+              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+              *pixel=gamma*MeshInterpolate(&delta,pixels[0],pixels[1],
+                pixels[2]);
+            }
+          else
+            {
+              /*
+                Bottom-right triangle (pixel: 3, diagonal: 1-2).
+              */
+              delta.x=1.0-delta.x;
+              delta.y=1.0-delta.y;
+              gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
+              gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+              *pixel=gamma*MeshInterpolate(&delta,pixels[3],pixels[2],
+                pixels[1]);
+            }
+        }
       break;
     }
-    default:
-      break;
   }
   return(status);
 }
@@ -3761,12 +3873,6 @@ static inline MagickRealType CubicWeightingFunction(const MagickRealType x)
   alpha=MagickMax(x-1.0,0.0);
   gamma-=4.0*alpha*alpha*alpha;
   return(gamma/6.0);
-}
-
-static inline double MeshInterpolate(const PointInfo *delta,const double p,
-  const double x,const double y)
-{
-  return(delta->x*x+delta->y*y+(1.0-delta->x-delta->y)*p);
 }
 
 static inline ssize_t NearestNeighbor(const MagickRealType x)
@@ -3993,23 +4099,22 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         delta,
         luminance;
 
-      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
           break;
         }
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
+      luminance.x=GetPixelLuminance(image,p+0*GetPixelChannels(image))-(double)
+        GetPixelLuminance(image,p+3*GetPixelChannels(image));
+      luminance.y=GetPixelLuminance(image,p+1*GetPixelChannels(image))-(double)
+        GetPixelLuminance(image,p+2*GetPixelChannels(image));
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
       AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
-      delta.x=x-x_offset;
-      delta.y=y-y_offset;
-      luminance.x=GetPixelInfoLuminance(pixels+0)-(double)
-        GetPixelInfoLuminance(pixels+3);
-      luminance.y=GetPixelInfoLuminance(pixels+1)-(double)
-        GetPixelInfoLuminance(pixels+2);
       if (fabs(luminance.x) < fabs(luminance.y))
         {
           /*
@@ -4018,7 +4123,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           if (delta.x <= delta.y)
             {
               /*
-                Bottom-left triangle  (pixel:2, diagonal: 0-3).
+                Bottom-left triangle (pixel: 2, diagonal: 0-3).
               */
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
@@ -4032,13 +4137,14 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[2].black,
                   pixels[3].black,pixels[0].black);
+              gamma=MeshInterpolate(&delta,1.0,1.0,1.0);
               pixel->alpha=gamma*MeshInterpolate(&delta,pixels[2].alpha,
                 pixels[3].alpha,pixels[0].alpha);
             }
           else
             {
               /*
-                Top-right triangle (pixel:1, diagonal: 0-3).
+                Top-right triangle (pixel:1 , diagonal: 0-3).
               */
               delta.x=1.0-delta.x;
               gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
@@ -4052,6 +4158,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[1].black,
                   pixels[0].black,pixels[3].black);
+              gamma=MeshInterpolate(&delta,1.0,1.0,1.0);
               pixel->alpha=gamma*MeshInterpolate(&delta,pixels[1].alpha,
                 pixels[0].alpha,pixels[3].alpha);
             }
@@ -4064,7 +4171,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           if (delta.x <= (1.0-delta.y))
             {
               /*
-                Top-left triangle (pixel 0, diagonal: 1-2).
+                Top-left triangle (pixel: 0, diagonal: 1-2).
               */
               gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
@@ -4077,6 +4184,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[0].black,
                   pixels[1].black,pixels[2].black);
+              gamma=MeshInterpolate(&delta,1.0,1.0,1.0);
               pixel->alpha=gamma*MeshInterpolate(&delta,pixels[0].alpha,
                 pixels[1].alpha,pixels[2].alpha);
             }
@@ -4098,6 +4206,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               if (image->colorspace == CMYKColorspace)
                 pixel->black=gamma*MeshInterpolate(&delta,pixels[3].black,
                   pixels[2].black,pixels[1].black);
+              gamma=MeshInterpolate(&delta,1.0,1.0,1.0);
               pixel->alpha=gamma*MeshInterpolate(&delta,pixels[3].alpha,
                 pixels[2].alpha,pixels[1].alpha);
             }

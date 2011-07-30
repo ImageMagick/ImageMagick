@@ -687,6 +687,17 @@ static inline Quantum GetPixelIntensity(const Image *image,const Quantum *pixel)
 #endif
 }
 
+static inline Quantum GetPixelLuminance(const Image *image,const Quantum *pixel)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) (0.21267*GetPixelRed(image,pixel)+0.71516*
+    GetPixelGreen(image,pixel)+0.07217*GetPixelBlue(image,pixel)+0.5));
+#else
+  return((Quantum) (0.21267*GetPixelRed(image,pixel)+0.71516*
+    GetPixelGreen(image,pixel)+0.07217*GetPixelBlue(image,pixel)));
+#endif
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
