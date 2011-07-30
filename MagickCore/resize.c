@@ -1239,7 +1239,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
         MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel_info,exception);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           pixel;
 
         PixelChannel
@@ -1261,6 +1261,10 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
             q[channel]=p[i];
             continue;
           }
+        status=InterpolatePixelChannel(image,interpolate_view,i,
+          MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
+        if (status == MagickFalse)
+          continue;
         switch (channel)
         {
           case RedPixelChannel: pixel=pixel_info.red; break;
