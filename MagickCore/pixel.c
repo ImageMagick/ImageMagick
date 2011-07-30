@@ -3567,7 +3567,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n t e r p o l a t e M a g i c k P i x e l P a c k e t                   %
+%   I n t e r p o l a t e P i x e l I n f o                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
