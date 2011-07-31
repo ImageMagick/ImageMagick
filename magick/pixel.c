@@ -3721,13 +3721,15 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->blue=gamma*(epsilon.y*(epsilon.x*pixels[0].blue+delta.x*
         pixels[1].blue)+delta.y*(epsilon.x*pixels[2].blue+delta.x*
         pixels[3].blue));
-      pixel->opacity=(epsilon.y*(epsilon.x*pixels[0].opacity+delta.x*
-        pixels[1].opacity)+delta.y*(epsilon.x*pixels[2].opacity+delta.x*
-        pixels[3].opacity));
       if (image->colorspace == CMYKColorspace)
         pixel->index=gamma*(epsilon.y*(epsilon.x*pixels[0].index+delta.x*
           pixels[1].index)+delta.y*(epsilon.x*pixels[2].index+delta.x*
           pixels[3].index));
+      gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
+      gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+      pixel->opacity=(epsilon.y*(epsilon.x*pixels[0].opacity+delta.x*
+        pixels[1].opacity)+delta.y*(epsilon.x*pixels[2].opacity+delta.x*
+        pixels[3].opacity));
       break;
     }
     case FilterInterpolatePixel:
