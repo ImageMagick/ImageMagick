@@ -1628,9 +1628,9 @@ MagickExport MagickRealType GetResizeFilterWeight(
 %
 %  The format of the LiquidRescaleImage method is:
 %
-%      Image *LiquidRescaleImage(const Image *image,
-%        const size_t columns,const size_t rows,
-%        const double delta_x,const double rigidity,ExceptionInfo *exception)
+%      Image *LiquidRescaleImage(const Image *image,const size_t columns,
+%        const size_t rows,const double delta_x,const double rigidity,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
