@@ -2468,8 +2468,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           bzip_info.avail_out=(unsigned int) BZipMaxExtent(packet_size*
             image->columns);
           code=BZ2_bzCompress(&bzip_info,BZ_FINISH);
-          if (code != BZ_OK)
-            status=MagickFalse;
           length=(size_t) (bzip_info.next_out-(char *) compress_pixels);
           if (length != 0)
             {
@@ -2495,8 +2493,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           lzma_info.next_out=compress_pixels;
           lzma_info.avail_out=packet_size*image->columns;
           code=lzma_code(&lzma_info,LZMA_FINISH);
-          if (code != LZMA_OK)
-            status=MagickFalse;
           length=(size_t) (lzma_info.next_out-compress_pixels);
           if (length > 6)
             {
@@ -2522,8 +2518,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           zip_info.avail_out=(uInt) ZipMaxExtent(packet_size*
             image->columns);
           code=deflate(&zip_info,Z_FINISH);
-          if (code != Z_OK)
-            status=MagickFalse;
           length=(size_t) (zip_info.next_out-compress_pixels);
           if (length > 6)
             {
