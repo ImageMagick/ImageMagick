@@ -1657,8 +1657,9 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     *image_view,
     *rescale_view;
 
-  guchar
-    *packet;
+  gfloat
+    *packet,
+    *pixels;
 
   Image
     *rescale_image;
@@ -1676,14 +1677,11 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   MagickBooleanType
     status;
 
-  register unsigned char
+  register gfloat
     *q;
 
   ssize_t
     y;
-
-  unsigned char
-    *pixels;
 
   /*
     Liquid rescale image.
@@ -1723,9 +1721,9 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       resize_image=DestroyImage(resize_image);
       return(rescale_image);
     }
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,image->rows*
+  pixels=(gfloat *) AcquireQuantumMemory(image->columns,image->rows*
     GetPixelChannels(image)*sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL)
+  if (pixels == (gfloat *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
   q=pixels;
@@ -1752,16 +1750,16 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        *q++=ScaleQuantumToChar(p[i]);
+        *q++=QuantumScale*p[i];
       p+=GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
-  carver=lqr_carver_new(pixels,image->columns,image->rows,
-    GetPixelChannels(image));
+  carver=lqr_carver_new_ext(pixels,image->columns,image->rows,
+    GetPixelChannels(image),LQR_COLDEPTH_32F);
   if (carver == (LqrCarver *) NULL)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixels=(gfloat *) RelinquishMagickMemory(pixels);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
@@ -1771,19 +1769,19 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     lqr_carver_get_height(carver),MagickTrue,exception);
   if (rescale_image == (Image *) NULL)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixels=(gfloat *) RelinquishMagickMemory(pixels);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(rescale_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&rescale_image->exception);
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixels=(gfloat *) RelinquishMagickMemory(pixels);
       rescale_image=DestroyImage(rescale_image);
       return((Image *) NULL);
     }
   rescale_view=AcquireCacheView(rescale_image);
   (void) lqr_carver_scan_reset(carver);
-  while (lqr_carver_scan(carver,&x_offset,&y_offset,&packet) != 0)
+  while (lqr_carver_scan_ext(carver,&x_offset,&y_offset,(void **) &packet) != 0)
   {
     register Quantum
       *restrict q;
@@ -1811,7 +1809,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       rescale_traits=GetPixelChannelMapTraits(rescale_image,channel);
       if (rescale_traits == UndefinedPixelTrait)
         continue;
-      q[channel]=ClampToQuantum(ScaleCharToQuantum(packet[i]));
+      q[channel]=ClampToQuantum(QuantumRange*packet[i]);
     }
     if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
       break;
