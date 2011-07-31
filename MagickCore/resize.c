@@ -61,6 +61,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
+#include "MagickCore/quantum-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
 #include "MagickCore/resize.h"
@@ -1653,10 +1654,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
 #define LiquidRescaleImageTag  "Rescale/Image"
 
   CacheView
+    *image_view,
     *rescale_view;
-
-  const char
-    *map;
 
   guchar
     *packet;
@@ -1665,8 +1664,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     *rescale_image;
 
   int
-    x,
-    y;
+    x_offset,
+    y_offset;
 
   LqrCarver
     *carver;
@@ -1677,8 +1676,11 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   MagickBooleanType
     status;
 
-  PixelInfo
-    pixel;
+  register unsigned char
+    *q;
+
+  ssize_t
+    y;
 
   unsigned char
     *pixels;
@@ -1721,27 +1723,42 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       resize_image=DestroyImage(resize_image);
       return(rescale_image);
     }
-  map="RGB";
-  if (image->matte == MagickFalse)
-    map="RGBA";
-  if (image->colorspace == CMYKColorspace)
-    {
-      map="CMYK";
-      if (image->matte == MagickFalse)
-        map="CMYKA";
-    }
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,image->rows*
-    strlen(map)*sizeof(*pixels));
+    GetPixelChannels(image)*sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     return((Image *) NULL);
-  status=ExportImagePixels(image,0,0,image->columns,image->rows,map,CharPixel,
-    pixels,exception);
-  if (status == MagickFalse)
+  status=MagickTrue;
+  q=pixels;
+  image_view=AcquireCacheView(image);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        *q++=ScaleQuantumToChar(p[i]);
+      p+=GetPixelChannels(image);
     }
-  carver=lqr_carver_new(pixels,image->columns,image->rows,strlen(map));
+  }
+  image_view=DestroyCacheView(image_view);
+  carver=lqr_carver_new(pixels,image->columns,image->rows,
+    GetPixelChannels(image));
   if (carver == (LqrCarver *) NULL)
     {
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
@@ -1760,42 +1777,46 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   if (SetImageStorageClass(rescale_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&rescale_image->exception);
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       rescale_image=DestroyImage(rescale_image);
       return((Image *) NULL);
     }
-  GetPixelInfo(rescale_image,&pixel);
-  (void) lqr_carver_scan_reset(carver);
   rescale_view=AcquireCacheView(rescale_image);
-  while (lqr_carver_scan(carver,&x,&y,&packet) != 0)
+  (void) lqr_carver_scan_reset(carver);
+  while (lqr_carver_scan(carver,&x_offset,&y_offset,&packet) != 0)
   {
     register Quantum
       *restrict q;
 
-    q=QueueCacheViewAuthenticPixels(rescale_view,x,y,1,1,exception);
-    if (q == (const Quantum *) NULL)
+    register ssize_t
+      i;
+
+    q=QueueCacheViewAuthenticPixels(rescale_view,x_offset,y_offset,1,1,
+      exception);
+    if (q == (Quantum *) NULL)
       break;
-    pixel.red=QuantumRange*(packet[0]/255.0);
-    pixel.green=QuantumRange*(packet[1]/255.0);
-    pixel.blue=QuantumRange*(packet[2]/255.0);
-    if (image->colorspace != CMYKColorspace)
-      {
-        if (image->matte == MagickFalse)
-          pixel.alpha=QuantumRange*(packet[3]/255.0);
-      }
-    else
-      {
-        pixel.black=QuantumRange*(packet[3]/255.0);
-        if (image->matte == MagickFalse)
-          pixel.alpha=QuantumRange*(packet[4]/255.0);
-      }
-    SetPixelPixelInfo(rescale_image,&pixel,q);
+    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    {
+      PixelChannel
+        channel;
+
+      PixelTrait
+        rescale_traits,
+        traits;
+
+      traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+      if (traits == UndefinedPixelTrait)
+        continue;
+      channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+      rescale_traits=GetPixelChannelMapTraits(rescale_image,channel);
+      if (rescale_traits == UndefinedPixelTrait)
+        continue;
+      q[channel]=ClampToQuantum(ScaleCharToQuantum(packet[i]));
+    }
     if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
       break;
   }
   rescale_view=DestroyCacheView(rescale_view);
-  /*
-    Relinquish resources.
-  */
   lqr_carver_destroy(carver);
   return(rescale_image);
 }
