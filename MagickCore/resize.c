@@ -1227,7 +1227,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      register PixelChannel
+      register ssize_t
         i;
 
       offset.x=((MagickRealType) (x+0.5)*image->columns/resize_image->columns);
