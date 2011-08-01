@@ -1047,12 +1047,12 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The ContrastStretchImage() is a simple image enhancement technique that
-%  attempts to improve the contrast in an image by `stretching' the range of
-%  intensity values it contains to span a desired range of values. It differs
-%  from the more sophisticated histogram equalization in that it can only
-%  apply %  a linear scaling function to the image pixel values.  As a result
-%  the `enhancement' is less harsh.
+%  ContrastStretchImage() is a simple image enhancement technique that attempts
+%  to improve the contrast in an image by `stretching' the range of intensity
+%  values it contains to span a desired range of values. It differs from the
+%  more sophisticated histogram equalization in that it can only apply a
+%  linear scaling function to the image pixel values.  As a result the
+%  `enhancement' is less harsh.
 %
 %  The format of the ContrastStretchImage method is:
 %
@@ -2999,8 +2999,8 @@ MagickExport MagickBooleanType LevelColorsImageChannel(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The LinearStretchImage() discards any pixels below the black point and
-%  above the white point and levels the remaining pixels.
+%  LinearStretchImage() discards any pixels below the black point and above
+%  the white point and levels the remaining pixels.
 %
 %  The format of the LinearStretchImage method is:
 %
