@@ -234,9 +234,9 @@ MagickExport MagickBooleanType AutoLevelImageChannel(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Use BrightnessContrastImage() to change the brightness and/or contrast of
-%  an image.  It converts the brightness and contrast parameters into slope
-%  and intercept and calls a polynomical function to apply to the image.
+%  BrightnessContrastImage() changes the brightness and/or contrast of an
+%  image.  It converts the brightness and contrast parameters into slope and
+%  intercept and calls a polynomical function to apply to the image.
 %
 %  The format of the BrightnessContrastImage method is:
 %
