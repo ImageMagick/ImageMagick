@@ -828,6 +828,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
         if (next == (Image *) NULL)
           break;
       }
+      ClearMagickException(exception);
       return(crop_image);
     }
 
