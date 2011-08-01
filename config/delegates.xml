@@ -87,7 +87,7 @@
   <delegate decode="pcl:mono" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="pdf" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=epswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
-  <delegate decode="png" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
+  <delegate decode="tiff" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="pov" command="&quot;povray&quot; &quot;+i%i&quot; -D0 +o&quot;%o&quot; +fn%q +w%w +h%h +a -q9 -kfi&quot;%s&quot; -kff&quot;%n&quot;\n&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
   <delegate decode="ps" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=epswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
@@ -100,11 +100,11 @@
   <delegate decode="rgba" encode="rle" mode="encode" command="&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;"/>
   <delegate decode="scan" command="&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="scanx" command="&quot;scanimage&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="png" encode="show" spawn="True" command="&quot;/usr/local/bin/display&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="miff" encode="show" spawn="True" command="&quot;/usr/local/bin/display&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="shtml" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="svg" command="&quot;rsvg&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="txt" encode="ps" mode="bi" command="&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
-  <delegate decode="png" encode="win" stealth="True" spawn="True" command="&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
+  <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="wmf" command="&quot;wmf2eps&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="xps:color" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="xps:cmyk" stealth="True" command="&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=bmpsep8&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
