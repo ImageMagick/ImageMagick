@@ -836,17 +836,15 @@ MagickExport Image *CropImageToTiles(const Image *image,
             }
           crop.width-=crop.x;
           crop.x+=image->page.x;
-          if ((offset.x < (double) width) && (offset.y < (double) height))
-            {
-              next=CropImage(image,&crop,exception);
-              if (next == (Image *) NULL)
-                break;
-              AppendImageToList(&crop_image,next);
-            }
+          next=CropImage(image,&crop,exception);
+          if (next == (Image *) NULL)
+            break;
+          AppendImageToList(&crop_image,next);
         }
         if (next == (Image *) NULL)
           break;
       }
+      ClearMagickException(exception);
       return(crop_image);
     }
 
