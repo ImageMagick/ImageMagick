@@ -2845,7 +2845,11 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
 
   MagickRealType
     alpha,
-    gamma;
+    pixel[MaxPixelChannels],
+    *scale_scanline,
+    *scanline,
+    *x_vector,
+    *y_vector;
 
   PixelChannel
     channel;
@@ -2857,13 +2861,6 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   PointInfo
     scale,
     span;
-
-  Quantum
-    pixel[MaxPixelChannels],
-    *scale_scanline,
-    *scanline,
-    *x_vector,
-    *y_vector;
 
   register ssize_t
     i;
@@ -2898,18 +2895,20 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   /*
     Allocate memory.
   */
-  x_vector=(Quantum *) AcquireQuantumMemory((size_t) image->columns,
+  x_vector=(MagickRealType *) AcquireQuantumMemory((size_t) image->columns,
     GetPixelChannels(image)*sizeof(*x_vector));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
-    scanline=(Quantum *) AcquireQuantumMemory((size_t) image->columns,
+    scanline=(MagickRealType *) AcquireQuantumMemory((size_t) image->columns,
       GetPixelChannels(image)*sizeof(*scanline));
-  scale_scanline=(Quantum *) AcquireQuantumMemory((size_t)
+  scale_scanline=(MagickRealType *) AcquireQuantumMemory((size_t)
     scale_image->columns,GetPixelChannels(image)*sizeof(*scale_scanline));
-  y_vector=(Quantum *) AcquireQuantumMemory((size_t) image->columns,
+  y_vector=(MagickRealType *) AcquireQuantumMemory((size_t) image->columns,
     GetPixelChannels(image)*sizeof(*y_vector));
-  if ((scanline == (Quantum *) NULL) || (scale_scanline == (Quantum *) NULL) ||
-      (x_vector == (Quantum *) NULL) || (y_vector == (Quantum *) NULL))
+  if ((scanline == (MagickRealType *) NULL) ||
+      (scale_scanline == (MagickRealType *) NULL) ||
+      (x_vector == (MagickRealType *) NULL) ||
+      (y_vector == (MagickRealType *) NULL))
     {
       scale_image=DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2931,10 +2930,12 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     register const Quantum
       *restrict p;
 
-    register Quantum
-      *restrict q,
+    register MagickRealType
       *restrict s,
       *restrict t;
+
+    register Quantum
+      *restrict q;
 
     register ssize_t
       x;
@@ -3174,11 +3175,11 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   /*
     Free allocated memory.
   */
-  y_vector=(Quantum *) RelinquishMagickMemory(y_vector);
-  scale_scanline=(Quantum *) RelinquishMagickMemory(scale_scanline);
+  y_vector=(MagickRealType *) RelinquishMagickMemory(y_vector);
+  scale_scanline=(MagickRealType *) RelinquishMagickMemory(scale_scanline);
   if (scale_image->rows != image->rows)
-    scanline=(Quantum *) RelinquishMagickMemory(scanline);
-  x_vector=(Quantum *) RelinquishMagickMemory(x_vector);
+    scanline=(MagickRealType *) RelinquishMagickMemory(scanline);
+  x_vector=(MagickRealType *) RelinquishMagickMemory(x_vector);
   scale_image->type=image->type;
   return(scale_image);
 }
