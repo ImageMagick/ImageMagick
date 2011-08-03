@@ -1298,6 +1298,30 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     }
   (void) CopyMagickString(component,path,MaxTextExtent);
   *magick='\0';
+  *subimage='\0';
+  p=component;
+  if (*p != '\0')
+    p=component+strlen(component)-1;
+  if ((*p == ']') && (strchr(component,'[') != (char *) NULL) &&
+      (IsPathAccessible(path) == MagickFalse))
+    {
+      /*
+        Look for scene specification (e.g. img0001.pcd[4]).
+      */
+      for (q=p-1; q > component; q--)
+        if (*q == '[')
+          break;
+      if (*q == '[')
+        {
+          (void) CopyMagickString(subimage,q+1,MaxTextExtent);
+          subimage[p-q-1]='\0';
+          if ((IsSceneGeometry(subimage,MagickFalse) == MagickFalse) &&
+              (IsGeometry(subimage) == MagickFalse))
+            *subimage='\0';
+          else
+            *q='\0';
+        }
+    }
 #if defined(__OS2__)
   if (path[1] != ":")
 #endif
@@ -1327,30 +1351,6 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         break;
       }
   }
-  *subimage='\0';
-  p=component;
-  if (*p != '\0')
-    p=component+strlen(component)-1;
-  if ((*p == ']') && (strchr(component,'[') != (char *) NULL) &&
-      (IsPathAccessible(path) == MagickFalse))
-    {
-      /*
-        Look for scene specification (e.g. img0001.pcd[4]).
-      */
-      for (q=p-1; q > component; q--)
-        if (*q == '[')
-          break;
-      if (*q == '[')
-        {
-          (void) CopyMagickString(subimage,q+1,MaxTextExtent);
-          subimage[p-q-1]='\0';
-          if ((IsSceneGeometry(subimage,MagickFalse) == MagickFalse) &&
-              (IsGeometry(subimage) == MagickFalse))
-            *subimage='\0';
-          else
-            *q='\0';
-        }
-    }
   p=component;
   if (*p != '\0')
     for (p=component+strlen(component)-1; p > component; p--)
