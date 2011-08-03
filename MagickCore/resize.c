@@ -2255,8 +2255,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           }
         pixel=0.0;
         if (((resize_traits & BlendPixelTrait) == 0) ||
-            (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-            (image->matte == MagickFalse))
+            (GetPixelAlphaTraits(resize_image) == UndefinedPixelTrait) ||
+            (resize_image->matte == MagickFalse))
           {
             /*
               No alpha blending.
@@ -2473,8 +2473,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           }
         pixel=0.0;
         if (((resize_traits & BlendPixelTrait) == 0) ||
-            (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-            (image->matte == MagickFalse))
+            (GetPixelAlphaTraits(resize_image) == UndefinedPixelTrait) ||
+            (resize_image->matte == MagickFalse))
           {
             /*
               No alpha blending.
@@ -2845,6 +2845,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
 
   MagickRealType
     alpha,
+    gamma,
     pixel[MaxPixelChannels],
     *scale_scanline,
     *scanline,
@@ -3073,6 +3074,9 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         s=scanline;
         for (x=0; x < (ssize_t) scale_image->columns; x++)
         {
+          channel=GetPixelChannelMapChannel(image,AlphaPixelChannel);
+          alpha=QuantumScale*s[channel];
+          gamma=1.0/(fabs((double) alpha) <= MagickEpsilon ? 1.0 : alpha);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
@@ -3082,7 +3086,12 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             scale_traits=GetPixelChannelMapTraits(scale_image,channel);
             if (scale_traits == UndefinedPixelTrait)
               continue;
-            q[channel]=ClampToQuantum(s[i]);
+            if (((traits & BlendPixelTrait) == 0) ||
+                (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
+                (scale_image->matte == MagickFalse))
+              q[channel]=ClampToQuantum(s[i]);
+            else
+              q[channel]=ClampToQuantum(gamma*s[i]);
           }
           q+=GetPixelChannels(scale_image);
           s+=GetPixelChannels(image);
@@ -3152,6 +3161,9 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       t=scale_scanline;
       for (x=0; x < (ssize_t) scale_image->columns; x++)
       {
+        channel=GetPixelChannelMapChannel(scale_image,AlphaPixelChannel);
+        alpha=QuantumScale*t[channel];
+        gamma=1.0/(fabs((double) alpha) <= MagickEpsilon ? 1.0 : alpha);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
@@ -3161,7 +3173,12 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           scale_traits=GetPixelChannelMapTraits(scale_image,channel);
           if (scale_traits == UndefinedPixelTrait)
             continue;
-          q[channel]=ClampToQuantum(t[i]);
+          if (((scale_traits & BlendPixelTrait) == 0) ||
+              (GetPixelAlphaTraits(scale_image) == UndefinedPixelTrait) ||
+              (scale_image->matte == MagickFalse))
+            q[channel]=ClampToQuantum(t[i]);
+          else
+            q[channel]=ClampToQuantum(gamma*t[i]);
         }
         q+=GetPixelChannels(scale_image);
         t+=GetPixelChannels(scale_image);
