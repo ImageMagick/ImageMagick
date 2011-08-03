@@ -1901,21 +1901,27 @@ static const char *FxOperatorPrecedence(const char *expression,
       case 'A':
       case 'a':
       {
+#if defined(MAGICKCORE_HAVE_ACOSH)
         if (LocaleNCompare(expression,"acosh",5) == 0)
           {
             expression+=5;
             break;
           }
+#endif
+#if defined(MAGICKCORE_HAVE_ASINH)
         if (LocaleNCompare(expression,"asinh",5) == 0)
           {
             expression+=5;
             break;
           }
+#endif
+#if defined(MAGICKCORE_HAVE_ATANH)
         if (LocaleNCompare(expression,"atanh",5) == 0)
           {
             expression+=5;
             break;
           }
+#endif
         break;
       }
       case 'J':
@@ -2342,12 +2348,14 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) fabs((double) alpha));
         }
+#if defined(MAGICKCORE_HAVE_ACOSH)
       if (LocaleNCompare(expression,"acosh",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
             exception);
           return((MagickRealType) acosh((double) alpha));
         }
+#endif
       if (LocaleNCompare(expression,"acos",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
@@ -2365,12 +2373,14 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           return(gamma*gamma);
         }
 #endif
+#if defined(MAGICKCORE_HAVE_ASINH)
       if (LocaleNCompare(expression,"asinh",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
             exception);
           return((MagickRealType) asinh((double) alpha));
         }
+#endif
       if (LocaleNCompare(expression,"asin",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
@@ -2389,12 +2399,14 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) atan2((double) alpha,(double) *beta));
         }
+#if defined(MAGICKCORE_HAVE_ATANH)
       if (LocaleNCompare(expression,"atanh",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
             exception);
           return((MagickRealType) atanh((double) alpha));
         }
+#endif
       if (LocaleNCompare(expression,"atan",4) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,beta,
