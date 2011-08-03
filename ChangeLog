@@ -3,6 +3,8 @@
 
 2011-08-02  6.7.1-2 Cristy  <quetzlzacatenango@image...>
   * Windows does not support acosh(), asinh(), or atanh().
+  * Accept filenames with time stamps and a sub-image specification (e.g.
+    test-18:37.jpg[0]).
 
 2011-08-01  6.7.1-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-1.
