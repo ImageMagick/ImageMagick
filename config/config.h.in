@@ -76,6 +76,9 @@
 /* Define if you have GVC library */
 #undef GVC_DELEGATE
 
+/* Define to 1 if you have the `acosh' function. */
+#undef HAVE_ACOSH
+
 /* Define to 1 if you have the `argz_add' function. */
 #undef HAVE_ARGZ_ADD
 
@@ -102,6 +105,12 @@
 
 /* Define to 1 if you have the <arm/limits.h> header file. */
 #undef HAVE_ARM_LIMITS_H
+
+/* Define to 1 if you have the `asinh' function. */
+#undef HAVE_ASINH
+
+/* Define to 1 if you have the `atanh' function. */
+#undef HAVE_ATANH
 
 /* Define to 1 if you have the `atexit' function. */
 #undef HAVE_ATEXIT

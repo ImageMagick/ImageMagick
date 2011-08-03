@@ -111,6 +111,11 @@
 #define MAGICKCORE_GVC_DELEGATE 1
 #endif
 
+/* Define to 1 if you have the `acosh' function. */
+#ifndef MAGICKCORE_HAVE_ACOSH
+#define MAGICKCORE_HAVE_ACOSH 1
+#endif
+
 /* Define to 1 if you have the `argz_add' function. */
 #ifndef MAGICKCORE_HAVE_ARGZ_ADD
 #define MAGICKCORE_HAVE_ARGZ_ADD 1
@@ -153,6 +158,16 @@
 
 /* Define to 1 if you have the <arm/limits.h> header file. */
 /* #undef HAVE_ARM_LIMITS_H */
+
+/* Define to 1 if you have the `asinh' function. */
+#ifndef MAGICKCORE_HAVE_ASINH
+#define MAGICKCORE_HAVE_ASINH 1
+#endif
+
+/* Define to 1 if you have the `atanh' function. */
+#ifndef MAGICKCORE_HAVE_ATANH
+#define MAGICKCORE_HAVE_ATANH 1
+#endif
 
 /* Define to 1 if you have the `atexit' function. */
 #ifndef MAGICKCORE_HAVE_ATEXIT
