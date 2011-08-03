@@ -1323,7 +1323,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         }
     }
 #if defined(__OS2__)
-  if (path[1] != ":")
+  if (path[1] != ':')
 #endif
   for (p=component; *p != '\0'; p++)
   {
@@ -1336,8 +1336,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
         if (*p == '\0')
           break;
       }
-    if ((*p == ':') && (IsPathDirectory(path) < 0) &&
-        (IsPathAccessible(path) == MagickFalse))
+    if ((*p == ':') && (IsPathDirectory(component) < 0) &&
+        (IsPathAccessible(component) == MagickFalse))
       {
         /*
           Look for image format specification (e.g. ps3:image).
