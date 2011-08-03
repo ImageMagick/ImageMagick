@@ -1362,9 +1362,7 @@ MagickExport Image *ConvolveImage(const Image *image,
         k=kernel_info->values;
         pixels=p;
         pixel=kernel_info->bias;
-        if (((convolve_traits & BlendPixelTrait) == 0) ||
-            (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-            (image->matte == MagickFalse))
+        if ((convolve_traits & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
