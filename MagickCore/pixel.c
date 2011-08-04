@@ -3685,9 +3685,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      if (((traits & BlendPixelTrait) == 0) ||
-          (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-          (image->matte == MagickFalse))
+      if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
@@ -3723,9 +3721,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      if (((traits & BlendPixelTrait) == 0) ||
-          (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-          (image->matte == MagickFalse))
+      if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
@@ -3770,9 +3766,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      if (((traits & BlendPixelTrait) == 0) ||
-          (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-          (image->matte == MagickFalse))
+      if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
@@ -3868,9 +3862,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      if (((traits & BlendPixelTrait) == 0) ||
-          (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-          (image->matte == MagickFalse))
+      if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
@@ -3967,9 +3959,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      if (((traits & BlendPixelTrait) == 0) ||
-          (GetPixelAlphaTraits(image) == UndefinedPixelTrait) ||
-          (image->matte == MagickFalse))
+      if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
@@ -4976,40 +4966,42 @@ MagickExport void SetPixelChannelMap(Image *image,
 */
 MagickExport void StandardPixelChannelMap(Image *image)
 {
+  PixelChannel
+    alpha_channel;
+
   register ssize_t
     i;
 
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
+  {
+    SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelChannel) i);
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
+  }
   image->number_channels=4;
-  SetPixelChannelMapComponent(image,RedPixelChannel,RedPixelChannel);
-  SetPixelChannelMapTraits(image,RedPixelChannel,(PixelTrait)
-    (UpdatePixelTrait | BlendPixelTrait));
-  SetPixelChannelMapComponent(image,GreenPixelChannel,GreenPixelChannel);
-  SetPixelChannelMapTraits(image,GreenPixelChannel,(PixelTrait)
-    (UpdatePixelTrait | BlendPixelTrait));
-  SetPixelChannelMapComponent(image,BluePixelChannel,BluePixelChannel);
-  SetPixelChannelMapTraits(image,BluePixelChannel,(PixelTrait)
-    (UpdatePixelTrait | BlendPixelTrait));
-  SetPixelChannelMapComponent(image,AlphaPixelChannel,AlphaPixelChannel);
-  SetPixelChannelMapTraits(image,AlphaPixelChannel,UpdatePixelTrait);
+  if (0 && image->colorspace == GRAYColorspace)
+    image->number_channels=2;
+  if (image->colorspace == CMYKColorspace)
+    image->number_channels++;
+  if (image->storage_class == PseudoClass)
+    image->number_channels++;
+  for (i=0; i < (ssize_t) image->number_channels; i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
+      UpdatePixelTrait);
+  alpha_channel=GetPixelChannelMapChannel(image,AlphaPixelChannel);
+  if (image->matte != MagickFalse)
+    for (i=0; i < (ssize_t) image->number_channels; i++)
+      if ((PixelChannel) i != alpha_channel)
+        SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
+          (UpdatePixelTrait | BlendPixelTrait));
   if (0 && image->colorspace == GRAYColorspace)
     {
       image->number_channels=2;
-      SetPixelChannelMapComponent(image,GreenPixelChannel,RedPixelChannel);
-      SetPixelChannelMapComponent(image,BluePixelChannel,RedPixelChannel);
-    }
-  if (image->colorspace == CMYKColorspace)
-    {
-      image->number_channels++;
-      SetPixelChannelMapComponent(image,BlackPixelChannel,BlackPixelChannel);
-      SetPixelChannelMapTraits(image,BlackPixelChannel,(PixelTrait)
-        (UpdatePixelTrait | BlendPixelTrait));
+      SetPixelChannelMapChannel(image,GreenPixelChannel,RedPixelChannel);
+      SetPixelChannelMapChannel(image,BluePixelChannel,RedPixelChannel);
     }
   if (image->storage_class == PseudoClass)
     {
-      image->number_channels++;
-      SetPixelChannelMapComponent(image,IndexPixelChannel,IndexPixelChannel);
+      SetPixelChannelMapChannel(image,IndexPixelChannel,IndexPixelChannel);
       SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
     }
   image->number_channels+=image->number_meta_channels;

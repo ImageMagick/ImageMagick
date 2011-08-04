@@ -476,7 +476,7 @@ static inline void SetPixelChannel(const Image *image,
   pixel[image->channel_map[image->map][channel].channel]=quantum;
 }
 
-static inline void SetPixelChannelMapComponent(const Image *image,
+static inline void SetPixelChannelMapChannel(const Image *image,
   const PixelChannel channel,const PixelChannel channels)
 {
   image->channel_map[image->map][channel].channel=channels;
