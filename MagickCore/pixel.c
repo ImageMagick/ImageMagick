@@ -5005,4 +5005,6 @@ MagickExport void StandardPixelChannelMap(Image *image)
       SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
     }
   image->number_channels+=image->number_meta_channels;
+  for ( ; i < (ssize_t) image->number_channels; i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,CopyPixelTrait);
 }
