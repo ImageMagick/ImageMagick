@@ -330,7 +330,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       exception);
     if (cmyk_image == (Image *) NULL)
       break;
-    if (SetImageStorageClass(cmyk_image,DirectClass) == MagickFalse)
+    if (SetImageStorageClass(cmyk_image,DirectClass,exception) == MagickFalse)
       break;
     (void) SetImageColorspace(cmyk_image,CMYKColorspace);
     image_view=AcquireCacheView(images);
@@ -1078,9 +1078,8 @@ MagickExport Image *ExtentImage(const Image *image,
     exception);
   if (extent_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(extent_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(extent_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&extent_image->exception);
       extent_image=DestroyImage(extent_image);
       return((Image *) NULL);
     }
@@ -1638,9 +1637,8 @@ MagickExport Image *SpliceImage(const Image *image,
     image->rows+splice_geometry.height,MagickTrue,exception);
   if (splice_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(splice_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(splice_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&splice_image->exception);
       splice_image=DestroyImage(splice_image);
       return((Image *) NULL);
     }

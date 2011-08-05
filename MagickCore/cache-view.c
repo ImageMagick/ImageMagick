@@ -875,12 +875,17 @@ MagickExport Quantum *QueueCacheViewAuthenticPixels(CacheView *cache_view,
 MagickExport MagickBooleanType SetCacheViewStorageClass(CacheView *cache_view,
   const ClassType storage_class)
 {
+  MagickBooleanType
+    status;
+
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   if (cache_view->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
-  return(SetImageStorageClass(cache_view->image,storage_class));
+  status=SetImageStorageClass(cache_view->image,storage_class,
+    &cache_view->image->exception);
+  return(status);
 }
 
 /*

@@ -1450,7 +1450,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             ThrowReaderException(CoderError,"ImageIsNotTiled");
           }
-        (void) SetImageStorageClass(image,DirectClass);
+        (void) SetImageStorageClass(image,DirectClass,&image->exception);
         number_pixels=columns*rows;
         tile_pixels=(uint32 *) AcquireQuantumMemory(number_pixels,
           sizeof(*tile_pixels));
@@ -2658,7 +2658,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case JPEGCompression:
       {
-        (void) SetImageStorageClass(image,DirectClass);
+        (void) SetImageStorageClass(image,DirectClass,&image->exception);
         (void) SetImageDepth(image,8);
         break;
       }
@@ -2683,7 +2683,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             {
               photometric=PHOTOMETRIC_YCBCR;
               (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,1,1);
-              (void) SetImageStorageClass(image,DirectClass);
+              (void) SetImageStorageClass(image,DirectClass,&image->exception);
               (void) SetImageDepth(image,8);
             }
           else

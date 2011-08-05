@@ -1964,7 +1964,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       }
     }
   }
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   /*
     Transfer the pixels from the pixel datarray to the image.

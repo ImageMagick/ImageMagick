@@ -526,7 +526,7 @@ extern MagickExport MagickBooleanType
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SetImageMask(Image *,const Image *),
   SetImageOpacity(Image *,const Quantum),
-  SetImageStorageClass(Image *,const ClassType),
+  SetImageStorageClass(Image *,const ClassType,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
   StripImage(Image *),
   SyncImage(Image *),

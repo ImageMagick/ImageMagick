@@ -169,7 +169,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
     return(MagickFalse);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  exception=(&image->exception);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
@@ -191,7 +192,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   /*
     Push initial segment on stack.
   */
-  exception=(&image->exception);
   x=x_offset;
   y=y_offset;
   start=0;
@@ -578,9 +578,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   paint_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(paint_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(paint_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&paint_image->exception);
       paint_image=DestroyImage(paint_image);
       return((Image *) NULL);
     }
@@ -765,7 +764,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   assert(fill != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
     Make image color opaque.
@@ -903,7 +902,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   assert(target != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
@@ -1032,7 +1031,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   assert(low != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);

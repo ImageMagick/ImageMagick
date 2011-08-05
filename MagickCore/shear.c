@@ -1885,9 +1885,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   shear.y=sin((double) DegreesToRadians(angle));
   if ((shear.x == 0.0) && (shear.y == 0.0))
     return(integral_image);
-  if (SetImageStorageClass(integral_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(integral_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&integral_image->exception);
       integral_image=DestroyImage(integral_image);
       return(integral_image);
     }
@@ -2038,9 +2037,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   shear.y=tan(DegreesToRadians(fmod(y_shear,360.0)));
   if ((shear.x == 0.0) && (shear.y == 0.0))
     return(integral_image);
-  if (SetImageStorageClass(integral_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(integral_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&integral_image->exception);
       integral_image=DestroyImage(integral_image);
       return(integral_image);
     }

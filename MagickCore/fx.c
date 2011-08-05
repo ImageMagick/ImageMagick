@@ -343,9 +343,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(noise_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(noise_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&noise_image->exception);
       noise_image=DestroyImage(noise_image);
       return((Image *) NULL);
     }
@@ -499,9 +498,8 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
     exception);
   if (shift_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(shift_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(shift_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&shift_image->exception);
       shift_image=DestroyImage(shift_image);
       return((Image *) NULL);
     }
@@ -732,9 +730,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
     exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(colorize_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(colorize_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&colorize_image->exception);
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
@@ -917,9 +914,8 @@ MagickExport Image *ColorMatrixImage(const Image *image,
   color_image=CloneImage(image,0,0,MagickTrue,exception);
   if (color_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(color_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(color_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&color_image->exception);
       color_image=DestroyImage(color_image);
       return((Image *) NULL);
     }
@@ -2967,9 +2963,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   fx_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (fx_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(fx_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(fx_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&fx_image->exception);
       fx_image=DestroyImage(fx_image);
       return((Image *) NULL);
     }
@@ -3156,9 +3151,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   implode_image=CloneImage(image,0,0,MagickTrue,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(implode_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(implode_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&implode_image->exception);
       implode_image=DestroyImage(implode_image);
       return((Image *) NULL);
     }
@@ -3390,9 +3384,8 @@ MagickExport Image *MorphImages(const Image *image,
           morph_images=DestroyImageList(morph_images);
           return((Image *) NULL);
         }
-      if (SetImageStorageClass(morph_image,DirectClass) == MagickFalse)
+      if (SetImageStorageClass(morph_image,DirectClass,exception) == MagickFalse)
         {
-          InheritException(exception,&morph_image->exception);
           morph_image=DestroyImage(morph_image);
           return((Image *) NULL);
         }
@@ -3750,7 +3743,7 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   image_view=AcquireCacheView(image);
   random_info=AcquireRandomInfo();
@@ -4006,9 +3999,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
   sepia_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (sepia_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(sepia_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(sepia_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&sepia_image->exception);
       sepia_image=DestroyImage(sepia_image);
       return((Image *) NULL);
     }
@@ -4271,8 +4263,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 %
 %    o image: the image.
 %
-%    o radius: the radius of the Gaussian, in pixels, not counting
-%      the center pixel.
+%    o radius: the radius of the Gaussian, in pixels, not counting the
+%      center pixel.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
@@ -4607,9 +4599,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_image=CloneImage(image,0,0,MagickTrue,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(stegano_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(stegano_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&stegano_image->exception);
       stegano_image=DestroyImage(stegano_image);
       return((Image *) NULL);
     }
@@ -4779,9 +4770,8 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
     MagickTrue,exception);
   if (stereo_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(stereo_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(stereo_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&stereo_image->exception);
       stereo_image=DestroyImage(stereo_image);
       return((Image *) NULL);
     }
@@ -4912,9 +4902,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   swirl_image=CloneImage(image,0,0,MagickTrue,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(swirl_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(swirl_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&swirl_image->exception);
       swirl_image=DestroyImage(swirl_image);
       return((Image *) NULL);
     }
@@ -5097,9 +5086,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   tint_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (tint_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(tint_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(tint_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&tint_image->exception);
       tint_image=DestroyImage(tint_image);
       return((Image *) NULL);
     }
@@ -5260,9 +5248,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   canvas_image=CloneImage(image,0,0,MagickTrue,exception);
   if (canvas_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(canvas_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(canvas_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&canvas_image->exception);
       canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
@@ -5373,9 +5360,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     fabs(amplitude)),MagickTrue,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(wave_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(wave_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&wave_image->exception);
       wave_image=DestroyImage(wave_image);
       return((Image *) NULL);
     }

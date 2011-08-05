@@ -3846,11 +3846,8 @@ MagickExport Image *MorphologyApply(const Image *image,
       rslt_image=CloneImage(image,0,0,MagickTrue,exception);
       if (rslt_image == (Image *) NULL)
         goto error_cleanup;
-      if (SetImageStorageClass(rslt_image,DirectClass) == MagickFalse)
-        {
-          InheritException(exception,&rslt_image->exception);
-          goto error_cleanup;
-        }
+      if (SetImageStorageClass(rslt_image,DirectClass,exception) == MagickFalse)
+        goto error_cleanup;
 
       changed = MorphologyPrimitiveDirect(rslt_image, method,
          kernel, exception);
@@ -4026,11 +4023,8 @@ MagickExport Image *MorphologyApply(const Image *image,
               work_image=CloneImage(image,0,0,MagickTrue,exception);
               if (work_image == (Image *) NULL)
                 goto error_cleanup;
-              if (SetImageStorageClass(work_image,DirectClass) == MagickFalse)
-                {
-                  InheritException(exception,&work_image->exception);
-                  goto error_cleanup;
-                }
+              if (SetImageStorageClass(work_image,DirectClass,exception) == MagickFalse)
+                goto error_cleanup;
               /* work_image->type=image->type; ??? */
             }
 

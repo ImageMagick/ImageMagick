@@ -220,9 +220,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     exception);
   if (frame_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(frame_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(frame_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&frame_image->exception);
       frame_image=DestroyImage(frame_image);
       return((Image *) NULL);
     }
@@ -672,7 +671,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       foreground=(Quantum) 0;
       background=(Quantum) QuantumRange;
     }
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
     Raise image.

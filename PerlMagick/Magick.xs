@@ -1799,7 +1799,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
 
           for ( ; image; image=image->next)
           {
-            if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
               break;
             x=0;
             y=0;
@@ -13394,7 +13394,7 @@ SetPixel(ref,...)
         }
       }
     }
-    (void) SetImageStorageClass(image,DirectClass);
+    (void) SetImageStorageClass(image,DirectClass,exception);
     PushPixelChannelMap(image,channel);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
     if ((q == (const Quantum *) NULL) || (av == (AV *) NULL) ||

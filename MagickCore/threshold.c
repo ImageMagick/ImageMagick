@@ -181,9 +181,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(threshold_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(threshold_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&threshold_image->exception);
       threshold_image=DestroyImage(threshold_image);
       return((Image *) NULL);
     }
@@ -368,7 +367,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
     Bilevel threshold image.
@@ -516,7 +515,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (thresholds == (const char *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   GetPixelInfo(image,&threshold);
   flags=ParseGeometry(thresholds,&geometry_info);
@@ -1368,11 +1367,8 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
     levels.black   = levels.black   ? levels.black-1   : 0;
     levels.alpha = levels.alpha ? levels.alpha-1 : 0;
 
-    if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-      {
-        InheritException(exception,&image->exception);
-        return(MagickFalse);
-      }
+    if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+      return(MagickFalse);
     status=MagickTrue;
     progress=0;
     image_view=AcquireCacheView(image);
@@ -1643,11 +1639,8 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
       random_info=DestroyRandomInfoThreadSet(random_info);
       return(status);
     }
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&image->exception);
-      return(MagickFalse);
-    }
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1830,7 +1823,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (thresholds == (const char *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   flags=ParseGeometry(thresholds,&geometry_info);
   GetPixelInfo(image,&threshold);

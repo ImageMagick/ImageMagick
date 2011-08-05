@@ -217,9 +217,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
     return((Image *) NULL);
   if (fabs(sigma) <= MagickEpsilon)
     return(blur_image);
-  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
@@ -509,9 +508,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     return((Image *) NULL);
   if (fabs(sigma) <= MagickEpsilon)
     return(sharp_image);
-  if (SetImageStorageClass(sharp_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(sharp_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&sharp_image->exception);
       sharp_image=DestroyImage(sharp_image);
       return((Image *) NULL);
     }
@@ -835,9 +833,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     return((Image *) NULL);
   if (fabs(sigma) <= MagickEpsilon)
     return(blur_image);
-  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
@@ -1220,6 +1217,7 @@ MagickExport Image *ConvolveImage(const Image *image,
     progress;
 
   ssize_t
+    center,
     y;
 
   /*
@@ -1237,9 +1235,8 @@ MagickExport Image *ConvolveImage(const Image *image,
     exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(convolve_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(convolve_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&convolve_image->exception);
       convolve_image=DestroyImage(convolve_image);
       return((Image *) NULL);
     }
@@ -1280,6 +1277,8 @@ MagickExport Image *ConvolveImage(const Image *image,
   /*
     Convolve image.
   */
+  center=(ssize_t) GetPixelChannels(image)*(image->columns+kernel_info->width)*
+    (kernel_info->height/2L)+GetPixelChannels(image)*(kernel_info->width/2);
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
@@ -1298,9 +1297,6 @@ MagickExport Image *ConvolveImage(const Image *image,
     register ssize_t
       x;
 
-    ssize_t
-      center;
-
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel_info->width/2L),y-
@@ -1313,9 +1309,6 @@ MagickExport Image *ConvolveImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    center=(ssize_t) GetPixelChannels(image)*(image->columns+
-      kernel_info->width)*(kernel_info->height/2L)+GetPixelChannels(image)*
-      (kernel_info->width/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -1593,9 +1586,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(despeckle_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(despeckle_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&despeckle_image->exception);
       despeckle_image=DestroyImage(despeckle_image);
       return((Image *) NULL);
     }
@@ -2131,11 +2123,10 @@ MagickExport Image *MotionBlurImage(const Image *image,
       offset=(OffsetInfo *) RelinquishMagickMemory(offset);
       return((Image *) NULL);
     }
-  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
       kernel=(double *) RelinquishMagickMemory(kernel);
       offset=(OffsetInfo *) RelinquishMagickMemory(offset);
-      InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
@@ -2888,9 +2879,8 @@ MagickExport Image *RadialBlurImage(const Image *image,
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
@@ -3213,9 +3203,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
@@ -3520,9 +3509,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   shade_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (shade_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(shade_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(shade_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&shade_image->exception);
       shade_image=DestroyImage(shade_image);
       return((Image *) NULL);
     }
@@ -3830,9 +3818,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(spread_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(spread_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&spread_image->exception);
       spread_image=DestroyImage(spread_image);
       return((Image *) NULL);
     }
@@ -4580,9 +4567,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
     exception);
   if (statistic_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(statistic_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(statistic_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&statistic_image->exception);
       statistic_image=DestroyImage(statistic_image);
       return((Image *) NULL);
     }

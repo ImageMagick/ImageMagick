@@ -799,7 +799,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   assert(exception->signature == MagickSignature);
   if (passkey == (const StringInfo *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
   if (quantum_info == (QuantumInfo *) NULL)

@@ -748,7 +748,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         (void) SortColormapByIntensity(image);
       }
     if ((image->storage_class == PseudoClass) && (image->colors > 256))
-      (void) SetImageStorageClass(image,DirectClass);
+      (void) SetImageStorageClass(image,DirectClass,&image->exception);
     if (image->storage_class == PseudoClass)
       flags|=PALM_HAS_COLORMAP_FLAG;
     else

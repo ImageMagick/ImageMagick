@@ -484,9 +484,8 @@ MagickExport Image *AppendImages(const Image *images,
   append_image=CloneImage(image,width,height,MagickTrue,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(append_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(append_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&append_image->exception);
       append_image=DestroyImage(append_image);
       return((Image *) NULL);
     }
@@ -695,7 +694,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
   if (clip_mask->storage_class == PseudoClass)
     {
       (void) SyncImage(clip_mask);
-      if (SetImageStorageClass(clip_mask,DirectClass) == MagickFalse)
+      if (SetImageStorageClass(clip_mask,DirectClass,&image->exception) == MagickFalse)
         return(MagickFalse);
     }
   if (inside == MagickFalse)
@@ -1039,9 +1038,8 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
   combine_image=CloneImage(image,0,0,MagickTrue,exception);
   if (combine_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(combine_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(combine_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&combine_image->exception);
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
@@ -2320,7 +2318,7 @@ MagickExport MagickBooleanType SeparateImage(Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
     Separate image channels.
@@ -2554,7 +2552,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       */
       if (image->matte == MagickFalse)
         break;
-      if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
       GetPixelInfo(image,&background);
       SetPixelInfoPacket(image,&image->background_color,&background);
@@ -2715,7 +2713,8 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  exception=(&image->exception);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->background_color.alpha != OpaqueAlpha)
     image->matte=MagickTrue;
@@ -2729,7 +2728,6 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   */
   status=MagickTrue;
   pixel.black=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2868,12 +2866,17 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 %
 %    o storage_class:  The image class.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetImageStorageClass(Image *image,
-  const ClassType storage_class)
+  const ClassType storage_class,ExceptionInfo *exception)
 {
+  PixelPacket
+    pixel;
+
   image->storage_class=storage_class;
-  return(MagickTrue);
+  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
 }
 
 /*
@@ -2919,7 +2922,7 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
   image->clip_mask=NewImageList();
   if (clip_mask == (Image *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   image->clip_mask=CloneImage(clip_mask,0,0,MagickTrue,&image->exception);
   if (image->clip_mask == (Image *) NULL)
@@ -3415,7 +3418,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,
   image->mask=NewImageList();
   if (mask == (Image *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   image->mask=CloneImage(mask,0,0,MagickTrue,&image->exception);
   if (image->mask == (Image *) NULL)
@@ -3632,7 +3635,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,RGBColorspace);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass);
+        status=SetImageStorageClass(image,DirectClass,&image->exception);
       image->matte=MagickFalse;
       break;
     }
@@ -3641,7 +3644,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,RGBColorspace);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass);
+        status=SetImageStorageClass(image,DirectClass,&image->exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       break;
@@ -3655,7 +3658,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
           status=TransformImageColorspace(image,CMYKColorspace);
         }
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass);
+        status=SetImageStorageClass(image,DirectClass,&image->exception);
       image->matte=MagickFalse;
       break;
     }
@@ -3668,7 +3671,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
           status=TransformImageColorspace(image,CMYKColorspace);
         }
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass);
+        status=SetImageStorageClass(image,DirectClass,&image->exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       break;
@@ -3974,9 +3977,8 @@ MagickExport Image *SmushImages(const Image *images,
   smush_image=CloneImage(image,width,height,MagickTrue,exception);
   if (smush_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(smush_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(smush_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&smush_image->exception);
       smush_image=DestroyImage(smush_image);
       return((Image *) NULL);
     }

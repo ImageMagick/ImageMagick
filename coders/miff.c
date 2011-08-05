@@ -1882,7 +1882,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
-      (void) SetImageStorageClass(image,DirectClass);
+      (void) SetImageStorageClass(image,DirectClass,&image->exception);
     if (IsImageGray(image,&image->exception) != MagickFalse)
       {
         image->storage_class=DirectClass;

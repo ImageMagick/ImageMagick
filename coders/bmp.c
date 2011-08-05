@@ -1517,7 +1517,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
     bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
     if ((image->storage_class == PseudoClass) && (image->colors > 256))
-      (void) SetImageStorageClass(image,DirectClass);
+      (void) SetImageStorageClass(image,DirectClass,&image->exception);
     if (image->storage_class != DirectClass)
       {
         /*
@@ -1536,10 +1536,10 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.bits_per_pixel=8;
         bmp_info.number_colors=1U << bmp_info.bits_per_pixel;
         if (image->matte != MagickFalse)
-          (void) SetImageStorageClass(image,DirectClass);
+          (void) SetImageStorageClass(image,DirectClass,&image->exception);
         else
           if ((size_t) bmp_info.number_colors < image->colors)
-            (void) SetImageStorageClass(image,DirectClass);
+            (void) SetImageStorageClass(image,DirectClass,&image->exception);
           else
             {
               bmp_info.file_size+=3*(1UL << bmp_info.bits_per_pixel);

@@ -279,7 +279,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         &image->exception);
       (void) ParseGeometry(annotate_info->geometry,&geometry_info);
     }
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -1243,7 +1243,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (draw_info->render != MagickFalse)
     {
       if (image->storage_class != DirectClass)
-        (void) SetImageStorageClass(image,DirectClass);
+        (void) SetImageStorageClass(image,DirectClass,&image->exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
     }
