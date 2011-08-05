@@ -55,6 +55,14 @@
 #include "MagickCore/string-private.h"
 
 /*
+ Constant declaration.
+*/
+const char
+  BackgroundColor[] = "#ffffff",  /* white */
+  BorderColor[] = "#dfdfdf",  /* gray */
+  MatteColor[] = "#bdbdbd";  /* gray */
+
+/*
   Define declarations.
 */
 #define UndefinedCompressionQuality  0UL
