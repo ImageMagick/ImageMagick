@@ -1148,6 +1148,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   /*
     Affine transform image.
   */
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -1157,7 +1158,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   edge.y2=MagickMin(max.y,(double) image->rows-1.0);
   inverse_affine=InverseAffineMatrix(affine);
   GetPixelInfo(image,&zero);
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   source_view=AcquireCacheView(source);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
