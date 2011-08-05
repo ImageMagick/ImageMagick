@@ -237,11 +237,11 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
     return(MagickFalse);
   source_image=source->image;
   destination_image=destination->image;
+  exception=destination->exception;
   if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) shared(progress,status) num_threads(source->number_threads)
 #endif
@@ -884,11 +884,11 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   if (set == (SetImageViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->image;
+  exception=destination->exception;
   if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) shared(progress,status) num_threads(destination->number_threads)
 #endif
@@ -1048,11 +1048,11 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
     return(MagickFalse);
   source_image=source->image;
   destination_image=destination->image;
+  exception=destination->exception;
   if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) shared(progress,status) num_threads(source->number_threads)
 #endif
@@ -1178,11 +1178,11 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   if (update == (UpdateImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
+  exception=source->exception;
   if (SetImageStorageClass(source_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  exception=source->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) shared(progress,status) num_threads(source->number_threads)
 #endif
