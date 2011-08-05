@@ -2211,9 +2211,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   if (distort_image == (Image *) NULL)
     return((Image *) NULL);
   /* if image is ColorMapped - change it to DirectClass */
-  if (SetImageStorageClass(distort_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(distort_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&distort_image->exception);
       distort_image=DestroyImage(distort_image);
       return((Image *) NULL);
     }
@@ -2871,9 +2870,8 @@ MagickExport Image *SparseColorImage(const Image *image,
   sparse_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sparse_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(sparse_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(sparse_image,DirectClass,exception) == MagickFalse)
     { /* if image is ColorMapped - change it to DirectClass */
-      InheritException(exception,&image->exception);
       sparse_image=DestroyImage(sparse_image);
       return((Image *) NULL);
     }

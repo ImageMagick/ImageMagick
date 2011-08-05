@@ -154,9 +154,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       difference_image=DestroyImage(difference_image);
       return((Image *) NULL);
     }
-  if (SetImageStorageClass(highlight_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(highlight_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&highlight_image->exception);
       difference_image=DestroyImage(difference_image);
       highlight_image=DestroyImage(highlight_image);
       return((Image *) NULL);
@@ -1786,9 +1785,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
     image->rows-reference->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(similarity_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(similarity_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&similarity_image->exception);
       similarity_image=DestroyImage(similarity_image);
       return((Image *) NULL);
     }

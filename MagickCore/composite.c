@@ -1601,7 +1601,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   GetPixelInfo(image,&zero);
   destination_image=(Image *) NULL;
@@ -2770,7 +2770,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   if (texture == (const Image *) NULL)
     return(MagickFalse);
   (void) SetImageVirtualPixelMethod(texture,TileVirtualPixelMethod);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&

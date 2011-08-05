@@ -900,7 +900,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         icon_info.offset_bits=icon_info.file_size;
         icon_info.compression=BI_RGB;
         if ((next->storage_class != DirectClass) && (next->colors > 256))
-          (void) SetImageStorageClass(next,DirectClass);
+          (void) SetImageStorageClass(next,DirectClass,&next->exception);
         if (next->storage_class == DirectClass)
           {
             /*
@@ -929,7 +929,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             icon_info.number_colors=one << icon_info.bits_per_pixel;
             if (icon_info.number_colors < next->colors)
               {
-                (void) SetImageStorageClass(next,DirectClass);
+                (void) SetImageStorageClass(next,DirectClass,&next->exception);
                 icon_info.number_colors=0;
                 icon_info.bits_per_pixel=(unsigned short) 24;
                 icon_info.compression=(size_t) BI_RGB;

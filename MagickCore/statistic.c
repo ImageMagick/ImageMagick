@@ -454,9 +454,8 @@ MagickExport Image *EvaluateImages(const Image *images,
     exception);
   if (evaluate_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(evaluate_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(evaluate_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&evaluate_image->exception);
       evaluate_image=DestroyImage(evaluate_image);
       return((Image *) NULL);
     }
@@ -726,11 +725,8 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&image->exception);
-      return(MagickFalse);
-    }
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
@@ -943,11 +939,8 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&image->exception);
-      return(MagickFalse);
-    }
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);

@@ -243,7 +243,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     &image->exception);
   if (histogram_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) SetImageStorageClass(histogram_image,DirectClass);
+  (void) SetImageStorageClass(histogram_image,DirectClass,&image->exception);
   /*
     Allocate histogram count arrays.
   */

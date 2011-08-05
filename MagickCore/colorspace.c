@@ -244,7 +244,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -299,7 +299,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       GetPixelInfo(image,&zero);
@@ -353,7 +353,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -413,7 +413,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -473,7 +473,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -533,7 +533,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -1665,7 +1665,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -1723,7 +1723,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       GetPixelInfo(image,&zero);
@@ -1780,7 +1780,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -1846,7 +1846,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -1912,7 +1912,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -1978,7 +1978,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           if (SyncImage(image) == MagickFalse)
             return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
       image_view=AcquireCacheView(image);
@@ -2094,7 +2094,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           (gamma/density)*0.002/film_gamma)-black));
       for ( ; i <= (ssize_t) MaxMap; i++)
         logmap[i]=(Quantum) QuantumRange;
-      if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

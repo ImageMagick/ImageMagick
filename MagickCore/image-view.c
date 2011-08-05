@@ -237,7 +237,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
     return(MagickFalse);
   source_image=source->image;
   destination_image=destination->image;
-  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -884,7 +884,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   if (set == (SetImageViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->image;
-  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1048,7 +1048,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
     return(MagickFalse);
   source_image=source->image;
   destination_image=destination->image;
-  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1178,7 +1178,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   if (update == (UpdateImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
-  if (SetImageStorageClass(source_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(source_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;

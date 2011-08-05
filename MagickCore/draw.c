@@ -1148,7 +1148,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   /*
     Affine transform image.
   */
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   edge.x1=MagickMax(min.x,0.0);
@@ -1777,7 +1777,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     }
   token=AcquireString(primitive);
   (void) QueryColorDatabase("#000000",&start_color,&image->exception);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )

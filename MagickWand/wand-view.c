@@ -285,7 +285,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     return(MagickFalse);
   source_image=source->wand->images;
   destination_image=destination->wand->images;
-  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -924,7 +924,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   if (set == (SetWandViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->wand->images;
-  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1097,7 +1097,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     return(MagickFalse);
   source_image=source->wand->images;
   destination_image=destination->wand->images;
-  if (SetImageStorageClass(destination_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1249,7 +1249,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   if (update == (UpdateWandViewMethod) NULL)
     return(MagickFalse);
   source_image=source->wand->images;
-  if (SetImageStorageClass(source_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(source_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;

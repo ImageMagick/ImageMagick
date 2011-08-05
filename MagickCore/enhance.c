@@ -723,10 +723,9 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clut_image != (Image *) NULL);
   assert(clut_image->signature == MagickSignature);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,
-    sizeof(*clut_map));
+  clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
   if (clut_map == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -1516,9 +1515,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(enhance_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(enhance_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&enhance_image->exception);
       enhance_image=DestroyImage(enhance_image);
       return((Image *) NULL);
     }
@@ -2132,7 +2130,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(hald_image != (Image *) NULL);
   assert(hald_image->signature == MagickSignature);
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);

@@ -1190,9 +1190,8 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (resize_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(resize_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(resize_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&resize_image->exception);
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);
     }
@@ -1772,9 +1771,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       pixels=(gfloat *) RelinquishMagickMemory(pixels);
       return((Image *) NULL);
     }
-  if (SetImageStorageClass(rescale_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(rescale_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&rescale_image->exception);
       pixels=(gfloat *) RelinquishMagickMemory(pixels);
       rescale_image=DestroyImage(rescale_image);
       return((Image *) NULL);
@@ -2127,11 +2125,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   scale=MagickMax(1.0/x_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
-  if (SetImageStorageClass(resize_image,storage_class) == MagickFalse)
-    {
-      InheritException(exception,&resize_image->exception);
-      return(MagickFalse);
-    }
+  if (SetImageStorageClass(resize_image,storage_class,exception) == MagickFalse)
+    return(MagickFalse);
   if (support < 0.5)
     {
       /*
@@ -2341,11 +2336,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   scale=MagickMax(1.0/y_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
-  if (SetImageStorageClass(resize_image,storage_class) == MagickFalse)
-    {
-      InheritException(exception,&resize_image->exception);
-      return(MagickFalse);
-    }
+  if (SetImageStorageClass(resize_image,storage_class,exception) == MagickFalse)
+    return(MagickFalse);
   if (support < 0.5)
     {
       /*
@@ -2883,9 +2875,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   scale_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(scale_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(scale_image,DirectClass,exception) == MagickFalse)
     {
-      InheritException(exception,&scale_image->exception);
       scale_image=DestroyImage(scale_image);
       return((Image *) NULL);
     }

@@ -1186,7 +1186,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 ThrowProfileException(ResourceLimitError,
                   "MemoryAllocationFailed",image->filename);
               }
-            if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
               {
                 target_pixels=DestroyPixelThreadSet(target_pixels);
                 source_pixels=DestroyPixelThreadSet(source_pixels);

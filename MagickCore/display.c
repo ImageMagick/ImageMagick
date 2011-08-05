@@ -3708,10 +3708,10 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using point algorithm.
             */
-            if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
+            if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
               return(MagickFalse);
             q=GetCacheViewAuthenticPixels(image_view,(ssize_t)x_offset,
-              (ssize_t)y_offset,1,1,exception);
+              (ssize_t) y_offset,1,1,exception);
             if (q == (Quantum *) NULL)
               break;
             SetPixelRed(*image,ScaleShortToQuantum(color.red),q);
@@ -3812,7 +3812,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using reset algorithm.
             */
-            if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
+            if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
               return(MagickFalse);
             for (y=0; y < (int) (*image)->rows; y++)
             {
@@ -4298,10 +4298,10 @@ static MagickBooleanType XCompositeImage(Display *display,
       (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel);
       opacity=(Quantum) (ScaleQuantumToChar((Quantum) QuantumRange)-
         ((ssize_t) ScaleQuantumToChar((Quantum) QuantumRange)*blend)/100);
-      if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+      exception=(&image->exception);
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
       image->matte=MagickTrue;
-      exception=(&image->exception);
       image_view=AcquireCacheView(image);
       for (y=0; y < (int) image->rows; y++)
       {
@@ -5316,10 +5316,10 @@ static MagickBooleanType XCropImage(Display *display,
   /*
     Cut image.
   */
-  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+  exception=(&image->exception);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   image->matte=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; y < (int) crop_info.height; y++)
   {
@@ -10000,10 +10000,10 @@ static MagickBooleanType XMatteEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
+        exception=(&(*image)->exception);
+        if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
           return(MagickFalse);
         (*image)->matte=MagickTrue;
-        exception=(&(*image)->exception);
         image_view=AcquireCacheView(*image);
         switch (method)
         {
@@ -10090,7 +10090,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using reset algorithm.
             */
-            if (SetImageStorageClass(*image,DirectClass) == MagickFalse)
+            if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
               return(MagickFalse);
             for (y=0; y < (int) (*image)->rows; y++)
             {

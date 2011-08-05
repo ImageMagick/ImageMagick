@@ -2464,7 +2464,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,
     &draw_image->background_color,&image->exception);
-  if (SetImageStorageClass(draw_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(draw_image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   draw_image->matte=MagickTrue;
   exception=(&image->exception);
@@ -7803,7 +7803,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               }
             XGetPixelInfo(display,visual_info,map_info,resource_info,image,
               pixel);
-            (void) SetImageStorageClass(image,DirectClass);
+            (void) SetImageStorageClass(image,DirectClass,exception);
             affinity_image=DestroyImage(affinity_image);
           }
       if (IsEventLogging())
