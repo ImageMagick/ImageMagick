@@ -2890,7 +2890,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     scanline=(MagickRealType *) AcquireQuantumMemory((size_t) image->columns,
       GetPixelChannels(image)*sizeof(*scanline));
   scale_scanline=(MagickRealType *) AcquireQuantumMemory((size_t)
-    scale_image->columns,GetPixelChannels(scale_image)*sizeof(*scale_scanline));
+    scale_image->columns,GetPixelChannels(image)*sizeof(*scale_scanline));
   y_vector=(MagickRealType *) AcquireQuantumMemory((size_t) image->columns,
     GetPixelChannels(image)*sizeof(*y_vector));
   if ((scanline == (MagickRealType *) NULL) ||
