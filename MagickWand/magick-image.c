@@ -8560,7 +8560,7 @@ WandExport MagickBooleanType MagickSetImageAlphaChannel(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(SetImageAlphaChannel(wand->images,alpha_type));
+  return(SetImageAlphaChannel(wand->images,alpha_type,&wand->images->exception));
 }
 
 /*
@@ -8887,7 +8887,7 @@ WandExport MagickBooleanType MagickSetImageColorspace(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(SetImageColorspace(wand->images,colorspace));
+  return(SetImageColorspace(wand->images,colorspace,&wand->images->exception));
 }
 
 /*
@@ -9155,7 +9155,7 @@ WandExport MagickBooleanType MagickSetImageExtent(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(SetImageExtent(wand->images,columns,rows));
+  return(SetImageExtent(wand->images,columns,rows,&wand->images->exception));
 }
 
 /*

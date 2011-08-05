@@ -755,8 +755,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             alpha_type=(AlphaChannelType) ParseCommandOption(MagickAlphaOptions,
               MagickFalse,argv[i+1]);
-            (void) SetImageAlphaChannel(*image,alpha_type);
-            InheritException(exception,&(*image)->exception);
+            (void) SetImageAlphaChannel(*image,alpha_type,exception);
             break;
           }
         if (LocaleCompare("annotate",option+1) == 0)
@@ -2014,8 +2013,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("matte",option+1) == 0)
           {
             (void) SetImageAlphaChannel(*image,(*option == '-') ?
-              SetAlphaChannel : DeactivateAlphaChannel );
-            InheritException(exception,&(*image)->exception);
+              SetAlphaChannel : DeactivateAlphaChannel,exception);
             break;
           }
         if (LocaleCompare("median",option+1) == 0)

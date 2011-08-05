@@ -146,7 +146,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   difference_image=CloneImage(image,0,0,MagickTrue,exception);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel);
+  (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel,exception);
   highlight_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (highlight_image == (Image *) NULL)
@@ -160,7 +160,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       highlight_image=DestroyImage(highlight_image);
       return((Image *) NULL);
     }
-  (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel);
+  (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel,exception);
   (void) QueryMagickColor("#f1001ecc",&highlight,exception);
   artifact=GetImageArtifact(image,"highlight-color");
   if (artifact != (const char *) NULL)

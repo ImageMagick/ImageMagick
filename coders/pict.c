@@ -1381,7 +1381,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           (double) MagickMax(image->rows,tile_image->rows));
         (void) SetImageExtent(image,
           MagickMax(image->columns,tile_image->columns),
-          MagickMax(image->rows,tile_image->rows));
+          MagickMax(image->rows,tile_image->rows),exception);
         if (IsRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,tile_image->colorspace);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,

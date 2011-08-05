@@ -103,9 +103,9 @@ static void ClearBounds(Image *image,RectangleInfo *bounds)
 
   if (bounds->x < 0)
     return;
-  if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   exception=(&image->exception);
+  if (image->matte == MagickFalse)
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
     register ssize_t

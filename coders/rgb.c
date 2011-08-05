@@ -1134,7 +1134,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       (void) TransformImageColorspace(image,RGBColorspace);
     if ((LocaleCompare(image_info->magick,"RGBA") == 0) &&
         (image->matte == MagickFalse))
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,&image->exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");

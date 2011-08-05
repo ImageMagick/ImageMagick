@@ -1447,16 +1447,15 @@ MagickExport Image *DistortResizeImage(const Image *image,
       /*
         Image has not transparency channel, so we free to use it
       */
-      (void) SetImageAlphaChannel(tmp_image,SetAlphaChannel);
+      (void) SetImageAlphaChannel(tmp_image,SetAlphaChannel,exception);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
-            MagickTrue,exception),
+        MagickTrue,exception),
 
       tmp_image=DestroyImage(tmp_image);
       if ( resize_image == (Image *) NULL )
         return((Image *) NULL);
 
-      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel);
-      InheritException(exception,&image->exception);
+      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,exception);
     }
   else
     {
@@ -1472,7 +1471,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
       PushPixelChannelMap(tmp_image,AlphaChannel);
       (void) SeparateImage(tmp_image);
       PopPixelChannelMap(tmp_image);
-      (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel);
+      (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel,exception);
       resize_alpha=DistortImage(tmp_image,AffineDistortion,12,distort_args,
         MagickTrue,exception),
       tmp_image=DestroyImage(tmp_image);
@@ -1494,11 +1493,10 @@ MagickExport Image *DistortResizeImage(const Image *image,
           return((Image *) NULL);
         }
       /* replace resize images alpha with the separally distorted alpha */
-      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel);
-      (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel);
+      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,exception);
+      (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel,exception);
       (void) CompositeImage(resize_image,CopyOpacityCompositeOp,resize_alpha,
-                    0,0);
-      InheritException(exception,&resize_image->exception);
+        0,0);
       resize_alpha=DestroyImage(resize_alpha);
     }
   (void) SetImageVirtualPixelMethod(resize_image,vp_save);

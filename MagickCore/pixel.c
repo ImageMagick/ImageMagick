@@ -1879,6 +1879,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   if (quantum_map == (QuantumType *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  exception=(&image->exception);
   for (i=0; i < (ssize_t) length; i++)
   {
     switch (map[i])
@@ -1900,7 +1901,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       case 'c':
       {
         quantum_map[i]=CyanQuantum;
-        (void) SetImageColorspace(image,CMYKColorspace);
+        (void) SetImageColorspace(image,CMYKColorspace,exception);
         break;
       }
       case 'g':
@@ -1913,7 +1914,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       case 'k':
       {
         quantum_map[i]=BlackQuantum;
-        (void) SetImageColorspace(image,CMYKColorspace);
+        (void) SetImageColorspace(image,CMYKColorspace,exception);
         break;
       }
       case 'I':
@@ -1926,7 +1927,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       case 'M':
       {
         quantum_map[i]=MagentaQuantum;
-        (void) SetImageColorspace(image,CMYKColorspace);
+        (void) SetImageColorspace(image,CMYKColorspace,exception);
         break;
       }
       case 'O':
@@ -1952,24 +1953,23 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
       case 'y':
       {
         quantum_map[i]=YellowQuantum;
-        (void) SetImageColorspace(image,CMYKColorspace);
+        (void) SetImageColorspace(image,CMYKColorspace,exception);
         break;
       }
       default:
       {
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          OptionError,"UnrecognizedPixelMap","`%s'",map);
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "UnrecognizedPixelMap","`%s'",map);
         return(MagickFalse);
       }
     }
   }
-  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
     Transfer the pixels from the pixel datarray to the image.
   */
-  exception=(&image->exception);
   switch (type)
   {
     case CharPixel:

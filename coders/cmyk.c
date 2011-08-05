@@ -1226,7 +1226,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
       (void) TransformImageColorspace(image,CMYKColorspace);
     if ((LocaleCompare(image_info->magick,"CMYKA") == 0) &&
         (image->matte == MagickFalse))
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,&image->exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");

@@ -822,7 +822,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image)
   clut_map=(PixelInfo *) RelinquishMagickMemory(clut_map);
   if ((clut_image->matte != MagickFalse) &&
       ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0))
-    (void) SetImageAlphaChannel(image,ActivateAlphaChannel);
+    (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   return(status);
 }
 
@@ -2134,7 +2134,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
     Hald clut image.
   */

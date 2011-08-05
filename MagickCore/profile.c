@@ -836,6 +836,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   ThrowBinaryException(severity,tag,context); \
 }
 
+  ExceptionInfo
+    *exception;
+
   MagickBooleanType
     status;
 
@@ -847,6 +850,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(name != (const char *) NULL);
+  exception=(&image->exception);
   if ((datum == (const void *) NULL) || (length == 0))
     {
       char
@@ -928,9 +932,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           return(MagickTrue);
         }
 #if !defined(MAGICKCORE_LCMS_DELEGATE)
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (LCMS)",
-        image->filename);
+      (void) ThrowMagickException(GetMagickModule(),MissingDelegateWarning,
+        "DelegateLibrarySupportNotBuiltIn","`%s' (LCMS)",image->filename);
 #else
       {
         cmsHPROFILE
@@ -972,9 +975,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               source_type,
               target_type;
 
-            ExceptionInfo
-              *exception;
-
             int
               intent;
 
@@ -995,7 +995,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               **restrict source_pixels,
               **restrict target_pixels;
 
-            exception=(&image->exception);
             target_profile=(cmsHPROFILE) NULL;
             if (icc_profile != (StringInfo *) NULL)
               {
@@ -1198,7 +1197,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 return(MagickFalse);
               }
             if (target_colorspace == CMYKColorspace)
-              (void) SetImageColorspace(image,target_colorspace);
+              (void) SetImageColorspace(image,target_colorspace,exception);
             status=MagickTrue;
             progress=0;
             image_view=AcquireCacheView(image);
@@ -1286,7 +1285,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 }
             }
             image_view=DestroyCacheView(image_view);
-            (void) SetImageColorspace(image,target_colorspace);
+            (void) SetImageColorspace(image,target_colorspace,exception);
             switch (signature)
             {
               case cmsSigRgbData:

@@ -3848,7 +3848,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,&metrics,
         &caption);
       status=SetImageExtent(caption_image,image->columns,(size_t)
-        ((count+1)*(metrics.ascent-metrics.descent)+0.5));
+        ((count+1)*(metrics.ascent-metrics.descent)+0.5),exception);
       if (status == MagickFalse)
         caption_image=DestroyImage(caption_image);
       else
@@ -3885,7 +3885,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       caption_image=DestroyImage(caption_image);
     }
   (void) QueryColorDatabase("none",&picture_image->background_color,exception);
-  (void) SetImageAlphaChannel(picture_image,OpaqueAlphaChannel);
+  (void) SetImageAlphaChannel(picture_image,OpaqueAlphaChannel,exception);
   rotate_image=RotateImage(picture_image,90.0,exception);
   picture_image=DestroyImage(picture_image);
   if (rotate_image == (Image *) NULL)
@@ -4164,7 +4164,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   if (border_image == (Image *) NULL)
     return((Image *) NULL);
   if (border_image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(border_image,OpaqueAlphaChannel);
+    (void) SetImageAlphaChannel(border_image,OpaqueAlphaChannel,exception);
   /*
     Shadow image.
   */

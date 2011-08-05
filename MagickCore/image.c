@@ -2395,7 +2395,7 @@ MagickExport MagickBooleanType SeparateImage(Image *image)
       }
   }
   image_view=DestroyCacheView(image_view);
-  (void) SetImageColorspace(image,RGBColorspace);
+  (void) SetImageColorspace(image,RGBColorspace,exception);
   return(status);
 }
 
@@ -2497,7 +2497,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 %  The format of the SetImageAlphaChannel method is:
 %
 %      MagickBooleanType SetImageAlphaChannel(Image *image,
-%        const AlphaChannelType alpha_type)
+%        const AlphaChannelType alpha_type,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2508,12 +2508,18 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 %      OpaqueAlphaChannel, SetAlphaChannel, ShapeAlphaChannel, and
 %      TransparentAlphaChannel.
 %
+%    o exception: return any errors or warnings in this structure.
+%
+%
 */
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
-  const AlphaChannelType alpha_type)
+  const AlphaChannelType alpha_type,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
+
+  PixelPacket
+    pixel;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -2532,9 +2538,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       CacheView
         *image_view;
 
-      ExceptionInfo
-        *exception;
-
       MagickBooleanType
         status;
 
@@ -2552,7 +2555,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       */
       if (image->matte == MagickFalse)
         break;
-      exception=(&image->exception);
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
       GetPixelInfo(image,&background);
@@ -2662,7 +2664,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case UndefinedAlphaChannel:
       break;
   }
-  return(status);
+  if (status == MagickFalse)
+    return(status);
+  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
 }
 
 /*
@@ -2858,7 +2862,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 %  The format of the SetImageStorageClass method is:
 %
 %      MagickBooleanType SetImageStorageClass(Image *image,
-%        const ClassType storage_class)
+%        const ClassType storage_class,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2946,7 +2950,7 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 %  The format of the SetImageExtent method is:
 %
 %      MagickBooleanType SetImageExtent(Image *image,const size_t columns,
-%        const size_t rows)
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2956,15 +2960,20 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 %
 %    o rows:  The image height in pixels.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
-  const size_t rows)
+  const size_t rows,ExceptionInfo *exception)
 {
+  PixelPacket
+    pixel;
+
   if ((columns == 0) || (rows == 0))
     return(MagickFalse);
   image->columns=columns;
   image->rows=rows;
-  return(MagickTrue);
+  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
 }
 
 /*
@@ -3539,6 +3548,9 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
   const char
     *artifact;
 
+  ExceptionInfo
+    *exception;
+
   ImageInfo
     *image_info;
 
@@ -3558,6 +3570,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
   artifact=GetImageArtifact(image,"dither");
   if (artifact != (const char *) NULL)
     (void) SetImageOption(image_info,"dither",artifact);
+  exception=(&image->exception);
   switch (type)
   {
     case BilevelType:
@@ -3587,7 +3600,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IsImageGray(image,&image->exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
     case PaletteType:
@@ -3609,7 +3622,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,RGBColorspace);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       PushPixelChannelMap(image,AlphaChannel);
       (void) BilevelImage(image,(double) QuantumRange/2.0);
       PopPixelChannelMap(image);
@@ -3623,7 +3636,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,RGBColorspace);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->colorspace=TransparentColorspace;
       status=QuantizeImage(quantize_info,image);
@@ -3646,7 +3659,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,&image->exception);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
     case ColorSeparationType:
@@ -3673,7 +3686,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,&image->exception);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
     case OptimizeType:
