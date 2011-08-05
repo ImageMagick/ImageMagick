@@ -1235,10 +1235,14 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
   status=stat(path,(struct stat *) attributes) == 0 ? MagickTrue : MagickFalse;
 #else
   {
+    int
+      count;
+
     wchar_t
       *unicode_path;
 
-    unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
+    count=MultiByteToWideChar(CP_ACP,0,path,-1,NULL,0);
+    unicode_path=(wchar_t *) AcquireQuantumMemory(count,sizeof(*unicode_path));
     if (unicode_path == (wchar_t *) NULL)
       return(MagickFalse);
     status=wstat(unicode_path,(struct stat *) attributes) == 0 ? MagickTrue :
@@ -1924,14 +1928,19 @@ MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
   file=(FILE *) NULL;
 #if defined(MAGICKCORE_HAVE__WFOPEN)
   {
+    int
+      count;
+
     wchar_t
       *unicode_mode,
       *unicode_path;
 
-    unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
+    count=MultiByteToWideChar(CP_ACP,0,path,-1,NULL,0);
+    unicode_path=(wchar_t *) AcquireQuantumMemory(count,sizeof(*unicode_path));
     if (unicode_path == (wchar_t *) NULL)
       return((FILE *) NULL);
-    unicode_mode=ConvertUTF8ToUTF16((const unsigned char *) mode);
+    count=MultiByteToWideChar(CP_ACP,0,mode,-1,NULL,0);
+    unicode_mode=(wchar_t *) AcquireQuantumMemory(count,sizeof(*unicode_mode));
     if (unicode_mode == (wchar_t *) NULL)
       {
         unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);
