@@ -671,6 +671,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       foreground=(Quantum) 0;
       background=(Quantum) QuantumRange;
     }
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
@@ -678,7 +679,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)

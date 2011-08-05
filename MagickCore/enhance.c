@@ -723,6 +723,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clut_image != (Image *) NULL);
   assert(clut_image->signature == MagickSignature);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
@@ -735,7 +736,6 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image)
   status=MagickTrue;
   progress=0;
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
-  exception=(&image->exception);
   clut_view=AcquireCacheView(clut_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4)
@@ -2130,6 +2130,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(hald_image != (Image *) NULL);
   assert(hald_image->signature == MagickSignature);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
@@ -2145,7 +2146,6 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   cube_size=level*level;
   width=(double) hald_image->columns;
   GetPixelInfo(hald_image,&zero);
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   hald_view=AcquireCacheView(hald_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

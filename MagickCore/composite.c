@@ -1601,6 +1601,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   GetPixelInfo(image,&zero);
@@ -1638,7 +1639,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if ((y_offset+(ssize_t) composite_image->rows) >= (ssize_t) image->rows)
         break;
       status=MagickTrue;
-      exception=(&image->exception);
       image_view=AcquireCacheView(image);
       composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2770,6 +2770,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   if (texture == (const Image *) NULL)
     return(MagickFalse);
   (void) SetImageVirtualPixelMethod(texture,TileVirtualPixelMethod);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -2825,7 +2826,6 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     Tile texture onto the image background (optimized).
   */
   status=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   texture_view=AcquireCacheView(texture);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

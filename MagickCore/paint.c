@@ -764,6 +764,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   assert(fill != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
@@ -771,7 +772,6 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   GetPixelInfo(image,&zero);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -902,6 +902,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   assert(target != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
@@ -911,7 +912,6 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   GetPixelInfo(image,&zero);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1031,6 +1031,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   assert(low != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
@@ -1040,7 +1041,6 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
