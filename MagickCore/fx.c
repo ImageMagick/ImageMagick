@@ -1146,13 +1146,13 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
   if (*p == '.')
     switch (*++p)  /* e.g. depth.r */
     {
-      case 'r': channel=RedChannel; break;
-      case 'g': channel=GreenChannel; break;
-      case 'b': channel=BlueChannel; break;
-      case 'c': channel=CyanChannel; break;
-      case 'm': channel=MagentaChannel; break;
-      case 'y': channel=YellowChannel; break;
-      case 'k': channel=BlackChannel; break;
+      case 'r': channel=RedPixelChannel; break;
+      case 'g': channel=GreenPixelChannel; break;
+      case 'b': channel=BluePixelChannel; break;
+      case 'c': channel=CyanPixelChannel; break;
+      case 'm': channel=MagentaPixelChannel; break;
+      case 'y': channel=YellowPixelChannel; break;
+      case 'k': channel=BlackPixelChannel; break;
       default: break;
     }
   (void) FormatLocaleString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
@@ -2817,7 +2817,8 @@ MagickExport MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
   MagickBooleanType
     status;
 
-  status=FxEvaluateChannelExpression(fx_info,GrayChannel,0,0,alpha,exception);
+  status=FxEvaluateChannelExpression(fx_info,GrayPixelChannel,0,0,alpha,
+    exception);
   return(status);
 }
 
@@ -2832,7 +2833,8 @@ MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
 
   file=fx_info->file;
   fx_info->file=(FILE *) NULL;
-  status=FxEvaluateChannelExpression(fx_info,GrayChannel,0,0,alpha,exception);
+  status=FxEvaluateChannelExpression(fx_info,GrayPixelChannel,0,0,alpha,
+    exception);
   fx_info->file=file;
   return(status);
 }
