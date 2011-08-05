@@ -1,3 +1,10 @@
+2011-08-05  6.7.1-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.1-3.
+
+2011-08-05  6.7.1-3 Cristy  <quetzlzacatenango@image...>
+  * Use MultiByteToWideChar() for Windows filenames (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19242).
+
 2011-08-03  6.7.1-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-2.
 
