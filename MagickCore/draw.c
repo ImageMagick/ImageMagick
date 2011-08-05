@@ -3922,7 +3922,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     Draw polygon or line.
   */
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
 #endif
@@ -4286,7 +4286,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     case MattePrimitive:
     {
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       switch (primitive_info->method)
       {
         case PointMethod:
@@ -4475,7 +4475,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           (void) TransformImage(&composite_image,(char *) NULL,geometry);
         }
       if (composite_image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel);
+        (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel,
+          exception);
       if (draw_info->alpha != OpaqueAlpha)
         (void) SetImageOpacity(composite_image,draw_info->alpha);
       SetGeometry(image,&geometry);

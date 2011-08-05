@@ -332,7 +332,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       break;
     if (SetImageStorageClass(cmyk_image,DirectClass,exception) == MagickFalse)
       break;
-    (void) SetImageColorspace(cmyk_image,CMYKColorspace);
+    (void) SetImageColorspace(cmyk_image,CMYKColorspace,exception);
     image_view=AcquireCacheView(images);
     cmyk_view=AcquireCacheView(cmyk_image);
     for (y=0; y < (ssize_t) images->rows; y++)

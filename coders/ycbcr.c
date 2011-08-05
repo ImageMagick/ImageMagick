@@ -1014,7 +1014,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
       (void) TransformImageColorspace(image,YCbCrColorspace);
     if ((LocaleCompare(image_info->magick,"YCbCrA") == 0) &&
         (image->matte == MagickFalse))
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,&image->exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");

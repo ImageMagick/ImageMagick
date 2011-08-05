@@ -3863,9 +3863,11 @@ MagickExport Image *MorphologyApply(const Image *image,
 
       if ( method == VoronoiMorphology ) {
         /* Preserve the alpha channel of input image - but turned off */
-        (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
+        (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
+          exception);
         (void) CompositeImage(rslt_image, CopyOpacityCompositeOp, image, 0, 0);
-        (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel);
+        (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
+          exception);
       }
       goto exit_cleanup;
     }

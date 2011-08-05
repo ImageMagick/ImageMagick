@@ -228,11 +228,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       break;
     }
   }
-  if (SetImageColorspace(image,colorspace) == MagickFalse)
+  exception=(&image->exception);
+  if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   switch (colorspace)
   {
     case CMYColorspace:
@@ -1157,7 +1157,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
   z_map=(TransformPacket *) RelinquishMagickMemory(z_map);
   y_map=(TransformPacket *) RelinquishMagickMemory(y_map);
   x_map=(TransformPacket *) RelinquishMagickMemory(x_map);
-  if (SetImageColorspace(image,colorspace) == MagickFalse)
+  if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
     return(MagickFalse);
   return(status);
 }
@@ -1178,7 +1178,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 %  The format of the SetImageColorspace method is:
 %
 %      MagickBooleanType SetImageColorspace(Image *image,
-%        const ColorspaceType colorspace)
+%        const ColorspaceType colorspace,ExceptiionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1186,12 +1186,17 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 %
 %    o colorspace: the colorspace.
 %
+%   o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetImageColorspace(Image *image,
-  const ColorspaceType colorspace)
+  const ColorspaceType colorspace,ExceptionInfo *exception)
 {
+  PixelPacket
+    pixel;
+
   image->colorspace=colorspace;
-  return(MagickTrue);
+  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
 }
 
 /*
@@ -1230,7 +1235,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (colorspace == UndefinedColorspace)
-    return(SetImageColorspace(image,colorspace));
+    return(SetImageColorspace(image,colorspace,&image->exception));
   if (image->colorspace == colorspace)
     return(MagickTrue);
   if ((colorspace == RGBColorspace) ||
@@ -1707,7 +1712,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1767,7 +1772,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1833,7 +1838,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1899,7 +1904,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1965,7 +1970,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -2038,7 +2043,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -2136,7 +2141,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       logmap=(Quantum *) RelinquishMagickMemory(logmap);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -2650,7 +2655,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   z_map=(TransformPacket *) RelinquishMagickMemory(z_map);
   y_map=(TransformPacket *) RelinquishMagickMemory(y_map);
   x_map=(TransformPacket *) RelinquishMagickMemory(x_map);
-  if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+  if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
     return(MagickFalse);
   return(MagickTrue);
 }
