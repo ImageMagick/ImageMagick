@@ -13,9 +13,6 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
-#include <strings.h>
-#endif
 #include "Magick++/Include.h"
 
 using namespace std;
