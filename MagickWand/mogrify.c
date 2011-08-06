@@ -58,9 +58,9 @@
  Constant declaration.
 */
 static const char
-  BackgroundColor[] = "#ffffff",  /* white */
-  BorderColor[] = "#dfdfdf",  /* gray */
-  MatteColor[] = "#bdbdbd";  /* gray */
+  MogrifyBackgroundColor[] = "#ffffff",  /* white */
+  MogrifyBorderColor[] = "#dfdfdf",  /* gray */
+  MogrifyMatteColor[] = "#bdbdbd";  /* gray */
 
 /*
   Define declarations.
@@ -921,7 +921,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             if (*option == '+')
               {
-                (void) QueryColorDatabase(BorderColor,&draw_info->border_color,
+                (void) QueryColorDatabase(MogrifyBorderColor,&draw_info->border_color,
                   exception);
                 break;
               }
@@ -6140,7 +6140,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 (void) DeleteImageOption(image_info,option+1);
-                (void) QueryColorDatabase(BackgroundColor,
+                (void) QueryColorDatabase(MogrifyBackgroundColor,
                   &image_info->background_color,exception);
                 break;
               }
@@ -6184,8 +6184,8 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 (void) DeleteImageOption(image_info,option+1);
-                (void) QueryColorDatabase(BorderColor,&image_info->border_color,
-                  exception);
+                (void) QueryColorDatabase(MogrifyBorderColor,
+                  &image_info->border_color,exception);
                 break;
               }
             (void) QueryColorDatabase(argv[i+1],&image_info->border_color,
@@ -6755,8 +6755,8 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 (void) SetImageOption(image_info,option+1,argv[i+1]);
-                (void) QueryColorDatabase(MatteColor,&image_info->matte_color,
-                  exception);
+                (void) QueryColorDatabase(MogrifyMatteColor,
+                  &image_info->matte_color,exception);
                 break;
               }
             (void) SetImageOption(image_info,option+1,argv[i+1]);
