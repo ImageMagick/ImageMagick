@@ -219,11 +219,12 @@ static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
       wchar_t
         *unicode_path;
 
-      count=MultiByteToWideChar(CP_ACP,0,path,-1,NULL,0);
+      count=MultiByteToWideChar(CP_ACP,0,path,-1,(wchar_t *) NULL,0);
       unicode_path=(wchar_t *) AcquireQuantumMemory(count,
         sizeof(*unicode_path));
       if (unicode_path != (wchar_t *) NULL)
         {
+          count=MultiByteToWideChar(CP_ACP,0,path,-1,unicode_path,count);
           hTemp=GetEnhMetaFileW(unicode_path);
           unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);
         }
