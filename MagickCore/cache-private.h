@@ -23,7 +23,6 @@ extern "C" {
 #endif
 
 #include <time.h>
-#include "MagickCore/cache.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/semaphore.h"
@@ -36,6 +35,9 @@ typedef enum
   DiskCache,
   PingCache
 } CacheType;
+
+typedef void
+  *Cache;
 
 typedef MagickBooleanType
   (*GetOneAuthenticPixelFromHandler)(Image *,const ssize_t,const ssize_t,

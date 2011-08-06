@@ -1982,8 +1982,8 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
   return(MagickTrue);
 }
 
-MagickExport Cache GetImagePixelCache(Image *image,
-  const MagickBooleanType clone,ExceptionInfo *exception)
+static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;

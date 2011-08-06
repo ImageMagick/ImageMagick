@@ -1192,12 +1192,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
-  CacheInfo
-    *cache_info;
-
   image->colorspace=colorspace;
-  cache_info=GetImagePixelCache(image,MagickTrue,exception);
-  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
+  return(MagickFalse);
 }
 
 /*
