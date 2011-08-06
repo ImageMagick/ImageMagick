@@ -1110,7 +1110,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            (void) SetImageAlphaChannel(image,(AlphaChannelType) sp);
+            (void) SetImageAlphaChannel(image,(AlphaChannelType) sp,exception);
           break;
         }
       if (LocaleCompare(attribute,"antialias") == 0)

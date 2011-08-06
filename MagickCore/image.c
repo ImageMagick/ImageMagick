@@ -2510,14 +2510,10 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 %
 %    o exception: return any errors or warnings in this structure.
 %
-%
 */
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   const AlphaChannelType alpha_type,ExceptionInfo *exception)
 {
-  CacheInfo
-    *cache_info;
-
   MagickBooleanType
     status;
 
@@ -2664,10 +2660,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case UndefinedAlphaChannel:
       break;
   }
-  if (status == MagickFalse)
-    return(status);
-  cache_info=GetImagePixelCache(image,MagickTrue,exception);
-  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
+  return(status);
 }
 
 /*
@@ -2877,12 +2870,8 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 MagickExport MagickBooleanType SetImageStorageClass(Image *image,
   const ClassType storage_class,ExceptionInfo *exception)
 {
-  CacheInfo
-    *cache_info;
-
   image->storage_class=storage_class;
-  cache_info=GetImagePixelCache(image,MagickTrue,exception);
-  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 /*
@@ -2968,15 +2957,11 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
   const size_t rows,ExceptionInfo *exception)
 {
-  CacheInfo
-    *cache_info;
-
   if ((columns == 0) || (rows == 0))
     return(MagickFalse);
   image->columns=columns;
   image->rows=rows;
-  cache_info=GetImagePixelCache(image,MagickTrue,exception);
-  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
+  return(MagickTrue);
 }
 
 /*

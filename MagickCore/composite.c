@@ -1574,9 +1574,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    zero;
-
   MagickRealType
     amount,
     destination_dissolve,
@@ -1588,6 +1585,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
   MagickStatusType
     flags;
+
+  PixelInfo
+    zero;
 
   ssize_t
     y;
