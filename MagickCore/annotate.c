@@ -550,6 +550,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   size_t
     width;
 
+  ssize_t
+    n;
+
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -563,17 +566,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     if (status == MagickFalse)
       break;
     width=(size_t) floor(metrics->width+0.5);
-    if (GetUTFCode(p) != '\n')
-      if (width <= image->columns)
-        continue;
-    if (s == (char *) NULL)
-      {
-        s=p;
-        while ((IsUTFSpace(GetUTFCode(s)) == MagickFalse) &&
-               (GetUTFCode(s) != 0))
-          s+=GetUTFOctets(s);
-      }
-    if (GetUTFCode(s) != 0)
+    if (width <= image->columns)
+      continue;
+    if (s != (char *) NULL)
       {
         *s='\n';
         p=s;
@@ -583,9 +578,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         {
           char
             *target;
-
-          ssize_t
-            n;
 
           /*
             No convenient line breaks-- insert newline.
@@ -599,14 +591,14 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
           *caption=target;
           p=(*caption)+n;
         }
-    s=(char *) NULL;
     q=draw_info->text;
+    s=(char *) NULL;
   }
-  i=0;
+  n=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) == '\n')
-      i++;
-  return(i);
+      n++;
+  return(n);
 }
 
 /*
@@ -886,6 +878,9 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
       draw_info->stretch,draw_info->weight,&image->exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Century Schoolbook",draw_info->style,
+      draw_info->stretch,draw_info->weight,&image->exception);
+  if (type_info == (const TypeInfo *) NULL)
+    type_info=GetTypeInfoByFamily("Sans",draw_info->style,
       draw_info->stretch,draw_info->weight,&image->exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
@@ -1402,7 +1397,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             if (active == MagickFalse)
               q=GetCacheViewAuthenticPixels(image_view,x_offset,y_offset,1,1,
                 exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (Quantum *) NULL)
               {
                 p++;
                 q+=GetPixelChannels(image);
@@ -1788,7 +1783,7 @@ static MagickBooleanType RenderPostscript(Image *image,
 
         q=GetCacheViewAuthenticPixels(annotate_view,0,y,annotate_image->columns,
           1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         for (x=0; x < (ssize_t) annotate_image->columns; x++)
         {
