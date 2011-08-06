@@ -136,7 +136,7 @@
 
 /* LBR01: Replicate top bit */
 
-#define LBR01PixelPacketRed(pixelpacket) \
+#define LBR01PacketRed(pixelpacket) \
      (pixelpacket).red=(ScaleQuantumToChar((pixelpacket).red) < 0x10 ? \
         0 : QuantumRange);
 
@@ -154,7 +154,7 @@
 
 #define LBR01PacketRGB(pixelpacket) \
         { \
-        LBR01PixelPacketRed((pixelpacket)); \
+        LBR01PacketRed((pixelpacket)); \
         LBR01PacketGreen((pixelpacket)); \
         LBR01PacketBlue((pixelpacket)); \
         }
@@ -196,7 +196,7 @@
 
 /* LBR02: Replicate top 2 bits */
 
-#define LBR02PixelPacketRed(pixelpacket) \
+#define LBR02PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xc0; \
      (pixelpacket).red=ScaleCharToQuantum( \
@@ -223,7 +223,7 @@
 
 #define LBR02PacketRGB(pixelpacket) \
         { \
-        LBR02PixelPacketRed((pixelpacket)); \
+        LBR02PacketRed((pixelpacket)); \
         LBR02PacketGreen((pixelpacket)); \
         LBR02PacketBlue((pixelpacket)); \
         }
@@ -283,7 +283,7 @@
 /* LBR03: Replicate top 3 bits (only used with opaque pixels during
    PNG8 quantization) */
 
-#define LBR03PixelPacketRed(pixelpacket) \
+#define LBR03PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xe0; \
      (pixelpacket).red=ScaleCharToQuantum( \
@@ -304,7 +304,7 @@
 
 #define LBR03PacketRGB(pixelpacket) \
         { \
-        LBR03PixelPacketRed((pixelpacket)); \
+        LBR03PacketRed((pixelpacket)); \
         LBR03PacketGreen((pixelpacket)); \
         LBR03PacketBlue((pixelpacket)); \
         }
@@ -340,7 +340,7 @@
 
 /* LBR04: Replicate top 4 bits */
 
-#define LBR04PixelPacketRed(pixelpacket) \
+#define LBR04PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red) & 0xf0; \
      (pixelpacket).red=ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))); \
@@ -363,7 +363,7 @@
 
 #define LBR04PacketRGB(pixelpacket) \
         { \
-        LBR04PixelPacketRed((pixelpacket)); \
+        LBR04PacketRed((pixelpacket)); \
         LBR04PacketGreen((pixelpacket)); \
         LBR04PacketBlue((pixelpacket)); \
         }
@@ -419,7 +419,7 @@
 
 /* LBR08: Replicate top 8 bits */
 
-#define LBR08PixelPacketRed(pixelpacket) \
+#define LBR08PacketRed(pixelpacket) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar((pixelpacket).red); \
      (pixelpacket).red=ScaleCharToQuantum((lbr_bits)); \
@@ -442,7 +442,7 @@
 
 #define LBR08PacketRGB(pixelpacket) \
         { \
-        LBR08PixelPacketRed((pixelpacket)); \
+        LBR08PacketRed((pixelpacket)); \
         LBR08PacketGreen((pixelpacket)); \
         LBR08PacketBlue((pixelpacket)); \
         }
@@ -498,7 +498,7 @@
 
 /* LBR16: Replicate top 16 bits */
 
-#define LBR16PixelPacketRed(pixelpacket) \
+#define LBR16PacketRed(pixelpacket) \
    { \
      unsigned short lbr_bits=ScaleQuantumToShort((pixelpacket).red); \
      (pixelpacket).red=ScaleShortToQuantum((lbr_bits)); \
@@ -521,7 +521,7 @@
 
 #define LBR16PacketRGB(pixelpacket) \
         { \
-        LBR16PixelPacketRed((pixelpacket)); \
+        LBR16PacketRed((pixelpacket)); \
         LBR16PacketGreen((pixelpacket)); \
         LBR16PacketBlue((pixelpacket)); \
         }
