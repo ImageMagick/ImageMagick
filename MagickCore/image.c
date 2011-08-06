@@ -2515,11 +2515,11 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   const AlphaChannelType alpha_type,ExceptionInfo *exception)
 {
+  CacheInfo
+    *cache_info;
+
   MagickBooleanType
     status;
-
-  PixelPacket
-    pixel;
 
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -2666,7 +2666,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   }
   if (status == MagickFalse)
     return(status);
-  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
+  cache_info=GetImagePixelCache(image,MagickTrue,exception);
+  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -2876,11 +2877,12 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
 MagickExport MagickBooleanType SetImageStorageClass(Image *image,
   const ClassType storage_class,ExceptionInfo *exception)
 {
-  PixelPacket
-    pixel;
+  CacheInfo
+    *cache_info;
 
   image->storage_class=storage_class;
-  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
+  cache_info=GetImagePixelCache(image,MagickTrue,exception);
+  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -2966,14 +2968,15 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
 MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
   const size_t rows,ExceptionInfo *exception)
 {
-  PixelPacket
-    pixel;
+  CacheInfo
+    *cache_info;
 
   if ((columns == 0) || (rows == 0))
     return(MagickFalse);
   image->columns=columns;
   image->rows=rows;
-  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
+  cache_info=GetImagePixelCache(image,MagickTrue,exception);
+  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
 
 /*

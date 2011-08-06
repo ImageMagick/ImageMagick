@@ -1192,11 +1192,12 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
-  PixelPacket
-    pixel;
+  CacheInfo
+    *cache_info;
 
   image->colorspace=colorspace;
-  return(GetOneAuthenticPixel(image,0,0,&pixel,exception));
+  cache_info=GetImagePixelCache(image,MagickTrue,exception);
+  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
 
 /*

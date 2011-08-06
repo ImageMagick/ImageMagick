@@ -1959,6 +1959,7 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
 {
   CacheInfo
@@ -1981,8 +1982,8 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
   return(MagickTrue);
 }
 
-static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
-  ExceptionInfo *exception)
+MagickExport Cache GetImagePixelCache(Image *image,
+  const MagickBooleanType clone,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -4277,8 +4278,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       (cache_info->reference_count == 1))
     {
       LockSemaphoreInfo(cache_info->semaphore);
-      if ((cache_info->mode != ReadMode) &&
-          (cache_info->type != MemoryCache) &&
+      if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
           (cache_info->reference_count == 1))
         {
           int
