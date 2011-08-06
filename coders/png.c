@@ -169,29 +169,29 @@
         (ScaleQuantumToChar(GetPixelRed(image,(pixel))) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01Green(pixel) \
+#define LBR01PixelGreen(pixel) \
         (ScaleQuantumToChar(GetPixelGreen(image,(pixel))) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01Blue(pixel) \
+#define LBR01PixelBlue(pixel) \
         (ScaleQuantumToChar(GetPixelBlue(image,(pixel))) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01Alpha(pixel) \
+#define LBR01PixelAlpha(pixel) \
         (ScaleQuantumToChar(GetPixelAlpha(image,(pixel))) < 0x10 ? \
         0 : QuantumRange);
 
-#define LBR01RGB(pixel) \
+#define LBR01PixelRGB(pixel) \
         { \
         LBR01PixelRed((pixel)); \
-        LBR01Green((pixel)); \
-        LBR01Blue((pixel)); \
+        LBR01PixelGreen((pixel)); \
+        LBR01PixelBlue((pixel)); \
         }
 
-#define LBR01RGBA(pixel) \
+#define LBR01PixelRGBA(pixel) \
         { \
-        LBR01RGB((pixel)); \
-        LBR01Alpha((pixel)); \
+        LBR01PixelRGB((pixel)); \
+        LBR01PixelAlpha((pixel)); \
         }
 
 /* LBR02: Replicate top 2 bits */
@@ -242,7 +242,7 @@
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
        (pixel)); \
    }
-#define LBR02Green(pixel) \
+#define LBR02PixelGreen(pixel) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar(GetPixelGreen(image,(pixel)))\
        & 0xc0; \
@@ -250,7 +250,7 @@
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
        (pixel)); \
    }
-#define LBR02Blue(pixel) \
+#define LBR02PixelBlue(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelBlue(image,(pixel))) & 0xc0; \
@@ -258,7 +258,7 @@
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6))), \
        (pixel)); \
    }
-#define LBR02Alpha(pixel) \
+#define LBR02PixelAlpha(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelAlpha(image,(pixel))) & 0xc0; \
@@ -267,17 +267,17 @@
        (pixel) ); \
    }
 
-#define LBR02RGB(pixel) \
+#define LBR02PixelRGB(pixel) \
         { \
         LBR02PixelRed((pixel)); \
-        LBR02Green((pixel)); \
-        LBR02Blue((pixel)); \
+        LBR02PixelGreen((pixel)); \
+        LBR02PixelBlue((pixel)); \
         }
 
-#define LBR02RGBA(pixel) \
+#define LBR02PixelRGBA(pixel) \
         { \
-        LBR02RGB((pixel)); \
-        LBR02Alpha((pixel)); \
+        LBR02PixelRGB((pixel)); \
+        LBR02PixelAlpha((pixel)); \
         }
 
 /* LBR03: Replicate top 3 bits (only used with opaque pixels during
@@ -381,21 +381,21 @@
      SetPixelRed(image,\
        ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))), (pixel)); \
    }
-#define LBR04Green(pixel) \
+#define LBR04PixelGreen(pixel) \
    { \
      unsigned char lbr_bits=ScaleQuantumToChar(GetPixelGreen(image,(pixel)))\
        & 0xf0; \
      SetPixelGreen(image,\
        ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))), (pixel)); \
    }
-#define LBR04Blue(pixel) \
+#define LBR04PixelBlue(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelBlue(image,(pixel))) & 0xf0; \
      SetPixelBlue(image,\
        ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))), (pixel)); \
    }
-#define LBR04Alpha(pixel) \
+#define LBR04PixelAlpha(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelAlpha(image,(pixel))) & 0xf0; \
@@ -403,17 +403,17 @@
        ScaleCharToQuantum((lbr_bits | (lbr_bits >> 4))), (pixel)); \
    }
 
-#define LBR04RGB(pixel) \
+#define LBR04PixelRGB(pixel) \
         { \
         LBR04PixelRed((pixel)); \
-        LBR04Green((pixel)); \
-        LBR04Blue((pixel)); \
+        LBR04PixelGreen((pixel)); \
+        LBR04PixelBlue((pixel)); \
         }
 
-#define LBR04RGBA(pixel) \
+#define LBR04PixelRGBA(pixel) \
         { \
-        LBR04RGB((pixel)); \
-        LBR04Alpha((pixel)); \
+        LBR04PixelRGB((pixel)); \
+        LBR04PixelAlpha((pixel)); \
         }
 
 
@@ -460,21 +460,21 @@
      SetPixelRed(image,\
        ScaleCharToQuantum((lbr_bits)), (pixel)); \
    }
-#define LBR08Green(pixel) \
+#define LBR08PixelGreen(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelGreen(image,(pixel))); \
      SetPixelGreen(image,\
        ScaleCharToQuantum((lbr_bits)), (pixel)); \
    }
-#define LBR08Blue(pixel) \
+#define LBR08PixelBlue(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelBlue(image,(pixel))); \
      SetPixelBlue(image,\
        ScaleCharToQuantum((lbr_bits)), (pixel)); \
    }
-#define LBR08Alpha(pixel) \
+#define LBR08PixelAlpha(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelAlpha(image,(pixel))); \
@@ -482,17 +482,17 @@
        ScaleCharToQuantum((lbr_bits)), (pixel)); \
    }
 
-#define LBR08RGB(pixel) \
+#define LBR08PixelRGB(pixel) \
         { \
         LBR08PixelRed((pixel)); \
-        LBR08Green((pixel)); \
-        LBR08Blue((pixel)); \
+        LBR08PixelGreen((pixel)); \
+        LBR08PixelBlue((pixel)); \
         }
 
-#define LBR08RGBA(pixel) \
+#define LBR08PixelRGBA(pixel) \
         { \
-        LBR08RGB((pixel)); \
-        LBR08Alpha((pixel)); \
+        LBR08PixelRGB((pixel)); \
+        LBR08PixelAlpha((pixel)); \
         }
 
 
@@ -539,21 +539,21 @@
      SetPixelRed(image,\
        ScaleShortToQuantum((lbr_bits)),(pixel)); \
    }
-#define LBR16Green(pixel) \
+#define LBR16PixelGreen(pixel) \
    { \
      unsigned short lbr_bits= \
        ScaleQuantumToShort(GetPixelGreen(image,(pixel))); \
      SetPixelGreen(image,\
        ScaleShortToQuantum((lbr_bits)),(pixel)); \
    }
-#define LBR16Blue(pixel) \
+#define LBR16PixelBlue(pixel) \
    { \
      unsigned short lbr_bits= \
        ScaleQuantumToShort(GetPixelBlue(image,(pixel))); \
      SetPixelBlue(image,\
        ScaleShortToQuantum((lbr_bits)),(pixel)); \
    }
-#define LBR16Alpha(pixel) \
+#define LBR16PixelAlpha(pixel) \
    { \
      unsigned short lbr_bits= \
        ScaleQuantumToShort(GetPixelAlpha(image,(pixel))); \
@@ -561,17 +561,17 @@
        ScaleShortToQuantum((lbr_bits)),(pixel)); \
    }
 
-#define LBR16RGB(pixel) \
+#define LBR16PixelRGB(pixel) \
         { \
         LBR16PixelRed((pixel)); \
-        LBR16Green((pixel)); \
-        LBR16Blue((pixel)); \
+        LBR16PixelGreen((pixel)); \
+        LBR16PixelBlue((pixel)); \
         }
 
-#define LBR16RGBA(pixel) \
+#define LBR16PixelRGBA(pixel) \
         { \
-        LBR16RGB((pixel)); \
-        LBR16Alpha((pixel)); \
+        LBR16PixelRGB((pixel)); \
+        LBR16PixelAlpha((pixel)); \
         }
 
 /*
@@ -7673,7 +7673,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
              for (x=0; x < (ssize_t) image->columns; x++)
              {
-                LBR16RGBA(r);
+                LBR16PixelRGBA(r);
                 r++;
              }
 
@@ -7707,7 +7707,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
              for (x=0; x < (ssize_t) image->columns; x++)
              {
-                LBR08RGBA(r);
+                LBR08PixelRGBA(r);
                 r++;
              }
 
@@ -7740,7 +7740,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
              for (x=0; x < (ssize_t) image->columns; x++)
              {
-                LBR04RGBA(r);
+                LBR04PixelRGBA(r);
                 r++;
              }
 
@@ -7772,7 +7772,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
              for (x=0; x < (ssize_t) image->columns; x++)
              {
-                LBR02RGBA(r);
+                LBR02PixelRGBA(r);
                 r++;
              }
 
@@ -7803,7 +7803,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
              for (x=0; x < (ssize_t) image->columns; x++)
              {
-                LBR01RGBA(r);
+                LBR01PixelRGBA(r);
                 r++;
              }
 
@@ -8444,7 +8444,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetPixelAlpha(image,r) == OpaqueAlpha)
-                  LBR04RGB(r);
+                  LBR04PixelRGB(r);
               r++;
             }
 
@@ -8549,7 +8549,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               if (GetPixelAlpha(image,r) == OpaqueAlpha)
-                  LBR02Blue(r);
+                  LBR02PixelBlue(r);
               r++;
             }
 
