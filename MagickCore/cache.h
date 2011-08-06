@@ -24,6 +24,12 @@ extern "C" {
 
 #include "MagickCore/blob.h"
 
+typedef void
+  *Cache;
+
+extern MagickExport Cache
+  GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *);
+
 extern MagickExport const Quantum
   *GetVirtualPixels(const Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
