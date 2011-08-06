@@ -4977,6 +4977,7 @@ MagickExport void StandardPixelChannelMap(Image *image)
     SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelChannel) i);
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
   }
+  image->sync=MagickTrue;
   image->number_channels=4;
   if (0 && image->colorspace == GRAYColorspace)
     image->number_channels=2;
