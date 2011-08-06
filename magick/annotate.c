@@ -549,6 +549,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   size_t
     width;
 
+  ssize_t
+    n;
+
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -562,17 +565,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     if (status == MagickFalse)
       break;
     width=(size_t) floor(metrics->width+0.5);
-    if (GetUTFCode(p) != '\n')
-      if (width <= image->columns)
-        continue;
-    if (s == (char *) NULL)
-      {
-        s=p;
-        while ((IsUTFSpace(GetUTFCode(s)) == MagickFalse) &&
-               (GetUTFCode(s) != 0))
-          s+=GetUTFOctets(s);
-      }
-    if (GetUTFCode(s) != 0)
+    if (width <= image->columns)
+      continue;
+    if (s != (char *) NULL)
       {
         *s='\n';
         p=s;
@@ -582,9 +577,6 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         {
           char
             *target;
-
-          ssize_t
-            n;
 
           /*
             No convenient line breaks-- insert newline.
@@ -598,14 +590,14 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
           *caption=target;
           p=(*caption)+n;
         }
-    s=(char *) NULL;
     q=draw_info->text;
+    s=(char *) NULL;
   }
-  i=0;
+  n=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) == '\n')
-      i++;
-  return(i);
+      n++;
+  return(n);
 }
 
 /*
@@ -797,8 +789,8 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
       "underline position: %g; underline thickness: %g",annotate_info->text,
       metrics->width,metrics->height,metrics->ascent,metrics->descent,
       metrics->max_advance,metrics->bounds.x1,metrics->bounds.y1,
-      metrics->bounds.x2,metrics->bounds.y2,metrics->origin.x,
-      metrics->origin.y,metrics->pixels_per_em.x,metrics->pixels_per_em.y,
+      metrics->bounds.x2,metrics->bounds.y2,metrics->origin.x,metrics->origin.y,
+      metrics->pixels_per_em.x,metrics->pixels_per_em.y,
       metrics->underline_position,metrics->underline_thickness);
   annotate_info=DestroyDrawInfo(annotate_info);
   return(status);
