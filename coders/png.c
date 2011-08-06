@@ -253,7 +253,7 @@
      SetPixelBlue((pixel), ScaleCharToQuantum( \
        (lbr_bits | (lbr_bits >> 2) | (lbr_bits >> 4) | (lbr_bits >> 6)))); \
    }
-#define LBR02PixelOpacity(pixel) \
+#define LBR02Opacity(pixel) \
    { \
      unsigned char lbr_bits= \
        ScaleQuantumToChar(GetPixelOpacity((pixel))) & 0xc0; \
@@ -271,7 +271,7 @@
 #define LBR02PixelRGBO(pixel) \
         { \
         LBR02PixelRGB((pixel)); \
-        LBR02PixelOpacity((pixel)); \
+        LBR02Opacity((pixel)); \
         }
 
 /* LBR03: Replicate top 3 bits (only used with opaque pixels during
