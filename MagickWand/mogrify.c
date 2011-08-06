@@ -57,10 +57,10 @@
 /*
  Constant declaration.
 */
-const char
-  MogrifyBackgroundColor[] = "#ffffff",  /* white */
-  MogrifyBorderColor[] = "#dfdfdf",  /* gray */
-  MogrifyMatteColor[] = "#bdbdbd";  /* gray */
+static const char
+  BackgroundColor[] = "#ffffff",  /* white */
+  BorderColor[] = "#dfdfdf",  /* gray */
+  MatteColor[] = "#bdbdbd";  /* gray */
 
 /*
   Define declarations.
@@ -921,7 +921,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             if (*option == '+')
               {
-                (void) QueryColorDatabase(MogrifyBorderColor,&draw_info->border_color,
+                (void) QueryColorDatabase(BorderColor,&draw_info->border_color,
                   exception);
                 break;
               }
@@ -6140,7 +6140,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 (void) DeleteImageOption(image_info,option+1);
-                (void) QueryColorDatabase(MogrifyBackgroundColor,
+                (void) QueryColorDatabase(BackgroundColor,
                   &image_info->background_color,exception);
                 break;
               }
@@ -6184,7 +6184,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 (void) DeleteImageOption(image_info,option+1);
-                (void) QueryColorDatabase(MogrifyBorderColor,&image_info->border_color,
+                (void) QueryColorDatabase(BorderColor,&image_info->border_color,
                   exception);
                 break;
               }
@@ -6755,7 +6755,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 (void) SetImageOption(image_info,option+1,argv[i+1]);
-                (void) QueryColorDatabase(MogrifyMatteColor,&image_info->matte_color,
+                (void) QueryColorDatabase(MatteColor,&image_info->matte_color,
                   exception);
                 break;
               }
