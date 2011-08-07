@@ -2521,7 +2521,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  status=MagickFalse;
+  status=MagickTrue;
   switch (alpha_type)
   {
     case ActivateAlphaChannel:
@@ -2558,7 +2558,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       if (image->colorspace == CMYKColorspace)
         ConvertRGBToCMYK(&background);
       SetPacketPixelInfo(image,&background,&pixel);
-      status=MagickTrue;
       image_view=AcquireCacheView(image);
       #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -3674,7 +3673,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,&image->exception);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+        status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
     case OptimizeType:
