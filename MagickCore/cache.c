@@ -1026,8 +1026,7 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
               blob,length);
           else
             {
-              count=WritePixelCacheRegion(clone_info,clone_offset,length,
-                blob);
+              count=WritePixelCacheRegion(clone_info,clone_offset,length,blob);
               if ((MagickSizeType) count != length)
                 {
                   status=MagickFalse;
@@ -1145,8 +1144,7 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
               blob,length);
           else
             {
-              count=WritePixelCacheRegion(clone_info,clone_offset,length,
-                blob);
+              count=WritePixelCacheRegion(clone_info,clone_offset,length,blob);
               if ((MagickSizeType) count != length)
                 {
                   status=MagickFalse;
@@ -1998,7 +1996,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     time_limit = 0;
 
   static time_t
-    cache_genesis = 0;
+    cache_timestamp = 0;
 
   status=MagickTrue;
   LockSemaphoreInfo(image->semaphore);
@@ -2028,10 +2026,10 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
         Set the exire time in seconds.
       */
       time_limit=GetMagickResourceLimit(TimeResource);
-      cache_genesis=time((time_t *) NULL);
+      cache_timestamp=time((time_t *) NULL);
     }
   if ((time_limit != MagickResourceInfinity) &&
-      ((MagickSizeType) (time((time_t *) NULL)-cache_genesis) >= time_limit))
+      ((MagickSizeType) (time((time_t *) NULL)-cache_timestamp) >= time_limit))
     ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
@@ -3278,7 +3276,8 @@ MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
         case GrayVirtualPixelMethod:
         {
           for (i=0; i < (ssize_t) cache_info->number_channels; i++)
-            SetPixelChannel(image,(PixelChannel) i,QuantumRange/2,virtual_pixel);
+            SetPixelChannel(image,(PixelChannel) i,QuantumRange/2,
+              virtual_pixel);
           SetPixelAlpha(image,OpaqueAlpha,virtual_pixel);
           break;
         }
