@@ -2534,9 +2534,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       CacheView
         *image_view;
 
-      MagickBooleanType
-        status;
-
       PixelInfo
         background;
 
