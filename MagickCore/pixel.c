@@ -4918,26 +4918,26 @@ MagickExport void PushPixelChannelMap(Image *image,
 %
 %  The format of the SetPixelChannelMap method is:
 %
-%      void SetPixelChannelMap(Image *image,const ChannelType channel_mask)
+%      void SetPixelChannelMap(Image *image,const ChannelType mask)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel_mask: the channel mask.
+%    o mask: the channel mask.
 %
 */
-MagickExport void SetPixelChannelMap(Image *image,
-  const ChannelType channel_mask)
+MagickExport void SetPixelChannelMap(Image *image,const ChannelType mask)
 {
 #define GetChannelBit(alpha,i)  (((size_t) (alpha) >> (size_t) (i)) & 0x01)
 
   register ssize_t
     i;
 
+  image->sync=MagickFalse;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    SetPixelChannelMapTraits(image,(PixelChannel) i,
-      GetChannelBit(channel_mask,i) ? UpdatePixelTrait : CopyPixelTrait);
+    SetPixelChannelMapTraits(image,(PixelChannel) i,GetChannelBit(mask,i) ?
+      UpdatePixelTrait : CopyPixelTrait);
   for ( ; i < MaxPixelChannels; i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
 }
