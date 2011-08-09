@@ -4934,7 +4934,7 @@ MagickExport void SetPixelChannelMap(Image *image,const ChannelType mask)
   register ssize_t
     i;
 
-  image->sync=MagickFalse;
+  image->sync=mask == DefaultChannels ? MagickTrue : MagickFalse;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,GetChannelBit(mask,i) ?
       UpdatePixelTrait : CopyPixelTrait);
