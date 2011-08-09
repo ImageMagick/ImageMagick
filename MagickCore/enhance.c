@@ -1088,35 +1088,21 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    if (image->sync != MagickFalse)
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        Quantum
-          intensity;
-
-        intensity=GetPixelIntensity(image,p);
-        histogram[ScaleQuantumToMap(intensity)].red++;
-        histogram[ScaleQuantumToMap(intensity)].green++;
-        histogram[ScaleQuantumToMap(intensity)].blue++;
-        histogram[ScaleQuantumToMap(intensity)].black++;
-        p+=GetPixelChannels(image);
-      }
-    else
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          histogram[ScaleQuantumToMap(GetPixelRed(image,p))].red++;
-        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          histogram[ScaleQuantumToMap(GetPixelGreen(image,p))].green++;
-        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          histogram[ScaleQuantumToMap(GetPixelBlue(image,p))].blue++;
-        if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-            (image->colorspace == CMYKColorspace))
-          histogram[ScaleQuantumToMap(GetPixelBlack(image,p))].black++;
-        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          histogram[ScaleQuantumToMap(GetPixelAlpha(image,p))].alpha++;
-        p+=GetPixelChannels(image);
-      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+        histogram[ScaleQuantumToMap(GetPixelRed(image,p))].red++;
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+        histogram[ScaleQuantumToMap(GetPixelGreen(image,p))].green++;
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+        histogram[ScaleQuantumToMap(GetPixelBlue(image,p))].blue++;
+      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
+          (image->colorspace == CMYKColorspace))
+        histogram[ScaleQuantumToMap(GetPixelBlack(image,p))].black++;
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+        histogram[ScaleQuantumToMap(GetPixelAlpha(image,p))].alpha++;
+      p+=GetPixelChannels(image);
+    }
   }
   /*
     Find the histogram boundaries by locating the black/white levels.
