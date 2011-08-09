@@ -23,8 +23,8 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  AutoGammaImage(Image *),
-  AutoLevelImage(Image *),
+  AutoGammaImage(Image *,ExceptionInfo *),
+  AutoLevelImage(Image *,ExceptionInfo *),
   BrightnessContrastImage(Image *,const double,const double),
   ClutImage(Image *,const Image *),
   ColorDecisionListImage(Image *,const char *),

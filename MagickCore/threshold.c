@@ -397,29 +397,18 @@ MagickExport MagickBooleanType BilevelImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,(Quantum) ((MagickRealType)
-          GetPixelRed(image,q) <= threshold ? 0 : QuantumRange),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,(Quantum) ((MagickRealType)
-          GetPixelGreen(image,q) <= threshold ? 0 : QuantumRange),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,(Quantum) ((MagickRealType)
-          GetPixelBlue(image,q) <= threshold ? 0 : QuantumRange),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,(Quantum) ((MagickRealType)
-          GetPixelBlack(image,q) <= threshold ? 0 : QuantumRange),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (image->matte == MagickFalse)
-            SetPixelAlpha(image,(Quantum) ((MagickRealType)
-              GetPixelAlpha(image,q) <= threshold ? 0 : QuantumRange),q);
-          else
-            SetPixelAlpha(image,(Quantum) ((MagickRealType)
-              GetPixelAlpha(image,q) >= threshold ? OpaqueAlpha :
-              TransparentAlpha),q);
-        }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+          q[i]=q[i] <= threshold ? 0 : QuantumRange;
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
