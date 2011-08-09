@@ -430,8 +430,7 @@ MagickExport QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
 */
 
 static inline void AssociateAlphaPixel(const Image *image,
-  const CubeInfo *cube_info,const Quantum *pixel,
-  RealPixelPacket *alpha_pixel)
+  const CubeInfo *cube_info,const Quantum *pixel,RealPixelPacket *alpha_pixel)
 {
   MagickRealType
     alpha;
