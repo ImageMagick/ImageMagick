@@ -10467,7 +10467,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           PushPixelChannelMap(image,channel);
-          (void) AutoGammaImage(image);
+          (void) AutoGammaImage(image,exception);
           PopPixelChannelMap(image);
           break;
         }
@@ -10476,7 +10476,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           PushPixelChannelMap(image,channel);
-          (void) AutoLevelImage(image);
+          (void) AutoLevelImage(image,exception);
           PopPixelChannelMap(image);
           break;
         }

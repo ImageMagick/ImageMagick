@@ -89,23 +89,26 @@
 %
 %  The format of the AutoGammaImage method is:
 %
-%      MagickBooleanType AutoGammaImage(Image *image)
+%      MagickBooleanType AutoGammaImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image to auto-level
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType AutoGammaImage(Image *image)
+MagickExport MagickBooleanType AutoGammaImage(Image *image,
+  ExceptionInfo *exception)
 {
-  MagickStatusType
-    status;
-
   double
     gamma,
     log_mean,
     mean,
     sans;
+
+  MagickStatusType
+    status;
 
   log_mean=log(0.5);
   if (image->sync != MagickFalse)
@@ -113,7 +116,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       /*
         Apply gamma correction equally accross all given channels.
       */
-      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
       return(LevelImage(image,0.0,(double) QuantumRange,gamma));
     }
@@ -124,7 +127,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
   if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
     {
       PushPixelChannelMap(image,RedChannel);
-      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelChannelMap(image);
@@ -132,7 +135,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
   if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
     {
       PushPixelChannelMap(image,GreenChannel);
-      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelChannelMap(image);
@@ -140,7 +143,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
   if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
     {
       PushPixelChannelMap(image,BlueChannel);
-      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelChannelMap(image);
@@ -149,7 +152,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (image->colorspace == CMYKColorspace))
     {
       PushPixelChannelMap(image,BlackChannel);
-      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelChannelMap(image);
@@ -158,7 +161,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
       (image->matte == MagickTrue))
     {
       PushPixelChannelMap(image,AlphaChannel);
-      (void) GetImageMean(image,&mean,&sans,&image->exception);
+      (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
       status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
       PopPixelChannelMap(image);
@@ -182,16 +185,19 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
 %
 %  The format of the LevelImage method is:
 %
-%      MagickBooleanType AutoLevelImage(Image *image)
+%      MagickBooleanType AutoLevelImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image to auto-level
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType AutoLevelImage(Image *image)
+MagickExport MagickBooleanType AutoLevelImage(Image *image,
+  ExceptionInfo *exception)
 {
-  return(MinMaxStretchImage(image,0.0,0.0));
+  return(MinMaxStretchImage(image,0.0,0.0,exception));
 }
 
 /*

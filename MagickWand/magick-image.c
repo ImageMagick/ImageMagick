@@ -730,9 +730,7 @@ WandExport MagickBooleanType MagickAutoGammaImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=AutoGammaImage(wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=AutoGammaImage(wand->images,&wand->images->exception);
   return(status);
 }
 
@@ -770,9 +768,7 @@ WandExport MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=AutoLevelImage(wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=AutoLevelImage(wand->images,&wand->images->exception);
   return(status);
 }
 

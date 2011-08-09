@@ -965,7 +965,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %  The format of the MinMaxStretchImage method is:
 %
 %      MagickBooleanType MinMaxStretchImage(Image *image,const double black,
-%        const double white)
+%        const double white,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -974,9 +974,11 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %    o black, white:  move the black / white point inward from the minimum and
 %      maximum points by this color value.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
-  const double black,const double white)
+  const double black,const double white,ExceptionInfo *exception)
 {
   double
     min,
@@ -991,7 +993,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       /*
         Auto-level all channels equally.
       */
-      (void) GetImageRange(image,&min,&max,&image->exception);
+      (void) GetImageRange(image,&min,&max,exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -1004,7 +1006,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
     {
       PushPixelChannelMap(image,RedChannel);
-      (void) GetImageRange(image,&min,&max,&image->exception);
+      (void) GetImageRange(image,&min,&max,exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -1014,7 +1016,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
     {
       PushPixelChannelMap(image,GreenChannel);
-      (void) GetImageRange(image,&min,&max,&image->exception);
+      (void) GetImageRange(image,&min,&max,exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -1024,7 +1026,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
     {
       PushPixelChannelMap(image,BlueChannel);
-      (void) GetImageRange(image,&min,&max,&image->exception);
+      (void) GetImageRange(image,&min,&max,exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -1035,7 +1037,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
        (image->colorspace == CMYKColorspace))
     {
       PushPixelChannelMap(image,BlackChannel);
-      (void) GetImageRange(image,&min,&max,&image->exception);
+      (void) GetImageRange(image,&min,&max,exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -1046,7 +1048,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
        (image->matte == MagickTrue))
     {
       PushPixelChannelMap(image,AlphaChannel);
-      (void) GetImageRange(image,&min,&max,&image->exception);
+      (void) GetImageRange(image,&min,&max,exception);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)

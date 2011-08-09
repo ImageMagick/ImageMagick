@@ -807,7 +807,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Auto Adjust Gamma of image based on its mean
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) AutoGammaImage(*image);
+            (void) AutoGammaImage(*image,exception);
             break;
           }
         if (LocaleCompare("auto-level",option+1) == 0)
@@ -816,7 +816,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Perfectly Normalize (max/min stretch) the image
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) AutoLevelImage(*image);
+            (void) AutoLevelImage(*image,exception);
             break;
           }
         if (LocaleCompare("auto-orient",option+1) == 0)

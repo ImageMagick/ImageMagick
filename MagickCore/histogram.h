@@ -31,7 +31,7 @@ extern MagickExport Image
 extern MagickExport MagickBooleanType
   IsHistogramImage(const Image *,ExceptionInfo *),
   IsPaletteImage(const Image *,ExceptionInfo *),
-  MinMaxStretchImage(Image *,const double,const double);
+  MinMaxStretchImage(Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport size_t
   GetNumberColors(const Image *,FILE *,ExceptionInfo *);
