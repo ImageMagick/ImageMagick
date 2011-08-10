@@ -218,7 +218,7 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image,
 %  The format of the BrightnessContrastImage method is:
 %
 %      MagickBooleanType BrightnessContrastImage(Image *image,
-%        const double brightness,const double contrast)
+%        const double brightness,const double contrast,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -228,9 +228,11 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image,
 %
 %    o contrast: the contrast percent (-100 .. 100).
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
-  const double brightness,const double contrast)
+  const double brightness,const double contrast,ExceptionInfo *exception)
 {
 #define BrightnessContastImageTag  "BrightnessContast/Image"
 
@@ -257,8 +259,188 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
   coefficients[0]=slope;
   coefficients[1]=intercept;
-  status=FunctionImage(image,PolynomialFunction,2,coefficients,
-    &image->exception);
+  status=FunctionImage(image,PolynomialFunction,2,coefficients,exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     C l u t I m a g e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClutImage() replaces each color value in the given image, by using it as an
+%  index to lookup a replacement color value in a Color Look UP Table in the
+%  form of an image.  The values are extracted along a diagonal of the CLUT
+%  image so either a horizontal or vertial gradient image can be used.
+%
+%  Typically this is used to either re-color a gray-scale image according to a
+%  color gradient in the CLUT image, or to perform a freeform histogram
+%  (level) adjustment according to the (typically gray-scale) gradient in the
+%  CLUT image.
+%
+%  When the 'channel' mask includes the matte/alpha transparency channel but
+%  one image has no such channel it is assumed that that image is a simple
+%  gray-scale image that will effect the alpha channel values, either for
+%  gray-scale coloring (with transparent or semi-transparent colors), or
+%  a histogram adjustment of existing alpha channel values.   If both images
+%  have matte channels, direct and normal indexing is applied, which is rarely
+%  used.
+%
+%  The format of the ClutImage method is:
+%
+%      MagickBooleanType ClutImage(Image *image,Image *clut_image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image, which is replaced by indexed CLUT values
+%
+%    o clut_image: the color lookup table image for replacement color values.
+%
+%    o channel: the channel.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
+  ExceptionInfo *exception)
+{
+#define ClampAlphaPixelChannel(pixel) ClampToQuantum((pixel)->alpha)
+#define ClampBlackPixelChannel(pixel) ClampToQuantum((pixel)->black)
+#define ClampBluePixelChannel(pixel) ClampToQuantum((pixel)->blue)
+#define ClampGreenPixelChannel(pixel) ClampToQuantum((pixel)->green)
+#define ClampRedPixelChannel(pixel) ClampToQuantum((pixel)->red)
+#define ClutImageTag  "Clut/Image"
+
+  CacheView
+    *clut_view,
+    *image_view;
+
+  double
+    *clut_map;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    adjust,
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(clut_image != (Image *) NULL);
+  assert(clut_image->signature == MagickSignature);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
+  clut_map=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
+    sizeof(*clut_map));
+  if (clut_map == (double *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  /*
+    Clut image.
+  */
+  status=MagickTrue;
+  progress=0;
+  adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
+  clut_view=AcquireCacheView(clut_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4)
+#endif
+  for (x=0; x <= (ssize_t) MaxMap; x++)
+  {
+    register ssize_t
+      i;
+
+    for (i=0; i < (ssize_t) GetPixelChannels(clut_image); i++)
+      (void) InterpolatePixelChannel(clut_image,clut_view,(PixelChannel) i,
+        UndefinedInterpolatePixel,QuantumScale*x*(clut_image->columns-adjust),
+        QuantumScale*x*(clut_image->rows-adjust),clut_map+x*
+        GetPixelChannels(clut_image)+i,exception);
+  }
+  clut_view=DestroyCacheView(clut_view);
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(clut_image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait 
+          clut_traits,
+          traits;
+
+        clut_traits=GetPixelChannelMapTraits(clut_image,(PixelChannel) i);
+        if (clut_traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(clut_image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(clut_image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[channel]=ClampToQuantum(clut_map[ScaleQuantumToMap(q[channel])*
+          GetPixelChannels(clut_image)+channel]);
+      }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_ClutImage)
+#endif
+        proceed=SetImageProgress(image,ClutImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  clut_map=(double *) RelinquishMagickMemory(clut_map);
+  if ((clut_image->matte != MagickFalse) &&
+      ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0))
+    (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   return(status);
 }
 
@@ -646,189 +828,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   cdl_map=(PixelPacket *) RelinquishMagickMemory(cdl_map);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     C l u t I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ClutImage() replaces each color value in the given image, by using it as an
-%  index to lookup a replacement color value in a Color Look UP Table in the
-%  form of an image.  The values are extracted along a diagonal of the CLUT
-%  image so either a horizontal or vertial gradient image can be used.
-%
-%  Typically this is used to either re-color a gray-scale image according to a
-%  color gradient in the CLUT image, or to perform a freeform histogram
-%  (level) adjustment according to the (typically gray-scale) gradient in the
-%  CLUT image.
-%
-%  When the 'channel' mask includes the matte/alpha transparency channel but
-%  one image has no such channel it is assumed that that image is a simple
-%  gray-scale image that will effect the alpha channel values, either for
-%  gray-scale coloring (with transparent or semi-transparent colors), or
-%  a histogram adjustment of existing alpha channel values.   If both images
-%  have matte channels, direct and normal indexing is applied, which is rarely
-%  used.
-%
-%  The format of the ClutImage method is:
-%
-%      MagickBooleanType ClutImage(Image *image,Image *clut_image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image, which is replaced by indexed CLUT values
-%
-%    o clut_image: the color lookup table image for replacement color values.
-%
-%    o channel: the channel.
-%
-*/
-MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image)
-{
-#define ClampAlphaPixelChannel(pixel) ClampToQuantum((pixel)->alpha)
-#define ClampBlackPixelChannel(pixel) ClampToQuantum((pixel)->black)
-#define ClampBluePixelChannel(pixel) ClampToQuantum((pixel)->blue)
-#define ClampGreenPixelChannel(pixel) ClampToQuantum((pixel)->green)
-#define ClampRedPixelChannel(pixel) ClampToQuantum((pixel)->red)
-#define ClutImageTag  "Clut/Image"
-
-  CacheView
-    *clut_view,
-    *image_view;
-
-  ExceptionInfo
-    *exception;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  PixelInfo
-    *clut_map;
-
-  register ssize_t
-    i;
-
-  ssize_t
-    adjust,
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(clut_image != (Image *) NULL);
-  assert(clut_image->signature == MagickSignature);
-  exception=(&image->exception);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
-  clut_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*clut_map));
-  if (clut_map == (PixelInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  /*
-    Clut image.
-  */
-  status=MagickTrue;
-  progress=0;
-  adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
-  clut_view=AcquireCacheView(clut_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4)
-#endif
-  for (i=0; i <= (ssize_t) MaxMap; i++)
-  {
-    GetPixelInfo(clut_image,clut_map+i);
-    (void) InterpolatePixelInfo(clut_image,clut_view,
-      UndefinedInterpolatePixel,QuantumScale*i*(clut_image->columns-adjust),
-      QuantumScale*i*(clut_image->rows-adjust),clut_map+i,exception);
-  }
-  clut_view=DestroyCacheView(clut_view);
-  image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    PixelInfo
-      pixel;
-
-    register Quantum
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    GetPixelInfo(image,&pixel);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      SetPixelInfo(image,q,&pixel);
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,ClampRedPixelChannel(clut_map+
-          ScaleQuantumToMap(GetPixelRed(image,q))),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,ClampGreenPixelChannel(clut_map+
-          ScaleQuantumToMap(GetPixelGreen(image,q))),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,ClampBluePixelChannel(clut_map+
-          ScaleQuantumToMap(GetPixelBlue(image,q))),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,ClampBlackPixelChannel(clut_map+
-          ScaleQuantumToMap(GetPixelBlack(image,q))),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (clut_image->matte == MagickFalse)
-            SetPixelAlpha(image,GetPixelInfoIntensity(clut_map+
-              ScaleQuantumToMap((Quantum) GetPixelAlpha(image,q))),q);
-          else
-            if (image->matte == MagickFalse)
-              SetPixelAlpha(image,ClampAlphaPixelChannel(clut_map+
-                ScaleQuantumToMap((Quantum) GetPixelInfoIntensity(&pixel))),q);
-            else
-              SetPixelAlpha(image,ClampAlphaPixelChannel(clut_map+
-                ScaleQuantumToMap(GetPixelAlpha(image,q))),q);
-        }
-      q+=GetPixelChannels(image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ClutImage)
-#endif
-        proceed=SetImageProgress(image,ClutImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  image_view=DestroyCacheView(image_view);
-  clut_map=(PixelInfo *) RelinquishMagickMemory(clut_map);
-  if ((clut_image->matte != MagickFalse) &&
-      ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0))
-    (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   return(status);
 }
 
