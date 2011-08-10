@@ -1870,7 +1870,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((*option == '+') || ((flags & AspectValue) != 0))
               (void) LevelizeImage(*image,black_point,white_point,gamma);
             else
-              (void) LevelImage(*image,black_point,white_point,gamma);
+              (void) LevelImage(*image,black_point,white_point,gamma,
+                exception);
             InheritException(exception,&(*image)->exception);
             break;
           }

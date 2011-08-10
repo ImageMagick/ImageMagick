@@ -1256,9 +1256,12 @@ void Magick::Image::level ( const double black_point,
                             const double white_point,
                             const double gamma )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  (void) LevelImage( image(), black_point, white_point, gamma );
-  throwImageException();
+  (void) LevelImage( image(), black_point, white_point, gamma, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Magnify image by integral size

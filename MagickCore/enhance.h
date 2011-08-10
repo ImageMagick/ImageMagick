@@ -33,7 +33,7 @@ extern MagickExport MagickBooleanType
   EqualizeImage(Image *image),
   GammaImage(Image *,const double,ExceptionInfo *),
   HaldClutImage(Image *,const Image *),
-  LevelImage(Image *,const double,const double,const double),
+  LevelImage(Image *,const double,const double,const double,ExceptionInfo *),
   LevelizeImage(Image *,const double,const double,const double),
   LevelImageColors(Image *,const PixelInfo *,const PixelInfo *,
     const MagickBooleanType),
