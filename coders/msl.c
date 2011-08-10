@@ -3485,7 +3485,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
 
         /* process image */
-        LevelImage(msl_info->image[n],levelBlack,levelWhite,levelGamma);
+        LevelImage(msl_info->image[n],levelBlack,levelWhite,levelGamma,
+          &msl_info->image[n]->exception);
         break;
       }
     }

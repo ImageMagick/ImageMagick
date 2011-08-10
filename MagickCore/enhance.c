@@ -110,62 +110,39 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
   MagickStatusType
     status;
 
+  register ssize_t
+    i;
+
   log_mean=log(0.5);
   if (image->sync != MagickFalse)
     {
       /*
-        Apply gamma correction equally accross all given channels.
+        Apply gamma correction equally across all given channels.
       */
       (void) GetImageMean(image,&mean,&sans,exception);
       gamma=log(mean*QuantumScale)/log_mean;
-      return(LevelImage(image,0.0,(double) QuantumRange,gamma));
+      return(LevelImage(image,0.0,(double) QuantumRange,gamma,exception));
     }
   /*
     Auto-gamma each channel separately.
   */
   status=MagickTrue;
-  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-    {
-      PushPixelChannelMap(image,RedChannel);
-      (void) GetImageMean(image,&mean,&sans,exception);
-      gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
-      PopPixelChannelMap(image);
-    }
-  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-    {
-      PushPixelChannelMap(image,GreenChannel);
-      (void) GetImageMean(image,&mean,&sans,exception);
-      gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
-      PopPixelChannelMap(image);
-    }
-  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-    {
-      PushPixelChannelMap(image,BlueChannel);
-      (void) GetImageMean(image,&mean,&sans,exception);
-      gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
-      PopPixelChannelMap(image);
-    }
-  if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->colorspace == CMYKColorspace))
-    {
-      PushPixelChannelMap(image,BlackChannel);
-      (void) GetImageMean(image,&mean,&sans,exception);
-      gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
-      PopPixelChannelMap(image);
-    }
-  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->matte == MagickTrue))
-    {
-      PushPixelChannelMap(image,AlphaChannel);
-      (void) GetImageMean(image,&mean,&sans,exception);
-      gamma=log(mean*QuantumScale)/log_mean;
-      status=status && LevelImage(image,0.0,(double) QuantumRange,gamma);
-      PopPixelChannelMap(image);
-    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelTrait
+      traits;
+
+    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    PushPixelChannelMap(image,(ChannelType) i);
+    status=GetImageMean(image,&mean,&sans,exception);
+    gamma=log(mean*QuantumScale)/log_mean;
+    status&=LevelImage(image,0.0,(double) QuantumRange,gamma,exception);
+    PopPixelChannelMap(image);
+    if (status == MagickFalse)
+      break;
+  }
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
@@ -2271,19 +2248,23 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %
 %  The format of the LevelImage method is:
 %
-%      MagickBooleanType LevelImage(Image *image,const char *levels)
+%      MagickBooleanType LevelImage(Image *image,const double black_point,
+%        const double white_point,const double gamma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o levels: Specify the levels where the black and white points have the
-%      range of 0-QuantumRange, and gamma has the range 0-10 (e.g. 10x90%+2).
-%      A '!' flag inverts the re-mapping.
+%    o black_point: The level to map zero (black) to.
+%
+%    o white_point: The level to map QuantumRange (white) to.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType LevelImage(Image *image,
-  const double black_point,const double white_point,const double gamma)
+  const double black_point,const double white_point,const double gamma,
+  ExceptionInfo *exception)
 {
 #define LevelImageTag  "Level/Image"
 #define LevelQuantum(x) (ClampToQuantum((MagickRealType) QuantumRange* \
@@ -2291,9 +2272,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -2341,7 +2319,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2365,22 +2342,17 @@ MagickExport MagickBooleanType LevelImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,LevelQuantum(
-          GetPixelRed(image,q)),q);
+        SetPixelRed(image,LevelQuantum(GetPixelRed(image,q)),q);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,
-          LevelQuantum(GetPixelGreen(image,q)),q);
+        SetPixelGreen(image,LevelQuantum(GetPixelGreen(image,q)),q);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,
-          LevelQuantum(GetPixelBlue(image,q)),q);
+        SetPixelBlue(image,LevelQuantum(GetPixelBlue(image,q)),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
-        SetPixelAlpha(image,
-          LevelQuantum(GetPixelAlpha(image,q)),q);
+        SetPixelAlpha(image,LevelQuantum(GetPixelAlpha(image,q)),q);
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,
-          LevelQuantum(GetPixelBlack(image,q)),q);
+        SetPixelBlack(image,LevelQuantum(GetPixelBlack(image,q)),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2437,7 +2409,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 %
 %    o black_point: The level to map zero (black) to.
 %
-%    o white_point: The level to map QuantiumRange (white) to.
+%    o white_point: The level to map QuantumRange (white) to.
 %
 %    o gamma: adjust gamma by this factor before mapping values.
 %
@@ -2613,33 +2585,38 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
           PushPixelChannelMap(image,RedChannel);
-          status|=LevelImage(image,black_color->red,white_color->red,1.0);
+          status|=LevelImage(image,black_color->red,white_color->red,1.0,
+            &image->exception);
           PopPixelChannelMap(image);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           PushPixelChannelMap(image,GreenChannel);
-          status|=LevelImage(image,black_color->green,white_color->green,1.0);
+          status|=LevelImage(image,black_color->green,white_color->green,1.0,
+            &image->exception);
           PopPixelChannelMap(image);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           PushPixelChannelMap(image,BlueChannel);
-          status|=LevelImage(image,black_color->blue,white_color->blue,1.0);
+          status|=LevelImage(image,black_color->blue,white_color->blue,1.0,
+            &image->exception);
           PopPixelChannelMap(image);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           PushPixelChannelMap(image,BlackChannel);
-          status|=LevelImage(image,black_color->black,white_color->black,1.0);
+          status|=LevelImage(image,black_color->black,white_color->black,1.0,
+            &image->exception);
           PopPixelChannelMap(image);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
           PushPixelChannelMap(image,AlphaChannel);
-          status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0);
+          status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
+            &image->exception);
           PopPixelChannelMap(image);
         }
     }
@@ -2782,7 +2759,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
   }
   histogram=(MagickRealType *) RelinquishMagickMemory(histogram);
-  status=LevelImage(image,(double) black,(double) white,1.0);
+  status=LevelImage(image,(double) black,(double) white,1.0,&image->exception);
   return(status);
 }
 

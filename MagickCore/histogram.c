@@ -997,7 +997,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0,exception);
       return(status != 0 ? MagickTrue : MagickFalse);
     }
   /*
@@ -1010,7 +1010,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0,exception);
       PopPixelChannelMap(image);
     }
   if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -1020,7 +1020,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0,exception);
       PopPixelChannelMap(image);
     }
   if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
@@ -1030,7 +1030,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0,exception);
       PopPixelChannelMap(image);
     }
   if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
@@ -1041,7 +1041,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0,exception);
       PopPixelChannelMap(image);
     }
   if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
@@ -1052,7 +1052,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0);
+        status&=LevelImage(image,min,max,1.0,exception);
       PopPixelChannelMap(image);
     }
   return(status != 0 ? MagickTrue : MagickFalse);

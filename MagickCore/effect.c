@@ -158,7 +158,7 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   if ((flags & SigmaValue) == 0)
     white_point=(double) QuantumRange-black_point;
   if ((flags & AspectValue ) == 0)
-    status=LevelImage(image,black_point,white_point,gamma);
+    status=LevelImage(image,black_point,white_point,gamma,&image->exception);
   else
     status=LevelizeImage(image,black_point,white_point,gamma);
   return(status);

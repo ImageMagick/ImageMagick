@@ -6049,9 +6049,8 @@ WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=LevelImage(wand->images,black_point,white_point,gamma);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=LevelImage(wand->images,black_point,white_point,gamma,
+    &wand->images->exception);
   return(status);
 }
 

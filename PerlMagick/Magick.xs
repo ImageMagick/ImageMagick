@@ -9373,7 +9373,7 @@ Mogrify(ref,...)
               attribute_flag[0]=attribute_flag[5];
             }
           PushPixelChannelMap(image,channel);
-          (void) LevelImage(image,black_point,white_point,gamma);
+          (void) LevelImage(image,black_point,white_point,gamma,exception);
           PopPixelChannelMap(image);
           break;
         }
