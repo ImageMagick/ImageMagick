@@ -1,3 +1,7 @@
+2011-08-09  6.7.1-4 Cristy  <quetzlzacatenango@image...>
+  * Add a  simple "ignore this type" style typemap to get past a xsubpp
+    exception in recent versions of Perl.
+
 2011-06-06  6.7.0-5 Cristy  <quetzlzacatenango@image...>
   * Set modulate() colorspace predicated on parameter (e.g. brightness is HSB).
 
