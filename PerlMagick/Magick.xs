@@ -10534,7 +10534,7 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
           PushPixelChannelMap(image,channel);
-          (void) BrightnessContrastImage(image,brightness,contrast);
+          (void) BrightnessContrastImage(image,brightness,contrast,exception);
           PopPixelChannelMap(image);
           break;
         }

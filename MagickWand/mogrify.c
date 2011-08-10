@@ -956,7 +956,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             contrast=0.0;
             if ((flags & SigmaValue) != 0)
               contrast=geometry_info.sigma;
-            (void) BrightnessContrastImage(*image,brightness,contrast);
+            (void) BrightnessContrastImage(*image,brightness,contrast,
+              exception);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -7339,9 +7340,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 status=MagickFalse;
                 break;
               }
-            (void) ClutImage(image,clut_image);
+            (void) ClutImage(image,clut_image,exception);
             clut_image=DestroyImage(clut_image);
-            InheritException(exception,&image->exception);
             *images=DestroyImageList(*images);
             *images=image;
             break;

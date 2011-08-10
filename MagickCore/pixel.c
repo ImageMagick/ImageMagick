@@ -3580,7 +3580,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %  The format of the InterpolatePixelChannel method is:
 %
 %      MagickBooleanType InterpolatePixelChannel(const Image *image,
-%        const PixelChannel channel,const CacheView *image_view,
+%        const CacheView *image_view,const PixelChannel channel,
 %        const InterpolatePixelMethod method,const double x,const double y,
 %        double *pixel,ExceptionInfo *exception)
 %
