@@ -10227,7 +10227,7 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
           PushPixelChannelMap(image,channel);
-          (void) ClutImage(image,argument_list[0].image_reference);
+          (void) ClutImage(image,argument_list[0].image_reference,exception);
           PopPixelChannelMap(image);
           break;
         }
