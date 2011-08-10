@@ -7500,6 +7500,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image_info == (ImageInfo *) NULL)
      ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
 
+#if 0
+  if (image_info->type == PaletteMatteType)
+    {
+      (void) SetImageType(image,TrueColorMatteType);
+      (void) SyncImage(image);
+    }
+#endif
+
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(ping_semaphore);
 #endif
@@ -9683,10 +9691,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Setting up filtering");
 
-        if (mng_info->write_png_compression_filter == PNG_ALL_FILTERS+1)
+        if (mng_info->write_png_compression_filter == 6)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: ADAPTIVE");
-        else if (mng_info->write_png_compression_filter == PNG_NO_FILTERS+1)
+        else if (mng_info->write_png_compression_filter == 0 ||
+                 mng_info->write_png_compression_filter == 1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: NONE");
         else
@@ -9708,7 +9717,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
      }
 
-  if (mng_info->write_png_compression_filter == 7 ||
+  else if (mng_info->write_png_compression_filter == 7 ||
       mng_info->write_png_compression_filter == 10)
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
 
@@ -9722,7 +9731,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
       }
 #endif
-      png_set_filter(ping,PNG_FILTER_TYPE_BASE,0);
+      png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
     }
 
   else if (mng_info->write_png_compression_filter == 9)
@@ -9735,7 +9744,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->write_png_compression_strategy != 0)
     png_set_compression_strategy(ping,
        mng_info->write_png_compression_strategy-1);
-
 
   if ((ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse) &&
      (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
