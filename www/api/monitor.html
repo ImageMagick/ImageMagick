@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
+   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
 </div>
 </div>
 </div>
@@ -215,9 +215,73 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module monitor Methods</h1>
+<p class="navigation-index">[<a href="#SetImageProgressMonitor">SetImageProgressMonitor</a> &bull; <a href="#SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageProgressMonitor">SetImageProgressMonitor</a></h2>
+<div class="doc-section">
+
+<p>SetImageProgressMonitor() sets the image progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
+
+<pre class="text">
+      MagickBooleanType MagickProgressMonitor(const char *text,
+  const MagickOffsetType offset,const MagickSizeType extent,
+  void *client_data)
+</pre>
+
+<p>If the progress monitor returns MagickFalse, the current operation is interrupted.</p>
+
+<p>The format of the SetImageProgressMonitor method is:</p>
+
+<pre class="code">
+  MagickProgressMonitor SetImageProgressMonitor(Image *image,
+    const MagickProgressMonitor progress_monitor,void *client_data)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>progress_monitor</h5>
+<p>Specifies a pointer to a method to monitor progress of an image operation.</p>
+
+<h5>client_data</h5>
+<p>Specifies a pointer to any client data.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/monitor_8c.html" id="SetImageInfoProgressMonitor">SetImageInfoProgressMonitor</a></h2>
+<div class="doc-section">
+
+<p>SetImageInfoProgressMonitor() sets the image_info progress monitor to the specified method and returns the previous progress monitor if any.  The progress monitor method looks like this:</p>
+
+<pre class="text">
+      MagickBooleanType MagickProgressMonitor(const char *text,
+  const MagickOffsetType offset,const MagickSizeType extent,
+  void *client_data)
+</pre>
+
+<p>If the progress monitor returns MagickFalse, the current operation is interrupted.</p>
+
+<p>The format of the SetImageInfoProgressMonitor method is:</p>
+
+<pre class="code">
+  MagickProgressMonitor SetImageInfoProgressMonitor(ImageInfo *image_info,
+    const MagickProgressMonitor progress_monitor,void *client_data)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>progress_monitor</h5>
+<p>Specifies a pointer to a method to monitor progress of an image operation.</p>
+
+<h5>client_data</h5>
+<p>Specifies a pointer to any client data.</p>
+
+ </div>
 
 </div>
 

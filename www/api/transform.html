@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -215,9 +215,358 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module transform Methods</h1>
+<p class="navigation-index">[<a href="#ChopImage">ChopImage</a> &bull; <a href="#CropImage">CropImage</a> &bull; <a href="#CropImageToTiles">CropImageToTiles</a> &bull; <a href="#ExcerptImage">ExcerptImage</a> &bull; <a href="#ExtentImage">ExtentImage</a> &bull; <a href="#FlipImage">FlipImage</a> &bull; <a href="#FlopImage">FlopImage</a> &bull; <a href="#RollImage">RollImage</a> &bull; <a href="#ShaveImage">ShaveImage</a> &bull; <a href="#SpliceImage">SpliceImage</a> &bull; <a href="#TransformImage">TransformImage</a> &bull; <a href="#to CropImageToTiles">to CropImageToTiles</a> &bull; <a href="#TransformImages">TransformImages</a> &bull; <a href="#TransposeImage">TransposeImage</a> &bull; <a href="#TransverseImage">TransverseImage</a> &bull; <a href="#TrimImage">TrimImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ChopImage">ChopImage</a></h2>
+<div class="doc-section">
+
+<p>ChopImage() removes a region of an image and collapses the image to occupy the removed portion.</p>
+
+<p>The format of the ChopImage method is:</p>
+
+<pre class="code">
+  Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>chop_info</h5>
+<p>Define the region of the image to chop.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="CropImage">CropImage</a></h2>
+<div class="doc-section">
+
+<p>CropImage() extracts a region of the image starting at the offset defined by geometry.  Region must be fully defined, and no special handling of geometry flags is performed.</p>
+
+<p>The format of the CropImage method is:</p>
+
+<pre class="code">
+  Image *CropImage(const Image *image,const RectangleInfo *geometry,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>geometry</h5>
+<p>Define the region of the image to crop with members x, y, width, and height.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="CropImageToTiles">CropImageToTiles</a></h2>
+<div class="doc-section">
+
+<p>CropImageToTiles() will crop a single image, into a possible list of tiles. This may include a single sub-region of the image.  This basically applies all the normal geometry flags for Crop.</p>
+
+<p>Image *CropImageToTiles(const Image *image,const RectangleInfo *crop_geometry, ExceptionInfo *exception)</p>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image The transformed image is returned as this parameter.</p>
+
+<h5>crop_geometry</h5>
+<p>A crop geometry string.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ExcerptImage">ExcerptImage</a></h2>
+<div class="doc-section">
+
+<p>ExcerptImage() returns a excerpt of the image as defined by the geometry.</p>
+
+<p>The format of the ExcerptImage method is:</p>
+
+<pre class="code">
+  Image *ExcerptImage(const Image *image,const RectangleInfo *geometry,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>geometry</h5>
+<p>Define the region of the image to extend with members x, y, width, and height.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ExtentImage">ExtentImage</a></h2>
+<div class="doc-section">
+
+<p>ExtentImage() extends the image as defined by the geometry, gravity, and image background color.  Set the (x,y) offset of the geometry to move the original image relative to the extended image.</p>
+
+<p>The format of the ExtentImage method is:</p>
+
+<pre class="code">
+  Image *ExtentImage(const Image *image,const RectangleInfo *geometry,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>geometry</h5>
+<p>Define the region of the image to extend with members x, y, width, and height.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="FlipImage">FlipImage</a></h2>
+<div class="doc-section">
+
+<p>FlipImage() creates a vertical mirror image by reflecting the pixels around the central x-axis.</p>
+
+<p>The format of the FlipImage method is:</p>
+
+<pre class="code">
+  Image *FlipImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="FlopImage">FlopImage</a></h2>
+<div class="doc-section">
+
+<p>FlopImage() creates a horizontal mirror image by reflecting the pixels around the central y-axis.</p>
+
+<p>The format of the FlopImage method is:</p>
+
+<pre class="code">
+  Image *FlopImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="RollImage">RollImage</a></h2>
+<div class="doc-section">
+
+<p>RollImage() offsets an image as defined by x_offset and y_offset.</p>
+
+<p>The format of the RollImage method is:</p>
+
+<pre class="code">
+  Image *RollImage(const Image *image,const ssize_t x_offset,
+    const ssize_t y_offset,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>x_offset</h5>
+<p>the number of columns to roll in the horizontal direction.</p>
+
+<h5>y_offset</h5>
+<p>the number of rows to roll in the vertical direction.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="ShaveImage">ShaveImage</a></h2>
+<div class="doc-section">
+
+<p>ShaveImage() shaves pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
+
+<p>The format of the ShaveImage method is:</p>
+
+<pre class="code">
+  Image *ShaveImage(const Image *image,const RectangleInfo *shave_info,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>shave_image</h5>
+<p>Method ShaveImage returns a pointer to the shaved image.  A null image is returned if there is a memory shortage or if the image width or height is zero.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>shave_info</h5>
+<p>Specifies a pointer to a RectangleInfo which defines the region of the image to crop.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="SpliceImage">SpliceImage</a></h2>
+<div class="doc-section">
+
+<p>SpliceImage() splices a solid color into the image as defined by the geometry.</p>
+
+<p>The format of the SpliceImage method is:</p>
+
+<pre class="code">
+  Image *SpliceImage(const Image *image,const RectangleInfo *geometry,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>geometry</h5>
+<p>Define the region of the image to splice with members x, y, width, and height.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImage">TransformImage</a></h2>
+<div class="doc-section">
+
+<p>TransformImage() is a convenience method that behaves like ResizeImage() or CropImage() but accepts scaling and/or cropping information as a region geometry specification.  If the operation fails, the original image handle is left as is.</p>
+
+<p>This should only be used for single images.</p>
+
+<p>The format of the TransformImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
+    const char *image_geometry)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image The transformed image is returned as this parameter.</p>
+
+<h5>crop_geometry</h5>
+<p>A crop geometry string.  This geometry defines a subregion of the image to crop.</p>
+
+<h5>image_geometry</h5>
+<p>An image geometry string.  This geometry defines the final size of the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="to_CropImageToTiles">to CropImageToTiles</a></h2>
+<div class="doc-section">
+
+<p>to CropImageToTiles() or ResizeImage(), as appropriate.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransformImages">TransformImages</a></h2>
+<div class="doc-section">
+
+<p>TransformImages() calls TransformImage() on each image of a sequence.</p>
+
+<p>The format of the TransformImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType TransformImages(Image **image,
+    const char *crop_geometry,const char *image_geometry)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image The transformed image is returned as this parameter.</p>
+
+<h5>crop_geometry</h5>
+<p>A crop geometry string.  This geometry defines a subregion of the image to crop.</p>
+
+<h5>image_geometry</h5>
+<p>An image geometry string.  This geometry defines the final size of the image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransposeImage">TransposeImage</a></h2>
+<div class="doc-section">
+
+<p>TransposeImage() creates a horizontal mirror image by reflecting the pixels around the central y-axis while rotating them by 90 degrees.</p>
+
+<p>The format of the TransposeImage method is:</p>
+
+<pre class="code">
+  Image *TransposeImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TransverseImage">TransverseImage</a></h2>
+<div class="doc-section">
+
+<p>TransverseImage() creates a vertical mirror image by reflecting the pixels around the central x-axis while rotating them by 270 degrees.</p>
+
+<p>The format of the TransverseImage method is:</p>
+
+<pre class="code">
+  Image *TransverseImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/transform_8c.html" id="TrimImage">TrimImage</a></h2>
+<div class="doc-section">
+
+<p>TrimImage() trims pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
+
+<p>The format of the TrimImage method is:</p>
+
+<pre class="code">
+  Image *TrimImage(const Image *image,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 

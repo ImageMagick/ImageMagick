@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
 </div>
 </div>
 </div>
@@ -215,9 +215,61 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module fourier Methods</h1>
+<p class="navigation-index">[<a href="#ForwardFourierTransformImage">ForwardFourierTransformImage</a> &bull; <a href="#InverseFourierTransformImage">InverseFourierTransformImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fourier_8c.html" id="ForwardFourierTransformImage">ForwardFourierTransformImage</a></h2>
+<div class="doc-section">
+
+<p>ForwardFourierTransformImage() implements the discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair.</p>
+
+<p>The format of the ForwadFourierTransformImage method is:</p>
+
+<pre class="code">
+  Image *ForwardFourierTransformImage(const Image *image,
+    const MagickBooleanType modulus,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>modulus</h5>
+<p>if true, return as transform as a magnitude / phase pair otherwise a real / imaginary image pair.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/fourier_8c.html" id="InverseFourierTransformImage">InverseFourierTransformImage</a></h2>
+<div class="doc-section">
+
+<p>InverseFourierTransformImage() implements the inverse discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair.</p>
+
+<p>The format of the InverseFourierTransformImage method is:</p>
+
+<pre class="code">
+  Image *InverseFourierTransformImage(const Image *magnitude_image,
+    const Image *phase_image,const MagickBooleanType modulus,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>magnitude_image</h5>
+<p>the magnitude or real image.</p>
+
+<h5>phase_image</h5>
+<p>the phase or imaginary image.</p>
+
+<h5>modulus</h5>
+<p>if true, return transform as a magnitude / phase pair otherwise a real / imaginary image pair.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 

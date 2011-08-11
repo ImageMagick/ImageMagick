@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2011090100025 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -215,9 +215,54 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module stream Methods</h1>
+<p class="navigation-index">[<a href="#ReadStream">ReadStream</a> &bull; <a href="#WriteStream">WriteStream</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/stream_8c.html" id="ReadStream">ReadStream</a></h2>
+<div class="doc-section">
+
+<p>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage() method.</p>
+
+<p>The format of the ReadStream() method is:</p>
+
+<pre class="code">
+  Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>stream</h5>
+<p>a callback method.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/stream_8c.html" id="WriteStream">WriteStream</a></h2>
+<div class="doc-section">
+
+<p>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage() method.</p>
+
+<p>The format of the WriteStream() method is:</p>
+
+<pre class="code">
+  MagickBooleanType WriteStream(const ImageInfo *image_info,Image *,
+    StreamHandler stream)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>stream</h5>
+<p>A callback method.</p>
+
+ </div>
 
 </div>
 

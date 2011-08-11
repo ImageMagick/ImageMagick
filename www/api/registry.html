@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2011120100300 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
 </div>
 </div>
 </div>
@@ -215,9 +215,154 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module registry Methods</h1>
+<p class="navigation-index">[<a href="#DefineImageRegistry">DefineImageRegistry</a> &bull; <a href="#DeleteImageRegistry">DeleteImageRegistry</a> &bull; <a href="#GetImageRegistry">GetImageRegistry</a> &bull; <a href="#GetNextImageRegistry">GetNextImageRegistry</a> &bull; <a href="#RegistryComponentTerminus">RegistryComponentTerminus</a> &bull; <a href="#RemoveImageRegistry">RemoveImageRegistry</a> &bull; <a href="#ResetImageRegistryIterator">ResetImageRegistryIterator</a> &bull; <a href="#SetImageRegistry">SetImageRegistry</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="DefineImageRegistry">DefineImageRegistry</a></h2>
+<div class="doc-section">
+
+<p>DefineImageRegistry() associates a key/value pair with the image registry.</p>
+
+<p>The format of the DefineImageRegistry method is:</p>
+
+<pre class="code">
+  MagickBooleanType DefineImageRegistry(const RegistryType type,
+    const char *option,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type.</p>
+
+<h5>option</h5>
+<p>the option.</p>
+
+<h5>exception</h5>
+<p>the exception.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="DeleteImageRegistry">DeleteImageRegistry</a></h2>
+<div class="doc-section">
+
+<p>DeleteImageRegistry() deletes a key from the image registry.</p>
+
+<p>The format of the DeleteImageRegistry method is:</p>
+
+<pre class="code">
+  MagickBooleanType DeleteImageRegistry(const char *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>key</h5>
+<p>the registry.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="GetImageRegistry">GetImageRegistry</a></h2>
+<div class="doc-section">
+
+<p>GetImageRegistry() returns a value associated with an image registry key.</p>
+
+<p>The format of the GetImageRegistry method is:</p>
+
+<pre class="code">
+  void *GetImageRegistry(const RegistryType type,const char *key,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type.</p>
+
+<h5>key</h5>
+<p>the key.</p>
+
+<h5>exception</h5>
+<p>the exception.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="GetNextImageRegistry">GetNextImageRegistry</a></h2>
+<div class="doc-section">
+
+<p>GetNextImageRegistry() gets the next image registry value.</p>
+
+<p>The format of the GetNextImageRegistry method is:</p>
+
+<pre class="code">
+  char *GetNextImageRegistry(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="RegistryComponentTerminus">RegistryComponentTerminus</a></h2>
+<div class="doc-section">
+
+<p>RegistryComponentTerminus() destroys the registry component.</p>
+
+<p>The format of the DestroyDefines method is:</p>
+
+<pre class="code">
+  void RegistryComponentTerminus(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="RemoveImageRegistry">RemoveImageRegistry</a></h2>
+<div class="doc-section">
+
+<p>RemoveImageRegistry() removes a key from the image registry and returns its value.</p>
+
+<p>The format of the RemoveImageRegistry method is:</p>
+
+<pre class="code">
+  void *RemoveImageRegistry(const char *key)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>key</h5>
+<p>the registry.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="ResetImageRegistryIterator">ResetImageRegistryIterator</a></h2>
+<div class="doc-section">
+
+<p>ResetImageRegistryIterator() resets the registry iterator.  Use it in conjunction with GetNextImageRegistry() to iterate over all the values in the image registry.</p>
+
+<p>The format of the ResetImageRegistryIterator method is:</p>
+
+<pre class="code">
+  ResetImageRegistryIterator(void)
+</pre>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/registry_8c.html" id="SetImageRegistry">SetImageRegistry</a></h2>
+<div class="doc-section">
+
+<p>SetImageRegistry() associates a value with an image registry key.</p>
+
+<p>The format of the SetImageRegistry method is:</p>
+
+<pre class="code">
+  MagickBooleanType SetImageRegistry(const RegistryType type,
+    const char *key,const void *value,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>type</h5>
+<p>the type.</p>
+
+<h5>key</h5>
+<p>the key.</p>
+
+<h5>value</h5>
+<p>the value.</p>
+
+<h5>exception</h5>
+<p>the exception.</p>
+
+ </div>
 
 </div>
 

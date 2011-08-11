@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -215,9 +215,97 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module montage Methods</h1>
+<p class="navigation-index">[<a href="#CloneMontageInfo">CloneMontageInfo</a> &bull; <a href="#DestroyMontageInfo">DestroyMontageInfo</a> &bull; <a href="#GetMontageInfo">GetMontageInfo</a> &bull; <a href="#MontageImageList">MontageImageList</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="CloneMontageInfo">CloneMontageInfo</a></h2>
+<div class="doc-section">
+
+<p>CloneMontageInfo() makes a copy of the given montage info structure.  If NULL is specified, a new image info structure is created initialized to default values.</p>
+
+<p>The format of the CloneMontageInfo method is:</p>
+
+<pre class="code">
+  MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
+    const MontageInfo *montage_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>montage_info</h5>
+<p>the montage info.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="DestroyMontageInfo">DestroyMontageInfo</a></h2>
+<div class="doc-section">
+
+<p>DestroyMontageInfo() deallocates memory associated with montage_info.</p>
+
+<p>The format of the DestroyMontageInfo method is:</p>
+
+<pre class="code">
+  MontageInfo *DestroyMontageInfo(MontageInfo *montage_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>montage_info</h5>
+<p>Specifies a pointer to an MontageInfo structure.</p>
+
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="GetMontageInfo">GetMontageInfo</a></h2>
+<div class="doc-section">
+
+<p>GetMontageInfo() initializes montage_info to default values.</p>
+
+<p>The format of the GetMontageInfo method is:</p>
+
+<pre class="code">
+  void GetMontageInfo(const ImageInfo *image_info,
+    MontageInfo *montage_info)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>a structure of type ImageInfo.</p>
+
+<h5>montage_info</h5>
+<p>Specifies a pointer to a MontageInfo structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/montage_8c.html" id="MontageImageList">MontageImageList</a></h2>
+<div class="doc-section">
+
+<p>MontageImageList() is a layout manager that lets you tile one or more thumbnails across an image canvas.</p>
+
+<p>The format of the MontageImageList method is:</p>
+
+<pre class="code">
+  Image *MontageImageList(const ImageInfo *image_info,
+    const MontageInfo *montage_info,Image *images,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image_info</h5>
+<p>the image info.</p>
+
+<h5>montage_info</h5>
+<p>Specifies a pointer to a MontageInfo structure.</p>
+
+<h5>images</h5>
+<p>Specifies a pointer to an array of Image structures.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
