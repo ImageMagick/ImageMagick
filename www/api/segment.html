@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.atlasmultimedia.de">Notebook Reparatur</a><!-- 2011100100025 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2011120100300 atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -215,9 +215,40 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module segment Methods</h1>
+<p class="navigation-index">[<a href="#SegmentImage">SegmentImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/segment_8c.html" id="SegmentImage">SegmentImage</a></h2>
+<div class="doc-section">
+
+<p>SegmentImage() segment an image by analyzing the histograms of the color components and identifying units that are homogeneous with the fuzzy C-means technique.</p>
+
+<p>The format of the SegmentImage method is:</p>
+
+<pre class="code">
+  MagickBooleanType SegmentImage(Image *image,
+    const ColorspaceType colorspace,const MagickBooleanType verbose,
+    const double cluster_threshold,const double smooth_threshold)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>colorspace</h5>
+<p>Indicate the colorspace.</p>
+
+<h5>verbose</h5>
+<p>Set to MagickTrue to print detailed information about the identified classes.</p>
+
+<h5>cluster_threshold</h5>
+<p>This represents the minimum number of pixels contained in a hexahedra before it can be considered valid (expressed as a percentage).</p>
+
+<h5>smooth_threshold</h5>
+<p>the smoothing threshold eliminates noise in the second derivative of the histogram.  As the value is increased, you can expect a smoother second derivative.</p>
+
+ </div>
 
 </div>
 

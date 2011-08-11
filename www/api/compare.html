@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
 </div>
 </div>
 </div>
@@ -215,9 +215,168 @@
 
 <div class="main">
 
-<h1>Module  Methods</h1>
-<p class="navigation-index">[<a href="#"></a>]</p>
+<h1>Module compare Methods</h1>
+<p class="navigation-index">[<a href="#CompareImageChannels">CompareImageChannels</a> &bull; <a href="#GetImageChannelDistortion">GetImageChannelDistortion</a> &bull; <a href="#GetImageChannelDistrortion">GetImageChannelDistrortion</a> &bull; <a href="#IsImagesEqual">IsImagesEqual</a> &bull; <a href="#SimilarityImage">SimilarityImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="CompareImageChannels">CompareImageChannels</a></h2>
+<div class="doc-section">
+
+<p>CompareImageChannels() compares one or more image channels of an image to a reconstructed image and returns the difference image.</p>
+
+<p>The format of the CompareImageChannels method is:</p>
+
+<pre class="code">
+  Image *CompareImageChannels(const Image *image,
+    const Image *reconstruct_image,const ChannelType channel,
+    const MetricType metric,double *distortion,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>reconstruct_image</h5>
+<p>the reconstruct image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>metric</h5>
+<p>the metric.</p>
+
+<h5>distortion</h5>
+<p>the computed distortion between the images.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageChannelDistortion">GetImageChannelDistortion</a></h2>
+<div class="doc-section">
+
+<p>GetImageChannelDistortion() compares one or more image channels of an image to a reconstructed image and returns the specified distortion metric.</p>
+
+<p>The format of the CompareImageChannels method is:</p>
+
+<pre class="code">
+  MagickBooleanType GetImageChannelDistortion(const Image *image,
+    const Image *reconstruct_image,const ChannelType channel,
+    const MetricType metric,double *distortion,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>reconstruct_image</h5>
+<p>the reconstruct image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
+
+<h5>metric</h5>
+<p>the metric.</p>
+
+<h5>distortion</h5>
+<p>the computed distortion between the images.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="GetImageChannelDistrortion">GetImageChannelDistrortion</a></h2>
+<div class="doc-section">
+
+<p>GetImageChannelDistrortion() compares the image channels of an image to a reconstructed image and returns the specified distortion metric for each channel.</p>
+
+<p>The format of the CompareImageChannels method is:</p>
+
+<pre class="code">
+  double *GetImageChannelDistortions(const Image *image,
+    const Image *reconstruct_image,const MetricType metric,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>reconstruct_image</h5>
+<p>the reconstruct image.</p>
+
+<h5>metric</h5>
+<p>the metric.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="IsImagesEqual">IsImagesEqual</a></h2>
+<div class="doc-section">
+
+<p>IsImagesEqual() measures the difference between colors at each pixel location of two images.  A value other than 0 means the colors match exactly.  Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reconstruct image.  The error measure is assigned to these image members:</p>
+
+<pre class="text">
+      o mean_error_per_pixel:  The mean error for any single pixel in
+  the image.
+</pre>
+
+<h5>normalized_mean_error</h5>
+<p>The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</p>
+
+<h5>normalized_maximum_error</h5>
+<p>The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</p>
+
+<p>A small normalized mean square error, accessed as image->normalized_mean_error, suggests the images are very similar in spatial layout and color.</p>
+
+<p>The format of the IsImagesEqual method is:</p>
+
+<pre class="code">
+  MagickBooleanType IsImagesEqual(Image *image,
+    const Image *reconstruct_image)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>reconstruct_image</h5>
+<p>the reconstruct image.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/compare_8c.html" id="SimilarityImage">SimilarityImage</a></h2>
+<div class="doc-section">
+
+<p>SimilarityImage() compares the reference image of the image and returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between.</p>
+
+<p>The format of the SimilarityImageImage method is:</p>
+
+<pre class="code">
+  Image *SimilarityImage(const Image *image,const Image *reference,
+    RectangleInfo *offset,double *similarity,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>reference</h5>
+<p>find an area of the image that closely resembles this image.</p>
+
+<p>o the best match offset of the reference image within the image.</p>
+
+<h5>similarity</h5>
+<p>the computed similarity between the images.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 
 </div>
 
