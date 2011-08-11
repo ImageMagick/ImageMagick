@@ -455,7 +455,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
 %  The format of the ColorDecisionListImage method is:
 %
 %      MagickBooleanType ColorDecisionListImage(Image *image,
-%        const char *color_correction_collection)
+%        const char *color_correction_collection,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -463,9 +463,11 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
 %
 %    o color_correction_collection: the color correction collection in XML.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
-  const char *color_correction_collection)
+  const char *color_correction_collection,ExceptionInfo *exception)
 {
 #define ColorDecisionListCorrectImageTag  "ColorDecisionList/Image"
 
@@ -501,9 +503,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     *content,
     *p;
 
-  ExceptionInfo
-    *exception;
-
   MagickBooleanType
     status;
 
@@ -534,7 +533,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (color_correction_collection == (const char *) NULL)
     return(MagickFalse);
-  ccc=NewXMLTree((const char *) color_correction_collection,&image->exception);
+  ccc=NewXMLTree((const char *) color_correction_collection,exception);
   if (ccc == (XMLTreeInfo *) NULL)
     return(MagickFalse);
   cc=GetXMLTreeChild(ccc,"ColorCorrection");
@@ -712,14 +711,14 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    cdl_map[i].red=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
-      MagickRealType) (MaxMap*(pow(color_correction.red.slope*i/MaxMap+
+    cdl_map[i].red=ClampToQuantum((MagickRealType) ScaleMapToQuantum(
+      (MagickRealType) (MaxMap*(pow(color_correction.red.slope*i/MaxMap+
       color_correction.red.offset,color_correction.red.power)))));
-    cdl_map[i].green=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
-      MagickRealType) (MaxMap*(pow(color_correction.green.slope*i/MaxMap+
+    cdl_map[i].green=ClampToQuantum((MagickRealType) ScaleMapToQuantum(
+      (MagickRealType) (MaxMap*(pow(color_correction.green.slope*i/MaxMap+
       color_correction.green.offset,color_correction.green.power)))));
-    cdl_map[i].blue=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
-      MagickRealType) (MaxMap*(pow(color_correction.blue.slope*i/MaxMap+
+    cdl_map[i].blue=ClampToQuantum((MagickRealType) ScaleMapToQuantum(
+      (MagickRealType) (MaxMap*(pow(color_correction.blue.slope*i/MaxMap+
       color_correction.blue.offset,color_correction.blue.power)))));
   }
   if (image->storage_class == PseudoClass)
@@ -737,13 +736,15 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 
         luma=0.2126*image->colormap[i].red+0.7152*image->colormap[i].green+
           0.0722*image->colormap[i].blue;
-        image->colormap[i].red=ClampToQuantum(luma+color_correction.saturation*
-          cdl_map[ScaleQuantumToMap(image->colormap[i].red)].red-luma);
+        image->colormap[i].red=ClampToQuantum(luma+
+          color_correction.saturation*cdl_map[ScaleQuantumToMap(
+          image->colormap[i].red)].red-luma);
         image->colormap[i].green=ClampToQuantum(luma+
           color_correction.saturation*cdl_map[ScaleQuantumToMap(
           image->colormap[i].green)].green-luma);
-        image->colormap[i].blue=ClampToQuantum(luma+color_correction.saturation*
-          cdl_map[ScaleQuantumToMap(image->colormap[i].blue)].blue-luma);
+        image->colormap[i].blue=ClampToQuantum(luma+
+          color_correction.saturation*cdl_map[ScaleQuantumToMap(
+          image->colormap[i].blue)].blue-luma);
       }
     }
   /*
@@ -751,7 +752,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)

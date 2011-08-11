@@ -575,8 +575,11 @@ void Magick::Image::chop( const Geometry &geometry_ )
 void Magick::Image::cdl ( const std::string &cdl_ )
 {
   modifyImage();
-  (void) ColorDecisionListImage( image(), cdl_.c_str() );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  (void) ColorDecisionListImage( image(), cdl_.c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Colorize
