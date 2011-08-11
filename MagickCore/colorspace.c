@@ -1235,12 +1235,12 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     return(SetImageColorspace(image,colorspace,&image->exception));
   if (image->colorspace == colorspace)
     return(MagickTrue);
-  if ((colorspace == RGBColorspace) ||
-      (colorspace == sRGBColorspace) ||
-      (colorspace == TransparentColorspace))
+  if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,image->colorspace));
   status=MagickTrue;
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if ((image->colorspace != RGBColorspace) &&
+      (image->colorspace != TransparentColorspace) &&
+      (image->colorspace != GRAYColorspace))
     status=TransformRGBImage(image,image->colorspace);
   if (RGBTransformImage(image,colorspace) == MagickFalse)
     status=MagickFalse;
