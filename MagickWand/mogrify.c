@@ -977,7 +977,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             color_correction_collection=FileToString(argv[i+1],~0,exception);
             if (color_correction_collection == (char *) NULL)
               break;
-            (void) ColorDecisionListImage(*image,color_correction_collection);
+            (void) ColorDecisionListImage(*image,color_correction_collection,
+              exception);
             InheritException(exception,&(*image)->exception);
             break;
           }

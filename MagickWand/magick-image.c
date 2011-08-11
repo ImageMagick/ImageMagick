@@ -1404,9 +1404,8 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ColorDecisionListImage(wand->images,color_correction_collection);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=ColorDecisionListImage(wand->images,color_correction_collection,
+    &wand->images->exception);
   return(status);
 }
 
