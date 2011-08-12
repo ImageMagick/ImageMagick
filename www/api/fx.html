@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -228,6 +228,8 @@
 <pre class="code">
   Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     ExceptionInfo *exception)
+  Image *AddNoiseImageChannel(const Image *image,const ChannelType channel,
+    const NoiseType noise_type,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -357,12 +359,17 @@
 <pre class="code">
   Image *FxImage(const Image *image,const char *expression,
     ExceptionInfo *exception)
+  Image *FxImageChannel(const Image *image,const ChannelType channel,
+    const char *expression,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel.</p>
 
 <h5>expression</h5>
 <p>A mathematical expression.</p>

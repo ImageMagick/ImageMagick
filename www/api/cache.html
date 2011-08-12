@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -216,7 +216,7 @@
 <div class="main">
 
 <h1>Module cache Methods</h1>
-<p class="navigation-index">[<a href="#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &bull; <a href="#GetAuthenticMetacontent">GetAuthenticMetacontent</a> &bull; <a href="#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &bull; <a href="#GetAuthenticPixels">GetAuthenticPixels</a> &bull; <a href="#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &bull; <a href="#GetOneVirtualMagickPixel">GetOneVirtualMagickPixel</a> &bull; <a href="#GetOneVirtualMethodPixel">GetOneVirtualMethodPixel</a> &bull; <a href="#GetOneVirtualPixel">GetOneVirtualPixel</a> &bull; <a href="#GetVirtualMetacontent">GetVirtualMetacontent</a> &bull; <a href="#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &bull; <a href="#GetVirtualPixels">GetVirtualPixels</a> &bull; <a href="#QueueAuthenticPixels">QueueAuthenticPixels</a> &bull; <a href="#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &bull; <a href="#SyncAuthenticPixels">SyncAuthenticPixels</a>]</p>
+<p class="navigation-index">[<a href="#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &bull; <a href="#GetAuthenticIndexQueue">GetAuthenticIndexQueue</a> &bull; <a href="#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &bull; <a href="#GetAuthenticPixels">GetAuthenticPixels</a> &bull; <a href="#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &bull; <a href="#GetOneVirtualMagickPixel">GetOneVirtualMagickPixel</a> &bull; <a href="#GetOneVirtualMethodPixel">GetOneVirtualMethodPixel</a> &bull; <a href="#GetOneVirtualPixel">GetOneVirtualPixel</a> &bull; <a href="#GetVirtualIndexQueue">GetVirtualIndexQueue</a> &bull; <a href="#VirtualPixelModulo">VirtualPixelModulo</a> &bull; <a href="#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &bull; <a href="#GetVirtualPixels">GetVirtualPixels</a> &bull; <a href="#QueueAuthenticPixels">QueueAuthenticPixels</a> &bull; <a href="#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &bull; <a href="#SyncAuthenticPixels">SyncAuthenticPixels</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
 <div class="doc-section">
@@ -235,15 +235,15 @@
 <p>the number of nexus threads.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticMetacontent">GetAuthenticMetacontent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticIndexQueue">GetAuthenticIndexQueue</a></h2>
 <div class="doc-section">
 
-<p>GetAuthenticMetacontent() returns the authentic metacontent corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the associated pixels are not available.</p>
+<p>GetAuthenticIndexQueue() returns the authentic black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p>
 
-<p>The format of the GetAuthenticMetacontent() method is:</p>
+<p>The format of the GetAuthenticIndexQueue() method is:</p>
 
 <pre class="code">
-  void *GetAuthenticMetacontent(const Image *image)
+  IndexPacket *GetAuthenticIndexQueue(const Image *image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -255,12 +255,12 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></h2>
 <div class="doc-section">
 
-<p>GetAuthenticPixelQueue() returns the authentic pixels associated corresponding with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
+<p>GetAuthenticPixelQueue() returns the authentic pixels associated with the last call to QueueAuthenticPixels() or GetAuthenticPixels().</p>
 
 <p>The format of the GetAuthenticPixelQueue() method is:</p>
 
 <pre class="code">
-  Quantum *GetAuthenticPixelQueue(const Image image)
+  PixelPacket *GetAuthenticPixelQueue(const Image image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -272,16 +272,16 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetAuthenticPixels">GetAuthenticPixels</a></h2>
 <div class="doc-section">
 
-<p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.</p>
+<p>GetAuthenticPixels() obtains a pixel region for read/write access. If the region is successfully accessed, a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.</p>
 
 <p>The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
 
-<p>Pixels accessed via the returned pointer represent a simple array of type Quantum.  If the image has corresponding metacontent,call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to obtain the meta-content corresponding to the region.  Once the Quantum array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or if the storage class is PseduoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
 
 <p>The format of the GetAuthenticPixels() method is:</p>
 
 <pre class="code">
-  Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
+  PixelPacket *GetAuthenticPixels(Image *image,const ssize_t x,
     const ssize_t y,const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
@@ -334,7 +334,7 @@
 
 <pre class="code">
   MagickBooleanType GetOneVirtualMagickPixel(const Image image,
-    const ssize_t x,const ssize_t y,PixelInfo *pixel,
+    const ssize_t x,const ssize_t y,MagickPixelPacket *pixel,
     ExceptionInfo exception)
 </pre>
 
@@ -363,7 +363,7 @@
 <pre class="code">
   MagickBooleanType GetOneVirtualMethodPixel(const Image image,
     const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-    const ssize_t y,PixelPacket *pixel,ExceptionInfo exception)
+    const ssize_t y,Pixelpacket *pixel,ExceptionInfo exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -411,15 +411,15 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualMetacontent">GetVirtualMetacontent</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualIndexQueue">GetVirtualIndexQueue</a></h2>
 <div class="doc-section">
 
-<p>GetVirtualMetacontent() returns the virtual metacontent corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the meta-content are not available.</p>
+<p>GetVirtualIndexQueue() returns the virtual black channel or the colormap indexes associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().  NULL is returned if the black channel or colormap indexes are not available.</p>
 
-<p>The format of the GetVirtualMetacontent() method is:</p>
+<p>The format of the GetVirtualIndexQueue() method is:</p>
 
 <pre class="code">
-  const void *GetVirtualMetacontent(const Image *image)
+  const IndexPacket *GetVirtualIndexQueue(const Image *image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -428,15 +428,20 @@
 <p>the image.</p>
 
  </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="VirtualPixelModulo">VirtualPixelModulo</a></h2>
+<div class="doc-section">
+
+<p>VirtualPixelModulo() computes the remainder of dividing offset by extent.  It returns not only the quotient (tile the offset falls in) but also the positive remainer within that tile such that 0 <= remainder < extent.  This method is essentially a ldiv() using a floored modulo division rather than the normal default truncated modulo division. </p>
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="GetVirtualPixelQueue">GetVirtualPixelQueue</a></h2>
 <div class="doc-section">
 
-<p>GetVirtualPixelQueue() returns the virtual pixels associated corresponding with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
+<p>GetVirtualPixelQueue() returns the virtual pixels associated with the last call to QueueAuthenticPixels() or GetVirtualPixels().</p>
 
 <p>The format of the GetVirtualPixelQueue() method is:</p>
 
 <pre class="code">
-  const Quantum *GetVirtualPixelQueue(const Image image)
+  const PixelPacket *GetVirtualPixelQueue(const Image image)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -450,7 +455,7 @@
 
 <p>GetVirtualPixels() returns an immutable pixel region. If the region is successfully accessed, a pointer to it is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working copy of the pixels or it may point to the original pixels in memory. Performance is maximized if the selected region is part of one row, or one or more full rows, since there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file.  The returned pointer must *never* be deallocated by the user.</p>
 
-<p>Pixels accessed via the returned pointer represent a simple array of type Quantum.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to access the meta-content (of type void) corresponding to the the region.</p>
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket.  If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to access the black color component or to obtain the colormap indexes (of type IndexPacket) corresponding to the region.</p>
 
 <p>If you plan to modify the pixels, use GetAuthenticPixels() instead.</p>
 
@@ -459,7 +464,7 @@
 <p>The format of the GetVirtualPixels() method is:</p>
 
 <pre class="code">
-  const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
+  const PixelPacket *GetVirtualPixels(const Image *image,const ssize_t x,
     const ssize_t y,const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>
@@ -479,18 +484,18 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache_8c.html" id="QueueAuthenticPixels">QueueAuthenticPixels</a></h2>
 <div class="doc-section">
 
-<p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully initialized a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
+<p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully initialized a pointer to a PixelPacket array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
 
 <p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p>
 
 <p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
 
-<p>Pixels accessed via the returned pointer represent a simple array of type Quantum. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticMetacontent() after invoking GetAuthenticPixels() to obtain the meta-content (of type void) corresponding to the region. Once the Quantum (and/or Quantum) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
+<p>Pixels accessed via the returned pointer represent a simple array of type PixelPacket. If the image type is CMYK or the storage class is PseudoClass, call GetAuthenticIndexQueue() after invoking GetAuthenticPixels() to obtain the black color component or the colormap indexes (of type IndexPacket) corresponding to the region.  Once the PixelPacket (and/or IndexPacket) array has been updated, the changes must be saved back to the underlying image using SyncAuthenticPixels() or they may be lost.</p>
 
 <p>The format of the QueueAuthenticPixels() method is:</p>
 
 <pre class="code">
-  Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
+  PixelPacket *QueueAuthenticPixels(Image *image,const ssize_t x,
     const ssize_t y,const size_t columns,const size_t rows,
     ExceptionInfo *exception)
 </pre>

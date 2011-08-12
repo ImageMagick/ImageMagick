@@ -203,7 +203,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -229,15 +229,18 @@
 
 <pre class="code">
   MagickBooleanType FloodfillPaintImage(Image *image,
-    const DrawInfo *draw_info,const PixelInfo target,
-    const ssize_t x_offset,const ssize_t y_offset,
-    const MagickBooleanType invert)
+    const ChannelType channel,const DrawInfo *draw_info,
+    const MagickPixelPacket target,const ssize_t x_offset,
+    const ssize_t y_offset,const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel(s).</p>
 
 <h5>draw_info</h5>
 <p>the draw info.</p>
@@ -289,12 +292,18 @@
   MagickBooleanType OpaquePaintImage(Image *image,
     const PixelPacket *target,const PixelPacket *fill,
     const MagickBooleanType invert)
+  MagickBooleanType OpaquePaintImageChannel(Image *image,
+    const ChannelType channel,const PixelPacket *target,
+    const PixelPacket *fill,const MagickBooleanType invert)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
+
+<h5>channel</h5>
+<p>the channel(s).</p>
 
 <h5>target</h5>
 <p>the RGB value of the target color.</p>
@@ -317,7 +326,7 @@
 
 <pre class="code">
   MagickBooleanType TransparentPaintImage(Image *image,
-    const PixelInfo *target,const Quantum opacity,
+    const MagickPixelPacket *target,const Quantum opacity,
     const MagickBooleanType invert)
 </pre>
 
@@ -347,7 +356,7 @@
 
 <pre class="code">
   MagickBooleanType TransparentPaintImage(Image *image,
-    const PixelInfo *low,const PixelInfo *hight,
+    const MagickPixelPacket *low,const MagickPixelPacket *hight,
     const Quantum opacity,const MagickBooleanType invert)
 </pre>
 
