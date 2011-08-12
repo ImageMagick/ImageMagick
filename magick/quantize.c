@@ -442,8 +442,7 @@ static inline void AssociateAlphaPixel(const CubeInfo *cube_info,
       alpha_pixel->opacity=(MagickRealType) GetPixelOpacity(pixel);
       return;
     }
-  alpha=(MagickRealType) (QuantumScale*(QuantumRange-
-    GetPixelOpacity(pixel)));
+  alpha=(MagickRealType) (QuantumScale*(QuantumRange-GetPixelOpacity(pixel)));
   alpha_pixel->red=alpha*GetPixelRed(pixel);
   alpha_pixel->green=alpha*GetPixelGreen(pixel);
   alpha_pixel->blue=alpha*GetPixelBlue(pixel);
@@ -466,14 +465,13 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
     id;
 
   id=(size_t) (((ScaleQuantumToChar(ClampToUnsignedQuantum(
-    GetPixelRed(pixel))) >> index) & 0x01) |
-    ((ScaleQuantumToChar(ClampToUnsignedQuantum(
-    GetPixelGreen(pixel))) >> index) & 0x01) << 1 |
-    ((ScaleQuantumToChar(ClampToUnsignedQuantum(
-    GetPixelBlue(pixel))) >> index) & 0x01) << 2);
+    GetPixelRed(pixel))) >> index) & 0x01) | ((ScaleQuantumToChar(
+    ClampToUnsignedQuantum(GetPixelGreen(pixel))) >> index) & 0x01) << 1 |
+    ((ScaleQuantumToChar(ClampToUnsignedQuantum(GetPixelBlue(pixel))) >>
+    index) & 0x01) << 2);
   if (cube_info->associate_alpha != MagickFalse)
-    id|=((ScaleQuantumToChar(ClampToUnsignedQuantum(
-      GetPixelOpacity(pixel))) >> index) & 0x1) << 3;
+    id|=((ScaleQuantumToChar(ClampToUnsignedQuantum(GetPixelOpacity(pixel))) >>
+      index) & 0x1) << 3;
   return(id);
 }
 
@@ -1104,8 +1102,7 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
           distance+=pixel*pixel;
           if (distance <= cube_info->distance)
             {
-              pixel=alpha*GetPixelBlue(p)-beta*
-                GetPixelBlue(q);
+              pixel=alpha*GetPixelBlue(p)-beta*GetPixelBlue(q);
               distance+=pixel*pixel;
               if (distance <= cube_info->distance)
                 {
@@ -2181,20 +2178,17 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
           beta=(MagickRealType) (QuantumScale*(QuantumRange-
             image->colormap[index].opacity));
         }
-      distance=fabs(alpha*GetPixelRed(p)-beta*
-        image->colormap[index].red);
+      distance=fabs(alpha*GetPixelRed(p)-beta*image->colormap[index].red);
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      distance=fabs(alpha*GetPixelGreen(p)-beta*
-        image->colormap[index].green);
+      distance=fabs(alpha*GetPixelGreen(p)-beta*image->colormap[index].green);
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      distance=fabs(alpha*GetPixelBlue(p)-beta*
-        image->colormap[index].blue);
+      distance=fabs(alpha*GetPixelBlue(p)-beta*image->colormap[index].blue);
       mean_error_per_pixel+=distance;
       mean_error+=distance*distance;
       if (distance > maximum_error)
@@ -2392,8 +2386,7 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
         SetPixelOpacity(q,PosterizePixel(GetPixelOpacity(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,PosterizePixel(
-          GetPixelIndex(indexes+x)));
+        SetPixelIndex(indexes+x,PosterizePixel(GetPixelIndex(indexes+x)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2654,8 +2647,11 @@ static MagickBooleanType DirectToColormapImage(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      image->colormap[i].red=GetPixelRed(q);
+      image->colormap[i].green=GetPixelGreen(q);
+      image->colormap[i].blue=GetPixelBlue(q);
+      image->colormap[i].opacity=GetPixelOpacity(q);
       SetPixelIndex(indexes+x,i);
-      SetPixelRGBO(image->colormap,q);
       i++;
       q++;
     }
@@ -3293,8 +3289,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
                 {
                   colormap_index[intensity]=(ssize_t) image->colors;
                   image->colormap[image->colors].red=GetPixelRed(q);
-                  image->colormap[image->colors].green=
-                    GetPixelGreen(q);
+                  image->colormap[image->colors].green=GetPixelGreen(q);
                   image->colormap[image->colors].blue=GetPixelBlue(q);
                   image->colors++;
                }
@@ -3357,8 +3352,8 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
-      SetPixelIndex(indexes+x,colormap_index[ScaleQuantumToMap(
-        GetPixelIndex(indexes+x))]);
+      SetPixelIndex(indexes+x,colormap_index[ScaleQuantumToMap(GetPixelIndex(
+        indexes+x))]);
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
