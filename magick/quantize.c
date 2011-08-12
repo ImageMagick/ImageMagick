@@ -2606,6 +2606,68 @@ static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
 %    o image: the image.
 %
 */
+
+static MagickBooleanType DirectToColormapImage(Image *image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  register ssize_t
+    i;
+
+  size_t
+    number_colors;
+
+  ssize_t
+    y;
+
+  status=MagickTrue;
+  number_colors=(size_t) (image->columns*image->rows);
+  if (AcquireImageColormap(image,number_colors) == MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  i=0;
+  image_view=AcquireCacheView(image);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    MagickBooleanType
+      proceed;
+
+    register IndexPacket
+      *restrict indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (const PixelPacket *) NULL)
+      break;
+    indexes=GetCacheViewAuthenticIndexQueue(image_view);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      SetPixelIndex(indexes+x,i);
+      SetPixelRGBO(image->colormap,q);
+      i++;
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      break;
+    proceed=SetImageProgress(image,AssignImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (proceed == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
 MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   Image *image)
 {
@@ -2630,6 +2692,8 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
+  if ((image->columns*image->rows) <= maximum_colors)
+    return(DirectToColormapImage(image,&image->exception));
   if ((IsGrayImage(image,&image->exception) != MagickFalse) &&
       (image->matte == MagickFalse))
     (void) SetGrayscaleImage(image);

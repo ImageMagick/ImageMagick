@@ -1,9 +1,11 @@
 2011-08-10  6.7.1-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-5.
-	
+
 2011-08-10  6.7.1-5 Cristy  <quetzlzacatenango@image...>
   * Revert -colorspace sRGB option patch (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19256).
+  * Revert -type PaletteMatte option patch (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19263
 
 2011-08-09  6.7.1-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-4.
