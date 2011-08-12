@@ -2630,6 +2630,8 @@ static MagickBooleanType DirectToColormapImage(Image *image,
   if (AcquireImageColormap(image,number_colors) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  if (image->colors != number_colors)
+    return(MagickFalse);
   i=0;
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2693,7 +2695,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
   if ((image->columns*image->rows) <= maximum_colors)
-    return(DirectToColormapImage(image,&image->exception));
+    (void) DirectToColormapImage(image,&image->exception);
   if ((IsGrayImage(image,&image->exception) != MagickFalse) &&
       (image->matte == MagickFalse))
     (void) SetGrayscaleImage(image);
