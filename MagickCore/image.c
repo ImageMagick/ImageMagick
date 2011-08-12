@@ -2656,7 +2656,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case UndefinedAlphaChannel:
       break;
   }
-  return(status);
+  if (status == MagickFalse)
+    return(status);
+  return(SyncImagePixelCache(image,exception));
 }
 
 /*
@@ -2867,7 +2869,7 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
   const ClassType storage_class,ExceptionInfo *exception)
 {
   image->storage_class=storage_class;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,exception));
 }
 
 /*
@@ -2957,7 +2959,7 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
     return(MagickFalse);
   image->columns=columns;
   image->rows=rows;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,exception));
 }
 
 /*
