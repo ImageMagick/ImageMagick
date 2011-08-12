@@ -10459,7 +10459,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].string_reference=(char *) NULL;
           (void) ColorDecisionListImage(image,
-            argument_list[0].string_reference);
+            argument_list[0].string_reference,exception);
           break;
         }
         case 127:  /* AutoGamma */

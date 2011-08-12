@@ -5318,6 +5318,45 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S y n c I m a g e P i x e l C a c h e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncImagePixelCache() saves the image pixels to the in-memory or disk cache.
+%  The method returns MagickTrue if the pixel region is flushed, otherwise
+%  MagickFalse.
+%
+%  The format of the SyncImagePixelCache() method is:
+%
+%      MagickBooleanType SyncImagePixelCache(Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType SyncImagePixelCache(Image *image,
+  ExceptionInfo *exception)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
+  return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   W r i t e P i x e l C a c h e M e t a c o n t e n t                       %
 %                                                                             %
 %                                                                             %

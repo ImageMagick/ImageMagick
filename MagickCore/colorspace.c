@@ -1193,7 +1193,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
   image->colorspace=colorspace;
-  return(MagickTrue);
+  return(SyncImagePixelCache(image,exception));
 }
 
 /*
