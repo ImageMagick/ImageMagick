@@ -63,7 +63,8 @@
 %
 %
 */
-int main(int argc,char **argv)
+
+int ConvertMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;
@@ -84,3 +85,29 @@ int main(int argc,char **argv)
   MagickCoreTerminus();
   return(status);
 }
+
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+int main(int argc,char **argv)
+{
+  return(ConvertMain(argc,argv));
+}
+#else
+int wmain(int argc,wchar_t *argv[])
+{
+  char
+    **utf8;
+
+  int
+    status;
+
+  register int
+    i;
+
+  utf8=NTArgvToUTF8(argc,argv);
+  status=ConvertMain(argc,utf8);
+  for (i=0; i < argc; i++)
+    utf8[i]=DestroyString(utf8[i]);
+  utf8=(char **) RelinquishMagickMemory(utf8);
+  return(status);
+}
+#endif
