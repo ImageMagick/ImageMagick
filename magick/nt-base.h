@@ -347,7 +347,8 @@ typedef UINT
 #endif
 
 extern MagickExport char
-  *NTGetLastError(void);
+  *NTGetLastError(void),
+  **NTArgvToUTF8(const int argc,wchar_t **);
 
 extern MagickExport const GhostInfo
   *NTGhostscriptDLLVectors(void);

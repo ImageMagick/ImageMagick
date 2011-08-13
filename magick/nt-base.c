@@ -41,6 +41,7 @@
 #include "magick/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include "magick/client.h"
+#include "magick/exception-private.h"
 #include "magick/locale_.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -332,6 +333,65 @@ MagickExport int IsWindows95()
       (version_info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
     return(1);
   return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T A r g v T o U T F 8                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NTArgvToUTF8() converts the wide command line arguments to UTF-8 to ensure
+%  compatibility with Linux.
+%
+%  The format of the NTArgvToUTF8 method is:
+%
+%      char **NTArgvToUTF8(const int argc,wchar_t **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: the number of command line arguments.
+%
+%    o argv:  the  wide-character command line arguments.
+%
+*/
+MagickExport char **NTArgvToUTF8(const int argc,wchar_t **argv)
+{
+  char
+    **utf8;
+
+  ssize_t
+    i;
+
+  utf8=(char **) AcquireQuantumMemory(argc,sizeof(*utf8));
+  if (utf8 == (char **) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToConvertStringToARGV");
+  for (i=0; i < (ssize_t) argc; i++)
+  {
+    ssize_t
+      count;
+
+    count=WideCharToMultiByte(CP_UTF8,0,argv[i],-1,NULL,0,NULL,NULL);
+    if (count < 0)
+      count=0;
+    utf8[i]=(char *) AcquireQuantumMemory(count+1,sizeof(**utf8));
+    if (utf8[i] == (char *) NULL)
+      {
+        for (i--; i >= 0; i--)
+          utf8[i]=DestroyString(utf8[i]);
+        utf8=(char **) RelinquishMagickMemory(utf8);
+        ThrowFatalException(ResourceLimitFatalError,
+          "UnableToConvertStringToARGV");
+      }
+    count=WideCharToMultiByte(CP_UTF8,0,argv[i],-1,utf8[i],count,NULL,NULL);
+    utf8[i][count]=0;
+  }
+  return(utf8);
 }
 
 /*
