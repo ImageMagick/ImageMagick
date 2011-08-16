@@ -221,9 +221,9 @@ check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
 	$(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) \
-	$(am__magickppinc_HEADERS_DIST) $(magickpptopinc_HEADERS) \
-	$(noinst_HEADERS) $(srcdir)/ImageMagick.spec.in \
-	$(srcdir)/Magick++/Makefile.am \
+	$(am__magickppinc_HEADERS_DIST) \
+	$(am__magickpptopinc_HEADERS_DIST) $(noinst_HEADERS) \
+	$(srcdir)/ImageMagick.spec.in $(srcdir)/Magick++/Makefile.am \
 	$(srcdir)/MagickCore/Makefile.am \
 	$(srcdir)/MagickWand/Makefile.am $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/PerlMagick/Makefile.am \
@@ -2184,7 +2184,15 @@ DATA = $(configlib_DATA) $(configshare_DATA) $(doc_DATA) \
 am__include_HEADERS_DIST = ltdl/ltdl.h
 am__ltdlinclude_HEADERS_DIST = ltdl/libltdl/lt_system.h \
 	ltdl/libltdl/lt_error.h ltdl/libltdl/lt_dlloader.h
-am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++.h
+am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
+	Magick++/lib/Magick++/CoderInfo.h \
+	Magick++/lib/Magick++/Color.h Magick++/lib/Magick++/Drawable.h \
+	Magick++/lib/Magick++/Exception.h \
+	Magick++/lib/Magick++/Geometry.h Magick++/lib/Magick++/Image.h \
+	Magick++/lib/Magick++/Include.h \
+	Magick++/lib/Magick++/Montage.h Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
+am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
 HEADERS = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
 	$(include_HEADERS) $(ltdlinclude_HEADERS) \
 	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
@@ -4352,6 +4360,8 @@ MAGICKWAND_CLEANFILES = \
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TESTS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TOP_INCHEADERS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_INCHEADERS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
 MAGICKPP_SCRIPTS_OPT = \
@@ -4465,11 +4475,25 @@ Magick___lib_libMagick___la_SOURCES = \
 	Magick++/lib/Magick++/TypeMetric.h
 
 magickpptopincdir = $(topincludedir)
-magickpptopinc_HEADERS = 
+magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
+MAGICKPP_TOP_INCHEADERS_OPT = \
+  Magick++/lib/Magick++.h
+
 magickppincdir = $(topincludedir)/Magick++
 magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 MAGICKPP_INCHEADERS_OPT = \
-	Magick++/lib/Magick++.h
+	Magick++/lib/Magick++/Blob.h \
+	Magick++/lib/Magick++/CoderInfo.h \
+	Magick++/lib/Magick++/Color.h \
+	Magick++/lib/Magick++/Drawable.h \
+	Magick++/lib/Magick++/Exception.h \
+	Magick++/lib/Magick++/Geometry.h \
+	Magick++/lib/Magick++/Image.h \
+	Magick++/lib/Magick++/Include.h \
+	Magick++/lib/Magick++/Montage.h \
+	Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/STL.h \
+	Magick++/lib/Magick++/TypeMetric.h
 
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
@@ -11430,18 +11454,6 @@ MagickCore-install-data-local:
 	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
 MagickCore-uninstall-local:
 	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-config.h
-	Magick++/lib/Magick++/Blob.h \
-	Magick++/lib/Magick++/CoderInfo.h \
-	Magick++/lib/Magick++/Color.h \
-	Magick++/lib/Magick++/Drawable.h \
-	Magick++/lib/Magick++/Exception.h \
-	Magick++/lib/Magick++/Geometry.h \
-	Magick++/lib/Magick++/Image.h \
-	Magick++/lib/Magick++/Include.h \
-	Magick++/lib/Magick++/Montage.h \
-	Magick++/lib/Magick++/Pixels.h \
-	Magick++/lib/Magick++/STL.h \
-	Magick++/lib/Magick++/TypeMetric.h
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:

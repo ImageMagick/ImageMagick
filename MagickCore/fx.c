@@ -648,7 +648,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   edge_image=DestroyImage(edge_image);
   if (charcoal_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) NormalizeImage(charcoal_image);
+  (void) NormalizeImage(charcoal_image,exception);
   (void) NegateImage(charcoal_image,MagickFalse,exception);
   (void) SetImageType(charcoal_image,GrayscaleType);
   return(charcoal_image);
@@ -4078,8 +4078,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
   }
   sepia_view=DestroyCacheView(sepia_view);
   image_view=DestroyCacheView(image_view);
-  (void) NormalizeImage(sepia_image);
-  (void) ContrastImage(sepia_image,MagickTrue);
+  (void) NormalizeImage(sepia_image,exception);
+  (void) ContrastImage(sepia_image,MagickTrue,exception);
   if (status == MagickFalse)
     sepia_image=DestroyImage(sepia_image);
   return(sepia_image);
@@ -4367,7 +4367,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   blur_image=DestroyImage(blur_image);
   if (dodge_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) NormalizeImage(dodge_image);
+  (void) NormalizeImage(dodge_image,exception);
   (void) NegateImage(dodge_image,MagickFalse,exception);
   (void) TransformImage(&dodge_image,(char *) NULL,"50%");
   sketch_image=CloneImage(image,0,0,MagickTrue,exception);

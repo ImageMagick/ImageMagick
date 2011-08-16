@@ -2468,7 +2468,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image != (Image *) NULL)
           for (x=0; x < i; x++)
-            (void) ContrastImage(preview_image,MagickTrue);
+            (void) ContrastImage(preview_image,MagickTrue,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"contrast (%.20g)",
           (double) i+1);
         break;
@@ -2479,7 +2479,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image == (Image *) NULL)
           break;
         for (x=0; x < i; x++)
-          (void) ContrastImage(preview_image,MagickFalse);
+          (void) ContrastImage(preview_image,MagickFalse,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"+contrast (%.20g)",
           (double) i+1);
         break;

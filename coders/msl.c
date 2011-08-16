@@ -2120,7 +2120,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) ContrastImage(msl_info->image[n],sharpen);
+          (void) ContrastImage(msl_info->image[n],sharpen,
+            &msl_info->image[n]->exception);
           break;
         }
       if (LocaleCompare((const char *) tag,"crop") == 0)
@@ -4084,7 +4085,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) NormalizeImage(msl_info->image[n]);
+          (void) NormalizeImage(msl_info->image[n],
+            &msl_info->image[n]->exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

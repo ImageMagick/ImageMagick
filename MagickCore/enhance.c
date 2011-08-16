@@ -215,8 +215,8 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 
   double
     alpha,
-    intercept,
     coefficients[2],
+    intercept,
     slope;
 
   MagickBooleanType
@@ -288,11 +288,6 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   ExceptionInfo *exception)
 {
-#define ClampAlphaPixelChannel(pixel) ClampToQuantum((pixel)->alpha)
-#define ClampBlackPixelChannel(pixel) ClampToQuantum((pixel)->black)
-#define ClampBluePixelChannel(pixel) ClampToQuantum((pixel)->blue)
-#define ClampGreenPixelChannel(pixel) ClampToQuantum((pixel)->green)
-#define ClampRedPixelChannel(pixel) ClampToQuantum((pixel)->red)
 #define ClutImageTag  "Clut/Image"
 
   CacheView
@@ -826,13 +821,15 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %  The format of the ContrastImage method is:
 %
 %      MagickBooleanType ContrastImage(Image *image,
-%        const MagickBooleanType sharpen)
+%        const MagickBooleanType sharpen,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o sharpen: Increase or decrease image contrast.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -864,15 +861,12 @@ static void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 }
 
 MagickExport MagickBooleanType ContrastImage(Image *image,
-  const MagickBooleanType sharpen)
+  const MagickBooleanType sharpen,ExceptionInfo *exception)
 {
 #define ContrastImageTag  "Contrast/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   int
     sign;
@@ -908,7 +902,6 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -985,7 +978,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 %  The format of the ContrastStretchImage method is:
 %
 %      MagickBooleanType ContrastStretchImage(Image *image,
-%        const char *levels)
+%        const char *levels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -998,9 +991,11 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 %    o levels: Specify the levels where the black and white points have the
 %      range of 0 to number-of-pixels (e.g. 1%, 10x90%, etc.).
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType ContrastStretchImage(Image *image,
-  const double black_point,const double white_point)
+  const double black_point,const double white_point,ExceptionInfo *exception)
 {
 #define MaxRange(color)  ((MagickRealType) ScaleQuantumToMap((Quantum) (color)))
 #define ContrastStretchImageTag  "ContrastStretch/Image"
@@ -1010,9 +1005,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 
   double
     intensity;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1051,7 +1043,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     Form histogram.
   */
   status=MagickTrue;
-  exception=(&image->exception);
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1273,7 +1264,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   /*
     Stretch the image.
   */
-  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) || (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
+  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) ||
+      (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace)))
     image->storage_class=DirectClass;
   if (image->storage_class == PseudoClass)
@@ -3269,14 +3261,17 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 %
 %  The format of the NormalizeImage method is:
 %
-%      MagickBooleanType NormalizeImage(Image *image)
+%      MagickBooleanType NormalizeImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType NormalizeImage(Image *image)
+MagickExport MagickBooleanType NormalizeImage(Image *image,
+  ExceptionInfo *exception)
 {
   double
     black_point,
@@ -3284,7 +3279,7 @@ MagickExport MagickBooleanType NormalizeImage(Image *image)
 
   black_point=(double) image->columns*image->rows*0.0015;
   white_point=(double) image->columns*image->rows*0.9995;
-  return(ContrastStretchImage(image,black_point,white_point));
+  return(ContrastStretchImage(image,black_point,white_point,exception));
 }
 
 /*

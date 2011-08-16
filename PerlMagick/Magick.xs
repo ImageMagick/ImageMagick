@@ -8385,7 +8385,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].integer_reference=0;
           (void) ContrastImage(image,argument_list[0].integer_reference != 0 ?
-            MagickTrue : MagickFalse);
+            MagickTrue : MagickFalse,exception);
           break;
         }
         case 37:  /* CycleColormap */
@@ -8791,7 +8791,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           PushPixelChannelMap(image,channel);
-          NormalizeImage(image);
+          NormalizeImage(image,exception);
           PopPixelChannelMap(image);
           break;
         }
@@ -9877,7 +9877,7 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
           PushPixelChannelMap(image,channel);
-          (void) ContrastStretchImage(image,black_point,white_point);
+          (void) ContrastStretchImage(image,black_point,white_point,exception);
           PopPixelChannelMap(image);
           break;
         }
