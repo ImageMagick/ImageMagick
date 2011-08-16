@@ -1806,9 +1806,7 @@ WandExport MagickBooleanType MagickContrastImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ContrastImage(wand->images,sharpen);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=ContrastImage(wand->images,sharpen,&wand->images->exception);
   return(status);
 }
 
@@ -1854,9 +1852,8 @@ WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ContrastStretchImage(wand->images,black_point,white_point);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=ContrastStretchImage(wand->images,black_point,white_point,
+    &wand->images->exception);
   return(status);
 }
 
@@ -6801,9 +6798,7 @@ WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=NormalizeImage(wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=NormalizeImage(wand->images,&wand->images->exception);
   return(status);
 }
 

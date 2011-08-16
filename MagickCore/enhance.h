@@ -28,8 +28,8 @@ extern MagickExport MagickBooleanType
   BrightnessContrastImage(Image *,const double,const double,ExceptionInfo *),
   ClutImage(Image *,const Image *,ExceptionInfo *),
   ColorDecisionListImage(Image *,const char *,ExceptionInfo *),
-  ContrastImage(Image *,const MagickBooleanType),
-  ContrastStretchImage(Image *,const double,const double),
+  ContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
+  ContrastStretchImage(Image *,const double,const double,ExceptionInfo *),
   EqualizeImage(Image *image),
   GammaImage(Image *,const double,ExceptionInfo *),
   HaldClutImage(Image *,const Image *),
@@ -40,7 +40,7 @@ extern MagickExport MagickBooleanType
   LinearStretchImage(Image *,const double,const double),
   ModulateImage(Image *,const char *),
   NegateImage(Image *,const MagickBooleanType,ExceptionInfo *),
-  NormalizeImage(Image *),
+  NormalizeImage(Image *,ExceptionInfo *),
   SigmoidalContrastImage(Image *,const MagickBooleanType,const double,
     const double);
 

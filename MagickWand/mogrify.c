@@ -1169,8 +1169,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ContrastImage(*image,(*option == '-') ? MagickTrue :
-              MagickFalse);
-            InheritException(exception,&(*image)->exception);
+              MagickFalse,exception);
             break;
           }
         if (LocaleCompare("contrast-stretch",option+1) == 0)
@@ -1197,7 +1196,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               }
             white_point=(MagickRealType) (*image)->columns*(*image)->rows-
               white_point;
-            (void) ContrastStretchImage(*image,black_point,white_point);
+            (void) ContrastStretchImage(*image,black_point,white_point,
+              exception);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -2158,8 +2158,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("normalize",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) NormalizeImage(*image);
-            InheritException(exception,&(*image)->exception);
+            (void) NormalizeImage(*image,exception);
             break;
           }
         break;

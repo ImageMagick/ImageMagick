@@ -706,8 +706,11 @@ void Magick::Image::composite ( const Image &compositeImage_,
 void Magick::Image::contrast ( const size_t sharpen_ )
 {
   modifyImage();
-  ContrastImage ( image(), (MagickBooleanType) sharpen_ );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  ContrastImage ( image(), (MagickBooleanType) sharpen_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Convolve image.  Applies a general image convolution kernel to the image.
@@ -1384,8 +1387,11 @@ void Magick::Image::negate ( const bool grayscale_ )
 void Magick::Image::normalize ( void )
 {
   modifyImage();
-  NormalizeImage ( image() );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  NormalizeImage ( image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Oilpaint image

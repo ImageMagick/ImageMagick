@@ -7785,7 +7785,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) ContrastImage(*image,MagickTrue);
+      (void) ContrastImage(*image,MagickTrue,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7800,7 +7800,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) ContrastImage(*image,MagickFalse);
+      (void) ContrastImage(*image,MagickFalse,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7838,7 +7838,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           white_point*=(double) (*image)->columns*(*image)->rows/100.0;
         }
       white_point=(MagickRealType) (*image)->columns*(*image)->rows-white_point;
-      (void) ContrastStretchImage(*image,black_point,white_point);
+      (void) ContrastStretchImage(*image,black_point,white_point,
+        &(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7890,7 +7891,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) NormalizeImage(*image);
+      (void) NormalizeImage(*image,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;

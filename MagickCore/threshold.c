@@ -343,8 +343,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %  with the 'threshold' value for both the black_point and the white_point.
 %
 */
-MagickExport MagickBooleanType BilevelImage(Image *image,
-  const double threshold)
+MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold)
 {
 #define ThresholdImageTag  "Threshold/Image"
 

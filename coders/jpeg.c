@@ -573,6 +573,9 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   char
     name[MaxTextExtent];
 
+  const StringInfo
+    *previous_profile;
+
   ErrorManager
     *error_manager;
 
@@ -641,6 +644,9 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
           (void) CopyMagickString(name,"xmp",MaxTextExtent);
         }
     }
+  previous_profile=GetImageProfile(image,name);
+  if (previous_profile != (const StringInfo *) NULL)
+    ConcatenateStringInfo(profile,previous_profile);
   status=SetImageProfile(image,name,profile);
   profile=DestroyStringInfo(profile);
   if (status == MagickFalse)

@@ -174,13 +174,8 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
   ssize_t
     y;
 
-#if 0
-  assert(image1->matte==MagickTrue);
-  assert(image2->matte==MagickTrue);
-#endif
-
-  if ( bounds->x< 0 ) return(MagickFalse);
-
+  if (bounds->x < 0)
+    return(MagickFalse);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
     p=GetVirtualPixels(image1,bounds->x,bounds->y+y,bounds->width,1,
