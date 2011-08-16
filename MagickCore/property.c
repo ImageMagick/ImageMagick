@@ -1295,8 +1295,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_BYTE:
             case EXIF_FMT_UNDEFINED:
             {
-              EXIFMultipleValues(1,"%.20g",(double)
-                (*(unsigned char *) p1));
+              EXIFMultipleValues(1,"%.20g",(double) (*(unsigned char *) p1));
               break;
             }
             case EXIF_FMT_SBYTE:
@@ -1474,8 +1473,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   return(status);
 }
 
-static MagickBooleanType GetXMPProperty(const Image *image,
-  const char *property)
+static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 {
   char
     *xmp_profile;
