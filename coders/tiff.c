@@ -1491,7 +1491,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if ((ssize_t) (x+columns) < (ssize_t) image->columns)
               columns_remaining=columns;
             p=tile_pixels+(rows-rows_remaining)*columns;
-            q=tile+(image->columns*(rows_remaining-1)+x);
+            q=tile+GetPixelChannels(image)*(image->columns*(rows_remaining-1)+
+              x);
             for (row=rows_remaining; row > 0; row--)
             {
               if (image->matte != MagickFalse)
