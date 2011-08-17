@@ -615,7 +615,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   p=GetStringInfoDatum(profile);
-  for (i=(ssize_t) GetStringInfoLength(profile)-1; i >= 0; i--)
+  for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
     *p++=(unsigned char) GetCharacter(jpeg_info);
   if (marker == 1)
     {
@@ -644,7 +644,15 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
     }
   previous_profile=GetImageProfile(image,name);
   if (previous_profile != (const StringInfo *) NULL)
-    ConcatenateStringInfo(profile,previous_profile);
+    {
+      SetStringInfoLength(profile,GetStringInfoLength(profile)+
+        GetStringInfoLength(previous_profile));
+      (void) memcpy(GetStringInfoDatum(profile),GetStringInfoDatum(profile)+
+        GetStringInfoLength(previous_profile),GetStringInfoLength(profile));
+      (void) memcpy(GetStringInfoDatum(profile),
+        GetStringInfoDatum(previous_profile),
+        GetStringInfoLength(previous_profile));
+    }
   status=SetImageProfile(image,name,profile);
   profile=DestroyStringInfo(profile);
   if (status == MagickFalse)
