@@ -2,7 +2,7 @@
   * New version 6.7.1-7.
 
 2011-08-15  6.7.1-7 Cristy  <quetzlzacatenango@image...>
-  * Proerly handled continued JPEG embedded profiles.
+  * Properly handled continued JPEG embedded profiles.
 
 2011-08-12  6.7.1-6 Cristy  <quetzlzacatenango@image...>
   * Yet another attempt to read Japanese filenames under Windows.
