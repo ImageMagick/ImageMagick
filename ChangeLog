@@ -1,7 +1,14 @@
+2011-08-18  6.7.1-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.1-8.
+
+2011-08-15  6.7.1-8 Cristy  <quetzlzacatenango@image...>
+  * Caption now wraps properly for Chinese text (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19249).
+
 2011-08-18  6.7.1-8 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG encoder would sometimes fail to respect the -define PNG:color-type
-  option when the incoming image was PseudoClass (reference
-http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19262).
+    option when the incoming image was PseudoClass (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19262).
 
 2011-08-15  6.7.1-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-7.
@@ -1818,8 +1825,6 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19262).
     by Sean Burke and Fred Weinhaus).  The -fft / -ifft option is not ready for
     prime time just yet.
   * Support -cdl (color decision list) option.
-  * Support breaks in Chinese characters which traditionally do not include
-    spaces.
   * Don't process directories as filenames when using wildcard paths
     (i.e. logo[1]/png).
 
