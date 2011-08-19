@@ -605,8 +605,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
           type=UndefinedType;
           break;
         }
-      if ((type == BilevelType) &&
-          (IsPixelMonochrome(image,p) == MagickFalse))
+      if ((type == BilevelType) && (IsPixelMonochrome(image,p) == MagickFalse))
         type=GrayscaleType;
       p+=GetPixelChannels(image);
     }
