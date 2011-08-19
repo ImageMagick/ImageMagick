@@ -567,7 +567,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     width=(size_t) floor(metrics->width+0.5);
     if (width <= image->columns)
       continue;
-    if ((s != (char *) NULL) && (GetUTFCode(s) < 128))
+    if ((s != (char *) NULL) && (GetUTFOctets(s) == 1))
       {
         *s='\n';
         p=s;
