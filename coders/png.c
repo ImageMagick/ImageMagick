@@ -7579,6 +7579,15 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "    storage_class=PseudoClass");
     }
 
+  if (image->storage_class == PseudoClass && 
+     (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
+     (mng_info->write_png_colortype != 0 &&
+     mng_info->write_png_colortype != 4)))
+    {
+      (void) SyncImage(image);
+      image->storage_class = DirectClass;
+    }
+
   if (ping_preserve_colormap == MagickFalse)
     {
       if (image->storage_class != PseudoClass && image->colormap != NULL)
@@ -9015,13 +9024,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       }
     } /* end of write_png8 */
 
-  else if (mng_info->write_png24)
+  else if (mng_info->write_png24 || mng_info->write_png_colortype == 3)
     {
       image_matte=MagickFalse;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB;
     }
 
-  else if (mng_info->write_png32)
+  else if (mng_info->write_png32 || mng_info->write_png_colortype == 7)
     {
       image_matte=MagickTrue;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB_ALPHA;
