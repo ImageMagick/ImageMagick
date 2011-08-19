@@ -204,7 +204,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2011090100060 Temurbas atlas.multimedia-->
 </div>
 </div>
 </div>
@@ -439,8 +439,8 @@
 <p>For convenience you can set the active trait for a set of pixel channels with a channel mask and these methods:</p>
 <pre class="text">
   PopPixelChannelMap()
-  PushPixelChannelMap()
   SetPixelChannelMap()
+  SetPixelChannelMask()
 </pre>
 
 <p>Previously MagickCore methods had channel analogs, for example, NegateImage() and NegateImageChannels().  The channel analog methods are no longer necessary because the pixel channel traits specify whether to act on a particular pixel channel and whether to blend with the alpha mask.  For example, instead of</p>
@@ -449,9 +449,9 @@
 </pre>
 <p>we use:</p>
 <pre class="text">
-  PushPixelChannelMap(image,channel);
-  NegateImage(image);
-  PopPixelChannelMap(image);
+  channel_mask=SetPixelChannelMask(image,channel);
+  NegateImage(image,exception);
+  (void) SetPixelChannelMap(image,channel_mask);
 </pre>
 
 <h4></a>Pixel Meta Channels</h4>
