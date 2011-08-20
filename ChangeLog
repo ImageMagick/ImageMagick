@@ -2506,7 +2506,7 @@
   * Scale pixel quantum to match PNG tRNS range (i.e. 0-255).
 
 2008-10-06  6.4.4-3 Cristy  <quetzlzacatenango@image...>
-  * Set sentinel byte for MVG coder.
+  * Set sentinal byte for MVG coder.
   * fx:standard_deviation returns standard deviation now instead of mean.
 
 2008-10-01  6.4.4-1 Florent Monnier  <monnier.florent@gmail...>
@@ -2667,7 +2667,7 @@
     equivalent -fx functions for DistortImages to report of the internal
     coefficients that was calculated, and who they are used.
   * Initial implementation of SparseColor for interpolated gradients from
-    sparsely separated points of color (or possibily other forms of arguments)
+    sparsely separated points of color (or possibly other forms of arguments)
   * New distortion Barrel as defined by Helmut Dersch options A,B,C,D
     on his web page  http://www.all-in-one.ee/~dersch/barrel/barrel.html
     And as developed by Fred WeinHaus in his PinBarrel script
@@ -3257,7 +3257,7 @@
     applied.
 
 2007-07-29  6.3.5-5 Cristy  <quetzlzacatenango@image...>
-  * Set the -poloroid border color with the -bordercolor option.
+  * Set the -polaroid border color with the -bordercolor option.
 
 2007-07-25  6.3.5-4 Cristy  <quetzlzacatenango@image...>
   * Remove extranous break statement so -type option properly sets the
