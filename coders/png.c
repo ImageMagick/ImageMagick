@@ -8038,7 +8038,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
      }
 
-     if (ping_exclude_bKGD == MagickFalse)
+     if (mng_info->write_png8 == MagickFalse &&
+         ping_exclude_bKGD == MagickFalse)
        {
          /* Add the background color to the palette, if it
           * isn't already there.
@@ -10983,7 +10984,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    * is forced to be 4 or 6 (GRAY_ALPHA or RGB_ALPHA).
    *
    * The -strip option causes StripImage() to set the png:include-chunk
-   * artifact to "none,gama".
+   * artifact to "none,trns,gama".
    */
 
   mng_info->ping_exclude_bKGD=MagickFalse;
