@@ -140,20 +140,21 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       {
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if (((image->columns != 0) && (width > (image->columns+1))) ||
-            ((image->rows != 0) && (height > (image->rows+1))))
+        if (((image->columns != 0) && (width >= image->columns)) ||
+            ((image->rows != 0) && (height >= image->rows)))
           break;
         status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       }
+      draw_info->pointsize/=2.0;
       for ( ; status != MagickFalse; draw_info->pointsize--)
       {
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((image->columns != 0) && (width <= (image->columns+1)) &&
-           ((image->rows == 0) || (height <= (image->rows+1))))
+        if ((image->columns != 0) && (width < image->columns) &&
+           ((image->rows == 0) || (height < image->rows)))
           break;
-        if ((image->rows != 0) && (height <= (image->rows+1)) &&
-           ((image->columns == 0) || (width <= (image->columns+1))))
+        if ((image->rows != 0) && (height < image->rows) &&
+           ((image->columns == 0) || (width < image->columns)))
           break;
         if (draw_info->pointsize < 2.0)
           break;
