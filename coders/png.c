@@ -11005,7 +11005,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    * is forced to be 4 or 6 (GRAY_ALPHA or RGB_ALPHA).
    *
    * The -strip option causes StripImage() to set the png:include-chunk
-   * artifact to "none,gama".
+   * artifact to "none,trns,gama".
    */
 
   mng_info->ping_exclude_bKGD=MagickFalse;
