@@ -558,6 +558,8 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   {
     if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
       s=p;
+    if (*p == '\n')
+      q=draw_info->text;
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
     *q='\0';
@@ -699,8 +701,8 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
     if (extent.width > metrics->width)
       *metrics=extent;
   }
-  metrics->height=(double) (i*(size_t) (metrics->ascent-
-    metrics->descent+0.5)+(i-1)*draw_info->interline_spacing);
+  metrics->height=(double) (i*(size_t) (metrics->ascent-metrics->descent+0.5)+
+    (i-1)*draw_info->interline_spacing);
   /*
     Relinquish resources.
   */
@@ -1431,15 +1433,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       origin.x+=direction*face->glyph->advance.x;
     metrics->origin.x=origin.x;
     metrics->origin.y=origin.y;
-    if (last_glyph.id != 0)
-      FT_Done_Glyph(last_glyph.image);
+    FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
     code=GetUTFCode(p);
   }
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  if (last_glyph.id != 0)
-    FT_Done_Glyph(last_glyph.image);
+  FT_Done_Glyph(last_glyph.image);
   if ((draw_info->stroke.opacity != TransparentOpacity) ||
       (draw_info->stroke_pattern != (Image *) NULL))
     {
@@ -1479,8 +1479,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 metrics->width=bitmap->left;
             }
         }
-      if (glyph.id != 0)
-        FT_Done_Glyph(glyph.image);
+      FT_Done_Glyph(glyph.image);
     }
   metrics->width-=metrics->bounds.x1/64.0;
   metrics->bounds.x1/=64.0;
