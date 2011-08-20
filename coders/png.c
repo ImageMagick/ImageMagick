@@ -8400,7 +8400,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-              if (GetPixelAlpha(image,r) > TransparentAlpha/2)
+              if (GetPixelAlpha(image,r) < OpaqueAlpha/2)
                 {
                   SetPixelPacket(image,&image->background_color,r);
                   SetPixelAlpha(image,TransparentAlpha,r);
