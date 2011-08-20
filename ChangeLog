@@ -1,9 +1,11 @@
 2011-08-18  6.7.1-9 Glenn Randers-Pehrson <glennrp@image...>
+  * The "-strip" option was excluding the PNG tRNS chunk (see 6.6.6-7, below);
+  revised the -strip option so it behaves as
+  if "-define PNG:include-chunk=none,trns,gama" had appeared on the commandline.
   * When writing a PNG8 and more than one transparent color is present,
   merge them into the image->background_color (Reference
   http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19329),
   finishing the implementation started in version 6.6.8-7.
-  * The "-strip" option was excluding the PNG tRNS chunk.
 
 2011-08-18  6.7.1-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-8.
@@ -169,7 +171,7 @@
   * Avoid fault on corrupt JPEG images.
   * Avoid fault on certain DJVU images (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18807).
-  * Fix -fx to interpret scientfic notation properly.
+  * Fix -fx to interpret scientific notation properly.
 
 2011-05-20  6.6.9-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.6.9-10.
@@ -848,7 +850,7 @@
 2010-10-05  6.6.5-0 Anthony Thyssen <A.Thyssen@griffith...>
   * Replaced "Robidoux" with Cubic 'Keys' filter that is near equivalent to
     the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)
-    This also is very similer to a Mitchell filter but specifically designed
+    This also is very similar to a Mitchell filter but specifically designed
     for EWA use and is the new default filter for Distorting Images.
   * Original sharpened Lanczos2D filter now called "Lanczos2Dsharp"
 
@@ -990,7 +992,7 @@
     function as "LanczosChebyshev" as faster alternative to Lanczos.
   * Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of
     the Sinc Trigonometric resize filter, as a proper filter to allow
-    direct comparision and speed testing of the filter.
+    direct comparison and speed testing of the filter.
   * Expanded the "-set option:filter:verbose 1" output, so as to also include
     the actual functions and other values that were used to create the filter.
 
@@ -1809,7 +1811,7 @@
   * Finished the recoding of Composite methods to allow easier debugging
     and faster access.
   * Added PegtopLight compose method as an alternative simpler Softlight
-    alternative.  See notes and comparision to SoftLight in...
+    alternative.  See notes and comparison to SoftLight in...
        http://www.pegtop.net/delphi/articles/blendmodes/softlight.htm
   * From the notes on Photoshop blend modes at
        http://www.simplefilter.de/en/basics/mixmods.html
@@ -2615,7 +2617,7 @@
     support the Magick Coder and Image Filter kits.
 
 2008-08-17  6.4.2-9 Anthony <anthony@griffith...>
-  * -sparse-color option completed with inital set of methods.
+  * -sparse-color option completed with initial set of methods.
   * -distort Barrel arguments expanded.
 
 2008-08-14  6.4.2-9 Cristy  <quetzlzacatenango@image...>
@@ -2660,12 +2662,12 @@
     distorts, just set this, the scale the result back to a normal size.
 
 2008-07-27  6.4.2-5 Anthony <anthony@griffith...>
-  * Rewrite on coefficient handlig for DistortImages so allow for generation
+  * Rewrite on coefficient handling for DistortImages so allow for generation
     by other operators (SparseColor), and addition of verbose output of
     equivalent -fx functions for DistortImages to report of the internal
     coefficients that was calculated, and who they are used.
   * Initial implementation of SparseColor for interpolated gradients from
-    sparsely separated points of color (or posibily other forms of arguments)
+    sparsely separated points of color (or possibily other forms of arguments)
   * New distortion Barrel as defined by Helmut Dersch options A,B,C,D
     on his web page  http://www.all-in-one.ee/~dersch/barrel/barrel.html
     And as developed by Fred WeinHaus in his PinBarrel script
@@ -2708,7 +2710,7 @@
   * Added new operator  +/-level-colors which will 'level' images based
     on colors to use for the black and white points. This lets to adjust
     the image in terms of mapping the given colors from/to black and white
-    respectivally.
+    respectively.
 
 2008-06-23  6.4.2-0 Christian Lackas <christian@lacka...>
   * Fix a problem with calling mpeg2encode with parameters (%o/%i) in wrong
@@ -2721,14 +2723,14 @@
   * Add pow as an -evaluate operation, using normalized values
 
 2008-06-18  6.4.1-9 Anthony <anthony@griffith...>
-  * Added a  LevelizeImageChannels() which is simular to LevelImageChannels()
+  * Added a  LevelizeImageChannels() which is similar to LevelImageChannels()
     Function maps black and white values to the given level values.
     Rather than mapping the given level values to black and white.
     Bacically a 'reverse-level' function, with different input args.
   * Set  +level  or a '!' flag in -level or LevelImage() to call
     the new 'reverse-level' function LevelizeImageChannels().
   * More work on IsMagickColorSimular() to fix relationship between
-    transparent-black and opaque-black, which was matched as 'simular'.
+    transparent-black and opaque-black, which was matched as 'similar'.
     Also attempts to fix 'K' channel handling for CMYK colorspace.
     More work on this to come.
 
@@ -2783,7 +2785,7 @@
   * The -background and -virtual-pixel settings are now applied correctly
     across parenthesis.
   * Only reset the exception signature if the relinquish memory is MagickTrue.
-  * Correct recolor equation for computing opacity (referencee
+  * Correct recolor equation for computing opacity (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=11346).
   * Set midpoint when scaling JP2 images.
   * Semaphores must be passed by reference when destroyed for reliable thread
@@ -3116,10 +3118,10 @@
     coordinates to be used to 'fit' a distortion function to an image.
     This addition will allow the use of image registration to generate
     panarama overviews and better geographical coordinate correction.
-  * Cosolidated the simular methods FlattenImage() and MosaicImage()
+  * Consolidated the similar methods FlattenImage() and MosaicImage()
     into a new layers function MergeImageLayers() method, adding 'flatten'
     and 'mosaic' layer methods.
-  * Addition of another simular layers method 'merge' which 'unlocks' the
+  * Addition of another similar layers method 'merge' which 'unlocks' the
     normal flatten/mosaic layer merger from the origin, The resulting image
     will have a virtual canvas of minimal size with an offset. Also images
     with negative offsets will not be clipped by the 'merge' form of the
@@ -3380,14 +3382,14 @@
 2007-04-12  6.3.3-8 Chris Madison  <madisonblu@hotma...>
   * Fix fault whem comparing a colormapped image with a non-colormapped one.
   * Fix race condition when spawning delegate programs.
-  * TIFF JPEG now respects the -quality comptression setting.
+  * TIFF JPEG now respects the -quality compression setting.
   * The -fx option now properly groks the logical and operator.
   * DPX tilestamp property should be timestamp.
 
 2007-04-13  6.3.3-7 Anthony  <anthony@griffith...>
   * Added GravityAdjustGeometry() to "geometry.c" to adjust geometry settings
     according to given gravity and canvas area it applies to. This is for
-    code simplification thoughout MagickCore.
+    code simplification throughout MagickCore.
 
 2007-04-09  6.3.3-6 Anthony  <anthony@griffith...>
   * Fixed CoalesceImages() to reset virtual canvas info on second and later
