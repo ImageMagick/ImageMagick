@@ -295,7 +295,7 @@
   * Fix segmentation fault after error in a morphology 'named' kernel
   * Added a range of kernels used for specialised thinning purposes
     as defined in a research paper by Dan S. Bloomberg.
-  * Added Dan Bloomberg best thinning skeletion, "Skeleton:3"
+  * Added Dan Bloomberg best thinning skeleton, "Skeleton:3"
   * Removed origin pixel from many Hit-and-Miss kernels allowing kernels
     to not only be used for thinning, but also thickening.
   * Renamed "ThinDiagonals" kernel to just "Diagonals"
@@ -883,8 +883,8 @@
     it is still a very blurry filter for default use in EWA.
   * Adjusted Variable Mapping Blur Composition so user arguments actual
     relate properly to the sigma of the blur for a maximum mapping value.
-  * Fix horizon anti-alising for output-scaled perspective distortions.
-  * 'Bessel' filter is now offically and more accuritally named 'Jinc'
+  * Fix horizon anti-aliasing for output-scaled perspective distortions.
+  * 'Bessel' filter is now officially and more accurately named 'Jinc'
     however 'Bessel' while not visible as a filter option can still be used
     as an internal alias for 'Jinc'.
 
@@ -1127,7 +1127,7 @@
   * Respect +dither option when saving to the GIF image format.
 
 2010-06-08  6.6.2-4 Cristy  <quetzlzacatenango@image...>
-  * End of string sentinal is \n not \r.
+  * End of string sentinel is \n not \r.
 
 2010-06-06  6.6.2-3 Glenn Randers-Pehrson <glennrp@image...>
   * Don't decode pixels in coders/png.c when image->ping is set.
@@ -1200,7 +1200,7 @@
   * Addition of "Laplacian of Gaussian" (LOG), also known as Mexican Hat
     EG: -morphology convolve LOG:0x1
   * Added FreiChen, Kirsch  Convolution kernels
-  * Added Descrete 'Laplacian of Gaussian' kernels (Laplacian type 15 and 19)
+  * Added Discrete 'Laplacian of Gaussian' kernels (Laplacian type 15 and 19)
   * Added Edges HitAndMiss Kernel
 
 2010-05-17  6.6.2-0 Cristy  <quetzlzacatenango@image...>
@@ -2008,7 +2008,7 @@
     cannot be used to force the PNG to use a bit-depth or color-type that
     does not losslessly represent the image.  You can, however, cause
     the writer to use a larger depth or to use the RGB colorspace when
-    grayscale or indexed would have been sufficent.
+    grayscale or indexed would have been sufficient.
 
 2009-05-01  6.5.1-10 Anthony Thyssen <A.Thyssen@griffith...>
   * Fixed the Rmin usage in Depolar and Polar distortions
@@ -2113,7 +2113,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13410).
 
 2009-03-24  6.5.0-7 Cristy  <quetzlzacatenango@image...>
-  * Referenced counted blob was incremented incorrectedly in CloneImage().
+  * Referenced counted blob was incremented incorrectly in CloneImage().
 
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13410).
 2009-03-23  6.5.0-6 Chris Madison  <madisonblu@gmail...>
@@ -2218,7 +2218,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13020).
 
 2009-01-30  6.4.9-0 Cristy  <quetzlzacatenango@image...>
-  * Stroking when annotating failed for stroks widths > 2 (reference
+  * Stroking when annotating failed for stroke widths > 2 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13009).
 
 2009-01-24  6.4.8-10 Cristy  <quetzlzacatenango@image...>
@@ -2322,7 +2322,7 @@
   * Fix Y shear angle for -shear option.
 
 2008-12-26  6.4.8-2 Cristy  <quetzlzacatenango@image...>
-  * Use GetImageArtifact() to retrieve -attentuate option value for +noise.
+  * Use GetImageArtifact() to retrieve -attenuate option value for +noise.
   * Support reading FITS test files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=12799).
   * Replace input.ttf with the public domain Tuffy.ttf font.
@@ -2346,9 +2346,9 @@
   * remove calls to exit() in MagickWand (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=12772).
   * Validate -affine arguments.
-  * Accept -attentuate as an option for convert.
+  * Accept -attenuate as an option for convert.
   * Properly create RGBA image if colormapped image has transparency.
-  * Support X11 geometry like this: +-4+-4;  wierd but X11 supports it.
+  * Support X11 geometry like this: +-4+-4;  weird but X11 supports it.
 
 2008-12-17  6.4.7-10 Chris Madison  <madisonblu@gmail...>
   * Fix off-by-one problem with -shear.
@@ -2409,7 +2409,7 @@
     quantum depth is 32.
 
 2008-12-01  6.4.6-8 Cristy  <quetzlzacatenango@image...>
-  * Global replaced accidently renamed MagickGetImagePixelColor().
+  * Global replaced accidentally renamed MagickGetImagePixelColor().
 
 2008-11-29  6.4.6-6 Cristy  <quetzlzacatenango@image...>
   * Fixed transient bug in the -white-threshold option.
@@ -2430,7 +2430,7 @@
     the -compress option.
 
 2008-11-25  6.4.6-3 Cristy  <quetzlzacatenango@image...>
-  * Numerous pixel cache improvements including embeded support for
+  * Numerous pixel cache improvements including embedded support for
     OpenMP in a transparent manner.
 
 2008-11-20  6.4.6-2 Cristy  <quetzlzacatenango@image...>
@@ -2506,7 +2506,7 @@
   * Scale pixel quantum to match PNG tRNS range (i.e. 0-255).
 
 2008-10-06  6.4.4-3 Cristy  <quetzlzacatenango@image...>
-  * Set sentinal byte for MVG coder.
+  * Set sentinel byte for MVG coder.
   * fx:standard_deviation returns standard deviation now instead of mean.
 
 2008-10-01  6.4.4-1 Florent Monnier  <monnier.florent@gmail...>
@@ -2797,7 +2797,7 @@
 
 2008-05-11  6.4.1-2 Cristy  <quetzlzacatenango@image...>
   * Import: properly handle a hierarchy of subwindows under X11.
-  * Refactor quantum pixel processor to inprove ease of use and speed.
+  * Refactor quantum pixel processor to improve ease of use and speed.
 
 2008-05-09  6.4.1-2 Leonardo de Paula Rosa Piga <lpiga@terra...>
   * OpenMP patch for sepia-tone effect.
@@ -3057,7 +3057,7 @@
 
 2007-11-02  6.3.7-0 Cristy  <quetzlzacatenango@image...>
   * Add support for SCT grayscale images.
-  * Fixed transparancy bug for the ICO image format.
+  * Fixed transparency bug for the ICO image format.
   * Fixed small memory leak in the caption and label coders.
   * Fixed -threshold option to return all white for -threshold 0 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10126).
@@ -3117,7 +3117,7 @@
     Perspective, Bilinear.   This allows for more than the minimal number of
     coordinates to be used to 'fit' a distortion function to an image.
     This addition will allow the use of image registration to generate
-    panarama overviews and better geographical coordinate correction.
+    panorama overviews and better geographical coordinate correction.
   * Consolidated the similar methods FlattenImage() and MosaicImage()
     into a new layers function MergeImageLayers() method, adding 'flatten'
     and 'mosaic' layer methods.
@@ -3126,7 +3126,7 @@
     will have a virtual canvas of minimal size with an offset. Also images
     with negative offsets will not be clipped by the 'merge' form of the
     command.  This was created for better layering of distorted images, such
-    as panarama overlays.
+    as panorama overlays.
   * Bug fix in handling transparency for EWA resampling.
   * Access to Resize Filter Functions from resize.c (for resample.c)
     with possible future filter sources... Acquire/Destory/Call ResizeFilter()
@@ -3184,14 +3184,14 @@
 2007-09-12  6.3.5-9 Anthony <anthony@griffith...>
   * Major Addition,  Area Resampling Functions, (scaled interpolation)
     for pixel lookup in Distortion functions.  This improves the look in
-    areas of minification enormousally, especially in situations of infinite
+    areas of minification enormously, especially in situations of infinite
     tiling and horizon views.  All virtual pixel methods have been handled
     to minimise computation time involved with area resampling.  To use the
     new function distortions need to be able to determine scaling vectors
     (distortion function derivitives) for correct working.  All
     -distort methods, except Arc, uses scaled area resampling.
   * Improvements to perspective distort method, to include the correct
-    differentation between the 'ground' on which the image lies, and the
+    differentiation between the 'ground' on which the image lies, and the
     'sky', the color of which can be set using the -mattecolor setting
     (as the distortion invalid pixel color). Background color is retains
     for surrounding ground areas. The horizon is also correct anti-aliased
@@ -3508,7 +3508,7 @@
 
 2007-02-12  6.3.2-5 Cristy  <quetzlzacatenango@image...>
   * Format strings in the POSIX locale.
-  * Make font metrics invarient to the strokewidth.
+  * Make font metrics invariant to the strokewidth.
 
 2007-02-10  6.3.2-4 Albert Chin  <china@thewr...>
   * Patch to fix configure.ac typo.
