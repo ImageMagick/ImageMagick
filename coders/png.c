@@ -8356,9 +8356,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       break;
 
     /* PNG8 can't have semitransparent colors so we threshold the
-     * opacity to 0 or OpaqueOpacity
+     * opacity to 0 or OpaqueOpacity, and PNG8 can only have one
+     * transparent color so if more than one is transparent we merge
+     * them into image->background_color.
      */
-    if (number_semitransparent != 0)
+    if (number_semitransparent != 0 || number_transparent > 1)
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Thresholding the alpha channel to binary");
@@ -10695,7 +10697,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %               transparent).  If other values are present they will be
 %               50%-thresholded to binary transparency.  If more than 256
 %               colors are present, they will be quantized to the 4-4-4-1,
-%               3-3-3-1, or  3-3-2-1 palette.
+%               3-3-3-1, or 3-3-2-1 palette.  The underlying RGB color
+%               of any resulting fully-transparent pixels is changed to
+%               the image's background color.
 %
 %               If you want better quantization or dithering of the colors
 %               or alpha than that, you need to do it before calling the
