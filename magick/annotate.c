@@ -558,7 +558,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   {
     if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
       s=p;
-    if (*p == '\n')
+    if (GetUTFCode(p) == '\n')
       q=draw_info->text;
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
