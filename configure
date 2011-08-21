@@ -3583,7 +3583,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=exported
+MAGICK_SVN_REVISION=5029
 
 
 
@@ -37796,7 +37796,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PERL              --with-perl=$with_perl		$have_perl
-PNG               --with-png=$with_png          	$have_png
+PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
 WEBP              --with-webp=$with_webp		$have_webp
