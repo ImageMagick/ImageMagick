@@ -378,7 +378,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
         PixelChannel
           channel;
 
-        PixelTrait 
+        PixelTrait
           clut_traits,
           traits;
 
@@ -3045,7 +3045,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
             }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelTrait 
+            PixelTrait
               traits;
 
             traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
@@ -3103,7 +3103,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelTrait 
+        PixelTrait
           traits;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
