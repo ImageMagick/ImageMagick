@@ -1,3 +1,8 @@
+2011-08-21  6.7.1-10 Glenn Randers-Pehrson <glennrp@image...>
+  * Revised configure.ac (and configure) to look for -lpng15, -lpng14, -lpng12,
+  and -lpng in that order instead of just -lpng.  This should help when
+  users upgrade their libpng delegate from one major version to another.
+
 2011-08-20  6.7.1-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-9.
 
