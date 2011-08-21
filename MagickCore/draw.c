@@ -4349,6 +4349,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         case FloodfillMethod:
         case FillToBorderMethod:
         {
+          ChannelType
+            channel_mask;
+
           PixelInfo
             target;
 
@@ -4359,11 +4362,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               target.green=(MagickRealType) draw_info->border_color.green;
               target.blue=(MagickRealType) draw_info->border_color.blue;
             }
-          PushPixelChannelMap(image,AlphaChannel);
+          channel_mask=SetPixelChannelMask(image,AlphaChannel);
           (void) FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
         case ResetMethod:

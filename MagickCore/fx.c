@@ -4128,6 +4128,9 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   CacheView
     *border_view;
 
+  ChannelType
+    channel_mask;
+
   Image
     *border_image,
     *clone_image,
@@ -4222,9 +4225,9 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
       }
   }
   border_view=DestroyCacheView(border_view);
-  PushPixelChannelMap(border_image,AlphaChannel);
+  channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
   shadow_image=BlurImage(border_image,0.0,sigma,exception);
-  PopPixelChannelMap(border_image);
+  (void) SetPixelChannelMap(border_image,channel_mask);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);

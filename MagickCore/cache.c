@@ -3997,7 +3997,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
-  StandardPixelChannelMap(image);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   source_info=(*cache_info);
@@ -4009,6 +4008,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->matte=image->matte;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
+  InitializePixelChannelMap(image);
   cache_info->number_channels=GetPixelChannels(image);
   cache_info->metacontent_extent=image->metacontent_extent;
   cache_info->mode=mode;

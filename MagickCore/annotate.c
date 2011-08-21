@@ -1434,13 +1434,15 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       origin.x+=direction*face->glyph->advance.x;
     metrics->origin.x=origin.x;
     metrics->origin.y=origin.y;
-    FT_Done_Glyph(last_glyph.image);
+    if (last_glyph.id != 0)
+      FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
     code=GetUTFCode(p);
   }
   if (utf8 != (unsigned char *) NULL)
     utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  FT_Done_Glyph(last_glyph.image);
+  if (last_glyph.id != 0)
+    FT_Done_Glyph(last_glyph.image);
   if ((draw_info->stroke.alpha != TransparentAlpha) ||
       (draw_info->stroke_pattern != (Image *) NULL))
     {

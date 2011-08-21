@@ -26,7 +26,6 @@ extern "C" {
 #include <MagickCore/constitute.h>
 
 #define MaxPixelChannels  32
-#define MaxPixelChannelMaps  8
 
 typedef enum
 {
@@ -141,6 +140,9 @@ typedef struct _PixelPacket
 typedef struct _CacheView
   CacheView_;
 
+extern MagickExport ChannelType
+  SetPixelChannelMask(Image *,const ChannelType);
+
 extern MagickExport MagickBooleanType
   ExportImagePixels(const Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
@@ -159,18 +161,16 @@ extern MagickExport MagickBooleanType
     const PixelPacket *);
 
 extern MagickExport PixelChannelMap
-  **AcquirePixelChannelMap(void),
-  **ClonePixelChannelMap(PixelChannelMap **),
-  **DestroyPixelChannelMap(PixelChannelMap **);
+  *AcquirePixelChannelMap(void),
+  *ClonePixelChannelMap(PixelChannelMap *),
+  *DestroyPixelChannelMap(PixelChannelMap *);
 
 extern MagickExport PixelInfo
   *ClonePixelInfo(const PixelInfo *);
 
 extern MagickExport void
-  StandardPixelChannelMap(Image *),
+  InitializePixelChannelMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),
-  PopPixelChannelMap(Image *),
-  PushPixelChannelMap(Image *,const ChannelType),
   SetPixelChannelMap(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

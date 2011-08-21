@@ -810,11 +810,9 @@ namespace Magick
   using MagickCore::PixelWand;
   using MagickCore::PointInfo;
   using MagickCore::PopDrawingWand;
-  using MagickCore::PopPixelChannelMap;
   using MagickCore::ProfileImage;
   using MagickCore::ProfileInfo;
   using MagickCore::PushDrawingWand;
-  using MagickCore::PushPixelChannelMap;
   using MagickCore::QuantizeImage;
   using MagickCore::QuantizeInfo;
   using MagickCore::QuantumInfo;
@@ -863,8 +861,9 @@ namespace Magick
   using MagickCore::SetLogEventMask;
   using MagickCore::SetMagickInfo;
   using MagickCore::SetMagickResourceLimit;
-  using MagickCore::SetStringInfoDatum;
   using MagickCore::SetImageVirtualPixelMethod;
+  using MagickCore::SetPixelChannelMask;
+  using MagickCore::SetStringInfoDatum;
   using MagickCore::ShadeImage;
   using MagickCore::SharpenImage;
   using MagickCore::SharpenImage;

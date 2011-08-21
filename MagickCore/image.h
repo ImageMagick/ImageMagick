@@ -287,11 +287,11 @@ struct _Image
   MagickBooleanType
     sync;
 
-  size_t
-    map;  
+  ChannelType
+    channel_mask;  
 
   PixelChannelMap
-    **channel_map;
+    *channel_map;
 
   void
     *cache;

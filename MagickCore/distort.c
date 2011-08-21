@@ -1459,18 +1459,22 @@ MagickExport Image *DistortResizeImage(const Image *image,
     }
   else
     {
+      ChannelType
+        channel_mask;
+
+      Image
+        *resize_alpha;
+
       /*
         Image has transparency so handle colors and alpha separatly.
         Basically we need to separate Virtual-Pixel alpha in the resized
         image, so only the actual original images alpha channel is used.
-      */
-      Image
-        *resize_alpha;
 
-      /* distort alpha channel separately */
-      PushPixelChannelMap(tmp_image,AlphaChannel);
+        distort alpha channel separately
+      */
+      channel_mask=SetPixelChannelMask(tmp_image,AlphaChannel);
       (void) SeparateImage(tmp_image);
-      PopPixelChannelMap(tmp_image);
+      SetPixelChannelMap(tmp_image,channel_mask);
       (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel,exception);
       resize_alpha=DistortImage(tmp_image,AffineDistortion,12,distort_args,
         MagickTrue,exception),

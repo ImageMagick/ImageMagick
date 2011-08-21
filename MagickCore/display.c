@@ -10054,6 +10054,9 @@ static MagickBooleanType XMatteEditImage(Display *display,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
+            ChannelType
+              channel_mask;
+
             DrawInfo
               *draw_info;
 
@@ -10078,11 +10081,11 @@ static MagickBooleanType XMatteEditImage(Display *display,
               (DrawInfo *) NULL);
             draw_info->fill.alpha=ClampToQuantum(InterpretLocaleValue(matte,
               (char **) NULL));
-            PushPixelChannelMap(*image,AlphaChannel); 
+            channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
               MagickFalse : MagickTrue);
-            PopPixelChannelMap(*image);
+            (void) SetPixelChannelMap(*image,channel_mask);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }

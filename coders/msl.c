@@ -605,6 +605,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   ChannelType
     channel;
 
+  ChannelType
+    channel_mask;
+
   char
     key[MaxTextExtent],
     *value;
@@ -736,10 +739,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelChannelMap(msl_info->image[n],channel);
+          channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           noise_image=AddNoiseImage(msl_info->image[n],noise,
             &msl_info->image[n]->exception);
-          PopPixelChannelMap(msl_info->image[n]);
+          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           if (noise_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -1229,10 +1232,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelChannelMap(msl_info->image[n],channel);
+          channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           blur_image=BlurImage(msl_info->image[n],geometry_info.rho,
             geometry_info.sigma,&msl_info->image[n]->exception);
-          PopPixelChannelMap(msl_info->image[n]);
+          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           if (blur_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -2053,7 +2056,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             &exception);
-          PushPixelChannelMap(image,channel);
+          channel_mask=SetPixelChannelMask(image,channel);
           if (rotate_image == (Image *) NULL)
             CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
           else
@@ -2067,7 +2070,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
           composite_image=DestroyImage(composite_image);
           break;
         }
@@ -3735,11 +3738,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
           draw_info->fill.alpha=ClampToQuantum(opacity);
-          PushPixelChannelMap(msl_info->image[n],AlphaChannel);
+          channel_mask=SetPixelChannelMask(msl_info->image[n],AlphaChannel);
           (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
             geometry.x,geometry.y,paint_method == FloodfillMethod ?
             MagickFalse : MagickTrue);
-          PopPixelChannelMap(msl_info->image[n]);
+          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -4035,10 +4038,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelChannelMap(msl_info->image[n],channel);
+          channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           (void) NegateImage(msl_info->image[n],gray,
             &msl_info->image[n]->exception);
-          PopPixelChannelMap(msl_info->image[n]);
+          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           break;
         }
       if (LocaleCompare((const char *) tag,"normalize") == 0)
@@ -4228,10 +4231,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          PushPixelChannelMap(msl_info->image[n],channel);
+          channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           (void) OpaquePaintImage(msl_info->image[n],&target,&fill_color,
             MagickFalse);
-          PopPixelChannelMap(msl_info->image[n]);
+          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

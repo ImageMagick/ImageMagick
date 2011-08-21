@@ -111,6 +111,9 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
   Image *composite_image,CompositeOptions *composite_options,
   ExceptionInfo *exception)
 {
+  ChannelType
+    channel_mask;
+
   MagickStatusType
     status;
 
@@ -122,25 +125,25 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   assert(exception != (ExceptionInfo *) NULL);
   status=MagickTrue;
-  PushPixelChannelMap(composite_image,composite_options->channel);
+  channel_mask=SetPixelChannelMask(composite_image,composite_options->channel);
   if (composite_image != (Image *) NULL)
     {
       assert(composite_image->signature == MagickSignature);
-      switch( composite_options->compose )
-        {
-          case BlendCompositeOp:
-          case BlurCompositeOp:
-          case DisplaceCompositeOp:
-          case DistortCompositeOp:
-          case DissolveCompositeOp:
-          case ModulateCompositeOp:
-          case ThresholdCompositeOp:
-            (void) SetImageArtifact(composite_image,"compose:args",
-              composite_options->compose_args);
-            break;
-          default:
-            break;
-        }
+      switch (composite_options->compose)
+      {
+        case BlendCompositeOp:
+        case BlurCompositeOp:
+        case DisplaceCompositeOp:
+        case DistortCompositeOp:
+        case DissolveCompositeOp:
+        case ModulateCompositeOp:
+        case ThresholdCompositeOp:
+          (void) SetImageArtifact(composite_image,"compose:args",
+            composite_options->compose_args);
+          break;
+        default:
+          break;
+      }
       /*
         Composite image.
       */
@@ -218,7 +221,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               GetImageException(*image,exception);
             }
     }
-  PopPixelChannelMap(composite_image);
+  (void) SetPixelChannelMap(composite_image,channel_mask);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 

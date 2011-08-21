@@ -83,35 +83,24 @@
 %
 %  The format of the AcquirePixelChannelMap() method is:
 %
-%      PixelChannelMap **AcquirePixelChannelMap(void)
+%      PixelChannelMap *AcquirePixelChannelMap(void)
 %
 */
-MagickExport PixelChannelMap **AcquirePixelChannelMap(void)
+MagickExport PixelChannelMap *AcquirePixelChannelMap(void)
 {
   PixelChannelMap
-    **channel_map;
+    *channel_map;
 
   register ssize_t
     i;
 
-  channel_map=(PixelChannelMap **) AcquireAlignedMemory(MaxPixelChannelMaps,
-    sizeof(**channel_map));
-  if (channel_map == (PixelChannelMap **) NULL)
+  channel_map=(PixelChannelMap *) AcquireQuantumMemory(MaxPixelChannels,
+    sizeof(*channel_map));
+  if (channel_map == (PixelChannelMap *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  for (i=0; i < MaxPixelChannelMaps; i++)
-  {
-    register ssize_t
-      j;
-
-    channel_map[i]=(PixelChannelMap *) AcquireQuantumMemory(MaxPixelChannels,
-      sizeof(*channel_map[i]));
-    if (channel_map[i] == (PixelChannelMap *) NULL)
-      ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-    (void) ResetMagickMemory(channel_map[i],0,MaxPixelChannels*
-      sizeof(*channel_map[i]));
-    for (j=0; j < MaxPixelChannels; j++)
-      channel_map[i][j].channel=(PixelChannel) j;
-  }
+  (void) ResetMagickMemory(channel_map,0,MaxPixelChannels*sizeof(*channel_map));
+  for (i=0; i < MaxPixelChannels; i++)
+    channel_map[i].channel=(PixelChannel) i;
   return(channel_map);
 }
 
@@ -130,30 +119,24 @@ MagickExport PixelChannelMap **AcquirePixelChannelMap(void)
 %
 %  The format of the ClonePixelChannelMap() method is:
 %
-%      PixelChannelMap **ClonePixelChannelMap(
-%        PixelChannelMap **channel_map)
+%      PixelChannelMap *ClonePixelChannelMap(PixelChannelMap *channel_map)
 %
 %  A description of each parameter follows:
 %
 %    o channel_map: the pixel component map.
 %
 */
-MagickExport PixelChannelMap **ClonePixelChannelMap(
-  PixelChannelMap **channel_map)
+MagickExport PixelChannelMap *ClonePixelChannelMap(PixelChannelMap *channel_map)
 {
   PixelChannelMap
-    **clone_map;
+    *clone_map;
 
-  register ssize_t
-    i;
-
-  assert(channel_map != (PixelChannelMap **) NULL);
+  assert(channel_map != (PixelChannelMap *) NULL);
   clone_map=AcquirePixelChannelMap();
-  if (clone_map == (PixelChannelMap **) NULL)
-    return((PixelChannelMap **) NULL);
-  for (i=0; i < MaxPixelChannelMaps; i++)
-    (void) CopyMagickMemory(clone_map[i],channel_map[i],MaxPixelChannels*
-      sizeof(*channel_map[i]));
+  if (clone_map == (PixelChannelMap *) NULL)
+    return((PixelChannelMap *) NULL);
+  (void) CopyMagickMemory(clone_map,channel_map,MaxPixelChannels*
+    sizeof(*channel_map));
   return(clone_map);
 }
 
@@ -208,23 +191,19 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 %
 %  The format of the DestroyPixelChannelMap() method is:
 %
-%      PixelChannelMap **DestroyPixelChannelMap(PixelChannelMap **channel_map)
+%      PixelChannelMap *DestroyPixelChannelMap(PixelChannelMap *channel_map)
 %
 %  A description of each parameter follows:
 %
 %    o channel_map: the pixel component map.
 %
 */
-MagickExport PixelChannelMap **DestroyPixelChannelMap(
-  PixelChannelMap **channel_map)
+MagickExport PixelChannelMap *DestroyPixelChannelMap(
+  PixelChannelMap *channel_map)
 {
-  register ssize_t
-    i;
-
-  assert(channel_map != (PixelChannelMap **) NULL);
-  for (i=0; i < MaxPixelChannelMaps; i++)
-    channel_map[i]=(PixelChannelMap *) RelinquishMagickMemory(channel_map[i]);
-  return((PixelChannelMap **) RelinquishMagickMemory(channel_map));
+  assert(channel_map != (PixelChannelMap *) NULL);
+  channel_map=(PixelChannelMap *) RelinquishMagickMemory(channel_map);
+  return((PixelChannelMap *) RelinquishMagickMemory(channel_map));
 }
 
 /*
@@ -3567,6 +3546,75 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n i t i a l i z e P i x e l C h a n n e l M a p                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializePixelChannelMap() defines the standard pixel component map.
+%
+%  The format of the InitializePixelChannelMap() method is:
+%
+%      void InitializePixelChannelMap(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport void InitializePixelChannelMap(Image *image)
+{
+  PixelChannel
+    alpha_channel;
+
+  register ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
+  {
+    SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelChannel) i);
+    SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
+  }
+  image->sync=MagickTrue;
+  image->number_channels=4;
+  if (0 && image->colorspace == GRAYColorspace)
+    image->number_channels=2;
+  if (image->colorspace == CMYKColorspace)
+    image->number_channels++;
+  if (image->storage_class == PseudoClass)
+    image->number_channels++;
+  for (i=0; i < (ssize_t) image->number_channels; i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
+      UpdatePixelTrait);
+  alpha_channel=GetPixelChannelMapChannel(image,AlphaPixelChannel);
+  if (image->matte != MagickFalse)
+    for (i=0; i < (ssize_t) image->number_channels; i++)
+      if ((PixelChannel) i != alpha_channel)
+        SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
+          (UpdatePixelTrait | BlendPixelTrait));
+  if (0 && image->colorspace == GRAYColorspace)
+    {
+      image->number_channels=2;
+      SetPixelChannelMapChannel(image,GreenPixelChannel,RedPixelChannel);
+      SetPixelChannelMapChannel(image,BluePixelChannel,RedPixelChannel);
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      SetPixelChannelMapChannel(image,IndexPixelChannel,IndexPixelChannel);
+      SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
+    }
+  image->number_channels+=image->number_meta_channels;
+  for ( ; i < (ssize_t) image->number_channels; i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,CopyPixelTrait);
+  SetPixelChannelMap(image,image->channel_mask);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I n t e r p o l a t e P i x e l C h a n n e l                             %
 %                                                                             %
 %                                                                             %
@@ -4844,69 +4892,6 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P o p P i x e l C h a n n e l M a p                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PopPixelChannelMap() pops the pixel component map.
-%
-%  The format of the PopPixelChannelMap method is:
-%
-%      void PopPixelChannelMap(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport void PopPixelChannelMap(Image *image)
-{
-  image->map--;
-  if (image->map < 0)
-    ThrowFatalException(ResourceLimitFatalError,"PixelChannelMapStack");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P u s h P i x e l C h a n n e l M a p                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PushPixelChannelMap() pushes the pixel channel map from the specified
-%  channel mask.
-%
-%  The format of the PushPixelChannelMap method is:
-%
-%      void PushPixelChannelMap(Image *image,const ChannelType channel_mask)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o channel_mask: the channel mask.
-%
-*/
-MagickExport void PushPixelChannelMap(Image *image,
-  const ChannelType channel_mask)
-{
-  image->map++;
-  if (image->map >= MaxPixelChannelMaps)
-    ThrowFatalException(ResourceLimitFatalError,"PixelChannelMapStack");
-  SetPixelChannelMap(image,channel_mask);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S e t P i x e l C h a n n e l M a p                                       %
 %                                                                             %
 %                                                                             %
@@ -4947,65 +4932,35 @@ MagickExport void SetPixelChannelMap(Image *image,const ChannelType mask)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   S t a n d a r d P i x e l C h a n n e l M a p                             %
+%   S e t P i x e l C h a n n e l M a s k                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StandardPixelChannelMap() defines the standard pixel component map.
+%  SetPixelChannelMask() sets the pixel channel mask from the specified
+%  channel mask.
 %
-%  The format of the StandardPixelChannelMap() method is:
+%  The format of the SetPixelChannelMask method is:
 %
-%      void StandardPixelChannelMap(Image *image)
+%      ChannelType SetPixelChannelMask(Image *image,
+%        const ChannelType channel_mask)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o channel_mask: the channel mask.
+%
 */
-MagickExport void StandardPixelChannelMap(Image *image)
+MagickExport ChannelType SetPixelChannelMask(Image *image,
+  const ChannelType channel_mask)
 {
-  PixelChannel
-    alpha_channel;
+  ChannelType
+    mask;
 
-  register ssize_t
-    i;
-
-  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
-  {
-    SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelChannel) i);
-    SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
-  }
-  image->sync=MagickTrue;
-  image->number_channels=4;
-  if (0 && image->colorspace == GRAYColorspace)
-    image->number_channels=2;
-  if (image->colorspace == CMYKColorspace)
-    image->number_channels++;
-  if (image->storage_class == PseudoClass)
-    image->number_channels++;
-  for (i=0; i < (ssize_t) image->number_channels; i++)
-    SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
-      UpdatePixelTrait);
-  alpha_channel=GetPixelChannelMapChannel(image,AlphaPixelChannel);
-  if (image->matte != MagickFalse)
-    for (i=0; i < (ssize_t) image->number_channels; i++)
-      if ((PixelChannel) i != alpha_channel)
-        SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
-          (UpdatePixelTrait | BlendPixelTrait));
-  if (0 && image->colorspace == GRAYColorspace)
-    {
-      image->number_channels=2;
-      SetPixelChannelMapChannel(image,GreenPixelChannel,RedPixelChannel);
-      SetPixelChannelMapChannel(image,BluePixelChannel,RedPixelChannel);
-    }
-  if (image->storage_class == PseudoClass)
-    {
-      SetPixelChannelMapChannel(image,IndexPixelChannel,IndexPixelChannel);
-      SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
-    }
-  image->number_channels+=image->number_meta_channels;
-  for ( ; i < (ssize_t) image->number_channels; i++)
-    SetPixelChannelMapTraits(image,(PixelChannel) i,CopyPixelTrait);
+  mask=image->channel_mask;
+  image->channel_mask=channel_mask;
+  SetPixelChannelMap(image,channel_mask);
+  return(mask);
 }
