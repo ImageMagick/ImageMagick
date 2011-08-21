@@ -427,6 +427,9 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
 static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   Image *image,const CompressionType compression)
 {
+  ChannelType
+    channel_mask;
+
   char
     buffer[MaxTextExtent];
 
@@ -515,9 +518,9 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   mask_image=CloneImage(image,0,0,MagickTrue,&image->exception);
   if (mask_image == (Image *) NULL)
     ThrowWriterException(CoderError,image->exception.reason);
-  PushPixelChannelMap(mask_image,AlphaChannel);
+  channel_mask=SetPixelChannelMask(mask_image,AlphaChannel);
   status=SeparateImage(mask_image);
-  PopPixelChannelMap(mask_image);
+  (void) SetPixelChannelMap(mask_image,channel_mask);
   if (status == MagickFalse)
     {
       mask_image=DestroyImage(mask_image);

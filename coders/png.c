@@ -11555,6 +11555,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   if (transparent)
     {
+      ChannelType
+        channel_mask;
+
       jng_color_type=14;
 
       /* Create JPEG blob, image, and image_info */
@@ -11577,9 +11580,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
 
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
-      PushPixelChannelMap(jpeg_image,AlphaChannel);
+      channel_mask=SetPixelChannelMask(jpeg_image,AlphaChannel);
       status=SeparateImage(jpeg_image);
-      PopPixelChannelMap(jpeg_image);
+      (void) SetPixelChannelMap(jpeg_image,channel_mask);
       jpeg_image->matte=MagickFalse;
 
       if (jng_quality >= 1000)

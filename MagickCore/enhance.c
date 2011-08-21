@@ -129,17 +129,20 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
   status=MagickTrue;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
+    ChannelType
+      channel_mask;
+
     PixelTrait
       traits;
 
     traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
-    PushPixelChannelMap(image,(ChannelType) i);
+    channel_mask=SetPixelChannelMask(image,(ChannelType) i);
     status=GetImageMean(image,&mean,&sans,exception);
     gamma=log(mean*QuantumScale)/log_mean;
     status&=LevelImage(image,0.0,(double) QuantumRange,gamma,exception);
-    PopPixelChannelMap(image);
+    (void) SetPixelChannelMask(image,channel_mask);
     if (status == MagickFalse)
       break;
   }
@@ -2561,6 +2564,9 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   const PixelInfo *black_color,const PixelInfo *white_color,
   const MagickBooleanType invert)
 {
+  ChannelType
+    channel_mask;
+
   MagickStatusType
     status;
 
@@ -2576,78 +2582,78 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
-          PushPixelChannelMap(image,RedChannel);
+          channel_mask=SetPixelChannelMask(image,RedChannel);
           status|=LevelImage(image,black_color->red,white_color->red,1.0,
             &image->exception);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
-          PushPixelChannelMap(image,GreenChannel);
+          channel_mask=SetPixelChannelMask(image,GreenChannel);
           status|=LevelImage(image,black_color->green,white_color->green,1.0,
             &image->exception);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
-          PushPixelChannelMap(image,BlueChannel);
+          channel_mask=SetPixelChannelMask(image,BlueChannel);
           status|=LevelImage(image,black_color->blue,white_color->blue,1.0,
             &image->exception);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          PushPixelChannelMap(image,BlackChannel);
+          channel_mask=SetPixelChannelMask(image,BlackChannel);
           status|=LevelImage(image,black_color->black,white_color->black,1.0,
             &image->exception);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
-          PushPixelChannelMap(image,AlphaChannel);
+          channel_mask=SetPixelChannelMask(image,AlphaChannel);
           status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
             &image->exception);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
     }
   else
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
-          PushPixelChannelMap(image,RedChannel);
+          channel_mask=SetPixelChannelMask(image,RedChannel);
           status|=LevelizeImage(image,black_color->red,white_color->red,1.0);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
-          PushPixelChannelMap(image,GreenChannel);
+          channel_mask=SetPixelChannelMask(image,GreenChannel);
           status|=LevelizeImage(image,black_color->green,white_color->green,
             1.0);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
-          PushPixelChannelMap(image,BlueChannel);
+          channel_mask=SetPixelChannelMask(image,BlueChannel);
           status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          PushPixelChannelMap(image,BlackChannel);
+          channel_mask=SetPixelChannelMask(image,BlackChannel);
           status|=LevelizeImage(image,black_color->black,white_color->black,
             1.0);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
-          PushPixelChannelMap(image,AlphaChannel);
+          channel_mask=SetPixelChannelMask(image,AlphaChannel);
           status|=LevelizeImage(image,black_color->alpha,white_color->alpha,
             1.0);
-          PopPixelChannelMap(image);
+          (void) SetPixelChannelMask(image,channel_mask);
         }
     }
   return(status == 0 ? MagickFalse : MagickTrue);
