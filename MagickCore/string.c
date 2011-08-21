@@ -2199,7 +2199,7 @@ MagickExport char **StringToList(const char *text)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringToStringInfo() returns the contents of a file as a string.
+%  StringToStringInfo() converts a string to a StringInfo type.
 %
 %  The format of the StringToStringInfo method is:
 %
@@ -2217,7 +2217,7 @@ MagickExport StringInfo *StringToStringInfo(const char *string)
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(string != (const char *) NULL);
-  string_info=AcquireStringInfo(strlen(string)+1);
+  string_info=AcquireStringInfo(strlen(string));
   SetStringInfoDatum(string_info,(const unsigned char *) string);
   return(string_info);
 }
