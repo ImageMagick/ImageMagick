@@ -30,7 +30,7 @@ extern MagickExport MagickBooleanType
   ColorDecisionListImage(Image *,const char *,ExceptionInfo *),
   ContrastImage(Image *,const MagickBooleanType,ExceptionInfo *),
   ContrastStretchImage(Image *,const double,const double,ExceptionInfo *),
-  EqualizeImage(Image *image),
+  EqualizeImage(Image *image,ExceptionInfo *),
   GammaImage(Image *,const double,ExceptionInfo *),
   HaldClutImage(Image *,const Image *),
   LevelImage(Image *,const double,const double,const double,ExceptionInfo *),

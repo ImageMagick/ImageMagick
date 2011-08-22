@@ -883,9 +883,11 @@ void Magick::Image::enhance ( void )
 // Equalize image (histogram equalization)
 void Magick::Image::equalize ( void )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  EqualizeImage( image() );
-  throwImageException();
+  EqualizeImage( image(), &exceptionInfo );
+  throwException( exceptionInfo );
 }
 
 // Erase image to current "background color"
