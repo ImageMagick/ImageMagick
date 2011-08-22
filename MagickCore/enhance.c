@@ -1012,11 +1012,11 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   MagickOffsetType
     progress;
 
-  double
-    *black,
+  MagickRealType
+    black[MaxPixelChannels],
     *histogram,
     *stretch_map,
-    *white;
+    white[MaxPixelChannels];
 
   register ssize_t
     i;
@@ -1031,23 +1031,17 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  black=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*black));
-  white=(double *) AcquireQuantumMemory(GetPixelChannels(image),sizeof(*white));
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,
+  histogram=(MagickRealType *) AcquireQuantumMemory(MaxMap+1UL,
     GetPixelChannels(image)*sizeof(*histogram));
-  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
+  stretch_map=(MagickRealType *) AcquireQuantumMemory(MaxMap+1UL,
     GetPixelChannels(image)*sizeof(*stretch_map));
-  if ((black == (double *) NULL) || (white == (double *) NULL) ||
-      (histogram == (double *) NULL) || (stretch_map == (double *) NULL))
+  if ((histogram == (MagickRealType *) NULL) ||
+      (stretch_map == (MagickRealType *) NULL))
     {
-      if (stretch_map != (double *) NULL)
-        stretch_map=(double *) RelinquishMagickMemory(stretch_map);
-      if (histogram != (double *) NULL)
-        histogram=(double *) RelinquishMagickMemory(histogram);
-      if (white != (double *) NULL)
-        white=(double *) RelinquishMagickMemory(white);
-      if (black != (double *) NULL)
-        black=(double *) RelinquishMagickMemory(black);
+      if (stretch_map != (MagickRealType *) NULL)
+        stretch_map=(MagickRealType *) RelinquishMagickMemory(stretch_map);
+      if (histogram != (MagickRealType *) NULL)
+        histogram=(MagickRealType *) RelinquishMagickMemory(histogram);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -1261,9 +1255,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  stretch_map=(double *) RelinquishMagickMemory(stretch_map);
-  white=(double *) RelinquishMagickMemory(white);
-  black=(double *) RelinquishMagickMemory(black);
+  stretch_map=(MagickRealType *) RelinquishMagickMemory(stretch_map);
   return(status);
 }
 
