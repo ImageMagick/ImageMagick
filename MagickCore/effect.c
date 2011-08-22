@@ -1901,7 +1901,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   emboss_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
-    (void) EqualizeImage(emboss_image);
+    (void) EqualizeImage(emboss_image,exception);
   return(emboss_image);
 }
 

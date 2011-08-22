@@ -1470,8 +1470,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Equalize image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) EqualizeImage(*image);
-            InheritException(exception,&(*image)->exception);
+            (void) EqualizeImage(*image,exception);
             break;
           }
         if (LocaleCompare("evaluate",option+1) == 0)

@@ -1294,34 +1294,18 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 */
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
-#define Enhance(weight) \
-  mean=((MagickRealType) GetPixelRed(image,r)+pixel.red)/2; \
-  distance=(MagickRealType) GetPixelRed(image,r)-(MagickRealType) pixel.red; \
+#define EnhancePixel(weight) \
+  mean=((MagickRealType) r[i]+q[channel])/2.0; \
+  distance=(MagickRealType) r[i]-(MagickRealType) q[channel]; \
   distance_squared=QuantumScale*(2.0*((MagickRealType) QuantumRange+1.0)+ \
-     mean)*distance*distance; \
-  mean=((MagickRealType) GetPixelGreen(image,r)+pixel.green)/2; \
-  distance=(MagickRealType) GetPixelGreen(image,r)- \
-    (MagickRealType) pixel.green; \
-  distance_squared+=4.0*distance*distance; \
-  mean=((MagickRealType) GetPixelBlue(image,r)+pixel.blue)/2; \
-  distance=(MagickRealType) GetPixelBlue(image,r)- \
-    (MagickRealType) pixel.blue; \
-  distance_squared+=QuantumScale*(3.0*((MagickRealType) \
-    QuantumRange+1.0)-1.0-mean)*distance*distance; \
-  mean=((MagickRealType) GetPixelAlpha(image,r)+pixel.alpha)/2; \
-  distance=(MagickRealType) GetPixelAlpha(image,r)-(MagickRealType) pixel.alpha; \
-  distance_squared+=QuantumScale*(3.0*((MagickRealType) \
-    QuantumRange+1.0)-1.0-mean)*distance*distance; \
+    mean)*distance*distance; \
   if (distance_squared < ((MagickRealType) QuantumRange*(MagickRealType) \
       QuantumRange/25.0f)) \
     { \
-      aggregate.red+=(weight)*GetPixelRed(image,r); \
-      aggregate.green+=(weight)*GetPixelGreen(image,r); \
-      aggregate.blue+=(weight)*GetPixelBlue(image,r); \
-      aggregate.alpha+=(weight)*GetPixelAlpha(image,r); \
+      aggregate+=(weight)*r[i]; \
       total_weight+=(weight); \
     } \
-  r++;
+  r+=GetPixelChannels(image);
 #define EnhanceImageTag  "Enhance/Image"
 
   CacheView
@@ -1337,9 +1321,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   MagickOffsetType
     progress;
 
-  PixelInfo
-    zero;
-
   ssize_t
     y;
 
@@ -1352,8 +1333,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < 5) || (image->rows < 5))
-    return((Image *) NULL);
   enhance_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (enhance_image == (Image *) NULL)
@@ -1368,7 +1347,6 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   */
   status=MagickTrue;
   progress=0;
-  (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireCacheView(image);
   enhance_view=AcquireCacheView(enhance_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1385,9 +1363,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     register ssize_t
       x;
 
-    /*
-      Read another scan line.
-    */
+    ssize_t
+      center;
+
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-2,y-2,image->columns+4,5,exception);
@@ -1398,48 +1376,63 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         status=MagickFalse;
         continue;
       }
+    center=GetPixelChannels(image)*(2*(image->columns+4)+2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      PixelInfo
-        aggregate;
+      register ssize_t
+        i;
 
-      MagickRealType
-        distance,
-        distance_squared,
-        mean,
-        total_weight;
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          aggregate,
+          distance,
+          distance_squared,
+          mean,
+          total_weight;
 
-      PixelPacket
-        pixel;
+        PixelChannel
+          channel;
 
-      register const Quantum
-        *restrict r;
+        PixelTrait
+          enhance_traits,
+          traits;
 
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      aggregate=zero;
-      total_weight=0.0;
-      r=p+2*(image->columns+4)+2;
-      GetPixelPacket(image,r,&pixel);
-      r=p;
-      Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
-      r=p+(image->columns+4);
-      Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
-      r=p+2*(image->columns+4);
-      Enhance(10.0); Enhance(40.0); Enhance(80.0); Enhance(40.0); Enhance(10.0);
-      r=p+3*(image->columns+4);
-      Enhance(8.0); Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
-      r=p+4*(image->columns+4);
-      Enhance(5.0); Enhance(8.0); Enhance(10.0); Enhance(8.0); Enhance(5.0);
-      SetPixelRed(enhance_image,(Quantum) ((aggregate.red+
-        (total_weight/2)-1)/total_weight),q);
-      SetPixelGreen(enhance_image,(Quantum) ((aggregate.green+
-        (total_weight/2)-1)/total_weight),q);
-      SetPixelBlue(enhance_image,(Quantum) ((aggregate.blue+
-        (total_weight/2)-1)/total_weight),q);
-      SetPixelAlpha(enhance_image,(Quantum) ((aggregate.alpha+
-        (total_weight/2)-1)/total_weight),q);
+        register const Quantum
+          *restrict r;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        enhance_traits=GetPixelChannelMapTraits(enhance_image,channel);
+        if (enhance_traits == UndefinedPixelTrait)
+          continue;
+        q[channel]=p[center+i];
+        if ((enhance_traits & CopyPixelTrait) != 0)
+          continue;
+        /*
+          Compute weighted average of target pixel color components.
+        */
+        aggregate=0.0;
+        total_weight=0.0;
+        r=p+0*GetPixelChannels(image)*(image->columns+4);
+        EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
+          EnhancePixel(8.0); EnhancePixel(5.0);
+        r=p+1*GetPixelChannels(image)*(image->columns+4);
+        EnhancePixel(8.0); EnhancePixel(20.0); EnhancePixel(40.0);
+          EnhancePixel(20.0); EnhancePixel(8.0);
+        r=p+2*GetPixelChannels(image)*(image->columns+4);
+        EnhancePixel(10.0); EnhancePixel(40.0); EnhancePixel(80.0);
+          EnhancePixel(40.0); EnhancePixel(10.0);
+        r=p+3*GetPixelChannels(image)*(image->columns+4);
+        EnhancePixel(8.0); EnhancePixel(20.0); EnhancePixel(40.0);
+          EnhancePixel(20.0); EnhancePixel(8.0);
+        r=p+4*GetPixelChannels(image)*(image->columns+4);
+        EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
+          EnhancePixel(8.0); EnhancePixel(5.0);
+        q[channel]=ClampToQuantum(aggregate/total_weight);
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(enhance_image);
     }
@@ -1478,24 +1471,22 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %
 %  The format of the EqualizeImage method is:
 %
-%      MagickBooleanType EqualizeImage(Image *image)
+%      MagickBooleanType EqualizeImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channel: the channel.
+%    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType EqualizeImage(Image *image)
+MagickExport MagickBooleanType EqualizeImage(Image *image,
+  ExceptionInfo *exception)
 {
 #define EqualizeImageTag  "Equalize/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1530,8 +1521,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image)
     sizeof(*histogram));
   map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*map));
   if ((equalize_map == (PixelInfo *) NULL) ||
-      (histogram == (PixelInfo *) NULL) ||
-      (map == (PixelInfo *) NULL))
+      (histogram == (PixelInfo *) NULL) || (map == (PixelInfo *) NULL))
     {
       if (map != (PixelInfo *) NULL)
         map=(PixelInfo *) RelinquishMagickMemory(map);
@@ -1546,7 +1536,6 @@ MagickExport MagickBooleanType EqualizeImage(Image *image)
     Form histogram.
   */
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
-  exception=(&image->exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum

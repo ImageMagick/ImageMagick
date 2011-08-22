@@ -2886,7 +2886,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) EqualizeImage(msl_info->image[n]);
+          (void) EqualizeImage(msl_info->image[n],
+            &msl_info->image[n]->exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

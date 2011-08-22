@@ -8643,7 +8643,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          EqualizeImage(image);
+          EqualizeImage(image,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
