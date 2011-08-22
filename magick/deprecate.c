@@ -1980,6 +1980,45 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
 %      arguments.
 %
 */
+
+MagickExport MagickBooleanType FormatImageAttributeList(Image *image,
+  const char *key,const char *format,va_list operands)
+{
+  char
+    value[MaxTextExtent];
+
+  int
+    n;
+
+#if defined(MAGICKCORE_HAVE_VSNPRINTF)
+  n=vsnprintf(value,MaxTextExtent,format,operands);
+#else
+  n=vsprintf(value,format,operands);
+#endif
+  if (n < 0)
+    value[MaxTextExtent-1]='\0';
+  return(SetImageProperty(image,key,value));
+}
+
+MagickExport MagickBooleanType FormatImagePropertyList(Image *image,
+  const char *property,const char *format,va_list operands)
+{
+  char
+    value[MaxTextExtent];
+
+  int
+    n;
+
+#if defined(MAGICKCORE_HAVE_VSNPRINTF)
+  n=vsnprintf(value,MaxTextExtent,format,operands);
+#else
+  n=vsprintf(value,format,operands);
+#endif
+  if (n < 0)
+    value[MaxTextExtent-1]='\0';
+  return(SetImageProperty(image,property,value));
+}
+
 MagickExport MagickBooleanType FormatImageAttribute(Image *image,
   const char *key,const char *format,...)
 {

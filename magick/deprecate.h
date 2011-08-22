@@ -153,15 +153,6 @@ extern MagickExport int
   ParseImageGeometry(const char *,ssize_t *,ssize_t *,size_t *,size_t *)
     magick_attribute((deprecated));
 
-extern MagickExport ssize_t
-  FormatMagickString(char *,const size_t,const char *,...)
-    magick_attribute((format (printf,3,4))) magick_attribute((deprecated)),
-  FormatMagickStringList(char *,const size_t,const char *,va_list)
-    magick_attribute((format (printf,3,0))),
-  GetImageListIndex(const Image *) magick_attribute((deprecated)),
-  SetMagickRegistry(const RegistryType,const void *,const size_t,
-    ExceptionInfo *) magick_attribute((deprecated));
-
 extern MagickExport MagickBooleanType
   AcquireOneCacheViewPixel(const CacheView *,const ssize_t,const ssize_t,
     PixelPacket *,ExceptionInfo *) magick_attribute((deprecated)),
@@ -187,6 +178,8 @@ extern MagickExport MagickBooleanType
     magick_attribute((format (printf,3,4))) magick_attribute((deprecated)),
   FormatImageAttributeList(Image *,const char *,const char *,va_list)
     magick_attribute((format (printf,3,0))) magick_attribute((deprecated)),
+  FormatImagePropertyList(Image *,const char *,const char *,va_list)
+    magick_attribute((format (printf,3,0))),
   FuzzyColorCompare(const Image *,const PixelPacket *,const PixelPacket *)
     magick_attribute((deprecated)),
   FuzzyOpacityCompare(const Image *,const PixelPacket *,const PixelPacket *)
@@ -266,6 +259,15 @@ extern MagickExport size_t
     magick_attribute((deprecated)),
   PushImagePixels(Image *,const QuantumType,const unsigned char *)
     magick_attribute((deprecated));
+
+extern MagickExport ssize_t
+  FormatMagickString(char *,const size_t,const char *,...)
+    magick_attribute((format (printf,3,4))) magick_attribute((deprecated)),
+  FormatMagickStringList(char *,const size_t,const char *,va_list)
+    magick_attribute((format (printf,3,0))),
+  GetImageListIndex(const Image *) magick_attribute((deprecated)),
+  SetMagickRegistry(const RegistryType,const void *,const size_t,
+    ExceptionInfo *) magick_attribute((deprecated));
 
 extern MagickExport unsigned int
   ChannelImage(Image *,const ChannelType) magick_attribute((deprecated)),

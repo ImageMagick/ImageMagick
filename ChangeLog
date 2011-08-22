@@ -1,8 +1,12 @@
+2011-08-22  6.7.1-10 Cristy  <quetzlzacatenango@image...>
+  * Revert FormatImageAttributeList(), FormatImagePropertyList() (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19339).
+
 2011-08-21  6.7.1-10 Glenn Randers-Pehrson <glennrp@image...>
   * Revised configure.ac (and configure) to look for -lpng15, -lpng14, -lpng12,
-  and -lpng in that order instead of just -lpng.  This should help find
-  a consistent library and headers when users upgrade their libpng delegate
-  from one version to another, incompatible version.
+    and -lpng in that order instead of just -lpng.  This should help find
+    a consistent library and headers when users upgrade their libpng delegate
+    from one version to another, incompatible version.
 
 2011-08-20  6.7.1-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-9.
