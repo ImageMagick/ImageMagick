@@ -60,7 +60,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-6.7.2//"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-6.7.1//"
 #endif
 
 /* Define if you have Display Postscript */
@@ -1269,12 +1269,12 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.2"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.1"
 #endif
 
 /* Define to the one symbol short name of this package. */
 #ifndef MAGICKCORE_PACKAGE_TARNAME
-#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick-6.7.2"
+#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick-6.7.1"
 #endif
 
 /* Define to the home page for this package. */
@@ -1284,7 +1284,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.7.2"
+#define MAGICKCORE_PACKAGE_VERSION "6.7.1"
 #endif
 
 /* Define if you have PNG library */
