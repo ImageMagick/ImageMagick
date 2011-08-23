@@ -40,7 +40,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '6.7.1 Q16 '
+      echo '6.7.2 Q16 '
       ;;
     --cflags)
       echo "-I${includedir} -fopenmp"
