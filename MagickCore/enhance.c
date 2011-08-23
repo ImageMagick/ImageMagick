@@ -387,12 +387,9 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
           continue;
         channel=GetPixelChannelMapChannel(clut_image,(PixelChannel) i);
         traits=GetPixelChannelMapTraits(clut_image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[channel]=ClampToQuantum(clut_map[ScaleQuantumToMap(q[channel])*
-          GetPixelChannels(clut_image)+channel]);
+        if ((traits & UpdatePixelTrait) != 0)
+          q[channel]=ClampToQuantum(clut_map[ScaleQuantumToMap(q[channel])*
+            GetPixelChannels(clut_image)+channel]);
       }
       q+=GetPixelChannels(image);
     }
@@ -1228,9 +1225,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
           traits;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        if (black[i] != white[i])
+        if (((traits & UpdatePixelTrait) != 0) && (black[i] != white[i]))
           q[i]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
             ScaleQuantumToMap(q[i])+i]);
       }
@@ -1684,11 +1679,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           traits;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        if (black[i] != white[i])
+        if (((traits & UpdatePixelTrait) != 0) && (black[i] != white[i]))
           q[i]=ClampToQuantum(equalize_map[GetPixelChannels(image)*
             ScaleQuantumToMap(q[i])+i]);
       }
@@ -1899,13 +1890,16 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 %
 %  The format of the HaldClutImage method is:
 %
-%      MagickBooleanType HaldClutImage(Image *image,Image *hald_image)
+%      MagickBooleanType HaldClutImage(Image *image,Image *hald_image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image, which is replaced by indexed CLUT values
 %
 %    o hald_image: the color lookup table image for replacement color values.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1917,7 +1911,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 MagickExport MagickBooleanType HaldClutImage(Image *image,
-  const Image *hald_image)
+  const Image *hald_image,ExceptionInfo *exception)
 {
 #define HaldClutImageTag  "Clut/Image"
 
@@ -1935,9 +1929,6 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 
   double
     width;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1962,7 +1953,6 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(hald_image != (Image *) NULL);
   assert(hald_image->signature == MagickSignature);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
@@ -1985,19 +1975,6 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    double
-      offset;
-
-    HaldInfo
-      point;
-
-    PixelInfo
-      pixel,
-      pixel1,
-      pixel2,
-      pixel3,
-      pixel4;
-
     register Quantum
       *restrict q;
 
@@ -2012,13 +1989,21 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    pixel=zero;
-    pixel1=zero;
-    pixel2=zero;
-    pixel3=zero;
-    pixel4=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        offset;
+
+      HaldInfo
+        point;
+
+      PixelInfo
+        pixel,
+        pixel1,
+        pixel2,
+        pixel3,
+        pixel4;
+
       point.x=QuantumScale*(level-1.0)*GetPixelRed(image,q);
       point.y=QuantumScale*(level-1.0)*GetPixelGreen(image,q);
       point.z=QuantumScale*(level-1.0)*GetPixelBlue(image,q);
@@ -2026,25 +2011,26 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      (void) InterpolatePixelInfo(image,hald_view,
-        UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
-        &pixel1,exception);
-      (void) InterpolatePixelInfo(image,hald_view,
-        UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
-        width),&pixel2,exception);
-      CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,
-        pixel2.alpha,point.y,&pixel3);
+      pixel1=zero;
+      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+        fmod(offset,width),floor(offset/width),&pixel1,exception);
+      pixel2=zero;
+      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+        fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
+      pixel3=zero;
+      CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
+        point.y,&pixel3);
       offset+=cube_size;
-      (void) InterpolatePixelInfo(image,hald_view,
-        UndefinedInterpolatePixel,fmod(offset,width),floor(offset/width),
-        &pixel1,exception);
-      (void) InterpolatePixelInfo(image,hald_view,
-        UndefinedInterpolatePixel,fmod(offset+level,width),floor((offset+level)/
-        width),&pixel2,exception);
-      CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,
-        pixel2.alpha,point.y,&pixel4);
-      CompositePixelInfoAreaBlend(&pixel3,pixel3.alpha,&pixel4,
-        pixel4.alpha,point.z,&pixel);
+      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+        fmod(offset,width),floor(offset/width),&pixel1,exception);
+      (void) InterpolatePixelInfo(image,hald_view,image->interpolate,
+        fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
+      pixel4=zero;
+      CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
+        point.y,&pixel4);
+      pixel=zero;
+      CompositePixelInfoAreaBlend(&pixel3,pixel3.alpha,&pixel4,pixel4.alpha,
+        point.z,&pixel);
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         SetPixelRed(image,ClampToQuantum(pixel.red),q);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -2122,9 +2108,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType LevelImage(Image *image,
-  const double black_point,const double white_point,const double gamma,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
+  const double white_point,const double gamma,ExceptionInfo *exception)
 {
 #define LevelImageTag  "Level/Image"
 #define LevelQuantum(x) (ClampToQuantum((MagickRealType) QuantumRange* \
@@ -2201,18 +2186,21 @@ MagickExport MagickBooleanType LevelImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,LevelQuantum(GetPixelRed(image,q)),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,LevelQuantum(GetPixelGreen(image,q)),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,LevelQuantum(GetPixelBlue(image,q)),q);
-      if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->matte == MagickTrue))
-        SetPixelAlpha(image,LevelQuantum(GetPixelAlpha(image,q)),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,LevelQuantum(GetPixelBlack(image,q)),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=LevelQuantum(q[i]);
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2261,7 +2249,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 %  The format of the LevelizeImage method is:
 %
 %      MagickBooleanType LevelizeImage(Image *image,const double black_point,
-%        const double white_point,const double gamma)
+%        const double white_point,const double gamma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2273,9 +2261,12 @@ MagickExport MagickBooleanType LevelImage(Image *image,
 %
 %    o gamma: adjust gamma by this factor before mapping values.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType LevelizeImage(Image *image,
-  const double black_point,const double white_point,const double gamma)
+  const double black_point,const double white_point,const double gamma,
+  ExceptionInfo *exception)
 {
 #define LevelizeImageTag  "Levelize/Image"
 #define LevelizeValue(x) (ClampToQuantum(((MagickRealType) \
@@ -2284,9 +2275,6 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -2353,18 +2341,18 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,LevelizeValue(GetPixelRed(image,q)),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,LevelizeValue(GetPixelGreen(image,q)),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,LevelizeValue(GetPixelBlue(image,q)),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,LevelizeValue(GetPixelBlack(image,q)),q);
-      if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->matte == MagickTrue))
-        SetPixelAlpha(image,LevelizeValue(GetPixelAlpha(image,q)),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+          q[i]=LevelizeValue(q[i]);
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2412,7 +2400,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %
 %    MagickBooleanType LevelImageColors(Image *image,
 %      const PixelInfo *black_color,const PixelInfo *white_color,
-%      const MagickBooleanType invert)
+%      const MagickBooleanType invert,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2424,10 +2412,12 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %
 %    o invert: if true map the colors (levelize), rather than from (level)
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType LevelImageColors(Image *image,
   const PixelInfo *black_color,const PixelInfo *white_color,
-  const MagickBooleanType invert)
+  const MagickBooleanType invert,ExceptionInfo *exception)
 {
   ChannelType
     channel_mask;
@@ -2449,21 +2439,21 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
         {
           channel_mask=SetPixelChannelMask(image,RedChannel);
           status|=LevelImage(image,black_color->red,white_color->red,1.0,
-            &image->exception);
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetPixelChannelMask(image,GreenChannel);
           status|=LevelImage(image,black_color->green,white_color->green,1.0,
-            &image->exception);
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetPixelChannelMask(image,BlueChannel);
           status|=LevelImage(image,black_color->blue,white_color->blue,1.0,
-            &image->exception);
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
@@ -2471,7 +2461,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
         {
           channel_mask=SetPixelChannelMask(image,BlackChannel);
           status|=LevelImage(image,black_color->black,white_color->black,1.0,
-            &image->exception);
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
@@ -2479,7 +2469,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
         {
           channel_mask=SetPixelChannelMask(image,AlphaChannel);
           status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
-            &image->exception);
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
     }
@@ -2488,36 +2478,38 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetPixelChannelMask(image,RedChannel);
-          status|=LevelizeImage(image,black_color->red,white_color->red,1.0);
+          status|=LevelizeImage(image,black_color->red,white_color->red,1.0,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetPixelChannelMask(image,GreenChannel);
-          status|=LevelizeImage(image,black_color->green,white_color->green,
-            1.0);
+          status|=LevelizeImage(image,black_color->green,white_color->green,1.0,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetPixelChannelMask(image,BlueChannel);
-          status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0);
+          status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           channel_mask=SetPixelChannelMask(image,BlackChannel);
-          status|=LevelizeImage(image,black_color->black,white_color->black,
-            1.0);
+          status|=LevelizeImage(image,black_color->black,white_color->black,1.0,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
           channel_mask=SetPixelChannelMask(image,AlphaChannel);
-          status|=LevelizeImage(image,black_color->alpha,white_color->alpha,
-            1.0);
+          status|=LevelizeImage(image,black_color->alpha,white_color->alpha,1.0,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
         }
     }

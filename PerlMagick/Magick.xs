@@ -10429,7 +10429,8 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) HaldClutImage(image,argument_list[0].image_reference);
+          (void) HaldClutImage(image,argument_list[0].image_reference,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
@@ -10499,7 +10500,8 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[3].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           (void) LevelImageColors(image,&black_point,&white_point,
-            argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse);
+            argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }

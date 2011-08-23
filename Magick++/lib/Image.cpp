@@ -1208,9 +1208,12 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
 // Apply a color lookup table (Hald CLUT) to the image.
 void  Magick::Image::haldClut ( const Image &clutImage_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  (void) HaldClutImage( image(), clutImage_.constImage() );
-  throwImageException();
+  (void) HaldClutImage( image(), clutImage_.constImage(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Implode image
