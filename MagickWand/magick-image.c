@@ -5629,9 +5629,7 @@ WandExport MagickBooleanType MagickHaldClutImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->images == (Image *) NULL) || (hald_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=HaldClutImage(wand->images,hald_wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=HaldClutImage(wand->images,hald_wand->images,&wand->images->exception);
   return(status);
 }
 

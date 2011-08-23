@@ -1868,7 +1868,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               white_point=(MagickRealType) QuantumRange-black_point;
             if ((*option == '+') || ((flags & AspectValue) != 0))
-              (void) LevelizeImage(*image,black_point,white_point,gamma);
+              (void) LevelizeImage(*image,black_point,white_point,gamma,
+                exception);
             else
               (void) LevelImage(*image,black_point,white_point,gamma,
                 exception);
@@ -1907,7 +1908,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   (void) QueryMagickColor("#ffffff",&white_point,exception);
               }
             (void) LevelImageColors(*image,&black_point,&white_point,
-              *option == '+' ? MagickTrue : MagickFalse);
+              *option == '+' ? MagickTrue : MagickFalse,exception);
             break;
           }
         if (LocaleCompare("linear-stretch",option+1) == 0)
@@ -7620,9 +7621,8 @@ This has been merged completely into MogrifyImage()
                 status=MagickFalse;
                 break;
               }
-            (void) HaldClutImage(image,hald_image);
+            (void) HaldClutImage(image,hald_image,exception);
             hald_image=DestroyImage(hald_image);
-            InheritException(exception,&image->exception);
             if (*images != (Image *) NULL)
               *images=DestroyImageList(*images);
             *images=image;

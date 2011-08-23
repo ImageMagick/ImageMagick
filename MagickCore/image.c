@@ -2628,7 +2628,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           */
           GetPixelInfo(image,&background);
           SetPixelInfoPacket(image,&(image->background_color),&background);
-          (void) LevelImageColors(image,&background,&background,MagickTrue);
+          (void) LevelImageColors(image,&background,&background,MagickTrue,
+            exception);
         }
       break;
     }

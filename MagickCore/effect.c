@@ -128,6 +128,9 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
     gamma,
     white_point;
 
+  ExceptionInfo
+    *exception;
+
   GeometryInfo
     geometry_info;
 
@@ -142,6 +145,7 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   */
   if (levels == (char *) NULL)
     return(MagickFalse);
+  exception=(&image->exception);
   flags=ParseGeometry(levels,&geometry_info);
   black_point=geometry_info.rho;
   white_point=(double) QuantumRange;
@@ -158,9 +162,9 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   if ((flags & SigmaValue) == 0)
     white_point=(double) QuantumRange-black_point;
   if ((flags & AspectValue ) == 0)
-    status=LevelImage(image,black_point,white_point,gamma,&image->exception);
+    status=LevelImage(image,black_point,white_point,gamma,exception);
   else
-    status=LevelizeImage(image,black_point,white_point,gamma);
+    status=LevelizeImage(image,black_point,white_point,gamma,exception);
   return(status);
 }
 
