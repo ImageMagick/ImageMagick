@@ -3607,7 +3607,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
   image->number_channels+=image->number_meta_channels;
   for ( ; i < (ssize_t) image->number_channels; i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,CopyPixelTrait);
-  SetPixelChannelMap(image,image->channel_mask);
 }
 
 /*
@@ -4914,17 +4913,18 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 */
 MagickExport void SetPixelChannelMap(Image *image,const ChannelType mask)
 {
-#define GetChannelBit(alpha,i)  (((size_t) (alpha) >> (size_t) (i)) & 0x01)
+#define GetChannelBit(mask,bit)  (((size_t) (mask) >> (size_t) (bit)) & 0x01)
 
   register ssize_t
     i;
 
   image->sync=mask == DefaultChannels ? MagickTrue : MagickFalse;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    SetPixelChannelMapTraits(image,(PixelChannel) i,GetChannelBit(mask,i) ?
+    SetPixelChannelMapTraits(image,(PixelChannel) i,GetChannelBit(mask,i) != 0 ?
       UpdatePixelTrait : CopyPixelTrait);
   for ( ; i < MaxPixelChannels; i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
+  SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
 }
 
 /*
