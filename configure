@@ -3583,7 +3583,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5041
+MAGICK_SVN_REVISION=5052
 
 
 
@@ -30039,8 +30039,7 @@ fi
 have_png='no'
 PNG_LIBS=''
 
-if test "$with_png" != 'no'
-then
+if test "$with_png" != 'no'; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PNG support " >&5
@@ -30116,8 +30115,7 @@ $as_echo "yes" >&6; }
           fi
         fi
 
-        if test $passed -gt 0 -a $failed -le 0
-        then
+        if test $passed -gt 0 -a $failed -le 0; then
           if test "1${var}" = '15' ; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng15... " >&6; }
@@ -30383,18 +30381,18 @@ fi
 $as_echo_n "checking if ${pnglib} package is complete... " >&6; }
             if test $passed -gt 0 ; then
               if test $failed -gt 0 ; then
-	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
-	        have_png='no (failed tests)'
+                  have_png='no (failed tests)'
               else
-	        PNG_LIBS="-l${pnglib}"
-	        LIBS="$PNG_LIBS $LIBS"
+                  PNG_LIBS="-l${pnglib}"
+                  LIBS="$PNG_LIBS $LIBS"
 
 $as_echo "#define PNG_DELEGATE 1" >>confdefs.h
 
-	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	        have_png='yes'
+                  have_png='yes'
               fi
             fi
           fi
