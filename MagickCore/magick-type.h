@@ -158,7 +158,7 @@ typedef enum
   RGBChannels = 0x0080,      /* set alpha from grayscale mask in RGB */
   GrayChannels = 0x0080,
   SyncChannels = 0x0100,     /* channels should be modified equally */
-  DefaultChannels = ((AllChannels | SyncChannels) &~ AlphaChannel &! IndexChannel)
+  DefaultChannels = ((AllChannels | SyncChannels) &~ AlphaChannel &~ IndexChannel)
 } ChannelType;
 
 typedef enum
