@@ -37,12 +37,12 @@ extern MagickExport MagickBooleanType
   LevelizeImage(Image *,const double,const double,const double,ExceptionInfo *),
   LevelImageColors(Image *,const PixelInfo *,const PixelInfo *,
     const MagickBooleanType,ExceptionInfo *),
-  LinearStretchImage(Image *,const double,const double),
-  ModulateImage(Image *,const char *),
+  LinearStretchImage(Image *,const double,const double,ExceptionInfo *),
+  ModulateImage(Image *,const char *,ExceptionInfo *),
   NegateImage(Image *,const MagickBooleanType,ExceptionInfo *),
   NormalizeImage(Image *,ExceptionInfo *),
   SigmoidalContrastImage(Image *,const MagickBooleanType,const double,
-    const double);
+    const double,ExceptionInfo *);
 
 extern MagickExport Image
   *EnhanceImage(const Image *,ExceptionInfo *);
