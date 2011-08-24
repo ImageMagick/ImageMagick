@@ -2417,8 +2417,7 @@ fi
 have_png='no'
 PNG_LIBS=''
 
-if test "$with_png" != 'no'
-then
+if test "$with_png" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING(for PNG support )
   AC_MSG_RESULT()
@@ -2471,8 +2470,7 @@ return 0;
           fi
         fi
 
-        if test $passed -gt 0 -a $failed -le 0
-        then
+        if test $passed -gt 0 -a $failed -le 0; then
           if test "1${var}" = '15' ; then
             AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
                failed=`expr $failed + 1`,)
@@ -2497,14 +2495,14 @@ return 0;
             AC_MSG_CHECKING(if ${pnglib} package is complete)
             if test $passed -gt 0 ; then
               if test $failed -gt 0 ; then
-	        AC_MSG_RESULT(no -- some components failed test)
-	        have_png='no (failed tests)'
+                  AC_MSG_RESULT(no -- some components failed test)
+                  have_png='no (failed tests)'
               else
-	        PNG_LIBS="-l${pnglib}"
-	        LIBS="$PNG_LIBS $LIBS"
-	        AC_DEFINE(PNG_DELEGATE,1,Define if you have PNG library)
-	        AC_MSG_RESULT(yes)
-	        have_png='yes'
+                  PNG_LIBS="-l${pnglib}"
+                  LIBS="$PNG_LIBS $LIBS"
+                  AC_DEFINE(PNG_DELEGATE,1,Define if you have PNG library)
+                  AC_MSG_RESULT(yes)
+                  have_png='yes'
               fi
             fi
           fi
