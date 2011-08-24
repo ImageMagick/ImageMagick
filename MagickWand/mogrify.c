@@ -1934,7 +1934,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               white_point=(MagickRealType) (*image)->columns*(*image)->rows-
                 black_point;
-            (void) LinearStretchImage(*image,black_point,white_point);
+            (void) LinearStretchImage(*image,black_point,white_point,exception);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -2044,8 +2044,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("modulate",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) ModulateImage(*image,argv[i+1]);
-            InheritException(exception,&(*image)->exception);
+            (void) ModulateImage(*image,argv[i+1],exception);
             break;
           }
         if (LocaleCompare("monitor",option+1) == 0)
@@ -2716,8 +2715,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.sigma=(double) QuantumRange*geometry_info.sigma/
                 100.0;
             (void) SigmoidalContrastImage(*image,(*option == '-') ?
-              MagickTrue : MagickFalse,geometry_info.rho,geometry_info.sigma);
-            InheritException(exception,&(*image)->exception);
+              MagickTrue : MagickFalse,geometry_info.rho,geometry_info.sigma,
+              exception);
             break;
           }
         if (LocaleCompare("sketch",option+1) == 0)

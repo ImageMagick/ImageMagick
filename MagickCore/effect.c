@@ -2431,7 +2431,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         (void) FormatLocaleString(factor,MaxTextExtent,"100,100,%g",
           2.0*percentage);
-        (void) ModulateImage(preview_image,factor);
+        (void) ModulateImage(preview_image,factor,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
         break;
       }
@@ -2442,7 +2442,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         (void) FormatLocaleString(factor,MaxTextExtent,"100,%g",
           2.0*percentage);
-        (void) ModulateImage(preview_image,factor);
+        (void) ModulateImage(preview_image,factor,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
         break;
       }
@@ -2452,7 +2452,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image == (Image *) NULL)
           break;
         (void) FormatLocaleString(factor,MaxTextExtent,"%g",2.0*percentage);
-        (void) ModulateImage(preview_image,factor);
+        (void) ModulateImage(preview_image,factor,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
         break;
       }

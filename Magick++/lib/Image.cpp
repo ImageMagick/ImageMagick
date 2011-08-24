@@ -1351,9 +1351,12 @@ void Magick::Image::modulate ( const double brightness_,
   FormatLocaleString( modulate, MaxTextExtent, "%3.6f,%3.6f,%3.6f",
 		brightness_, saturation_, hue_);
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  ModulateImage( image(), modulate );
-  throwImageException();
+  ModulateImage( image(), modulate, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Motion blur image with specified blur factor
@@ -1948,9 +1951,12 @@ void Magick::Image::shear ( const double xShearAngle_,
 // Contrast image
 void Magick::Image::sigmoidalContrast ( const size_t sharpen_, const double contrast, const double midpoint )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  (void) SigmoidalContrastImage( image(), (MagickBooleanType) sharpen_, contrast, midpoint );
-  throwImageException();
+  (void) SigmoidalContrastImage( image(), (MagickBooleanType) sharpen_, contrast, midpoint, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Solarize image (similar to effect seen when exposing a photographic

@@ -3966,7 +3966,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
-          (void) ModulateImage(msl_info->image[n],modulate);
+          (void) ModulateImage(msl_info->image[n],modulate,
+            &msl_info->image[n]->exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

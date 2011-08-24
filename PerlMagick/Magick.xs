@@ -8772,7 +8772,7 @@ Mogrify(ref,...)
             }
           (void) FormatLocaleString(modulate,MaxTextExtent,"%.15g,%.15g,%.15g",
             geometry_info.rho,geometry_info.sigma,geometry_info.xi);
-          (void) ModulateImage(image,modulate);
+          (void) ModulateImage(image,modulate,exception);
           break;
         }
         case 44:  /* Negate */
@@ -9781,7 +9781,7 @@ Mogrify(ref,...)
               MagickFalse;
           channel_mask=SetPixelChannelMask(image,channel);
           (void) SigmoidalContrastImage(image,sharpen,geometry_info.rho,
-            geometry_info.sigma);
+            geometry_info.sigma,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
@@ -10073,7 +10073,7 @@ Mogrify(ref,...)
             black_point=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             white_point=argument_list[2].real_reference;
-          (void) LinearStretchImage(image,black_point,white_point);
+          (void) LinearStretchImage(image,black_point,white_point,exception);
           break;
         }
         case 109:  /* Mask */

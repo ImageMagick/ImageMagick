@@ -7690,7 +7690,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) CopyMagickString(modulate_factors,"100.0/100.0/",MaxTextExtent);
       (void) ConcatenateMagickString(modulate_factors,hue_percent,
         MaxTextExtent);
-      (void) ModulateImage(*image,modulate_factors);
+      (void) ModulateImage(*image,modulate_factors,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7718,7 +7718,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) CopyMagickString(modulate_factors,"100.0/",MaxTextExtent);
       (void) ConcatenateMagickString(modulate_factors,saturation_percent,
         MaxTextExtent);
-      (void) ModulateImage(*image,modulate_factors);
+      (void) ModulateImage(*image,modulate_factors,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7745,7 +7745,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) CopyMagickString(modulate_factors,brightness_percent,
         MaxTextExtent);
-      (void) ModulateImage(*image,modulate_factors);
+      (void) ModulateImage(*image,modulate_factors,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -7876,7 +7876,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & PercentValue) != 0)
         geometry_info.sigma=1.0*QuantumRange*geometry_info.sigma/100.0;
       (void) SigmoidalContrastImage(*image,MagickTrue,geometry_info.rho,
-        geometry_info.sigma);
+        geometry_info.sigma,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;

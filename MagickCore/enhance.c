@@ -2227,7 +2227,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     L e v e l i z e I m a g e C h a n n e l                                 %
+%     L e v e l i z e I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2533,7 +2533,8 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
 %  The format of the LinearStretchImage method is:
 %
 %      MagickBooleanType LinearStretchImage(Image *image,
-%        const double black_point,const double white_point)
+%        const double black_point,const double white_point,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2543,14 +2544,16 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
 %
 %    o white_point: the white point.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType LinearStretchImage(Image *image,
-  const double black_point,const double white_point)
+  const double black_point,const double white_point,ExceptionInfo *exception)
 {
 #define LinearStretchImageTag  "LinearStretch/Image"
 
-  ExceptionInfo
-    *exception;
+  CacheView
+    *image_view;
 
   MagickBooleanType
     status;
@@ -2578,7 +2581,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
     Form histogram.
   */
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
-  exception=(&image->exception);
+  image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -2587,15 +2590,16 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
     register ssize_t
       x;
 
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    for (x=(ssize_t) image->columns-1; x >= 0; x--)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       histogram[ScaleQuantumToMap(GetPixelIntensity(image,p))]++;
       p+=GetPixelChannels(image);
     }
   }
+  image_view=DestroyCacheView(image_view);
   /*
     Find the histogram boundaries by locating the black and white point levels.
   */
@@ -2637,14 +2641,16 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
 %
 %  The format of the ModulateImage method is:
 %
-%      MagickBooleanType ModulateImage(Image *image,const char *modulate)
+%      MagickBooleanType ModulateImage(Image *image,const char *modulate,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o modulate: Define the percent change in brightness, saturation, and
-%      hue.
+%    o modulate: Define the percent change in brightness, saturation, and hue.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -2724,7 +2730,8 @@ static void ModulateHWB(const double percent_hue,const double percent_whiteness,
   ConvertHWBToRGB(hue,whiteness,blackness,red,green,blue);
 }
 
-MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
+MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
+  ExceptionInfo *exception)
 {
 #define ModulateImageTag  "Modulate/Image"
 
@@ -2741,9 +2748,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
     percent_brightness,
     percent_hue,
     percent_saturation;
-
-  ExceptionInfo
-    *exception;
 
   GeometryInfo
     geometry_info;
@@ -2825,7 +2829,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -3168,7 +3171,8 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 %  The format of the SigmoidalContrastImage method is:
 %
 %      MagickBooleanType SigmoidalContrastImage(Image *image,
-%        const MagickBooleanType sharpen,const char *levels)
+%        const MagickBooleanType sharpen,const char *levels,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3181,17 +3185,17 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 %
 %    o beta: midpoint of the function as a color value 0 to QuantumRange.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
-  const MagickBooleanType sharpen,const double contrast,const double midpoint)
+  const MagickBooleanType sharpen,const double contrast,const double midpoint,
+  ExceptionInfo *exception)
 {
 #define SigmoidalContrastImageTag  "SigmoidalContrast/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -3230,21 +3234,20 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       {
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
           (MaxMap*((1.0/(1.0+exp(contrast*(midpoint/(double) QuantumRange-
-          (double) i/MaxMap))))-(1.0/(1.0+exp(contrast*(midpoint/
-          (double) QuantumRange)))))/((1.0/(1.0+exp(contrast*(midpoint/
-          (double) QuantumRange-1.0))))-(1.0/(1.0+exp(contrast*(midpoint/
-          (double) QuantumRange)))))+0.5));
+          (double) i/MaxMap))))-(1.0/(1.0+exp(contrast*(midpoint/(double)
+          QuantumRange)))))/((1.0/(1.0+exp(contrast*(midpoint/(double)
+          QuantumRange-1.0))))-(1.0/(1.0+exp(contrast*(midpoint/(double)
+          QuantumRange)))))+0.5));
         continue;
       }
     sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-      (MaxMap*(QuantumScale*midpoint-log((1.0-(1.0/(1.0+exp(midpoint/
-      (double) QuantumRange*contrast))+((double) i/MaxMap)*((1.0/
-      (1.0+exp(contrast*(midpoint/(double) QuantumRange-1.0))))-(1.0/
-      (1.0+exp(midpoint/(double) QuantumRange*contrast))))))/
-      (1.0/(1.0+exp(midpoint/(double) QuantumRange*contrast))+
-      ((double) i/MaxMap)*((1.0/(1.0+exp(contrast*(midpoint/
-      (double) QuantumRange-1.0))))-(1.0/(1.0+exp(midpoint/
-      (double) QuantumRange*contrast))))))/contrast)));
+      (MaxMap*(QuantumScale*midpoint-log((1.0-(1.0/(1.0+exp(midpoint/(double)
+      QuantumRange*contrast))+((double) i/MaxMap)*((1.0/(1.0+exp(contrast*(
+      midpoint/(double) QuantumRange-1.0))))-(1.0/(1.0+exp(midpoint/(double)
+      QuantumRange*contrast))))))/(1.0/(1.0+exp(midpoint/(double) QuantumRange*
+      contrast))+((double) i/MaxMap)*((1.0/(1.0+exp(contrast*(midpoint/(double)
+      QuantumRange-1.0))))-(1.0/(1.0+exp(midpoint/(double) QuantumRange*
+      contrast))))))/contrast)));
   }
   if (image->storage_class == PseudoClass)
     {
@@ -3275,7 +3278,6 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -3298,22 +3300,18 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetPixelRed(image,q))]),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetPixelGreen(image,q))]),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetPixelBlue(image,q))]),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetPixelBlack(image,q))]),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelAlpha(image,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
-          GetPixelAlpha(image,q))]),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+          q[i]=ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(q[i])]);
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

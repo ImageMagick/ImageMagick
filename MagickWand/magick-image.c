@@ -6088,9 +6088,8 @@ WandExport MagickBooleanType MagickLinearStretchImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=LinearStretchImage(wand->images,black_point,white_point);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=LinearStretchImage(wand->images,black_point,white_point,
+    &wand->images->exception);
   return(status);
 }
 
@@ -6341,9 +6340,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
     brightness,saturation,hue);
-  status=ModulateImage(wand->images,modulate);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=ModulateImage(wand->images,modulate,&wand->images->exception);
   return(status);
 }
 
@@ -10440,9 +10437,8 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SigmoidalContrastImage(wand->images,sharpen,alpha,beta);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=SigmoidalContrastImage(wand->images,sharpen,alpha,beta,
+    &wand->images->exception);
   return(status);
 }
 
