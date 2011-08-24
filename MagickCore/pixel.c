@@ -3588,7 +3588,9 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
       UpdatePixelTrait);
   alpha_channel=GetPixelChannelMapChannel(image,AlphaPixelChannel);
-  if (image->matte != MagickFalse)
+  if (image->matte == MagickFalse)
+    SetPixelChannelMapTraits(image,AlphaPixelChannel,CopyPixelTrait);
+  else
     for (i=0; i < (ssize_t) image->number_channels; i++)
       if ((PixelChannel) i != alpha_channel)
         SetPixelChannelMapTraits(image,(PixelChannel) i,(PixelTrait)
