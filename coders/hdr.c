@@ -371,7 +371,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  if (LocaleCompare(format,"32-bit_rle_rgbe") == 0)
+  if (LocaleCompare(format,"32-bit_rle_xyze") == 0)
     image->colorspace=XYZColorspace;
   image->compression=(image->columns < 8) || (image->columns > 0x7ffff) ?
     NoCompression : RLECompression;
