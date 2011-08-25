@@ -10681,6 +10681,8 @@ Mogrify(ref,...)
           if (next && (next != image))
             {
               image->next=next->next;
+              if (image->next != (Image *) NULL)
+                image->next->previous=image;
               DeleteImageFromRegistry(*pv,next);
             }
           sv_setiv(*pv,(IV) image);
