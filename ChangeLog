@@ -1,6 +1,7 @@
 2011-08-22  6.7.1-10 Cristy  <quetzlzacatenango@image...>
   * Revert FormatImageAttributeList(), FormatImagePropertyList() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19339).
+  * HDR format 32-bit_rle_xyze implies the XYZ colorspace.
 
 2011-08-21  6.7.1-10 Glenn Randers-Pehrson <glennrp@image...>
   * Revised configure.ac (and configure) to look for -lpng15, -lpng14, -lpng12,
