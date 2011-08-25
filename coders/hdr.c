@@ -156,12 +156,12 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register Quantum
     *q;
 
-  register unsigned char
-    *p;
-
   register ssize_t
     i,
     x;
+
+  register unsigned char
+    *p;
 
   ssize_t
     count,
