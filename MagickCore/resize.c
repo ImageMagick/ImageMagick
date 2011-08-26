@@ -3127,10 +3127,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         }
       if ((next_column == MagickFalse) &&
           ((ssize_t) n < (ssize_t) scale_image->columns))
-        {
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-            scale_scanline[n*GetPixelChannels(image)+i]=pixel[i];
-        }
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          scale_scanline[n*GetPixelChannels(scale_image)+i]=pixel[i];
       /*
         Transfer scanline to scaled image.
       */
