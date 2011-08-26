@@ -4904,7 +4904,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 %
 %  The format of the SetPixelChannelMap method is:
 %
-%      void SetPixelChannelMap(Image *image,const ChannelType mask)
+%      void SetPixelChannelMap(Image *image,const ChannelType channel_mask)
 %
 %  A description of each parameter follows:
 %
@@ -4913,17 +4913,18 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
 %    o mask: the channel mask.
 %
 */
-MagickExport void SetPixelChannelMap(Image *image,const ChannelType mask)
+MagickExport void SetPixelChannelMap(Image *image,
+  const ChannelType channel_mask)
 {
 #define GetChannelBit(mask,bit)  (((size_t) (mask) >> (size_t) (bit)) & 0x01)
 
   register ssize_t
     i;
 
-  image->sync=mask == DefaultChannels ? MagickTrue : MagickFalse;
+  image->sync=channel_mask == DefaultChannels ? MagickTrue : MagickFalse;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    SetPixelChannelMapTraits(image,(PixelChannel) i,GetChannelBit(mask,i) != 0 ?
-      UpdatePixelTrait : CopyPixelTrait);
+    SetPixelChannelMapTraits(image,(PixelChannel) i,
+      GetChannelBit(channel_mask,i) != 0 ? UpdatePixelTrait : CopyPixelTrait);
   for ( ; i < MaxPixelChannels; i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
   SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
