@@ -262,8 +262,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
                 exception);
               q=GetCacheViewAuthenticPixels(floodplane_view,x,y,
                 image->columns-x,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for ( ; x < (ssize_t) image->columns; x++)
               {
@@ -292,8 +291,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
             exception);
           q=GetCacheViewAuthenticPixels(floodplane_view,x,y,(size_t) (x2-x+1),1,
             exception);
-          if ((p == (const Quantum *) NULL) ||
-              (q == (Quantum *) NULL))
+          if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
             break;
           for ( ; x <= x2; x++)
           {
