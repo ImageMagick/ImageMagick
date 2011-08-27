@@ -3150,14 +3150,14 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           if ((scale_traits & BlendPixelTrait) == 0)
             {
               q[channel]=ClampToQuantum(scale_scanline[x*
-                GetPixelChannels(scale_image)+i]);
+                GetPixelChannels(scale_image)+channel]);
               continue;
             }
           alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
             GetPixelChannelMapChannel(image,AlphaPixelChannel)];
           gamma=1.0/(fabs((double) alpha) <= MagickEpsilon ? 1.0 : alpha);
           q[channel]=ClampToQuantum(gamma*scale_scanline[
-            GetPixelChannels(scale_image)+i]);
+            GetPixelChannels(scale_image)+channel]);
         }
         q+=GetPixelChannels(scale_image);
       }
