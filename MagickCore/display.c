@@ -3803,7 +3803,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               &draw_info->fill,exception);
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
-              MagickFalse : MagickTrue);
+              MagickFalse : MagickTrue,exception);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }
@@ -10084,7 +10084,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
-              MagickFalse : MagickTrue);
+              MagickFalse : MagickTrue,exception);
             (void) SetPixelChannelMap(*image,channel_mask);
             draw_info=DestroyDrawInfo(draw_info);
             break;

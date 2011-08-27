@@ -990,12 +990,16 @@ void Magick::Image::floodFillOpacity( const ssize_t x_,
   target.green=pixel.green;
   target.blue=pixel.blue;
   target.alpha=alpha_;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   FloodfillPaintImage ( image(),
                         options()->drawInfo(), // const DrawInfo *draw_info
                         &target,
                   			static_cast<ssize_t>(x_), static_cast<ssize_t>(y_),
-                        method_  == FloodfillMethod ? MagickFalse : MagickTrue);
-  throwImageException();
+                        method_  == FloodfillMethod ? MagickFalse : MagickTrue,
+    &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Flood-fill texture across pixels that match the color of the
@@ -1019,16 +1023,19 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   target.red=GetPixelRed(constImage(),p);
   target.green=GetPixelGreen(constImage(),p);
   target.blue=GetPixelBlue(constImage(),p);
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   if (p)
     FloodfillPaintImage ( image(), // Image *image
                           options()->drawInfo(), // const DrawInfo *draw_info
                           &target, // const MagickPacket target
                           static_cast<ssize_t>(x_), // const ssize_t x_offset
                           static_cast<ssize_t>(y_), // const ssize_t y_offset
-                          MagickFalse // const PaintMethod method
-      );
+                          MagickFalse, // const PaintMethod method
+      &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 
-  throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
 				      const Magick::Image &texture_ )
@@ -1054,14 +1061,17 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
   target.red=static_cast<PixelPacket>(borderColor_).red;
   target.green=static_cast<PixelPacket>(borderColor_).green;
   target.blue=static_cast<PixelPacket>(borderColor_).blue;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   FloodfillPaintImage ( image(),
                         options()->drawInfo(),
                         &target,
                         static_cast<ssize_t>(x_),
                         static_cast<ssize_t>(y_),
-                        MagickTrue);
+                        MagickTrue, &exceptionInfo);
 
-  throwImageException();
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 void  Magick::Image::floodFillTexture( const Magick::Geometry &point_,
 				       const Magick::Image &texture_,
@@ -1310,10 +1320,13 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   target.blue=static_cast<PixelPacket>(target_).blue;
   target.alpha=alpha_;
   ChannelType channel_mask = SetPixelChannelMask( image(), AlphaChannel );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   FloodfillPaintImage ( image(), options()->drawInfo(), &target, x_, y_,
-    method_ == FloodfillMethod ? MagickFalse : MagickTrue);
+    method_ == FloodfillMethod ? MagickFalse : MagickTrue, &exceptionInfo);
   (void) SetPixelChannelMap( image(), channel_mask );
-  throwImageException();
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Filter image by replacing each pixel component with the median
@@ -1447,10 +1460,13 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
 
   PixelInfo opaque;
   PixelInfo pen;
-  (void) QueryMagickColor(std::string(opaqueColor_).c_str(),&opaque,&image()->exception);
-  (void) QueryMagickColor(std::string(penColor_).c_str(),&pen,&image()->exception);
-  OpaquePaintImage ( image(), &opaque, &pen, MagickFalse );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  (void) QueryMagickColor(std::string(opaqueColor_).c_str(),&opaque, &exceptionInfo);
+  (void) QueryMagickColor(std::string(penColor_).c_str(),&pen, &exceptionInfo);
+  OpaquePaintImage ( image(), &opaque, &pen, MagickFalse, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Ping is similar to read except only enough of the image is read to
@@ -2090,9 +2106,13 @@ void Magick::Image::transparent ( const Color &color_ )
 
   PixelInfo target;
   (void) QueryMagickColor(std::string(color_).c_str(),&target,&image()->exception);
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  TransparentPaintImage ( image(), &target, TransparentAlpha, MagickFalse );
-  throwImageException();
+  TransparentPaintImage ( image(), &target, TransparentAlpha, MagickFalse,
+    &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Add matte image to image, setting pixels matching color to transparent
@@ -2114,10 +2134,13 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
     &image()->exception);
   (void) QueryMagickColor(std::string(colorHigh_).c_str(),&targetHigh,
     &image()->exception);
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
   TransparentPaintImageChroma ( image(), &targetLow, &targetHigh,
-    TransparentAlpha, MagickFalse );
-  throwImageException();
+    TransparentAlpha, MagickFalse, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 

@@ -8171,7 +8171,7 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
           (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
-            geometry.y,invert);
+            geometry.y,invert,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8730,7 +8730,7 @@ Mogrify(ref,...)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
           channel_mask=SetPixelChannelMask(image,AlphaChannel);
           (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
-            geometry.y,invert);
+            geometry.y,invert,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -8824,7 +8824,7 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             invert=(MagickBooleanType) argument_list[4].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) OpaquePaintImage(image,&target,&fill_color,invert);
+          (void) OpaquePaintImage(image,&target,&fill_color,invert,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
@@ -8996,7 +8996,7 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             invert=(MagickBooleanType) argument_list[3].integer_reference;
           (void) TransparentPaintImage(image,&target,ClampToQuantum(opacity),
-            invert);
+            invert,exception);
           break;
         }
         case 57:  /* Threshold */
@@ -10166,7 +10166,7 @@ Mogrify(ref,...)
             invert=(MagickBooleanType) argument_list[7].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
-            geometry.y,invert);
+            geometry.y,invert,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -11088,7 +11088,7 @@ Montage(ref,...)
               QueryMagickColor(SvPV(ST(i),na),&transparent_color,exception);
               for (next=image; next; next=next->next)
                 (void) TransparentPaintImage(next,&transparent_color,
-                  TransparentAlpha,MagickFalse);
+                  TransparentAlpha,MagickFalse,exception);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -11110,7 +11110,7 @@ Montage(ref,...)
     if (transparent_color.alpha != TransparentAlpha)
       for (next=image; next; next=next->next)
         (void) TransparentPaintImage(next,&transparent_color,
-          TransparentAlpha,MagickFalse);
+          TransparentAlpha,MagickFalse,exception);
     for (  ; image; image=image->next)
     {
       AddImageToRegistry(sv,image);
