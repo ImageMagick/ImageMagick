@@ -2494,7 +2494,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetMagickToken(q,&q,token);
             (void) QueryColorDatabase(token,&stop_color,&image->exception);
             (void) GradientImage(image,LinearGradient,ReflectSpread,
-              &start_color,&stop_color);
+              &start_color,&stop_color,&image->exception);
             start_color=stop_color;
             GetMagickToken(q,&q,token);
             break;
@@ -4245,7 +4245,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             }
           (void) FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
-            MagickTrue);
+            MagickTrue,exception);
           break;
         }
         case ResetMethod:
@@ -4365,7 +4365,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           channel_mask=SetPixelChannelMask(image,AlphaChannel);
           (void) FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
-            MagickTrue);
+            MagickTrue,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }

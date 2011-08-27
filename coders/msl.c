@@ -1718,7 +1718,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
             geometry.x,geometry.y,paint_method == FloodfillMethod ?
-            MagickFalse : MagickTrue);
+            MagickFalse : MagickTrue,&msl_info->image[n]->exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -3742,7 +3742,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           channel_mask=SetPixelChannelMask(msl_info->image[n],AlphaChannel);
           (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
             geometry.x,geometry.y,paint_method == FloodfillMethod ?
-            MagickFalse : MagickTrue);
+            MagickFalse : MagickTrue,&msl_info->image[n]->exception);
           (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -4235,7 +4235,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           (void) OpaquePaintImage(msl_info->image[n],&target,&fill_color,
-            MagickFalse);
+            MagickFalse,&msl_info->image[n]->exception);
           (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           break;
         }
@@ -7111,7 +7111,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
                 (void) QueryMagickColor(value,&target,&exception);
                 (void) TransparentPaintImage(msl_info->image[n],&target,
-                  TransparentAlpha,MagickFalse);
+                  TransparentAlpha,MagickFalse,&msl_info->image[n]->exception);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);

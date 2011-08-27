@@ -515,12 +515,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         if (bits_per_pixel != 16)
           SetPixelInfoPacket(image,image->colormap+(mask-transparentIndex),
             &transpix);
-        (void) TransparentPaintImage(image,&transpix,(Quantum)
-          TransparentAlpha,MagickFalse);
+        (void) TransparentPaintImage(image,&transpix,(Quantum) TransparentAlpha,
+          MagickFalse,exception);
       }
     one_row=(unsigned char *) RelinquishMagickMemory(one_row);
     if (compressionType == PALM_COMPRESSION_SCANLINE)
-    lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
+      lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
     /*
       Proceed to next image. Copied from coders/pnm.c
     */

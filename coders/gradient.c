@@ -133,7 +133,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
-    LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
+    LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color,
+    exception);
   return(GetFirstImageInList(image));
 }
 

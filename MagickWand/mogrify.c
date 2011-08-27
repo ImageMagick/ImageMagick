@@ -1571,8 +1571,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) ParsePageGeometry(*image,argv[i+1],&geometry,exception);
             (void) QueryMagickColor(argv[i+2],&target,exception);
             (void) FloodfillPaintImage(*image,draw_info,&target,geometry.x,
-              geometry.y,*option == '-' ? MagickFalse : MagickTrue);
-            InheritException(exception,&(*image)->exception);
+              geometry.y,*option == '-' ? MagickFalse : MagickTrue,exception);
             break;
           }
         if (LocaleCompare("flop",option+1) == 0)
@@ -2172,7 +2171,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             (void) QueryMagickColor(argv[i+1],&target,exception);
             (void) OpaquePaintImage(*image,&target,&fill,*option == '-' ?
-              MagickFalse : MagickTrue);
+              MagickFalse : MagickTrue,exception);
             break;
           }
         if (LocaleCompare("ordered-dither",option+1) == 0)
@@ -2939,8 +2938,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             (void) QueryMagickColor(argv[i+1],&target,exception);
             (void) TransparentPaintImage(*image,&target,(Quantum)
-              TransparentAlpha,*option == '-' ? MagickFalse : MagickTrue);
-            InheritException(exception,&(*image)->exception);
+              TransparentAlpha,*option == '-' ? MagickFalse : MagickTrue,
+              &(*image)->exception);
             break;
           }
         if (LocaleCompare("transpose",option+1) == 0)

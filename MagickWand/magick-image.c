@@ -3023,9 +3023,8 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   if (bordercolor != (PixelWand *) NULL)
     PixelGetMagickColor(bordercolor,&target);
   wand->images->fuzz=fuzz;
-  status=FloodfillPaintImage(wand->images,draw_info,&target,x,y,invert);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=FloodfillPaintImage(wand->images,draw_info,&target,x,y,invert,
+    &wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
   return(status);
 }
@@ -6899,9 +6898,8 @@ WandExport MagickBooleanType MagickOpaquePaintImage(MagickWand *wand,
   PixelGetMagickColor(target,&target_pixel);
   PixelGetMagickColor(fill,&fill_pixel);
   wand->images->fuzz=fuzz;
-  status=OpaquePaintImage(wand->images,&target_pixel,&fill_pixel,invert);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=OpaquePaintImage(wand->images,&target_pixel,&fill_pixel,invert,
+    &wand->images->exception);
   return(status);
 }
 
@@ -11445,9 +11443,7 @@ WandExport MagickBooleanType MagickTransparentPaintImage(MagickWand *wand,
   PixelGetMagickColor(target,&target_pixel);
   wand->images->fuzz=fuzz;
   status=TransparentPaintImage(wand->images,&target_pixel,ClampToQuantum(
-    QuantumRange*alpha),invert);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+    QuantumRange*alpha),invert,&wand->images->exception);
   return(status);
 }
 

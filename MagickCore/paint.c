@@ -85,7 +85,7 @@
 %      MagickBooleanType FloodfillPaintImage(Image *image,
 %        const DrawInfo *draw_info,const PixelInfo target,
 %        const ssize_t x_offset,const ssize_t y_offset,
-%        const MagickBooleanType invert)
+%        const MagickBooleanType invert,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -99,10 +99,13 @@
 %
 %    o invert: paint any pixel that does not match the target color.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   const DrawInfo *draw_info,const PixelInfo *target,const ssize_t x_offset,
-  const ssize_t y_offset,const MagickBooleanType invert)
+  const ssize_t y_offset,const MagickBooleanType invert,
+  ExceptionInfo *exception)
 {
 #define MaxStacksize  (1UL << 15)
 #define PushSegmentStack(up,left,right,delta) \
@@ -125,9 +128,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   CacheView
     *floodplane_view,
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   Image
     *floodplane_image;
@@ -169,7 +169,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
     return(MagickFalse);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
@@ -380,7 +379,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %
 %      MagickBooleanType GradientImage(Image *image,const GradientType type,
 %        const SpreadMethod method,const PixelPacket *start_color,
-%        const PixelPacket *stop_color)
+%        const PixelPacket *stop_color,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -394,6 +393,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %
 %    o stop_color: the stop color.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 
 static inline double MagickMax(const double x,const double y)
@@ -403,7 +404,8 @@ static inline double MagickMax(const double x,const double y)
 
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
-  const PixelPacket *start_color,const PixelPacket *stop_color)
+  const PixelPacket *start_color,const PixelPacket *stop_color,
+  ExceptionInfo *exception)
 {
   DrawInfo
     *draw_info;
@@ -720,7 +722,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %      MagickBooleanType OpaquePaintImage(Image *image,
 %        const PixelPacket *target,const PixelPacket *fill,
-%        const MagickBooleanType invert)
+%        const MagickBooleanType invert,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -732,17 +734,17 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %    o invert: paint any pixel that does not match the target color.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType OpaquePaintImage(Image *image,
-  const PixelInfo *target,const PixelInfo *fill,const MagickBooleanType invert)
+  const PixelInfo *target,const PixelInfo *fill,const MagickBooleanType invert,
+  ExceptionInfo *exception)
 {
 #define OpaquePaintImageTag  "Opaque/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -762,7 +764,6 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   assert(fill != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*
@@ -858,7 +859,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
 %
 %      MagickBooleanType TransparentPaintImage(Image *image,
 %        const PixelInfo *target,const Quantum opacity,
-%        const MagickBooleanType invert)
+%        const MagickBooleanType invert,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -870,18 +871,17 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
 %
 %    o invert: paint any pixel that does not match the target color.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   const PixelInfo *target,const Quantum opacity,
-  const MagickBooleanType invert)
+  const MagickBooleanType invert,ExceptionInfo *exception)
 {
 #define TransparentPaintImageTag  "Transparent/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -900,7 +900,6 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   assert(target != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
@@ -987,7 +986,8 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
 %
 %      MagickBooleanType TransparentPaintImage(Image *image,
 %        const PixelInfo *low,const PixelInfo *hight,
-%        const Quantum opacity,const MagickBooleanType invert)
+%        const Quantum opacity,const MagickBooleanType invert,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1001,18 +1001,17 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
 %
 %    o invert: paint any pixel that does not match the target color.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
-  const PixelInfo *low,const PixelInfo *high,
-  const Quantum opacity,const MagickBooleanType invert)
+  const PixelInfo *low,const PixelInfo *high,const Quantum opacity,
+  const MagickBooleanType invert,ExceptionInfo *exception)
 {
 #define TransparentPaintImageTag  "Transparent/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1029,7 +1028,6 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   assert(low != (PixelInfo *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)

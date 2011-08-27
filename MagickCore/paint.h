@@ -30,15 +30,15 @@ extern MagickExport Image
 
 extern MagickExport MagickBooleanType
   FloodfillPaintImage(Image *,const DrawInfo *,const PixelInfo *,const ssize_t,
-    const ssize_t,const MagickBooleanType),
+    const ssize_t,const MagickBooleanType,ExceptionInfo *),
   GradientImage(Image *,const GradientType,const SpreadMethod,
-    const PixelPacket *,const PixelPacket *),
+    const PixelPacket *,const PixelPacket *,ExceptionInfo *),
   OpaquePaintImage(Image *,const PixelInfo *,const PixelInfo *,
-    const MagickBooleanType),
+    const MagickBooleanType,ExceptionInfo *),
   TransparentPaintImage(Image *,const PixelInfo *,
-    const Quantum,const MagickBooleanType),
+    const Quantum,const MagickBooleanType,ExceptionInfo *),
   TransparentPaintImageChroma(Image *,const PixelInfo *,
-    const PixelInfo *,const Quantum,const MagickBooleanType);
+    const PixelInfo *,const Quantum,const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
