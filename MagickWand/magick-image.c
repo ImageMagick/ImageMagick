@@ -6812,7 +6812,7 @@ WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
 %  The format of the MagickOilPaintImage method is:
 %
 %      MagickBooleanType MagickOilPaintImage(MagickWand *wand,
-%        const double radius)
+%        const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -6820,9 +6820,11 @@ WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
 %
 %    o radius: the radius of the circular neighborhood.
 %
+%    o sigma: the standard deviation of the Gaussian, in pixels.
+%
 */
 WandExport MagickBooleanType MagickOilPaintImage(MagickWand *wand,
-  const double radius)
+  const double radius,const double sigma)
 {
   Image
     *paint_image;
@@ -6833,7 +6835,7 @@ WandExport MagickBooleanType MagickOilPaintImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  paint_image=OilPaintImage(wand->images,radius,wand->exception);
+  paint_image=OilPaintImage(wand->images,radius,sigma,wand->exception);
   if (paint_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,paint_image);

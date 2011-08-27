@@ -2691,8 +2691,10 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case OilPaintPreview:
       {
-        preview_image=OilPaintImage(thumbnail,(double) radius,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"paint %g",radius);
+        preview_image=OilPaintImage(thumbnail,(double) radius,(double) sigma,
+          exception);
+        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",
+          radius,sigma);
         break;
       }
       case CharcoalDrawingPreview:

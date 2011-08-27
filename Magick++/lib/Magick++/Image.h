@@ -462,7 +462,7 @@ namespace Magick
     void            normalize ( void );
     
     // Oilpaint image (image looks like oil painting)
-    void            oilPaint ( const double radius_ = 3.0 );
+    void            oilPaint ( const double radius_ = 0.0, const double sigma = 1.0 );
 
     // Set or attenuate the alpha channel in the image. If the image
     // pixels are opaque then they are set to the specified alpha

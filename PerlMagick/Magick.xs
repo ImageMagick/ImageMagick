@@ -241,10 +241,10 @@ static struct
       {"interpolate", MagickInterpolateOptions} } },
     { "Magnify", },
     { "MedianFilter", { {"geometry", StringReference},
-      {"width", IntegerReference},{"height", IntegerReference},
+      {"width", IntegerReference}, {"height", IntegerReference},
       {"channel", MagickChannelOptions} } },
     { "Minify", },
-    { "OilPaint", { {"radius", RealReference} } },
+    { "OilPaint", { {"radius", RealReference}, {"sigma", RealReference} } },
     { "ReduceNoise", { {"geometry", StringReference},
       {"width", IntegerReference},{"height", IntegerReference},
       {"channel", MagickChannelOptions} } },
@@ -7735,8 +7735,10 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=0.0;
+          if (attribute_flag[1] == 0)
+            argument_list[1].real_reference=1.0;
           image=OilPaintImage(image,argument_list[0].real_reference,
-            exception);
+            argument_list[1].real_reference,exception);
           break;
         }
         case 21:  /* ReduceNoise */
