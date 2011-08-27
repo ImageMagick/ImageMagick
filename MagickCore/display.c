@@ -8654,7 +8654,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
-      paint_image=OilPaintImage(*image,geometry_info.rho,&(*image)->exception);
+      paint_image=OilPaintImage(*image,geometry_info.rho,geometry_info.sigma,
+        &(*image)->exception);
       if (paint_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

@@ -26,7 +26,7 @@ extern "C" {
 #include "MagickCore/draw.h"
 
 extern MagickExport Image
-  *OilPaintImage(const Image *,const double,ExceptionInfo *);
+  *OilPaintImage(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   FloodfillPaintImage(Image *,const DrawInfo *,const PixelInfo *,const ssize_t,

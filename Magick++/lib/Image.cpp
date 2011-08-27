@@ -1416,12 +1416,12 @@ void Magick::Image::normalize ( void )
 }
 
 // Oilpaint image
-void Magick::Image::oilPaint ( const double radius_ )
+void Magick::Image::oilPaint ( const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    OilPaintImage( image(), radius_, &exceptionInfo );
+    OilPaintImage( image(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

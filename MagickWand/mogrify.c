@@ -2188,7 +2188,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            mogrify_image=OilPaintImage(*image,geometry_info.rho,exception);
+            mogrify_image=OilPaintImage(*image,geometry_info.rho,
+              geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("pen",option+1) == 0)

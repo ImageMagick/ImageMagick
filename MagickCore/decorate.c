@@ -701,41 +701,59 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < y; x++)
     {
-      SetPixelRed(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelRed(image,q)*HighlightFactor+(MagickRealType) foreground*
-        (QuantumRange-HighlightFactor))),q);
-      SetPixelGreen(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelGreen(image,q)*HighlightFactor+(MagickRealType) foreground*
-        (QuantumRange-HighlightFactor))),q);
-      SetPixelBlue(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelBlue(image,q)*HighlightFactor+(MagickRealType) foreground*
-        (QuantumRange-HighlightFactor))),q);
+      register ssize_t
+        i;
+ 
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+         q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
+           HighlightFactor+(MagickRealType) foreground*(QuantumRange-
+           HighlightFactor)));
+      }
       q+=GetPixelChannels(image);
     }
     for ( ; x < (ssize_t) (image->columns-y); x++)
     {
-      SetPixelRed(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelRed(image,q)*AccentuateFactor+(MagickRealType) foreground*
-        (QuantumRange-AccentuateFactor))),q);
-      SetPixelGreen(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelGreen(image,q)*AccentuateFactor+(MagickRealType) foreground*
-        (QuantumRange-AccentuateFactor))),q);
-      SetPixelBlue(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelBlue(image,q)*AccentuateFactor+(MagickRealType) foreground*
-        (QuantumRange-AccentuateFactor))),q);
+      register ssize_t
+        i;
+ 
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+         q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
+           AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
+           AccentuateFactor)));
+      }
       q+=GetPixelChannels(image);
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelRed(image,q)*ShadowFactor+(MagickRealType) background*
-        (QuantumRange-ShadowFactor))),q);
-      SetPixelGreen(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelGreen(image,q)*ShadowFactor+(MagickRealType) background*
-        (QuantumRange-ShadowFactor))),q);
-      SetPixelBlue(image,ClampToQuantum(QuantumScale*((MagickRealType)
-        GetPixelBlue(image,q)*ShadowFactor+(MagickRealType) background*
-        (QuantumRange-ShadowFactor))),q);
+      register ssize_t
+        i;
+ 
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) != 0)
+         q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
+           AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
+           AccentuateFactor)));
+         q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
+           ShadowFactor+(MagickRealType) background*(QuantumRange-
+           ShadowFactor)));
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
