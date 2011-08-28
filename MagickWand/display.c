@@ -542,7 +542,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 Display image to a specified X window.
               */
               status=XDisplayBackgroundImage(display,&resource_info,
-                display_image);
+                display_image,exception);
               if (status != MagickFalse)
                 {
                   state|=RetainColorsState;
@@ -561,7 +561,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               if (resource_info.delay != 1)
                 display_image->delay=resource_info.delay;
               nexus=XDisplayImage(display,&resource_info,argv,argc,
-                &display_image,&state);
+                &display_image,&state,exception);
               status&=nexus != (Image *) NULL;
               if (nexus == (Image *) NULL)
                 break;
@@ -579,7 +579,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                     break;
                   }
                 next=XDisplayImage(display,&resource_info,argv,argc,&nexus,
-                  &state);
+                  &state,exception);
                 if ((next == (Image *) NULL) &&
                     (GetNextImageInList(nexus) != (Image *) NULL))
                   {

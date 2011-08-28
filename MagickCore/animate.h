@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  AnimateImages(const ImageInfo *,Image *);
+  AnimateImages(const ImageInfo *,Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -2336,7 +2336,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) DisplayImages(msl_info->image_info[n],msl_info->image[n]);
+          (void) DisplayImages(msl_info->image_info[n],msl_info->image[n],
+            &msl_info->image[n]->exception);
           break;
         }
       if (LocaleCompare((const char *) tag,"draw") == 0)

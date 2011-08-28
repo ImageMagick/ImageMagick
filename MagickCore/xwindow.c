@@ -5398,7 +5398,7 @@ MagickExport Cursor XMakeCursor(Display *display,Window window,
 %
 %      MagickBooleanType XMakeImage(Display *display,
 %        const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
-%        unsigned int width,unsigned int height)
+%        unsigned int width,unsigned int height,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5417,10 +5417,12 @@ MagickExport Cursor XMakeCursor(Display *display,Window window,
 %    o height: Specifies the height in pixels of the rectangular area to
 %      display.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType XMakeImage(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
-  unsigned int width,unsigned int height)
+  unsigned int width,unsigned int height,ExceptionInfo *exception)
 {
 #define CheckOverflowException(length,width,height) \
   (((height) != 0) && ((length)/((size_t) height) != ((size_t) width)))

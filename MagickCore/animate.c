@@ -238,10 +238,10 @@ typedef enum
 */
 static Image
   *XMagickCommand(Display *,XResourceInfo *,XWindows *,const CommandType,
-    Image **,MagickStatusType *);
+    Image **,MagickStatusType *,ExceptionInfo *);
 
 static MagickBooleanType
-  XSaveImage(Display *,XResourceInfo *,XWindows *,Image *);
+  XSaveImage(Display *,XResourceInfo *,XWindows *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -261,7 +261,7 @@ static MagickBooleanType
 %  The format of the AnimateImages method is:
 %
 %      MagickBooleanType AnimateImages(const ImageInfo *image_info,
-%        Image *images)
+%        Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -269,9 +269,11 @@ static MagickBooleanType
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
-  Image *images)
+  Image *images,ExceptionInfo *exception)
 {
   char
     *argv[1];
@@ -297,13 +299,12 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
     {
-      (void) ThrowMagickException(&images->exception,GetMagickModule(),
-        XServerError,"UnableToOpenXServer","`%s'",XDisplayName(
-        image_info->server_name));
+      (void) ThrowMagickException(exception,GetMagickModule(),XServerError,
+        "UnableToOpenXServer","`%s'",XDisplayName(image_info->server_name));
       return(MagickFalse);
     }
-  if (images->exception.severity != UndefinedException)
-    CatchException(&images->exception);
+  if (exception->severity != UndefinedException)
+    CatchException(exception);
   (void) XSetErrorHandler(XError);
   resource_database=XGetResourceDatabase(display,GetClientName());
   (void) ResetMagickMemory(&resource_info,0,sizeof(XResourceInfo));
@@ -312,12 +313,11 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
     resource_info.image_geometry=AcquireString(image_info->page);
   resource_info.immutable=MagickTrue;
   argv[0]=AcquireString(GetClientName());
-  (void) XAnimateImages(display,&resource_info,argv,1,images);
+  (void) XAnimateImages(display,&resource_info,argv,1,images,exception);
   argv[0]=DestroyString(argv[0]);
   (void) XCloseDisplay(display);
   XDestroyResourceInfo(&resource_info);
-  status=images->exception.severity == UndefinedException ?
-    MagickTrue : MagickFalse;
+  status=exception->severity == UndefinedException ? MagickTrue : MagickFalse;
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
@@ -339,7 +339,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
 %
 %      Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %        XWindows *windows,const CommandType command_type,Image **image,
-%        MagickStatusType *state)
+%        MagickStatusType *state,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -356,11 +356,13 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
 %    o state: Specifies a MagickStatusType;  XMagickCommand may return a
 %      modified state.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const CommandType command_type,Image **image,
-  MagickStatusType *state)
+  MagickStatusType *state,ExceptionInfo *exception)
 {
   Image
     *nexus;
@@ -384,9 +386,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     {
       char
         **filelist;
-
-      ExceptionInfo
-        *exception;
 
       Image
         *images,
@@ -437,7 +436,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           return((Image *) NULL);
         }
       read_info=CloneImageInfo(resource_info->image_info);
-      exception=AcquireExceptionInfo();
       images=NewImageList();
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
@@ -458,7 +456,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           break;
       }
       filelist=(char **) RelinquishMagickMemory(filelist);
-      exception=DestroyExceptionInfo(exception);
       read_info=DestroyImageInfo(read_info);
       if (images == (Image *) NULL)
         {
@@ -536,7 +533,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Save image.
       */
-      status=XSaveImage(display,resource_info,windows,*image);
+      status=XSaveImage(display,resource_info,windows,*image,exception);
       if (status == MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to write X image:",
@@ -621,7 +618,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       status=InvokeDelegate(resource_info->image_info,*image,"browse",
-        (char *) NULL,&(*image)->exception);
+        (char *) NULL,exception);
       if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
@@ -682,7 +679,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %  The format of the XAnimateBackgroundImage method is:
 %
 %      void XAnimateBackgroundImage(Display *display,
-%        XResourceInfo *resource_info,Image *images)
+%        XResourceInfo *resource_info,Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -692,6 +689,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
 %    o images: the image list.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -722,7 +721,7 @@ static int SceneCompare(const void *x,const void *y)
 #endif
 
 MagickExport void XAnimateBackgroundImage(Display *display,
-  XResourceInfo *resource_info,Image *images)
+  XResourceInfo *resource_info,Image *images,ExceptionInfo *exception)
 {
   char
     geometry[MaxTextExtent],
@@ -853,7 +852,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     XDestroyWindowColors(display,root_window);
-  coalesce_image=CoalesceImages(images,&images->exception);
+  coalesce_image=CoalesceImages(images,exception);
   if (coalesce_image == (Image *) NULL)
     ThrowXWindowFatalException(ResourceLimitError,"MemoryAllocationFailed",
       images->filename);
@@ -889,7 +888,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     Sort images by increasing scene number.
   */
   number_scenes=GetImageListLength(images);
-  image_list=ImageListToArray(images,&images->exception);
+  image_list=ImageListToArray(images,exception);
   if (image_list == (Image **) NULL)
     ThrowXWindowFatalException(ResourceLimitFatalError,
       "MemoryAllocationFailed",images->filename);
@@ -957,7 +956,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.x=(int) geometry_info.x;
   window_info.y=(int) geometry_info.y;
   status=XMakeImage(display,&resources,&window_info,image_list[0],
-    window_info.width,window_info.height);
+    window_info.width,window_info.height,exception);
   if (status == MagickFalse)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       images->filename);
@@ -1082,7 +1081,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         image_list[scene]->filename);
     status=XMakeImage(display,&resources,&window_info,image_list[scene],
-      columns,rows);
+      columns,rows,exception);
     if (status == MagickFalse)
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         images->filename);
@@ -1173,7 +1172,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
 %  The format of the XAnimateImages method is:
 %
 %      Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
-%        char **argv,const int argc,Image *images)
+%        char **argv,const int argc,Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1188,9 +1187,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
 %
 %    o images: the image list.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport Image *XAnimateImages(Display *display,
-  XResourceInfo *resource_info,char **argv,const int argc,Image *images)
+  XResourceInfo *resource_info,char **argv,const int argc,Image *images,
+  ExceptionInfo *exception)
 {
 #define MagickMenus  4
 #define MaXWindows  8
@@ -1405,8 +1407,8 @@ MagickExport Image *XAnimateImages(Display *display,
 
       status=chdir(working_directory);
       if (status == -1)
-        (void) ThrowMagickException(&images->exception,GetMagickModule(),
-          FileOpenError,"UnableToOpenFile","%s",working_directory);
+        (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+          "UnableToOpenFile","%s",working_directory);
       warning_handler=resource_info->display_warnings ?
         SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
@@ -1471,7 +1473,7 @@ MagickExport Image *XAnimateImages(Display *display,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  coalesce_image=CoalesceImages(images,&images->exception);
+  coalesce_image=CoalesceImages(images,exception);
   if (coalesce_image == (Image *) NULL)
     ThrowXWindowFatalException(XServerFatalError,"MemoryAllocationFailed",
       images->filename);
@@ -1508,7 +1510,7 @@ MagickExport Image *XAnimateImages(Display *display,
     Sort images by increasing scene number.
   */
   number_scenes=GetImageListLength(images);
-  image_list=ImageListToArray(images,&images->exception);
+  image_list=ImageListToArray(images,exception);
   if (image_list == (Image **) NULL)
     ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       images->filename);
@@ -1929,7 +1931,7 @@ MagickExport Image *XAnimateImages(Display *display,
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         image_list[scene]->filename);
     status=XMakeImage(display,resource_info,&windows->image,image_list[scene],
-      columns,rows);
+      columns,rows,exception);
     if (status == MagickFalse)
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         images->filename);
@@ -1998,7 +2000,7 @@ MagickExport Image *XAnimateImages(Display *display,
   image=image_list[0];
   state=(MagickStatusType) (ForwardAnimationState | RepeatAnimationState);
   (void) XMagickCommand(display,resource_info,windows,PlayCommand,&images,
-    &state);
+    &state,exception);
   do
   {
     if (XEventsQueued(display,QueuedAfterFlush) == 0)
@@ -2188,7 +2190,7 @@ MagickExport Image *XAnimateImages(Display *display,
           }
         if (command_type != NullCommand)
           nexus=XMagickCommand(display,resource_info,windows,
-            command_type,&image,&state);
+            command_type,&image,&state,exception);
         continue;
       }
     switch (event.type)
@@ -2344,8 +2346,8 @@ MagickExport Image *XAnimateImages(Display *display,
                 (void) CopyMagickString(resource_info->image_info->filename,
                   ((char *) data)+5,MaxTextExtent);
               }
-            nexus=ReadImage(resource_info->image_info,&image->exception);
-            CatchException(&image->exception);
+            nexus=ReadImage(resource_info->image_info,exception);
+            CatchException(exception);
             if (nexus != (Image *) NULL)
               state|=ExitState;
             (void) XFree((void *) data);
@@ -2556,7 +2558,7 @@ MagickExport Image *XAnimateImages(Display *display,
         }
         if (command_type != NullCommand)
           nexus=XMagickCommand(display,resource_info,windows,
-            command_type,&image,&state);
+            command_type,&image,&state,exception);
         break;
       }
       case KeyRelease:
@@ -2601,7 +2603,7 @@ MagickExport Image *XAnimateImages(Display *display,
               {
                 if (LocaleCompare(display_image->filename,"LOGO") == 0)
                   nexus=XMagickCommand(display,resource_info,windows,
-                    OpenCommand,&image,&state);
+                    OpenCommand,&image,&state,exception);
                 else
                   state|=ExitState;
               }
@@ -2621,7 +2623,8 @@ MagickExport Image *XAnimateImages(Display *display,
             XMakeStandardColormap(display,icon_visual,icon_resources,
               display_image,icon_map,icon_pixel);
             (void) XMakeImage(display,icon_resources,&windows->icon,
-              display_image,windows->icon.width,windows->icon.height);
+              display_image,windows->icon.width,windows->icon.height,
+              exception);
             (void) XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             (void) XClearWindow(display,windows->icon.id);
@@ -2687,8 +2690,8 @@ MagickExport Image *XAnimateImages(Display *display,
           break;
         (void) CopyMagickString(resource_info->image_info->filename,
           (char *) data,MaxTextExtent);
-        nexus=ReadImage(resource_info->image_info,&image->exception);
-        CatchException(&image->exception);
+        nexus=ReadImage(resource_info->image_info,exception);
+        CatchException(exception);
         if (nexus != (Image *) NULL)
           state|=ExitState;
         (void) XFree((void *) data);
@@ -2832,8 +2835,8 @@ MagickExport Image *XAnimateImages(Display *display,
   (void) directory;
   status=chdir(resource_info->home_directory);
   if (status == -1)
-    (void) ThrowMagickException(&images->exception,GetMagickModule(),
-      FileOpenError,"UnableToOpenFile","%s",resource_info->home_directory);
+    (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+      "UnableToOpenFile","%s",resource_info->home_directory);
   return(nexus);
 }
 
@@ -2853,7 +2856,8 @@ MagickExport Image *XAnimateImages(Display *display,
 %  The format of the XSaveImage method is:
 %
 %      MagickBooleanType XSaveImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image *image)
+%        XResourceInfo *resource_info,XWindows *windows,Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2872,7 +2876,8 @@ MagickExport Image *XAnimateImages(Display *display,
 %
 */
 static MagickBooleanType XSaveImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image *image)
+  XResourceInfo *resource_info,XWindows *windows,Image *image,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -2901,8 +2906,8 @@ static MagickBooleanType XSaveImage(Display *display,
       GetPathComponent(image->filename,TailPath,filename);
       status=chdir(path);
       if (status == -1)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          FileOpenError,"UnableToOpenFile","%s",path);
+        (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+          "UnableToOpenFile","%s",path);
     }
   XFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
@@ -2921,7 +2926,7 @@ static MagickBooleanType XSaveImage(Display *display,
     }
   image_info=CloneImageInfo(resource_info->image_info);
   (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-  (void) SetImageInfo(image_info,1,&image->exception);
+  (void) SetImageInfo(image_info,1,exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {
@@ -2969,7 +2974,7 @@ static MagickBooleanType XSaveImage(Display *display,
     Write image.
   */
   image=GetFirstImageInList(image);
-  status=WriteImages(image_info,image,filename,&image->exception);
+  status=WriteImages(image_info,image,filename,exception);
   if (status != MagickFalse)
     image->taint=MagickFalse;
   image_info=DestroyImageInfo(image_info);
@@ -3004,9 +3009,11 @@ static MagickBooleanType XSaveImage(Display *display,
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -3014,9 +3021,8 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (X11)",
-    image->filename);
+  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
+    "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image->filename);
   return(MagickFalse);
 }
 #endif

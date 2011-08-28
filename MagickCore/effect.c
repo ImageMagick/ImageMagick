@@ -121,15 +121,12 @@
 */
 
 MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
-  const char *levels)
+  const char *levels,ExceptionInfo *exception)
 {
   double
     black_point,
     gamma,
     white_point;
-
-  ExceptionInfo
-    *exception;
 
   GeometryInfo
     geometry_info;
@@ -145,7 +142,6 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   */
   if (levels == (char *) NULL)
     return(MagickFalse);
-  exception=(&image->exception);
   flags=ParseGeometry(levels,&geometry_info);
   black_point=geometry_info.rho;
   white_point=(double) QuantumRange;
@@ -235,14 +231,14 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
     }
-  (void) AdaptiveLevelImage(edge_image,"20%,95%");
+  (void) AdaptiveLevelImage(edge_image,"20%,95%",exception);
   gaussian_image=GaussianBlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
       edge_image=gaussian_image;
     }
-  (void) AdaptiveLevelImage(edge_image,"10%,95%");
+  (void) AdaptiveLevelImage(edge_image,"10%,95%",exception);
   /*
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
@@ -526,14 +522,14 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       sharp_image=DestroyImage(sharp_image);
       return((Image *) NULL);
     }
-  (void) AdaptiveLevelImage(edge_image,"20%,95%");
+  (void) AdaptiveLevelImage(edge_image,"20%,95%",exception);
   gaussian_image=GaussianBlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
       edge_image=gaussian_image;
     }
-  (void) AdaptiveLevelImage(edge_image,"10%,95%");
+  (void) AdaptiveLevelImage(edge_image,"10%,95%",exception);
   /*
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
