@@ -7602,9 +7602,7 @@ WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
   raise_info.height=height;
   raise_info.x=x;
   raise_info.y=y;
-  status=RaiseImage(wand->images,&raise_info,raise);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=RaiseImage(wand->images,&raise_info,raise,&wand->images->exception);
   return(status);
 }
 

@@ -2367,8 +2367,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry.height=geometry.width;
             (void) RaiseImage(*image,&geometry,*option == '-' ? MagickTrue :
-              MagickFalse);
-            InheritException(exception,&(*image)->exception);
+              MagickFalse,exception);
             break;
           }
         if (LocaleCompare("random-threshold",option+1) == 0)

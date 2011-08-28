@@ -4946,7 +4946,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) RaiseImage(msl_info->image[n],&geometry,raise);
+          (void) RaiseImage(msl_info->image[n],&geometry,raise,
+            &msl_info->image[n]->exception);
           break;
         }
       if (LocaleCompare((const char *) tag,"read") == 0)

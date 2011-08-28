@@ -1577,10 +1577,13 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
 void Magick::Image::raise ( const Geometry &geometry_ ,
 			    const bool raisedFlag_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   RectangleInfo raiseInfo = geometry_;
   modifyImage();
-  RaiseImage ( image(), &raiseInfo, raisedFlag_ == true ? MagickTrue : MagickFalse );
-  throwImageException();
+  RaiseImage ( image(), &raiseInfo, raisedFlag_ == true ? MagickTrue : MagickFalse, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 
