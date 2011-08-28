@@ -1504,10 +1504,8 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           (void) CloseBlob(image);
           image->blob->exempt=MagickTrue;
           *image->filename='\0';
-          status=WriteImage(blob_info,image);
-          if ((status == MagickFalse) || (image->blob->length == 0))
-            InheritException(exception,&image->exception);
-          else
+          status=WriteImage(blob_info,image,exception);
+          if ((status != MagickFalse) && (image->blob->length != 0))
             {
               *length=image->blob->length;
               blob=DetachBlob(image->blob);
@@ -1540,11 +1538,9 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
             {
               (void) FormatLocaleString(image->filename,MaxTextExtent,"%s:%s",
                 image->magick,unique);
-              status=WriteImage(blob_info,image);
+              status=WriteImage(blob_info,image,exception);
               (void) fclose(blob_info->file);
-              if (status == MagickFalse)
-                InheritException(exception,&image->exception);
-              else
+              if (status != MagickFalse)
                 blob=FileToBlob(image->filename,~0UL,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
@@ -1917,7 +1913,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   byte_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   write_info=CloneImageInfo(image_info);
   SetImageInfoFile(write_info,unique_file);
-  status=WriteImage(write_info,byte_image);
+  status=WriteImage(write_info,byte_image,exception);
   write_info=DestroyImageInfo(write_info);
   byte_image=DestroyImage(byte_image);
   (void) fclose(unique_file);

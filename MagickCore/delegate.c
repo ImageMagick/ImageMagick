@@ -965,7 +965,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       {
         (void) FormatLocaleString(p->filename,MaxTextExtent,"%s:%s",
           delegate_info->decode,clone_info->filename);
-        status=WriteImage(clone_info,p);
+        status=WriteImage(clone_info,p,exception);
         if (status == MagickFalse)
           {
             (void) RelinquishUniqueFileResource(image_info->unique);

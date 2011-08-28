@@ -2727,7 +2727,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           file=close(file)-1;
         (void) FormatLocaleString(preview_image->filename,MaxTextExtent,
           "jpeg:%s",filename);
-        status=WriteImage(preview_info,preview_image);
+        status=WriteImage(preview_info,preview_image,exception);
         if (status != MagickFalse)
           {
             Image

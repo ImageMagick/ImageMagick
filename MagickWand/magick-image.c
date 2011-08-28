@@ -11877,9 +11877,7 @@ WandExport MagickBooleanType MagickWriteImage(MagickWand *wand,
     return(MagickFalse);
   write_info=CloneImageInfo(wand->image_info);
   write_info->adjoin=MagickTrue;
-  status=WriteImage(write_info,image);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&image->exception);
+  status=WriteImage(write_info,image,&image->exception);
   image=DestroyImage(image);
   write_info=DestroyImageInfo(write_info);
   return(status);
@@ -11933,10 +11931,8 @@ WandExport MagickBooleanType MagickWriteImageFile(MagickWand *wand,FILE *file)
   write_info=CloneImageInfo(wand->image_info);
   SetImageInfoFile(write_info,file);
   write_info->adjoin=MagickTrue;
-  status=WriteImage(write_info,image);
+  status=WriteImage(write_info,image,&image->exception);
   write_info=DestroyImageInfo(write_info);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&image->exception);
   image=DestroyImage(image);
   return(status);
 }

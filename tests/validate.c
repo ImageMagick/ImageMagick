@@ -544,8 +544,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           continue;
         }
       reference_image->compression=reference_formats[i].compression;
-      status=WriteImage(image_info,reference_image);
-      InheritException(exception,&reference_image->exception);
+      status=WriteImage(image_info,reference_image,exception);
       reference_image=DestroyImage(reference_image);
       if (status == MagickFalse)
         {
@@ -763,8 +762,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
           continue;
         }
       reference_image->compression=reference_formats[i].compression;
-      status=WriteImage(image_info,reference_image);
-      InheritException(exception,&reference_image->exception);
+      status=WriteImage(image_info,reference_image,exception);
       reference_image=DestroyImage(reference_image);
       if (status == MagickFalse)
         {
@@ -793,8 +791,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         reference_formats[i].magick,output_filename);
       reference_image->depth=reference_types[j].depth;
       reference_image->compression=reference_formats[i].compression;
-      status=WriteImage(image_info,reference_image);
-      InheritException(exception,&reference_image->exception);
+      status=WriteImage(image_info,reference_image,exception);
       if (status == MagickFalse)
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
@@ -1442,8 +1439,7 @@ int main(int argc,char **argv)
       (void) AcquireUniqueFilename(output_filename);
       (void) CopyMagickString(reference_image->filename,reference_filename,
         MaxTextExtent);
-      status=WriteImage(image_info,reference_image);
-      InheritException(exception,&reference_image->exception);
+      status=WriteImage(image_info,reference_image,exception);
       reference_image=DestroyImage(reference_image);
       if (status == MagickFalse)
         fail++;

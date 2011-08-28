@@ -384,7 +384,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       next=GetNextImageInList(image);
       image->next=NewImageList();
       (void) CopyMagickString(image->magick,"PNG",MaxTextExtent);
-      (void) WriteImage(write_info,image);
+      (void) WriteImage(write_info,image,&image->exception);
       image->next=next;
       /*
         Determine image map filename.

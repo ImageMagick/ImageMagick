@@ -191,7 +191,7 @@ static MagickBooleanType WritePreviewImage(const ImageInfo *image_info,
   if (LocaleCompare(write_info->magick,"PREVIEW") == 0)
     (void) FormatLocaleString(preview_image->filename,MaxTextExtent,
       "miff:%s",image_info->filename);
-  status=WriteImage(write_info,preview_image);
+  status=WriteImage(write_info,preview_image,&image->exception);
   preview_image=DestroyImage(preview_image);
   write_info=DestroyImageInfo(write_info);
   return(status);

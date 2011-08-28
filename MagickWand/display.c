@@ -602,7 +602,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               (void) CopyMagickString(display_image->filename,
                 resource_info.write_filename,MaxTextExtent);
               (void) SetImageInfo(image_info,1,&display_image->exception);
-              status&=WriteImage(image_info,display_image);
+              status&=WriteImage(image_info,display_image,
+                &display_image->exception);
               GetImageException(display_image,exception);
             }
           /*
