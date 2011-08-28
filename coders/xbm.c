@@ -67,7 +67,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteXBMImage(const ImageInfo *,Image *);
+  WriteXBMImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -456,11 +456,12 @@ ModuleExport void UnregisterXBMImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure WriteXBMImage() writes an image to a file in the X bitmap format.
+%  WriteXBMImage() writes an image to a file in the X bitmap format.
 %
 %  The format of the WriteXBMImage method is:
 %
-%      MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXBMImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -468,9 +469,11 @@ ModuleExport void UnregisterXBMImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     basename[MaxTextExtent],
@@ -502,7 +505,9 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -535,7 +540,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)

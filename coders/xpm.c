@@ -75,8 +75,8 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePICONImage(const ImageInfo *,Image *),
-  WriteXPMImage(const ImageInfo *,Image *);
+  WritePICONImage(const ImageInfo *,Image *,ExceptionInfo *),
+  WriteXPMImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -519,7 +519,7 @@ ModuleExport void UnregisterXPMImage(void)
 %  The format of the WritePICONImage method is:
 %
 %      MagickBooleanType WritePICONImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -527,9 +527,11 @@ ModuleExport void UnregisterXPMImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #define ColormapExtent  155
 #define GraymapExtent  95
@@ -575,9 +577,6 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     basename[MaxTextExtent],
     name[MaxTextExtent],
     symbol[MaxTextExtent];
-
-  ExceptionInfo
-    *exception;
 
   Image
     *affinity_image,
@@ -627,7 +626,9 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -636,16 +637,14 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   (void) ParseMetaGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
   picon=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,1.0,
-    &image->exception);
+    exception);
   blob_info=CloneImageInfo(image_info);
   (void) AcquireUniqueFilename(blob_info->filename);
   if ((image_info->type != TrueColorType) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
-    affinity_image=BlobToImage(blob_info,Graymap,GraymapExtent,
-      &image->exception);
+      (IsImageGray(image,exception) != MagickFalse))
+    affinity_image=BlobToImage(blob_info,Graymap,GraymapExtent,exception);
   else
-    affinity_image=BlobToImage(blob_info,Colormap,ColormapExtent,
-      &image->exception);
+    affinity_image=BlobToImage(blob_info,Colormap,ColormapExtent,exception);
   (void) RelinquishUniqueFileResource(blob_info->filename);
   blob_info=DestroyImageInfo(blob_info);
   if ((picon == (Image *) NULL) || (affinity_image == (Image *) NULL))
@@ -655,7 +654,6 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   quantize_info=DestroyQuantizeInfo(quantize_info);
   affinity_image=DestroyImage(affinity_image);
   transparent=MagickFalse;
-  exception=(&image->exception);
   if (picon->storage_class == PseudoClass)
     {
       (void) CompressImageColormap(picon);
@@ -743,8 +741,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
-    (void) QueryMagickColorname(image,&pixel,XPMCompliance,name,
-      &image->exception);
+    (void) QueryMagickColorname(image,&pixel,XPMCompliance,name,exception);
     if (transparent != MagickFalse)
       {
         if (i == (ssize_t) (colors-1))
@@ -771,7 +768,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   (void) WriteBlobString(image,"/* pixels */\n");
   for (y=0; y < (ssize_t) picon->rows; y++)
   {
-    p=GetVirtualPixels(picon,0,y,picon->columns,1,&picon->exception);
+    p=GetVirtualPixels(picon,0,y,picon->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     (void) WriteBlobString(image,"\"");
@@ -818,7 +815,8 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 %
 %  The format of the WriteXPMImage method is:
 %
-%      MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXPMImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -826,8 +824,11 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
 #define MaxCixels  92
 
@@ -872,7 +873,9 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -974,8 +977,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
-    (void) QueryMagickColorname(image,&pixel,XPMCompliance,name,
-      &image->exception);
+    (void) QueryMagickColorname(image,&pixel,XPMCompliance,name,exception);
     if (i == opacity)
       (void) CopyMagickString(name,"None",MaxTextExtent);
     /*
@@ -999,7 +1001,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/* pixels */\n");
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     (void) WriteBlobString(image,"\"");

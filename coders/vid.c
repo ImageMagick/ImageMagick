@@ -67,7 +67,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteVIDImage(const ImageInfo *,Image *);
+  WriteVIDImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -291,7 +291,8 @@ ModuleExport void UnregisterVIDImage(void)
 %
 %  The format of the WriteVIDImage method is:
 %
-%      MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteVIDImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -299,8 +300,11 @@ ModuleExport void UnregisterVIDImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   Image
     *montage_image;
@@ -323,19 +327,18 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image)
   for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
     (void) SetImageProperty(p,"label",DefaultTileLabel);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  montage_image=MontageImageList(image_info,montage_info,image,
-    &image->exception);
+  montage_image=MontageImageList(image_info,montage_info,image,exception);
   montage_info=DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(CorruptImageError,image->exception.reason);
+    return(MagickFalse);
   (void) CopyMagickString(montage_image->filename,image_info->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
-  (void) SetImageInfo(write_info,1,&image->exception);
+  (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"VID") == 0)
     (void) FormatLocaleString(montage_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);
-  status=WriteImage(write_info,montage_image,&image->exception);
+  status=WriteImage(write_info,montage_image,exception);
   montage_image=DestroyImage(montage_image);
   write_info=DestroyImageInfo(write_info);
   return(status);

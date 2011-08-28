@@ -186,7 +186,7 @@ typedef struct _SVGInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WriteSVGImage(const ImageInfo *,Image *);
+  WriteSVGImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3212,13 +3212,16 @@ ModuleExport void UnregisterSVGImage(void)
 %
 %  The format of the WriteSVGImage method is:
 %
-%      MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteSVGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -3409,7 +3412,8 @@ static MagickBooleanType TraceSVGImage(Image *image)
   return(MagickTrue);
 }
 
-static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
 #define BezierQuantum  200
 
@@ -3471,7 +3475,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   value=GetImageArtifact(image,"SVG");
@@ -4235,7 +4241,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
         number_points,sizeof(*primitive_info));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
           break;
         }
@@ -4431,7 +4437,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image)
               number_points,sizeof(*primitive_info));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
-                (void) ThrowMagickException(&image->exception,GetMagickModule(),
+                (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed","`%s'",
                   image->filename);
                 break;

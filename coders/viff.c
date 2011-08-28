@@ -69,7 +69,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteVIFFImage(const ImageInfo *,Image *);
+  WriteVIFFImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -845,13 +845,15 @@ ModuleExport void UnregisterVIFFImage(void)
 %  The format of the WriteVIFFImage method is:
 %
 %      MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -863,7 +865,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_NONE  0
@@ -960,7 +962,9 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) ResetMagickMemory(&viff_info,0,sizeof(ViffInfo));
@@ -972,8 +976,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     */
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
-    if (IsImageGray(image,&image->exception) != MagickFalse)
-      (void) SetImageStorageClass(image,DirectClass,&image->exception);
+    if (IsImageGray(image,exception) != MagickFalse)
+      (void) SetImageStorageClass(image,DirectClass,exception);
     viff_info.identifier=(char) 0xab;
     viff_info.file_type=1;
     viff_info.release=1;
@@ -1019,7 +1023,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=number_pixels;
-        if (IsImageGray(image,&image->exception) == MagickFalse)
+        if (IsImageGray(image,exception) == MagickFalse)
           {
             /*
               Colormapped VIFF raster.
@@ -1093,7 +1097,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         number_pixels=(MagickSizeType) image->columns*image->rows;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -1117,7 +1121,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         }
       }
     else
-      if (IsImageGray(image,&image->exception) == MagickFalse)
+      if (IsImageGray(image,exception) == MagickFalse)
         {
           unsigned char
             *viff_colormap;
@@ -1144,7 +1148,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
           q=viff_pixels;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
@@ -1178,8 +1182,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             (void) SetImageType(image,BilevelType);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               bit=0;
@@ -1216,8 +1219,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             */
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
