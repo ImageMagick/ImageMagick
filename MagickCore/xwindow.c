@@ -2046,7 +2046,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   /*
     Write info about the image to a file.
   */
-  (void) IdentifyImage(image,file,MagickTrue);
+  (void) IdentifyImage(image,file,MagickTrue,&image->exception);
   (void) fclose(file);
   text=FileToString(filename,~0,&image->exception);
   (void) RelinquishUniqueFileResource(filename);

@@ -1765,8 +1765,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             if (format == (char *) NULL)
               {
-                (void) IdentifyImage(*image,stdout,mogrify_info->verbose);
-                InheritException(exception,&(*image)->exception);
+                (void) IdentifyImage(*image,stdout,mogrify_info->verbose,
+                  exception);
                 break;
               }
             text=InterpretImageProperties(mogrify_info,*image,format);

@@ -9589,7 +9589,7 @@ Mogrify(ref,...)
             (void) SetImageArtifact(image,"identify:features",
               argument_list[1].string_reference);
           (void) IdentifyImage(image,argument_list[0].file_reference,
-            MagickTrue);
+            MagickTrue,exception);
           break;
         }
         case 80:  /* BlackThreshold */
