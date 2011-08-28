@@ -646,9 +646,7 @@ WandExport MagickBooleanType MagickAnimateImages(MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) CloneString(&wand->image_info->server_name,server_name);
-  status=AnimateImages(wand->image_info,wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=AnimateImages(wand->image_info,wand->images,&wand->images->exception);
   return(status);
 }
 
@@ -2313,9 +2311,7 @@ WandExport MagickBooleanType MagickDisplayImage(MagickWand *wand,
   if (image == (Image *) NULL)
     return(MagickFalse);
   (void) CloneString(&wand->image_info->server_name,server_name);
-  status=DisplayImages(wand->image_info,image);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&image->exception);
+  status=DisplayImages(wand->image_info,image,&image->exception);
   image=DestroyImage(image);
   return(status);
 }
@@ -2356,9 +2352,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   (void) CloneString(&wand->image_info->server_name,server_name);
-  status=DisplayImages(wand->image_info,wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=DisplayImages(wand->image_info,wand->images,&wand->images->exception);
   return(status);
 }
 

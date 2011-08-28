@@ -207,5 +207,5 @@ ModuleExport void UnregisterXImage(void)
 static MagickBooleanType WriteXImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  return(DisplayImages(image_info,image));
+  return(DisplayImages(image_info,image,exception));
 }

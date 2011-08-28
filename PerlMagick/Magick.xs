@@ -2422,9 +2422,8 @@ Animate(ref,...)
         for (i=2; i < items; i+=2)
           SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i),
             exception);
-    (void) AnimateImages(package_info->image_info,image);
+    (void) AnimateImages(package_info->image_info,image,exception);
     (void) CatchImageException(image);
-    InheritException(exception,&image->exception);
 
   PerlException:
     if (package_info != (struct PackageInfo *) NULL)
@@ -3529,9 +3528,8 @@ Display(ref,...)
         for (i=2; i < items; i+=2)
           SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i),
             exception);
-    (void) DisplayImages(package_info->image_info,image);
+    (void) DisplayImages(package_info->image_info,image,exception);
     (void) CatchImageException(image);
-    InheritException(exception,&image->exception);
 
   PerlException:
     if (package_info != (struct PackageInfo *) NULL)

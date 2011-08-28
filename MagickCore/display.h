@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  DisplayImages(const ImageInfo *,Image *),
+  DisplayImages(const ImageInfo *,Image *,ExceptionInfo *),
   RemoteDisplayCommand(const ImageInfo *,const char *,const char *,
     ExceptionInfo *);
 

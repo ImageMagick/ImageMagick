@@ -776,7 +776,11 @@ void Magick::Image::despeckle ( void )
 // Display image
 void Magick::Image::display( void )
 {
-  DisplayImages( imageInfo(), image() );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  DisplayImages( imageInfo(), image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Distort image.  distorts an image using various distortion methods, by

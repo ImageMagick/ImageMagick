@@ -1442,7 +1442,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
     ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1])
   if (resource_info.window_id != (char *) NULL)
     {
-      XAnimateBackgroundImage(display,&resource_info,image);
+      XAnimateBackgroundImage(display,&resource_info,image,exception);
       status&=MagickTrue;
     }
   else
@@ -1453,12 +1453,14 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
       /*
         Animate image to X server.
       */
-      animate_image=XAnimateImages(display,&resource_info,argv,argc,image);
+      animate_image=XAnimateImages(display,&resource_info,argv,argc,image,
+        exception);
       status&=animate_image != (Image *) NULL;
       while (animate_image != (Image *) NULL)
       {
         image=animate_image;
-        animate_image=XAnimateImages(display,&resource_info,argv,argc,image);
+        animate_image=XAnimateImages(display,&resource_info,argv,argc,image,
+          exception);
         if (animate_image != image)
           image=DestroyImageList(image);
       }

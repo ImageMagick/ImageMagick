@@ -525,7 +525,7 @@ extern MagickExport MagickBooleanType
   XMagickProgressMonitor(const char *,const MagickOffsetType,
     const MagickSizeType,void *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,unsigned int,
-    unsigned int),
+    unsigned int,ExceptionInfo *),
   XQueryColorDatabase(const char *,XColor *),
   XRemoteCommand(Display *,const char *,const char *);
 
