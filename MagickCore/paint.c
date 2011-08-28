@@ -73,12 +73,12 @@
 %  specified, the color value is changed for any neighbor pixel that does not
 %  match the bordercolor member of image.
 %
-%  By default target must match a particular pixel color exactly.
-%  However, in many cases two colors may differ by a small amount.  The
-%  fuzz member of image defines how much tolerance is acceptable to
-%  consider two colors as the same.  For example, set fuzz to 10 and the
-%  color red at intensities of 100 and 102 respectively are now
-%  interpreted as the same color for the purposes of the floodfill.
+%  By default target must match a particular pixel color exactly.  However,
+%  in many cases two colors may differ by a small amount.  The fuzz member of
+%  image defines how much tolerance is acceptable to consider two colors as
+%  the same.  For example, set fuzz to 10 and the color red at intensities of
+%  100 and 102 respectively are now interpreted as the same color for the
+%  purposes of the floodfill.
 %
 %  The format of the FloodfillPaintImage method is:
 %
