@@ -67,7 +67,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteRGBImage(const ImageInfo *,Image *);
+  WriteRGBImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1061,7 +1061,7 @@ ModuleExport void UnregisterRGBImage(void)
 %  The format of the WriteRGBImage method is:
 %
 %      MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1069,9 +1069,11 @@ ModuleExport void UnregisterRGBImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1109,7 +1111,9 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       /*
         Open output image file.
       */
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
     }
@@ -1134,7 +1138,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
       (void) TransformImageColorspace(image,RGBColorspace);
     if ((LocaleCompare(image_info->magick,"RGBA") == 0) &&
         (image->matte == MagickFalse))
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,&image->exception);
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1152,11 +1156,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1180,28 +1184,28 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,&image->exception);
+            RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,&image->exception);
+            GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,&image->exception);
+            BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
           if (quantum_type == RGBAQuantum)
             {
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                AlphaQuantum,pixels,&image->exception);
+                AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
                 break;
@@ -1209,7 +1213,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           if (quantum_type == RGBOQuantum)
             {
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                OpacityQuantum,pixels,&image->exception);
+                OpacityQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
                 break;
@@ -1234,11 +1238,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,&image->exception);
+            RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1254,11 +1258,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,&image->exception);
+            GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1274,11 +1278,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,&image->exception);
+            BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1296,11 +1300,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
               register const Quantum
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                AlphaQuantum,pixels,&image->exception);
+                AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
               break;
@@ -1330,7 +1334,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         */
         AppendImageFormat("R",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
-          AppendBinaryBlobMode,&image->exception);
+          AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
           return(status);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -1338,11 +1342,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,&image->exception);
+            RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1356,7 +1360,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         (void) CloseBlob(image);
         AppendImageFormat("G",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
-          AppendBinaryBlobMode,&image->exception);
+          AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
           return(status);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -1364,11 +1368,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,&image->exception);
+            GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1382,7 +1386,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
         (void) CloseBlob(image);
         AppendImageFormat("B",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
-          AppendBinaryBlobMode,&image->exception);
+          AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
           return(status);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -1390,11 +1394,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,&image->exception);
+            BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
@@ -1411,7 +1415,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
             (void) CloseBlob(image);
             AppendImageFormat("A",image->filename);
             status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
-              AppendBinaryBlobMode,&image->exception);
+              AppendBinaryBlobMode,exception);
             if (status == MagickFalse)
               return(status);
             for (y=0; y < (ssize_t) image->rows; y++)
@@ -1419,12 +1423,11 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
               register const Quantum
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                AlphaQuantum,pixels,&image->exception);
+                AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
                 break;

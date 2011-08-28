@@ -61,7 +61,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteTHUMBNAILImage(const ImageInfo *,Image *);
+  WriteTHUMBNAILImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,7 +139,7 @@ ModuleExport void UnregisterTHUMBNAILImage(void)
 %  The format of the WriteTHUMBNAILImage method is:
 %
 %      MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -147,9 +147,11 @@ ModuleExport void UnregisterTHUMBNAILImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   const char
     *property;
@@ -199,7 +201,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
       break;
   }
   thumbnail_image=BlobToImage(image_info,GetStringInfoDatum(profile)+offset+i-2,
-    length,&image->exception);
+    length,exception);
   if (thumbnail_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageType(thumbnail_image,thumbnail_image->matte == MagickFalse ?
@@ -207,11 +209,11 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   (void) CopyMagickString(thumbnail_image->filename,image->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
-  (void) SetImageInfo(write_info,1,&image->exception);
+  (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"THUMBNAIL") == 0)
     (void) FormatLocaleString(thumbnail_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);
-  status=WriteImage(write_info,thumbnail_image,&image->exception);
+  status=WriteImage(write_info,thumbnail_image,exception);
   thumbnail_image=DestroyImage(thumbnail_image);
   write_info=DestroyImageInfo(write_info);
   return(status);

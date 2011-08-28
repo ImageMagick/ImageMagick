@@ -65,7 +65,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteWBMPImage(const ImageInfo *,Image *);
+  WriteWBMPImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -301,7 +301,7 @@ ModuleExport void UnregisterWBMPImage(void)
 %  The format of the WriteWBMPImage method is:
 %
 %      MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -309,6 +309,7 @@ ModuleExport void UnregisterWBMPImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -344,7 +345,7 @@ static void WBMPWriteInteger(Image *image,const size_t value)
 }
 
 static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -371,7 +372,9 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -385,7 +388,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   WBMPWriteInteger(image,image->rows);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     bit=0;

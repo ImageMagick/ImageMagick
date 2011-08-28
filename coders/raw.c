@@ -66,7 +66,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteRAWImage(const ImageInfo *,Image *);
+  WriteRAWImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -422,7 +422,8 @@ ModuleExport void UnregisterRAWImage(void)
 %
 %  The format of the WriteRAWImage method is:
 %
-%      MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteRAWImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -430,8 +431,11 @@ ModuleExport void UnregisterRAWImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickOffsetType
     scene;
@@ -467,7 +471,9 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   switch (*image->magick)
@@ -558,11 +564,11 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image)
     pixels=GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-        quantum_type,pixels,&image->exception);
+        quantum_type,pixels,exception);
       count=WriteBlob(image,length,pixels);
       if (count != (ssize_t) length)
         break;

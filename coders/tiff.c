@@ -190,9 +190,9 @@ static Image *
   ReadTIFFImage(const ImageInfo *,ExceptionInfo *);
 
 static MagickBooleanType
-  WriteGROUP4Image(const ImageInfo *,Image *),
-  WritePTIFImage(const ImageInfo *,Image *),
-  WriteTIFFImage(const ImageInfo *,Image *);
+  WriteGROUP4Image(const ImageInfo *,Image *,ExceptionInfo *),
+  WritePTIFImage(const ImageInfo *,Image *,ExceptionInfo *),
+  WriteTIFFImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -1852,7 +1852,7 @@ ModuleExport void UnregisterTIFFImage(void)
 %  The format of the WriteGROUP4Image method is:
 %
 %      MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *)
 %
 %  A description of each parameter follows:
 %
@@ -1860,9 +1860,11 @@ ModuleExport void UnregisterTIFFImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -1907,10 +1909,12 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  huffman_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  huffman_image=CloneImage(image,0,0,MagickTrue,exception);
   if (huffman_image == (Image *) NULL)
     {
       (void) CloseBlob(image);
@@ -1923,8 +1927,8 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
-      ThrowFileException(&image->exception,FileOpenError,
-        "UnableToCreateTemporaryFile",filename);
+      ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+        filename);
       return(MagickFalse);
     }
   (void) FormatLocaleString(huffman_image->filename,MaxTextExtent,"tiff:%s",
@@ -1935,12 +1939,11 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   write_info->compression=Group4Compression;
   write_info->type=BilevelType;
   (void) SetImageOption(write_info,"quantum:polarity","min-is-white");
-  status=WriteTIFFImage(write_info,huffman_image);
+  status=WriteTIFFImage(write_info,huffman_image,exception);
   (void) fflush(file);
   write_info=DestroyImageInfo(write_info);
   if (status == MagickFalse)
     {
-      InheritException(&image->exception,&huffman_image->exception);
       huffman_image=DestroyImage(huffman_image);
       (void) fclose(file);
       (void) RelinquishUniqueFileResource(filename);
@@ -1952,7 +1955,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
       huffman_image=DestroyImage(huffman_image);
       (void) fclose(file);
       (void) RelinquishUniqueFileResource(filename);
-      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
+      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image_info->filename);
       return(MagickFalse);
     }
@@ -2019,7 +2022,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
 %  The format of the WritePTIFImage method is:
 %
 %      MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2027,9 +2030,11 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   Image
     *images,
@@ -2052,8 +2057,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   images=NewImageList();
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,
-      &image->exception));
+    AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,exception));
     columns=next->columns;
     rows=next->rows;
     while ((columns > 64) && (rows > 64))
@@ -2061,7 +2065,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       columns/=2;
       rows/=2;
       pyramid_image=ResizeImage(next,columns,rows,UndefinedFilter,image->blur,
-        &image->exception);
+        exception);
       AppendImageToList(&images,pyramid_image);
     }
   }
@@ -2071,7 +2075,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
   write_info->adjoin=MagickTrue;
-  status=WriteTIFFImage(write_info,GetFirstImageInList(images));
+  status=WriteTIFFImage(write_info,GetFirstImageInList(images),exception);
   images=DestroyImageList(images);
   write_info=DestroyImageInfo(write_info);
   return(status);
@@ -2094,13 +2098,15 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
 %  The format of the WriteTIFFImage method is:
 %
 %      MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -2407,7 +2413,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
 }
 
 static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  (8192UL/TIFFScanlineSize(tiff))
@@ -2477,10 +2483,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  (void) MagickSetThreadValue(tiff_exception,&image->exception);
+  (void) MagickSetThreadValue(tiff_exception,exception);
   error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   endian_type=UndefinedEndian;
@@ -2532,7 +2542,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&
         (quantum_info->format == UndefinedQuantumFormat) &&
-        (IsHighDynamicRangeImage(image,&image->exception) != MagickFalse))
+        (IsHighDynamicRangeImage(image,exception) != MagickFalse))
       {
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
@@ -2608,8 +2618,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if ((compress_tag != COMPRESSION_NONE) &&
         (TIFFIsCODECConfigured(compress_tag) == 0))
       {
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          CoderError,"CompressionNotSupported","`%s'",CommandOptionToMnemonic(
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          "CompressionNotSupported","`%s'",CommandOptionToMnemonic(
           MagickCompressOptions,(ssize_t) compression));
         compress_tag=COMPRESSION_NONE;
         compression=NoCompression;
@@ -2640,8 +2650,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           break;
         default:
         {
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
-            CoderError,"CompressionNotSupported","`%s'",CommandOptionToMnemonic(
+          (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+            "CompressionNotSupported","`%s'",CommandOptionToMnemonic(
               MagickCompressOptions,(ssize_t) compression));
           compress_tag=COMPRESSION_NONE;
           compression=NoCompression;
@@ -2659,7 +2669,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case JPEGCompression:
       {
-        (void) SetImageStorageClass(image,DirectClass,&image->exception);
+        (void) SetImageStorageClass(image,DirectClass,exception);
         (void) SetImageDepth(image,8);
         break;
       }
@@ -2684,7 +2694,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             {
               photometric=PHOTOMETRIC_YCBCR;
               (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,1,1);
-              (void) SetImageStorageClass(image,DirectClass,&image->exception);
+              (void) SetImageStorageClass(image,DirectClass,exception);
               (void) SetImageDepth(image,8);
             }
           else
@@ -2698,14 +2708,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             (image_info->type != TrueColorMatteType))
           {
             if ((image_info->type != PaletteType) &&
-                (IsImageGray(image,&image->exception) != MagickFalse))
+                (IsImageGray(image,exception) != MagickFalse))
               {
                 photometric=(uint16) (quantum_info->min_is_white !=
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 if ((image_info->depth == 0) && (image->matte == MagickFalse) &&
-                    (IsImageMonochrome(image,&image->exception) != MagickFalse))
+                    (IsImageMonochrome(image,exception) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
                     if (status == MagickFalse)
@@ -3049,12 +3059,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const Quantum
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                quantum_type,pixels,&image->exception);
+                quantum_type,pixels,exception);
               (void) length;
               if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
@@ -3079,12 +3088,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const Quantum
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                RedQuantum,pixels,&image->exception);
+                RedQuantum,pixels,exception);
               if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
                 break;
             }
@@ -3099,12 +3107,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const Quantum
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                GreenQuantum,pixels,&image->exception);
+                GreenQuantum,pixels,exception);
               if (TIFFWritePixels(tiff,&tiff_info,y,1,image) == -1)
                 break;
             }
@@ -3119,12 +3126,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const Quantum
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                BlueQuantum,pixels,&image->exception);
+                BlueQuantum,pixels,exception);
               if (TIFFWritePixels(tiff,&tiff_info,y,2,image) == -1)
                 break;
             }
@@ -3140,12 +3146,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 register const Quantum
                   *restrict p;
 
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 length=ExportQuantumPixels(image,(CacheView *) NULL,
-                  quantum_info,AlphaQuantum,pixels,&image->exception);
+                  quantum_info,AlphaQuantum,pixels,exception);
                 if (TIFFWritePixels(tiff,&tiff_info,y,3,image) == -1)
                   break;
               }
@@ -3175,11 +3180,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
             break;
           if (image->previous == (Image *) NULL)
@@ -3246,11 +3251,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
             break;
           if (image->previous == (Image *) NULL)

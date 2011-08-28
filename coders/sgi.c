@@ -102,7 +102,7 @@ typedef struct _SGIInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WriteSGIImage(const ImageInfo *,Image *);
+  WriteSGIImage(const ImageInfo *,Image *,ExceptionInfo *);
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -780,13 +780,16 @@ ModuleExport void UnregisterSGIImage(void)
 %
 %  The format of the WriteSGIImage method is:
 %
-%      MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteSGIImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -843,7 +846,8 @@ static size_t SGIEncode(unsigned char *pixels,size_t length,
   return((size_t) (q-packets));
 }
 
-static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   CompressionType
     compression;
@@ -892,7 +896,9 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns > 65535UL) || (image->rows > 65535UL))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -923,7 +929,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     else
       {
         if ((image_info->type != TrueColorType) &&
-            (IsImageGray(image,&image->exception) != MagickFalse))
+            (IsImageGray(image,exception) != MagickFalse))
           {
             iris_info.dimension=2;
             iris_info.depth=1;
@@ -971,7 +977,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       if (image->depth <= 8)

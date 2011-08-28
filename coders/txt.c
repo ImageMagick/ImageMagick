@@ -72,7 +72,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteTXTImage(const ImageInfo *,Image *);
+  WriteTXTImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -593,7 +593,8 @@ ModuleExport void UnregisterTXTImage(void)
 %
 %  The format of the WriteTXTImage method is:
 %
-%      MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteTXTImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -601,8 +602,11 @@ ModuleExport void UnregisterTXTImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent],
@@ -636,7 +640,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -656,7 +660,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -693,8 +697,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
         (void) FormatLocaleString(buffer,MaxTextExtent,"%s",tuple);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"  ");
-        (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
-          &image->exception);
+        (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,exception);
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");
         p+=GetPixelChannels(image);

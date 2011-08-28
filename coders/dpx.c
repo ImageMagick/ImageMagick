@@ -1359,6 +1359,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       ((horizontal_factor == 2) || (vertical_factor == 2)))
     if ((image->columns % 2) != 0)
       image->columns++;
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);

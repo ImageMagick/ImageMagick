@@ -161,7 +161,7 @@ typedef struct _PSDInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WritePSDImage(const ImageInfo *,Image *);
+  WritePSDImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1524,13 +1524,16 @@ ModuleExport void UnregisterPSDImage(void)
 %
 %  The format of the WritePSDImage method is:
 %
-%      MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePSDImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -2038,7 +2041,8 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
   }
 }
 
-static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *property;
@@ -2084,7 +2088,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   packet_size=(size_t) (image->depth > 8 ? 6 : 3);
@@ -2098,7 +2104,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
-  if (IsImageGray(image,&image->exception) != MagickFalse)
+  if (IsImageGray(image,exception) != MagickFalse)
     num_channels=(image->matte != MagickFalse ? 2UL : 1UL);
   else
     if (image->storage_class == PseudoClass)
@@ -2113,7 +2119,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,(unsigned short) num_channels);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
-  if (IsImageGray(image,&image->exception) != MagickFalse)
+  if (IsImageGray(image,exception) != MagickFalse)
     {
       MagickBooleanType
         monochrome;
@@ -2121,8 +2127,8 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       /*
         Write depth & mode.
       */
-      monochrome=IsImageMonochrome(image,&image->exception) &&
-        (image->depth == 1) ? MagickTrue : MagickFalse;
+      monochrome=IsImageMonochrome(image,exception) && (image->depth == 1) ?
+        MagickTrue : MagickFalse;
       (void) WriteBlobMSBShort(image,(unsigned short)
         (monochrome != MagickFalse ? 1 : image->depth > 8 ? 16 : 8));
       (void) WriteBlobMSBShort(image,(unsigned short)
@@ -2148,7 +2154,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobMSBShort(image,CMYKMode);
         }
     }
-  if ((IsImageGray(image,&image->exception) != MagickFalse) ||
+  if ((IsImageGray(image,exception) != MagickFalse) ||
       (image->storage_class == DirectClass) || (image->colors > 256))
     (void) WriteBlobMSBLong(image,0);
   else
@@ -2217,7 +2223,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
   while ( next_image != NULL )
   {
     packet_size=next_image->depth > 8 ? 2UL : 1UL;
-    if (IsImageGray(next_image,&image->exception) != MagickFalse)
+    if (IsImageGray(next_image,exception) != MagickFalse)
       num_channels=next_image->matte != MagickFalse ? 2UL : 1UL;
     else
       if (next_image->storage_class == PseudoClass)
@@ -2272,7 +2278,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
         packet_size=next_image->depth > 8 ? 2UL : 1UL;
         channel_size=(unsigned int) ((packet_size*next_image->rows*
           next_image->columns)+2);
-        if ((IsImageGray(next_image,&image->exception) != MagickFalse) ||
+        if ((IsImageGray(next_image,exception) != MagickFalse) ||
             (next_image->storage_class == PseudoClass))
           {
              (void) WriteBlobMSBShort(image,(unsigned short)

@@ -65,7 +65,7 @@
 */
 #if defined(MAGICKCORE_X11_DELEGATE)
 static MagickBooleanType
-  WriteXImage(const ImageInfo *,Image *);
+  WriteXImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 #if defined(MAGICKCORE_X11_DELEGATE)
@@ -192,7 +192,8 @@ ModuleExport void UnregisterXImage(void)
 %
 %  The format of the WriteXImage method is:
 %
-%      MagickBooleanType WriteXImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -200,8 +201,11 @@ ModuleExport void UnregisterXImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteXImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteXImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   return(DisplayImages(image_info,image));
 }

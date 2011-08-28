@@ -69,7 +69,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteTGAImage(const ImageInfo *,Image *);
+  WriteTGAImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -579,7 +579,8 @@ ModuleExport void UnregisterTGAImage(void)
 %
 %  The format of the WriteTGAImage method is:
 %
-%      MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteTGAImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -596,7 +597,8 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
 #define TargaColormap 1
 #define TargaRGB 2
@@ -667,7 +669,9 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -695,7 +699,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
       (image_info->type != TrueColorMatteType) &&
       (image_info->type != PaletteType) &&
       (image->matte == MagickFalse) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
+      (IsImageGray(image,exception) != MagickFalse))
     targa_info.image_type=TargaMonochrome;
   else
     if ((image->storage_class == DirectClass) || (image->colors > 256))
@@ -772,7 +776,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=(ssize_t) (image->rows-1); y >= 0; y--)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     q=targa_pixels;

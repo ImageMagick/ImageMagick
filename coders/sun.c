@@ -68,7 +68,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteSUNImage(const ImageInfo *,Image *);
+  WriteSUNImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -685,7 +685,8 @@ ModuleExport void UnregisterSUNImage(void)
 %
 %  The format of the WriteSUNImage method is:
 %
-%      MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteSUNImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -693,8 +694,11 @@ ModuleExport void UnregisterSUNImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
 #define RMT_EQUAL_RGB  1
 #define RMT_NONE  0
@@ -746,7 +750,9 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -781,7 +787,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           0;
       }
     else
-      if (IsImageMonochrome(image,&image->exception))
+      if (IsImageMonochrome(image,exception) != MagickFalse)
         {
           /*
             Monochrome SUN raster.
@@ -847,7 +853,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
@@ -874,7 +880,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       }
     else
-      if (IsImageMonochrome(image,&image->exception))
+      if (IsImageMonochrome(image,exception) != MagickFalse)
         {
           register unsigned char
             bit,
@@ -886,7 +892,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           (void) SetImageType(image,BilevelType);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             bit=0;
@@ -938,7 +944,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)

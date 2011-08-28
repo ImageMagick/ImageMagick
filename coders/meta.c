@@ -2256,7 +2256,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       profile=GetImageProfile(image,"8bim");
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"No8BIMDataIsAvailable");
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       (void) WriteBlob(image,GetStringInfoLength(profile),
@@ -2277,7 +2279,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
         profile=GetImageProfile(image,"8bim");
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"No8BIMDataIsAvailable");
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       info=GetStringInfoDatum(profile);
       length=GetStringInfoLength(profile);
       length=GetIPTCStream(&info,length);
@@ -2295,7 +2299,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       profile=GetImageProfile(image,"8bim");
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"No8BIMDataIsAvailable");
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       buff=AcquireImage((ImageInfo *) NULL);
@@ -2327,7 +2333,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       length=GetIPTCStream(&info,length);
       if (length == 0)
         ThrowWriterException(CoderError,"NoIPTCProfileAvailable");
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       buff=AcquireImage((ImageInfo *) NULL);
@@ -2352,7 +2360,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       profile=GetImageProfile(image,image_info->magick);
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"NoAPP1DataIsAvailable");
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       (void) WriteBlob(image,GetStringInfoLength(profile),
@@ -2369,7 +2379,9 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       profile=GetImageProfile(image,"icc");
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"NoColorProfileIsAvailable");
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       (void) WriteBlob(image,GetStringInfoLength(profile),

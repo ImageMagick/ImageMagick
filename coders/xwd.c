@@ -77,7 +77,7 @@
 */
 #if defined(MAGICKCORE_X11_DELEGATE)
 static MagickBooleanType
-  WriteXWDImage(const ImageInfo *,Image *);
+  WriteXWDImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -586,7 +586,8 @@ ModuleExport void UnregisterXWDImage(void)
 %
 %  The format of the WriteXWDImage method is:
 %
-%      MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXWDImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -594,8 +595,11 @@ ModuleExport void UnregisterXWDImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *value;
@@ -640,7 +644,9 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -756,7 +762,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image)
   scanline_pad=(bytes_per_line-((image->columns*bits_per_pixel) >> 3));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     q=pixels;
