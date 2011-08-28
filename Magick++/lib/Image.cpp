@@ -2230,10 +2230,13 @@ void Magick::Image::wave ( const double amplitude_, const double wavelength_ )
 // Write image to file
 void Magick::Image::write( const std::string &imageSpec_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
   fileName( imageSpec_ );
-  WriteImage( imageInfo(), image() );
-  throwImageException();
+  WriteImage( imageInfo(), image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Write image to in-memory BLOB

@@ -7199,7 +7199,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
           /* process */
           {
-            (void) WriteImage(msl_info->image_info[n], msl_info->image[n]);
+            (void) WriteImage(msl_info->image_info[n], msl_info->image[n],
+              &msl_info->image[n]->exception);
             break;
           }
         }

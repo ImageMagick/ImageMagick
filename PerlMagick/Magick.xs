@@ -9747,7 +9747,7 @@ Mogrify(ref,...)
               (argument_list[2].integer_reference != 0))
             (void) SetImageArtifact(image,"identify:unique","true");
           (void) IdentifyImage(image,argument_list[0].file_reference,
-            MagickTrue);
+            MagickTrue,exception);
           break;
         }
         case 91:  /* SepiaTone */
@@ -14063,10 +14063,7 @@ Write(ref,...)
       GetImageListLength(image),&image->exception);
     for (next=image; next; next=next->next)
     {
-      (void) WriteImage(package_info->image_info,next);
-      if (next->exception.severity >= ErrorException)
-        InheritException(exception,&next->exception);
-      GetImageException(next,exception);
+      (void) WriteImage(package_info->image_info,next,exception);
       number_images++;
       if (package_info->image_info->adjoin)
         break;

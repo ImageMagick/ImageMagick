@@ -5718,7 +5718,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
               (void) AcquireUniqueFileResource(filename);
               (void) FormatLocaleString(stipple_image->filename,MaxTextExtent,
                 "xbm:%s",filename);
-              (void) WriteImage(image_info,stipple_image);
+              (void) WriteImage(image_info,stipple_image,&(*image)->exception);
               stipple_image=DestroyImage(stipple_image);
               image_info=DestroyImageInfo(image_info);
               status=XReadBitmapFile(display,root_window,filename,&width,
@@ -8948,7 +8948,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"launch:%s",
         filename);
-      status=WriteImage(image_info,*image);
+      status=WriteImage(image_info,*image,&(*image)->exception);
       if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to launch image editor",
           (char *) NULL);
@@ -9027,7 +9027,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"preview:%s",
         filename);
-      status=WriteImage(image_info,*image);
+      status=WriteImage(image_info,*image,&(*image)->exception);
       (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
       preview_image=ReadImage(image_info,&(*image)->exception);
       (void) RelinquishUniqueFileResource(filename);
@@ -9035,7 +9035,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         break;
       (void) FormatLocaleString(preview_image->filename,MaxTextExtent,"show:%s",
         filename);
-      status=WriteImage(image_info,preview_image);
+      status=WriteImage(image_info,preview_image,&(*image)->exception);
       preview_image=DestroyImage(preview_image);
       if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to show image preview",
@@ -9060,7 +9060,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"histogram:%s",
         filename);
-      status=WriteImage(image_info,*image);
+      status=WriteImage(image_info,*image,&(*image)->exception);
       (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
       histogram_image=ReadImage(image_info,&(*image)->exception);
       (void) RelinquishUniqueFileResource(filename);
@@ -9068,7 +9068,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         break;
       (void) FormatLocaleString(histogram_image->filename,MaxTextExtent,
         "show:%s",filename);
-      status=WriteImage(image_info,histogram_image);
+      status=WriteImage(image_info,histogram_image,&(*image)->exception);
       histogram_image=DestroyImage(histogram_image);
       if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to show histogram",
@@ -9099,7 +9099,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"matte:%s",
         filename);
-      status=WriteImage(image_info,*image);
+      status=WriteImage(image_info,*image,&(*image)->exception);
       (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
       matte_image=ReadImage(image_info,&(*image)->exception);
       (void) RelinquishUniqueFileResource(filename);
@@ -9107,7 +9107,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         break;
       (void) FormatLocaleString(matte_image->filename,MaxTextExtent,"show:%s",
         filename);
-      status=WriteImage(image_info,matte_image);
+      status=WriteImage(image_info,matte_image,&(*image)->exception);
       matte_image=DestroyImage(matte_image);
       if (status == MagickFalse)
         XNoticeWidget(display,windows,"Unable to show matte",
@@ -10919,7 +10919,7 @@ static MagickBooleanType XPrintImage(Display *display,
   (void) AcquireUniqueFilename(filename);
   (void) FormatLocaleString(print_image->filename,MaxTextExtent,"print:%s",
     filename);
-  status=WriteImage(image_info,print_image);
+  status=WriteImage(image_info,print_image,&image->exception);
   (void) RelinquishUniqueFileResource(filename);
   print_image=DestroyImage(print_image);
   image_info=DestroyImageInfo(image_info);
@@ -12521,7 +12521,7 @@ static MagickBooleanType XSaveImage(Display *display,
     Write image.
   */
   (void) CopyMagickString(save_image->filename,filename,MaxTextExtent);
-  status=WriteImage(image_info,save_image);
+  status=WriteImage(image_info,save_image,&image->exception);
   if (status != MagickFalse)
     image->taint=MagickFalse;
   save_image=DestroyImage(save_image);

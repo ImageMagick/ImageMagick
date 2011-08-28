@@ -45,7 +45,7 @@ extern MagickExport Image
 
 extern MagickExport MagickBooleanType
   ConstituteComponentGenesis(void),
-  WriteImage(const ImageInfo *,Image *),
+  WriteImage(const ImageInfo *,Image *,ExceptionInfo *),
   WriteImages(const ImageInfo *,Image *,const char *,ExceptionInfo *);
 
 extern MagickExport void

@@ -547,7 +547,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
           frame=CloneImage(p,0,0,MagickTrue,&p->exception);
           if (frame == (Image *) NULL)
             break;
-          status=WriteImage(write_info,frame);
+          status=WriteImage(write_info,frame,&image->exception);
           frame=DestroyImage(frame);
           break;
         }

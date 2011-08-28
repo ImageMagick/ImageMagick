@@ -211,7 +211,7 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   if (LocaleCompare(write_info->magick,"THUMBNAIL") == 0)
     (void) FormatLocaleString(thumbnail_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);
-  status=WriteImage(write_info,thumbnail_image);
+  status=WriteImage(write_info,thumbnail_image,&image->exception);
   thumbnail_image=DestroyImage(thumbnail_image);
   write_info=DestroyImageInfo(write_info);
   return(status);

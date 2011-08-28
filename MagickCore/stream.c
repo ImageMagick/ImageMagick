@@ -2695,7 +2695,7 @@ MagickExport MagickBooleanType WriteStream(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   write_info=CloneImageInfo(image_info);
   write_info->stream=stream;
-  status=WriteImage(write_info,image);
+  status=WriteImage(write_info,image,&image->exception);
   write_info=DestroyImageInfo(write_info);
   return(status);
 }
