@@ -8378,7 +8378,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) ParsePageGeometry(*image,bevel_width,&page_geometry,
         &(*image)->exception);
-      (void) RaiseImage(*image,&page_geometry,MagickTrue);
+      (void) RaiseImage(*image,&page_geometry,MagickTrue,&(*image)->exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;

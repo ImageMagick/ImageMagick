@@ -42,7 +42,8 @@ extern MagickExport Image
   *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  RaiseImage(Image *,const RectangleInfo *,const MagickBooleanType);
+  RaiseImage(Image *,const RectangleInfo *,const MagickBooleanType,
+    ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

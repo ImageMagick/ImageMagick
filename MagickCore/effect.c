@@ -2649,7 +2649,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         geometry.height=(size_t) (2*i+2);
         geometry.x=i/2;
         geometry.y=i/2;
-        (void) RaiseImage(preview_image,&geometry,MagickTrue);
+        (void) RaiseImage(preview_image,&geometry,MagickTrue,exception);
         (void) FormatLocaleString(label,MaxTextExtent,
           "raise %.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
           geometry.height,(double) geometry.x,(double) geometry.y);

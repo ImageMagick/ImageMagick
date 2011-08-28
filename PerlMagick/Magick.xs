@@ -8882,8 +8882,9 @@ Mogrify(ref,...)
             geometry.height=argument_list[2].integer_reference;
           if (attribute_flag[3] == 0)
             argument_list[3].integer_reference=1;
-          (void) RaiseImage(image,&geometry,argument_list[3].integer_reference !=
-            0 ? MagickTrue : MagickFalse);
+          (void) RaiseImage(image,&geometry,
+            argument_list[3].integer_reference != 0 ? MagickTrue : MagickFalse,
+            exception);
           break;
         }
         case 50:  /* Segment */
