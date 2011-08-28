@@ -188,7 +188,7 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
         image->magick_columns=image->columns;
         image->magick_rows=image->rows;
         (void) IdentifyImage(image,GetBlobFileHandle(image),
-          image_info->verbose);
+          image_info->verbose,&image->exception);
       }
     else
       {

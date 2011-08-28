@@ -330,7 +330,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
             image->scene=count++;
           if (format == (char *) NULL)
             {
-              (void) IdentifyImage(image,stdout,image_info->verbose);
+              (void) IdentifyImage(image,stdout,image_info->verbose,exception);
               continue;
             }
           if (metadata != (char **) NULL)

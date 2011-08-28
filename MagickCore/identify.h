@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  IdentifyImage(Image *,FILE *,const MagickBooleanType);
+  IdentifyImage(Image *,FILE *,const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -5760,7 +5760,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
         "UnableToCreateTemporaryFile","`%s'",wand->name);
       return((char *) NULL);
     }
-  (void) IdentifyImage(wand->images,file,MagickTrue);
+  (void) IdentifyImage(wand->images,file,MagickTrue,wand->exception);
   (void) fclose(file);
   description=FileToString(filename,~0,wand->exception);
   (void) RelinquishUniqueFileResource(filename);

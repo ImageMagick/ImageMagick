@@ -275,7 +275,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
     {
       ResetTimer(&image->timer);
       if (ping_info->verbose != MagickFalse)
-        (void) IdentifyImage(image,stdout,MagickFalse);
+        (void) IdentifyImage(image,stdout,MagickFalse,exception);
     }
   ping_info=DestroyImageInfo(ping_info);
   return(image);
@@ -786,7 +786,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->dispose=(DisposeType) ParseCommandOption(MagickDisposeOptions,
         MagickFalse,option);
     if (read_info->verbose != MagickFalse)
-      (void) IdentifyImage(next,stderr,MagickFalse);
+      (void) IdentifyImage(next,stderr,MagickFalse,exception);
     image=next;
   }
   read_info=DestroyImageInfo(read_info);
@@ -1216,7 +1216,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   if ((LocaleCompare(write_info->magick,"info") != 0) &&
       (write_info->verbose != MagickFalse))
-    (void) IdentifyImage(image,stdout,MagickFalse);
+    (void) IdentifyImage(image,stdout,MagickFalse,&image->exception);
   write_info=DestroyImageInfo(write_info);
   return(status);
 }
