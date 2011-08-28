@@ -64,7 +64,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMTVImage(const ImageInfo *,Image *);
+  WriteMTVImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -307,7 +307,8 @@ ModuleExport void UnregisterMTVImage(void)
 %
 %  The format of the WriteMTVImage method is:
 %
-%      MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMTVImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -315,8 +316,11 @@ ModuleExport void UnregisterMTVImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent];
@@ -351,7 +355,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -374,7 +378,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       q=pixels;

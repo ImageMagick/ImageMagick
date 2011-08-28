@@ -134,7 +134,7 @@ static inline int
   GetNextLZWCode(LZWInfo *,const size_t);
 
 static MagickBooleanType
-  WriteGIFImage(const ImageInfo *,Image *);
+  WriteGIFImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 static ssize_t
   ReadBlobBlock(Image *,unsigned char *);
@@ -1433,7 +1433,8 @@ ModuleExport void UnregisterGIFImage(void)
 %
 %  The format of the WriteGIFImage method is:
 %
-%      MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteGIFImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1441,8 +1442,11 @@ ModuleExport void UnregisterGIFImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   Image
     *next_image;
@@ -1494,7 +1498,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -1557,7 +1561,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
     opacity=(-1);
-    if (IsImageOpaque(image,&image->exception) != MagickFalse)
+    if (IsImageOpaque(image,exception) != MagickFalse)
       {
         if ((image->storage_class == DirectClass) || (image->colors > 256))
           (void) SetImageType(image,PaletteType);

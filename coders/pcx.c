@@ -99,7 +99,7 @@ typedef struct _PCXInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WritePCXImage(const ImageInfo *,Image *);
+  WritePCXImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -761,7 +761,8 @@ ModuleExport void UnregisterPCXImage(void)
 %
 %  The format of the WritePCXImage method is:
 %
-%      MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePCXImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -769,8 +770,10 @@ ModuleExport void UnregisterPCXImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
+
 static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
   const unsigned char *pixels,Image *image)
 {
@@ -828,7 +831,8 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
   return (MagickTrue);
 }
 
-static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -870,7 +874,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -904,7 +908,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
     pcx_info.bits_per_pixel=8;
     if ((image->storage_class == PseudoClass) &&
-        (IsImageMonochrome(image,&image->exception) != MagickFalse))
+        (IsImageMonochrome(image,exception) != MagickFalse))
       pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;
@@ -993,8 +997,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          pixels=GetVirtualPixels(image,0,y,image->columns,1,
-            &image->exception);
+          pixels=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (pixels == (const Quantum *) NULL)
             break;
           q=pcx_pixels;
@@ -1058,7 +1061,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
         if (pcx_info.bits_per_pixel > 1)
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             q=pcx_pixels;
@@ -1096,8 +1099,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
                 GetPixelPacketIntensity(&image->colormap[1]) ? 1 : 0);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               bit=0;
@@ -1167,8 +1169,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image)
         *message;
 
       message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        FileOpenError,"UnableToWriteFile","`%s': %s",image->filename,message);
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+        "UnableToWriteFile","`%s': %s",image->filename,message);
       message=DestroyString(message);
     }
   (void) CloseBlob(image);

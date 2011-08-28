@@ -65,7 +65,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteHTMLImage(const ImageInfo *,Image *);
+  WriteHTMLImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,7 +197,8 @@ ModuleExport void UnregisterHTMLImage(void)
 %
 %  The format of the WriteHTMLImage method is:
 %
-%      MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -205,10 +206,11 @@ ModuleExport void UnregisterHTMLImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
 static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   char
     basename[MaxTextExtent],
@@ -242,7 +244,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) CloseBlob(image);
@@ -287,7 +289,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       /*
         Open output image file.
       */
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       /*
@@ -384,7 +386,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       next=GetNextImageInList(image);
       image->next=NewImageList();
       (void) CopyMagickString(image->magick,"PNG",MaxTextExtent);
-      (void) WriteImage(write_info,image,&image->exception);
+      (void) WriteImage(write_info,image,exception);
       image->next=next;
       /*
         Determine image map filename.
@@ -396,7 +398,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   /*
     Open image map.
   */
-  status=OpenBlob(write_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(write_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   write_info=DestroyImageInfo(write_info);

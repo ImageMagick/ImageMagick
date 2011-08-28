@@ -66,7 +66,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteHDRImage(const ImageInfo *,Image *);
+  WriteHDRImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -568,7 +568,7 @@ ModuleExport void UnregisterHDRImage(void)
 %  The format of the WriteHDRImage method is:
 %
 %      MagickBooleanType WriteHDRImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -642,7 +642,8 @@ static size_t HDRWriteRunlengthPixels(Image *image,unsigned char *pixels)
   return(p);
 }
 
-static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     header[MaxTextExtent];
@@ -680,7 +681,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -731,7 +732,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     if ((image->columns >= 8) && (image->columns <= 0x7ffff))

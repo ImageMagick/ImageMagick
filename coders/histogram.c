@@ -70,7 +70,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteHISTOGRAMImage(const ImageInfo *,Image *);
+  WriteHISTOGRAMImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,13 +158,15 @@ ModuleExport void UnregisterHISTOGRAMImage(void)
 %  The format of the WriteHISTOGRAMImage method is:
 %
 %      MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -176,7 +178,7 @@ static inline size_t MagickMax(const size_t x,const size_t y)
 }
 
 static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #define HistogramDensity  "256x200"
 
@@ -185,9 +187,6 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
 
   const char
     *option;
-
-  ExceptionInfo
-    *exception;
 
   Image
     *histogram_image;
@@ -240,10 +239,10 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   else
     (void) ParseAbsoluteGeometry(image_info->density,&geometry);
   histogram_image=CloneImage(image,geometry.width,geometry.height,MagickTrue,
-    &image->exception);
+    exception);
   if (histogram_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) SetImageStorageClass(histogram_image,DirectClass,&image->exception);
+  (void) SetImageStorageClass(histogram_image,DirectClass,exception);
   /*
     Allocate histogram count arrays.
   */
@@ -262,7 +261,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   (void) ResetMagickMemory(histogram,0,length*sizeof(*histogram));
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -293,9 +292,8 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram image.
   */
-  exception=(&image->exception);
   (void) QueryColorDatabase("#000000",&histogram_image->background_color,
-    &image->exception);
+    exception);
   (void) SetImageBackgroundColor(histogram_image);
   for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
@@ -363,9 +361,9 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
           char
             *property;
 
-          (void) GetNumberColors(image,file,&image->exception);
+          (void) GetNumberColors(image,file,exception);
           (void) fclose(file);
-          property=FileToString(filename,~0UL,&image->exception);
+          property=FileToString(filename,~0UL,exception);
           if (property != (char *) NULL)
             {
               (void) SetImageProperty(histogram_image,"comment",property);
@@ -380,11 +378,11 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   (void) CopyMagickString(histogram_image->filename,image_info->filename,
     MaxTextExtent);
   write_info=CloneImageInfo(image_info);
-  (void) SetImageInfo(write_info,1,&image->exception);
+  (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"HISTOGRAM") == 0)
     (void) FormatLocaleString(histogram_image->filename,MaxTextExtent,
       "miff:%s",write_info->filename);
-  status=WriteImage(write_info,histogram_image,&image->exception);
+  status=WriteImage(write_info,histogram_image,exception);
   histogram_image=DestroyImage(histogram_image);
   write_info=DestroyImageInfo(write_info);
   return(status);

@@ -306,7 +306,7 @@ typedef struct DPXInfo
   Forward declaractions.
 */
 static MagickBooleanType
-  WriteDPXImage(const ImageInfo *,Image *);
+  WriteDPXImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1221,13 +1221,16 @@ ModuleExport void UnregisterDPXImage(void)
 %
 %  The format of the WriteDPXImage method is:
 %
-%      MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteDPXImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1272,7 +1275,8 @@ static unsigned int StringToTimeCode(const char *key)
   return(value);
 }
 
-static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *value;
@@ -1307,14 +1311,14 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   register ssize_t
     i;
 
+  size_t
+    extent;
+
   ssize_t
     count,
     horizontal_factor,
     vertical_factor,
     y;
-
-  size_t
-    extent;
 
   time_t
     seconds;
@@ -1355,7 +1359,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
       ((horizontal_factor == 2) || (vertical_factor == 2)))
     if ((image->columns % 2) != 0)
       image->columns++;
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -1469,7 +1473,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
           if ((image_info->type != TrueColorType) &&
               (image->matte == MagickFalse) &&
-              (IsImageGray(image,&image->exception) != MagickFalse))
+              (IsImageGray(image,exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }
@@ -1773,7 +1777,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     count=WriteBlobByte(image,0x00);
     if (count != 1)
       {
-        ThrowFileException(&image->exception,FileOpenError,"UnableToWriteFile",
+        ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
           image->filename);
         break;
       }
@@ -1801,7 +1805,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     image->depth,MagickTrue);
   if ((image_info->type != UndefinedType) &&
       (image_info->type != TrueColorType) && (image->matte == MagickFalse) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
+      (IsImageGray(image,exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;
       extent=GetBytesPerRow(image->columns,1UL,image->depth,MagickTrue);
@@ -1809,11 +1813,11 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      quantum_type,pixels,&image->exception);
+      quantum_type,pixels,exception);
     count=WriteBlob(image,extent,pixels);
     if (count != (ssize_t) extent)
       break;

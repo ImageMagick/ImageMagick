@@ -140,7 +140,7 @@ typedef struct _IconInfo
   Forward declaractions.
 */
 static MagickBooleanType
-  WriteICONImage(const ImageInfo *,Image *);
+  WriteICONImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -751,7 +751,7 @@ ModuleExport void UnregisterICONImage(void)
 %  The format of the WriteICONImage method is:
 %
 %      MagickBooleanType WriteICONImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -759,9 +759,11 @@ ModuleExport void UnregisterICONImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   IconFile
     icon_file;
@@ -809,7 +811,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -867,13 +869,13 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Icon image encoded as a compressed PNG image.
         */
-        write_image=CloneImage(next,0,0,MagickTrue,&image->exception);
+        write_image=CloneImage(next,0,0,MagickTrue,exception);
         if (write_image == (Image *) NULL)
           return(MagickFalse);
         write_info=CloneImageInfo(image_info);
         (void) CopyMagickString(write_info->filename,"PNG:",MaxTextExtent);
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
-          &image->exception);
+          exception);
         write_image=DestroyImage(write_image);
         write_info=DestroyImageInfo(write_info);
         if (png == (unsigned char *) NULL)
@@ -900,7 +902,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         icon_info.offset_bits=icon_info.file_size;
         icon_info.compression=BI_RGB;
         if ((next->storage_class != DirectClass) && (next->colors > 256))
-          (void) SetImageStorageClass(next,DirectClass,&next->exception);
+          (void) SetImageStorageClass(next,DirectClass,exception);
         if (next->storage_class == DirectClass)
           {
             /*
@@ -929,7 +931,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             icon_info.number_colors=one << icon_info.bits_per_pixel;
             if (icon_info.number_colors < next->colors)
               {
-                (void) SetImageStorageClass(next,DirectClass,&next->exception);
+                (void) SetImageStorageClass(next,DirectClass,exception);
                 icon_info.number_colors=0;
                 icon_info.bits_per_pixel=(unsigned short) 24;
                 icon_info.compression=(size_t) BI_RGB;
@@ -998,7 +1000,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             */
             for (y=0; y < (ssize_t) next->rows; y++)
             {
-              p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
+              p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               q=pixels+(next->rows-y-1)*bytes_per_line;
@@ -1039,7 +1041,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             */
             for (y=0; y < (ssize_t) next->rows; y++)
             {
-              p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
+              p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               q=pixels+(next->rows-y-1)*bytes_per_line;
@@ -1076,7 +1078,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             */
             for (y=0; y < (ssize_t) next->rows; y++)
             {
-              p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
+              p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               q=pixels+(next->rows-y-1)*bytes_per_line;
@@ -1102,7 +1104,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             */
             for (y=0; y < (ssize_t) next->rows; y++)
             {
-              p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
+              p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               q=pixels+(next->rows-y-1)*bytes_per_line;
@@ -1193,7 +1195,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         scanline_pad=(((next->columns+31) & ~31)-next->columns) >> 3;
         for (y=((ssize_t) next->rows - 1); y >= 0; y--)
         {
-          p=GetVirtualPixels(next,0,y,next->columns,1,&next->exception);
+          p=GetVirtualPixels(next,0,y,next->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           bit=0;

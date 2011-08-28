@@ -73,7 +73,7 @@
 */
 #if defined(MAGICKCORE_JBIG_DELEGATE)
 static MagickBooleanType
-  WriteJBIGImage(const ImageInfo *,Image *);
+  WriteJBIGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 #if defined(MAGICKCORE_JBIG_DELEGATE)
@@ -367,7 +367,8 @@ ModuleExport void UnregisterJBIGImage(void)
 %
 %  The format of the WriteJBIGImage method is:
 %
-%      MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -375,6 +376,7 @@ ModuleExport void UnregisterJBIGImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -388,7 +390,7 @@ static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 }
 
 static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   double
     version;
@@ -431,7 +433,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   version=InterpretLocaleValue(JBG_VERSION,(char **) NULL);
@@ -455,7 +457,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     q=pixels;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       bit=0;

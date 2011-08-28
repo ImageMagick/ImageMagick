@@ -105,7 +105,7 @@
 */
 #if defined(MAGICKCORE_JP2_DELEGATE)
 static MagickBooleanType
-  WriteJP2Image(const ImageInfo *,Image *);
+  WriteJP2Image(const ImageInfo *,Image *,ExceptionInfo *);
 
 static volatile MagickBooleanType
   instantiate_jp2 = MagickFalse;
@@ -784,7 +784,8 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %  The format of the WriteJP2Image method is:
 %
-%      MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteJP2Image(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -792,8 +793,11 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     *key,
@@ -844,7 +848,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -857,7 +861,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError,"UnableToManageJP2Stream");
   number_components=image->matte ? 4UL : 3UL;
   if ((image_info->type != TrueColorType) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
+      (IsImageGray(image,exception) != MagickFalse))
     number_components=1;
   if ((image->columns != (unsigned int) image->columns) ||
       (image->rows != (unsigned int) image->rows))
@@ -919,7 +923,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   range=GetQuantumRange((size_t) component_info[0].prec);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)

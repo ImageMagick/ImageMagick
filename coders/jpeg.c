@@ -149,7 +149,7 @@ typedef struct _SourceManager
 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 static MagickBooleanType
-  WriteJPEGImage(const ImageInfo *,Image *);
+  WriteJPEGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -1477,7 +1477,7 @@ ModuleExport void UnregisterJPEGImage(void)
 %  The format of the WriteJPEGImage method is:
 %
 %      MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1485,6 +1485,7 @@ ModuleExport void UnregisterJPEGImage(void)
 %
 %    o jpeg_image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1721,7 +1722,7 @@ static char **SamplingFactorToList(const char *text)
 }
 
 static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   const char
     *option,
@@ -1764,7 +1765,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -1827,7 +1828,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
   }
   if ((image_info->type != TrueColorType) &&
-      (IsImageGray(image,&image->exception) != MagickFalse))
+      (IsImageGray(image,exception) != MagickFalse))
     {
       jpeg_info.input_components=1;
       jpeg_info.in_color_space=JCS_GRAYSCALE;
@@ -1939,7 +1940,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         *jpeg_info;
 
       jpeg_info=CloneImageInfo(image_info);
-      jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+      jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
       if (jpeg_image != (Image *) NULL)
         {
           MagickSizeType
@@ -1960,7 +1961,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           for (minimum=0; minimum != maximum; )
           {
             jpeg_image->quality=minimum+(maximum-minimum)/2;
-            status=WriteJPEGImage(jpeg_info,jpeg_image);
+            status=WriteJPEGImage(jpeg_info,jpeg_image,exception);
             if (GetBlobSize(jpeg_image) <= extent)
               minimum=jpeg_image->quality+1;
             else
@@ -1991,8 +1992,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
 #else
       if (image->quality < 100)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          CoderWarning,"LosslessToLossyJPEGConversion",image->filename);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+          "LosslessToLossyJPEGConversion",image->filename);
       else
         {
           int
@@ -2232,7 +2233,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=jpeg_pixels;
@@ -2259,7 +2260,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             register ssize_t
               x;
 
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             q=jpeg_pixels;
@@ -2283,7 +2284,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             register ssize_t
               x;
 
-            p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
             if (p == (const Quantum *) NULL)
               break;
             q=jpeg_pixels;
@@ -2319,7 +2320,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         register ssize_t
           x;
 
-        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
         q=jpeg_pixels;
@@ -2346,7 +2347,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=jpeg_pixels;
@@ -2372,7 +2373,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=jpeg_pixels;

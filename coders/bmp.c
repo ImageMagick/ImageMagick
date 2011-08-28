@@ -137,7 +137,7 @@ typedef struct _BMPInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WriteBMPImage(const ImageInfo *,Image *);
+  WriteBMPImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1439,7 +1439,8 @@ ModuleExport void UnregisterBMPImage(void)
 %
 %  The format of the WriteBMPImage method is:
 %
-%      MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteBMPImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1447,8 +1448,11 @@ ModuleExport void UnregisterBMPImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   BMPInfo
     bmp_info;
@@ -1493,7 +1497,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   type=4;
@@ -1517,7 +1521,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
     bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
     if ((image->storage_class == PseudoClass) && (image->colors > 256))
-      (void) SetImageStorageClass(image,DirectClass,&image->exception);
+      (void) SetImageStorageClass(image,DirectClass,exception);
     if (image->storage_class != DirectClass)
       {
         /*
@@ -1536,10 +1540,10 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.bits_per_pixel=8;
         bmp_info.number_colors=1U << bmp_info.bits_per_pixel;
         if (image->matte != MagickFalse)
-          (void) SetImageStorageClass(image,DirectClass,&image->exception);
+          (void) SetImageStorageClass(image,DirectClass,exception);
         else
           if ((size_t) bmp_info.number_colors < image->colors)
-            (void) SetImageStorageClass(image,DirectClass,&image->exception);
+            (void) SetImageStorageClass(image,DirectClass,exception);
           else
             {
               bmp_info.file_size+=3*(1UL << bmp_info.bits_per_pixel);
@@ -1641,7 +1645,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
           ssize_t
             offset;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1690,7 +1694,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1734,7 +1738,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1762,7 +1766,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1792,7 +1796,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
