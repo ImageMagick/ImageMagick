@@ -932,14 +932,14 @@ typedef struct _MngInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WritePNGImage(const ImageInfo *,Image *);
+  WritePNGImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 static MagickBooleanType
-  WriteMNGImage(const ImageInfo *,Image *);
+  WriteMNGImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 #if defined(JNG_SUPPORTED)
 static MagickBooleanType
-  WriteJNGImage(const ImageInfo *,Image *);
+  WriteJNGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 #if PNG_LIBPNG_VER > 10011
@@ -7222,7 +7222,8 @@ ModuleExport void UnregisterPNGImage(void)
 %
 %  The format of the WriteMNGImage method is:
 %
-%      MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -7230,6 +7231,7 @@ ModuleExport void UnregisterPNGImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 %  To do (as of version 5.5.2, November 26, 2002 -- glennrp -- see also
 %    "To do" under ReadPNGImage):
@@ -10765,13 +10767,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %  The format of the WritePNGImage method is:
 %
-%      MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePNGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %  Returns MagickTrue on success, MagickFalse on failure.
 %
@@ -10891,7 +10896,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
     excluding,
@@ -12116,7 +12121,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 %
 %  The format of the WriteJNGImage method is:
 %
-%      MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -12124,9 +12130,12 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     have_mng_structure,
@@ -12176,9 +12185,8 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
 }
 #endif
 
-
-
-static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *option;

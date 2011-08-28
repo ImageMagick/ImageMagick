@@ -70,7 +70,7 @@
 */
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static MagickBooleanType
-  WriteCLIPBOARDImage(const ImageInfo *,Image *);
+  WriteCLIPBOARDImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -314,7 +314,7 @@ ModuleExport void UnregisterCLIPBOARDImage(void)
 %  The format of the WriteCLIPBOARDImage method is:
 %
 %      MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -322,10 +322,12 @@ ModuleExport void UnregisterCLIPBOARDImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 #if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   /*
     Allocate memory for pixels.
@@ -349,4 +351,3 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   return(MagickTrue);
 }
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
-

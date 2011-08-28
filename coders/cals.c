@@ -71,7 +71,7 @@
  Forward declarations.
 */
 static MagickBooleanType
-  WriteCALSImage(const ImageInfo *,Image *);
+  WriteCALSImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -389,13 +389,15 @@ ModuleExport void UnregisterCALSImage(void)
 %  The format of the WriteCALSImage method is:
 %
 %      MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -430,7 +432,7 @@ static ssize_t WriteCALSRecord(Image *image,const char *data)
 }
 
 static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   char
     header[129];
@@ -468,7 +470,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -558,14 +560,14 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->filename,"GROUP4:",MaxTextExtent);
   (void) CopyMagickString(write_info->magick,"GROUP4",MaxTextExtent);
-  group4_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  group4_image=CloneImage(image,0,0,MagickTrue,exception);
   if (group4_image == (Image *) NULL)
     {
       (void) CloseBlob(image);
       return(MagickFalse);
     }
   group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
-    &image->exception);
+    exception);
   group4_image=DestroyImage(group4_image);
   if (group4 == (unsigned char *) NULL)
     {

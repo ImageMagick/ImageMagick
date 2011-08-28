@@ -78,7 +78,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePCLImage(const ImageInfo *,Image *);
+  WritePCLImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -469,13 +469,16 @@ ModuleExport void UnregisterPCLImage(void)
 %
 %  The format of the WritePCLImage method is:
 %
-%      MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePCLImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -651,7 +654,8 @@ static size_t PCLPackbitsCompressImage(const size_t length,
   return((size_t) (q-compress_pixels));
 }
 
-static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent];
@@ -695,7 +699,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   density=75;
@@ -725,7 +729,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
       density);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"\033&l0E");  /* top margin 0 */
-    if (IsImageMonochrome(image,&image->exception) != MagickFalse)
+    if (IsImageMonochrome(image,exception) != MagickFalse)
       {
         /*
           Monochrome image: use default printer monochrome setup.
@@ -842,7 +846,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
     }
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       q=pixels;

@@ -62,7 +62,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMATTEImage(const ImageInfo *,Image *);
+  WriteMATTEImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -136,13 +136,13 @@ ModuleExport void UnregisterMATTEImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Function WriteMATTEImage() writes an image of matte bytes to a file.  It
-%  consists of data from the matte component of the image [0..255].
+%  WriteMATTEImage() writes an image of matte bytes to a file.  It consists of
+%  data from the matte component of the image [0..255].
 %
 %  The format of the WriteMATTEImage method is:
 %
 %      MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -150,13 +150,12 @@ ModuleExport void UnregisterMATTEImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *matte_image;
 
@@ -177,8 +176,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
 
   if (image->matte == MagickFalse)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAAlphaChannel");
-  matte_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    &image->exception);
+  matte_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (matte_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageType(matte_image,TrueColorMatteType);
@@ -186,7 +184,6 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   /*
     Convert image to matte pixels.
   */
-  exception=(&image->exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

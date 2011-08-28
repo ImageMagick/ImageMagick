@@ -98,7 +98,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePS3Image(const ImageInfo *,Image *);
+  WritePS3Image(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -185,13 +185,16 @@ ModuleExport void UnregisterPS3Image(void)
 %
 %  The format of the WritePS3Image method is:
 %
-%      MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePS3Image(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -603,7 +606,8 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   return(status);
 }
 
-static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   static const char
     *PostscriptProlog[]=
@@ -867,7 +871,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(MagickFalse);
   compression=image->compression;
@@ -878,7 +882,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     case FaxCompression:
     case Group4Compression:
     { 
-      if ((IsImageMonochrome(image,&image->exception) == MagickFalse) ||
+      if ((IsImageMonochrome(image,exception) == MagickFalse) ||
           (image->matte != MagickFalse))
         compression=RLECompression;
       break;
@@ -887,7 +891,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RLECompression;
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (JPEG)",
         image->filename);
       break;
@@ -897,7 +901,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RLECompression;
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (ZLIB)",
         image->filename);
       break;
@@ -961,8 +965,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
     geometry.height=(size_t) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
-    (void) ParseGravityGeometry(image,page_geometry,&page_info,
-      &image->exception);
+    (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
@@ -1022,7 +1025,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               (void) WriteBlobString(image,
                 "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
             else
-              if (IsImageGray(image,&image->exception) != MagickFalse)
+              if (IsImageGray(image,exception) != MagickFalse)
                 (void) WriteBlobString(image,
                   "%%DocumentProcessColors: Black\n");
           }
@@ -1105,7 +1108,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,
         "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
-      if (IsImageGray(image,&image->exception) != MagickFalse)
+      if (IsImageGray(image,exception) != MagickFalse)
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
     /*
       Adjust document bounding box to bound page bounding box.
@@ -1230,7 +1233,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
     */
     option=GetImageOption(image_info,"ps3:imagemask");
     (void) WriteBlobString(image,((option != (const char *) NULL) &&
-      (IsImageMonochrome(image,&image->exception) != MagickFalse)) ?
+      (IsImageMonochrome(image,exception) != MagickFalse)) ?
       "true\n" : "false\n");
     /*
       Output pixel data.
@@ -1242,8 +1245,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         (image_info->type != ColorSeparationType) &&
         (image_info->type != ColorSeparationMatteType) &&
         (image->colorspace != CMYKColorspace) &&
-        ((IsImageGray(image,&image->exception) != MagickFalse) ||
-         (IsImageMonochrome(image,&image->exception) != MagickFalse)))
+        ((IsImageGray(image,exception) != MagickFalse) ||
+         (IsImageMonochrome(image,exception) != MagickFalse)))
       {
         /*
           Gray images.
@@ -1292,14 +1295,13 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
           1 bit or 8 bit components?
         */
         (void) FormatLocaleString(buffer,MaxTextExtent,"%d\n",
-          IsImageMonochrome(image,&image->exception) != MagickFalse ? 1 : 8);
+          IsImageMonochrome(image,exception) != MagickFalse ? 1 : 8);
         (void) WriteBlobString(image,buffer);
         /*
           Image data.
         */
         if (compression == JPEGCompression)
-          status=InjectImageBlob(image_info,image,image,"jpeg",
-            &image->exception);
+          status=InjectImageBlob(image_info,image,image,"jpeg",exception);
         else
           if ((compression == FaxCompression) ||
               (compression == Group4Compression))
@@ -1389,8 +1391,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
             Image data.
           */
           if (compression == JPEGCompression)
-            status=InjectImageBlob(image_info,image,image,"jpeg",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,image,"jpeg",exception);
           else
             {
               /*
@@ -1524,8 +1525,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
               }
               case JPEGCompression:
               {
-                status=InjectImageBlob(image_info,image,image,"jpeg",
-                  &image->exception);
+                status=InjectImageBlob(image_info,image,image,"jpeg",exception);
                 break;
               }
               case RLECompression:

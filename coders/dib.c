@@ -111,7 +111,7 @@ typedef struct _DIBInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WriteDIBImage(const ImageInfo *,Image *);
+  WriteDIBImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -952,7 +952,8 @@ ModuleExport void UnregisterDIBImage(void)
 %
 %  The format of the WriteDIBImage method is:
 %
-%      MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteDIBImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -960,8 +961,11 @@ ModuleExport void UnregisterDIBImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   DIBInfo
     dib_info;
@@ -998,7 +1002,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -1022,7 +1026,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_info.bits_per_pixel=8;
       if (image_info->depth > 8)
         dib_info.bits_per_pixel=16;
-      if (IsImageMonochrome(image,&image->exception) != MagickFalse)
+      if (IsImageMonochrome(image,exception) != MagickFalse)
         dib_info.bits_per_pixel=1;
       dib_info.number_colors=(dib_info.bits_per_pixel == 16) ? 0 :
         (1UL << dib_info.bits_per_pixel);
@@ -1075,7 +1079,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
         q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1115,7 +1119,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
         q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1142,7 +1146,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
         q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1174,7 +1178,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
         q=pixels+(image->rows-y-1)*bytes_per_line;

@@ -75,7 +75,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePCDImage(const ImageInfo *,Image *);
+  WritePCDImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -929,13 +929,16 @@ ModuleExport void UnregisterPCDImage(void)
 %
 %  The format of the WritePCDImage method is:
 %
-%      MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePCDImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1060,7 +1063,8 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   return(MagickTrue);
 }
 
-static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   Image
     *pcd_image;
@@ -1086,7 +1090,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
       /*
         Rotate portrait to landscape.
       */
-      rotate_image=RotateImage(image,90.0,&image->exception);
+      rotate_image=RotateImage(image,90.0,exception);
       if (rotate_image == (Image *) NULL)
         return(MagickFalse);
       pcd_image=rotate_image;
@@ -1094,7 +1098,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)

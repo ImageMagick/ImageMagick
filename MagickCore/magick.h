@@ -40,7 +40,7 @@ typedef Image
   *DecodeImageHandler(const ImageInfo *,ExceptionInfo *);
 
 typedef MagickBooleanType
-  EncodeImageHandler(const ImageInfo *,Image *);
+  EncodeImageHandler(const ImageInfo *,Image *,ExceptionInfo *);
 
 typedef MagickBooleanType
   IsImageFormatHandler(const unsigned char *,const size_t);

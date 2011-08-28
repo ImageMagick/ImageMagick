@@ -70,7 +70,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePNMImage(const ImageInfo *,Image *);
+  WritePNMImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1404,7 +1404,8 @@ ModuleExport void UnregisterPNMImage(void)
 %
 %  The format of the WritePNMImage method is:
 %
-%      MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePNMImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1412,8 +1413,11 @@ ModuleExport void UnregisterPNMImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent],
@@ -1462,7 +1466,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -1494,7 +1498,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       case 'f':
       {
         format='F';
-        if (IsImageGray(image,&image->exception) != MagickFalse)
+        if (IsImageGray(image,exception) != MagickFalse)
           format='f';
         break;
       }
@@ -1510,12 +1514,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       case 'n':
       {
         if ((image_info->type != TrueColorType) &&
-            (IsImageGray(image,&image->exception) != MagickFalse))
+            (IsImageGray(image,exception) != MagickFalse))
           {
             format='5';
             if (image_info->compression == NoCompression)
               format='2';
-            if (IsImageMonochrome(image,&image->exception) != MagickFalse)
+            if (IsImageMonochrome(image,exception) != MagickFalse)
               {
                 format='4';
                 if (image_info->compression == NoCompression)
@@ -1574,7 +1578,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           "WIDTH %.20g\nHEIGHT %.20g\n",(double) image->columns,(double)
           image->rows);
         (void) WriteBlobString(image,buffer);
-        quantum_type=GetQuantumType(image,&image->exception);
+        quantum_type=GetQuantumType(image,exception);
         switch (quantum_type)
         {
           case CMYKQuantum:
@@ -1638,7 +1642,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -1691,7 +1695,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -1750,7 +1754,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -1807,11 +1811,11 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GrayQuantum,pixels,&image->exception);
+            GrayQuantum,pixels,exception);
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
             break;
@@ -1854,13 +1858,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
           if ((image->depth == 8) || (image->depth == 16))
             extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              GrayQuantum,pixels,&image->exception);
+              GrayQuantum,pixels,exception);
           else
             {
               if (image->depth <= 8)
@@ -1936,13 +1940,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
           if ((image->depth == 8) || (image->depth == 16))
             extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,&image->exception);
+              quantum_type,pixels,exception);
           else
             {
               if (image->depth <= 8)
@@ -2004,13 +2008,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register ssize_t
             x;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           q=pixels;
           if ((image->depth == 8) || (image->depth == 16))
             extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              quantum_type,pixels,&image->exception);
+              quantum_type,pixels,exception);
           else
             {
               switch (quantum_type)
@@ -2159,11 +2163,11 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
           register const Quantum
             *restrict p;
 
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           (void) WriteBlob(image,extent,pixels);
           if (image->previous == (Image *) NULL)
             {

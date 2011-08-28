@@ -161,7 +161,7 @@ static unsigned char
   Forward declarations.
 */
 static MagickBooleanType
-  WritePALMImage(const ImageInfo *,Image *);
+  WritePALMImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -640,7 +640,7 @@ ModuleExport void UnregisterPALMImage(void)
 %  The format of the WritePALMImage method is:
 %
 %      MagickBooleanType WritePALMImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -648,15 +648,14 @@ ModuleExport void UnregisterPALMImage(void)
 %
 %    o image:  A pointer to a Image structure.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   int
     y;
-
-  ExceptionInfo
-    exception;
 
   MagickBooleanType
     status;
@@ -716,10 +715,9 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  GetExceptionInfo(&exception);
   quantize_info=AcquireQuantizeInfo(image_info);
   flags=0;
   currentOffset=0;
@@ -735,7 +733,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   {
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
-    count=GetNumberColors(image,NULL,&exception);
+    count=GetNumberColors(image,NULL,exception);
     for (bits_per_pixel=1;  (one << bits_per_pixel) < count; bits_per_pixel*=2) ;
     if (image_info->depth > 100)
       bits_per_pixel=image_info->depth-100;
@@ -748,7 +746,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         (void) SortColormapByIntensity(image);
       }
     if ((image->storage_class == PseudoClass) && (image->colors > 256))
-      (void) SetImageStorageClass(image,DirectClass,&image->exception);
+      (void) SetImageStorageClass(image,DirectClass,exception);
     if (image->storage_class == PseudoClass)
       flags|=PALM_HAS_COLORMAP_FLAG;
     else
@@ -793,7 +791,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
       {
         if (flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
           {
-            quantize_info->dither=IsPaletteImage(image,&image->exception);
+            quantize_info->dither=IsPaletteImage(image,exception);
             quantize_info->number_colors=image->colors;
             (void) QuantizeImage(quantize_info,image);
             (void) WriteBlobMSBShort(image,(unsigned short) image->colors);
@@ -815,13 +813,13 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             *affinity_image;
 
           affinity_image=ConstituteImage(256,1,"RGB",CharPixel,&PalmPalette,
-            &exception);
+            exception);
           (void) TransformImageColorspace(affinity_image,
             affinity_image->colorspace);
           (void) RemapImage(quantize_info,image,affinity_image);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            q=GetAuthenticPixels(image,0,y,image->columns,1,&exception);
+            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               SetPixelIndex(image,FindColor(image,&image->colormap[(ssize_t)
@@ -847,7 +845,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     {
       ptr=one_row;
       (void) ResetMagickMemory(ptr,0,bytes_per_row);
-      p=GetVirtualPixels(image,0,y,image->columns,1,&exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       if (bits_per_pixel == 16)
@@ -982,6 +980,5 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   } while (image_info->adjoin != MagickFalse);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   (void) CloseBlob(image);
-  (void) DestroyExceptionInfo(&exception);
   return(MagickTrue);
 }

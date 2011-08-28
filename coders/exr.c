@@ -65,7 +65,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteEXRImage(const ImageInfo *,Image *);
+  WriteEXRImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -331,7 +331,8 @@ ModuleExport void UnregisterEXRImage(void)
 %
 %  The format of the WriteEXRImage method is:
 %
-%      MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteEXRImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -339,8 +340,11 @@ ModuleExport void UnregisterEXRImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   ImageInfo
     *write_info;
@@ -381,7 +385,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   write_info=CloneImageInfo(image_info);
@@ -414,7 +418,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
   ImfDeleteHeader(hdr_info);
   if (file == (ImfOutputFile *) NULL)
     {
-      ThrowFileException(&image->exception,BlobError,"UnableToOpenBlob",
+      ThrowFileException(exception,BlobError,"UnableToOpenBlob",
         ImfErrorMessage());
       write_info=DestroyImageInfo(write_info);
       return(MagickFalse);
@@ -427,7 +431,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image)
     }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)

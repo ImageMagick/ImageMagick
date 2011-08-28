@@ -68,7 +68,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteCIPImage(const ImageInfo *,Image *);
+  WriteCIPImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,13 +147,16 @@ ModuleExport void UnregisterCIPImage(void)
 %
 %  The format of the WriteCIPImage method is:
 %
-%      MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteCIPImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -164,7 +167,8 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
   return(y);
 }
 
-static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent];
@@ -197,7 +201,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) WriteBlobString(image,"<CiscoIPPhoneImage>\n");
@@ -233,7 +237,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
     (void) TransformImageColorspace(image,RGBColorspace);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < ((ssize_t) image->columns-3); x+=4)

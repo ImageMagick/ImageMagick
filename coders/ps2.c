@@ -83,7 +83,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePS2Image(const ImageInfo *,Image *);
+  WritePS2Image(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -172,13 +172,16 @@ ModuleExport void UnregisterPS2Image(void)
 %
 %  The format of the WritePS2Image method is:
 %
-%      MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePS2Image(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -219,7 +222,8 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   return(status);
 }
 
-static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   static const char
     *PostscriptProlog[]=
@@ -457,7 +461,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   compression=image->compression;
@@ -469,7 +473,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RLECompression;
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (JPEG)",
         image->filename);
       break;
@@ -533,8 +537,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
     geometry.height=(size_t) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
-    (void) ParseGravityGeometry(image,page_geometry,&page_info,
-      &image->exception);
+    (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
@@ -722,7 +725,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsImageGray(image,&image->exception) != MagickFalse)))
+         (IsImageGray(image,exception) != MagickFalse)))
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n1\n%d\n",
           (double) image->columns,(double) image->rows,(int)
@@ -752,10 +755,12 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
           }
           case JPEGCompression:
           {
-            status=InjectImageBlob(image_info,image,image,"jpeg",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,image,"jpeg",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case RLECompression:
@@ -778,8 +783,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -813,8 +817,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
             Ascii85Initialize(image);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -848,10 +851,12 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
           {
             case JPEGCompression:
             {
-              status=InjectImageBlob(image_info,image,image,"jpeg",
-                &image->exception);
+              status=InjectImageBlob(image_info,image,image,"jpeg",exception);
               if (status == MagickFalse)
-                ThrowWriterException(CoderError,image->exception.reason);
+                {
+                  (void) CloseBlob(image);
+                  return(MagickFalse);
+                }
               break;
             }
             case RLECompression:
@@ -875,8 +880,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
@@ -930,8 +934,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
               Ascii85Initialize(image);
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
@@ -1025,8 +1028,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
@@ -1060,8 +1062,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
               Ascii85Initialize(image);
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)

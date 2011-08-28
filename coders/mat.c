@@ -82,7 +82,7 @@
   Forward declaration.
 */
 static MagickBooleanType
-  WriteMATImage(const ImageInfo *,Image *);
+  WriteMATImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 
 /* Auto coloring method, sorry this creates some artefact inside data
@@ -1143,24 +1143,21 @@ ModuleExport void UnregisterMATImage(void)
 %
 %  The format of the WriteMATImage method is:
 %
-%      unsigned int WriteMATImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMATImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
-%
-%    o status: Function WriteMATImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o image:  A pointer to an Image structure.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   ssize_t y;
   unsigned z;
   register const Quantum *p;
@@ -1190,7 +1187,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
   (void) logging;
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(MagickFalse);
   image->depth=8;
@@ -1217,7 +1214,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
 
-    is_gray = IsImageGray(image,&image->exception);
+    is_gray = IsImageGray(image,exception);
     z = is_gray ? 0 : 3;
 
     /*
@@ -1251,7 +1248,6 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     /*
       Store image data.
     */
-    exception=(&image->exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1260,14 +1256,14 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image)
     {
       for (y=0; y < (ssize_t)image->columns; y++)
       {
-        p=GetVirtualPixels(image,y,0,1,image->rows,&image->exception);
+        p=GetVirtualPixels(image,y,0,1,image->rows,exception);
         if (p == (const Quantum *) NULL)
           break;
         (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           z2qtype[z],pixels,exception);
         (void) WriteBlob(image,image->rows,pixels);
       }    
-      if (!SyncAuthenticPixels(image,exception))
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
     } while(z-- >= 2);
     while(padding-->0) (void) WriteBlobByte(image,0);

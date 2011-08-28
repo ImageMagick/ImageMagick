@@ -93,7 +93,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMIFFImage(const ImageInfo *,Image *);
+  WriteMIFFImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1623,7 +1623,7 @@ ModuleExport void UnregisterMIFFImage(void)
 %  The format of the WriteMIFFImage method is:
 %
 %      MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  Compression code contributed by Kyle Shorter.
 %
@@ -1632,6 +1632,8 @@ ModuleExport void UnregisterMIFFImage(void)
 %    o image_info: the image info.
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1783,7 +1785,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
 }
 
 static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
   bz_stream
@@ -1857,7 +1859,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   code=0;
@@ -1874,7 +1876,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((image->storage_class != PseudoClass) && (image->depth >= 32) &&
         (quantum_info->format == UndefinedQuantumFormat) &&
-        (IsHighDynamicRangeImage(image,&image->exception) != MagickFalse))
+        (IsHighDynamicRangeImage(image,exception) != MagickFalse))
       {
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
@@ -1882,12 +1884,12 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       }
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
-      (void) SetImageStorageClass(image,DirectClass,&image->exception);
+      (void) SetImageStorageClass(image,DirectClass,exception);
     if ((image->colorspace != sRGBColorspace) &&
-        (IsImageGray(image,&image->exception) != MagickFalse))
+        (IsImageGray(image,exception) != MagickFalse))
       {
-        (void) SetImageStorageClass(image,DirectClass,&image->exception);
-        (void) SetImageColorspace(image,GRAYColorspace,&image->exception);
+        (void) SetImageStorageClass(image,DirectClass,exception);
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
       }
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
@@ -2297,7 +2299,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    quantum_type=GetQuantumType(image,&image->exception);
+    quantum_type=GetQuantumType(image,exception);
     pixels=GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -2309,7 +2311,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 
       if (status == MagickFalse)
         break;
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       q=pixels;
@@ -2321,7 +2323,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
           (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           do
           {
             bzip_info.next_out=(char *) compress_pixels;
@@ -2346,7 +2348,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           lzma_info.next_in=pixels;
           lzma_info.avail_in=packet_size*image->columns;
           (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           do
           {
             lzma_info.next_out=compress_pixels;
@@ -2371,7 +2373,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
           (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           do
           {
             zip_info.next_out=compress_pixels;
@@ -2415,7 +2417,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         default:
         {
           (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            quantum_type,pixels,&image->exception);
+            quantum_type,pixels,exception);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           break;
         }

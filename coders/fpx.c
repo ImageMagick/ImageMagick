@@ -80,7 +80,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteFPXImage(const ImageInfo *,Image *);
+  WriteFPXImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
@@ -578,13 +578,16 @@ ModuleExport void UnregisterFPXImage(void)
 %
 %  The format of the WriteFPXImage method is:
 %
-%      MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteFPXImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -769,7 +772,8 @@ static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
   *color_twist=result;
 }
 
-static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   FPXBackground
     background_color;
@@ -843,7 +847,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) CloseBlob(image);
@@ -863,7 +867,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
   if (image->matte != MagickFalse)
     colorspace.numberOfComponents=4;
   if ((image_info->type != TrueColorType) &&
-      IsImageGray(image,&image->exception))
+      (IsImageGray(image,exception) != MagickFalse))
     {
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;
@@ -989,11 +993,11 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     quantum_type=GrayQuantum;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      quantum_type,pixels,&image->exception);
+      quantum_type,pixels,exception);
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)
       break;

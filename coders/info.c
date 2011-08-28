@@ -65,7 +65,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteINFOImage(const ImageInfo *,Image *);
+  WriteINFOImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,7 +144,7 @@ ModuleExport void UnregisterINFOImage(void)
 %  The format of the WriteINFOImage method is:
 %
 %      MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -152,9 +152,11 @@ ModuleExport void UnregisterINFOImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   const char
     *format;
@@ -174,7 +176,7 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   scene=0;
@@ -188,7 +190,7 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
         image->magick_columns=image->columns;
         image->magick_rows=image->rows;
         (void) IdentifyImage(image,GetBlobFileHandle(image),
-          image_info->verbose,&image->exception);
+          image_info->verbose,exception);
       }
     else
       {

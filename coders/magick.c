@@ -13265,7 +13265,7 @@ static const MagickImageInfo
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMAGICKImage(const ImageInfo *,Image *);
+  WriteMAGICKImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13469,7 +13469,7 @@ ModuleExport void UnregisterMAGICKImage(void)
 %  The format of the WriteMAGICKImage method is:
 %
 %      MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -13477,9 +13477,11 @@ ModuleExport void UnregisterMAGICKImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent];
@@ -13515,9 +13517,9 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
       image_info->filename);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  magick_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  magick_image=CloneImage(image,0,0,MagickTrue,exception);
   if (magick_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,image->exception.reason);
+    return(MagickFalse);
   write_info=CloneImageInfo(image_info);
   *write_info->filename='\0';
   (void) CopyMagickString(write_info->magick,"GIF",MaxTextExtent);
@@ -13527,12 +13529,12 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
       (void) CopyMagickString(write_info->magick,"PNM",MaxTextExtent);
       length*=3;
     }
-  blob=ImageToBlob(write_info,magick_image,&length,&image->exception);
+  blob=ImageToBlob(write_info,magick_image,&length,exception);
   magick_image=DestroyImage(magick_image);
   (void) DestroyImageInfo(write_info);
   if (blob == (void *) NULL)
     return(MagickFalse);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) WriteBlobString(image,"/*\n");

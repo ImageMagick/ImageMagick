@@ -90,7 +90,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePDFImage(const ImageInfo *,Image *);
+  WritePDFImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -831,13 +831,16 @@ ModuleExport void UnregisterPDFImage(void)
 %
 %  The format of the WritePDFImage method is:
 %
-%      MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePDFImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -921,7 +924,8 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   return(status);
 }
 
-static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
 #define CFormat  "/Filter [ /%s ]\n"
 #define ObjectsPerImage  14
@@ -1051,7 +1055,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   /*
@@ -1195,7 +1199,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       case FaxCompression:
       case Group4Compression:
       {
-        if ((IsImageMonochrome(image,&image->exception) == MagickFalse) ||
+        if ((IsImageMonochrome(image,exception) == MagickFalse) ||
             (image->matte != MagickFalse))
           compression=RLECompression;
         break;
@@ -1204,7 +1208,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       case JPEGCompression:
       {
         compression=RLECompression;
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+        (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (JPEG)",
           image->filename);
         break;
@@ -1214,7 +1218,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       case JPEG2000Compression:
       {
         compression=RLECompression;
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+        (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (JP2)",
           image->filename);
         break;
@@ -1224,7 +1228,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression:
       {
         compression=RLECompression;
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+        (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (ZLIB)",
           image->filename);
         break;
@@ -1301,8 +1305,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
     geometry.height=(size_t) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
-    (void) ParseGravityGeometry(image,page_geometry,&page_info,
-      &image->exception);
+    (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
@@ -1551,7 +1554,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsImageGray(image,&image->exception) != MagickFalse)))
+         (IsImageGray(image,exception) != MagickFalse)))
       {
         switch (compression)
         {
@@ -1568,18 +1571,22 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
           }
           case JPEGCompression:
           {
-            status=InjectImageBlob(image_info,image,image,"jpeg",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,image,"jpeg",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case JPEG2000Compression:
           {
-            status=InjectImageBlob(image_info,image,image,"jp2",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,image,"jp2",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case RLECompression:
@@ -1599,7 +1606,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -1640,7 +1647,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             Ascii85Initialize(image);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -1670,18 +1677,22 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case JPEGCompression:
           {
-            status=InjectImageBlob(image_info,image,image,"jpeg",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,image,"jpeg",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case JPEG2000Compression:
           {
-            status=InjectImageBlob(image_info,image,image,"jp2",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,image,"jp2",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case RLECompression:
@@ -1702,7 +1713,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -1747,7 +1758,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             Ascii85Initialize(image);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -1797,8 +1808,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
@@ -1839,8 +1849,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Initialize(image);
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
@@ -1888,7 +1897,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
           ((image_info->type != TrueColorType) &&
-           (IsImageGray(image,&image->exception) != MagickFalse)))
+           (IsImageGray(image,exception) != MagickFalse)))
           (void) CopyMagickString(buffer,"/DeviceGray\n",MaxTextExtent);
       else
         if ((image->storage_class == DirectClass) || (image->colors > 256) ||
@@ -1907,10 +1916,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     SetGeometry(image,&geometry);
     (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    tile_image=ThumbnailImage(image,geometry.width,geometry.height,
-      &image->exception);
+    tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,image->exception.reason);
+      return(MagickFalse);
     xref[object++]=TellBlob(image);
     (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
@@ -1995,7 +2003,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
     if ((compression == FaxCompression) ||
         (compression == Group4Compression) ||
         ((image_info->type != TrueColorType) &&
-         (IsImageGray(tile_image,&image->exception) != MagickFalse)))
+         (IsImageGray(tile_image,exception) != MagickFalse)))
       {
         switch (compression)
         {
@@ -2013,17 +2021,22 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
           case JPEGCompression:
           {
             status=InjectImageBlob(image_info,image,tile_image,"jpeg",
-              &image->exception);
+              exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,tile_image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case JPEG2000Compression:
           {
-            status=InjectImageBlob(image_info,image,tile_image,"jp2",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,tile_image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case RLECompression:
@@ -2048,7 +2061,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) tile_image->rows; y++)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                &tile_image->exception);
+                exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
@@ -2083,7 +2096,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) tile_image->rows; y++)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                &tile_image->exception);
+                exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
@@ -2107,17 +2120,22 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
           case JPEGCompression:
           {
             status=InjectImageBlob(image_info,image,tile_image,"jpeg",
-              &image->exception);
+              exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,tile_image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case JPEG2000Compression:
           {
-            status=InjectImageBlob(image_info,image,tile_image,"jp2",
-              &image->exception);
+            status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
-              ThrowWriterException(CoderError,tile_image->exception.reason);
+              {
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
             break;
           }
           case RLECompression:
@@ -2143,7 +2161,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) tile_image->rows; y++)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                &tile_image->exception);
+                exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
@@ -2182,7 +2200,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) tile_image->rows; y++)
             {
               p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                &tile_image->exception);
+                exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
@@ -2232,7 +2250,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (y=0; y < (ssize_t) tile_image->rows; y++)
               {
                 p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                  &tile_image->exception);
+                  exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
@@ -2267,7 +2285,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
               for (y=0; y < (ssize_t) tile_image->rows; y++)
               {
                 p=GetVirtualPixels(tile_image,0,y,tile_image->columns,1,
-                  &tile_image->exception);
+                  exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
@@ -2435,7 +2453,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -2469,7 +2487,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
             Ascii85Initialize(image);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)

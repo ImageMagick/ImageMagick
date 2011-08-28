@@ -79,7 +79,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WritePSImage(const ImageInfo *,Image *);
+  WritePSImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -994,13 +994,16 @@ ModuleExport void UnregisterPSImage(void)
 %
 %  The format of the WritePSImage method is:
 %
-%      MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePSImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1023,7 +1026,8 @@ static inline unsigned char *PopHexPixel(const char **hex_digits,
   return(pixels);
 }
 
-static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
@@ -1408,7 +1412,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
@@ -1469,8 +1473,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
     geometry.height=(size_t) floor(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
-    (void) ParseGravityGeometry(image,page_geometry,&page_info,
-      &image->exception);
+    (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
@@ -1598,7 +1601,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Create preview image.
             */
-            preview_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+            preview_image=CloneImage(image,0,0,MagickTrue,exception);
             if (preview_image == (Image *) NULL)
               ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
             /*
@@ -1614,7 +1617,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(preview_image,0,y,preview_image->columns,1,
-                &preview_image->exception);
+                exception);
               if (p == (const Quantum *) NULL)
                 break;
               bit=0;
@@ -1737,9 +1740,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     index=0;
     x=0;
     if ((image_info->type != TrueColorType) &&
-        (IsImageGray(image,&image->exception) != MagickFalse))
+        (IsImageGray(image,exception) != MagickFalse))
       {
-        if (IsImageMonochrome(image,&image->exception) == MagickFalse)
+        if (IsImageMonochrome(image,exception) == MagickFalse)
           {
             Quantum
               pixel;
@@ -1754,8 +1757,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
@@ -1803,8 +1805,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
               bit=0;
@@ -1877,8 +1878,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 GetPixelPacket(image,p,&pixel);
@@ -1939,8 +1939,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
@@ -2021,8 +2020,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 index=GetPixelIndex(image,p);
@@ -2083,8 +2081,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                  &image->exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)

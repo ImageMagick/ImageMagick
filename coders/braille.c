@@ -65,7 +65,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteBRAILLEImage(const ImageInfo *,Image *);
+  WriteBRAILLEImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,7 +158,7 @@ ModuleExport void UnregisterBRAILLEImage(void)
 %  The format of the WriteBRAILLEImage method is:
 %
 %      MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -166,9 +166,11 @@ ModuleExport void UnregisterBRAILLEImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent];
@@ -214,7 +216,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       cell_height=3;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (!iso_11548_1)
@@ -259,7 +261,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     if ((y+cell_height) > image->rows)
       cell_height = (size_t) (image->rows-y);
 
-    p=GetVirtualPixels(image,0,y,image->columns,cell_height,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,cell_height,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x+=2)

@@ -134,7 +134,7 @@ typedef struct _PDBImage
   Forward declarations.
 */
 static MagickBooleanType
-  WritePDBImage(const ImageInfo *,Image *);
+  WritePDBImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -656,7 +656,8 @@ ModuleExport void UnregisterPDBImage(void)
 %
 %  The format of the WritePDBImage method is:
 %
-%      MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WritePDBImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -664,6 +665,7 @@ ModuleExport void UnregisterPDBImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -682,7 +684,8 @@ static unsigned char *EncodeRLE(unsigned char *destination,
   return(destination);
 }
 
-static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *comment;
@@ -735,13 +738,13 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
 
-  if (image -> colors <= 2  ||  GetImageType( image, &image -> exception ) == BilevelType) { /* TS */
+  if (image -> colors <= 2  ||  GetImageType( image, exception ) == BilevelType) { /* TS */
     bits_per_pixel = 1;
   } else if (image -> colors <= 4) {
     bits_per_pixel = 2;
@@ -828,11 +831,11 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   buffer[0]=0x00;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-      GrayQuantum,scanline,&image->exception);
+      GrayQuantum,scanline,exception);
     for (x=0; x < pdb_image.width; x++)
     {
       if (x < (ssize_t) image->columns)

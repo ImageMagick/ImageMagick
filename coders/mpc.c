@@ -76,7 +76,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMPCImage(const ImageInfo *,Image *);
+  WriteMPCImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1015,7 +1015,8 @@ ModuleExport void UnregisterMPCImage(void)
 %
 %  The format of the WriteMPCImage method is:
 %
-%      MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMPCImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1023,8 +1024,11 @@ ModuleExport void UnregisterMPCImage(void)
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent],
@@ -1057,7 +1061,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) CopyMagickString(cache_filename,image->filename,MaxTextExtent);
@@ -1395,7 +1399,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       Initialize persistent pixel cache.
     */
     status=PersistPixelCache(image,cache_filename,MagickFalse,&offset,
-      &image->exception);
+      exception);
     if (status == MagickFalse)
       ThrowWriterException(CacheError,"UnableToPersistPixelCache");
     if (GetNextImageInList(image) == (Image *) NULL)

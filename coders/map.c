@@ -69,7 +69,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMAPImage(const ImageInfo *,Image *);
+  WriteMAPImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -321,7 +321,8 @@ ModuleExport void UnregisterMAPImage(void)
 %
 %  The format of the WriteMAPImage method is:
 %
-%      MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMAPImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -329,9 +330,11 @@ ModuleExport void UnregisterMAPImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -366,7 +369,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -374,7 +377,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  if (IsPaletteImage(image,&image->exception) == MagickFalse)
+  if (IsPaletteImage(image,exception) == MagickFalse)
     (void) SetImageType(image,PaletteType);
   depth=GetImageQuantumDepth(image,MagickTrue);
   packet_size=(size_t) (depth/8);
@@ -414,7 +417,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     q=pixels;

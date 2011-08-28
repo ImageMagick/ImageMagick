@@ -65,7 +65,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMPEGImage(const ImageInfo *image_info,Image *image);
+  WriteMPEGImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -354,13 +354,15 @@ ModuleExport void UnregisterMPEGImage(void)
 %  The format of the WriteMPEGImage method is:
 %
 %      MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image_info: the image info.
 %
 %    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -453,7 +455,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
 }
 
 static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #define WriteMPEGIntermediateFormat "jpg"
 
@@ -499,14 +501,14 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) CloseBlob(image);
   /*
     Write intermediate files.
   */
-  coalesce_image=CoalesceImages(image,&image->exception);
+  coalesce_image=CoalesceImages(image,exception);
   if (coalesce_image == (Image *) NULL)
     return(MagickFalse);
   file=AcquireUniqueFileResource(basename);
@@ -544,24 +546,24 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
           (void) FormatLocaleString(previous_image,MaxTextExtent,
             "%s%.20g.%s",basename,(double) p->scene,
             WriteMPEGIntermediateFormat);
-          frame=CloneImage(p,0,0,MagickTrue,&p->exception);
+          frame=CloneImage(p,0,0,MagickTrue,exception);
           if (frame == (Image *) NULL)
             break;
-          status=WriteImage(write_info,frame,&image->exception);
+          status=WriteImage(write_info,frame,exception);
           frame=DestroyImage(frame);
           break;
         }
         case 1:
         {
           blob=(unsigned char *) FileToBlob(previous_image,~0UL,&length,
-            &image->exception);
+            exception);
         }
         default:
         {
           (void) FormatLocaleString(filename,MaxTextExtent,"%s%.20g.%s",
             basename,(double) p->scene,WriteMPEGIntermediateFormat);
           if (length > 0)
-            status=BlobToFile(filename,blob,length,&image->exception);
+            status=BlobToFile(filename,blob,length,exception);
           break;
         }
       }
@@ -594,7 +596,7 @@ static MagickBooleanType WriteMPEGImage(const ImageInfo *image_info,
   if (*coalesce_image->magick == '\0')
     (void) CopyMagickString(coalesce_image->magick,image->magick,MaxTextExtent);
   status=InvokeDelegate(write_info,coalesce_image,(char *) NULL,"mpeg:encode",
-    &image->exception);
+    exception);
   (void) FormatLocaleString(write_info->filename,MaxTextExtent,"%s.%s",
     write_info->unique,coalesce_image->magick);
   status=CopyDelegateFile(write_info->filename,image->filename);

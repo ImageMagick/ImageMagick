@@ -157,7 +157,7 @@ typedef struct _MSLInfo
 */
 #if defined(MAGICKCORE_XML_DELEGATE)
 static MagickBooleanType
-  WriteMSLImage(const ImageInfo *,Image *);
+  WriteMSLImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 static MagickBooleanType
   SetMSLAttributes(MSLInfo *,const char *,const char *);
@@ -8100,7 +8100,8 @@ ModuleExport void UnregisterMSLImage(void)
 %
 %  The format of the WriteMSLImage method is:
 %
-%      MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMSLImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -8108,8 +8109,11 @@ ModuleExport void UnregisterMSLImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -8118,7 +8122,7 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ReferenceImage(image);
-  (void) ProcessMSLScript(image_info,&image,&image->exception);
+  (void) ProcessMSLScript(image_info,&image,exception);
   return(MagickTrue);
 }
 #endif

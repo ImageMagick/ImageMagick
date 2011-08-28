@@ -321,7 +321,7 @@ static const PICTCode
   Forward declarations.
 */
 static MagickBooleanType
-  WritePICTImage(const ImageInfo *,Image *);
+  WritePICTImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1510,7 +1510,7 @@ ModuleExport void UnregisterPICTImage(void)
 %  The format of the WritePICTImage method is:
 %
 %      MagickBooleanType WritePICTImage(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1518,9 +1518,11 @@ ModuleExport void UnregisterPICTImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
 #define MaxCount  128
 #define PictCropRegionOp  0x01
@@ -1592,7 +1594,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns > 65535L) || (image->rows > 65535L))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -1732,7 +1734,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       unsigned char
         *blob;
 
-      jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+      jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
       if (jpeg_image == (Image *) NULL)
         {
           (void) CloseBlob(image);
@@ -1742,7 +1744,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       (void) CopyMagickString(jpeg_info->magick,"JPEG",MaxTextExtent);
       length=0;
       blob=(unsigned char *) ImageToBlob(jpeg_info,jpeg_image,&length,
-        &image->exception);
+        exception);
       jpeg_info=DestroyImageInfo(jpeg_info);
       if (blob == (unsigned char *) NULL)
         return(MagickFalse);
@@ -1872,7 +1874,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   if ((storage_class == PseudoClass) && (image->matte == MagickFalse))
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -1912,7 +1914,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         opacity=scanline+3*image->columns;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           red=scanline;

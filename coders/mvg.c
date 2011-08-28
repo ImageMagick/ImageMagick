@@ -61,7 +61,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMVGImage(const ImageInfo *,Image *);
+  WriteMVGImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -295,7 +295,8 @@ ModuleExport void UnregisterMVGImage(void)
 %
 %  The format of the WriteMVGImage method is:
 %
-%      MagickBooleanType WriteMVGImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteMVGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -303,8 +304,11 @@ ModuleExport void UnregisterMVGImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteMVGImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteMVGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *value;
@@ -324,7 +328,7 @@ static MagickBooleanType WriteMVGImage(const ImageInfo *image_info,Image *image)
   value=GetImageArtifact(image,"MVG");
   if (value == (const char *) NULL)
     ThrowWriterException(OptionError,"NoImageVectorGraphics");
-  status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   (void) WriteBlob(image,strlen(value),(const unsigned char *) value);

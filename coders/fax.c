@@ -64,7 +64,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteFAXImage(const ImageInfo *,Image *);
+  WriteFAXImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -284,7 +284,8 @@ ModuleExport void UnregisterFAXImage(void)
 %
 %  The format of the WriteFAXImage method is:
 %
-%      MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteFAXImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -292,8 +293,11 @@ ModuleExport void UnregisterFAXImage(void)
 %
 %    o image:  The image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   ImageInfo
     *write_info;
@@ -313,7 +317,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   write_info=CloneImageInfo(image_info);

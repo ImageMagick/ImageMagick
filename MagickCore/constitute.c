@@ -1135,7 +1135,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       thread_support=GetMagickThreadSupport(magick_info);
       if ((thread_support & EncoderThreadSupport) == 0)
         LockSemaphoreInfo(constitute_semaphore);
-      status=GetImageEncoder(magick_info)(write_info,image);
+      status=GetImageEncoder(magick_info)(write_info,image,exception);
       if ((thread_support & EncoderThreadSupport) == 0)
         UnlockSemaphoreInfo(constitute_semaphore);
     }
@@ -1194,7 +1194,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               thread_support=GetMagickThreadSupport(magick_info);
               if ((thread_support & EncoderThreadSupport) == 0)
                 LockSemaphoreInfo(constitute_semaphore);
-              status=GetImageEncoder(magick_info)(write_info,image);
+              status=GetImageEncoder(magick_info)(write_info,image,exception);
               if ((thread_support & EncoderThreadSupport) == 0)
                 UnlockSemaphoreInfo(constitute_semaphore);
             }
