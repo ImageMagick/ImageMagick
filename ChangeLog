@@ -1,3 +1,9 @@
+2011-08-29  6.7.2-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.1-9.
+
+2011-08-29  6.7.2-1 Cristy  <quetzlzacatenango@image...>
+  * The AllChannels defined changed to 0x7ffffff to avoid integer overflow.
+
 2011-08-26  6.7.2-0 Cristy  <quetzlzacatenango@image...>
   * HDR format 32-bit_rle_xyze implies the XYZ colorspace.
 
