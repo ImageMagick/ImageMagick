@@ -7597,71 +7597,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_preserve_colormap = mng_info->ping_preserve_colormap;
   ping_need_colortype_warning = MagickFalse;
 
-  /* Recognize the ICC sRGB profile and convert it to the sRGB chunk,
-   * i.e., eliminate the ICC profile and set image->rendering_intent.
-   * Note that this will not involve any changes to the actual pixels
-   * but merely passes information to applications that read the resulting
-   * PNG image.
-   */
-   if (ping_exclude_sRGB == MagickFalse)
-   {
-      char
-        *name;
-
-      const StringInfo
-        *profile;
-
-      ResetImageProfileIterator(image);
-      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
-      {
-        profile=GetImageProfile(image,name);
-
-        if (profile != (StringInfo *) NULL)
-          {
-            if ((LocaleCompare(name,"ICC") == 0) ||
-                (LocaleCompare(name,"ICM") == 0))
-             {
-                 unsigned char
-                   *data;
-
-                 png_uint_32
-                   length;
-
-                 {
-                    length=(png_uint_32) GetStringInfoLength(profile);
-
-                    if (length == 3144)
-                    {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    got a 3144-byte ICC profile (potentially sRGB)");
-
-                      data=GetStringInfoDatum(profile);
-
-                      if (data[52]=='s' && data[53]=='R' &&
-                          data[54]=='G' && data[55]=='B')
-                      {
-                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                             "    It is sRGB)");
-                         if (image->rendering_intent==UndefinedIntent);
-                           image->rendering_intent=PerceptualIntent;
-                      }
-                      else
-                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                             "    It is not sRGB (%c%c%c%c)",data[52],
-                             data[53],data[54],data[55]);
-                      
-                    }
-                    else
-                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "    got a %lu-byte ICC profile",
-                         (unsigned long) length);
-                 }
-             }
-          }
-        name=GetNextImageProfile(image);
-      }
-  }
-
   number_opaque = 0;
   number_semitransparent = 0;
   number_transparent = 0;
@@ -8135,7 +8070,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
      }
 
-     if (ping_exclude_bKGD == MagickFalse)
+     if (mng_info->write_png8 == MagickFalse &&
+         ping_exclude_bKGD == MagickFalse)
        {
          /* Add the background color to the palette, if it
           * isn't already there.
@@ -9710,6 +9646,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "    Compression mem level: 9");
 
+  png_set_compression_mem_level(ping, 9);
+
   /* Untangle the "-quality" setting:
 
      Undefined is 0; the default is used.
@@ -9745,8 +9683,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     Note that using the -quality option, not all combinations of
     PNG filter type, zlib compression level, and zlib compression
     strategy are possible.  This will be addressed soon in a
-    release that accomodates "-define PNG:compression-strategy",
-    etc.
+    release that accomodates "-define PNG:compression-strategy", etc.
 
    */
 
@@ -9793,10 +9730,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Setting up filtering");
 
-        if (mng_info->write_png_compression_filter == PNG_ALL_FILTERS+1)
+        if (mng_info->write_png_compression_filter == 6)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: ADAPTIVE");
-        else if (mng_info->write_png_compression_filter == PNG_NO_FILTERS+1)
+        else if (mng_info->write_png_compression_filter == 0 ||
+                 mng_info->write_png_compression_filter == 1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: NONE");
         else
@@ -9817,8 +9755,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       else
         png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
      }
-
-  if (mng_info->write_png_compression_filter == 7 ||
+  else if (mng_info->write_png_compression_filter == 7 ||
       mng_info->write_png_compression_filter == 10)
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
 
@@ -9832,7 +9769,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         ping_filter_method=PNG_INTRAPIXEL_DIFFERENCING;
       }
 #endif
-      png_set_filter(ping,PNG_FILTER_TYPE_BASE,0);
+      png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
     }
 
   else if (mng_info->write_png_compression_filter == 9)
@@ -9847,12 +9784,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        mng_info->write_png_compression_strategy-1);
 
 
-  if (ping_exclude_sRGB != MagickFalse ||
-     (image->rendering_intent == UndefinedIntent))
-  {
-    if ((ping_exclude_tEXt == MagickFalse ||
-       ping_exclude_zTXt == MagickFalse) &&
-       (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
+  if ((ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse) &&
+     (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
     {
       ResetImageProfileIterator(image);
       for (name=GetNextImageProfile(image); name != (const char *) NULL; )
@@ -9895,7 +9828,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         name=GetNextImageProfile(image);
       }
-    }
   }
 
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
@@ -9915,6 +9847,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) png_set_sRGB(ping,ping_info,(
             Magick_RenderingIntent_to_PNG_RenderingIntent(
               image->rendering_intent)));
+
+          if (ping_exclude_gAMA == MagickFalse)
+            png_set_gAMA(ping,ping_info,0.45455);
         }
     }
 
@@ -11218,18 +11153,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
       else if (LocaleCompare(value,"5") == 0)
         mng_info->write_png_compression_filter = 6;
-
-      else if (LocaleCompare(value,"6") == 0)
-        mng_info->write_png_compression_filter = 7;
-
-      else if (LocaleCompare(value,"7") == 0)
-        mng_info->write_png_compression_filter = 8;
-
-      else if (LocaleCompare(value,"8") == 0)
-        mng_info->write_png_compression_filter = 9;
-
-      else if (LocaleCompare(value,"9") == 0)
-        mng_info->write_png_compression_filter = 10;
 
       else
         (void) ThrowMagickException(&image->exception,
