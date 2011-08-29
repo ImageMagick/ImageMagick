@@ -12414,10 +12414,13 @@ static MagickBooleanType XSaveImage(Display *display,
 
       GetPathComponent(image->filename,HeadPath,path);
       GetPathComponent(image->filename,TailPath,filename);
-      status=chdir(path);
-      if (status == -1)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          FileOpenError,"UnableToOpenFile","%s",path);
+      if (*path != '\0')
+        {
+          status=chdir(path);
+          if (status == -1)
+            (void) ThrowMagickException(&image->exception,GetMagickModule(),
+              FileOpenError,"UnableToOpenFile","%s",path);
+        }
     }
   XFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
