@@ -214,7 +214,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
     i>>=1;
   for (depth=1; ; depth++)
   {
-    if (PlasmaImage(image,&segment_info,0,depth) != MagickFalse)
+    if (PlasmaImage(image,&segment_info,0,depth,exception) != MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) depth,
       max_depth);

@@ -3511,7 +3511,7 @@ MagickExport Image *MorphImages(const Image *image,
 %  The format of the PlasmaImage method is:
 %
 %      MagickBooleanType PlasmaImage(Image *image,const SegmentInfo *segment,
-%        size_t attenuate,size_t depth)
+%        size_t attenuate,size_t depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3522,6 +3522,8 @@ MagickExport Image *MorphImages(const Image *image,
 %    o attenuate: Define the plasma attenuation factor.
 %
 %    o depth: Limit the plasma recursion depth.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -3538,11 +3540,8 @@ static inline Quantum PlasmaPixel(RandomInfo *random_info,
 
 MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
   CacheView *image_view,RandomInfo *random_info,const SegmentInfo *segment,
-  size_t attenuate,size_t depth)
+  size_t attenuate,size_t depth,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   MagickRealType
     plasma;
 
@@ -3574,22 +3573,22 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       local_info.x2=(double) x_mid;
       local_info.y2=(double) y_mid;
       (void) PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth);
+        attenuate,depth,exception);
       local_info=(*segment);
       local_info.y1=(double) y_mid;
       local_info.x2=(double) x_mid;
       (void) PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth);
+        attenuate,depth,exception);
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y2=(double) y_mid;
       (void) PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth);
+        attenuate,depth,exception);
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y1=(double) y_mid;
       return(PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth));
+        attenuate,depth,exception));
     }
   x_mid=(ssize_t) ceil((segment->x1+segment->x2)/2-0.5);
   y_mid=(ssize_t) ceil((segment->y1+segment->y2)/2-0.5);
@@ -3599,7 +3598,6 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
   /*
     Average pixels and apply plasma.
   */
-  exception=(&image->exception);
   plasma=(MagickRealType) QuantumRange/(2.0*attenuate);
   if ((segment->x1 != (double) x_mid) || (segment->x2 != (double) x_mid))
     {
@@ -3728,7 +3726,8 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
 }
 
 MagickExport MagickBooleanType PlasmaImage(Image *image,
-  const SegmentInfo *segment,size_t attenuate,size_t depth)
+  const SegmentInfo *segment,size_t attenuate,size_t depth,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -3745,11 +3744,12 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   image_view=AcquireCacheView(image);
   random_info=AcquireRandomInfo();
-  status=PlasmaImageProxy(image,image_view,random_info,segment,attenuate,depth);
+  status=PlasmaImageProxy(image,image_view,random_info,segment,attenuate,depth,
+    exception);
   random_info=DestroyRandomInfo(random_info);
   image_view=DestroyCacheView(image_view);
   return(status);
@@ -3848,7 +3848,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
         value);
       (void) CloneString(&annotate_info->text,caption);
       count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,&metrics,
-        &caption);
+        &caption,exception);
       status=SetImageExtent(caption_image,image->columns,(size_t)
         ((count+1)*(metrics.ascent-metrics.descent)+0.5),exception);
       if (status == MagickFalse)
@@ -3863,7 +3863,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
           if (annotate_info->gravity == UndefinedGravity)
             (void) CloneString(&annotate_info->geometry,AcquireString(
               geometry));
-          (void) AnnotateImage(caption_image,annotate_info);
+          (void) AnnotateImage(caption_image,annotate_info,exception);
           height+=caption_image->rows;
         }
       annotate_info=DestroyDrawInfo(annotate_info);
@@ -4411,7 +4411,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 %
 %  The format of the SolarizeImage method is:
 %
-%      MagickBooleanType SolarizeImage(Image *image,const double threshold)
+%      MagickBooleanType SolarizeImage(Image *image,const double threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4419,17 +4420,16 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 %
 %    o threshold:  Define the extent of the solarization.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SolarizeImage(Image *image,
-  const double threshold)
+  const double threshold,ExceptionInfo *exception)
 {
 #define SolarizeImageTag  "Solarize/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -4469,7 +4469,6 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -4484,8 +4483,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-      exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (const Quantum *) NULL)
       {
         status=MagickFalse;

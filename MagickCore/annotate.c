@@ -112,11 +112,14 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickBooleanType
-  RenderType(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
-  RenderPostscript(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
+  RenderType(Image *,const DrawInfo *,const PointInfo *,TypeMetric *,
+    ExceptionInfo *),
+  RenderPostscript(Image *,const DrawInfo *,const PointInfo *,TypeMetric *,
+    ExceptionInfo *),
   RenderFreetype(Image *,const DrawInfo *,const char *,const PointInfo *,
-    TypeMetric *),
-  RenderX11(Image *,const DrawInfo *,const PointInfo *,TypeMetric *);
+    TypeMetric *,ExceptionInfo *),
+  RenderX11(Image *,const DrawInfo *,const PointInfo *,TypeMetric *,
+    ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -206,7 +209,8 @@ MagickExport void AnnotateComponentTerminus(void)
 %
 %  The format of the AnnotateImage method is:
 %
-%      MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info)
+%      MagickBooleanType AnnotateImage(Image *image,DrawInfo *draw_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -214,9 +218,11 @@ MagickExport void AnnotateComponentTerminus(void)
 %
 %    o draw_info: the draw info.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType AnnotateImage(Image *image,
-  const DrawInfo *draw_info)
+  const DrawInfo *draw_info,ExceptionInfo *exception)
 {
   char
     primitive[MaxTextExtent],
@@ -276,10 +282,10 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   if (annotate_info->geometry != (char *) NULL)
     {
       (void) ParsePageGeometry(image,annotate_info->geometry,&geometry,
-        &image->exception);
+        exception);
       (void) ParseGeometry(annotate_info->geometry,&geometry_info);
     }
-  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -290,7 +296,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.tx=geometry_info.xi-image->page.x;
     annotate_info->affine.ty=geometry_info.psi-image->page.y;
     (void) CloneString(&annotate->text,textlist[i]);
-    (void) GetTypeMetrics(image,annotate,&metrics);
+    (void) GetTypeMetrics(image,annotate,&metrics,exception);
     height=(ssize_t) (metrics.ascent-metrics.descent+
       draw_info->interline_spacing+0.5);
     switch (annotate->gravity)
@@ -479,7 +485,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     /*
       Annotate image with text.
     */
-    status=RenderType(image,annotate,&offset,&metrics);
+    status=RenderType(image,annotate,&offset,&metrics,exception);
     if (status == MagickFalse)
       break;
     if (annotate->decorate == LineThroughDecoration)
@@ -518,7 +524,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %  The format of the FormatMagickCaption method is:
 %
 %      ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-%        const MagickBooleanType split,TypeMetric *metrics,char **caption)
+%        const MagickBooleanType split,TypeMetric *metrics,char **caption,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -532,9 +539,12 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %
 %    o caption: the caption.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
-  const MagickBooleanType split,TypeMetric *metrics,char **caption)
+  const MagickBooleanType split,TypeMetric *metrics,char **caption,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -564,7 +574,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
     *q='\0';
-    status=GetTypeMetrics(image,draw_info,metrics);
+    status=GetTypeMetrics(image,draw_info,metrics,exception);
     if (status == MagickFalse)
       break;
     width=(size_t) floor(metrics->width+0.5);
@@ -639,7 +649,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 %  The format of the GetMultilineTypeMetrics method is:
 %
 %      MagickBooleanType GetMultilineTypeMetrics(Image *image,
-%        const DrawInfo *draw_info,TypeMetric *metrics)
+%        const DrawInfo *draw_info,TypeMetric *metrics,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -649,9 +659,11 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 %
 %    o metrics: Return the font metrics in this structure.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
-  const DrawInfo *draw_info,TypeMetric *metrics)
+  const DrawInfo *draw_info,TypeMetric *metrics,ExceptionInfo *exception)
 {
   char
     **textlist;
@@ -693,12 +705,12 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
     Find the widest of the text lines.
   */
   annotate_info->text=textlist[0];
-  status=GetTypeMetrics(image,annotate_info,&extent);
+  status=GetTypeMetrics(image,annotate_info,&extent,exception);
   *metrics=extent;
   for (i=1; textlist[i] != (char *) NULL; i++)
   {
     annotate_info->text=textlist[i];
-    status=GetTypeMetrics(image,annotate_info,&extent);
+    status=GetTypeMetrics(image,annotate_info,&extent,exception);
     if (extent.width > metrics->width)
       *metrics=extent;
   }
@@ -748,7 +760,7 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
 %  The format of the GetTypeMetrics method is:
 %
 %      MagickBooleanType GetTypeMetrics(Image *image,const DrawInfo *draw_info,
-%        TypeMetric *metrics)
+%        TypeMetric *metrics,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -758,9 +770,11 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
 %
 %    o metrics: Return the font metrics in this structure.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType GetTypeMetrics(Image *image,
-  const DrawInfo *draw_info,TypeMetric *metrics)
+  const DrawInfo *draw_info,TypeMetric *metrics,ExceptionInfo *exception)
 {
   DrawInfo
     *annotate_info;
@@ -784,7 +798,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
   (void) ResetMagickMemory(metrics,0,sizeof(*metrics));
   offset.x=0.0;
   offset.y=0.0;
-  status=RenderType(image,annotate_info,&offset,metrics);
+  status=RenderType(image,annotate_info,&offset,metrics,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),"Metrics: text: %s; "
       "width: %g; height: %g; ascent: %g; descent: %g; max advance: %g; "
@@ -816,7 +830,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
 %  The format of the RenderType method is:
 %
 %      MagickBooleanType RenderType(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,TypeMetric *metrics)
+%        const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -828,9 +842,11 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
 %
 %    o metrics: bounding box of text.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 {
   const TypeInfo
     *type_info;
@@ -847,51 +863,52 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
       if (*draw_info->font == '@')
         {
           status=RenderFreetype(image,draw_info,draw_info->encoding,offset,
-            metrics);
+            metrics,exception);
           return(status);
         }
       if (*draw_info->font == '-')
-        return(RenderX11(image,draw_info,offset,metrics));
+        return(RenderX11(image,draw_info,offset,metrics,exception));
       if (IsPathAccessible(draw_info->font) != MagickFalse)
         {
           status=RenderFreetype(image,draw_info,draw_info->encoding,offset,
-            metrics);
+            metrics,exception);
           return(status);
         }
-      type_info=GetTypeInfo(draw_info->font,&image->exception);
+      type_info=GetTypeInfo(draw_info->font,exception);
       if (type_info == (const TypeInfo *) NULL)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          TypeWarning,"UnableToReadFont","`%s'",draw_info->font);
+        (void) ThrowMagickException(exception,GetMagickModule(),TypeWarning,
+          "UnableToReadFont","`%s'",draw_info->font);
     }
   if ((type_info == (const TypeInfo *) NULL) &&
       (draw_info->family != (const char *) NULL))
     {
       type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
-        draw_info->stretch,draw_info->weight,&image->exception);
+        draw_info->stretch,draw_info->weight,exception);
       if (type_info == (const TypeInfo *) NULL)
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          TypeWarning,"UnableToReadFont","`%s'",draw_info->family);
+        (void) ThrowMagickException(exception,GetMagickModule(),TypeWarning,
+          "UnableToReadFont","`%s'",draw_info->family);
     }
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Arial",draw_info->style,
-      draw_info->stretch,draw_info->weight,&image->exception);
+      draw_info->stretch,draw_info->weight,exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Helvetica",draw_info->style,
-      draw_info->stretch,draw_info->weight,&image->exception);
+      draw_info->stretch,draw_info->weight,exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Century Schoolbook",draw_info->style,
-      draw_info->stretch,draw_info->weight,&image->exception);
+      draw_info->stretch,draw_info->weight,exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Sans",draw_info->style,
-      draw_info->stretch,draw_info->weight,&image->exception);
+      draw_info->stretch,draw_info->weight,exception);
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
-      draw_info->stretch,draw_info->weight,&image->exception);
+      draw_info->stretch,draw_info->weight,exception);
   if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfo("*",&image->exception);
+    type_info=GetTypeInfo("*",exception);
   if (type_info == (const TypeInfo *) NULL)
     {
-      status=RenderFreetype(image,draw_info,draw_info->encoding,offset,metrics);
+      status=RenderFreetype(image,draw_info,draw_info->encoding,offset,metrics,
+        exception);
       return(status);
     }
   annotate_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -900,7 +917,8 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
     (void) CloneString(&annotate_info->metrics,type_info->metrics);
   if (type_info->glyphs != (char *) NULL)
     (void) CloneString(&annotate_info->font,type_info->glyphs);
-  status=RenderFreetype(image,annotate_info,type_info->encoding,offset,metrics);
+  status=RenderFreetype(image,annotate_info,type_info->encoding,offset,metrics,
+    exception);
   annotate_info=DestroyDrawInfo(annotate_info);
   return(status);
 }
@@ -922,7 +940,8 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderFreetype method is:
 %
 %      MagickBooleanType RenderFreetype(Image *image,DrawInfo *draw_info,
-%        const char *encoding,const PointInfo *offset,TypeMetric *metrics)
+%        const char *encoding,const PointInfo *offset,TypeMetric *metrics,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -935,6 +954,8 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 %    o offset: (x,y) location of text relative to image.
 %
 %    o metrics: bounding box of text.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1006,7 +1027,8 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 }
 
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
-  const char *encoding,const PointInfo *offset,TypeMetric *metrics)
+  const char *encoding,const PointInfo *offset,TypeMetric *metrics,
+  ExceptionInfo *exception)
 {
 #if !defined(FT_OPEN_PATHNAME)
 #define FT_OPEN_PATHNAME  ft_open_pathname
@@ -1112,9 +1134,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (status != 0)
     {
       (void) FT_Done_FreeType(library);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        TypeError,"UnableToReadFont","`%s'",draw_info->font);
-      return(RenderPostscript(image,draw_info,offset,metrics));
+      (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
+        "UnableToReadFont","`%s'",draw_info->font);
+      return(RenderPostscript(image,draw_info,offset,metrics,exception));
     }
   if ((draw_info->metrics != (char *) NULL) &&
       (IsPathAccessible(draw_info->metrics) != MagickFalse))
@@ -1240,9 +1262,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (draw_info->render != MagickFalse)
     {
       if (image->storage_class != DirectClass)
-        (void) SetImageStorageClass(image,DirectClass,&image->exception);
+        (void) SetImageStorageClass(image,DirectClass,exception);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,&image->exception);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
   direction=1.0;
   if (draw_info->direction == RightToLeftDirection)
@@ -1330,9 +1352,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         CacheView
           *image_view;
 
-        ExceptionInfo
-          *exception;
-
         MagickBooleanType
           status;
 
@@ -1340,7 +1359,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           Rasterize the glyph.
         */
         status=MagickTrue;
-        exception=(&image->exception);
         image_view=AcquireCacheView(image);
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
@@ -1502,9 +1520,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 #else
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *magick_unused(encoding),const PointInfo *offset,
-  TypeMetric *metrics)
+  TypeMetric *metrics,ExceptionInfo *exception)
 {
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
+  (void) ThrowMagickException(exception,GetMagickModule(),
     MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (Freetype)",
     draw_info->font != (char *) NULL ? draw_info->font : "none");
   return(RenderPostscript(image,draw_info,offset,metrics));
@@ -1528,7 +1546,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 %  The format of the RenderPostscript method is:
 %
 %      MagickBooleanType RenderPostscript(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,TypeMetric *metrics)
+%        const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1539,6 +1557,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 %    o offset: (x,y) location of text relative to image.
 %
 %    o metrics: bounding box of text.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1580,7 +1600,8 @@ static char *EscapeParenthesis(const char *text)
 }
 
 static MagickBooleanType RenderPostscript(Image *image,
-  const DrawInfo *draw_info,const PointInfo *offset,TypeMetric *metrics)
+  const DrawInfo *draw_info,const PointInfo *offset,TypeMetric *metrics,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
@@ -1626,8 +1647,7 @@ static MagickBooleanType RenderPostscript(Image *image,
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
-      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
-        filename);
+      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",filename);
       return(MagickFalse);
     }
   (void) FormatLocaleFile(file,"%%!PS-Adobe-3.0\n");
@@ -1690,8 +1710,8 @@ static MagickBooleanType RenderPostscript(Image *image,
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&annotate_info->density,draw_info->density);
   annotate_info->antialias=draw_info->text_antialias;
-  annotate_image=ReadImage(annotate_info,&image->exception);
-  CatchException(&image->exception);
+  annotate_image=ReadImage(annotate_info,exception);
+  CatchException(exception);
   annotate_info=DestroyImageInfo(annotate_info);
   (void) RelinquishUniqueFileResource(filename);
   if (annotate_image == (Image *) NULL)
@@ -1719,7 +1739,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       RectangleInfo
         crop_info;
 
-      crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
+      crop_info=GetImageBoundingBox(annotate_image,exception);
       crop_info.height=(size_t) ((resolution.y/DefaultResolution)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
       crop_info.y=(ssize_t) ceil((resolution.y/DefaultResolution)*extent.y/8.0-
@@ -1751,9 +1771,6 @@ static MagickBooleanType RenderPostscript(Image *image,
     }
   if (draw_info->fill.alpha != TransparentAlpha)
     {
-      ExceptionInfo
-        *exception;
-
       MagickBooleanType
         sync;
 
@@ -1766,7 +1783,6 @@ static MagickBooleanType RenderPostscript(Image *image,
       /*
         Render fill color.
       */
-      exception=(&image->exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       if (annotate_image->matte == MagickFalse)
@@ -1827,7 +1843,7 @@ static MagickBooleanType RenderPostscript(Image *image,
 %  The format of the RenderX11 method is:
 %
 %      MagickBooleanType RenderX11(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,TypeMetric *metrics)
+%        const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1839,10 +1855,12 @@ static MagickBooleanType RenderPostscript(Image *image,
 %
 %    o metrics: bounding box of text.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 #if defined(MAGICKCORE_X11_DELEGATE)
 static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -2039,12 +2057,12 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
 }
 #else
 static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,TypeMetric *metrics)
+  const PointInfo *offset,TypeMetric *metrics,ExceptionInfo *exception)
 {
   (void) draw_info;
   (void) offset;
   (void) metrics;
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
+  (void) ThrowMagickException(exception,GetMagickModule(),
     MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (X11)",
     image->filename);
   return(MagickFalse);

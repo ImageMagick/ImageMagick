@@ -603,10 +603,8 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
   draw_info->affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
   draw_info->affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
   (void) CloneString(&draw_info->geometry,geometry);
-  status=AnnotateImage(wand->images,draw_info);
+  status=AnnotateImage(wand->images,draw_info,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
   return(status);
 }
 
@@ -10630,9 +10628,7 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SolarizeImage(wand->images,threshold);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=SolarizeImage(wand->images,threshold,&wand->images->exception);
   return(status);
 }
 

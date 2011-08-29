@@ -445,14 +445,17 @@ void Magick::Image::annotate ( const std::string &text_,
           +current.tx;
     }
 
-  AnnotateImage( image(), drawInfo );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  AnnotateImage( image(), drawInfo, &exceptionInfo );
 
   // Restore original values
   drawInfo->affine = oaffine;
   drawInfo->text = 0;
   drawInfo->geometry = 0;
 
-  throwImageException();
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 // Annotate with text (bounding area is entire image) and placement gravity.
 void Magick::Image::annotate ( const std::string &text_,
@@ -467,12 +470,15 @@ void Magick::Image::annotate ( const std::string &text_,
 
   drawInfo->gravity = gravity_;
 
-  AnnotateImage( image(), drawInfo );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  AnnotateImage( image(), drawInfo, &exceptionInfo );
 
   drawInfo->gravity = NorthWestGravity;
   drawInfo->text = 0;
 
-  throwImageException();
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Blur image
@@ -1986,9 +1992,12 @@ void Magick::Image::sigmoidalContrast ( const size_t sharpen_, const double cont
 // film to light during the development process)
 void Magick::Image::solarize ( const double factor_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  SolarizeImage ( image(), factor_ );
-  throwImageException();
+  SolarizeImage ( image(), factor_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Sparse color image, given a set of coordinates, interpolates the colors
@@ -3096,8 +3105,12 @@ void Magick::Image::fontTypeMetrics( const std::string &text_,
 {
   DrawInfo *drawInfo = options()->drawInfo();
   drawInfo->text = const_cast<char *>(text_.c_str());
-  GetTypeMetrics( image(), drawInfo, &(metrics->_typeMetric) );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetTypeMetrics( image(), drawInfo, &(metrics->_typeMetric), &exceptionInfo );
   drawInfo->text = 0;
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Image format string

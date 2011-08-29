@@ -553,11 +553,11 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
     }
   (void) CloneString(&draw_info->text,text);
   (void) ResetMagickMemory(&metrics,0,sizeof(metrics));
-  status=GetTypeMetrics(wand->images,draw_info,&metrics);
+  status=GetTypeMetrics(wand->images,draw_info,&metrics,
+    &wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)
     {
-      InheritException(wand->exception,&wand->images->exception);
       font_metrics=(double *) RelinquishMagickMemory(font_metrics);
       return((double *) NULL);
     }
@@ -661,11 +661,11 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
     }
   (void) CloneString(&draw_info->text,text);
   (void) ResetMagickMemory(&metrics,0,sizeof(metrics));
-  status=GetMultilineTypeMetrics(wand->images,draw_info,&metrics);
+  status=GetMultilineTypeMetrics(wand->images,draw_info,&metrics,
+    &wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)
     {
-      InheritException(wand->exception,&wand->images->exception);
       font_metrics=(double *) RelinquishMagickMemory(font_metrics);
       return((double *) NULL);
     }

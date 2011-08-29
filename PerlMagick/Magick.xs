@@ -8129,7 +8129,7 @@ Mogrify(ref,...)
           if (attribute_flag[32] != 0)
             draw_info->direction=(DirectionType)
               argument_list[32].integer_reference;
-          (void) AnnotateImage(image,draw_info);
+          (void) AnnotateImage(image,draw_info,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8934,9 +8934,9 @@ Mogrify(ref,...)
             flags=ParseGeometry(argument_list[0].string_reference,
               &geometry_info);
           if (attribute_flag[1] != 0)
-            geometry_info.rho=SiPrefixToDouble(argument_list[1].string_reference,
-             QuantumRange);
-          (void) SolarizeImage(image,geometry_info.rho);
+            geometry_info.rho=SiPrefixToDouble(
+             argument_list[1].string_reference,QuantumRange);
+          (void) SolarizeImage(image,geometry_info.rho,exception);
           break;
         }
         case 53:  /* Sync */
@@ -12318,7 +12318,7 @@ QueryFontMetrics(ref,...)
         (void) FormatLocaleString(draw_info->geometry,MaxTextExtent,
           "%.15g,%.15g",x,y);
       }
-    status=GetTypeMetrics(image,draw_info,&metrics);
+    status=GetTypeMetrics(image,draw_info,&metrics,exception);
     (void) CatchImageException(image);
     if (status == MagickFalse)
       PUSHs(&sv_undef);
@@ -12691,8 +12691,8 @@ QueryMultilineFontMetrics(ref,...)
         (void) FormatLocaleString(draw_info->geometry,MaxTextExtent,
           "%.15g,%.15g",x,y);
       }
-    status=GetMultilineTypeMetrics(image,draw_info,&metrics);
-    (void) CatchImageException(image);
+    status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+    (void) CatchException(exception);
     if (status == MagickFalse)
       PUSHs(&sv_undef);
     else

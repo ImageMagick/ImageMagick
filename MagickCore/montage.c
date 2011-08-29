@@ -548,7 +548,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
   draw_info->text=AcquireString("");
-  (void) GetTypeMetrics(image_list[0],draw_info,&metrics);
+  (void) GetTypeMetrics(image_list[0],draw_info,&metrics,exception);
   texture=NewImageList();
   if (montage_info->texture != (char *) NULL)
     {
@@ -696,13 +696,13 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         clone_info=CloneDrawInfo(image_info,draw_info);
         clone_info->gravity=CenterGravity;
         clone_info->pointsize*=2.0;
-        (void) GetTypeMetrics(image_list[0],clone_info,&metrics);
+        (void) GetTypeMetrics(image_list[0],clone_info,&metrics,exception);
         (void) FormatLocaleString(geometry,MaxTextExtent,
           "%.20gx%.20g%+.20g%+.20g",(double) montage->columns,(double)
           (metrics.ascent-metrics.descent),0.0,(double) extract_info.y+4);
         (void) CloneString(&clone_info->geometry,geometry);
         (void) CloneString(&clone_info->text,title);
-        (void) AnnotateImage(montage,clone_info);
+        (void) AnnotateImage(montage,clone_info,exception);
         clone_info=DestroyDrawInfo(clone_info);
       }
     (void) SetImageProgressMonitor(montage,progress_monitor,
@@ -848,7 +848,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
                 (montage_info->shadow != MagickFalse ? 4 : 0))+bevel_width));
               (void) CloneString(&draw_info->geometry,geometry);
               (void) CloneString(&draw_info->text,value);
-              (void) AnnotateImage(montage,draw_info);
+              (void) AnnotateImage(montage,draw_info,exception);
             }
         }
       x_offset+=(ssize_t) (width+2*(extract_info.x+border_width));
