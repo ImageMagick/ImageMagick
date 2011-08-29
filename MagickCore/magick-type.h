@@ -150,7 +150,7 @@ typedef enum
   BlackChannel = 0x0010,
   IndexChannel = 0x0020,
   CompositeChannels = 0x002F,
-  AllChannels = ~0L,
+  AllChannels = 0x7ffffff,
   /*
     Special purpose channel types.
   */
