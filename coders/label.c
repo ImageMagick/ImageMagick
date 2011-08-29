@@ -135,7 +135,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       /*
         Fit label to canvas size.
       */
-      status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       for ( ; status != MagickFalse; draw_info->pointsize*=2.0)
       {
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
@@ -143,7 +143,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         if (((image->columns != 0) && (width >= image->columns)) ||
             ((image->rows != 0) && (height >= image->rows)))
           break;
-        status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       }
       draw_info->pointsize/=2.0;
       for ( ; status != MagickFalse; draw_info->pointsize--)
@@ -158,10 +158,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           break;
         if (draw_info->pointsize < 2.0)
           break;
-        status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       }
     }
-  status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
     {
       InheritException(exception,&image->exception);
@@ -195,7 +195,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) AnnotateImage(image,draw_info);
+  (void) AnnotateImage(image,draw_info,exception);
   if (image_info->pointsize == 0.0)
     {
       char

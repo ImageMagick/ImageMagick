@@ -251,7 +251,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
     (long) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
-  status=GetTypeMetrics(image,draw_info,&metrics);
+  status=GetTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
     ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
   page.y=(ssize_t) ceil((double) page.y+metrics.ascent-0.5);
@@ -290,7 +290,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
         (void) SetImageProgressMonitor(image,progress_monitor,
           image->client_data);
       }
-    (void) AnnotateImage(image,draw_info);
+    (void) AnnotateImage(image,draw_info,exception);
     if (p == (char *) NULL)
       break;
     /*
@@ -324,7 +324,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
       (void) TextureImage(image,texture);
       (void) SetImageProgressMonitor(image,progress_monitor,image->client_data);
     }
-  (void) AnnotateImage(image,draw_info);
+  (void) AnnotateImage(image,draw_info,exception);
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
   draw_info=DestroyDrawInfo(draw_info);

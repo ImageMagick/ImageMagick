@@ -154,14 +154,15 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+          exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
-        status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
         (void) status;
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
@@ -173,14 +174,15 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+          exception);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
         if (draw_info->gravity == UndefinedGravity)
           (void) CloneString(&draw_info->geometry,geometry);
-        status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
         if ((width > (image->columns+1)) || (height > (image->rows+1)))
@@ -189,7 +191,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       }
       draw_info->pointsize--;
     }
-  i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption);
+  i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption,exception);
   if (image->rows == 0)
     image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
       draw_info->interline_spacing+draw_info->stroke_width)+0.5);
@@ -206,7 +208,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     Draw caption.
   */
   (void) CloneString(&draw_info->text,caption);
-  status=GetMultilineTypeMetrics(image,draw_info,&metrics);
+  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if ((draw_info->gravity != UndefinedGravity) &&
       (draw_info->direction != RightToLeftDirection))
     image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
@@ -221,7 +223,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           metrics.ascent+draw_info->stroke_width/2.0);
       draw_info->geometry=AcquireString(geometry);
     }
-  (void) AnnotateImage(image,draw_info);
+  (void) AnnotateImage(image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
   caption=DestroyString(caption);
   return(GetFirstImageInList(image));

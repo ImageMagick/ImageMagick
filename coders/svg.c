@@ -1116,7 +1116,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               draw_info->pointsize=svg_info->pointsize;
               draw_info->text=AcquireString(svg_info->text);
               (void) ConcatenateString(&draw_info->text," ");
-              GetTypeMetrics(svg_info->image,draw_info,&metrics);
+              (void) GetTypeMetrics(svg_info->image,draw_info,
+                &metrics,svg_info->exception);
               svg_info->bounds.x+=metrics.width;
               draw_info=DestroyDrawInfo(draw_info);
               *svg_info->text='\0';
@@ -2431,7 +2432,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
               draw_info->pointsize=svg_info->pointsize;
               draw_info->text=AcquireString(svg_info->text);
               (void) ConcatenateString(&draw_info->text," ");
-              GetTypeMetrics(svg_info->image,draw_info,&metrics);
+              (void) GetTypeMetrics(svg_info->image,draw_info,&metrics,
+                svg_info->exception);
               svg_info->bounds.x+=metrics.width;
               draw_info=DestroyDrawInfo(draw_info);
               *svg_info->text='\0';

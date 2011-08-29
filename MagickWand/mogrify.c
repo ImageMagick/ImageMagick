@@ -789,8 +789,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               fmod(geometry_info.sigma,360.0))));
             draw_info->affine.sy=cos(DegreesToRadians(
               fmod(geometry_info.sigma,360.0)));
-            (void) AnnotateImage(*image,draw_info);
-            InheritException(exception,&(*image)->exception);
+            (void) AnnotateImage(*image,draw_info,exception);
             break;
           }
         if (LocaleCompare("antialias",option+1) == 0)
@@ -2738,8 +2737,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
             (void) SyncImageSettings(mogrify_info,*image);
             threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
-            (void) SolarizeImage(*image,threshold);
-            InheritException(exception,&(*image)->exception);
+            (void) SolarizeImage(*image,threshold,exception);
             break;
           }
         if (LocaleCompare("sparse-color",option+1) == 0)

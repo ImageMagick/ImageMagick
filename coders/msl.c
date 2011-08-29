@@ -1079,7 +1079,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             affine.tx;
           draw_info->affine.ty=affine.rx*current.tx+affine.sy*current.ty+
             affine.ty;
-          (void) AnnotateImage(msl_info->image[n],draw_info);
+          (void) AnnotateImage(msl_info->image[n],draw_info,
+            &msl_info->image[n]->exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -4816,7 +4817,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             affine.tx;
           draw_info->affine.ty=affine.rx*current.tx+affine.sy*current.ty+
             affine.ty;
-          status=GetTypeMetrics(msl_info->attributes[n],draw_info,&metrics);
+          status=GetTypeMetrics(msl_info->attributes[n],draw_info,&metrics,
+            &msl_info->image[n]->exception);
           if (status != MagickFalse)
             {
               Image
@@ -6618,7 +6620,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) SolarizeImage(msl_info->image[n],geometry_info.rho);
+          (void) SolarizeImage(msl_info->image[n],geometry_info.rho,
+            &msl_info->image[n]->exception);
           break;
         }
       if (LocaleCompare((const char *) tag,"spread") == 0)

@@ -26,13 +26,14 @@ extern "C" {
 
 extern MagickExport MagickBooleanType
   AnnotateComponentGenesis(void),
-  AnnotateImage(Image *,const DrawInfo *),
-  GetMultilineTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
-  GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *);
+  AnnotateImage(Image *,const DrawInfo *,ExceptionInfo *),
+  GetMultilineTypeMetrics(Image *,const DrawInfo *,TypeMetric *,
+    ExceptionInfo *),
+  GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *,ExceptionInfo *);
 
 extern MagickExport ssize_t
   FormatMagickCaption(Image *,DrawInfo *,const MagickBooleanType,TypeMetric *,
-    char **);
+    char **,ExceptionInfo *);
 
 extern MagickExport void
   AnnotateComponentTerminus(void);

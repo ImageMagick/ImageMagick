@@ -62,8 +62,8 @@ extern MagickExport Image
   *WaveImage(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  PlasmaImage(Image *,const SegmentInfo *,size_t,size_t),
-  SolarizeImage(Image *,const double);
+  PlasmaImage(Image *,const SegmentInfo *,size_t,size_t,ExceptionInfo *),
+  SolarizeImage(Image *,const double,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

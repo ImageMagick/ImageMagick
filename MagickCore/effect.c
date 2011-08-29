@@ -2622,7 +2622,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image == (Image *) NULL)
           break;
         (void) SolarizeImage(preview_image,(double) QuantumRange*
-          percentage/100.0);
+          percentage/100.0,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"solarize %g",
           (QuantumRange*percentage)/100.0);
         break;

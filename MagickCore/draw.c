@@ -4419,7 +4419,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+f%+f",
         primitive_info->point.x,primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
-      status=AnnotateImage(image,clone_info);
+      status=AnnotateImage(image,clone_info,exception);
       clone_info=DestroyDrawInfo(clone_info);
       break;
     }
