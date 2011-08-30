@@ -11323,7 +11323,7 @@ Mosaic(ref)
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
       "mosaic-%.*s",(int) (MaxTextExtent-9),((p=strrchr(image->filename,'/')) ?       p+1 : image->filename));
-    (void) CopyMagickString(image->filename,info->image_info->filename,
+    (void) CopyMagickString(info->image_info->filename,image->filename,
       MaxTextExtent);
     SetImageInfo(info->image_info,0,&image->exception);
     exception=DestroyExceptionInfo(exception);
