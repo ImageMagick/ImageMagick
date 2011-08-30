@@ -1309,7 +1309,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       if (status == MagickFalse)
         break;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       switch (image->compression)
       {

@@ -1112,7 +1112,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count != (ssize_t) extent)
       status=MagickFalse;
     q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

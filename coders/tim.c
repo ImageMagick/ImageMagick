@@ -256,7 +256,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
@@ -293,7 +293,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -322,7 +322,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=tim_pixels+y*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -357,7 +357,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           p=tim_pixels+y*bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {

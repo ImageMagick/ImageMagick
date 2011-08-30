@@ -220,7 +220,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     bit=0;
     byte=0;

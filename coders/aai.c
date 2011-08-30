@@ -171,7 +171,7 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {

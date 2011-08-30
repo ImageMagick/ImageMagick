@@ -619,7 +619,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           break;
       }
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     p=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -1310,7 +1310,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   q=GetAuthenticPixels(layer_info[i].image,0,y,
                     layer_info[i].image->columns,1,exception);
-                  if (q == (const Quantum *) NULL)
+                  if (q == (Quantum *) NULL)
                     break;
                   for (x=0; x < (ssize_t) layer_info[i].image->columns; x++)
                   {

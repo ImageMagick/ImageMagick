@@ -194,7 +194,7 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 
   exception=(&image->exception);
   q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-  if (q == (const Quantum *) NULL)
+  if (q == (Quantum *) NULL)
     return;
   for (x = 0; x < (ssize_t) image->columns; x++)
   {
@@ -260,7 +260,7 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
 
   exception=(&image->exception);
   q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
-  if (q == (const Quantum *) NULL)
+  if (q == (Quantum *) NULL)
     return;
   for (x = 0; x < (ssize_t) image->columns; x++)
   {
@@ -889,7 +889,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
       {
         q=QueueAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
-        if (q == (const Quantum *)NULL)
+        if (q == (Quantum *)NULL)
   {
     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));

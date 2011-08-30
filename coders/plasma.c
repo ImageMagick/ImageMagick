@@ -112,7 +112,7 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
   exception=(&image->exception);
   q=GetAuthenticPixels(image,(ssize_t) ceil(x-0.5),(ssize_t) ceil(y-0.5),1,1,
     exception);
-  if (q == (const Quantum *) NULL)
+  if (q == (Quantum *) NULL)
     return;
   range=GetQuantumRange(16UL);
   SetPixelRed(image,ScaleAnyToQuantum((size_t) (65535.0*
@@ -170,7 +170,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {

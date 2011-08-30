@@ -2280,7 +2280,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
       q=QueueCacheViewAuthenticPixels(distort_view,0,j,distort_image->columns,1,
         exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         {
           status=MagickFalse;
           continue;
@@ -2912,7 +2912,7 @@ MagickExport Image *SparseColorImage(const Image *image,
 
       q=GetCacheViewAuthenticPixels(sparse_view,0,j,sparse_image->columns,
         1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         {
           status=MagickFalse;
           continue;

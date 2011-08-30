@@ -341,7 +341,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
                 break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GrayQuantum,pixels,exception);
@@ -353,7 +353,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
                 break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           RedQuantum,pixels,exception);  
@@ -363,7 +363,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GreenQuantum,pixels,exception);
@@ -373,7 +373,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           BlueQuantum,pixels,exception);

@@ -564,7 +564,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
           continue;
         q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
             continue;
@@ -1519,7 +1519,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -1784,7 +1784,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
       */
       exception=(&image->exception);
       q=GetCacheViewAuthenticPixels(image_view,p->x,p->y,1,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         return(MagickFalse);
       AssociateAlphaPixel(image,cube_info,q,&pixel);
       for (i=0; i < ErrorQueueLength; i++)
@@ -2372,7 +2372,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -3265,7 +3265,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
           continue;
         q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
             continue;
@@ -3339,7 +3339,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

@@ -1242,7 +1242,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
@@ -1300,7 +1300,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (status == -1)
             break;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
@@ -1336,7 +1336,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (status == -1)
               break;
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (Quantum *) NULL)
               break;
             if (image->colorspace != CMYKColorspace)
               switch (i)
@@ -1391,7 +1391,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           if (i == 0)
             {
@@ -1579,7 +1579,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           q+=GetPixelChannels(image)*(image->columns-1);
           for (x=0; x < (ssize_t) image->columns; x++)

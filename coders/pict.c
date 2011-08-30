@@ -1163,7 +1163,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
               q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,
                 exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) tile_image->columns; x++)
               {

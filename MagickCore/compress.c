@@ -629,7 +629,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
     */
     p=scanline;
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {

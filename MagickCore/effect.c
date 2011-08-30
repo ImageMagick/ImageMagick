@@ -315,7 +315,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
     r=GetCacheViewVirtualPixels(edge_view,0,y,edge_image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
-    if ((r == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((r == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -1677,7 +1677,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 
       q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
         1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       j++;
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -2160,7 +2160,7 @@ MagickExport Image *MotionBlurImage(const Image *image,
       continue;
     q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -2930,7 +2930,7 @@ MagickExport Image *RadialBlurImage(const Image *image,
       continue;
     q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -3856,7 +3856,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       continue;
     q=QueueCacheViewAuthenticPixels(spread_view,0,y,spread_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

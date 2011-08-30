@@ -186,7 +186,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         (void) GetOneVirtualPixel(watermark,k % (ssize_t) watermark->columns,
           k/(ssize_t) watermark->columns,&pixel,exception);
         q=GetAuthenticPixels(image,x,y,1,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         switch (c)
         {

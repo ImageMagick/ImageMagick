@@ -297,7 +297,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
                 (ssize_t) (y % image->rows),1,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               byte=(unsigned char) ReadBlobByte(image);
               length--;
@@ -339,7 +339,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),
             (ssize_t) (y % image->rows),1,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           switch (channel)
           {

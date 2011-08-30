@@ -179,7 +179,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (offset >= (ssize_t) length)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               p=pixels;
               bit=0;
@@ -214,7 +214,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (offset >= (ssize_t) length)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           p=pixels;
           bit=0;

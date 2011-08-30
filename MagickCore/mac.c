@@ -1355,7 +1355,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
       *restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < image->columns; x++)
     {

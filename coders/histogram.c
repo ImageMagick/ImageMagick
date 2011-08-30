@@ -298,7 +298,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
     q=GetAuthenticPixels(histogram_image,x,0,1,histogram_image->rows,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
       {

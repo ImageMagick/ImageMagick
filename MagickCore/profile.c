@@ -1226,7 +1226,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 continue;
               q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
                 exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 {
                   status=MagickFalse;
                   continue;

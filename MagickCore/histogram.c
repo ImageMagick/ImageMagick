@@ -1268,7 +1268,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
       {
         q=QueueCacheViewAuthenticPixels(unique_view,cube_info->x,0,1,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           continue;
         SetPixelRed(unique_image,p->red,q);
         SetPixelGreen(unique_image,p->green,q);

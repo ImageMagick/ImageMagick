@@ -1077,7 +1077,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             {
               q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,
                 exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               for (x=0; x < (ssize_t) mask_image->columns; x++)
               {

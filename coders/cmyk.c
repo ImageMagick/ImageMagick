@@ -228,7 +228,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,quantum_type,pixels,exception);
@@ -242,7 +242,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=QueueAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -312,7 +312,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             quantum_type=quantum_types[i];
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
               exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (Quantum *) NULL)
               break;
             length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
               quantum_info,quantum_type,pixels,exception);
@@ -326,7 +326,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                   image->columns,1,exception);
                 if ((p == (const Quantum *) NULL) ||
-                    (q == (const Quantum *) NULL))
+                    (q == (Quantum *) NULL))
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
@@ -407,7 +407,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,CyanQuantum,pixels,exception);
@@ -421,7 +421,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -459,7 +459,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,MagentaQuantum,pixels,exception);
@@ -473,7 +473,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -511,7 +511,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,YellowQuantum,pixels,exception);
@@ -525,7 +525,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -563,7 +563,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,BlackQuantum,pixels,exception);
@@ -577,7 +577,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -617,7 +617,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 }
               q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
                 exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
                 quantum_info,AlphaQuantum,pixels,exception);
@@ -632,7 +632,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
                   if ((p == (const Quantum *) NULL) ||
-                      (q == (const Quantum *) NULL))
+                      (q == (Quantum *) NULL))
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
@@ -705,7 +705,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,CyanQuantum,pixels,exception);
@@ -719,7 +719,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -776,7 +776,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,MagentaQuantum,pixels,exception);
@@ -790,7 +790,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -847,7 +847,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,YellowQuantum,pixels,exception);
@@ -861,7 +861,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -918,7 +918,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             }
           q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
             quantum_info,BlackQuantum,pixels,exception);
@@ -932,7 +932,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
               if ((p == (const Quantum *) NULL) ||
-                  (q == (const Quantum *) NULL))
+                  (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -991,7 +991,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 }
               q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
                 exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,
                 quantum_info,YellowQuantum,pixels,exception);
@@ -1005,7 +1005,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
                   if ((p == (const Quantum *) NULL) ||
-                      (q == (const Quantum *) NULL))
+                      (q == (Quantum *) NULL))
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {

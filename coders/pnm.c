@@ -437,7 +437,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -548,7 +548,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *restrict q;
 
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -636,7 +636,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (count != (ssize_t) extent)
             status=MagickFalse;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             {
               status=MagickFalse;
               continue;
@@ -712,7 +712,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (count != (ssize_t) extent)
             status=MagickFalse;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             {
               status=MagickFalse;
               continue;
@@ -820,7 +820,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (count != (ssize_t) extent)
             status=MagickFalse;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             {
               status=MagickFalse;
               continue;
@@ -996,7 +996,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (count != (ssize_t) extent)
             status=MagickFalse;
           q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             {
               status=MagickFalse;
               continue;
@@ -1226,7 +1226,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             status=MagickFalse;
           q=QueueAuthenticPixels(image,0,(ssize_t) (image->rows-offset-1),
             image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             {
               status=MagickFalse;
               continue;

@@ -3208,7 +3208,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       continue;
     q=GetCacheViewAuthenticPixels(implode_view,0,y,implode_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -3613,7 +3613,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       (void) GetOneCacheViewVirtualPixel(image_view,x,(ssize_t)
         ceil(segment->y2-0.5),&v,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         return(MagickTrue);
       SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
         (u.red+v.red)/2.0,plasma),q);
@@ -3633,7 +3633,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
           (void) GetOneCacheViewVirtualPixel(image_view,x,(ssize_t)
             ceil(segment->y2-0.5),&v,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             return(MagickTrue);
           SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
             (u.red+v.red)/2.0,plasma),q);
@@ -3660,7 +3660,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
           (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
             ceil(segment->x2-0.5),y,&v,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             return(MagickTrue);
           SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
             (u.red+v.red)/2.0,plasma),q);
@@ -3684,7 +3684,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
           (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
             ceil(segment->x2-0.5),y,&v,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             return(MagickTrue);
           SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
             (u.red+v.red)/2.0,plasma),q);
@@ -3710,7 +3710,7 @@ MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
       y=(ssize_t) ceil(segment->y2-0.5);
       (void) GetOneCacheViewVirtualPixel(image_view,x,y,&v,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x_mid,y_mid,1,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         return(MagickTrue);
       SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
         (u.red+v.red)/2.0,plasma),q);
@@ -4191,7 +4191,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
       continue;
     q=GetCacheViewAuthenticPixels(border_view,0,y,border_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -4335,7 +4335,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       continue;
     q=QueueCacheViewAuthenticPixels(random_view,0,y,random_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -4484,7 +4484,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -4631,7 +4631,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         q=GetCacheViewAuthenticPixels(stegano_view,k % (ssize_t)
           stegano_image->columns,k/(ssize_t) stegano_image->columns,1,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         switch (c)
         {
@@ -4799,7 +4799,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
     q=GetVirtualPixels(right_image,0,y,right_image->columns,1,exception);
     r=QueueAuthenticPixels(stereo_image,0,y,stereo_image->columns,1,exception);
     if ((p == (const Quantum *) NULL) ||
-        (q == (const Quantum *) NULL) || (r == (Quantum *) NULL))
+        (q == (Quantum *) NULL) || (r == (Quantum *) NULL))
       break;
     for (x=0; x < (ssize_t) stereo_image->columns; x++)
     {
@@ -4958,7 +4958,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       continue;
     q=GetCacheViewAuthenticPixels(swirl_view,0,y,swirl_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -5411,7 +5411,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       continue;
     q=QueueCacheViewAuthenticPixels(wave_view,0,y,wave_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

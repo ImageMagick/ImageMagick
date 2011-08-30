@@ -211,7 +211,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     p=pixels;
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     count=ReadBlob(image,(size_t) packet_size*image->columns,pixels);
     if (count != (ssize_t) (packet_size*image->columns))

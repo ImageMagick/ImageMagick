@@ -478,7 +478,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       p=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       r=scanline;
       if (image->storage_class == DirectClass)

@@ -565,7 +565,7 @@ MagickExport MagickBooleanType XAnnotateImage(Display *display,
 
     q=GetCacheViewAuthenticPixels(annotate_view,0,(ssize_t) y,
       annotate_image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
@@ -2479,7 +2479,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
 
     q=QueueCacheViewAuthenticPixels(draw_view,0,(ssize_t) y,draw_image->columns,
       1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (int) draw_image->columns; x++)
     {
@@ -2604,7 +2604,7 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
 
     q=GetCacheViewAuthenticPixels(draw_view,0,(ssize_t) y,draw_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (int) draw_image->columns; x++)
     {
@@ -4390,7 +4390,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               {
                 q=QueueCacheViewAuthenticPixels(composite_view,0,(ssize_t) y,
                   composite_image->columns,1,exception);
-                if (q == (const Quantum *) NULL)
+                if (q == (Quantum *) NULL)
                   break;
                 for (x=0; x < (int) composite_image->columns; x++)
                 {
@@ -4414,7 +4414,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               {
                 q=QueueCacheViewAuthenticPixels(composite_view,0,(ssize_t) y,
                   composite_image->columns,1,exception);
-                if (q == (const Quantum *) NULL)
+                if (q == (Quantum *) NULL)
                   break;
                 for (x=0; x < (int) composite_image->columns; x++)
                 {
@@ -4465,7 +4465,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
             {
               q=QueueCacheViewAuthenticPixels(composite_view,0,(ssize_t) y,
                 composite_image->columns,1,exception);
-              if (q == (const Quantum *) NULL)
+              if (q == (Quantum *) NULL)
                 break;
               for (x=0; x < (int) composite_image->columns; x++)
               {

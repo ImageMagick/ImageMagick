@@ -354,7 +354,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (((unsigned char) (tga_info.attributes & 0x20) >> 5) == 0)
       real=image->rows-real-1;
     q=QueueAuthenticPixels(image,0,(ssize_t) real,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {

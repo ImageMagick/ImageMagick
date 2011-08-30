@@ -166,7 +166,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *restrict q;
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     count=ReadBlob(image,length,pixels);
     if (count != (ssize_t) length)

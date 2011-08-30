@@ -551,7 +551,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

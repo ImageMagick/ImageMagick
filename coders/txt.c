@@ -471,7 +471,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (count < 5)
           continue;
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           continue;
         SetPixelRed(image,ScaleAnyToQuantum(pixel.red,range),q);
         SetPixelGreen(image,ScaleAnyToQuantum(pixel.green,range),q);

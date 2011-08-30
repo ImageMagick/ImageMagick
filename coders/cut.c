@@ -110,7 +110,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
     case 1:  /* Convert bitmap scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         for (x=0; x < ((ssize_t) image->columns-7); x+=8)
         {
@@ -139,7 +139,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
     case 2:  /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
@@ -186,7 +186,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
     case 4:  /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
@@ -212,7 +212,7 @@ static void InsertRow(ssize_t depth,unsigned char *p,ssize_t y,Image *image)
     case 8: /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (const Quantum *) NULL) break;
+        if (q == (Quantum *) NULL) break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           index=ConstrainColormapIndex(image,*p);

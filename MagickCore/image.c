@@ -2150,7 +2150,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       continue;
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -2343,7 +2343,7 @@ MagickExport MagickBooleanType SeparateImage(Image *image)
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -2579,7 +2579,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           continue;
         q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
             continue;
@@ -2745,7 +2745,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
     if (status == MagickFalse)
       continue;
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -2829,7 +2829,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
     if (status == MagickFalse)
       continue;
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -3492,7 +3492,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -4149,7 +4149,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
