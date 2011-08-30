@@ -2191,7 +2191,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           p-=x_offset*GetPixelChannels(composite_image);
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

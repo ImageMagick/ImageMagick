@@ -212,7 +212,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     r=QueueCacheViewAuthenticPixels(highlight_view,0,y,highlight_image->columns,
       1,exception);
     if ((p == (const Quantum *) NULL) ||
-        (q == (const Quantum *) NULL) || (r == (Quantum *) NULL))
+        (q == (Quantum *) NULL) || (r == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -357,7 +357,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
       1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -460,7 +460,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
       1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -573,7 +573,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
       reconstruct_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -678,7 +678,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
       1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         break;
@@ -807,7 +807,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
       reconstruct_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -928,7 +928,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
       1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -1058,7 +1058,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
       reconstruct_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -1515,7 +1515,7 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
       1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -1665,7 +1665,7 @@ static double GetNCCDistortion(const Image *image,
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
       1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;

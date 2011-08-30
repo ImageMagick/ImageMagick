@@ -1243,7 +1243,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       }
     p=jpeg_pixels;
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     if (jpeg_info.data_precision > 8)
       {

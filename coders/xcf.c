@@ -369,7 +369,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   for (y=0; y < (ssize_t) tile_image->rows; y++)
   {
     q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     if (inDocInfo->image_type == GIMP_GRAY)
       {

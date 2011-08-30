@@ -294,7 +294,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   {
     q=GetCacheViewAuthenticPixels(magnitude_view,0L,y,fourier_info->height,1UL,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
@@ -350,7 +350,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   {
     q=GetCacheViewAuthenticPixels(phase_view,0L,y,fourier_info->height,1UL,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
@@ -1086,7 +1086,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
       break;
     q=GetCacheViewAuthenticPixels(image_view,0L,y,fourier_info->width >
       image->columns ? image->columns : fourier_info->width,1UL,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {

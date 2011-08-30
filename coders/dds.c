@@ -529,7 +529,7 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info)
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
         Min(4, dds_info->height - y),exception);
       
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         return MagickFalse;
       
       /* Read 8 bytes of data from the image */
@@ -703,7 +703,7 @@ static MagickBooleanType ReadDXT5(Image *image, DDSInfo *dds_info)
       q = QueueAuthenticPixels(image, x, y, Min(4, dds_info->width - x),
                          Min(4, dds_info->height - y),exception);
       
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         return MagickFalse;
       
       /* Read alpha values (8 bytes) */

@@ -137,7 +137,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
       continue;
     q=QueueAuthenticPixels(image,0,y,image->columns,(size_t) level,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;

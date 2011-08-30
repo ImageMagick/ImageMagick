@@ -1133,7 +1133,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
               (rotate_image->columns-(tile_y+height)),y+tile_x,height,1,
               exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (Quantum *) NULL)
               {
                 status=MagickFalse;
                 break;
@@ -1342,7 +1342,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
 
             q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(ssize_t) (y+
               rotate_image->rows-(tile_x+width)),height,1,exception);
-            if (q == (const Quantum *) NULL)
+            if (q == (Quantum *) NULL)
               {
                 status=MagickFalse;
                 break;

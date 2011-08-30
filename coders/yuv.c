@@ -231,7 +231,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count=ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           chroma_pixels=QueueAuthenticPixels(chroma_image,0,y,
             chroma_image->columns,1,exception);
@@ -285,7 +285,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count=ReadBlob(image,(size_t) quantum*image->columns,scanline);
           p=scanline;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
@@ -333,7 +333,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=scanline;
           q=QueueAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
             exception);
-          if (q == (const Quantum *) NULL)
+          if (q == (Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
@@ -369,7 +369,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=scanline;
         q=GetAuthenticPixels(chroma_image,0,y,chroma_image->columns,1,
           exception);
-        if (q == (const Quantum *) NULL)
+        if (q == (Quantum *) NULL)
           break;
         for (x=0; x < (ssize_t) chroma_image->columns; x++)
         {
@@ -400,7 +400,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       chroma_pixels=GetVirtualPixels(resize_image,0,y,resize_image->columns,1,
         &resize_image->exception);
-      if ((q == (const Quantum *) NULL) ||
+      if ((q == (Quantum *) NULL) ||
           (chroma_pixels == (const Quantum *) NULL))
         break;
       for (x=0; x < (ssize_t) image->columns; x++)

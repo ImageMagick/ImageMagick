@@ -651,7 +651,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
       *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
@@ -857,7 +857,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
       *restrict q;
 
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);

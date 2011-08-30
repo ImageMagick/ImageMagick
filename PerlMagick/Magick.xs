@@ -13404,7 +13404,7 @@ SetPixel(ref,...)
     (void) SetImageStorageClass(image,DirectClass,exception);
     channel_mask=SetPixelChannelMask(image,channel);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
-    if ((q == (const Quantum *) NULL) || (av == (AV *) NULL) ||
+    if ((q == (Quantum *) NULL) || (av == (AV *) NULL) ||
         (SvTYPE(av) != SVt_PVAV))
       PUSHs(&sv_undef);
     else

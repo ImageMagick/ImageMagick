@@ -299,7 +299,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     count=ReadBlob(image,length,pixels);
     (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,

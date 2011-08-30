@@ -2926,7 +2926,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
 
     q=QueueCacheViewAuthenticPixels(scale_view,0,y,scale_image->columns,1,
       exception);
-    if (q == (const Quantum *) NULL)
+    if (q == (Quantum *) NULL)
       break;
     alpha=1.0;
     if (scale_image->rows == image->rows)

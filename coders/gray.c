@@ -207,7 +207,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           break;
         }
       q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       length=ImportQuantumPixels(canvas_image,(CacheView *) NULL,quantum_info,
         quantum_type,pixels,exception);
@@ -221,7 +221,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           q=QueueAuthenticPixels(image,0,y-image->extract_info.y,image->columns,
             1,exception);
           if ((p == (const Quantum *) NULL) ||
-              (q == (const Quantum *) NULL))
+              (q == (Quantum *) NULL))
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {

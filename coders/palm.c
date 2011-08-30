@@ -463,7 +463,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         }
       ptr=one_row;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (const Quantum *) NULL)
+      if (q == (Quantum *) NULL)
         break;
       if (bits_per_pixel == 16)
         {
