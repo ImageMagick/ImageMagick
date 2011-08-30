@@ -11288,9 +11288,6 @@ Mosaic(ref)
     AV
       *av;
 
-    char
-      *p;
-
     ExceptionInfo
       *exception;
 
