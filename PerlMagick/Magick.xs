@@ -11268,6 +11268,9 @@ Mosaic(ref)
     AV
       *av;
 
+    char
+      *p;
+
     ExceptionInfo
       *exception;
 
@@ -11318,6 +11321,8 @@ Mosaic(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
+    (void) FormatLocaleString(info->image_info->filename,MaxTextExtent,
+      "mosaic-%.*s",(int) (MaxTextExtent-9),((p=strrchr(image->filename,'/')) ?       p+1 : image->filename));
     (void) CopyMagickString(image->filename,info->image_info->filename,
       MaxTextExtent);
     SetImageInfo(info->image_info,0,&image->exception);
