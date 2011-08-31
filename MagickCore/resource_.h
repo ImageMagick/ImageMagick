@@ -52,7 +52,6 @@ extern MagickExport MagickSizeType
   GetMagickResourceLimit(const ResourceType);
 
 extern MagickExport void
-  AsynchronousResourceComponentTerminus(void),
   RelinquishMagickResource(const ResourceType,const MagickSizeType),
   ResourceComponentTerminus(void);
 

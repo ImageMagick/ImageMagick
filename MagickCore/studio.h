@@ -71,6 +71,7 @@ extern "C" {
 #endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+# define MagickPrivate
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
 # endif
@@ -130,7 +131,6 @@ extern "C" {
 #  pragma warning(disable : 4786)
 #  pragma warning(disable : 4996)
 # endif
-# define MagickPrivate
 #else
 # if __GNUC__ >= 4
 #  define MagickExport __attribute__ ((visibility ("default")))

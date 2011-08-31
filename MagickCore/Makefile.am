@@ -211,6 +211,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/resize-private.h \
 	MagickCore/resource.c \
 	MagickCore/resource_.h \
+	MagickCore/resource-private.h \
 	MagickCore/segment.c \
 	MagickCore/segment.h \
 	MagickCore/semaphore.c \
@@ -391,6 +392,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/random-private.h \
 	MagickCore/resample-private.h \
 	MagickCore/resize-private.h \
+	MagickCore/resource-private.h \
 	MagickCore/semaphore-private.h \
 	MagickCore/signature-private.h \
 	MagickCore/static.h \

@@ -444,10 +444,11 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/resample.h MagickCore/resample-private.h \
 	MagickCore/resize.c MagickCore/resize.h \
 	MagickCore/resize-private.h MagickCore/resource.c \
-	MagickCore/resource_.h MagickCore/segment.c \
-	MagickCore/segment.h MagickCore/semaphore.c \
-	MagickCore/semaphore.h MagickCore/semaphore-private.h \
-	MagickCore/shear.c MagickCore/shear.h MagickCore/signature.c \
+	MagickCore/resource_.h MagickCore/resource-private.h \
+	MagickCore/segment.c MagickCore/segment.h \
+	MagickCore/semaphore.c MagickCore/semaphore.h \
+	MagickCore/semaphore-private.h MagickCore/shear.c \
+	MagickCore/shear.h MagickCore/signature.c \
 	MagickCore/signature.h MagickCore/signature-private.h \
 	MagickCore/splay-tree.c MagickCore/splay-tree.h \
 	MagickCore/static.c MagickCore/static.h MagickCore/statistic.c \
@@ -1585,8 +1586,7 @@ coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_webp_la_rpath =  \
 @WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
 coders_wmf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_wmf_la_OBJECTS = coders/coders_wmf_la-wmf.lo
 coders_wmf_la_OBJECTS = $(am_coders_wmf_la_OBJECTS)
 coders_wmf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2554,7 +2554,6 @@ VERSION = @VERSION@
 WEBP_LIBS = @WEBP_LIBS@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WMF_LIBS = @WMF_LIBS@
-WMF_LIBS_DEPS = @WMF_LIBS_DEPS@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 WinPathScript = @WinPathScript@
 X11_LIBS = @X11_LIBS@
@@ -4018,6 +4017,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/resize-private.h \
 	MagickCore/resource.c \
 	MagickCore/resource_.h \
+	MagickCore/resource-private.h \
 	MagickCore/segment.c \
 	MagickCore/segment.h \
 	MagickCore/semaphore.c \
@@ -4193,6 +4193,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/random-private.h \
 	MagickCore/resample-private.h \
 	MagickCore/resize-private.h \
+	MagickCore/resource-private.h \
 	MagickCore/semaphore-private.h \
 	MagickCore/signature-private.h \
 	MagickCore/static.h \
