@@ -1341,11 +1341,10 @@ MagickExport Image *ConvolveImage(const Image *image,
           v;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if (traits == UndefinedPixelTrait)
-          continue;
         channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
         convolve_traits=GetPixelChannelMapTraits(convolve_image,channel);
-        if (convolve_traits == UndefinedPixelTrait)
+        if ((traits == UndefinedPixelTrait) ||
+            (convolve_traits == UndefinedPixelTrait))
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {

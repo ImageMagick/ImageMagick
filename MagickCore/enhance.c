@@ -383,13 +383,14 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
           traits;
 
         clut_traits=GetPixelChannelMapTraits(clut_image,(PixelChannel) i);
-        if (clut_traits == UndefinedPixelTrait)
-          continue;
         channel=GetPixelChannelMapChannel(clut_image,(PixelChannel) i);
         traits=GetPixelChannelMapTraits(clut_image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[channel]=ClampToQuantum(clut_map[ScaleQuantumToMap(q[channel])*
-            GetPixelChannels(clut_image)+channel]);
+        if ((traits == UndefinedPixelTrait) ||
+            (clut_traits == UndefinedPixelTrait) ||
+            ((traits & UpdatePixelTrait) == 0))
+          continue;
+        q[channel]=ClampToQuantum(clut_map[ScaleQuantumToMap(q[channel])*
+          GetPixelChannels(clut_image)+channel]);
       }
       q+=GetPixelChannels(image);
     }
@@ -1389,11 +1390,10 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
           *restrict r;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if (traits == UndefinedPixelTrait)
-          continue;
         channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
         enhance_traits=GetPixelChannelMapTraits(enhance_image,channel);
-        if (enhance_traits == UndefinedPixelTrait)
+        if ((traits == UndefinedPixelTrait) ||
+            (enhance_traits == UndefinedPixelTrait))
           continue;
         q[channel]=p[center+i];
         if ((enhance_traits & CopyPixelTrait) != 0)
@@ -2195,9 +2195,8 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
           traits;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if ((traits & UpdatePixelTrait) == 0)
+        if ((traits == UndefinedPixelTrait) ||
+            ((traits & UpdatePixelTrait) == 0))
           continue;
         q[i]=LevelQuantum(q[i]);
       }

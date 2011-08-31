@@ -252,11 +252,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           v;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if (traits == UndefinedPixelTrait)
-          continue;
         channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
         threshold_traits=GetPixelChannelMapTraits(threshold_image,channel);
-        if (threshold_traits == UndefinedPixelTrait)
+        if ((traits == UndefinedPixelTrait) ||
+            (threshold_traits == UndefinedPixelTrait))
           continue;
         if ((threshold_traits & CopyPixelTrait) != 0)
           {

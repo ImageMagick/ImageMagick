@@ -1695,8 +1695,6 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
     image=GetImageFromList(images,i % GetImageListLength(images));
     (void) XDisplayImage(display,&resource_info,argv,1,&image,&state,exception);
   }
-  SetErrorHandler((ErrorHandler) NULL);
-  SetWarningHandler((WarningHandler) NULL);
   argv[0]=DestroyString(argv[0]);
   (void) XCloseDisplay(display);
   XDestroyResourceInfo(&resource_info);

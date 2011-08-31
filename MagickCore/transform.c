@@ -514,6 +514,9 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   MagickOffsetType
     progress;
 
+  OffsetInfo
+    offset;
+
   RectangleInfo
     bounding_box,
     page;
@@ -612,8 +615,10 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     return((Image *) NULL);
   crop_image->page.width=image->page.width;
   crop_image->page.height=image->page.height;
-  if (((ssize_t) (bounding_box.x+bounding_box.width) > (ssize_t) image->page.width) ||
-      ((ssize_t) (bounding_box.y+bounding_box.height) > (ssize_t) image->page.height))
+  offset.x=(ssize_t) (bounding_box.x+bounding_box.width);
+  offset.y=(ssize_t) (bounding_box.y+bounding_box.height);
+  if ((offset.x > (ssize_t) image->page.width) ||
+      (offset.y > (ssize_t) image->page.height))
     {
       crop_image->page.width=bounding_box.width;
       crop_image->page.height=bounding_box.height;
@@ -654,14 +659,26 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       }
     for (x=0; x < (ssize_t) crop_image->columns; x++)
     {
-      SetPixelRed(crop_image,GetPixelRed(image,p),q);
-      SetPixelGreen(crop_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(crop_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(crop_image,GetPixelBlack(image,p),q);
-      SetPixelAlpha(crop_image,GetPixelAlpha(image,p),q);
-      if (image->storage_class == PseudoClass)
-        SetPixelIndex(crop_image,GetPixelIndex(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          crop_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        crop_traits=GetPixelChannelMapTraits(crop_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (crop_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(crop_image);
     }
@@ -994,14 +1011,26 @@ MagickExport Image *ExcerptImage(const Image *image,
       }
     for (x=0; x < (ssize_t) excerpt_image->columns; x++)
     {
-      SetPixelRed(excerpt_image,GetPixelRed(image,p),q);
-      SetPixelGreen(excerpt_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(excerpt_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(excerpt_image,GetPixelBlack(image,p),q);
-      if (image->storage_class == PseudoClass)
-        SetPixelIndex(excerpt_image,GetPixelIndex(image,p),q);
-      SetPixelAlpha(excerpt_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          excerpt_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        excerpt_traits=GetPixelChannelMapTraits(excerpt_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (excerpt_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(excerpt_image);
     }
@@ -1182,14 +1211,26 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) flip_image->columns; x++)
     {
-      SetPixelRed(flip_image,GetPixelRed(image,p),q);
-      SetPixelGreen(flip_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(flip_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(flip_image,GetPixelBlack(image,p),q);
-      if (image->storage_class == PseudoClass)
-        SetPixelIndex(flip_image,GetPixelIndex(image,p),q);
-      SetPixelAlpha(flip_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          flip_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        flip_traits=GetPixelChannelMapTraits(flip_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (flip_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(flip_image);
     }
@@ -1311,15 +1352,27 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
     q+=GetPixelChannels(flop_image)*flop_image->columns;
     for (x=0; x < (ssize_t) flop_image->columns; x++)
     {
+      register ssize_t
+        i;
+
       q-=GetPixelChannels(flop_image);
-      SetPixelRed(flop_image,GetPixelRed(image,p),q);
-      SetPixelGreen(flop_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(flop_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(flop_image,GetPixelBlack(image,p),q);
-      SetPixelAlpha(flop_image,GetPixelAlpha(image,p),q);
-      if (image->storage_class == PseudoClass)
-        SetPixelIndex(flop_image,GetPixelIndex(image,p),q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          flop_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        flop_traits=GetPixelChannelMapTraits(flop_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (flop_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(flop_view,exception) == MagickFalse)
@@ -1427,12 +1480,26 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
-      SetPixelRed(destination,GetPixelRed(source,p),q);
-      SetPixelGreen(destination,GetPixelGreen(source,p),q);
-      SetPixelBlue(destination,GetPixelBlue(source,p),q);
-      if (destination->colorspace == CMYKColorspace)
-        SetPixelBlack(destination,GetPixelBlack(source,p),q);
-      SetPixelAlpha(destination,GetPixelAlpha(source,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          destination_traits,
+          source_traits;
+
+        source_traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((source_traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(source);
       q+=GetPixelChannels(destination);
     }
@@ -1731,14 +1798,26 @@ MagickExport Image *SpliceImage(const Image *image,
       }
     for (x=0; x < splice_geometry.x; x++)
     {
-      SetPixelRed(splice_image,GetPixelRed(image,p),q);
-      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(splice_image,GetPixelBlack(image,p),q);
-      SetPixelAlpha(splice_image,OpaqueAlpha,q);
-      if (image->matte != MagickFalse)
-        SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          splice_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        splice_traits=GetPixelChannelMapTraits(splice_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (splice_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1746,14 +1825,26 @@ MagickExport Image *SpliceImage(const Image *image,
       q+=GetPixelChannels(splice_image);
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
-      SetPixelRed(splice_image,GetPixelRed(image,p),q);
-      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(splice_image,GetPixelBlack(image,p),q);
-      SetPixelAlpha(splice_image,OpaqueAlpha,q);
-      if (image->matte != MagickFalse)
-        SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          splice_traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        splice_traits=GetPixelChannelMapTraits(splice_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (splice_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1803,14 +1894,26 @@ MagickExport Image *SpliceImage(const Image *image,
       }
     for (x=0; x < splice_geometry.x; x++)
     {
-      SetPixelRed(splice_image,GetPixelRed(image,p),q);
-      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
-      SetPixelAlpha(splice_image,OpaqueAlpha,q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(splice_image,GetPixelBlack(image,p),q);
-      if (image->matte != MagickFalse)
-        SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          splice_traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        splice_traits=GetPixelChannelMapTraits(splice_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (splice_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1818,14 +1921,26 @@ MagickExport Image *SpliceImage(const Image *image,
       q+=GetPixelChannels(splice_image);
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
-      SetPixelRed(splice_image,GetPixelRed(image,p),q);
-      SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
-      SetPixelAlpha(splice_image,OpaqueAlpha,q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(splice_image,GetPixelBlack(image,p),q);
-      if (image->matte != MagickFalse)
-        SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          splice_traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        splice_traits=GetPixelChannelMapTraits(splice_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (splice_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
@@ -1870,6 +1985,17 @@ MagickExport Image *SpliceImage(const Image *image,
 %
 %  This should only be used for single images.
 %
+%  This function destroys what it assumes to be a single image list.
+%  If the input image is part of a larger list, all other images in that list
+%  will be simply 'lost', not destroyed.
+%
+%  Also if the crop generates a list of images only the first image is resized.
+%  And finally if the crop succeeds and the resize failed, you will get a
+%  cropped image, as well as a 'false' or 'failed' report.
+%
+%  This function and should probably be depreciated in favor of direct calls
+%  to CropImageToTiles() or ResizeImage(), as appropriate.
+%
 %  The format of the TransformImage method is:
 %
 %      MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
@@ -1885,19 +2011,6 @@ MagickExport Image *SpliceImage(const Image *image,
 %    o image_geometry: An image geometry string.  This geometry defines the
 %      final size of the image.
 %
-*/
-/*
-  DANGER: This function destroys what it assumes to be a single image list.
-  If the input image is part of a larger list, all other images in that list
-  will be simply 'lost', not destroyed.
-
-  Also if the crop generates a list of images only the first image is resized.
-  And finally if the crop succeeds and the resize failed, you will get a
-  cropped image, as well as a 'false' or 'failed' report.
-
-  This function and should probably be depreciated in favor of direct calls
-  to CropImageToTiles() or ResizeImage(), as appropriate.
-
 */
 MagickExport MagickBooleanType TransformImage(Image **image,
   const char *crop_geometry,const char *image_geometry)
@@ -2113,12 +2226,26 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(transpose_image,GetPixelRed(image,p),q);
-      SetPixelGreen(transpose_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(transpose_image,GetPixelBlue(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(transpose_image,GetPixelBlack(image,p),q);
-      SetPixelAlpha(transpose_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          transpose_traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        transpose_traits=GetPixelChannelMapTraits(transpose_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (transpose_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(transpose_image);
     }
@@ -2226,17 +2353,17 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
     register const Quantum
       *restrict p;
 
-    register ssize_t
-      x;
-
     register Quantum
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(transverse_view,(ssize_t) (image->rows-y-
-      1),0,1,transverse_image->rows,exception);
+    q=QueueCacheViewAuthenticPixels(transverse_view,(ssize_t) (image->rows-y-1),
+      0,1,transverse_image->rows,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
@@ -2245,13 +2372,27 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
     q+=GetPixelChannels(transverse_image)*image->columns;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      register ssize_t
+        i;
+
       q-=GetPixelChannels(transverse_image);
-      SetPixelRed(transverse_image,GetPixelRed(image,p),q);
-      SetPixelGreen(transverse_image,GetPixelGreen(image,p),q);
-      SetPixelBlue(transverse_image,GetPixelBlue(image,p),q);
-      SetPixelAlpha(transverse_image,GetPixelAlpha(image,p),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(transverse_image,GetPixelBlack(image,p),q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          transverse_traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        transverse_traits=GetPixelChannelMapTraits(transverse_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (transverse_traits == UndefinedPixelTrait))
+          continue;
+        q[channel]=p[i];
+      }
       p+=GetPixelChannels(image);
     }
     sync=SyncCacheViewAuthenticPixels(transverse_view,exception);
