@@ -67,6 +67,7 @@
 #include "MagickCore/random_.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/resource_.h"
+#include "MagickCore/resource-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/semaphore-private.h"

@@ -79,7 +79,7 @@
   Forward declarations.
 */
 static MagickBooleanType
-  WriteXTRNImage(const ImageInfo *,Image *);
+  WriteXTRNImage(const ImageInfo *,Image *,ExceptionInfo *exception);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -422,7 +422,8 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 %  The format of the WriteXTRNImage method is:
 %
-%      MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image)
+%      MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -430,6 +431,7 @@ ModuleExport void UnregisterXTRNImage(void)
 %
 %    o image:  A pointer to a Image structure.
 %
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -475,7 +477,7 @@ size_t SafeArrayFifo(const Image *image,const void *data,const size_t length)
   return(tlen);
 }
 
-static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image)
+static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image,ExceptionInfo *exception)
 {
   Image *
     p;
@@ -498,7 +500,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       clone_info=CloneImageInfo(image_info);
-      status=WriteImage(image_info,image);
+      status=WriteImage(image_info,image,exception);
       if (status == MagickFalse)
         CatchImageException(image);
       clone_info=DestroyImageInfo(clone_info);
@@ -520,7 +522,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
           if ((image_info_ptr != (ImageInfo **) NULL) &&
               (image_ptr != (Image **) NULL))
             {
-              *image_ptr=CloneImage(image,0,0,MagickFalse,&(image->exception));
+              *image_ptr=CloneImage(image,0,0,MagickFalse,exception);
               *image_info_ptr=clone_info;
             }
         }
@@ -529,9 +531,6 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
     {
       char
         **blob_data;
-
-      ExceptionInfo
-        exception;
 
       size_t
         *blob_length;
@@ -555,14 +554,13 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             (void) CopyMagickString(p->filename,filename,MaxTextExtent);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,1,&image->exception);
+          SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
-          GetExceptionInfo(&exception);
           if (*blob_length == 0)
             *blob_length=8192;
           *blob_data=(char *) ImageToBlob(clone_info,image,blob_length,
-            &exception);
+            exception);
           if (*blob_data == NULL)
             status=MagickFalse;
           if (status == MagickFalse)
@@ -594,7 +592,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             (void) CopyMagickString(p->filename,filename,MaxTextExtent);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,1,&image->exception);
+          SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
           status=WriteStream(clone_info,image,fifo);
@@ -623,7 +621,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
             (void) CopyMagickString(p->filename,filename,MaxTextExtent);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,1,&image->exception);
+          SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
           status=WriteStream(clone_info,image,SafeArrayFifo);
