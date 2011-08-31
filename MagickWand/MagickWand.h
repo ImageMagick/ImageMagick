@@ -55,7 +55,7 @@ extern "C" {
 #  define MAGICKCORE_POSIX_SUPPORT
 #endif 
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
 # endif
@@ -64,12 +64,20 @@ extern "C" {
 #   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
 #  endif
 #  if !defined(_MAGICKLIB_)
-#   define WandExport  __declspec(dllimport)
+#   if defined(__GNUC__)
+#    define WandExport __attribute__ ((dllimport))
+#   else
+#    define WandExport __declspec(dllimport)
+#   endif
 #   if defined(_VISUALC_)
 #    pragma message( "MagickWand lib DLL import interface" )
 #   endif
 #  else
-#   define WandExport  __declspec(dllexport)
+#   if defined(__GNUC__)
+#    define WandExport __attribute__ ((dllexport))
+#   else
+#    define WandExport __declspec(dllexport)
+#   endif
 #   if defined(_VISUALC_)
 #    pragma message( "MagickWand lib DLL export interface" )
 #   endif
@@ -103,8 +111,13 @@ extern "C" {
 #  pragma warning(disable : 4996)
 # endif
 #else
-# define WandExport
-# define ModuleExport
+# if __GNUC__ >= 4
+#  define WandExport __attribute__ ((visibility ("default")))
+#  define WandPrivate  __attribute__ ((visibility ("hidden")))
+# else
+#   define WandExport
+#   define WandPrivate
+# endif
 # define WandGlobal
 #endif
 
