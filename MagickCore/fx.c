@@ -3034,11 +3034,10 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
           traits;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        if (traits == UndefinedPixelTrait)
-          continue;
         channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
         fx_traits=GetPixelChannelMapTraits(fx_image,channel);
-        if (fx_traits == UndefinedPixelTrait)
+        if ((traits == UndefinedPixelTrait) ||
+            (fx_traits == UndefinedPixelTrait))
           continue;
         if ((fx_traits & CopyPixelTrait) != 0)
           {

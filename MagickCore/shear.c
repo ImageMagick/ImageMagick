@@ -1154,11 +1154,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                   traits;
 
                 traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-                if (traits == UndefinedPixelTrait)
-                  continue;
                 channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
                 rotate_traits=GetPixelChannelMapTraits(rotate_image,channel);
-                if (rotate_traits == UndefinedPixelTrait)
+                if ((traits == UndefinedPixelTrait) ||
+                    (rotate_traits == UndefinedPixelTrait))
                   continue;
                 if ((rotate_traits & CopyPixelTrait) != 0)
                   {
@@ -1243,11 +1242,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               traits;
 
             traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-            if (traits == UndefinedPixelTrait)
-              continue;
             channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
             rotate_traits=GetPixelChannelMapTraits(rotate_image,channel);
-            if (rotate_traits == UndefinedPixelTrait)
+            if ((traits == UndefinedPixelTrait) ||
+                (rotate_traits == UndefinedPixelTrait))
               continue;
             if ((rotate_traits & CopyPixelTrait) != 0)
               {
@@ -1363,11 +1361,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                   traits;
 
                 traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-                if (traits == UndefinedPixelTrait)
-                  continue;
                 channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
                 rotate_traits=GetPixelChannelMapTraits(rotate_image,channel);
-                if (rotate_traits == UndefinedPixelTrait)
+                if ((traits == UndefinedPixelTrait) ||
+                    (rotate_traits == UndefinedPixelTrait))
                   continue;
                 if ((rotate_traits & CopyPixelTrait) != 0)
                   {
