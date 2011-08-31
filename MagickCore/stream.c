@@ -489,15 +489,17 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
   PixelPacket *pixel,ExceptionInfo *exception)
 {
   const Quantum
-    *q;
+    *p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   *pixel=image->background_color;
-  q=GetVirtualPixelStream(image,virtual_pixel_method,x,y,1,1,exception);
-  if (q != (const Quantum *) NULL)
+  p=GetVirtualPixelStream(image,virtual_pixel_method,x,y,1,1,exception);
+  if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  GetPixelPacket(image,q,pixel);
+  GetPixelPacket(image,p,pixel);
+  if (image->colorspace == CMYKColorspace)
+    pixel->black=GetPixelBlack(image,p);
   return(MagickTrue);
 }
 
