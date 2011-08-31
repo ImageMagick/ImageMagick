@@ -70,7 +70,7 @@ extern "C" {
 #  undef MAGICKCORE_BUILD_MODULES
 #endif
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
 # endif
@@ -79,12 +79,20 @@ extern "C" {
 #   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
 #  endif
 #  if !defined(_MAGICKLIB_)
-#   define MagickExport  __declspec(dllimport)
+#   if defined(__GNUC__)
+#    define MagickExport __attribute__ ((dllimport))
+#   else
+#    define MagickExport __declspec(dllimport)
+#   endif
 #   if defined(_VISUALC_)
 #    pragma message( "MagickCore lib DLL import interface" )
 #   endif
 #  else
-#   define MagickExport  __declspec(dllexport)
+#   if defined(__GNUC__)
+#    define MagickExport __attribute__ ((dllexport))
+#   else
+#    define MagickExport __declspec(dllexport)
+#   endif
 #   if defined(_VISUALC_)
 #    pragma message( "MagickCore lib DLL export interface" )
 #   endif
@@ -97,7 +105,11 @@ extern "C" {
 # endif
 
 # if defined(_DLL) && !defined(_LIB)
-#  define ModuleExport  __declspec(dllexport)
+#   if defined(__GNUC__)
+#    define ModuleExport __attribute__ ((dllexport))
+#   else
+#    define ModuleExport __declspec(dllexport)
+#   endif
 #  if defined(_VISUALC_)
 #   pragma message( "MagickCore module DLL export interface" )
 #  endif
@@ -118,9 +130,16 @@ extern "C" {
 #  pragma warning(disable : 4786)
 #  pragma warning(disable : 4996)
 # endif
+# define MagickPrivate
 #else
-# define MagickExport
-# define ModuleExport
+# if __GNUC__ >= 4
+#  define MagickExport __attribute__ ((visibility ("default")))
+#  define MagickPrivate  __attribute__ ((visibility ("hidden")))
+# else
+#   define MagickExport
+#   define MagickPrivate
+# endif
+# define ModuleExport  MagickExport
 # define MagickGlobal
 #endif
 
