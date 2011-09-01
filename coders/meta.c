@@ -1146,8 +1146,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             (void) WriteBlobByte(buff,(unsigned char) c);
           }
         }
-      profile=AcquireStringInfo((size_t) GetBlobSize(buff));
-      SetStringInfoDatum(profile,GetBlobStreamData(buff));
+      profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
+        GetBlobSize(buff));
+      if (profile == (StringInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       status=SetImageProfile(image,"8bim",profile);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
@@ -1253,8 +1255,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
 #endif
         }
-      profile=AcquireStringInfo((size_t) GetBlobSize(buff));
-      SetStringInfoDatum(profile,GetBlobStreamData(buff));
+      profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
+        GetBlobSize(buff));
+      if (profile == (StringInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       status=SetImageProfile(image,name,profile);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
@@ -1283,8 +1287,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           break;
         (void) WriteBlobByte(buff,(unsigned char) c);
       }
-      profile=AcquireStringInfo((size_t) GetBlobSize(buff));
-      SetStringInfoDatum(profile,GetBlobStreamData(buff));
+      profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
+        GetBlobSize(buff));
+      if (profile == (StringInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       (void) SetImageProfile(image,"icc",profile);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
@@ -1328,7 +1334,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             (void) WriteBlobByte(buff,(unsigned char) c);
           }
         }
-      profile=AcquireStringInfo((size_t) GetBlobSize(buff));
+      profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
+        GetBlobSize(buff));
+      if (profile == (StringInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       /*
         subtract off the length of the 8BIM stuff.
       */
@@ -1362,8 +1371,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           break;
         (void) WriteBlobByte(buff,(unsigned char) c);
       }
-      profile=AcquireStringInfo((size_t) GetBlobSize(buff));
-      SetStringInfoDatum(profile,GetBlobStreamData(buff));
+      profile=BlobToStringInfo(GetBlobStreamData(buff),(size_t)
+        GetBlobSize(buff));
+      if (profile == (StringInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       (void) SetImageProfile(image,"xmp",profile);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
