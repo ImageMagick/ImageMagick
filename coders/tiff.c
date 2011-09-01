@@ -458,8 +458,10 @@ static MagickBooleanType ReadProfile(Image *image,const char *name,
       if (length < 4)
         return(MagickFalse);
     }
-  profile=AcquireStringInfo((size_t) length);
-  SetStringInfoDatum(profile,datum+i);
+  profile=BlobToStringInfo(datum+i,(size_t) length);
+  if (profile == (StringInfo *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   status=SetImageProfile(image,name,profile);
   profile=DestroyStringInfo(profile);
   if (status == MagickFalse)
