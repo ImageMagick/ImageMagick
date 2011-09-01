@@ -1167,12 +1167,16 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                        reserved_length+=4096;
                        info=(unsigned char *) ResizeQuantumMemory(info,
                          (size_t) reserved_length,sizeof(*info));
+                      if (info == (unsigned char *) NULL)
+                         ThrowReaderException(ResourceLimitError,
+                           "MemoryAllocationFailed");
                     }
                 }
-                info=(unsigned char *) ResizeQuantumMemory(info,(size_t)
-                  (info_length+1),sizeof(*info));
-                profile=AcquireStringInfo((size_t) info_length);
-                SetStringInfoDatum(profile,(const unsigned char *) info);
+                profile=BlobToStringInfo(info,(size_t) info_length);
+                if (profile == (StringInfo *) NULL)
+                  ThrowReaderException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+                info=(unsigned char *) RelinquishMagickMemory(info);
                 if (i8bim == MagickTrue)
                   (void) CopyMagickString(name,"8bim",sizeof(name));
                 else if (icc == MagickTrue)
@@ -1183,7 +1187,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
                     header);
                 (void) SetImageProfile(image,name,profile);
-                info=(unsigned char *) RelinquishMagickMemory(info);
                 profile=DestroyStringInfo(profile);
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "      profile name=%s",name);
