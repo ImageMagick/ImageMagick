@@ -207,6 +207,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
     *string_info;
 
   string_info=AcquireStringInfo(0);
+  string_info->length=length;
   if (~string_info->length >= (MaxTextExtent-1))
     string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
       MaxTextExtent,sizeof(*string_info->datum));
@@ -215,7 +216,6 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
       string_info=DestroyStringInfo(string_info);
       return((StringInfo *) NULL);
     }
-  string_info->length=length;
   if (blob != (const void *) NULL)
     (void) memcpy(string_info->datum,blob,length);
   return(string_info);
