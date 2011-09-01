@@ -1843,7 +1843,7 @@ Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
     return(MagickFalse);
   }
 
-  profile=AcquireStringInfo(length);
+  profile=BlobToStringInfo((const void *) NULL,length);
 
   if (profile == (StringInfo *) NULL)
   {
