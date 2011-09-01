@@ -624,8 +624,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "Profile: ICC, %.20g bytes",(double) blob->len_);
-          profile=AcquireStringInfo(blob->len_);
-          SetStringInfoDatum(profile,blob->buf_);
+          profile=BlobToStringInfo(blob->buf_,blob->len_);
+          if (profile == (StringInfo *) NULL)
+            ThrowReaderException(CorruptImageError,"MemoryAllocationFailed");
           icc_profile=(StringInfo *) GetImageProfile(image,"icc");
           if (icc_profile == (StringInfo *) NULL)
             (void) SetImageProfile(image,"icc",profile);
