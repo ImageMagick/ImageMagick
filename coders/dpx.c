@@ -988,7 +988,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           StringInfo
             *profile;
 
-           profile=AcquireStringInfo(dpx.file.user_size-sizeof(dpx.user.id));
+           profile=BlobToStringInfo((const void *) NULL,
+             dpx.file.user_size-sizeof(dpx.user.id));
+           if (profile == (StringInfo *) NULL)
+             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
            offset+=ReadBlob(image,GetStringInfoLength(profile),
              GetStringInfoDatum(profile));
            (void) SetImageProfile(image,"dpx",profile);
