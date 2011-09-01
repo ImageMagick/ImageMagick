@@ -2079,8 +2079,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       */
       image->taint=MagickTrue;
       image->type=UndefinedType;
-      if (1 && image->colorspace == GRAYColorspace)
-        image->colorspace=RGBColorspace;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         status=OpenPixelCache(image,IOMode,exception);
     }
