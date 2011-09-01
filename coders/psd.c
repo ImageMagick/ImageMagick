@@ -424,7 +424,7 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
 
   if (length < 16)
     return(MagickFalse);
-  profile=AcquireStringInfo(length);
+  profile=BlobToStringInfo((const void *) NULL,length);
   SetStringInfoDatum(profile,blocks);
   (void) SetImageProfile(image,"8bim",profile);
   profile=DestroyStringInfo(profile);
