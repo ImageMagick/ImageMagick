@@ -60,7 +60,7 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Colorize.miff',
 testFilterCompare('input.miff',  q//, 'reference/filter/Contrast.miff', 'Contrast', q//, 0.06, 0.6);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Convolve.miff', 'Convolve', q/[1, 1, 1, 1, 4, 1, 1, 1, 1]/, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Convolve.miff', 'Convolve', q/[1, 1, 1, 1, 4, 1, 1, 1, 1]/, 0.02, 0.6);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Crop.miff', 'Crop', q/geometry=>'80x80+5+10'/, 0.002, 0.02);
