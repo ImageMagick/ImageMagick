@@ -130,7 +130,7 @@
 #define CLOptions "-DCLQuantum=uint -DCLPixelType=uint4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_uint4
-#elif (MAGICKCORE_QUANTUM_DEPTH == 32)
+#elif (MAGICKCORE_QUANTUM_DEPTH == 64)
 #define CLOptions "-DCLQuantum=ussize_t -DCLPixelType=ussize_t4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
 #define CLPixelPacket  cl_ulong4
