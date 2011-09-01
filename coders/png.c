@@ -2296,7 +2296,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Reading PNG iCCP chunk.");
-          profile=AcquireStringInfo(profile_length);
+          profile=BlobToStringInfo(info,profile_length);
+          if (profile == (StringInfo *) NULL)
+          {
+            (void) ThrowMagickException(&image->exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              "unable to copy profile");
+            return(MagickFalse);
+          }
           SetStringInfoDatum(profile,(const unsigned char *) info);
           (void) SetImageProfile(image,"icc",profile);
           profile=DestroyStringInfo(profile);
