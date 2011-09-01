@@ -443,7 +443,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   length-=14;
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  profile=AcquireStringInfo(length);
+  profile=BlobToStringInfo((const void *) NULL,length);
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -539,7 +539,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     return(MagickTrue);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  profile=AcquireStringInfo(length);
+  profile=BlobToStringInfo((const void *) NULL,length);
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -610,7 +610,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   (void) FormatLocaleString(name,MaxTextExtent,"APP%d",marker);
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  profile=AcquireStringInfo(length);
+  profile=BlobToStringInfo((const void *) NULL,length);
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
