@@ -875,7 +875,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       AcquireString(keyword+8));
                     profile=BlobToStringInfo((const void *) NULL,(size_t)
                       StringToLong(options));
-                    if (profile == (char *) NULL)
+                    if (profile == (StringInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,
                         "MemoryAllocationFailed");
                     (void) SetImageProfile(image,keyword+8,profile);
