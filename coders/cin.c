@@ -671,7 +671,9 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         User defined data.
       */
-      profile=AcquireStringInfo(cin.file.user_length);
+      profile=BlobToStringInfo((const void *) NULL,cin.file.user_length);
+      if (profile == (StringInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       offset+=ReadBlob(image,GetStringInfoLength(profile),
         GetStringInfoDatum(profile));
       (void) SetImageProfile(image,"dpx:user.data",profile);
