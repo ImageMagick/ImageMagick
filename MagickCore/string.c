@@ -182,6 +182,48 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   B l o b T o S t r i n g I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BlobToStringInfo() returns the contents of a blob as a string.
+%
+%  The format of the BlobToStringInfo method is:
+%
+%      StringInfo *BlobToStringInfo(const void *blob,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o blob: the blob.
+%
+%    o length: the length of the blob.
+%
+*/
+MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
+{
+  StringInfo
+    *string_info;
+
+  string_info=AcquireStringInfo(0);
+  string_info->datum=(unsigned char *) AcquireQuantumMemory(length,
+    sizeof(*string_info->datum));
+  if (string_info->datum == (unsigned char *) NULL)
+    {
+      string_info=DestroyStringInfo(string_info);
+      return((StringInfo *) NULL);
+    }
+  if (blob != (const void *) NULL)
+    (void) memcpy(string_info->datum,blob,length);
+  return(string_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e S t r i n g                                                     %
 %                                                                             %
 %                                                                             %

@@ -1273,7 +1273,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 if (length == 0)
                   break;
-                profile=AcquireStringInfo(length);
+                profile=BlobToStringInfo((const void *) NULL,length);
                 SetStringInfoDatum(profile,info);
                 status=SetImageProfile(image,"icc",profile);
                 profile=DestroyStringInfo(profile);
@@ -1286,7 +1286,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 if (length == 0)
                   break;
-                profile=AcquireStringInfo(length);
+                profile=BlobToStringInfo((const void *) NULL,length);
                 SetStringInfoDatum(profile,info);
                 status=SetImageProfile(image,"iptc",profile);
                 if (status == MagickFalse)
