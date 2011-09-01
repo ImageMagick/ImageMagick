@@ -209,8 +209,8 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
   string_info=AcquireStringInfo(0);
   string_info->length=length;
   if (~string_info->length >= (MaxTextExtent-1))
-    string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
-      MaxTextExtent,sizeof(*string_info->datum));
+    string_info->datum=(unsigned char *) AcquireQuantumMemory(
+      string_info->length+MaxTextExtent,sizeof(*string_info->datum));
   if (string_info->datum == (unsigned char *) NULL)
     {
       string_info=DestroyStringInfo(string_info);
@@ -222,7 +222,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
