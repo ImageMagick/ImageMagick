@@ -2,7 +2,7 @@
   * New version 6.7.2-2.
 
 2011-08-31  6.7.2-2 Cristy  <quetzlzacatenango@image...>
-  * Write grayscale MIFF as gray pixel, not RGB (reference
+  * Write grayscale MIFF as a single gray pixel component, not RGB (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=19403).
 
 2011-08-29  6.7.2-1 Cristy  <quetzlzacatenango@image...>
