@@ -180,7 +180,7 @@ static SplayTreeInfo
 %    o number_threads: the number of nexus threads.
 %
 */
-MagickExport Cache AcquirePixelCache(const size_t number_threads)
+MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
 {
   CacheInfo
     *cache_info;
@@ -246,7 +246,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
 %    o number_threads: the number of nexus threads.
 %
 */
-MagickExport NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
+MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 {
   NexusInfo
     **nexus_info;
@@ -493,7 +493,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
 %    o cache: the pixel cache.
 %
 */
-MagickExport Cache ClonePixelCache(const Cache cache)
+MagickPrivate Cache ClonePixelCache(const Cache cache)
 {
   CacheInfo
     *clone_info;
@@ -1225,7 +1225,7 @@ static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
 %    o cache: the pixel cache.
 %
 */
-MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
+MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 {
   CacheInfo
     *cache_info,
@@ -1377,7 +1377,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
   cache_info->metacontent=(void *) NULL;
 }
 
-MagickExport Cache DestroyPixelCache(Cache cache)
+MagickPrivate Cache DestroyPixelCache(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -1470,7 +1470,7 @@ static inline void RelinquishCacheNexusPixels(NexusInfo *nexus_info)
   nexus_info->mapped=MagickFalse;
 }
 
-MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
+MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
   const size_t number_threads)
 {
   register ssize_t
@@ -1640,7 +1640,7 @@ static inline MagickBooleanType IsPixelAuthentic(const CacheInfo *cache_info,
   return(status);
 }
 
-MagickExport Quantum *GetAuthenticPixelCacheNexus(Image *image,
+MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,
   const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
   NexusInfo *nexus_info,ExceptionInfo *exception)
 {
@@ -2481,7 +2481,7 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
 %    o cache: the pixel cache.
 %
 */
-MagickExport ColorspaceType GetPixelCacheColorspace(const Cache cache)
+MagickPrivate ColorspaceType GetPixelCacheColorspace(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -2517,7 +2517,7 @@ MagickExport ColorspaceType GetPixelCacheColorspace(const Cache cache)
 %    o cache_methods: Specifies a pointer to a CacheMethods structure.
 %
 */
-MagickExport void GetPixelCacheMethods(CacheMethods *cache_methods)
+MagickPrivate void GetPixelCacheMethods(CacheMethods *cache_methods)
 {
   assert(cache_methods != (CacheMethods *) NULL);
   (void) ResetMagickMemory(cache_methods,0,sizeof(*cache_methods));
@@ -2562,7 +2562,7 @@ MagickExport void GetPixelCacheMethods(CacheMethods *cache_methods)
 %    o nexus_info: the nexus info.
 %
 */
-MagickExport MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
+MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
   NexusInfo *nexus_info)
 {
   CacheInfo
@@ -2606,7 +2606,7 @@ MagickExport MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
 %    o nexus_info: the cache nexus to return the meta-content.
 %
 */
-MagickExport void *GetPixelCacheNexusMetacontent(const Cache cache,
+MagickPrivate void *GetPixelCacheNexusMetacontent(const Cache cache,
   NexusInfo *nexus_info)
 {
   CacheInfo
@@ -2646,7 +2646,7 @@ MagickExport void *GetPixelCacheNexusMetacontent(const Cache cache,
 %    o nexus_info: the cache nexus to return the pixels.
 %
 */
-MagickExport Quantum *GetPixelCacheNexusPixels(const Cache cache,
+MagickPrivate Quantum *GetPixelCacheNexusPixels(const Cache cache,
   NexusInfo *nexus_info)
 {
   CacheInfo
@@ -2732,7 +2732,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
 %    o cache: the pixel cache.
 %
 */
-MagickExport ClassType GetPixelCacheStorageClass(const Cache cache)
+MagickPrivate ClassType GetPixelCacheStorageClass(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -2773,7 +2773,7 @@ MagickExport ClassType GetPixelCacheStorageClass(const Cache cache)
 %    o height: the optimize cache tile height in pixels.
 %
 */
-MagickExport void GetPixelCacheTileSize(const Image *image,size_t *width,
+MagickPrivate void GetPixelCacheTileSize(const Image *image,size_t *width,
   size_t *height)
 {
   CacheInfo
@@ -2813,7 +2813,7 @@ MagickExport void GetPixelCacheTileSize(const Image *image,size_t *width,
 %    o image: the image.
 %
 */
-MagickExport CacheType GetPixelCacheType(const Image *image)
+MagickPrivate CacheType GetPixelCacheType(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2934,7 +2934,7 @@ static const void *GetVirtualMetacontentFromCache(const Image *image)
 %    o nexus_info: the cache nexus to return the meta-content.
 %
 */
-MagickExport const void *GetVirtualMetacontentFromNexus(const Cache cache,
+MagickPrivate const void *GetVirtualMetacontentFromNexus(const Cache cache,
   NexusInfo *nexus_info)
 {
   CacheInfo
@@ -3125,7 +3125,7 @@ static inline MagickModulo VirtualPixelModulo(const ssize_t offset,
   return(modulo);
 }
 
-MagickExport const Quantum *GetVirtualPixelsFromNexus(const Image *image,
+MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
   const size_t columns,const size_t rows,NexusInfo *nexus_info,
   ExceptionInfo *exception)
@@ -3744,7 +3744,7 @@ static const Quantum *GetVirtualPixelsCache(const Image *image)
 %    o nexus_info: the cache nexus to return the colormap pixels.
 %
 */
-MagickExport const Quantum *GetVirtualPixelsNexus(const Cache cache,
+MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
   NexusInfo *nexus_info)
 {
   CacheInfo
@@ -4357,7 +4357,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Quantum *QueueAuthenticNexus(Image *image,const ssize_t x,
+MagickPrivate Quantum *QueueAuthenticNexus(Image *image,const ssize_t x,
   const ssize_t y,const size_t columns,const size_t rows,NexusInfo *nexus_info,
   ExceptionInfo *exception)
 {
@@ -4843,7 +4843,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
 %    o cache_info: the pixel cache.
 %
 */
-MagickExport Cache ReferencePixelCache(Cache cache)
+MagickPrivate Cache ReferencePixelCache(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -4881,7 +4881,7 @@ MagickExport Cache ReferencePixelCache(Cache cache)
 %    o cache_methods: Specifies a pointer to a CacheMethods structure.
 %
 */
-MagickExport void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
+MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 {
   CacheInfo
     *cache_info;
@@ -5168,7 +5168,7 @@ MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
+MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   NexusInfo *nexus_info,ExceptionInfo *exception)
 {
   CacheInfo

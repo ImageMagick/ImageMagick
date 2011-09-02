@@ -370,29 +370,48 @@ MAGICKCORE_INCLUDE_HDRS = \
 
 MAGICKCORE_NOINST_HDRS = \
 	MagickCore/animate-private.h \
+	MagickCore/annotate-private.h \
 	MagickCore/blob-private.h \
+ 	MagickCore/cache-private.h \
 	MagickCore/cache-private.h \
-	MagickCore/color-private.h \
+ 	MagickCore/coder-private.h \
 	MagickCore/colormap-private.h \
+ 	MagickCore/color-private.h \
+	MagickCore/color-private.h \
 	MagickCore/colorspace-private.h \
 	MagickCore/composite-private.h \
+ 	MagickCore/configure-private.h \
+ 	MagickCore/constitute-private.h \
+ 	MagickCore/delegate-private.h \
 	MagickCore/delegate-private.h \
 	MagickCore/display-private.h \
 	MagickCore/draw-private.h \
 	MagickCore/exception-private.h \
 	MagickCore/fx-private.h \
 	MagickCore/image-private.h \
+ 	MagickCore/locale-private.h \
+ 	MagickCore/log-private.h \
 	MagickCore/mac.h \
+ 	MagickCore/magick-private.h \
+ 	MagickCore/magic-private.h \
+ 	MagickCore/methods-private.h \
+ 	MagickCore/mime-private.h \
 	MagickCore/mime-private.h \
+ 	MagickCore/module-private.h \
 	MagickCore/monitor-private.h \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
+ 	MagickCore/policy-private.h \
 	MagickCore/quantum-private.h \
+ 	MagickCore/random_-private.h \
 	MagickCore/random-private.h \
+ 	MagickCore/registry-private.h \
 	MagickCore/resample-private.h \
 	MagickCore/resize-private.h \
+ 	MagickCore/resource-private.h \
 	MagickCore/resource-private.h \
+ 	MagickCore/semaphore-private.h \
 	MagickCore/semaphore-private.h \
 	MagickCore/signature-private.h \
 	MagickCore/static.h \
@@ -402,8 +421,9 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/thread_.h \
 	MagickCore/thread-private.h \
 	MagickCore/token-private.h \
-	MagickCore/xwindow-private.h \
-	MagickCore/vms.h
+ 	MagickCore/type-private.h \
+	MagickCore/vms.h \
+	MagickCore/xwindow-private.h
 
 MAGICKCORE_EXTRA_DIST = \
 	MagickCore/MagickCore-config.in \
