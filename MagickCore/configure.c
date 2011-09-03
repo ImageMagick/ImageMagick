@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/client.h"
 #include "MagickCore/configure.h"
+#include "MagickCore/configure-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/hashmap.h"
@@ -112,7 +113,7 @@ static MagickBooleanType
 %      MagickBooleanType ConfigureComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType ConfigureComponentGenesis(void)
+MagickPrivate MagickBooleanType ConfigureComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&configure_semaphore);
   return(MagickTrue);
@@ -156,7 +157,7 @@ static void *DestroyConfigureElement(void *configure_info)
   return((void *) NULL);
 }
 
-MagickExport void ConfigureComponentTerminus(void)
+MagickPrivate void ConfigureComponentTerminus(void)
 {
   if (configure_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&configure_semaphore);

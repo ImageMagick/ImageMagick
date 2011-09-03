@@ -41,34 +41,39 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/annotate.h"
+#include "MagickCore/annotate-private.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
-#include "MagickCore/coder.h"
+#include "MagickCore/cache-private.h"
+#include "MagickCore/coder-private.h"
 #include "MagickCore/client.h"
-#include "MagickCore/coder.h"
-#include "MagickCore/configure.h"
-#include "MagickCore/constitute.h"
-#include "MagickCore/delegate.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/configure-private.h"
+#include "MagickCore/constitute-private.h"
+#include "MagickCore/delegate-private.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/locale_.h"
-#include "MagickCore/log.h"
-#include "MagickCore/magic.h"
+#include "MagickCore/locale-private.h"
+#include "MagickCore/log-private.h"
+#include "MagickCore/magic-private.h"
 #include "MagickCore/magick.h"
+#include "MagickCore/magick-private.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/mime.h"
+#include "MagickCore/mime-private.h"
 #include "MagickCore/module.h"
+#include "MagickCore/module-private.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include "MagickCore/nt-feature.h"
 #endif
-#include "MagickCore/random_.h"
+#include "MagickCore/random-private.h"
 #include "MagickCore/registry.h"
+#include "MagickCore/registry-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/resource-private.h"
 #include "MagickCore/policy.h"
+#include "MagickCore/policy-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/semaphore-private.h"
 #include "MagickCore/signature-private.h"
@@ -77,6 +82,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread_.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/type-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xwindow-private.h"
@@ -1060,7 +1066,7 @@ MagickExport MagickBooleanType IsMagickInstantiated(void)
 %      MagickBooleanType MagickComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType MagickComponentGenesis(void)
+MagickPrivate MagickBooleanType MagickComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&magick_semaphore);
   return(MagickTrue);
@@ -1084,7 +1090,7 @@ MagickExport MagickBooleanType MagickComponentGenesis(void)
 %      void MagickComponentTerminus(void)
 %
 */
-MagickExport void MagickComponentTerminus(void)
+MagickPrivate void MagickComponentTerminus(void)
 {
   if (magick_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&magick_semaphore);

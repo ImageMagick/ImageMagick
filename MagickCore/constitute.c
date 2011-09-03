@@ -47,6 +47,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/client.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/identify.h"
@@ -95,7 +96,7 @@ static SemaphoreInfo
 %      MagickBooleanType ConstituteComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType ConstituteComponentGenesis(void)
+MagickPrivate MagickBooleanType ConstituteComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&constitute_semaphore);
   return(MagickTrue);
@@ -119,7 +120,7 @@ MagickExport MagickBooleanType ConstituteComponentGenesis(void)
 %      ConstituteComponentTerminus(void)
 %
 */
-MagickExport void ConstituteComponentTerminus(void)
+MagickPrivate void ConstituteComponentTerminus(void)
 {
   if (constitute_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&constitute_semaphore);

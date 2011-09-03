@@ -1052,7 +1052,7 @@ MagickExport char *MagickToMime(const char *magick)
 %      MagickBooleanType MimeComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType MimeComponentGenesis(void)
+MagickPrivate MagickBooleanType MimeComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&mime_semaphore);
   return(MagickTrue);
@@ -1097,7 +1097,7 @@ static void *DestroyMimeElement(void *mime_info)
   return((void *) NULL);
 }
 
-MagickExport void MimeComponentTerminus(void)
+MagickPrivate void MimeComponentTerminus(void)
 {
   if (mime_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&mime_semaphore);

@@ -47,6 +47,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/registry.h"
+#include "MagickCore/registry-private.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
@@ -297,7 +298,7 @@ MagickExport char *GetNextImageRegistry(void)
 %      MagickBooleanType RegistryComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType RegistryComponentGenesis(void)
+MagickPrivate MagickBooleanType RegistryComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&registry_semaphore);
   return(MagickTrue);
@@ -321,7 +322,7 @@ MagickExport MagickBooleanType RegistryComponentGenesis(void)
 %      void RegistryComponentTerminus(void)
 %
 */
-MagickExport void RegistryComponentTerminus(void)
+MagickPrivate void RegistryComponentTerminus(void)
 {
   if (registry_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&registry_semaphore);

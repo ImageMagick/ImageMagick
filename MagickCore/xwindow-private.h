@@ -519,7 +519,6 @@ extern MagickExport int
 
 extern MagickExport MagickBooleanType
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
-  XComponentGenesis(void),
   XDrawImage(Display *,const XPixelInfo *,XDrawInfo *,Image *),
   XGetWindowColor(Display *,XWindows *,char *),
   XMagickProgressMonitor(const char *,const MagickOffsetType,
@@ -529,13 +528,15 @@ extern MagickExport MagickBooleanType
   XQueryColorDatabase(const char *,XColor *),
   XRemoteCommand(Display *,const char *,const char *);
 
+extern MagickPrivate MagickBooleanType
+  XComponentGenesis(void);
+
 extern MagickExport void
   DestroyXResources(void),
   XBestIconSize(Display *,XWindowInfo *,Image *),
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),
   XCheckRefreshWindows(Display *,XWindows *),
   XClientMessage(Display *,const Window,const Atom,const Atom,const Time),
-  XComponentTerminus(void),
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const size_t),
@@ -567,6 +568,9 @@ extern MagickExport void
   XSetCursorState(Display *,XWindows *,const MagickStatusType),
   XUserPreferences(XResourceInfo *),
   XWarning(const ExceptionType,const char *,const char *);
+
+extern MagickPrivate void
+  XComponentTerminus(void);
 
 extern MagickExport Window
   XWindowByID(Display *,const Window,const size_t),

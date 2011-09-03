@@ -35,15 +35,11 @@ extern MagickExport const char
 
 extern MagickExport MagickBooleanType
   ListMimeInfo(FILE *,ExceptionInfo *),
-  LoadMimeLists(const char *,ExceptionInfo *),
-  MimeComponentGenesis(void);
+  LoadMimeLists(const char *,ExceptionInfo *);
 
 extern MagickExport const MimeInfo
   *GetMimeInfo(const char *,const unsigned char *,const size_t,ExceptionInfo *),
   **GetMimeInfoList(const char *,size_t *,ExceptionInfo *);
-
-extern MagickExport void
-  MimeComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -220,6 +220,7 @@ extern MagickPrivate const void
   *GetVirtualMetacontentFromNexus(const Cache,NexusInfo *);
 
 extern MagickPrivate MagickBooleanType
+  CacheComponentGenesis(void),
   SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *);
 
 extern MagickPrivate MagickSizeType
@@ -240,13 +241,12 @@ extern MagickPrivate size_t
   GetPixelCacheChannels(const Cache);
 
 extern MagickPrivate void
+  CacheComponentTerminus(void),
   ClonePixelCacheMethods(Cache,const Cache),
+  *GetPixelCacheNexusMetacontent(const Cache,NexusInfo *),
   GetPixelCacheTileSize(const Image *,size_t *,size_t *),
   GetPixelCacheMethods(CacheMethods *),
   SetPixelCacheMethods(Cache,CacheMethods *);
-
-extern MagickPrivate void
-  *GetPixelCacheNexusMetacontent(const Cache,NexusInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

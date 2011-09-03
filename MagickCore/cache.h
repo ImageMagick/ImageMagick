@@ -34,7 +34,6 @@ extern MagickExport const void
   *GetVirtualMetacontent(const Image *);
 
 extern MagickExport MagickBooleanType
-  CacheComponentGenesis(void),
   GetOneVirtualMagickPixel(const Image *,const ssize_t,const ssize_t,
     PixelInfo *,ExceptionInfo *),
   GetOneVirtualPixel(const Image *,const ssize_t,const ssize_t,PixelPacket *,
@@ -63,7 +62,6 @@ extern MagickExport VirtualPixelMethod
   SetPixelCacheVirtualMethod(const Image *,const VirtualPixelMethod);
 
 extern MagickExport void
-  CacheComponentTerminus(void),
   *GetAuthenticMetacontent(const Image *),
   *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *);
 

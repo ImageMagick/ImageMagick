@@ -816,7 +816,7 @@ static MagickBooleanType
 %      MagickBooleanType ColorComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType ColorComponentGenesis(void)
+MagickPrivate MagickBooleanType ColorComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&color_semaphore);
   return(MagickTrue);
@@ -858,7 +858,7 @@ static void *DestroyColorElement(void *color_info)
   return((void *) NULL);
 }
 
-MagickExport void ColorComponentTerminus(void)
+MagickPrivate void ColorComponentTerminus(void)
 {
   if (color_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&color_semaphore);

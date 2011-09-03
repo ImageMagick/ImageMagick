@@ -44,6 +44,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/annotate.h"
+#include "MagickCore/annotate-private.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/client.h"
@@ -139,7 +140,7 @@ static MagickBooleanType
 %      MagickBooleanType AnnotateComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType AnnotateComponentGenesis(void)
+MagickPrivate MagickBooleanType AnnotateComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&annotate_semaphore);
   return(MagickTrue);
@@ -163,7 +164,7 @@ MagickExport MagickBooleanType AnnotateComponentGenesis(void)
 %      AnnotateComponentTerminus(void)
 %
 */
-MagickExport void AnnotateComponentTerminus(void)
+MagickPrivate void AnnotateComponentTerminus(void)
 {
   if (annotate_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&annotate_semaphore);

@@ -50,6 +50,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
+#include "MagickCore/policy-private.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
@@ -963,7 +964,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
 %      MagickBooleanType PolicyComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType PolicyComponentGenesis(void)
+MagickPrivate MagickBooleanType PolicyComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&policy_semaphore);
   return(MagickTrue);
@@ -1009,7 +1010,7 @@ static void *DestroyPolicyElement(void *policy_info)
   return((void *) NULL);
 }
 
-MagickExport void PolicyComponentTerminus(void)
+MagickPrivate void PolicyComponentTerminus(void)
 {
   if (policy_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&policy_semaphore);

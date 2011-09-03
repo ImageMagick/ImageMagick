@@ -59,6 +59,12 @@ typedef struct _GhostInfo
     (MagickDLLCall *delete_instance)(gs_main_instance *);
 } GhostInfo;
 
+extern MagickPrivate MagickBooleanType
+  DelegateComponentGenesis(void);
+
+extern MagickPrivate void
+  DelegateComponentTerminus(void);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

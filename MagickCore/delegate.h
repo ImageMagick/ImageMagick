@@ -58,13 +58,9 @@ extern MagickExport ssize_t
   GetDelegateMode(const DelegateInfo *);
 
 extern MagickExport MagickBooleanType
-  DelegateComponentGenesis(void),
   GetDelegateThreadSupport(const DelegateInfo *),
   InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
-
-extern MagickExport void
-  DelegateComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

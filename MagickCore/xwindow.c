@@ -1658,7 +1658,7 @@ static Window XClientWindow(Display *display,Window target_window)
 %      XComponentTerminus(void)
 %
 */
-MagickExport void XComponentTerminus(void)
+MagickPrivate void XComponentTerminus(void)
 {
   DestroyXResources();
 }
@@ -9732,7 +9732,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
 %      MagickBooleanType XComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType XComponentGenesis(void)
+MagickPrivate MagickBooleanType XComponentGenesis(void)
 {
   return(MagickTrue);
 }

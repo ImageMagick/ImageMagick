@@ -24,6 +24,12 @@ extern "C" {
 
 #include "MagickCore/thread-private.h"
 
+extern MagickPrivate MagickBooleanType
+  RandomComponentGenesis(void);
+
+extern MagickPrivate void
+  RandomComponentTerminus(void);
+
 static inline RandomInfo **DestroyRandomInfoThreadSet(
   RandomInfo **random_info)
 {

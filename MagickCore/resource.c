@@ -904,7 +904,7 @@ static inline MagickSizeType StringToSizeType(const char *string,
   return((MagickSizeType) value);
 }
 
-MagickExport MagickBooleanType ResourceComponentGenesis(void)
+MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
 {
   char
     *limit;
@@ -1037,7 +1037,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
 %      ResourceComponentTerminus(void)
 %
 */
-MagickExport void ResourceComponentTerminus(void)
+MagickPrivate void ResourceComponentTerminus(void)
 {
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&resource_semaphore);
