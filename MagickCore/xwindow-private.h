@@ -161,6 +161,16 @@ typedef struct _XDrawInfo
     geometry[MaxTextExtent];
 } XDrawInfo;
 
+typedef struct _XImportInfo
+{
+  MagickBooleanType
+    frame,
+    borders,
+    screen,
+    descend,
+    silent;
+} XImportInfo;
+
 typedef enum
 {
   DefaultState = 0x0000,
@@ -505,43 +515,33 @@ typedef struct _XWindows
     dnd_protocols;
 } XWindows;
 
-extern MagickExport char
-  *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
-  *XGetResourceInstance(XrmDatabase,const char *,const char *,const char *),
-  *XGetScreenDensity(Display *);
-
-extern MagickExport Cursor
+extern MagickPrivate Cursor
   XMakeCursor(Display *,Window,Colormap,char *,char *);
 
-extern MagickExport int
-  XCheckDefineCursor(Display *,Window,Cursor),
-  XError(Display *,XErrorEvent *);
+extern MagickPrivate int
+  XCheckDefineCursor(Display *,Window,Cursor);
 
-extern MagickExport MagickBooleanType
+extern MagickPrivate MagickBooleanType
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
+  XComponentGenesis(void),
   XDrawImage(Display *,const XPixelInfo *,XDrawInfo *,Image *),
   XGetWindowColor(Display *,XWindows *,char *),
   XMagickProgressMonitor(const char *,const MagickOffsetType,
     const MagickSizeType,void *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,unsigned int,
     unsigned int,ExceptionInfo *),
-  XQueryColorDatabase(const char *,XColor *),
-  XRemoteCommand(Display *,const char *,const char *);
+  XQueryColorDatabase(const char *,XColor *);
 
-extern MagickPrivate MagickBooleanType
-  XComponentGenesis(void);
-
-extern MagickExport void
-  DestroyXResources(void),
+extern MagickPrivate void
   XBestIconSize(Display *,XWindowInfo *,Image *),
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),
   XCheckRefreshWindows(Display *,XWindows *),
   XClientMessage(Display *,const Window,const Atom,const Atom,const Time),
+  XComponentTerminus(void),
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const size_t),
   XDisplayImageInfo(Display *,const XResourceInfo *,XWindows *,Image *,Image *),
-  XDestroyResourceInfo(XResourceInfo *),
   XDestroyWindowColors(Display *,Window),
   XFreeResources(Display *,XVisualInfo *,XStandardColormap *,XPixelInfo *,
     XFontStruct *,XResourceInfo *,XWindowInfo *),
@@ -554,7 +554,6 @@ extern MagickExport void
   XGetPixelInfo(Display *,const XVisualInfo *,const XStandardColormap *,
     const XResourceInfo *,Image *,XPixelInfo *),
   XGetMapInfo(const XVisualInfo *,const Colormap,XStandardColormap *),
-  XGetResourceInfo(const ImageInfo *,XrmDatabase,const char *,XResourceInfo *),
   XGetWindowInfo(Display *,XVisualInfo *,XStandardColormap *,XPixelInfo *,
     XFontStruct *,XResourceInfo *,XWindowInfo *),
   XMakeMagnifyImage(Display *,XWindows *),
@@ -564,29 +563,22 @@ extern MagickExport void
     XWindowInfo *),
   XQueryPosition(Display *,const Window,int *,int *),
   XRefreshWindow(Display *,const XWindowInfo *,const XEvent *),
-  XRetainWindowColors(Display *,const Window),
   XSetCursorState(Display *,XWindows *,const MagickStatusType),
   XUserPreferences(XResourceInfo *),
   XWarning(const ExceptionType,const char *,const char *);
 
-extern MagickPrivate void
-  XComponentTerminus(void);
-
-extern MagickExport Window
+extern MagickPrivate Window
   XWindowByID(Display *,const Window,const size_t),
   XWindowByName(Display *,const Window,const char *),
   XWindowByProperty(Display *,const Window,const Atom);
 
-extern MagickExport XFontStruct
+extern MagickPrivate XFontStruct
   *XBestFont(Display *,const XResourceInfo *,const MagickBooleanType);
 
-extern MagickExport XrmDatabase
-  XGetResourceDatabase(Display *,const char *);
-
-extern MagickExport XVisualInfo
+extern MagickPrivate XVisualInfo
   *XBestVisualInfo(Display *,XStandardColormap *,XResourceInfo *);
 
-extern MagickExport XWindows
+extern MagickPrivate XWindows
   *XInitializeWindows(Display *,XResourceInfo *),
   *XSetWindows(XWindows *);
 

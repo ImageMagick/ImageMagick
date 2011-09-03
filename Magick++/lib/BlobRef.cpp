@@ -30,7 +30,7 @@ Magick::BlobRef::BlobRef ( const void* data_,
   if( data_ )
     {
       _data = new unsigned char[length_];
-      memcpy( _data, data_, length_ );
+      MagickCore::memcpy( _data, data_, length_ );
     }
 }
 

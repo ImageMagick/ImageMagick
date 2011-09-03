@@ -69,6 +69,8 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
 #include "MagickCore/widget.h"
+#include "MagickCore/widget-private.h"
+#include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
 
 #if defined(MAGICKCORE_X11_DELEGATE)
