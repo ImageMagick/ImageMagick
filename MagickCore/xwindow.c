@@ -77,6 +77,7 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/widget.h"
+#include "MagickCore/widget-private.h"
 #include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
 #include "MagickCore/version.h"
@@ -452,7 +453,7 @@ MagickExport void DestroyXResources(void)
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType XAnnotateImage(Display *display,
+MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
 {
   CacheView
@@ -781,7 +782,7 @@ static char **FontToList(char *font)
   return(fontlist);
 }
 
-MagickExport XFontStruct *XBestFont(Display *display,
+MagickPrivate XFontStruct *XBestFont(Display *display,
   const XResourceInfo *resource_info,const MagickBooleanType text_font)
 {
   static const char
@@ -889,7 +890,7 @@ MagickExport XFontStruct *XBestFont(Display *display,
 %    o image: the image.
 %
 */
-MagickExport void XBestIconSize(Display *display,XWindowInfo *window,
+MagickPrivate void XBestIconSize(Display *display,XWindowInfo *window,
   Image *image)
 {
   int
@@ -1017,7 +1018,7 @@ MagickExport void XBestIconSize(Display *display,XWindowInfo *window,
 %    o color: Specifies the desired RGB value to find in the colors array.
 %
 */
-MagickExport void XBestPixel(Display *display,const Colormap colormap,
+MagickPrivate void XBestPixel(Display *display,const Colormap colormap,
   XColor *colors,unsigned int number_colors,XColor *color)
 {
   MagickBooleanType
@@ -1154,7 +1155,7 @@ static inline size_t MagickMin(const unsigned int x,
   return(y);
 }
 
-MagickExport XVisualInfo *XBestVisualInfo(Display *display,
+MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
   XStandardColormap *map_info,XResourceInfo *resource_info)
 {
 #define MaxStandardColormaps  7
@@ -1460,7 +1461,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
 %    o cursor: the cursor.
 %
 */
-MagickExport int XCheckDefineCursor(Display *display,Window window,
+MagickPrivate int XCheckDefineCursor(Display *display,Window window,
   Cursor cursor)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -1496,7 +1497,7 @@ MagickExport int XCheckDefineCursor(Display *display,Window window,
 %    o windows: Specifies a pointer to a XWindows structure.
 %
 */
-MagickExport void XCheckRefreshWindows(Display *display,XWindows *windows)
+MagickPrivate void XCheckRefreshWindows(Display *display,XWindows *windows)
 {
   Window
     id;
@@ -1555,7 +1556,7 @@ MagickExport void XCheckRefreshWindows(Display *display,XWindows *windows)
 %    o timestamp: Specifies a value of type Time.
 %
 */
-MagickExport void XClientMessage(Display *display,const Window window,
+MagickPrivate void XClientMessage(Display *display,const Window window,
   const Atom protocol,const Atom reason,const Time timestamp)
 {
   XClientMessageEvent
@@ -1693,7 +1694,7 @@ MagickPrivate void XComponentTerminus(void)
 %    o image: the image.
 %
 */
-MagickExport void XConfigureImageColormap(Display *display,
+MagickPrivate void XConfigureImageColormap(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image)
 {
   Colormap
@@ -1745,7 +1746,7 @@ MagickExport void XConfigureImageColormap(Display *display,
 %    o window_info: Specifies a pointer to a XWindowInfo structure.
 %
 */
-MagickExport void XConstrainWindowPosition(Display *display,
+MagickPrivate void XConstrainWindowPosition(Display *display,
   XWindowInfo *window_info)
 {
   int
@@ -1795,7 +1796,7 @@ MagickExport void XConstrainWindowPosition(Display *display,
 %      returning.
 %
 */
-MagickExport void XDelay(Display *display,const size_t milliseconds)
+MagickPrivate void XDelay(Display *display,const size_t milliseconds)
 {
   assert(display != (Display *) NULL);
   (void) XFlush(display);
@@ -1867,7 +1868,7 @@ MagickExport void XDestroyResourceInfo(XResourceInfo *resource_info)
 %    o window: Specifies a pointer to a Window structure.
 %
 */
-MagickExport void XDestroyWindowColors(Display *display,Window window)
+MagickPrivate void XDestroyWindowColors(Display *display,Window window)
 {
   Atom
     property,
@@ -1944,7 +1945,7 @@ MagickExport void XDestroyWindowColors(Display *display,Window window)
 %    o image: the image.
 %
 */
-MagickExport void XDisplayImageInfo(Display *display,
+MagickPrivate void XDisplayImageInfo(Display *display,
   const XResourceInfo *resource_info,XWindows *windows,Image *undo_image,
   Image *image)
 {
@@ -2282,7 +2283,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType XDrawImage(Display *display,
+MagickPrivate MagickBooleanType XDrawImage(Display *display,
   const XPixelInfo *pixel,XDrawInfo *draw_info,Image *image)
 {
   CacheView
@@ -2644,12 +2645,12 @@ MagickExport MagickBooleanType XDrawImage(Display *display,
 %
 %  XError() ignores BadWindow errors for XQueryTree and XGetWindowAttributes,
 %  and ignores BadDrawable errors for XGetGeometry, and ignores BadValue errors
-%  for XQueryColor.  It returns MagickFalse in those cases.  Otherwise it returns
-%  True.
+%  for XQueryColor.  It returns MagickFalse in those cases.  Otherwise it
+%  returns True.
 %
 %  The format of the XError function is:
 %
-%      XError(display,error)
+%      int XError(display,error)
 %
 %  A description of each parameter follows:
 %
@@ -2739,7 +2740,7 @@ MagickExport int XError(Display *display,XErrorEvent *error)
 %    o window_info: Specifies a pointer to a X11 XWindowInfo structure.
 %
 */
-MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
+MagickPrivate void XFreeResources(Display *display,XVisualInfo *visual_info,
   XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window_info)
 {
@@ -2833,7 +2834,7 @@ MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
 %    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 */
-MagickExport void XFreeStandardColormap(Display *display,
+MagickPrivate void XFreeStandardColormap(Display *display,
   const XVisualInfo *visual_info,XStandardColormap *map_info,XPixelInfo *pixel)
 {
   /*
@@ -2886,7 +2887,7 @@ MagickExport void XFreeStandardColormap(Display *display,
 %    o annotate_info: Specifies a pointer to a XAnnotateInfo structure.
 %
 */
-MagickExport void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
+MagickPrivate void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 {
   /*
     Initialize annotate structure.
@@ -2936,7 +2937,7 @@ MagickExport void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 %    o map_info: Specifies a pointer to a X11 XStandardColormap structure.
 %
 */
-MagickExport void XGetMapInfo(const XVisualInfo *visual_info,
+MagickPrivate void XGetMapInfo(const XVisualInfo *visual_info,
   const Colormap colormap,XStandardColormap *map_info)
 {
   /*
@@ -3011,7 +3012,7 @@ MagickExport void XGetMapInfo(const XVisualInfo *visual_info,
 %    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 */
-MagickExport void XGetPixelInfo(Display *display,
+MagickPrivate void XGetPixelInfo(Display *display,
   const XVisualInfo *visual_info,const XStandardColormap *map_info,
   const XResourceInfo *resource_info,Image *image,XPixelInfo *pixel)
 {
@@ -3831,7 +3832,7 @@ static Window XGetSubwindow(Display *display,Window window,int x,int y)
 %      returned in this character string.
 %
 */
-MagickExport MagickBooleanType XGetWindowColor(Display *display,
+MagickPrivate MagickBooleanType XGetWindowColor(Display *display,
   XWindows *windows,char *name)
 {
   int
@@ -4563,7 +4564,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
 */
-MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
+MagickPrivate void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window)
 {
@@ -4713,7 +4714,7 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
 %      contains the extents of any highlighting rectangle.
 %
 */
-MagickExport void XHighlightEllipse(Display *display,Window window,
+MagickPrivate void XHighlightEllipse(Display *display,Window window,
   GC annotate_context,const RectangleInfo *highlight_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -4763,7 +4764,7 @@ MagickExport void XHighlightEllipse(Display *display,Window window,
 %      contains the extents of any highlighting rectangle.
 %
 */
-MagickExport void XHighlightLine(Display *display,Window window,
+MagickPrivate void XHighlightLine(Display *display,Window window,
   GC annotate_context,const XSegment *highlight_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -4807,7 +4808,7 @@ MagickExport void XHighlightLine(Display *display,Window window,
 %      contains the extents of any highlighting rectangle.
 %
 */
-MagickExport void XHighlightRectangle(Display *display,Window window,
+MagickPrivate void XHighlightRectangle(Display *display,Window window,
   GC annotate_context,const RectangleInfo *highlight_info)
 {
   assert(display != (Display *) NULL);
@@ -5122,7 +5123,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
 */
-MagickExport XWindows *XInitializeWindows(Display *display,
+MagickPrivate XWindows *XInitializeWindows(Display *display,
   XResourceInfo *resource_info)
 {
   Window
@@ -5319,7 +5320,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
 %    o foreground_color: Specifies the color to use for the cursor foreground.
 %
 */
-MagickExport Cursor XMakeCursor(Display *display,Window window,
+MagickPrivate Cursor XMakeCursor(Display *display,Window window,
   Colormap colormap,char *background_color,char *foreground_color)
 {
 #define scope_height 17
@@ -5420,7 +5421,7 @@ MagickExport Cursor XMakeCursor(Display *display,Window window,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType XMakeImage(Display *display,
+MagickPrivate MagickBooleanType XMakeImage(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
   unsigned int width,unsigned int height,ExceptionInfo *exception)
 {
@@ -7086,7 +7087,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
 %    o windows: Specifies a pointer to a XWindows structure.
 %
 */
-MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
+MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows)
 {
   char
     tuple[MaxTextExtent];
@@ -7706,7 +7707,7 @@ static inline Quantum ScaleXToQuantum(const size_t x,
   return((Quantum) (((MagickRealType) QuantumRange*x)/scale+0.5));
 }
 
-MagickExport void XMakeStandardColormap(Display *display,
+MagickPrivate void XMakeStandardColormap(Display *display,
   XVisualInfo *visual_info,XResourceInfo *resource_info,Image *image,
   XStandardColormap *map_info,XPixelInfo *pixel)
 {
@@ -8322,7 +8323,7 @@ MagickExport void XMakeStandardColormap(Display *display,
 %    o window_info: Specifies a pointer to a X11 XWindowInfo structure.
 %
 */
-MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
+MagickPrivate void XMakeWindow(Display *display,Window parent,char **argv,
   int argc,XClassHint *class_hint,XWMHints *manager_hints,
   XWindowInfo *window_info)
 {
@@ -8599,7 +8600,7 @@ static const char *GetLocaleMonitorMessage(const char *text)
   return(locale_message);
 }
 
-MagickExport MagickBooleanType XMagickProgressMonitor(const char *tag,
+MagickPrivate MagickBooleanType XMagickProgressMonitor(const char *tag,
   const MagickOffsetType quantum,const MagickSizeType span,
   void *magick_unused(client_data))
 {
@@ -8641,7 +8642,7 @@ MagickExport MagickBooleanType XMagickProgressMonitor(const char *tag,
 %      color is returned as this value.
 %
 */
-MagickExport MagickBooleanType XQueryColorDatabase(const char *target,
+MagickPrivate MagickBooleanType XQueryColorDatabase(const char *target,
   XColor *color)
 {
   Colormap
@@ -8721,7 +8722,7 @@ MagickExport MagickBooleanType XQueryColorDatabase(const char *target,
 %      window.
 %
 */
-MagickExport void XQueryPosition(Display *display,const Window window,int *x,int *y)
+MagickPrivate void XQueryPosition(Display *display,const Window window,int *x,int *y)
 {
   int
     x_root,
@@ -8771,7 +8772,7 @@ MagickExport void XQueryPosition(Display *display,const Window window,int *x,int
 %      the entire image is refreshed.
 %
 */
-MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
+MagickPrivate void XRefreshWindow(Display *display,const XWindowInfo *window,
   const XEvent *event)
 {
   int
@@ -9202,7 +9203,7 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 %      to busy, otherwise the cursor are reset to their default.
 %
 */
-MagickExport void XSetCursorState(Display *display,XWindows *windows,
+MagickPrivate void XSetCursorState(Display *display,XWindows *windows,
   const MagickStatusType state)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -9258,7 +9259,7 @@ MagickExport void XSetCursorState(Display *display,XWindows *windows,
 %    o windows_info: Initialize the Windows structure with this information.
 %
 */
-MagickExport XWindows *XSetWindows(XWindows *windows_info)
+MagickPrivate XWindows *XSetWindows(XWindows *windows_info)
 {
   static XWindows
     *windows = (XWindows *) NULL;
@@ -9293,7 +9294,7 @@ MagickExport XWindows *XSetWindows(XWindows *windows_info)
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
 */
-MagickExport void XUserPreferences(XResourceInfo *resource_info)
+MagickPrivate void XUserPreferences(XResourceInfo *resource_info)
 {
 #if defined(X11_PREFERENCES_PATH)
   char
@@ -9420,7 +9421,7 @@ static const char *XVisualClassName(const int visual_class)
 %    o description: Specifies any description to the reason.
 %
 */
-MagickExport void XWarning(const ExceptionType magick_unused(warning),
+MagickPrivate void XWarning(const ExceptionType magick_unused(warning),
   const char *reason,const char *description)
 {
   char
@@ -9467,7 +9468,7 @@ MagickExport void XWarning(const ExceptionType magick_unused(warning),
 %    o id: Specifies the id of the window to locate.
 %
 */
-MagickExport Window XWindowByID(Display *display,const Window root_window,
+MagickPrivate Window XWindowByID(Display *display,const Window root_window,
   const size_t id)
 {
   RectangleInfo
@@ -9545,7 +9546,7 @@ MagickExport Window XWindowByID(Display *display,const Window root_window,
 %    o name: Specifies the name of the window to locate.
 %
 */
-MagickExport Window XWindowByName(Display *display,const Window root_window,
+MagickPrivate Window XWindowByName(Display *display,const Window root_window,
   const char *name)
 {
   register int
@@ -9622,7 +9623,7 @@ MagickExport Window XWindowByName(Display *display,const Window root_window,
 %    o property: Specifies the property of the window to locate.
 %
 */
-MagickExport Window XWindowByProperty(Display *display,const Window window,
+MagickPrivate Window XWindowByProperty(Display *display,const Window window,
   const Atom property)
 {
   Atom
@@ -9701,7 +9702,7 @@ MagickExport Window XWindowByProperty(Display *display,const Window window,
 %    o ximage_info: Specifies a pointer to an XImportInfo structure.
 %
 */
-MagickExport Image *XImportImage(const ImageInfo *image_info,
+MagickPrivate Image *XImportImage(const ImageInfo *image_info,
   XImportInfo *ximage_info)
 {
   assert(image_info != (const ImageInfo *) NULL);

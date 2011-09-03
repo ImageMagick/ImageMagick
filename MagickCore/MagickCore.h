@@ -140,6 +140,7 @@ extern "C" {
 # include "MagickCore/methods.h"
 #endif
 #include "MagickCore/magick-type.h"
+#include "MagickCore/xwindow.h"
 #include "MagickCore/accelerate.h"
 #include "MagickCore/animate.h"
 #include "MagickCore/annotate.h"
@@ -220,7 +221,6 @@ extern "C" {
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
 #include "MagickCore/xml-tree.h"
-#include "MagickCore/xwindow.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
