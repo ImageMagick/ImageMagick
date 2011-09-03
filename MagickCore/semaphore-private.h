@@ -22,6 +22,12 @@
 extern "C" {
 #endif
 
+extern MagickPrivate MagickBooleanType
+  SemaphoreComponentGenesis(void);
+
+extern MagickPrivate void
+  SemaphoreComponentTerminus(void);
+
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;

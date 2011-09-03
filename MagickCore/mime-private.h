@@ -31,6 +31,12 @@ typedef enum
   LongData
 } DataType;
 
+extern MagickPrivate MagickBooleanType
+  MimeComponentGenesis(void);
+
+extern MagickPrivate void
+  MimeComponentTerminus(void);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

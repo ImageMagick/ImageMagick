@@ -47,6 +47,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/hashmap.h"
 #include "MagickCore/log.h"
+#include "MagickCore/log-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/option.h"
 #include "MagickCore/semaphore.h"
@@ -686,7 +687,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
 %      MagickBooleanType LogComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType LogComponentGenesis(void)
+MagickPrivate MagickBooleanType LogComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&log_semaphore);
   return(MagickTrue);
@@ -737,7 +738,7 @@ static void *DestroyLogElement(void *log_info)
   return((void *) NULL);
 }
 
-MagickExport void LogComponentTerminus(void)
+MagickPrivate void LogComponentTerminus(void)
 {
   if (log_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&log_semaphore);

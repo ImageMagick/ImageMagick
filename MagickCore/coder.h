@@ -45,11 +45,7 @@ extern MagickExport const CoderInfo
   **GetCoderInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  CoderComponentGenesis(void),
   ListCoderInfo(FILE *,ExceptionInfo *);
-
-MagickExport void
-  CoderComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

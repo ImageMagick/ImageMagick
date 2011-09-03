@@ -22,8 +22,12 @@
 extern "C" {
 #endif
 
+extern MagickPrivate MagickBooleanType
+  ResourceComponentGenesis(void);
+
 extern MagickPrivate void
-  AsynchronousResourceComponentTerminus(void);
+  AsynchronousResourceComponentTerminus(void),
+  ResourceComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

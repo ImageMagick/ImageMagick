@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore image color methods.
+  MagickCore private image color methods.
 */
 #ifndef _MAGICKCORE_COLOR_PRIVATE_H
 #define _MAGICKCORE_COLOR_PRIVATE_H
@@ -21,6 +21,12 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+extern MagickPrivate MagickBooleanType
+  ColorComponentGenesis(void);
+
+extern MagickPrivate void
+  ColorComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

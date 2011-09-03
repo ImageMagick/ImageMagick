@@ -53,6 +53,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/module-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/splay-tree.h"
@@ -1153,7 +1154,7 @@ MagickExport MagickBooleanType ListModuleInfo(FILE *file,
 %      MagickBooleanType ModuleComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType ModuleComponentGenesis(void)
+MagickPrivate MagickBooleanType ModuleComponentGenesis(void)
 {
   ExceptionInfo
     *exception;
@@ -1186,7 +1187,7 @@ MagickExport MagickBooleanType ModuleComponentGenesis(void)
 %      ModuleComponentTerminus(void)
 %
 */
-MagickExport void ModuleComponentTerminus(void)
+MagickPrivate void ModuleComponentTerminus(void)
 {
   if (module_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&module_semaphore);

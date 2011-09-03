@@ -25,9 +25,6 @@ extern "C" {
 typedef struct SemaphoreInfo
   SemaphoreInfo;
 
-extern MagickExport MagickBooleanType
-  SemaphoreComponentGenesis(void);
-
 extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);
 
@@ -36,7 +33,6 @@ extern MagickExport void
   DestroySemaphoreInfo(SemaphoreInfo **),
   LockSemaphoreInfo(SemaphoreInfo *),
   RelinquishSemaphoreInfo(SemaphoreInfo *),
-  SemaphoreComponentTerminus(void),
   UnlockSemaphoreInfo(SemaphoreInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -55,6 +55,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/type.h"
+#include "MagickCore/type-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xml-tree.h"
@@ -1349,7 +1350,7 @@ static MagickBooleanType LoadTypeLists(const char *filename,
 %      MagickBooleanType TypeComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType TypeComponentGenesis(void)
+MagickPrivate MagickBooleanType TypeComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&type_semaphore);
   return(MagickTrue);
@@ -1373,7 +1374,7 @@ MagickExport MagickBooleanType TypeComponentGenesis(void)
 %      void TypeComponentTerminus(void)
 %
 */
-MagickExport void TypeComponentTerminus(void)
+MagickPrivate void TypeComponentTerminus(void)
 {
   if (type_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&type_semaphore);

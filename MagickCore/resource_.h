@@ -44,7 +44,6 @@ extern MagickExport MagickBooleanType
   AcquireMagickResource(const ResourceType,const MagickSizeType),
   ListMagickResourceInfo(FILE *,ExceptionInfo *),
   RelinquishUniqueFileResource(const char *),
-  ResourceComponentGenesis(void),
   SetMagickResourceLimit(const ResourceType,const MagickSizeType);
 
 extern MagickExport MagickSizeType
@@ -52,8 +51,7 @@ extern MagickExport MagickSizeType
   GetMagickResourceLimit(const ResourceType);
 
 extern MagickExport void
-  RelinquishMagickResource(const ResourceType,const MagickSizeType),
-  ResourceComponentTerminus(void);
+  RelinquishMagickResource(const ResourceType,const MagickSizeType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

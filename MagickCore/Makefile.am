@@ -323,6 +323,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/locale_.h \
 	MagickCore/log.h \
 	MagickCore/magic.h \
+	MagickCore/magic-private.h \
 	MagickCore/magick.h \
 	MagickCore/magick-config.h \
 	MagickCore/magick-type.h \

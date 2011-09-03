@@ -56,11 +56,8 @@ extern MagickExport LinkedListInfo
   *GetConfigureOptions(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  ConfigureComponentGenesis(void),
   ListConfigureInfo(FILE *,ExceptionInfo *);
 
-extern MagickExport void
-  ConfigureComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/client.h"
 #include "MagickCore/coder.h"
+#include "MagickCore/coder-private.h"
 #include "MagickCore/configure.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -252,7 +253,7 @@ static MagickBooleanType
 %      MagickBooleanType CoderComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType CoderComponentGenesis(void)
+MagickPrivate MagickBooleanType CoderComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&coder_semaphore);
   return(MagickTrue);
@@ -276,7 +277,7 @@ MagickExport MagickBooleanType CoderComponentGenesis(void)
 %      CoderComponentTerminus(void)
 %
 */
-MagickExport void CoderComponentTerminus(void)
+MagickPrivate void CoderComponentTerminus(void)
 {
   if (coder_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&coder_semaphore);

@@ -47,6 +47,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/hashmap.h"
 #include "MagickCore/locale_.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/semaphore.h"
@@ -1375,7 +1376,7 @@ static MagickBooleanType LoadLocaleLists(const char *filename,
 %      MagickBooleanType LocaleComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType LocaleComponentGenesis(void)
+MagickPrivate MagickBooleanType LocaleComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&locale_semaphore);
   return(MagickTrue);
@@ -1399,7 +1400,7 @@ MagickExport MagickBooleanType LocaleComponentGenesis(void)
 %      LocaleComponentTerminus(void)
 %
 */
-MagickExport void LocaleComponentTerminus(void)
+MagickPrivate void LocaleComponentTerminus(void)
 {
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&locale_semaphore);

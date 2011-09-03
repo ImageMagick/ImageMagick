@@ -52,6 +52,7 @@
 #include "MagickCore/configure.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/delegate.h"
+#include "MagickCore/delegate-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/hashmap.h"
@@ -159,7 +160,7 @@ static MagickBooleanType
 %      MagickBooleanType DelegateComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType DelegateComponentGenesis(void)
+MagickPrivate MagickBooleanType DelegateComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&delegate_semaphore);
   return(MagickTrue);
@@ -202,8 +203,7 @@ static void *DestroyDelegate(void *delegate_info)
   return((void *) NULL);
 }
 
-
-MagickExport void DelegateComponentTerminus(void)
+MagickPrivate void DelegateComponentTerminus(void)
 {
   if (delegate_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&delegate_semaphore);

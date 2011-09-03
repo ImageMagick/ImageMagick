@@ -53,6 +53,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/random_.h"
+#include "MagickCore/random-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
@@ -702,7 +703,7 @@ MagickExport double GetRandomValue(RandomInfo *random_info)
 %      MagickBooleanType RandomComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType RandomComponentGenesis(void)
+MagickPrivate MagickBooleanType RandomComponentGenesis(void)
 {
   AcquireSemaphoreInfo(&random_semaphore);
   return(MagickTrue);
@@ -726,7 +727,7 @@ MagickExport MagickBooleanType RandomComponentGenesis(void)
 %      RandomComponentTerminus(void)
 %
 */
-MagickExport void RandomComponentTerminus(void)
+MagickPrivate void RandomComponentTerminus(void)
 {
   if (random_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&random_semaphore);
