@@ -83,6 +83,7 @@
 #include "MagickCore/threshold.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/xml-tree.h"
+#include "MagickCore/xml-tree-private.h"
 
 /*
   Define declarations.

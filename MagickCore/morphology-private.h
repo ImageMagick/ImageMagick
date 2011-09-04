@@ -33,6 +33,7 @@ extern MagickPrivate Image
     const KernelInfo *,const CompositeOperator,const double,ExceptionInfo *);
 
 extern MagickPrivate void
+  ShowKernelInfo(const KernelInfo *),
   ZeroKernelNans(KernelInfo *);
 
 #endif

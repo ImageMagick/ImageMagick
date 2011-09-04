@@ -4711,7 +4711,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %    o kernel: the Morphology/Convolution kernel
 %
 */
-MagickExport void ShowKernelInfo(const KernelInfo *kernel)
+MagickPrivate void ShowKernelInfo(const KernelInfo *kernel)
 {
   const KernelInfo
     *k;
