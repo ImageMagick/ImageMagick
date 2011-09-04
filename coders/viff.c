@@ -394,7 +394,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             image->colors=image->depth <= 8 ? 256UL : 65536UL;
             if (viff_info.data_storage_type == VFF_TYP_BIT)
               image->colors=2;
-            if (AcquireImageColormap(image,image->colors) == MagickFalse)
+            if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
         break;
@@ -418,7 +418,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           default: bytes_per_pixel=1; break;
         }
         image->colors=viff_info.map_columns;
-        if (AcquireImageColormap(image,image->colors) == MagickFalse)
+        if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         viff_colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
           viff_info.map_rows*bytes_per_pixel*sizeof(*viff_colormap));
@@ -615,8 +615,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
-        (void) SetImageType(image,BilevelType);
-        (void) SetImageType(image,PaletteType);
+        (void) SetImageType(image,BilevelType,exception);
+        (void) SetImageType(image,PaletteType,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -1179,7 +1179,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             /*
               Convert PseudoClass image to a VIFF monochrome image.
             */
-            (void) SetImageType(image,BilevelType);
+            (void) SetImageType(image,BilevelType,exception);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);

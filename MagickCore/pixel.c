@@ -1797,7 +1797,7 @@ MagickExport void GetPixelInfo(const Image *image,
 %      MagickBooleanType ImportImagePixels(Image *image,const ssize_t x_offset,
 %        const ssize_t y_offset,const size_t columns,
 %        const size_t rows,const char *map,const StorageType type,
-%        const void *pixels)
+%        const void *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1821,15 +1821,14 @@ MagickExport void GetPixelInfo(const Image *image,
 %      map and type.  You must preallocate this array where the expected
 %      length varies depending on the values of width, height, map, and type.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType ImportImagePixels(Image *image,
   const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
   const size_t rows,const char *map,const StorageType type,
-  const void *pixels)
+  const void *pixels,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   QuantumType
     *quantum_map;
 
@@ -1858,7 +1857,6 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   if (quantum_map == (QuantumType *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  exception=(&image->exception);
   for (i=0; i < (ssize_t) length; i++)
   {
     switch (map[i])

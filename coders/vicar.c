@@ -280,7 +280,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   image->depth=8;
-  if (AcquireImageColormap(image,256) == MagickFalse)
+  if (AcquireImageColormap(image,256,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {

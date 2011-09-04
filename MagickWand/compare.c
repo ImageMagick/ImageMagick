@@ -992,7 +992,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   else
     {
       if (image_info->verbose != MagickFalse)
-        (void) IsImagesEqual(image,reconstruct_image);
+        (void) IsImagesEqual(image,reconstruct_image,exception);
       if (*difference_image->magick == '\0')
         (void) CopyMagickString(difference_image->magick,image->magick,
           MaxTextExtent);
@@ -1191,7 +1191,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           char
             *text;
 
-          text=InterpretImageProperties(image_info,difference_image,format);
+          text=InterpretImageProperties(image_info,difference_image,format,
+            exception);
           if (text == (char *) NULL)
             ThrowCompareException(ResourceLimitError,"MemoryAllocationFailed",
               GetExceptionMessage(errno));

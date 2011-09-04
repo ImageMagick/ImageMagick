@@ -521,8 +521,8 @@ extern MagickExport ImageInfo
   *DestroyImageInfo(ImageInfo *);
 
 extern MagickExport MagickBooleanType
-  ClipImage(Image *),
-  ClipImagePath(Image *,const char *,const MagickBooleanType),
+  ClipImage(Image *,ExceptionInfo *),
+  ClipImagePath(Image *,const char *,const MagickBooleanType,ExceptionInfo *),
   GetImageAlphaChannel(const Image *),
   IsTaintImage(const Image *),
   IsMagickConflict(const char *),
@@ -534,14 +534,14 @@ extern MagickExport MagickBooleanType
   SeparateImage(Image *),
   SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *),
   SetImageBackgroundColor(Image *),
-  SetImageClipMask(Image *,const Image *),
+  SetImageClipMask(Image *,const Image *,ExceptionInfo *),
   SetImageColor(Image *,const PixelInfo *),
   SetImageExtent(Image *,const size_t,const size_t,ExceptionInfo *),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
-  SetImageMask(Image *,const Image *),
+  SetImageMask(Image *,const Image *,ExceptionInfo *),
   SetImageOpacity(Image *,const Quantum),
   SetImageStorageClass(Image *,const ClassType,ExceptionInfo *),
-  SetImageType(Image *,const ImageType),
+  SetImageType(Image *,const ImageType,ExceptionInfo *),
   StripImage(Image *),
   SyncImage(Image *),
   SyncImageSettings(const ImageInfo *,Image *),

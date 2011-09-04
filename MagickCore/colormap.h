@@ -23,9 +23,9 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  AcquireImageColormap(Image *,const size_t),
-  CycleColormapImage(Image *,const ssize_t),
-  SortColormapByIntensity(Image *);
+  AcquireImageColormap(Image *,const size_t,ExceptionInfo *),
+  CycleColormapImage(Image *,const ssize_t,ExceptionInfo *),
+  SortColormapByIntensity(Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

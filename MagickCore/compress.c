@@ -361,11 +361,14 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 %
 %  The format of the HuffmanDecodeImage method is:
 %
-%      MagickBooleanType HuffmanDecodeImage(Image *image)
+%      MagickBooleanType HuffmanDecodeImage(Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -383,7 +386,8 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
+MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
+  ExceptionInfo *exception)
 {
 #define HashSize  1021
 #define MBHashA  293
@@ -422,9 +426,6 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
 
   const HuffmanTable
     *entry;
-
-  ExceptionInfo
-    *exception;
 
   HuffmanTable
     **mb_hash,
@@ -507,7 +508,6 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
   image->x_resolution=204.0;
   image->y_resolution=196.0;
   image->units=PixelsPerInchResolution;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; ((y < (ssize_t) image->rows) && (null_lines < 3)); )
   {
@@ -673,7 +673,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
 %  The format of the HuffmanEncodeImage method is:
 %
 %      MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
-%        Image *image,Image *inject_image)
+%        Image *image,Image *inject_image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -683,9 +683,11 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
 %
 %    o inject_image: inject into the image stream.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
-  Image *image,Image *inject_image)
+  Image *image,Image *inject_image,ExceptionInfo *exception)
 {
 #define HuffmanOutputCode(entry)  \
 {  \
@@ -715,9 +717,6 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 
   const HuffmanTable
     *entry;
-
-  ExceptionInfo
-    *exception;
 
   int
     k,
@@ -780,7 +779,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
       scanline=(unsigned char *) RelinquishMagickMemory(scanline);
       return(MagickFalse);
     }
-  (void) SetImageType(huffman_image,BilevelType);
+  (void) SetImageType(huffman_image,BilevelType,exception);
   byte='\0';
   bit=(unsigned char) 0x80;
   if (LocaleCompare(image_info->magick,"FAX") != 0)
@@ -797,7 +796,6 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
   /*
     Compress to 1D Huffman pixels.
   */
-  exception=(&huffman_image->exception);
   q=scanline;
   for (y=0; y < (ssize_t) huffman_image->rows; y++)
   {
@@ -915,7 +913,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 %  The format of the LZWEncodeImage method is:
 %
 %      MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
-%        unsigned char *pixels)
+%        unsigned char *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -926,9 +924,11 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
 %    o pixels: the address of an unsigned array of characters containing the
 %      pixels to compress.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels)
+  unsigned char *pixels,ExceptionInfo *exception)
 {
 #define LZWClr  256UL  /* Clear Table Marker */
 #define LZWEod  257UL  /* End of Data marker */
@@ -1090,7 +1090,7 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %
 */
 MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
-  const size_t length,unsigned char *pixels)
+  const size_t length,unsigned char *pixels,ExceptionInfo *exception)
 {
   int
     count;
@@ -1212,7 +1212,7 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
 %  The format of the ZLIBEncodeImage method is:
 %
 %      MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
-%        unsigned char *pixels)
+%        unsigned char *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1223,6 +1223,8 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
 %
 %    o pixels: the address of an unsigned array of characters containing the
 %      pixels to compress.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1240,7 +1242,7 @@ static void RelinquishZIPMemory(voidpf context,voidpf memory)
 }
 
 MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels)
+  unsigned char *pixels,ExceptionInfo *exception)
 {
   int
     status;

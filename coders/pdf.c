@@ -888,7 +888,7 @@ static char *EscapeParenthesis(const char *text)
 }
 
 static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image,Image *inject_image)
+  Image *image,Image *inject_image,ExceptionInfo *exception)
 {
   Image
     *group4_image;
@@ -909,11 +909,11 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->filename,"GROUP4:",MaxTextExtent);
   (void) CopyMagickString(write_info->magick,"GROUP4",MaxTextExtent);
-  group4_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
+  group4_image=CloneImage(inject_image,0,0,MagickTrue,exception);
   if (group4_image == (Image *) NULL)
     return(MagickFalse);
   group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
-    &image->exception);
+    exception);
   group4_image=DestroyImage(group4_image);
   if (group4 == (unsigned char *) NULL)
     return(MagickFalse);
@@ -1565,10 +1565,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           {
             if (LocaleCompare(CCITTParam,"0") == 0)
               {
-                (void) HuffmanEncodeImage(image_info,image,image);
+                (void) HuffmanEncodeImage(image_info,image,image,exception);
                 break;
               }
-            (void) Huffman2DEncodeImage(image_info,image,image);
+            (void) Huffman2DEncodeImage(image_info,image,image,exception);
             break;
           }
           case JPEGCompression:
@@ -1626,13 +1626,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,length,pixels);
+              status=ZLIBEncodeImage(image,length,pixels,exception);
             else
 #endif
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,length,pixels);
+                status=LZWEncodeImage(image,length,pixels,exception);
               else
-                status=PackbitsEncodeImage(image,length,pixels);
+                status=PackbitsEncodeImage(image,length,pixels,exception);
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             if (status == MagickFalse)
               {
@@ -1737,13 +1737,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,length,pixels);
+              status=ZLIBEncodeImage(image,length,pixels,exception);
             else
 #endif
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,length,pixels);
+                status=LZWEncodeImage(image,length,pixels,exception);
               else
-                status=PackbitsEncodeImage(image,length,pixels);
+                status=PackbitsEncodeImage(image,length,pixels,exception);
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             if (status == MagickFalse)
               {
@@ -1828,13 +1828,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
               }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,length,pixels);
+                status=ZLIBEncodeImage(image,length,pixels,exception);
               else
 #endif
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,length,pixels);
+                  status=LZWEncodeImage(image,length,pixels,exception);
                 else
-                  status=PackbitsEncodeImage(image,length,pixels);
+                  status=PackbitsEncodeImage(image,length,pixels,exception);
               pixels=(unsigned char *) RelinquishMagickMemory(pixels);
               if (status == MagickFalse)
                 {
@@ -2014,10 +2014,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           {
             if (LocaleCompare(CCITTParam,"0") == 0)
               {
-                (void) HuffmanEncodeImage(image_info,image,tile_image);
+                (void) HuffmanEncodeImage(image_info,image,tile_image,
+                  exception);
                 break;
               }
-            (void) Huffman2DEncodeImage(image_info,image,tile_image);
+            (void) Huffman2DEncodeImage(image_info,image,tile_image,exception);
             break;
           }
           case JPEGCompression:
@@ -2074,13 +2075,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,length,pixels);
+              status=ZLIBEncodeImage(image,length,pixels,exception);
             else
 #endif
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,length,pixels);
+                status=LZWEncodeImage(image,length,pixels,exception);
               else
-                status=PackbitsEncodeImage(image,length,pixels);
+                status=PackbitsEncodeImage(image,length,pixels,exception);
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             if (status == MagickFalse)
               {
@@ -2178,13 +2179,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,length,pixels);
+              status=ZLIBEncodeImage(image,length,pixels,exception);
             else
 #endif
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,length,pixels);
+                status=LZWEncodeImage(image,length,pixels,exception);
               else
-                status=PackbitsEncodeImage(image,length,pixels);
+                status=PackbitsEncodeImage(image,length,pixels,exception);
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             if (status == MagickFalse)
               {
@@ -2263,13 +2264,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
               }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,length,pixels);
+                status=ZLIBEncodeImage(image,length,pixels,exception);
               else
 #endif
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,length,pixels);
+                  status=LZWEncodeImage(image,length,pixels,exception);
                 else
-                  status=PackbitsEncodeImage(image,length,pixels);
+                  status=PackbitsEncodeImage(image,length,pixels,exception);
               pixels=(unsigned char *) RelinquishMagickMemory(pixels);
               if (status == MagickFalse)
                 {
@@ -2466,13 +2467,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,length,pixels);
+              status=ZLIBEncodeImage(image,length,pixels,exception);
             else
 #endif
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,length,pixels);
+                status=LZWEncodeImage(image,length,pixels,exception);
               else
-                status=PackbitsEncodeImage(image,length,pixels);
+                status=PackbitsEncodeImage(image,length,pixels,exception);
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             if (status == MagickFalse)
               {

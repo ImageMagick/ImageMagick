@@ -179,7 +179,7 @@ static MagickBooleanType WriteMATTEImage(const ImageInfo *image_info,
   matte_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (matte_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageType(matte_image,TrueColorMatteType);
+  (void) SetImageType(matte_image,TrueColorMatteType,exception);
   matte_image->matte=MagickFalse;
   /*
     Convert image to matte pixels.

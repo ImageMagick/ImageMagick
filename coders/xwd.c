@@ -458,7 +458,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert X image to PseudoClass packets.
         */
-        if (AcquireImageColormap(image,image->colors) == MagickFalse)
+        if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         for (i=0; i < (ssize_t) image->colors; i++)
         {

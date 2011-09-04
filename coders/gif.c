@@ -387,11 +387,9 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
   return(PopLZWStack(lzw_info->stack));
 }
 
-static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
+static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   int
     c;
 
@@ -425,7 +423,6 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
   if (lzw_info == (LZWInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  exception=(&image->exception);
   pass=0;
   offset=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -930,7 +927,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-static MagickBooleanType PingGIFImage(Image *image)
+static MagickBooleanType PingGIFImage(Image *image,ExceptionInfo *exception)
 {
   unsigned char
     buffer[256],
@@ -1257,7 +1254,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Inititialize colormap.
     */
-    if (AcquireImageColormap(image,image->colors) == MagickFalse)
+    if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       {
         global_colormap=(unsigned char *) RelinquishMagickMemory(
           global_colormap);
@@ -1326,9 +1323,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Decode image.
     */
     if (image_info->ping != MagickFalse)
-      status=PingGIFImage(image);
+      status=PingGIFImage(image,exception);
     else
-      status=DecodeImage(image,opacity);
+      status=DecodeImage(image,opacity,exception);
     if ((image_info->ping == MagickFalse) && (status == MagickFalse))
       {
         global_colormap=(unsigned char *) RelinquishMagickMemory(
@@ -1572,7 +1569,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
     if (IsImageOpaque(image,exception) != MagickFalse)
       {
         if ((image->storage_class == DirectClass) || (image->colors > 256))
-          (void) SetImageType(image,PaletteType);
+          (void) SetImageType(image,PaletteType,exception);
       }
     else
       {
@@ -1584,7 +1581,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
           Identify transparent colormap index.
         */
         if ((image->storage_class == DirectClass) || (image->colors > 256))
-          (void) SetImageType(image,PaletteBilevelMatteType);
+          (void) SetImageType(image,PaletteBilevelMatteType,exception);
         for (i=0; i < (ssize_t) image->colors; i++)
           if (image->colormap[i].alpha != OpaqueAlpha)
             {
@@ -1602,7 +1599,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
             }
         if (opacity == -1)
           {
-            (void) SetImageType(image,PaletteBilevelMatteType);
+            (void) SetImageType(image,PaletteBilevelMatteType,exception);
             for (i=0; i < (ssize_t) image->colors; i++)
               if (image->colormap[i].alpha != OpaqueAlpha)
                 {

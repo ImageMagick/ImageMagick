@@ -30,7 +30,7 @@ typedef struct _SignatureInfo
   SignatureInfo;
 
 extern MagickExport MagickBooleanType
-  SignatureImage(Image *);
+  SignatureImage(Image *,ExceptionInfo *exception);
 
 extern MagickExport SignatureInfo
   *AcquireSignatureInfo(void),

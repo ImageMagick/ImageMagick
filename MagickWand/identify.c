@@ -338,7 +338,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
               char
                 *text;
 
-              text=InterpretImageProperties(image_info,image,format);
+              text=InterpretImageProperties(image_info,image,format,exception);
               if (text == (char *) NULL)
                 ThrowIdentifyException(ResourceLimitError,
                   "MemoryAllocationFailed",GetExceptionMessage(errno));

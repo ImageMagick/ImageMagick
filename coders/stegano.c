@@ -159,7 +159,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   if (watermark == (Image *) NULL)
     return((Image *) NULL);
   watermark->depth=MAGICKCORE_QUANTUM_DEPTH;
-  if (AcquireImageColormap(image,MaxColormapSize) == MagickFalse)
+  if (AcquireImageColormap(image,MaxColormapSize,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {

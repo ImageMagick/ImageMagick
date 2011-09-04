@@ -640,7 +640,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageType(clone_image,GrayscaleType);
+  (void) SetImageType(clone_image,GrayscaleType,exception);
   edge_image=EdgeImage(clone_image,radius,exception);
   clone_image=DestroyImage(clone_image);
   if (edge_image == (Image *) NULL)
@@ -651,7 +651,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
     return((Image *) NULL);
   (void) NormalizeImage(charcoal_image,exception);
   (void) NegateImage(charcoal_image,MagickFalse,exception);
-  (void) SetImageType(charcoal_image,GrayscaleType);
+  (void) SetImageType(charcoal_image,GrayscaleType,exception);
   return(charcoal_image);
 }
 
@@ -3845,7 +3845,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
         return((Image *) NULL);
       annotate_info=CloneDrawInfo((const ImageInfo *) NULL,draw_info);
       caption=InterpretImageProperties((ImageInfo *) NULL,(Image *) image,
-        value);
+        value,exception);
       (void) CloneString(&annotate_info->text,caption);
       count=FormatMagickCaption(caption_image,annotate_info,MagickTrue,&metrics,
         &caption,exception);
@@ -5273,7 +5273,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     "ellipse %g,%g,%g,%g,0.0,360.0",image->columns/2.0,
     image->rows/2.0,image->columns/2.0-x,image->rows/2.0-y);
   draw_info->primitive=AcquireString(ellipse);
-  (void) DrawImage(oval_image,draw_info);
+  (void) DrawImage(oval_image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
   blur_image=BlurImage(oval_image,radius,sigma,exception);
   oval_image=DestroyImage(oval_image);

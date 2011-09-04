@@ -445,7 +445,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       if(PalHeader.MaxIndex<1) goto ErasePalette;
       image->colors=PalHeader.MaxIndex+1;
-      if (AcquireImageColormap(image,image->colors) == MagickFalse) goto NoMemory;
+      if (AcquireImageColormap(image,image->colors,exception) == MagickFalse) goto NoMemory;
 
       if(PalHeader.MaxRed==0) PalHeader.MaxRed=(unsigned int) QuantumRange;  /*avoid division by 0*/
       if(PalHeader.MaxGreen==0) PalHeader.MaxGreen=(unsigned int) QuantumRange;
@@ -491,7 +491,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
 
       image->colors=256;
-      if (AcquireImageColormap(image,image->colors) == MagickFalse)
+      if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         {
         NoMemory:
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");

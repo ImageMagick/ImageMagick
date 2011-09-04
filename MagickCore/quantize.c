@@ -328,10 +328,10 @@ static NodeInfo
   *GetNodeInfo(CubeInfo *,const size_t,const size_t,NodeInfo *);
 
 static MagickBooleanType
-  AssignImageColors(Image *,CubeInfo *),
+  AssignImageColors(Image *,CubeInfo *,ExceptionInfo *),
   ClassifyImageColors(CubeInfo *,const Image *,ExceptionInfo *),
   DitherImage(Image *,CubeInfo *),
-  SetGrayscaleImage(Image *);
+  SetGrayscaleImage(Image *,ExceptionInfo *);
 
 static size_t
   DefineImageColormap(Image *,CubeInfo *,NodeInfo *);
@@ -497,7 +497,8 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
   return(id);
 }
 
-static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
+static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
+  ExceptionInfo *exception)
 {
 #define AssignImageTag  "Assign/Image"
 
@@ -516,7 +517,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
         (IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYColorspace))
       (void) TransformImageColorspace((Image *) image,RGBColorspace);
-  if (AcquireImageColormap(image,cube_info->colors) == MagickFalse)
+  if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   image->colors=0;
@@ -1160,14 +1161,18 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
 %
 %  The format of the CompressImageColormap method is:
 %
-%      MagickBooleanType CompressImageColormap(Image *image)
+%      MagickBooleanType CompressImageColormap(Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType CompressImageColormap(Image *image)
+MagickExport MagickBooleanType CompressImageColormap(Image *image,
+  ExceptionInfo *exception)
 {
   QuantizeInfo
     quantize_info;
@@ -1181,7 +1186,7 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image)
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;
   quantize_info.tree_depth=MaxTreeDepth;
-  return(QuantizeImage(&quantize_info,image));
+  return(QuantizeImage(&quantize_info,image,exception));
 }
 
 /*
@@ -2265,7 +2270,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     P o s t e r i z e I m a g e C h a n n e l                               %
+%     P o s t e r i z e I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2277,7 +2282,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %  The format of the PosterizeImage method is:
 %
 %      MagickBooleanType PosterizeImage(Image *image,const size_t levels,
-%        const MagickBooleanType dither)
+%        const MagickBooleanType dither,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2288,6 +2293,8 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %    o dither: Set this integer value to something other than zero to dither
 %      the mapped image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -2302,7 +2309,7 @@ static inline ssize_t MagickRound(MagickRealType x)
 }
 
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
-  const MagickBooleanType dither)
+  const MagickBooleanType dither,ExceptionInfo *exception)
 {
 #define PosterizeImageTag  "Posterize/Image"
 #define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
@@ -2310,9 +2317,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -2356,7 +2360,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2415,7 +2418,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     levels,MaxColormapSize+1);
   quantize_info->dither=dither;
   quantize_info->tree_depth=MaxTreeDepth;
-  status=QuantizeImage(quantize_info,image);
+  status=QuantizeImage(quantize_info,image,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   return(status);
 }
@@ -2594,13 +2597,15 @@ static void PruneToCubeDepth(const Image *image,CubeInfo *cube_info,
 %  The format of the QuantizeImage method is:
 %
 %      MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o quantize_info: Specifies a pointer to an QuantizeInfo structure.
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -2624,7 +2629,7 @@ static MagickBooleanType DirectToColormapImage(Image *image,
 
   status=MagickTrue;
   number_colors=(size_t) (image->columns*image->rows);
-  if (AcquireImageColormap(image,number_colors) == MagickFalse)
+  if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   if (image->colors != number_colors)
@@ -2667,7 +2672,7 @@ static MagickBooleanType DirectToColormapImage(Image *image,
 }
 
 MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   CubeInfo
     *cube_info;
@@ -2694,7 +2699,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     (void) DirectToColormapImage(image,&image->exception);
   if ((IsImageGray(image,&image->exception) != MagickFalse) &&
       (image->matte == MagickFalse))
-    (void) SetGrayscaleImage(image);
+    (void) SetGrayscaleImage(image,exception);
   if ((image->storage_class == PseudoClass) &&
       (image->colors <= maximum_colors))
     return(MagickTrue);
@@ -2729,7 +2734,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         Reduce the number of colors in the image.
       */
       ReduceImageColors(image,cube_info);
-      status=AssignImageColors(image,cube_info);
+      status=AssignImageColors(image,cube_info,exception);
     }
   DestroyCubeInfo(cube_info);
   return(status);
@@ -2754,7 +2759,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
 %  The format of the QuantizeImages method is:
 %
 %      MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
-%        Image *images)
+%        Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2762,9 +2767,11 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
 %
 %    o images: Specifies a pointer to a list of Image structures.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
-  Image *images)
+  Image *images,ExceptionInfo *exception)
 {
   CubeInfo
     *cube_info;
@@ -2798,7 +2805,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
       /*
         Handle a single image with QuantizeImage.
       */
-      status=QuantizeImage(quantize_info,images);
+      status=QuantizeImage(quantize_info,images,exception);
       return(status);
     }
   status=MagickFalse;
@@ -2859,7 +2866,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
       {
         progress_monitor=SetImageProgressMonitor(image,(MagickProgressMonitor)
           NULL,image->client_data);
-        status=AssignImageColors(image,cube_info);
+        status=AssignImageColors(image,cube_info,exception);
         if (status == MagickFalse)
           break;
         (void) SetImageProgressMonitor(image,progress_monitor,
@@ -3031,7 +3038,7 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
 %  The format of the RemapImage method is:
 %
 %      MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
-%        Image *image,const Image *remap_image)
+%        Image *image,const Image *remap_image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3041,9 +3048,11 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
 %
 %    o remap_image: the reference image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
-  Image *image,const Image *remap_image)
+  Image *image,const Image *remap_image,ExceptionInfo *exception)
 {
   CubeInfo
     *cube_info;
@@ -3072,7 +3081,7 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
         Classify image colors from the reference image.
       */
       cube_info->quantize_info->number_colors=cube_info->colors;
-      status=AssignImageColors(image,cube_info);
+      status=AssignImageColors(image,cube_info,exception);
     }
   DestroyCubeInfo(cube_info);
   return(status);
@@ -3095,7 +3104,7 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
 %  The format of the RemapImage method is:
 %
 %      MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
-%        Image *images,Image *remap_image)
+%        Image *images,Image *remap_image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3105,9 +3114,11 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
 %
 %    o remap_image: the reference image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
-  Image *images,const Image *remap_image)
+  Image *images,const Image *remap_image,ExceptionInfo *exception)
 {
   CubeInfo
     *cube_info;
@@ -3128,7 +3139,7 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
       /*
         Create a global colormap for an image sequence.
       */
-      status=QuantizeImages(quantize_info,images);
+      status=QuantizeImages(quantize_info,images,exception);
       return(status);
     }
   /*
@@ -3139,7 +3150,7 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  status=ClassifyImageColors(cube_info,remap_image,&image->exception);
+  status=ClassifyImageColors(cube_info,remap_image,exception);
   if (status != MagickFalse)
     {
       /*
@@ -3149,7 +3160,7 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
       image=images;
       for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
       {
-        status=AssignImageColors(image,cube_info);
+        status=AssignImageColors(image,cube_info,exception);
         if (status == MagickFalse)
           break;
       }
@@ -3173,11 +3184,13 @@ MagickExport MagickBooleanType RemapImages(const QuantizeInfo *quantize_info,
 %
 %  The format of the SetGrayscaleImage method is:
 %
-%      MagickBooleanType SetGrayscaleImage(Image *image)
+%      MagickBooleanType SetGrayscaleImage(Image *image,ExceptionInfo *exeption)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -3205,13 +3218,11 @@ static int IntensityCompare(const void *x,const void *y)
 }
 #endif
 
-static MagickBooleanType SetGrayscaleImage(Image *image)
+static MagickBooleanType SetGrayscaleImage(Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -3238,17 +3249,13 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       image->filename);
   if (image->storage_class != PseudoClass)
     {
-      ExceptionInfo
-        *exception;
-
       for (i=0; i <= (ssize_t) MaxMap; i++)
         colormap_index[i]=(-1);
-      if (AcquireImageColormap(image,MaxMap+1) == MagickFalse)
+      if (AcquireImageColormap(image,MaxMap+1,exception) == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       image->colors=0;
       status=MagickTrue;
-      exception=(&image->exception);
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -3323,7 +3330,6 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   image->colormap=(PixelPacket *) RelinquishMagickMemory(image->colormap);
   image->colormap=colormap;
   status=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)

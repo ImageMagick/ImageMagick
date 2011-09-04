@@ -26,7 +26,7 @@ extern MagickExport MagickBooleanType
   GetImageDynamicThreshold(const Image *,const double,const double,
     PixelInfo *,ExceptionInfo *),
   SegmentImage(Image *,const ColorspaceType,const MagickBooleanType,
-    const double,const double);
+    const double,const double,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

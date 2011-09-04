@@ -377,10 +377,11 @@ extern MagickExport DrawInfo
 
 extern MagickExport MagickBooleanType
   DrawAffineImage(Image *,const Image *,const AffineMatrix *),
-  DrawClipPath(Image *,const DrawInfo *,const char *),
+  DrawClipPath(Image *,const DrawInfo *,const char *,ExceptionInfo *),
   DrawGradientImage(Image *,const DrawInfo *),
-  DrawImage(Image *,const DrawInfo *),
-  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
+  DrawImage(Image *,const DrawInfo *,ExceptionInfo *),
+  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **,
+    ExceptionInfo *),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *);
 
 extern MagickExport void

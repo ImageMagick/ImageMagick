@@ -48,10 +48,6 @@
 /*
   Include declarations.
 */
-#if !defined(WIN32)
-#define MagickExport
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -1222,7 +1218,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             clip_mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageClipMask(image,clip_mask);
+            SetImageClipMask(image,clip_mask,exception);
           break;
         }
       if (LocaleNCompare(attribute,"colormap",8) == 0)
@@ -1281,7 +1277,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           for ( ; image; image=image->next)
             (void) SetImageProperty(image,"Comment",InterpretImageProperties(
               info ? info->image_info : (ImageInfo *) NULL,image,
-              SvPV(sval,na)));
+              SvPV(sval,na),exception));
           break;
         }
       if (LocaleCompare(attribute,"compression") == 0)
@@ -1628,7 +1624,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           for ( ; image; image=image->next)
             (void) SetImageProperty(image,"label",InterpretImageProperties(
               info ? info->image_info : (ImageInfo *) NULL,image,
-              SvPV(sval,na)));
+              SvPV(sval,na),exception));
           break;
         }
       if (LocaleCompare(attribute,"loop") == 0)
@@ -1671,7 +1667,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageMask(image,mask);
+            SetImageMask(image,mask,exception);
           break;
         }
       if (LocaleCompare(attribute,"mattecolor") == 0)
@@ -1721,7 +1717,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (info)
             info->image_info->monochrome=sp != 0 ? MagickTrue : MagickFalse;
           for ( ; image; image=image->next)
-            (void) SetImageType(image,BilevelType);
+            (void) SetImageType(image,BilevelType,exception);
           break;
         }
       if (info)
@@ -2077,7 +2073,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (info)
             info->image_info->type=(ImageType) sp;
           for ( ; image; image=image->next)
-            SetImageType(image,(ImageType) sp);
+            SetImageType(image,(ImageType) sp,exception);
           break;
         }
       if (info)
@@ -4416,7 +4412,7 @@ Get(ref,...)
 
                   sv=NULL;
                   if (image->mask == (Image *) NULL)
-                    ClipImage(image);
+                    ClipImage(image,exception);
                   if (image->mask != (Image *) NULL)
                     {
                       AddImageToRegistry(sv,image->mask);
@@ -4435,7 +4431,7 @@ Get(ref,...)
 
                   sv=NULL;
                   if (image->clip_mask == (Image *) NULL)
-                    ClipImage(image);
+                    ClipImage(image,exception);
                   if (image->clip_mask != (Image *) NULL)
                     {
                       AddImageToRegistry(sv,image->clip_mask);
@@ -5231,7 +5227,7 @@ Get(ref,...)
 
               if (image == (Image *) NULL)
                 break;
-              (void) SignatureImage(image);
+              (void) SignatureImage(image,exception);
               value=GetImageProperty(image,"Signature");
               if (value != (const char *) NULL)
                 s=newSVpv(value,0);
@@ -5441,7 +5437,7 @@ Get(ref,...)
                    *meta;
 
                  meta=InterpretImageProperties(info ? info->image_info :
-                   (ImageInfo *) NULL,image,attribute);
+                   (ImageInfo *) NULL,image,attribute,exception);
                  s=newSVpv(meta,0);
                  PUSHs(s ? sv_2mortal(s) : &sv_undef);
                  meta=(char *) RelinquishMagickMemory(meta);
@@ -6784,7 +6780,7 @@ Layers(ref,...)
         OptimizeImageTransparency(image,exception);
         InheritException(&(image->exception),exception);
         quantize_info=AcquireQuantizeInfo(info->image_info);
-        (void) RemapImages(quantize_info,image,(Image *) NULL);
+        (void) RemapImages(quantize_info,image,(Image *) NULL,exception);
         quantize_info=DestroyQuantizeInfo(quantize_info);
         break;
       }
@@ -7473,7 +7469,7 @@ Mogrify(ref,...)
             argument_list[0].string_reference=(char *) NULL;
           (void) SetImageProperty(image,"comment",InterpretImageProperties(
             info ? info->image_info : (ImageInfo *) NULL,image,
-            argument_list[0].string_reference));
+            argument_list[0].string_reference,exception));
           break;
         }
         case 2:  /* Label */
@@ -7482,7 +7478,7 @@ Mogrify(ref,...)
             argument_list[0].string_reference=(char *) NULL;
           (void) SetImageProperty(image,"label",InterpretImageProperties(
             info ? info->image_info : (ImageInfo *) NULL,image,
-            argument_list[0].string_reference));
+            argument_list[0].string_reference,exception));
           break;
         }
         case 3:  /* AddNoise */
@@ -7928,7 +7924,8 @@ Mogrify(ref,...)
                 *text;
 
               text=InterpretImageProperties(info ? info->image_info :
-                (ImageInfo *) NULL,image,argument_list[0].string_reference);
+                (ImageInfo *) NULL,image,argument_list[0].string_reference,
+                exception);
               (void) CloneString(&draw_info->text,text);
               text=DestroyString(text);
             }
@@ -8394,7 +8391,8 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             argument_list[0].integer_reference=6;
-          (void) CycleColormapImage(image,argument_list[0].integer_reference);
+          (void) CycleColormapImage(image,argument_list[0].integer_reference,
+            exception);
           break;
         }
         case 38:  /* Draw */
@@ -8634,7 +8632,7 @@ Mogrify(ref,...)
           if (attribute_flag[32] != 0)
             draw_info->direction=(DirectionType)
               argument_list[32].integer_reference;
-          DrawImage(image,draw_info);
+          DrawImage(image,draw_info,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8688,7 +8686,7 @@ Mogrify(ref,...)
             quantize_info->dither_method=(DitherMethod)
               argument_list[2].integer_reference;
           (void) RemapImages(quantize_info,image,
-            argument_list[0].image_reference);
+            argument_list[0].image_reference,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
           break;
         }
@@ -8854,7 +8852,7 @@ Mogrify(ref,...)
               &image->transparent_color,exception);
           if (attribute_flag[5] && argument_list[5].integer_reference)
             {
-              (void) QuantizeImages(quantize_info,image);
+              (void) QuantizeImages(quantize_info,image,exception);
               goto PerlException;
             }
           if (attribute_flag[6] != 0)
@@ -8863,9 +8861,9 @@ Mogrify(ref,...)
           if ((image->storage_class == DirectClass) ||
               (image->colors > quantize_info->number_colors) ||
               (quantize_info->colorspace == GRAYColorspace))
-            (void) QuantizeImage(quantize_info,image);
+            (void) QuantizeImage(quantize_info,image,exception);
           else
-            CompressImageColormap(image);
+            CompressImageColormap(image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
           break;
         }
@@ -8919,12 +8917,12 @@ Mogrify(ref,...)
             verbose=argument_list[4].integer_reference != 0 ?
               MagickTrue : MagickFalse;
           (void) SegmentImage(image,colorspace,verbose,cluster_threshold,
-            smoothing_threshold);
+            smoothing_threshold,exception);
           break;
         }
         case 51:  /* Signature */
         {
-          (void) SignatureImage(image);
+          (void) SignatureImage(image,exception);
           break;
         }
         case 52:  /* Solarize */
@@ -9386,7 +9384,8 @@ Mogrify(ref,...)
           if (attribute_flag[1] == 0)
             argument_list[1].integer_reference=MagickTrue;
           (void) ClipImagePath(image,argument_list[0].string_reference,
-            argument_list[1].integer_reference != 0 ? MagickTrue : MagickFalse);
+            argument_list[1].integer_reference != 0 ? MagickTrue : MagickFalse,
+            exception);
           break;
         }
         case 75:  /* AffineTransform */
@@ -9519,7 +9518,8 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             image->fuzz=SiPrefixToDouble(argument_list[1].string_reference,
               QuantumRange);
-          (void) IsImagesEqual(image,argument_list[0].image_reference);
+          (void) IsImagesEqual(image,argument_list[0].image_reference,
+            exception);
           break;
         }
         case 77:  /* AdaptiveThreshold */
@@ -9705,7 +9705,8 @@ Mogrify(ref,...)
           if (attribute_flag[1] == 0)
             argument_list[1].integer_reference=0;
           (void) PosterizeImage(image,argument_list[0].integer_reference,
-            argument_list[1].integer_reference ? MagickTrue : MagickFalse);
+            argument_list[1].integer_reference ? MagickTrue : MagickFalse,
+            exception);
           break;
         }
         case 89:  /* Shadow */
@@ -10103,7 +10104,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             (void) SetImageProperty(image,"caption",InterpretImageProperties(
               info ? info->image_info : (ImageInfo *) NULL,image,
-              argument_list[0].string_reference));
+              argument_list[0].string_reference,exception));
           angle=0.0;
           if (attribute_flag[1] != 0)
             angle=argument_list[1].real_reference;
@@ -10294,7 +10295,7 @@ Mogrify(ref,...)
             quantize_info->dither_method=(DitherMethod)
               argument_list[2].integer_reference;
           (void) RemapImages(quantize_info,image,
-            argument_list[0].image_reference);
+            argument_list[0].image_reference,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
           break;
         }
@@ -10956,7 +10957,7 @@ Montage(ref,...)
               for (next=image; next; next=next->next)
                 (void) SetImageProperty(next,"label",InterpretImageProperties(
                   info ? info->image_info : (ImageInfo *) NULL,next,
-                  SvPV(ST(i),na)));
+                  SvPV(ST(i),na),exception));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",

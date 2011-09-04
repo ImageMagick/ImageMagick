@@ -87,13 +87,15 @@
 %  The format of the AcquireImageColormap method is:
 %
 %      MagickBooleanType AcquireImageColormap(Image *image,
-%        const size_t colors)
+%        const size_t colors,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o colors: the number of colors in the image colormap.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -114,7 +116,7 @@ static inline size_t MagickMin(const size_t x,
 }
 
 MagickExport MagickBooleanType AcquireImageColormap(Image *image,
-  const size_t colors)
+  const size_t colors,ExceptionInfo *exception)
 {
   register ssize_t
     i;
@@ -171,7 +173,8 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 %
 %  The format of the CycleColormapImage method is:
 %
-%      MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace)
+%      MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -179,15 +182,14 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 %
 %    o displace:  displace the colormap this amount.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType CycleColormapImage(Image *image,
-  const ssize_t displace)
+  const ssize_t displace,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -200,9 +202,8 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == DirectClass)
-    (void) SetImageType(image,PaletteType);
+    (void) SetImageType(image,PaletteType,exception);
   status=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -258,11 +259,14 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 %
 %  The format of the SortColormapByIntensity method is:
 %
-%      MagickBooleanType SortColormapByIntensity(Image *image)
+%      MagickBooleanType SortColormapByIntensity(Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: A pointer to an Image structure.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -290,13 +294,11 @@ static int IntensityCompare(const void *x,const void *y)
 }
 #endif
 
-MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
+MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -346,7 +348,6 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
   for (i=0; i < (ssize_t) image->colors; i++)
     pixels[(ssize_t) image->colormap[i].alpha]=(unsigned short) i;
   status=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

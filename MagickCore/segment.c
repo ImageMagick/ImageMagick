@@ -218,7 +218,7 @@ static void
 %      MagickBooleanType Classify(Image *image,short **extrema,
 %        const MagickRealType cluster_threshold,
 %        const MagickRealType weighting_exponent,
-%        const MagickBooleanType verbose)
+%        const MagickBooleanType verbose,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -237,10 +237,13 @@ static void
 %    o verbose:  A value greater than zero prints detailed information about
 %      the identified classes.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static MagickBooleanType Classify(Image *image,short **extrema,
   const MagickRealType cluster_threshold,
-  const MagickRealType weighting_exponent,const MagickBooleanType verbose)
+  const MagickRealType weighting_exponent,const MagickBooleanType verbose,
+  ExceptionInfo *exception)
 {
 #define SegmentImageTag  "Segment/Image"
 
@@ -252,9 +255,6 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     *head,
     *last_cluster,
     *next_cluster;
-
-  ExceptionInfo
-    *exception;
 
   ExtentPacket
     blue,
@@ -352,7 +352,6 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   status=MagickTrue;
   count=0;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -512,7 +511,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   /*
     Allocate image colormap.
   */
-  if (AcquireImageColormap(image,number_clusters) == MagickFalse)
+  if (AcquireImageColormap(image,number_clusters,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   i=0;
@@ -1768,7 +1767,8 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
 %
 %      MagickBooleanType SegmentImage(Image *image,
 %        const ColorspaceType colorspace,const MagickBooleanType verbose,
-%        const double cluster_threshold,const double smooth_threshold)
+%        const double cluster_threshold,const double smooth_threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1787,10 +1787,13 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
 %      derivative of the histogram.  As the value is increased, you can expect a
 %      smoother second derivative.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SegmentImage(Image *image,
   const ColorspaceType colorspace,const MagickBooleanType verbose,
-  const double cluster_threshold,const double smooth_threshold)
+  const double cluster_threshold,const double smooth_threshold,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1841,7 +1844,8 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   /*
     Classify using the fuzzy c-Means technique.
   */
-  status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose);
+  status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose,
+    exception);
   if (IsRGBColorspace(colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,colorspace);
   /*

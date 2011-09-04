@@ -1774,7 +1774,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           char
             *text;
 
-          text=InterpretImageProperties(image_info,montage_image,format);
+          text=InterpretImageProperties(image_info,montage_image,format,
+            exception);
           if (text == (char *) NULL)
             ThrowMontageException(ResourceLimitError,"MemoryAllocationFailed",
               GetExceptionMessage(errno));

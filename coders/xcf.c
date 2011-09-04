@@ -331,11 +331,9 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max)
 }
 
 static MagickBooleanType load_tile(Image *image,Image *tile_image,
-  XCFDocInfo *inDocInfo,XCFLayerInfo *inLayerInfo,size_t data_length)
+  XCFDocInfo *inDocInfo,XCFLayerInfo *inLayerInfo,size_t data_length,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   ssize_t
     y;
 
@@ -365,7 +363,6 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   if (count != (ssize_t) data_length)
     ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
       image->filename);
-  exception=(&image->exception);
   for (y=0; y < (ssize_t) tile_image->rows; y++)
   {
     q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
@@ -406,11 +403,9 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
 }
 
 static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
-  XCFDocInfo *inDocInfo,XCFLayerInfo *inLayerInfo,size_t data_length)
+  XCFDocInfo *inDocInfo,XCFLayerInfo *inLayerInfo,size_t data_length,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   MagickOffsetType
     size;
 
@@ -670,12 +665,12 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
       switch (inDocInfo->compression)
       {
         case COMPRESS_NONE:
-          if (load_tile(image,tile_image,inDocInfo,inLayerInfo,(size_t) (offset2-offset)) == 0)
+          if (load_tile(image,tile_image,inDocInfo,inLayerInfo,(size_t) (offset2-offset),exception) == 0)
             status=MagickTrue;
           break;
         case COMPRESS_RLE:
           if (load_tile_rle (image,tile_image,inDocInfo,inLayerInfo,
-              (int) (offset2-offset)) == 0)
+              (int) (offset2-offset),exception) == 0)
             status=MagickTrue;
           break;
         case COMPRESS_ZLIB:
@@ -765,7 +760,7 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
 }
 
 static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
-  XCFLayerInfo *outLayer )
+  XCFLayerInfo *outLayer, ExceptionInfo *exception )
 {
   MagickOffsetType
     offset;
@@ -1294,7 +1289,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /* seek to the layer offset */
       offset=SeekBlob(image,offset,SEEK_SET);
       /* read in the layer */
-      layer_ok=ReadOneLayer(image,&doc_info,&layer_info[current_layer]);
+      layer_ok=ReadOneLayer(image,&doc_info,&layer_info[current_layer],
+        exception);
       if (layer_ok == MagickFalse)
         {
           int j;

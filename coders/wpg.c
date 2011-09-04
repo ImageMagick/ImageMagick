@@ -1036,7 +1036,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
 
               image->colors=WPG_Palette.NumOfEntries;
-              if (!AcquireImageColormap(image,image->colors))
+              if (!AcquireImageColormap(image,image->colors,exception))
                 goto NoMemory;
               for (i=WPG_Palette.StartIndex;
                    i < (int)WPG_Palette.NumOfEntries; i++)
@@ -1089,7 +1089,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if ((image->colors == 0) && (bpp != 24))
                 {
                   image->colors=one << bpp;
-                  if (!AcquireImageColormap(image,image->colors))
+                  if (!AcquireImageColormap(image,image->colors,exception))
                     {
                     NoMemory:
                       ThrowReaderException(ResourceLimitError,
@@ -1220,7 +1220,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
 
               image->colors=WPG_Palette.NumOfEntries;
-              if (AcquireImageColormap(image,image->colors) == MagickFalse)
+              if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
               for (i=WPG_Palette.StartIndex;
@@ -1273,7 +1273,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
                   one=1;
                   image->colors=one << bpp;
-                  if (!AcquireImageColormap(image,image->colors))
+                  if (!AcquireImageColormap(image,image->colors,exception))
                     goto NoMemory;
                 }
               else

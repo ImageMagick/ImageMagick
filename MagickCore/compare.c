@@ -1458,7 +1458,7 @@ MagickExport double *GetImageDistortions(Image *image,
 %  The format of the IsImagesEqual method is:
 %
 %      MagickBooleanType IsImagesEqual(Image *image,
-%        const Image *reconstruct_image)
+%        const Image *reconstruct_image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1466,16 +1466,15 @@ MagickExport double *GetImageDistortions(Image *image,
 %
 %    o reconstruct_image: the reconstruct image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType IsImagesEqual(Image *image,
-  const Image *reconstruct_image)
+  const Image *reconstruct_image,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
     *reconstruct_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1500,7 +1499,6 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
   mean_error=0.0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
   for (y=0; y < (ssize_t) image->rows; y++)

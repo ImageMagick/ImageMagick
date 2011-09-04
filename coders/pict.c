@@ -1094,7 +1094,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     flags=1L*ReadBlobMSBShort(image);
                     tile_image->colors=1UL*ReadBlobMSBShort(image)+1;
                   }
-                status=AcquireImageColormap(tile_image,tile_image->colors);
+                status=AcquireImageColormap(tile_image,tile_image->colors,
+                  exception);
                 if (status == MagickFalse)
                   {
                     tile_image=DestroyImage(tile_image);

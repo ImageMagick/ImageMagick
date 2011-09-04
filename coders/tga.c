@@ -254,7 +254,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           one=1;
           image->colors=one << tga_info.bits_per_pixel;
-          if (AcquireImageColormap(image,image->colors) == MagickFalse)
+          if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
     }
@@ -288,7 +288,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read TGA raster colormap.
       */
-      if (AcquireImageColormap(image,image->colors) == MagickFalse)
+      if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       for (i=0; i < (ssize_t) image->colors; i++)
       {

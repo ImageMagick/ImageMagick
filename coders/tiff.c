@@ -433,7 +433,7 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
 }
 
 static MagickBooleanType ReadProfile(Image *image,const char *name,
-  unsigned char *datum,ssize_t length)
+  unsigned char *datum,ssize_t length,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -501,7 +501,7 @@ static void TIFFErrors(const char *module,const char *format,va_list error)
       "`%s'",module);
 }
 
-static void TIFFGetProfiles(TIFF *tiff,Image *image)
+static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
 {
   uint32
     length;
@@ -512,12 +512,12 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
 #if defined(TIFFTAG_ICCPROFILE)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1)
-    (void) ReadProfile(image,"icc",profile,(ssize_t) length);
+    (void) ReadProfile(image,"icc",profile,(ssize_t) length,exception);
 #endif
 #if defined(TIFFTAG_PHOTOSHOP)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1)
-    (void) ReadProfile(image,"8bim",profile,(ssize_t) length);
+    (void) ReadProfile(image,"8bim",profile,(ssize_t) length,exception);
 #endif
 #if defined(TIFFTAG_RICHTIFFIPTC)
   length=0;
@@ -525,17 +525,17 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
     {
       if (TIFFIsByteSwapped(tiff) != 0)
         TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
-      (void) ReadProfile(image,"iptc",profile,4L*length);
+      (void) ReadProfile(image,"iptc",profile,4L*length,exception);
     }
 #endif
 #if defined(TIFFTAG_XMLPACKET)
   length=0;
   if (TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&profile) == 1)
-    (void) ReadProfile(image,"xmp",profile,(ssize_t) length);
+    (void) ReadProfile(image,"xmp",profile,(ssize_t) length,exception);
 #endif
   length=0;
   if (TIFFGetField(tiff,37724,&length,&profile) == 1)
-    (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
+    (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length,exception);
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image)
@@ -990,7 +990,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((option != (const char *) NULL) &&
         (IsMagickTrue(option) != MagickFalse))
       TIFFGetEXIFProperties(tiff,image);
-    TIFFGetProfiles(tiff,image);
+    TIFFGetProfiles(tiff,image,exception);
     /*
       Allocate memory for the image and pixel buffer.
     */
@@ -1109,7 +1109,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           colors;
 
         colors=(size_t) GetQuantumRange(bits_per_sample)+1;
-        if (AcquireImageColormap(image,colors) == MagickFalse)
+        if (AcquireImageColormap(image,colors,exception) == MagickFalse)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1935,7 +1935,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
     }
   (void) FormatLocaleString(huffman_image->filename,MaxTextExtent,"tiff:%s",
     filename);
-  (void) SetImageType(huffman_image,BilevelType);
+  (void) SetImageType(huffman_image,BilevelType,exception);
   write_info=CloneImageInfo((ImageInfo *) NULL);
   SetImageInfoFile(write_info,file);
   write_info->compression=Group4Compression;
@@ -2538,7 +2538,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     */
     if ((image_info->type != UndefinedType) &&
         (image_info->type != OptimizeType))
-      (void) SetImageType(image,image_info->type);
+      (void) SetImageType(image,image_info->type,exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2666,7 +2666,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case FaxCompression:
       case Group4Compression:
       {
-        (void) SetImageType(image,BilevelType);
+        (void) SetImageType(image,BilevelType,exception);
         break;
       }
       case JPEGCompression:

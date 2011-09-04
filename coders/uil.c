@@ -257,7 +257,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
             }
           }
         }
-      (void) SetImageType(image,PaletteType);
+      (void) SetImageType(image,PaletteType,exception);
       colors=image->colors;
       if (transparent != MagickFalse)
         {

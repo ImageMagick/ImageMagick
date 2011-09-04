@@ -1541,7 +1541,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   progress=0;
   if (image->sync != MagickFalse)
     {
-      if (AcquireImageColormap(image,2) == MagickFalse)
+      if (AcquireImageColormap(image,2,exception) == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       random_info=AcquireRandomInfoThreadSet();

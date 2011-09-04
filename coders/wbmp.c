@@ -174,7 +174,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   if (DiscardBlobBytes(image,image->offset) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
@@ -382,7 +382,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   /*
     Convert image to a bi-level image.
   */
-  (void) SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType,exception);
   (void) WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);
   WBMPWriteInteger(image,image->rows);

@@ -146,7 +146,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=576;
   image->rows=720;
   image->depth=1;
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {

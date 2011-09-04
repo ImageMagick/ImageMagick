@@ -151,7 +151,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     if (bits_per_pixel == 8)
-      if (AcquireImageColormap(image,256) == MagickFalse)
+      if (AcquireImageColormap(image,256,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))

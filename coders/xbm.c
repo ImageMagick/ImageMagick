@@ -271,7 +271,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  if (AcquireImageColormap(image,image->colors) == MagickFalse)
+  if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Initialize colormap.
@@ -530,7 +530,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
   /*
     Convert MIFF to X bitmap pixels.
   */
-  (void) SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType,exception);
   bit=0;
   byte=0;
   count=0;

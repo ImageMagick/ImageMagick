@@ -118,6 +118,9 @@ typedef struct _DestinationManager
 
 typedef struct _ErrorManager
 {
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
@@ -309,11 +312,15 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
   ErrorManager
     *error_manager;
 
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
   *message='\0';
   error_manager=(ErrorManager *) jpeg_info->client_data;
+  exception=error_manager->exception;
   image=error_manager->image;
   if (level < 0)
     {
@@ -349,6 +356,9 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   ErrorManager
     *error_manager;
 
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
@@ -365,6 +375,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     Determine length of comment.
   */
   error_manager=(ErrorManager *) jpeg_info->client_data;
+  exception=error_manager->exception;
   image=error_manager->image;
   length=(size_t) ((size_t) GetCharacter(jpeg_info) << 8);
   length+=GetCharacter(jpeg_info);
@@ -397,6 +408,9 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 
   ErrorManager
     *error_manager;
+
+  ExceptionInfo
+    *exception;
 
   Image
     *image;
@@ -444,6 +458,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
   error_manager=(ErrorManager *) jpeg_info->client_data;
+  exception=error_manager->exception;
   image=error_manager->image;
   profile=BlobToStringInfo((const void *) NULL,length);
   if (profile == (StringInfo *) NULL)
@@ -479,6 +494,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 
   ErrorManager
     *error_manager;
+
+  ExceptionInfo
+    *exception;
 
   Image
     *image;
@@ -540,6 +558,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (length == 0)
     return(MagickTrue);
   error_manager=(ErrorManager *) jpeg_info->client_data;
+  exception=error_manager->exception;
   image=error_manager->image;
   profile=BlobToStringInfo((const void *) NULL,length);
   if (profile == (StringInfo *) NULL)
@@ -579,6 +598,9 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   ErrorManager
     *error_manager;
 
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
@@ -611,6 +633,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   marker=jpeg_info->unread_marker-JPEG_APP0;
   (void) FormatLocaleString(name,MaxTextExtent,"APP%d",marker);
   error_manager=(ErrorManager *) jpeg_info->client_data;
+  exception=error_manager->exception;
   image=error_manager->image;
   profile=BlobToStringInfo((const void *) NULL,length);
   if (profile == (StringInfo *) NULL)
@@ -986,6 +1009,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
+  error_manager.exception=exception;
   error_manager.image=image;
   if (setjmp(error_manager.error_recovery) != 0)
     {
@@ -1152,7 +1176,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
   if ((image_info->colors != 0) && (image_info->colors <= 256))
-    if (AcquireImageColormap(image,image_info->colors) == MagickFalse)
+    if (AcquireImageColormap(image,image_info->colors,exception) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((jpeg_info.output_components == 1) &&
       (jpeg_info.quantize_colors == MagickFalse))
@@ -1161,7 +1185,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         colors;
 
       colors=(size_t) GetQuantumRange(image->depth)+1;
-      if (AcquireImageColormap(image,colors) == MagickFalse)
+      if (AcquireImageColormap(image,colors,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   if (image->debug != MagickFalse)
@@ -1780,6 +1804,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
+  error_manager.exception=exception;
   error_manager.image=image;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_manager.error_recovery) != 0)

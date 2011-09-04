@@ -72,7 +72,7 @@
 */
 #if defined(MAGICKCORE_WEBP_DELEGATE)
 static MagickBooleanType
-  WriteWEBPImage(const ImageInfo *,Image *);
+  WriteWEBPImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 #if defined(MAGICKCORE_WEBP_DELEGATE)
@@ -294,7 +294,7 @@ static int WebPWriter(const unsigned char *stream,size_t length,
 }
 
 static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   int
     webp_status;

@@ -143,7 +143,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     Initialize image colormap.
   */
   image->depth=1;
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
@@ -318,7 +318,7 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
   /*
     Convert image to a bi-level image.
   */
-  (void) SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

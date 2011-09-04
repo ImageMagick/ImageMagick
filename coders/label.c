@@ -123,7 +123,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AcquireImage(image_info);
   (void) ResetImagePage(image,"0x0+0+0");
-  property=InterpretImageProperties(image_info,image,image_info->filename);
+  property=InterpretImageProperties(image_info,image,image_info->filename,
+    exception);
   (void) SetImageProperty(image,"label",property);
   property=DestroyString(property);
   label=GetImageProperty(image,"label");
