@@ -22,6 +22,15 @@
 extern "C" {
 #endif
 
+extern MagickPrivate double
+  GenerateDifferentialNoise(RandomInfo *,const Quantum,const NoiseType,
+    const MagickRealType);
+
+extern MagickPrivate size_t
+  GetOptimalKernelWidth(const double,const double),
+  GetOptimalKernelWidth1D(const double,const double),
+  GetOptimalKernelWidth2D(const double,const double);
+
 extern MagickPrivate void
   ConvertHSBToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),

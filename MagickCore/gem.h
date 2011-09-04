@@ -26,14 +26,7 @@ extern "C" {
 #include <MagickCore/random_.h>
 
 extern MagickExport double
-  ExpandAffine(const AffineMatrix *),
-  GenerateDifferentialNoise(RandomInfo *,const Quantum,const NoiseType,
-    const MagickRealType);
-
-extern MagickExport size_t
-  GetOptimalKernelWidth(const double,const double),
-  GetOptimalKernelWidth1D(const double,const double),
-  GetOptimalKernelWidth2D(const double,const double);
+  ExpandAffine(const AffineMatrix *);
 
 extern MagickExport void
   ConvertHSLToRGB(const double,const double,const double,Quantum *,Quantum *,

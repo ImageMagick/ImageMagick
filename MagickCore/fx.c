@@ -58,6 +58,7 @@
 #include "MagickCore/fx.h"
 #include "MagickCore/fx-private.h"
 #include "MagickCore/gem.h"
+#include "MagickCore/gem-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/layer.h"
 #include "MagickCore/list.h"
