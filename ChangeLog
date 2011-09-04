@@ -7,6 +7,8 @@
   * Bail gracefully for corrupt JPEG images.
   * Bail gracefully for negative montage geometries (references
     https://bugzilla.redhat.com/show_bug.cgi?id=735599).
+  * Account for DCm bits allocated 16 and significant bits 12 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19420).
 
 2011-08-29  6.7.2-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.1-1.
