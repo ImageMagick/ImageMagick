@@ -7568,6 +7568,71 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   ping_preserve_colormap = mng_info->ping_preserve_colormap;
   ping_need_colortype_warning = MagickFalse;
 
+  /* Recognize the ICC sRGB profile and convert it to the sRGB chunk,
+   * i.e., eliminate the ICC profile and set image->rendering_intent.
+   * Note that this will not involve any changes to the actual pixels
+   * but merely passes information to applications that read the resulting
+   * PNG image.
+   */
+   if (ping_exclude_sRGB == MagickFalse)
+   {
+      char
+        *name;
+
+      const StringInfo
+        *profile;
+
+      ResetImageProfileIterator(image);
+      for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+      {
+        profile=GetImageProfile(image,name);
+
+        if (profile != (StringInfo *) NULL)
+          {
+            if ((LocaleCompare(name,"ICC") == 0) ||
+                (LocaleCompare(name,"ICM") == 0))
+             {
+                 unsigned char
+                   *data;
+
+                 png_uint_32
+                   length;
+
+                 {
+                    length=(png_uint_32) GetStringInfoLength(profile);
+
+                    if (length == 3144)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "    got a 3144-byte ICC profile (potentially sRGB)");
+
+                      data=GetStringInfoDatum(profile);
+
+                      if (data[52]=='s' && data[53]=='R' &&
+                          data[54]=='G' && data[55]=='B')
+                      {
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                             "    It is sRGB)");
+                         if (image->rendering_intent==UndefinedIntent);
+                           image->rendering_intent=PerceptualIntent;
+                      }
+                      else
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                             "    It is not sRGB (%c%c%c%c)",data[52],
+                             data[53],data[54],data[55]);
+                      
+                    }
+                    else
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "    got a %lu-byte ICC profile",
+                         (unsigned long) length);
+                 }
+             }
+          }
+        name=GetNextImageProfile(image);
+      }
+  }
+
   number_opaque = 0;
   number_semitransparent = 0;
   number_transparent = 0;
@@ -9763,8 +9828,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_set_compression_strategy(ping,
        mng_info->write_png_compression_strategy-1);
 
-  if ((ping_exclude_tEXt == MagickFalse || ping_exclude_zTXt == MagickFalse) &&
-     (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
+  /* Only write the iCCP chunk if we are not writing the sRGB chunk. */
+  if (ping_exclude_sRGB != MagickFalse ||
+     (image->rendering_intent == UndefinedIntent))
+  {
+    if ((ping_exclude_tEXt == MagickFalse ||
+       ping_exclude_zTXt == MagickFalse) &&
+       (ping_exclude_iCCP == MagickFalse || ping_exclude_zCCP == MagickFalse))
     {
       ResetImageProfileIterator(image);
       for (name=GetNextImageProfile(image); name != (const char *) NULL; )
@@ -9807,6 +9877,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
         name=GetNextImageProfile(image);
       }
+    }
   }
 
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
@@ -9826,9 +9897,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           (void) png_set_sRGB(ping,ping_info,(
             Magick_RenderingIntent_to_PNG_RenderingIntent(
               image->rendering_intent)));
-
-          if (ping_exclude_gAMA == MagickFalse)
-            png_set_gAMA(ping,ping_info,0.45455);
         }
     }
 
