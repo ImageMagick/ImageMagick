@@ -3823,6 +3823,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           ReadDCMLSBShort(stream_info,image));
                       if (signed_data == 1)
                         pixel_value=((signed short) pixel_value);
+                      if (significant_bits == 12)
+                        pixel_value>>=4;
                     }
                   else
                     {
