@@ -605,7 +605,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %    o attenuate:  attenuate the noise.
 %
 */
-MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
+MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
   const Quantum pixel,const NoiseType noise_type,const MagickRealType attenuate)
 {
 #define NoiseEpsilon  (attenuate*1.0e-5)
@@ -747,7 +747,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-MagickExport size_t GetOptimalKernelWidth1D(const double radius,
+MagickPrivate size_t GetOptimalKernelWidth1D(const double radius,
   const double sigma)
 {
   double
@@ -788,7 +788,7 @@ MagickExport size_t GetOptimalKernelWidth1D(const double radius,
   return((size_t) (width-2));
 }
 
-MagickExport size_t GetOptimalKernelWidth2D(const double radius,
+MagickPrivate size_t GetOptimalKernelWidth2D(const double radius,
   const double sigma)
 {
   double
@@ -829,7 +829,7 @@ MagickExport size_t GetOptimalKernelWidth2D(const double radius,
   return((size_t) (width-2));
 }
 
-MagickExport size_t  GetOptimalKernelWidth(const double radius,
+MagickPrivate size_t  GetOptimalKernelWidth(const double radius,
   const double sigma)
 {
   return(GetOptimalKernelWidth1D(radius,sigma));

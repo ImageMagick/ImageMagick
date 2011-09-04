@@ -479,6 +479,20 @@ struct _ImageInfo
     signature;
 };
 
+extern MagickExport const char
+  DefaultTileFrame[],
+  DefaultTileGeometry[],
+  DefaultTileLabel[],
+  LoadImageTag[],
+  LoadImagesTag[],
+  PSDensityGeometry[],
+  PSPageGeometry[],
+  SaveImageTag[],
+  SaveImagesTag[];
+
+extern MagickExport const double
+  DefaultResolution;
+
 extern MagickExport ExceptionType
   CatchImageException(Image *);
 

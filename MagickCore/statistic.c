@@ -63,6 +63,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/gem.h"
+#include "MagickCore/gem-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/list.h"
 #include "MagickCore/image-private.h"

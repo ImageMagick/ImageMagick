@@ -56,6 +56,7 @@
 #include "MagickCore/effect.h"
 #include "MagickCore/fx.h"
 #include "MagickCore/gem.h"
+#include "MagickCore/gem-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"

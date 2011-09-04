@@ -30,23 +30,11 @@ extern "C" {
 #define UndefinedTicksPerSecond  100L
 #define UndefinedCompressionQuality  0UL
 
-extern MagickExport const char
+extern MagickPrivate const char
   BackgroundColor[],
   BorderColor[],
-  DefaultTileFrame[],
-  DefaultTileGeometry[],
-  DefaultTileLabel[],
   ForegroundColor[],
-  MatteColor[],
-  LoadImageTag[],
-  LoadImagesTag[],
-  PSDensityGeometry[],
-  PSPageGeometry[],
-  SaveImageTag[],
-  SaveImagesTag[];
-
-extern MagickExport const double
-  DefaultResolution;
+  MatteColor[];
 
 static inline double DegreesToRadians(const double degrees)
 {
