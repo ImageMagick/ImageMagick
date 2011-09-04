@@ -646,10 +646,16 @@ void Magick::Image::colorMatrix (const size_t order_,
 // in the current image. False is returned if the images are identical.
 bool Magick::Image::compare ( const Image &reference_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
   Image ref = reference_;
   ref.modifyImage();
-  return static_cast<bool>(IsImagesEqual(image(), ref.image()));
+  bool status =
+    static_cast<bool>(IsImagesEqual(image(), ref.image(), &exceptionInfo));
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  return status;
 }
 
 // Composite two images
@@ -762,9 +768,12 @@ void Magick::Image::crop ( const Geometry &geometry_ )
 // Cycle Color Map
 void Magick::Image::cycleColormap ( const ssize_t amount_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
-  CycleColormapImage( image(), amount_ );
-  throwImageException();
+  CycleColormapImage( image(), amount_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Despeckle
@@ -1310,11 +1319,14 @@ void Magick::Image::magnify ( void )
 // Remap image colors with closest color from reference image
 void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
   options()->quantizeDither( dither_ );
   RemapImage ( options()->quantizeInfo(), image(),
-             mapImage_.constImage());
-  throwImageException();
+             mapImage_.constImage(), &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 // Floodfill designated area with replacement alpha value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
@@ -1537,9 +1549,12 @@ void Magick::Image::quantize ( const bool measureError_  )
   else
     options()->quantizeInfo()->measure_error=MagickFalse;
 
-  QuantizeImage( options()->quantizeInfo(), image() );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  QuantizeImage( options()->quantizeInfo(), image(), &exceptionInfo );
 
-  throwImageException();
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Apply an arithmetic or bitwise operator to the image pixel quantums.
@@ -1885,15 +1900,17 @@ void Magick::Image::scale ( const Geometry &geometry_ )
 void Magick::Image::segment ( const double clusterThreshold_, 
 			      const double smoothingThreshold_ )
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
   SegmentImage ( image(),
 		 options()->quantizeColorSpace(),
 		 (MagickBooleanType) options()->verbose(),
 		 clusterThreshold_,
-		 smoothingThreshold_ );
-  throwImageException();
+		 smoothingThreshold_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   SyncImage( image() );
-  throwImageException();
 }
 
 // Shade image using distant light source
@@ -2603,26 +2620,30 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
 {
   modifyImage();
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   if( clipMask_.isValid() )
     {
       // Set clip mask
-      SetImageClipMask( image(), clipMask_.constImage() );
+      SetImageClipMask( image(), clipMask_.constImage(), &exceptionInfo );
     }
   else
     {
       // Unset existing clip mask
-      SetImageClipMask( image(), 0 );
+      SetImageClipMask( image(), 0, &exceptionInfo );
     }
+   throwException( exceptionInfo );
+   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 Magick::Image Magick::Image::clipMask ( void  ) const
 {
-      ExceptionInfo exceptionInfo;
-      GetExceptionInfo( &exceptionInfo );
-      MagickCore::Image* image =
-        GetImageClipMask( constImage(), &exceptionInfo );
-      throwException( exceptionInfo );
-  (void) DestroyExceptionInfo( &exceptionInfo );
-      return Magick::Image( image );
+   ExceptionInfo exceptionInfo;
+   GetExceptionInfo( &exceptionInfo );
+   MagickCore::Image* image =
+     GetImageClipMask( constImage(), &exceptionInfo );
+   throwException( exceptionInfo );
+   (void) DestroyExceptionInfo( &exceptionInfo );
+   return Magick::Image( image );
 }
 
 void Magick::Image::colorFuzz ( const double fuzz_ )
@@ -3609,13 +3630,17 @@ std::string Magick::Image::signature ( const bool force_ ) const
   Lock( &_imgRef->_mutexLock );
 
   // Re-calculate image signature if necessary
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   if ( force_ ||
        !GetImageProperty(constImage(), "Signature") ||
        constImage()->taint )
     {
-      SignatureImage( const_cast<MagickCore::Image *>(constImage()) );
+      SignatureImage( const_cast<MagickCore::Image *>(constImage()), &exceptionInfo );
     }
 
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   const char *property = GetImageProperty(constImage(), "Signature");
 
   return std::string( property );
@@ -3940,9 +3965,13 @@ Magick::ImageType Magick::Image::type ( void ) const
 }
 void Magick::Image::type ( const Magick::ImageType type_)
 {
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   modifyImage();
   options()->type( type_ );
-  SetImageType( image(), type_ );
+  SetImageType( image(), type_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 void Magick::Image::verbose ( const bool verboseFlag_ )

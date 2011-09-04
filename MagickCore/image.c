@@ -636,7 +636,7 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %  The format of the ClipImagePath method is:
 %
 %      MagickBooleanType ClipImagePath(Image *image,const char *pathname,
-%        const MagickBooleanType inside)
+%        const MagickBooleanType inside,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -648,15 +648,17 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %    o inside: if non-zero, later operations take effect inside clipping path.
 %      Otherwise later operations take effect outside clipping path.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 
-MagickExport MagickBooleanType ClipImage(Image *image)
+MagickExport MagickBooleanType ClipImage(Image *image,ExceptionInfo *exception)
 {
-  return(ClipImagePath(image,"#1",MagickTrue));
+  return(ClipImagePath(image,"#1",MagickTrue,exception));
 }
 
 MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
-  const MagickBooleanType inside)
+  const MagickBooleanType inside,ExceptionInfo *exception)
 {
 #define ClipImagePathTag  "ClipPath/Image"
 
@@ -705,7 +707,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     (void) NegateImage(clip_mask,MagickFalse,&image->exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MaxTextExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
-  (void) SetImageClipMask(image,clip_mask);
+  (void) SetImageClipMask(image,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
   return(MagickTrue);
 }
@@ -2902,7 +2904,8 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
 %
 %  The format of the SetImageClipMask method is:
 %
-%      MagickBooleanType SetImageClipMask(Image *image,const Image *clip_mask)
+%      MagickBooleanType SetImageClipMask(Image *image,const Image *clip_mask,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2910,9 +2913,11 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
 %
 %    o clip_mask: the image clip path.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetImageClipMask(Image *image,
-  const Image *clip_mask)
+  const Image *clip_mask,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -3401,7 +3406,8 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 %
 %  The format of the SetImageMask method is:
 %
-%      MagickBooleanType SetImageMask(Image *image,const Image *mask)
+%      MagickBooleanType SetImageMask(Image *image,const Image *mask,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3409,9 +3415,11 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 %
 %    o mask: the image mask.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetImageMask(Image *image,
-  const Image *mask)
+  const Image *mask,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
@@ -3532,7 +3540,8 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
 %
 %  The format of the SetImageType method is:
 %
-%      MagickBooleanType SetImageType(Image *image,const ImageType type)
+%      MagickBooleanType SetImageType(Image *image,const ImageType type,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3540,14 +3549,14 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
 %
 %    o type: Image type.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
+MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
+  ExceptionInfo *exception)
 {
   const char
     *artifact;
-
-  ExceptionInfo
-    *exception;
 
   ImageInfo
     *image_info;
@@ -3568,7 +3577,6 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
   artifact=GetImageArtifact(image,"dither");
   if (artifact != (const char *) NULL)
     (void) SetImageOption(image_info,"dither",artifact);
-  exception=(&image->exception);
   switch (type)
   {
     case BilevelType:
@@ -3580,7 +3588,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
           quantize_info=AcquireQuantizeInfo(image_info);
           quantize_info->number_colors=2;
           quantize_info->colorspace=GRAYColorspace;
-          status=QuantizeImage(quantize_info,image);
+          status=QuantizeImage(quantize_info,image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
       image->matte=MagickFalse;
@@ -3609,7 +3617,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
         {
           quantize_info=AcquireQuantizeInfo(image_info);
           quantize_info->number_colors=256;
-          status=QuantizeImage(quantize_info,image);
+          status=QuantizeImage(quantize_info,image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
       image->matte=MagickFalse;
@@ -3628,7 +3636,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       (void) BilevelImage(image,(double) QuantumRange/2.0);
       (void) SetPixelChannelMask(image,channel_mask);
       quantize_info=AcquireQuantizeInfo(image_info);
-      status=QuantizeImage(quantize_info,image);
+      status=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       break;
     }
@@ -3640,7 +3648,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->colorspace=TransparentColorspace;
-      status=QuantizeImage(quantize_info,image);
+      status=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       break;
     }

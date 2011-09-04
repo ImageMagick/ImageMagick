@@ -652,7 +652,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 image->storage_class = PseudoClass;
                 image->depth =  8UL;    /* i only support that? */
                 image->colors= 2;
-                if (AcquireImageColormap(image,image->colors) == MagickFalse)
+                if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
                   ThrowReaderException(ResourceLimitError,
                    "MemoryAllocationFailed");
         } else {
@@ -713,7 +713,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 
 #if 0
 /* palette */
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Monochrome colormap.   mmc: this the default!

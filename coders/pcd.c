@@ -111,7 +111,7 @@ static MagickBooleanType
 %
 */
 static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
-  unsigned char *chroma1,unsigned char *chroma2)
+  unsigned char *chroma1,unsigned char *chroma2,ExceptionInfo *exception)
 {
 #define IsSync  ((sum & 0xffffff00UL) == 0xfffffe00UL)
 #define PCDGetBits(n) \
@@ -741,7 +741,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->rows=1024;
       for (i=0; i < (4*0x800); i++)
         (void) ReadBlobByte(image);
-      status=DecodeImage(image,luma,chroma1,chroma2);
+      status=DecodeImage(image,luma,chroma1,chroma2,exception);
       if ((scene >= 5) && status)
         {
           /*
@@ -753,7 +753,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->rows=2048;
           offset=TellBlob(image)/0x800+12;
           offset=SeekBlob(image,offset*0x800,SEEK_SET);
-          status=DecodeImage(image,luma,chroma1,chroma2);
+          status=DecodeImage(image,luma,chroma1,chroma2,exception);
           if ((scene >= 6) && (status != MagickFalse))
             {
               /*

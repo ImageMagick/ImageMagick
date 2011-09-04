@@ -281,7 +281,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       i+=6;
   }
   ConcatenateString(&draw_info->primitive,"pop graphic-context");
-  (void) DrawImage(image,draw_info);
+  (void) DrawImage(image,draw_info,exception);
   /*
     Relinquish resources.
   */

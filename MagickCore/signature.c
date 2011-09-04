@@ -458,23 +458,23 @@ MagickExport void SetSignatureDigest(SignatureInfo *signature_info,
 %
 %  The format of the SignatureImage method is:
 %
-%      MagickBooleanType SignatureImage(Image *image)
+%      MagickBooleanType SignatureImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType SignatureImage(Image *image)
+MagickExport MagickBooleanType SignatureImage(Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
 
   char
     *hex_signature;
-
-  ExceptionInfo
-    *exception;
 
   QuantumInfo
     *quantum_info;
@@ -523,7 +523,6 @@ MagickExport MagickBooleanType SignatureImage(Image *image)
   signature_info=AcquireSignatureInfo();
   signature=AcquireStringInfo(quantum_info->extent);
   pixels=GetQuantumPixels(quantum_info);
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

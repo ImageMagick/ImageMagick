@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  SignatureImage(Image *);
+  SignatureImage(Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

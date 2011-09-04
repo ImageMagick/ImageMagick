@@ -342,7 +342,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     */
     one=1;
     if ((bits_per_pixel < 16) &&
-        (AcquireImageColormap(image,one << bits_per_pixel) == MagickFalse))
+        (AcquireImageColormap(image,one << bits_per_pixel,exception) == MagickFalse))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     GetPixelInfo(image,&transpix);
     if (bits_per_pixel == 16)  /* Direct Color */
@@ -744,8 +744,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     if (bits_per_pixel < 8)
       {
         (void) TransformImageColorspace(image,GRAYColorspace);
-        (void) SetImageType(image,PaletteType);
-        (void) SortColormapByIntensity(image);
+        (void) SetImageType(image,PaletteType,exception);
+        (void) SortColormapByIntensity(image,exception);
       }
     if ((image->storage_class == PseudoClass) && (image->colors > 256))
       (void) SetImageStorageClass(image,DirectClass,exception);
@@ -795,7 +795,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
           {
             quantize_info->dither=IsPaletteImage(image,exception);
             quantize_info->number_colors=image->colors;
-            (void) QuantizeImage(quantize_info,image);
+            (void) QuantizeImage(quantize_info,image,exception);
             (void) WriteBlobMSBShort(image,(unsigned short) image->colors);
             for (count = 0; count < image->colors; count++)
             {
@@ -818,7 +818,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             exception);
           (void) TransformImageColorspace(affinity_image,
             affinity_image->colorspace);
-          (void) RemapImage(quantize_info,image,affinity_image);
+          (void) RemapImage(quantize_info,image,affinity_image,exception);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             q=GetAuthenticPixels(image,0,y,image->columns,1,exception);

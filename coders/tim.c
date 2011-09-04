@@ -193,7 +193,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         height=ReadBlobLSBShort(image);
         image->columns=width;
         image->rows=height;
-        if (AcquireImageColormap(image,pixel_mode == 1 ? 256UL : 16UL) == MagickFalse)
+        if (AcquireImageColormap(image,pixel_mode == 1 ? 256UL : 16UL,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         tim_colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
           2UL*sizeof(*tim_colormap));

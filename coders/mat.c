@@ -852,7 +852,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     {
       if(image->colors>256) image->colors = 256;
 
-      if (!AcquireImageColormap(image, image->colors))
+      if (AcquireImageColormap(image, image->colors,exception) == MagickFalse)
       {
  NoMemory:ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");}
     }

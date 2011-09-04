@@ -855,7 +855,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Reading colormap of %.20g colors",(double) image->colors);
-        if (AcquireImageColormap(image,image->colors) == MagickFalse)
+        if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         bmp_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
           image->colors,4*sizeof(*bmp_colormap));

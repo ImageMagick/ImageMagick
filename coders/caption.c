@@ -132,7 +132,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   /*
     Format caption.
   */
-  property=InterpretImageProperties(image_info,image,image_info->filename);
+  property=InterpretImageProperties(image_info,image,image_info->filename,
+    exception);
   (void) SetImageProperty(image,"caption",property);
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption"));

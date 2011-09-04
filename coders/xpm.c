@@ -342,7 +342,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   xpm_colors=NewSplayTree(CompareXPMColor,RelinquishMagickMemory,
     (void *(*)(void *)) NULL);
-  if (AcquireImageColormap(image,image->colors) == MagickFalse)
+  if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Read image colormap.
@@ -650,13 +650,13 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   if ((picon == (Image *) NULL) || (affinity_image == (Image *) NULL))
     return(MagickFalse);
   quantize_info=AcquireQuantizeInfo(image_info);
-  status=RemapImage(quantize_info,picon,affinity_image);
+  status=RemapImage(quantize_info,picon,affinity_image,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   affinity_image=DestroyImage(affinity_image);
   transparent=MagickFalse;
   if (picon->storage_class == PseudoClass)
     {
-      (void) CompressImageColormap(picon);
+      (void) CompressImageColormap(picon,exception);
       if (picon->matte != MagickFalse)
         transparent=MagickTrue;
     }
@@ -687,7 +687,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
               break;
           }
         }
-      (void) SetImageType(picon,PaletteType);
+      (void) SetImageType(picon,PaletteType,exception);
     }
   colors=picon->colors;
   if (transparent != MagickFalse)
@@ -884,7 +884,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   if (image->matte == MagickFalse)
     {
       if ((image->storage_class == DirectClass) || (image->colors > 256))
-        (void) SetImageType(image,PaletteType);
+        (void) SetImageType(image,PaletteType,exception);
     }
   else
     {
@@ -896,7 +896,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
         Identify transparent colormap index.
       */
       if ((image->storage_class == DirectClass) || (image->colors > 256))
-        (void) SetImageType(image,PaletteBilevelMatteType);
+        (void) SetImageType(image,PaletteBilevelMatteType,exception);
       for (i=0; i < (ssize_t) image->colors; i++)
         if (image->colormap[i].alpha != OpaqueAlpha)
           {
@@ -914,7 +914,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
           }
       if (opacity == -1)
         {
-          (void) SetImageType(image,PaletteBilevelMatteType);
+          (void) SetImageType(image,PaletteBilevelMatteType,exception);
           for (i=0; i < (ssize_t) image->colors; i++)
             if (image->colormap[i].alpha != OpaqueAlpha)
               {

@@ -578,7 +578,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read DIB raster colormap.
       */
-      if (AcquireImageColormap(image,image->colors) == MagickFalse)
+      if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       length=(size_t) image->colors;
       dib_colormap=(unsigned char *) AcquireQuantumMemory(length,

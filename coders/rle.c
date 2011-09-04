@@ -467,7 +467,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (number_colormaps == 0)
           map_length=256;
-        if (AcquireImageColormap(image,map_length) == MagickFalse)
+        if (AcquireImageColormap(image,map_length,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         p=colormap;
         if (number_colormaps == 1)

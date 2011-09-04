@@ -287,7 +287,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
         decode ? decode : encode);
       return((char *) NULL);
     }
-  command=InterpretImageProperties(image_info,image,commands[0]);
+  command=InterpretImageProperties(image_info,image,commands[0],exception);
   if (command == (char *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
       "MemoryAllocationFailed","`%s'",commands[0]);
@@ -936,7 +936,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           return(MagickFalse);
         }
       magick=InterpretImageProperties(image_info,image,decode != (char *) NULL ?
-        delegate_info->encode : delegate_info->decode);
+        delegate_info->encode : delegate_info->decode,exception);
       if (magick == (char *) NULL)
         {
           (void) RelinquishUniqueFileResource(image_info->unique);
@@ -1029,7 +1029,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           }
       }
     status=MagickFalse;
-    command=InterpretImageProperties(image_info,image,commands[i]);
+    command=InterpretImageProperties(image_info,image,commands[i],exception);
     if (command != (char *) NULL)
       {
         /*

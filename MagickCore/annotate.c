@@ -463,7 +463,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         (void) FormatLocaleString(primitive,MaxTextExtent,
           "rectangle 0,0 %g,%.20g",metrics.origin.x,(double) height);
         (void) CloneString(&undercolor_info->primitive,primitive);
-        (void) DrawImage(image,undercolor_info);
+        (void) DrawImage(image,undercolor_info,exception);
         (void) DestroyDrawInfo(undercolor_info);
       }
     annotate_info->affine.tx=offset.x;
@@ -475,7 +475,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         annotate_info->affine.ty-=(draw_info->affine.sy*(metrics.ascent+
           metrics.descent-metrics.underline_position));
         (void) CloneString(&annotate_info->primitive,primitive);
-        (void) DrawImage(image,annotate_info);
+        (void) DrawImage(image,annotate_info,exception);
       }
     else
       if (annotate->decorate == UnderlineDecoration)
@@ -483,7 +483,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           annotate_info->affine.ty-=(draw_info->affine.sy*
             metrics.underline_position);
           (void) CloneString(&annotate_info->primitive,primitive);
-          (void) DrawImage(image,annotate_info);
+          (void) DrawImage(image,annotate_info,exception);
         }
     /*
       Annotate image with text.
@@ -496,7 +496,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         annotate_info->affine.ty-=(draw_info->affine.sy*(height+
           metrics.underline_position+metrics.descent)/2.0);
         (void) CloneString(&annotate_info->primitive,primitive);
-        (void) DrawImage(image,annotate_info);
+        (void) DrawImage(image,annotate_info,exception);
       }
   }
   /*
@@ -1476,7 +1476,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           annotate_info->affine.tx=offset->x;
           annotate_info->affine.ty=offset->y;
           (void) ConcatenateString(&annotate_info->primitive,"'");
-          (void) DrawImage(image,annotate_info);
+          (void) DrawImage(image,annotate_info,exception);
         }
       }
   /*

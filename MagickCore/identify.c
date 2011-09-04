@@ -365,7 +365,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   p=GetVirtualPixels(image,0,0,1,1,exception);
   ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
   type=GetImageType(image,exception);
-  (void) SignatureImage(image);
+  (void) SignatureImage(image,exception);
   (void) FormatLocaleFile(file,"Image: %s\n",image->filename);
   if (*image->magick_filename != '\0')
     if (LocaleCompare(image->magick_filename,image->filename) != 0)
@@ -796,7 +796,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           }
         (void) FormatLocaleFile(file," %.20gx%.20g %s\n",(double)
           tile->magick_columns,(double) tile->magick_rows,tile->magick);
-        (void) SignatureImage(tile);
+        (void) SignatureImage(tile,exception);
         ResetImagePropertyIterator(tile);
         property=GetNextImageProperty(tile);
         while (property != (const char *) NULL)

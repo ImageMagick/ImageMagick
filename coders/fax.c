@@ -161,7 +161,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->rows == 0)
     image->rows=3508;
   image->depth=8;
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Monochrome colormap.
@@ -177,7 +177,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  status=HuffmanDecodeImage(image);
+  status=HuffmanDecodeImage(image,exception);
   if (status == MagickFalse)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   if (EOFBlob(image) != MagickFalse)
@@ -332,7 +332,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
     */
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,RGBColorspace);
-    status=HuffmanEncodeImage(write_info,image,image);
+    status=HuffmanEncodeImage(write_info,image,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

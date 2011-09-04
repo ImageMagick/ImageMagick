@@ -358,7 +358,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           */
           one=1;
           number_colors=one << icon_info.bits_per_pixel;
-          if (AcquireImageColormap(image,number_colors) == MagickFalse)
+          if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
             image->colors,4UL*sizeof(*icon_colormap));

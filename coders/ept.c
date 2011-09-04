@@ -432,7 +432,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
       GetQuantizeInfo(&quantize_info);
       quantize_info.dither=IsPaletteImage(write_image,exception) == MagickFalse
         ? MagickTrue : MagickFalse;
-      (void) QuantizeImage(&quantize_info,write_image);
+      (void) QuantizeImage(&quantize_info,write_image,exception);
     }
   write_info->compression=NoCompression;
   ept_info.tiff=(unsigned char *) ImageToBlob(write_info,write_image,

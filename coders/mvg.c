@@ -210,7 +210,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           draw_info->primitive[GetBlobSize(image)]='\0';
         }
      }
-  (void) DrawImage(image,draw_info);
+  (void) DrawImage(image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));

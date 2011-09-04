@@ -199,7 +199,7 @@ ModuleExport void UnregisterPS3Image(void)
 */
 
 static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image,Image *inject_image)
+  Image *image,Image *inject_image,ExceptionInfo *exception)
 {
   Image
     *group4_image;
@@ -220,11 +220,11 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) CopyMagickString(write_info->filename,"GROUP4:",MaxTextExtent);
   (void) CopyMagickString(write_info->magick,"GROUP4",MaxTextExtent);
-  group4_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
+  group4_image=CloneImage(inject_image,0,0,MagickTrue,exception);
   if (group4_image == (Image *) NULL)
     return(MagickFalse);
   group4=(unsigned char *) ImageToBlob(write_info,group4_image,&length,
-    &image->exception);
+    exception);
   group4_image=DestroyImage(group4_image);
   if (group4 == (unsigned char *) NULL)
     return(MagickFalse);
@@ -236,7 +236,7 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
 }
 
 static MagickBooleanType SerializeImage(const ImageInfo *image_info,
-  Image *image,unsigned char **pixels,size_t *length)
+  Image *image,unsigned char **pixels,size_t *length,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -300,7 +300,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
 }
 
 static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
-  Image *image,unsigned char **pixels,size_t *length)
+  Image *image,unsigned char **pixels,size_t *length,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -339,7 +339,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   q=(*pixels);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     if (pack == 1)
@@ -377,7 +377,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
 }
 
 static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
-  Image *image,unsigned char **pixels,size_t *length)
+  Image *image,unsigned char **pixels,size_t *length,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -406,7 +406,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
   q=(*pixels);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -428,7 +428,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
 }
 
 static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
-  Image *image,const CompressionType compression)
+  Image *image,const CompressionType compression,ExceptionInfo *exception)
 {
   ChannelType
     channel_mask;
@@ -529,8 +529,8 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
       mask_image=DestroyImage(mask_image);
       return(MagickFalse);
     }
-  (void) SetImageType(mask_image,BilevelType);
-  (void) SetImageType(mask_image,PaletteType);
+  (void) SetImageType(mask_image,BilevelType,exception);
+  (void) SetImageType(mask_image,PaletteType,exception);
   mask_image->matte=MagickFalse;
   pixels=(unsigned char *) NULL;
   length=0;
@@ -539,7 +539,8 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     case NoCompression:
     default:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixels,&length,
+        exception);
       if (status == MagickFalse)
         break;
       Ascii85Initialize(image);
@@ -554,35 +555,38 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     {
       if ((compression == FaxCompression) ||
           (LocaleCompare(CCITTParam,"0") == 0))
-        status=HuffmanEncodeImage(image_info,image,mask_image);
+        status=HuffmanEncodeImage(image_info,image,mask_image,exception);
       else
-        status=Huffman2DEncodeImage(image_info,image,mask_image);
+        status=Huffman2DEncodeImage(image_info,image,mask_image,exception);
       break;
     }
     case LZWCompression:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixels,&length,
+        exception);
       if (status == MagickFalse)
         break;
-      status=LZWEncodeImage(image,length,pixels);
+      status=LZWEncodeImage(image,length,pixels,exception);
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       break;
     }
     case RLECompression:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixels,&length,
+        exception);
       if (status == MagickFalse)
         break;
-      status=PackbitsEncodeImage(image,length,pixels);
+      status=PackbitsEncodeImage(image,length,pixels,exception);
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       break;
     }
     case ZipCompression:
     {
-      status=SerializeImageChannel(image_info,mask_image,&pixels,&length);
+      status=SerializeImageChannel(image_info,mask_image,&pixels,&length,
+        exception);
       if (status == MagickFalse)
         break;
-      status=ZLIBEncodeImage(image,length,pixels);
+      status=ZLIBEncodeImage(image,length,pixels,exception);
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       break;
     }
@@ -1155,7 +1159,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       Image mask.
     */
     if ((image->matte != MagickFalse) &&
-        (WritePS3MaskImage(image_info,image,compression) == MagickFalse))
+        (WritePS3MaskImage(image_info,image,compression,exception) == MagickFalse))
       {
         (void) CloseBlob(image);
         return(MagickFalse);
@@ -1309,13 +1313,14 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               (compression == Group4Compression))
             {
               if (LocaleCompare(CCITTParam,"0") == 0)
-                status=HuffmanEncodeImage(image_info,image,image);
+                status=HuffmanEncodeImage(image_info,image,image,exception);
               else
-                status=Huffman2DEncodeImage(image_info,image,image);
+                status=Huffman2DEncodeImage(image_info,image,image,exception);
             }
           else
             {
-              status=SerializeImageChannel(image_info,image,&pixels,&length);
+              status=SerializeImageChannel(image_info,image,&pixels,&length,
+                exception);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
@@ -1335,17 +1340,17 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                 }
                 case LZWCompression:
                 {
-                  status=LZWEncodeImage(image,length,pixels);
+                  status=LZWEncodeImage(image,length,pixels,exception);
                   break;
                 }
                 case RLECompression:
                 {
-                  status=PackbitsEncodeImage(image,length,pixels);
+                  status=PackbitsEncodeImage(image,length,pixels,exception);
                   break;
                 }
                 case ZipCompression:
                 {
-                  status=ZLIBEncodeImage(image,length,pixels);
+                  status=ZLIBEncodeImage(image,length,pixels,exception);
                   break;
                 }
               }
@@ -1399,7 +1404,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               /*
                 Stream based compressions.
               */
-              status=SerializeImage(image_info,image,&pixels,&length);
+              status=SerializeImage(image_info,image,&pixels,&length,exception);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
@@ -1419,17 +1424,17 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                 }
                 case RLECompression:
                 {
-                  status=PackbitsEncodeImage(image,length,pixels);
+                  status=PackbitsEncodeImage(image,length,pixels,exception);
                   break;
                 }
                 case LZWCompression:
                 {
-                  status=LZWEncodeImage(image,length,pixels);
+                  status=LZWEncodeImage(image,length,pixels,exception);
                   break;
                 }
                 case ZipCompression:
                 {
-                  status=ZLIBEncodeImage(image,length,pixels);
+                  status=ZLIBEncodeImage(image,length,pixels,exception);
                   break;
                 }
               }
@@ -1507,7 +1512,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                 }
                 Ascii85Flush(image);
               }
-            status=SerializeImageIndexes(image_info,image,&pixels,&length);
+            status=SerializeImageIndexes(image_info,image,&pixels,&length,
+              exception);
             if (status == MagickFalse)
               {
                 (void) CloseBlob(image);
@@ -1532,17 +1538,17 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               }
               case RLECompression:
               {
-                status=PackbitsEncodeImage(image,length,pixels);
+                status=PackbitsEncodeImage(image,length,pixels,exception);
                 break;
               }
               case LZWCompression:
               {
-                status=LZWEncodeImage(image,length,pixels);
+                status=LZWEncodeImage(image,length,pixels,exception);
                 break;
               }
               case ZipCompression:
               {
-                status=ZLIBEncodeImage(image,length,pixels);
+                status=ZLIBEncodeImage(image,length,pixels,exception);
                 break;
               }
             }

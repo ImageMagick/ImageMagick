@@ -170,7 +170,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     CatchException(exception);
     if (next_image == (Image *) NULL)
       break;
-    label=InterpretImageProperties(image_info,next_image,DefaultTileLabel);
+    label=InterpretImageProperties(image_info,next_image,DefaultTileLabel,
+      exception);
     (void) SetImageProperty(next_image,"label",label);
     label=DestroyString(label);
     if (image_info->debug != MagickFalse)

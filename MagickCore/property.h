@@ -24,7 +24,8 @@ extern "C" {
 
 extern MagickExport char
   *GetNextImageProperty(const Image *),
-  *InterpretImageProperties(const ImageInfo *,Image *,const char *),
+  *InterpretImageProperties(const ImageInfo *,Image *,const char *,
+    ExceptionInfo *),
   *RemoveImageProperty(Image *,const char *);
 
 extern MagickExport const char

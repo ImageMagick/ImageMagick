@@ -28,7 +28,7 @@ extern "C" {
 #define ThrowBinaryException(severity,tag,context) \
 { \
   if (image != (Image *) NULL) \
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),severity, \
+    (void) ThrowMagickException(exception,GetMagickModule(),severity, \
       tag == (const char *) NULL ? "unknown" : tag,"`%s'",context); \
   return(MagickFalse); \
 }
@@ -78,7 +78,7 @@ extern "C" {
 }
 #define ThrowWriterException(severity,tag) \
 { \
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),severity, \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
     tag == (const char *) NULL ? "unknown" : tag,"`%s'",image->filename); \
   if (image_info->adjoin != MagickFalse) \
     while (image->previous != (Image *) NULL) \

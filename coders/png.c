@@ -2709,7 +2709,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         Initialize image colormap.
       */
-      if (AcquireImageColormap(image,image->colors) == MagickFalse)
+      if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
       if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
@@ -3699,12 +3699,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (LocaleCompare(image_info->magick,"PNG24") == 0)
     {
-      (void) SetImageType(image,TrueColorType);
+      (void) SetImageType(image,TrueColorType,exception);
       image->matte=MagickFalse;
     }
 
   if (LocaleCompare(image_info->magick,"PNG32") == 0)
-    (void) SetImageType(image,TrueColorMatteType);
+    (void) SetImageType(image,TrueColorMatteType,exception);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7418,7 +7418,7 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
 
 /* Write one PNG image */
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
-   const ImageInfo *IMimage_info,Image *IMimage)
+  const ImageInfo *IMimage_info,Image *IMimage,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -8260,7 +8260,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             image->colors = image_colors;
 
-            if (AcquireImageColormap(image,image_colors) ==
+            if (AcquireImageColormap(image,image_colors,exception) ==
                 MagickFalse)
                ThrowWriterException(ResourceLimitError,
                    "MemoryAllocationFailed");
@@ -10902,10 +10902,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       image->depth = 8;
 
       if (image->matte == MagickTrue)
-        (void) SetImageType(image,TrueColorMatteType);
+        (void) SetImageType(image,TrueColorMatteType,exception);
 
       else
-        (void) SetImageType(image,TrueColorType);
+        (void) SetImageType(image,TrueColorType,exception);
 
       (void) SyncImage(image);
     }
@@ -10917,10 +10917,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       image->depth = 8;
 
       if (image->matte == MagickTrue)
-        (void) SetImageType(image,TrueColorMatteType);
+        (void) SetImageType(image,TrueColorMatteType,exception);
 
       else
-        (void) SetImageType(image,TrueColorType);
+        (void) SetImageType(image,TrueColorType,exception);
 
       (void) SyncImage(image);
     }
@@ -11489,7 +11489,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   mng_info->need_blob = MagickTrue;
 
-  status=WriteOnePNGImage(mng_info,image_info,image);
+  status=WriteOnePNGImage(mng_info,image_info,image,exception);
 
   MngInfoFreeStruct(mng_info,&have_mng_structure);
 
@@ -11503,7 +11503,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
 /* Write one JNG image */
 static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
-   const ImageInfo *image_info,Image *image)
+   const ImageInfo *image_info,Image *image,ExceptionInfo *exception)
 {
   Image
     *jpeg_image;
@@ -11594,7 +11594,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         jpeg_image_info->quality=jng_quality;
 
       jpeg_image_info->type=GrayscaleType;
-      (void) SetImageType(jpeg_image,GrayscaleType);
+      (void) SetImageType(jpeg_image,GrayscaleType,exception);
       (void) AcquireUniqueFilename(jpeg_image->filename);
       (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,
         "%s",jpeg_image->filename);
@@ -12104,7 +12104,7 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image,
 
   (void) WriteBlob(image,8,(const unsigned char *) "\213JNG\r\n\032\n");
 
-  status=WriteOneJNGImage(mng_info,image_info,image);
+  status=WriteOneJNGImage(mng_info,image_info,image,exception);
   (void) CloseBlob(image);
 
   (void) CatchImageException(image);
@@ -12919,7 +12919,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        /* To do: specify the desired alpha compression method. */
        write_info=CloneImageInfo(image_info);
        write_info->compression=UndefinedCompression;
-       status=WriteOneJNGImage(mng_info,write_info,image);
+       status=WriteOneJNGImage(mng_info,write_info,image,exception);
        write_info=DestroyImageInfo(write_info);
      }
    else
@@ -12949,7 +12949,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        mng_info->ping_exclude_zCCP=MagickTrue;
        mng_info->ping_exclude_zTXt=MagickTrue;
 
-       status=WriteOnePNGImage(mng_info,image_info,image);
+       status=WriteOnePNGImage(mng_info,image_info,image,exception);
      }
 
     if (status == MagickFalse)

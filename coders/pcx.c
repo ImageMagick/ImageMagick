@@ -363,7 +363,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         image->colors=(size_t) MagickMin(one << (1UL*
           (pcx_info.bits_per_pixel*pcx_info.planes)),256UL);
-    if (AcquireImageColormap(image,image->colors) == MagickFalse)
+    if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;

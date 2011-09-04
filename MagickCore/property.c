@@ -2523,7 +2523,7 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %  The format of the InterpretImageProperties method is:
 %
 %      char *InterpretImageProperties(const ImageInfo *image_info,Image *image,
-%        const char *embed_text)
+%        const char *embed_text,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2534,9 +2534,11 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %    o embed_text: the address of a character string containing the embedded
 %      formatting characters.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
-  Image *image,const char *embed_text)
+  Image *image,const char *embed_text,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
@@ -3108,7 +3110,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image bounding box.
         */
-        page=GetImageBoundingBox(image,&image->exception);
+        page=GetImageBoundingBox(image,exception);
         q+=FormatLocaleString(q,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
           (double) page.width,(double) page.height,(double) page.x,(double)
           page.y);
@@ -3119,7 +3121,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         /*
           Image signature.
         */
-        (void) SignatureImage(image);
+        (void) SignatureImage(image,exception);
         value=GetImageProperty(image,"signature");
         if (value == (const char *) NULL)
           break;

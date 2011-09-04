@@ -4300,8 +4300,7 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"MVG:\n'%s'\n",wand->mvg);
   if (wand->image == (Image *) NULL)
     ThrowDrawException(WandError,"ContainsNoImages",wand->name);
-  status=DrawImage(wand->image,CurrentContext);
-  InheritException(wand->exception,&wand->image->exception);
+  status=DrawImage(wand->image,CurrentContext,wand->exception);
   CurrentContext->primitive=(char *) NULL;
   return(status);
 }

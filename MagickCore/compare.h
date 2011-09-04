@@ -50,7 +50,7 @@ extern MagickExport Image
 extern MagickExport MagickBooleanType
   GetImageDistortion(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
-  IsImagesEqual(Image *,const Image *);
+  IsImagesEqual(Image *,const Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

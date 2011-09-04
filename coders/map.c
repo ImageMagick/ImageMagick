@@ -157,7 +157,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->storage_class=PseudoClass;
   status=AcquireImageColormap(image,(size_t)
-    (image->offset != 0 ? image->offset : 256));
+    (image->offset != 0 ? image->offset : 256),exception);
   if (status == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   depth=GetImageQuantumDepth(image,MagickTrue);
@@ -380,7 +380,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
     Allocate colormap.
   */
   if (IsPaletteImage(image,exception) == MagickFalse)
-    (void) SetImageType(image,PaletteType);
+    (void) SetImageType(image,PaletteType,exception);
   depth=GetImageQuantumDepth(image,MagickTrue);
   packet_size=(size_t) (depth/8);
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,packet_size*

@@ -203,12 +203,9 @@ MagickExport Image *ConstituteImage(const size_t columns,
   image->columns=columns;
   image->rows=rows;
   (void) SetImageBackgroundColor(image);
-  status=ImportImagePixels(image,0,0,columns,rows,map,storage,pixels);
+  status=ImportImagePixels(image,0,0,columns,rows,map,storage,pixels,exception);
   if (status == MagickFalse)
-    {
-      InheritException(exception,&image->exception);
-      image=DestroyImage(image);
-    }
+     image=DestroyImage(image);
   return(image);
 }
 
@@ -694,21 +691,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     option=GetImageOption(read_info,"caption");
     if (option != (const char *) NULL)
       {
-        property=InterpretImageProperties(read_info,next,option);
+        property=InterpretImageProperties(read_info,next,option,exception);
         (void) SetImageProperty(next,"caption",property);
         property=DestroyString(property);
       }
     option=GetImageOption(read_info,"comment");
     if (option != (const char *) NULL)
       {
-        property=InterpretImageProperties(read_info,next,option);
+        property=InterpretImageProperties(read_info,next,option,exception);
         (void) SetImageProperty(next,"comment",property);
         property=DestroyString(property);
       }
     option=GetImageOption(read_info,"label");
     if (option != (const char *) NULL)
       {
-        property=InterpretImageProperties(read_info,next,option);
+        property=InterpretImageProperties(read_info,next,option,exception);
         (void) SetImageProperty(next,"label",property);
         property=DestroyString(property);
       }

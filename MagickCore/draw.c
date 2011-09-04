@@ -1372,7 +1372,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %  The format of the DrawClipPath method is:
 %
 %      MagickBooleanType DrawClipPath(Image *image,const DrawInfo *draw_info,
-%        const char *name)
+%        const char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1382,9 +1382,11 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %
 %    o name: the name of the clip path.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType DrawClipPath(Image *image,
-  const DrawInfo *draw_info,const char *name)
+  const DrawInfo *draw_info,const char *name,ExceptionInfo *exception)
 {
   char
     clip_mask[MaxTextExtent];
@@ -1416,7 +1418,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
         &image->exception);
       if (clip_mask == (Image *) NULL)
         return(MagickFalse);
-      (void) SetImageClipMask(image,clip_mask);
+      (void) SetImageClipMask(image,clip_mask,exception);
       clip_mask=DestroyImage(clip_mask);
     }
   (void) QueryColorDatabase("#00000000",&image->clip_mask->background_color,
@@ -1430,7 +1432,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   (void) CloneString(&clone_info->primitive,value);
   (void) QueryColorDatabase("#ffffff",&clone_info->fill,&image->exception);
   clone_info->clip_mask=(char *) NULL;
-  status=DrawImage(image->clip_mask,clone_info);
+  status=DrawImage(image->clip_mask,clone_info,exception);
   status|=NegateImage(image->clip_mask,MagickFalse,&image->exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
@@ -1628,13 +1630,16 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
 %
 %  The format of the DrawImage method is:
 %
-%      MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
+%      MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o draw_info: the draw info.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1657,7 +1662,8 @@ static inline void TracePoint(PrimitiveInfo *primitive_info,
   primitive_info->point=point;
 }
 
-MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
+MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
+  ExceptionInfo *exception)
 {
 #define RenderImageTag  "Render/Image"
 
@@ -1871,7 +1877,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetMagickToken(q,&q,token);
             (void) CloneString(&graphic_context[n]->clip_mask,token);
             (void) DrawClipPath(image,graphic_context[n],
-              graphic_context[n]->clip_mask);
+              graphic_context[n]->clip_mask,exception);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -1976,7 +1982,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             (void) FormatLocaleString(pattern,MaxTextExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               (void) DrawPatternPath(image,draw_info,token,
-                &graphic_context[n]->fill_pattern);
+                &graphic_context[n]->fill_pattern,exception);
             else
               {
                 status=QueryColorDatabase(token,&graphic_context[n]->fill,
@@ -2259,7 +2265,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context[n]->clip_mask != (char *) NULL)
                   if (LocaleCompare(graphic_context[n]->clip_mask,
                       graphic_context[n-1]->clip_mask) != 0)
-                    (void) SetImageClipMask(image,(Image *) NULL);
+                    (void) SetImageClipMask(image,(Image *) NULL,exception);
                 graphic_context[n]=DestroyDrawInfo(graphic_context[n]);
                 n--;
                 break;
@@ -2505,7 +2511,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             (void) FormatLocaleString(pattern,MaxTextExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               (void) DrawPatternPath(image,draw_info,token,
-                &graphic_context[n]->stroke_pattern);
+                &graphic_context[n]->stroke_pattern,exception);
             else
               {
                 status=QueryColorDatabase(token,&graphic_context[n]->stroke,
@@ -3106,7 +3112,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             (LocaleCompare(graphic_context[n]->clip_mask,
              graphic_context[n-1]->clip_mask) != 0))
           (void) DrawClipPath(image,graphic_context[n],
-            graphic_context[n]->clip_mask);
+            graphic_context[n]->clip_mask,exception);
         (void) DrawPrimitive(image,graphic_context[n],primitive_info);
       }
     if (primitive_info->text != (char *) NULL)
@@ -3464,7 +3470,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 %  The format of the DrawPatternPath method is:
 %
 %      MagickBooleanType DrawPatternPath(Image *image,const DrawInfo *draw_info,
-%        const char *name,Image **pattern)
+%        const char *name,Image **pattern,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3476,9 +3482,12 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType DrawPatternPath(Image *image,
-  const DrawInfo *draw_info,const char *name,Image **pattern)
+  const DrawInfo *draw_info,const char *name,Image **pattern,
+  ExceptionInfo *exception)
 {
   char
     property[MaxTextExtent];
@@ -3526,7 +3535,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   clone_info->fill_pattern=NewImageList();
   clone_info->stroke_pattern=NewImageList();
   (void) CloneString(&clone_info->primitive,path);
-  status=DrawImage(*pattern,clone_info);
+  status=DrawImage(*pattern,clone_info,exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end pattern-path");

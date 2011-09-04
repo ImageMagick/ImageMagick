@@ -523,7 +523,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       image_info->depth=reference_types[j].depth;
       (void) FormatLocaleString(reference_image->filename,MaxTextExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
-      status=SetImageType(reference_image,reference_types[j].type);
+      status=SetImageType(reference_image,reference_types[j].type,exception);
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
@@ -741,7 +741,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       image_info->depth=reference_types[j].depth;
       (void) FormatLocaleString(reference_image->filename,MaxTextExtent,"%s:%s",
         reference_formats[i].magick,output_filename);
-      status=SetImageType(reference_image,reference_types[j].type);
+      status=SetImageType(reference_image,reference_types[j].type,exception);
       InheritException(exception,&reference_image->exception);
       if (status == MagickFalse)
         {
@@ -969,8 +969,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       (void) SetImageBackgroundColor(reference_image);
       status=ImportImagePixels(reference_image,0,0,reference_image->columns,
         reference_image->rows,reference_map[i],reference_storage[j].type,
-        pixels);
-      InheritException(exception,&reference_image->exception);
+        pixels,exception);
       if (status == MagickFalse)
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
@@ -991,7 +990,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       (void) SetImageBackgroundColor(reconstruct_image);
       status=ImportImagePixels(reconstruct_image,0,0,reconstruct_image->columns,
         reconstruct_image->rows,reference_map[i],reference_storage[j].type,
-        pixels);
+        pixels,exception);
       InheritException(exception,&reconstruct_image->exception);
       pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       if (status == MagickFalse)

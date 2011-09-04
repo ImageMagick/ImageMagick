@@ -157,7 +157,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   depth=(unsigned char) ReadBlobByte(image);
   if (depth != 1)
     ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported");
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
@@ -338,7 +338,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
   /*
     Convert image to a bi-level image.
   */
-  (void) SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType,exception);
   info=0;
   if ((image->columns >= 256) || (image->rows >= 256))
     SetBit(info,4,1);

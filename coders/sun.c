@@ -333,7 +333,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Create linear color ramp.
             */
-            if (AcquireImageColormap(image,image->colors) == MagickFalse)
+            if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
         break;
@@ -346,7 +346,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
-        if (AcquireImageColormap(image,image->colors) == MagickFalse)
+        if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         sun_colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
           sizeof(*sun_colormap));
@@ -889,7 +889,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
           /*
             Convert PseudoClass image to a SUN monochrome image.
           */
-          (void) SetImageType(image,BilevelType);
+          (void) SetImageType(image,BilevelType,exception);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             p=GetVirtualPixels(image,0,y,image->columns,1,exception);

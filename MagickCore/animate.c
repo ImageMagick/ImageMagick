@@ -496,7 +496,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             *title;
 
           title=InterpretImageProperties(resource_info->image_info,*image,
-            resource_info->title);
+            resource_info->title,exception);
           (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
           title=DestroyString(title);
         }
@@ -889,7 +889,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
           next=GetNextImageInList(next);
         }
         if (next != (Image *) NULL)
-          (void) RemapImages(resources.quantize_info,images,(Image *) NULL);
+          (void) RemapImages(resources.quantize_info,images,(Image *) NULL,
+            exception);
       }
   /*
     Sort images by increasing scene number.
@@ -915,7 +916,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         (visual_info->klass == TrueColor) ||
         (visual_info->klass == DirectColor))
       (void) SetImageType(image_list[scene],image_list[scene]->matte ==
-        MagickFalse ? TrueColorType : TrueColorMatteType);
+        MagickFalse ? TrueColorType : TrueColorMatteType,exception);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -923,7 +924,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if ((resource_info->map_type != (char *) NULL) ||
       (visual_info->klass == TrueColor) || (visual_info->klass == DirectColor))
     (void) SetImageType(display_image,display_image->matte == MagickFalse ?
-      TrueColorType : TrueColorMatteType);
+      TrueColorType : TrueColorMatteType,exception);
   XMakeStandardColormap(display,visual_info,&resources,display_image,map_info,
     &pixel);
   /*
@@ -1511,7 +1512,7 @@ MagickExport Image *XAnimateImages(Display *display,
         }
         if (next != (Image *) NULL)
           (void) RemapImages(resource_info->quantize_info,images,
-            (Image *) NULL);
+            (Image *) NULL,exception);
       }
   /*
     Sort images by increasing scene number.
@@ -1537,7 +1538,7 @@ MagickExport Image *XAnimateImages(Display *display,
         (visual_info->klass == TrueColor) ||
         (visual_info->klass == DirectColor))
       (void) SetImageType(image_list[scene],image_list[scene]->matte ==
-        MagickFalse ? TrueColorType : TrueColorMatteType);
+        MagickFalse ? TrueColorType : TrueColorMatteType,exception);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -1651,7 +1652,7 @@ MagickExport Image *XAnimateImages(Display *display,
         *title;
 
       title=InterpretImageProperties(resource_info->image_info,display_image,
-        resource_info->title);
+        resource_info->title,exception);
       (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
       (void) CopyMagickString(windows->image.icon_name,title,MaxTextExtent);
       title=DestroyString(title);
@@ -1962,7 +1963,7 @@ MagickExport Image *XAnimateImages(Display *display,
           *title;
 
         title=InterpretImageProperties(resource_info->image_info,
-          image_list[scene],resource_info->title);
+          image_list[scene],resource_info->title,exception);
         (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
         title=DestroyString(title);
       }
@@ -2100,7 +2101,7 @@ MagickExport Image *XAnimateImages(Display *display,
                     *title;
 
                   title=InterpretImageProperties(resource_info->image_info,
-                    image,resource_info->title);
+                    image,resource_info->title,exception);
                   (void) CopyMagickString(windows->image.name,title,
                     MaxTextExtent);
                   title=DestroyString(title);

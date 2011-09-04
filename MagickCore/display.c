@@ -7984,7 +7984,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       (void) SetImageType(*image,(*image)->matte == MagickFalse ?
-        GrayscaleType : GrayscaleMatteType);
+        GrayscaleType : GrayscaleMatteType,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -8015,7 +8015,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       affinity_image=ReadImage(image_info,exception);
       if (affinity_image != (Image *) NULL)
         {
-          (void) RemapImage(&quantize_info,*image,affinity_image);
+          (void) RemapImage(&quantize_info,*image,affinity_image,exception);
           affinity_image=DestroyImage(affinity_image);
         }
       CatchException(exception);
@@ -8048,7 +8048,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       quantize_info.number_colors=StringToUnsignedLong(colors);
       quantize_info.dither=status != 0 ? MagickTrue : MagickFalse;
-      (void) QuantizeImage(&quantize_info,*image);
+      (void) QuantizeImage(&quantize_info,*image,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -8455,7 +8455,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=1.0;
       (void) SegmentImage(*image,RGBColorspace,MagickFalse,geometry_info.rho,
-        geometry_info.sigma);
+        geometry_info.sigma,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -13642,7 +13642,7 @@ static Image *XVisualDirectoryImage(Display *display,
       {
         (void) DeleteImageProperty(next_image,"label");
         (void) SetImageProperty(next_image,"label",InterpretImageProperties(
-          read_info,next_image,DefaultTileLabel));
+          read_info,next_image,DefaultTileLabel,exception));
         (void) ParseRegionGeometry(next_image,read_info->size,&geometry,
           exception);
         thumbnail_image=ThumbnailImage(next_image,geometry.width,
@@ -14652,7 +14652,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         *title;
 
       title=InterpretImageProperties(resource_info->image_info,display_image,
-        resource_info->title);
+        resource_info->title,exception);
       (void) CopyMagickString(windows->image.name,title,MaxTextExtent);
       (void) CopyMagickString(windows->image.icon_name,title,MaxTextExtent);
       title=DestroyString(title);

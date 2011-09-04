@@ -2492,7 +2492,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         colors<<=1;
         quantize_info.number_colors=colors;
         quantize_info.colorspace=GRAYColorspace;
-        (void) QuantizeImage(&quantize_info,preview_image);
+        (void) QuantizeImage(&quantize_info,preview_image,exception);
         (void) FormatLocaleString(label,MaxTextExtent,
           "-colorspace gray -colors %.20g",(double) colors);
         break;
@@ -2504,7 +2504,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         colors<<=1;
         quantize_info.number_colors=colors;
-        (void) QuantizeImage(&quantize_info,preview_image);
+        (void) QuantizeImage(&quantize_info,preview_image,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"colors %.20g",(double)
           colors);
         break;
@@ -2658,7 +2658,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         threshold+=0.4f;
         (void) SegmentImage(preview_image,RGBColorspace,MagickFalse,threshold,
-          threshold);
+          threshold,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"segment %gx%g",
           threshold,threshold);
         break;

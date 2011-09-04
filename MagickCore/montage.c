@@ -387,7 +387,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     geometry,
     extract_info;
 
-
   size_t
     bevel_width,
     border_width,
@@ -560,7 +559,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   /*
     Determine the number of lines in an next label.
   */
-  title=InterpretImageProperties(clone_info,image_list[0],montage_info->title);
+  title=InterpretImageProperties(clone_info,image_list[0],montage_info->title,
+    exception);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
     title_offset=(size_t) (2*(metrics.ascent-metrics.descent)*

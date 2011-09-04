@@ -144,7 +144,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image colormap.
   */
-  if (AcquireImageColormap(image,2) == MagickFalse)
+  if (AcquireImageColormap(image,2,exception) == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
@@ -331,7 +331,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image,
   /*
     Convert image to a bi-level image.
   */
-  (void) SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType,exception);
   quantum_info=AcquireQuantumInfo(image_info,image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

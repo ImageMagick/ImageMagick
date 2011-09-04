@@ -4445,7 +4445,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
             /*
               Create colormap.
             */
-            if (AcquireImageColormap(composite_image,number_colors) == MagickFalse)
+            if (AcquireImageColormap(composite_image,number_colors,exception) == MagickFalse)
               {
                 XDestroyImage(ximage);
                 composite_image=DestroyImage(composite_image);
@@ -7803,7 +7803,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
                 }
                 (void) SyncAuthenticPixels(affinity_image,exception);
                 (void) RemapImage(resource_info->quantize_info,image,
-                  affinity_image);
+                  affinity_image,exception);
               }
             XGetPixelInfo(display,visual_info,map_info,resource_info,image,
               pixel);
@@ -7838,7 +7838,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
         */
         quantize_info=(*resource_info->quantize_info);
         quantize_info.number_colors=(size_t) visual_info->colormap_size;
-        (void) QuantizeImage(&quantize_info,image);
+        (void) QuantizeImage(&quantize_info,image,exception);
       }
   /*
     Free previous and create new colormap.
