@@ -4403,9 +4403,9 @@ MagickExport PixelPacket *QueueAuthenticNexus(Image *image,const ssize_t x,
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
-  assert(cache_info->signature == MagickSignature);
   if (cache_info == (Cache) NULL)
     return((PixelPacket *) NULL);
+  assert(cache_info->signature == MagickSignature);
   if ((cache_info->columns == 0) && (cache_info->rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
