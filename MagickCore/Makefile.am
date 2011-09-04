@@ -262,6 +262,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/widget-private.h \
 	MagickCore/xml-tree.c \
 	MagickCore/xml-tree.h \
+	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow.c \
 	MagickCore/xwindow.h 
 
@@ -432,6 +433,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/utility-private.h \
 	MagickCore/vms.h \
  	MagickCore/widget-private.h \
+	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow-private.h
 
 MAGICKCORE_EXTRA_DIST = \
