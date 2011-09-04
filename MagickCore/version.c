@@ -45,6 +45,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 
 /*

@@ -53,6 +53,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/fx.h"
 #include "MagickCore/gem.h"
+#include "MagickCore/gem-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/histogram.h"
 #include "MagickCore/image.h"

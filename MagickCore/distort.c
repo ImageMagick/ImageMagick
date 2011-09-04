@@ -54,6 +54,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/list.h"
 #include "MagickCore/matrix.h"
+#include "MagickCore/matrix-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"

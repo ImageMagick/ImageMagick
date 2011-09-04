@@ -13,18 +13,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore graphic resample methods.
+  MagickCore private graphic gems methods.
 */
-#ifndef _MAGICKCORE_MATRIX_H
-#define _MAGICKCORE_MATRIX_H
+#ifndef _MAGICKCORE_GEM_PRIVATE_H
+#define _MAGICKCORE_GEM_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-extern MagickExport double
-  **AcquireMagickMatrix(const size_t,const size_t),
-  **RelinquishMagickMatrix(double **,const size_t);
+extern MagickPrivate void
+  ConvertHSBToRGB(const double,const double,const double,Quantum *,Quantum *,
+    Quantum *),
+  ConvertHWBToRGB(const double,const double,const double,Quantum *,Quantum *,
+    Quantum *),
+  ConvertRGBToHSB(const Quantum,const Quantum,const Quantum,double *,double *,
+    double *),
+  ConvertRGBToHWB(const Quantum,const Quantum,const Quantum,double *,double *,
+    double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

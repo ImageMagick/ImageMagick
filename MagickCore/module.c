@@ -61,6 +61,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_MODULES_SUPPORT)
 #if defined(MAGICKCORE_LTDL_DELEGATE)
 #include "ltdl.h"

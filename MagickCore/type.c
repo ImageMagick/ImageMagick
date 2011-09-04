@@ -58,6 +58,7 @@
 #include "MagickCore/type-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree.h"
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
 # include "fontconfig/fontconfig.h"

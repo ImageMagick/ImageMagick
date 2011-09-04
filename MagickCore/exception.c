@@ -51,6 +51,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Forward declarations.
@@ -936,10 +937,10 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
 %
 */
 
-MagickExport MagickBooleanType ThrowMagickExceptionList(
-  ExceptionInfo *exception,const char *module,const char *function,
-  const size_t line,const ExceptionType severity,const char *tag,
-  const char *format,va_list operands)
+static MagickBooleanType ThrowMagickExceptionList(ExceptionInfo *exception,
+  const char *module,const char *function,const size_t line,
+  const ExceptionType severity,const char *tag,const char *format,
+  va_list operands)
 {
   char
     message[MaxTextExtent],

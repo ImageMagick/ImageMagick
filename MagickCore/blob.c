@@ -62,6 +62,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include <sys/mman.h>
 #endif

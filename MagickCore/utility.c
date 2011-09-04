@@ -58,6 +58,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_HAVE_PROCESS_H)
 #include <process.h>
 #endif
@@ -564,7 +565,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 %    o components:  The number of components to chop.
 %
 */
-MagickExport void ChopPathComponents(char *path,const size_t components)
+MagickPrivate void ChopPathComponents(char *path,const size_t components)
 {
   register ssize_t
     i;
@@ -596,7 +597,7 @@ MagickExport void ChopPathComponents(char *path,const size_t components)
 %      path.
 %
 */
-MagickExport void ExpandFilename(char *path)
+MagickPrivate void ExpandFilename(char *path)
 {
   char
     expand_path[MaxTextExtent];
@@ -937,7 +938,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
 %    o extent: the maximum extent of the path.
 %
 */
-MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
+MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 {
   char
     *directory;
@@ -1059,7 +1060,7 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 %      ssize_t GetMagickPageSize()
 %
 */
-MagickExport ssize_t GetMagickPageSize(void)
+MagickPrivate ssize_t GetMagickPageSize(void)
 {
   static ssize_t
     page_size = -1;
@@ -1450,7 +1451,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 %    o number_components:  return the number of components in the list
 %
 */
-MagickExport char **GetPathComponents(const char *path,
+MagickPrivate char **GetPathComponents(const char *path,
   size_t *number_components)
 {
   char
@@ -1682,7 +1683,7 @@ static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
 #endif
 }
 
-MagickExport char **ListFiles(const char *directory,const char *pattern,
+MagickPrivate char **ListFiles(const char *directory,const char *pattern,
   size_t *number_entries)
 {
   char
@@ -1803,7 +1804,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
 %      returning.
 %
 */
-MagickExport void MagickDelay(const MagickSizeType milliseconds)
+MagickPrivate void MagickDelay(const MagickSizeType milliseconds)
 {
   if (milliseconds == 0)
     return;
@@ -1867,7 +1868,6 @@ MagickExport void MagickDelay(const MagickSizeType milliseconds)
 %  A description of each parameter follows.
 %
 %   o  label:  This character string is the label.
-%
 %
 */
 MagickExport size_t MultilineCensus(const char *label)

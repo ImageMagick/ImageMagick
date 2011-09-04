@@ -41,6 +41,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/matrix.h"
+#include "MagickCore/matrix-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/utility.h"
 
@@ -176,7 +177,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %  details see    http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
-MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
+MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
   double **vectors,const size_t rank,const size_t number_vectors)
 {
 #define GaussJordanSwap(x,y) \
@@ -354,7 +355,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
 %     RelinquishMagickMatrix(vectors,2UL);
 %
 */
-MagickExport void LeastSquaresAddTerms(double **matrix,double **vectors,
+MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
   const double *terms,const double *results,const size_t rank,
   const size_t number_vectors)
 {

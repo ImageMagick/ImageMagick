@@ -75,6 +75,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/xml-tree.h"
 

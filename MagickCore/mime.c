@@ -52,6 +52,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree.h"
 
 /*

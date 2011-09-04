@@ -50,6 +50,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/token-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Typedef declaractions.
