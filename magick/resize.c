@@ -2611,8 +2611,11 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   */
   filter_image=DestroyImage(filter_image);
   resize_filter=DestroyResizeFilter(resize_filter);
-  if ((status == MagickFalse) || (resize_image == (Image *) NULL))
-    return((Image *) NULL);
+  if (status == MagickFalse) 
+    {
+      resize_image=DestroyImage(resize_image);
+      return((Image *) NULL);
+    }
   resize_image->type=image->type;
   return(resize_image);
 }
