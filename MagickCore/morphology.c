@@ -3729,7 +3729,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 ** Basically this provides the complex grue between the requested morphology
 ** method and raw low-level implementation (above).
 */
-MagickExport Image *MorphologyApply(const Image *image,
+MagickPrivate Image *MorphologyApply(const Image *image,
   const MorphologyMethod method, const ssize_t iterations,
   const KernelInfo *kernel, const CompositeOperator compose,const double bias,
   ExceptionInfo *exception)
@@ -4828,7 +4828,7 @@ MagickExport void UnityAddKernelInfo(KernelInfo *kernel,
 %    o kernel: the Morphology/Convolution kernel
 %
 */
-MagickExport void ZeroKernelNans(KernelInfo *kernel)
+MagickPrivate void ZeroKernelNans(KernelInfo *kernel)
 {
   register size_t
     i;

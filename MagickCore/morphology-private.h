@@ -28,13 +28,11 @@ extern "C" {
 
 #include <MagickCore/morphology.h>
 
-extern MagickExport Image
+extern MagickPrivate Image
   *MorphologyApply(const Image *,const MorphologyMethod,const ssize_t,
     const KernelInfo *,const CompositeOperator,const double,ExceptionInfo *);
 
-extern MagickExport void
-  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
-  UnityAddKernelInfo(KernelInfo *,const double),
+extern MagickPrivate void
   ZeroKernelNans(KernelInfo *);
 
 #endif
