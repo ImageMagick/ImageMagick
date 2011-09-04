@@ -138,7 +138,9 @@ extern MagickExport Image
 
 extern MagickExport void
   ScaleGeometryKernelInfo(KernelInfo *,const char *),
-  ShowKernelInfo(const KernelInfo *);
+  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
+  ShowKernelInfo(const KernelInfo *),
+  UnityAddKernelInfo(KernelInfo *,const double);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
