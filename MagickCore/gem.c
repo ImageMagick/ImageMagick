@@ -44,6 +44,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/gem.h"
+#include "MagickCore/gem-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/log.h"
@@ -83,7 +84,7 @@
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
+MagickPrivate void ConvertHSBToRGB(const double hue,const double saturation,
   const double brightness,Quantum *red,Quantum *green,Quantum *blue)
 {
   MagickRealType
@@ -266,7 +267,7 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
+MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
   const double blackness,Quantum *red,Quantum *green,Quantum *blue)
 {
   MagickRealType
@@ -343,7 +344,7 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
 %      component of the HSB color space.
 %
 */
-MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
+MagickPrivate void ConvertRGBToHSB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *brightness)
 {
   MagickRealType
@@ -506,7 +507,7 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
 %      component of the HWB color space.
 %
 */
-MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
+MagickPrivate void ConvertRGBToHWB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *whiteness,double *blackness)
 {
   long

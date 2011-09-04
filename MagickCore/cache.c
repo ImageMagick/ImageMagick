@@ -66,6 +66,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 #include "zlib.h"
 #endif
@@ -297,7 +298,7 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport const void *AcquirePixelCachePixels(const Image *image,
+MagickPrivate const void *AcquirePixelCachePixels(const Image *image,
   MagickSizeType *length,ExceptionInfo *exception)
 {
   CacheInfo
@@ -2687,7 +2688,7 @@ MagickPrivate Quantum *GetPixelCacheNexusPixels(const Cache cache,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
+MagickPrivate void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   ExceptionInfo *exception)
 {
   CacheInfo
@@ -2850,7 +2851,7 @@ MagickPrivate CacheType GetPixelCacheType(const Image *image)
 %    o image: the image.
 %
 */
-MagickExport VirtualPixelMethod GetPixelCacheVirtualMethod(const Image *image)
+MagickPrivate VirtualPixelMethod GetPixelCacheVirtualMethod(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -5118,7 +5119,7 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
 %    o virtual_pixel_method: choose the type of virtual pixel.
 %
 */
-MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
+MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
   const VirtualPixelMethod virtual_pixel_method)
 {
   CacheInfo
@@ -5316,7 +5317,7 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c I m a g e P i x e l C a c h e                                     %
++   S y n c I m a g e P i x e l C a c h e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5338,7 +5339,7 @@ MagickExport MagickBooleanType SyncAuthenticPixels(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType SyncImagePixelCache(Image *image,
+MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
   ExceptionInfo *exception)
 {
   CacheInfo

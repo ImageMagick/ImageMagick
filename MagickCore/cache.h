@@ -30,7 +30,6 @@ extern MagickExport const Quantum
   *GetVirtualPixelQueue(const Image *);
 
 extern MagickExport const void
-  *AcquirePixelCachePixels(const Image *,MagickSizeType *,ExceptionInfo *),
   *GetVirtualMetacontent(const Image *);
 
 extern MagickExport MagickBooleanType
@@ -44,8 +43,7 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
-  SyncAuthenticPixels(Image *,ExceptionInfo *),
-  SyncImagePixelCache(Image *,ExceptionInfo *);
+  SyncAuthenticPixels(Image *,ExceptionInfo *);
 
 extern MagickExport MagickSizeType
   GetImageExtent(const Image *);
@@ -57,13 +55,8 @@ extern MagickExport Quantum
   *QueueAuthenticPixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *);
 
-extern MagickExport VirtualPixelMethod
-  GetPixelCacheVirtualMethod(const Image *),
-  SetPixelCacheVirtualMethod(const Image *,const VirtualPixelMethod);
-
 extern MagickExport void
-  *GetAuthenticMetacontent(const Image *),
-  *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *);
+  *GetAuthenticMetacontent(const Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

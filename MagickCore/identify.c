@@ -92,6 +92,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)
 #if defined(MAGICKCORE_HAVE_LCMS_LCMS2_H)

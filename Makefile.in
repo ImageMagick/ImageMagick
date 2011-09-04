@@ -407,19 +407,20 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/exception-private.h MagickCore/feature.c \
 	MagickCore/feature.h MagickCore/fourier.c MagickCore/fourier.h \
 	MagickCore/fx.c MagickCore/fx.h MagickCore/fx-private.h \
-	MagickCore/gem.c MagickCore/gem.h MagickCore/geometry.c \
-	MagickCore/geometry.h MagickCore/hashmap.c \
-	MagickCore/hashmap.h MagickCore/histogram.c \
-	MagickCore/histogram.h MagickCore/identify.c \
-	MagickCore/identify.h MagickCore/image.c MagickCore/image.h \
-	MagickCore/image-private.h MagickCore/image-view.c \
-	MagickCore/image-view.h MagickCore/layer.c MagickCore/layer.h \
-	MagickCore/list.c MagickCore/list.h MagickCore/locale.c \
-	MagickCore/locale_.h MagickCore/log.c MagickCore/log.h \
-	MagickCore/mac.h MagickCore/magic.c MagickCore/magic.h \
-	MagickCore/magick.c MagickCore/magick-config.h \
-	MagickCore/magick-type.h MagickCore/magick.h \
-	MagickCore/matrix.c MagickCore/matrix.h MagickCore/memory.c \
+	MagickCore/gem.c MagickCore/gem.h MagickCore/gem-private.h \
+	MagickCore/geometry.c MagickCore/geometry.h \
+	MagickCore/hashmap.c MagickCore/hashmap.h \
+	MagickCore/histogram.c MagickCore/histogram.h \
+	MagickCore/identify.c MagickCore/identify.h MagickCore/image.c \
+	MagickCore/image.h MagickCore/image-private.h \
+	MagickCore/image-view.c MagickCore/image-view.h \
+	MagickCore/layer.c MagickCore/layer.h MagickCore/list.c \
+	MagickCore/list.h MagickCore/locale.c MagickCore/locale_.h \
+	MagickCore/log.c MagickCore/log.h MagickCore/mac.h \
+	MagickCore/magic.c MagickCore/magic.h MagickCore/magick.c \
+	MagickCore/magick-config.h MagickCore/magick-type.h \
+	MagickCore/magick.h MagickCore/matrix.c MagickCore/matrix.h \
+	MagickCore/matrix-private.h MagickCore/memory.c \
 	MagickCore/memory_.h MagickCore/methods.h MagickCore/mime.c \
 	MagickCore/mime.h MagickCore/module.c MagickCore/module.h \
 	MagickCore/monitor.c MagickCore/monitor.h \
@@ -461,7 +462,8 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/token-private.h MagickCore/transform.c \
 	MagickCore/transform.h MagickCore/threshold.c \
 	MagickCore/threshold.h MagickCore/type.c MagickCore/type.h \
-	MagickCore/utility.c MagickCore/utility.h MagickCore/version.c \
+	MagickCore/utility.c MagickCore/utility.h \
+	MagickCore/utility-private.h MagickCore/version.c \
 	MagickCore/version.h MagickCore/vms.h MagickCore/widget.c \
 	MagickCore/widget.h MagickCore/widget-private.h \
 	MagickCore/xml-tree.c MagickCore/xml-tree.h \
@@ -3934,6 +3936,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/fx-private.h \
 	MagickCore/gem.c \
 	MagickCore/gem.h \
+	MagickCore/gem-private.h \
 	MagickCore/geometry.c \
 	MagickCore/geometry.h \
 	MagickCore/hashmap.c \
@@ -3964,6 +3967,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/magick.h \
 	MagickCore/matrix.c \
 	MagickCore/matrix.h \
+	MagickCore/matrix-private.h \
 	MagickCore/memory.c \
 	MagickCore/memory_.h \
 	MagickCore/methods.h \
@@ -4058,6 +4062,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/type.h \
 	MagickCore/utility.c \
 	MagickCore/utility.h \
+	MagickCore/utility-private.h \
 	MagickCore/version.c \
 	MagickCore/version.h \
 	MagickCore/vms.h \
@@ -4192,12 +4197,14 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/draw-private.h \
 	MagickCore/exception-private.h \
 	MagickCore/fx-private.h \
+	MagickCore/gem-private.h \
 	MagickCore/image-private.h \
  	MagickCore/locale-private.h \
  	MagickCore/log-private.h \
 	MagickCore/mac.h \
  	MagickCore/magick-private.h \
  	MagickCore/magic-private.h \
+	MagickCore/matrix-private.h \
  	MagickCore/methods-private.h \
  	MagickCore/mime-private.h \
 	MagickCore/mime-private.h \
@@ -4226,6 +4233,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/thread-private.h \
 	MagickCore/token-private.h \
  	MagickCore/type-private.h \
+	MagickCore/utility-private.h \
 	MagickCore/vms.h \
  	MagickCore/widget-private.h \
 	MagickCore/xwindow-private.h

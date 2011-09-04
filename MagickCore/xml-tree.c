@@ -59,6 +59,7 @@
 #include "MagickCore/token-private.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Define declarations.

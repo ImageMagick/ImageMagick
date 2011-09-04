@@ -85,6 +85,7 @@
 #include "MagickCore/type-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/xwindow-private.h"
 
 /*

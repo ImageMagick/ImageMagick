@@ -13,18 +13,29 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore graphic resample methods.
+  MagickCore private utility methods.
 */
-#ifndef _MAGICKCORE_MATRIX_H
-#define _MAGICKCORE_MATRIX_H
+#ifndef _MAGICKCORE_UTILITY_PRIVATE_H
+#define _MAGICKCORE_UTILITY_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-extern MagickExport double
-  **AcquireMagickMatrix(const size_t,const size_t),
-  **RelinquishMagickMatrix(double **,const size_t);
+extern MagickPrivate char
+  **GetPathComponents(const char *,size_t *),
+  **ListFiles(const char *,const char *,size_t *);
+
+extern MagickPrivate MagickBooleanType
+  GetExecutionPath(char *,const size_t);
+
+extern MagickPrivate ssize_t
+  GetMagickPageSize(void);
+
+extern MagickPrivate void
+  ChopPathComponents(char *,const size_t),
+  ExpandFilename(char *),
+  MagickDelay(const MagickSizeType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

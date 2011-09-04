@@ -13,10 +13,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore private graphic gems methods.
+  MagickCore graphic gems methods.
 */
-#ifndef _MAGICKCORE_GEM_PRIVATE_H
-#define _MAGICKCORE_GEM_PRIVATE_H
+#ifndef _MAGICKCORE_GEM_H
+#define _MAGICKCORE_GEM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -36,17 +36,9 @@ extern MagickExport size_t
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport void
-  ConvertHSBToRGB(const double,const double,const double,Quantum *,Quantum *,
-    Quantum *),
   ConvertHSLToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
-  ConvertHWBToRGB(const double,const double,const double,Quantum *,Quantum *,
-    Quantum *),
-  ConvertRGBToHSB(const Quantum,const Quantum,const Quantum,double *,double *,
-    double *),
   ConvertRGBToHSL(const Quantum,const Quantum,const Quantum,double *,double *,
-    double *),
-  ConvertRGBToHWB(const Quantum,const Quantum,const Quantum,double *,double *,
     double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

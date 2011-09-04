@@ -74,6 +74,7 @@
 #include "MagickCore/timer.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 static SemaphoreInfo
   *constitute_semaphore = (SemaphoreInfo *) NULL;

@@ -154,10 +154,7 @@ extern MagickExport MagickBooleanType
     const char *),
   ThrowMagickException(ExceptionInfo *,const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...)
-    magick_attribute((format (printf,7,8))),
-  ThrowMagickExceptionList(ExceptionInfo *,const char *,const char *,
-    const size_t,const ExceptionType,const char *,const char *,va_list)
-    magick_attribute((format (printf,7,0)));
+    magick_attribute((format (printf,7,8)));
 
 extern MagickExport void
   CatchException(ExceptionInfo *),

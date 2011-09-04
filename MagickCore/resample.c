@@ -62,6 +62,7 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 /*
   EWA Resampling Options
 */

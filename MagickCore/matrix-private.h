@@ -13,18 +13,21 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore graphic resample methods.
+  MagickCore private graphic matrix methods.
 */
-#ifndef _MAGICKCORE_MATRIX_H
-#define _MAGICKCORE_MATRIX_H
+#ifndef _MAGICKCORE_MATRIX_PRIVATE_H
+#define _MAGICKCORE_MATRIX_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-extern MagickExport double
-  **AcquireMagickMatrix(const size_t,const size_t),
-  **RelinquishMagickMatrix(double **,const size_t);
+extern MagickPrivate MagickBooleanType
+  GaussJordanElimination(double **,double **,const size_t,const size_t);
+
+extern MagickPrivate void
+  LeastSquaresAddTerms(double **,double **,const double *,const double *,
+    const size_t, const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

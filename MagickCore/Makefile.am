@@ -127,6 +127,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/fx-private.h \
 	MagickCore/gem.c \
 	MagickCore/gem.h \
+	MagickCore/gem-private.h \
 	MagickCore/geometry.c \
 	MagickCore/geometry.h \
 	MagickCore/hashmap.c \
@@ -157,6 +158,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/magick.h \
 	MagickCore/matrix.c \
 	MagickCore/matrix.h \
+	MagickCore/matrix-private.h \
 	MagickCore/memory.c \
 	MagickCore/memory_.h \
 	MagickCore/methods.h \
@@ -251,6 +253,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/type.h \
 	MagickCore/utility.c \
 	MagickCore/utility.h \
+	MagickCore/utility-private.h \
 	MagickCore/version.c \
 	MagickCore/version.h \
 	MagickCore/vms.h \
@@ -390,12 +393,14 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/draw-private.h \
 	MagickCore/exception-private.h \
 	MagickCore/fx-private.h \
+	MagickCore/gem-private.h \
 	MagickCore/image-private.h \
  	MagickCore/locale-private.h \
  	MagickCore/log-private.h \
 	MagickCore/mac.h \
  	MagickCore/magick-private.h \
  	MagickCore/magic-private.h \
+	MagickCore/matrix-private.h \
  	MagickCore/methods-private.h \
  	MagickCore/mime-private.h \
 	MagickCore/mime-private.h \
@@ -424,6 +429,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/thread-private.h \
 	MagickCore/token-private.h \
  	MagickCore/type-private.h \
+	MagickCore/utility-private.h \
 	MagickCore/vms.h \
  	MagickCore/widget-private.h \
 	MagickCore/xwindow-private.h
