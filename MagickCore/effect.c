@@ -226,7 +226,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
   /*
     Edge detect the image brighness channel, level, blur, and level again.
   */
-  edge_image=EdgeImage(image,radius,exception);
+  edge_image=EdgeImage(image,radius,sigma,exception);
   if (edge_image == (Image *) NULL)
     {
       blur_image=DestroyImage(blur_image);
@@ -401,7 +401,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_AdaptiveSharpenImage)
+  #pragma omp critical (MagickCore_AdaptiveBlurImage)
 #endif
         proceed=SetImageProgress(image,AdaptiveBlurImageTag,progress++,
           image->rows);
@@ -517,7 +517,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   /*
     Edge detect the image brighness channel, level, sharp, and level again.
   */
-  edge_image=EdgeImage(image,radius,exception);
+  edge_image=EdgeImage(image,radius,sigma,exception);
   if (edge_image == (Image *) NULL)
     {
       sharp_image=DestroyImage(sharp_image);
@@ -1741,7 +1741,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %  The format of the EdgeImage method is:
 %
 %      Image *EdgeImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1749,11 +1749,13 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %
 %    o radius: the radius of the pixel neighborhood.
 %
+%    o sigma: the standard deviation of the Gaussian, in pixels.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *EdgeImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
   Image
     *edge_image;
@@ -1778,7 +1780,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth1D(radius,0.5);
+  width=GetOptimalKernelWidth2D(radius,sigma);
   kernel_info=AcquireKernelInfo((const char *) NULL);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2605,7 +2607,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case EdgeDetectPreview:
       {
-        preview_image=EdgeImage(thumbnail,radius,exception);
+        preview_image=EdgeImage(thumbnail,radius,sigma,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"edge %g",radius);
         break;
       }
