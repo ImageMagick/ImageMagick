@@ -4809,9 +4809,6 @@ MagickExport Image *UnsharpMaskImage(const Image *image,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    bias;
-
   MagickRealType
     quantum_threshold;
 
@@ -4832,7 +4829,6 @@ MagickExport Image *UnsharpMaskImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(image,&bias);
   image_view=AcquireCacheView(image);
   unsharp_view=AcquireCacheView(unsharp_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
