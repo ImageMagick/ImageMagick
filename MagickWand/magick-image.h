@@ -71,9 +71,10 @@ extern WandExport InterpolatePixelMethod
   MagickGetImageInterpolateMethod(MagickWand *);
 
 extern WandExport MagickBooleanType
-  MagickAdaptiveBlurImage(MagickWand *,const double,const double),
+  MagickAdaptiveBlurImage(MagickWand *,const double,const double,const double),
   MagickAdaptiveResizeImage(MagickWand *,const size_t,const size_t),
-  MagickAdaptiveSharpenImage(MagickWand *,const double,const double),
+  MagickAdaptiveSharpenImage(MagickWand *,const double,const double,
+    const double),
   MagickAdaptiveThresholdImage(MagickWand *,const size_t,const size_t,
     const ssize_t),
   MagickAddImage(MagickWand *,const MagickWand *),

@@ -455,13 +455,13 @@ static struct
     { "Sans1", },
     { "AdaptiveSharpen", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"channel", MagickChannelOptions} } },
+      {"bias", RealReference}, {"channel", MagickChannelOptions} } },
     { "Transpose", },
     { "Transverse", },
     { "AutoOrient", },
     { "AdaptiveBlur", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"channel", MagickChannelOptions} } },
+      {"bias", RealReference}, {"channel", MagickChannelOptions} } },
     { "Sketch", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
       {"angle", RealReference} } },
@@ -9901,16 +9901,20 @@ Mogrify(ref,...)
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=1.0;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=0.0;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            channel=(ChannelType) argument_list[4].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=AdaptiveSharpenImage(image,geometry_info.rho,
-            geometry_info.sigma,exception);
+            geometry_info.sigma,geometry_info.xi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
@@ -9977,16 +9981,20 @@ Mogrify(ref,...)
                 &geometry_info);
               if ((flags & SigmaValue) == 0)
                 geometry_info.sigma=1.0;
+              if ((flags & XiValue) == 0)
+                geometry_info.xi=0.0;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            channel=(ChannelType) argument_list[4].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=AdaptiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
+            geometry_info.xi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;

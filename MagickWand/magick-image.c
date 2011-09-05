@@ -177,7 +177,7 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %  The format of the MagickAdaptiveBlurImage method is:
 %
 %      MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
-%        const double radius,const double sigma)
+%        const double radius,const double sigma,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -188,9 +188,11 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double bias)
 {
   Image
     *sharp_image;
@@ -201,7 +203,7 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=AdaptiveBlurImage(wand->images,radius,sigma,wand->exception);
+  sharp_image=AdaptiveBlurImage(wand->images,radius,sigma,bias,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -274,7 +276,7 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 %  The format of the MagickAdaptiveSharpenImage method is:
 %
 %      MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
-%        const double radius,const double sigma)
+%        const double radius,const double sigma,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -285,9 +287,11 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double bias)
 {
   Image
     *sharp_image;
@@ -298,7 +302,8 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=AdaptiveSharpenImage(wand->images,radius,sigma,wand->exception);
+  sharp_image=AdaptiveSharpenImage(wand->images,radius,sigma,bias,
+    wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
