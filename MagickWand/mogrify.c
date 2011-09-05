@@ -707,7 +707,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
             mogrify_image=AdaptiveBlurImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("adaptive-resize",option+1) == 0)
@@ -731,7 +731,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
             mogrify_image=AdaptiveSharpenImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("affine",option+1) == 0)

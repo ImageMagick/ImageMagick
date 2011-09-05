@@ -106,7 +106,7 @@
 %  The format of the AdaptiveBlurImage method is:
 %
 %      Image *AdaptiveBlurImage(const Image *image,const double radius,
-%        const double sigma,ExceptionInfo *exception)
+%        const double sigma,const double bias,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -116,6 +116,8 @@
 %      pixel.
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
+%
+%    o bias: the bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -166,7 +168,8 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
 }
 
 MagickExport Image *AdaptiveBlurImage(const Image *image,
-  const double radius,const double sigma,ExceptionInfo *exception)
+  const double radius,const double sigma,const double bias,
+  ExceptionInfo *exception)
 {
 #define AdaptiveBlurImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -190,9 +193,6 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
 
   MagickOffsetType
     progress;
-
-  PixelInfo
-    bias;
 
   register ssize_t
     i;
@@ -291,8 +291,6 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(image,&bias);
-  SetPixelInfoBias(image,&bias);
   image_view=AcquireCacheView(image);
   edge_view=AcquireCacheView(edge_image);
   blur_view=AcquireCacheView(blur_image);
@@ -302,7 +300,6 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
     register const Quantum
-      *restrict p,
       *restrict r;
 
     register Quantum
@@ -323,73 +320,108 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
       }
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
-      PixelInfo
-        pixel;
-
-      MagickRealType
-        alpha,
-        gamma;
-
-      register const double
-        *restrict k;
+      register const Quantum
+        *restrict p;
 
       register ssize_t
-        i,
-        u,
-        v;
+        i;
 
-      gamma=0.0;
-      i=(ssize_t) ceil((double) width*QuantumScale*
+      ssize_t
+        center,
+        j;
+
+      j=(ssize_t) ceil((double) width*QuantumScale*
         GetPixelIntensity(edge_image,r)-0.5);
-      if (i < 0)
-        i=0;
+      if (j < 0)
+        j=0;
       else
-        if (i > (ssize_t) width)
-          i=(ssize_t) width;
-      if ((i & 0x01) != 0)
-        i--;
-      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) (width-i)/2L),y-
-        (ssize_t) ((width-i)/2L),width-i,width-i,exception);
+        if (j > (ssize_t) width)
+          j=(ssize_t) width;
+      if ((j & 0x01) != 0)
+        j--;
+      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) (width-j)/2L),y-
+        (ssize_t) ((width-j)/2L),width-j,width-j,exception);
       if (p == (const Quantum *) NULL)
         break;
-      pixel=bias;
-      k=kernel[i];
-      for (v=0; v < (ssize_t) (width-i); v++)
+      center=(ssize_t) GetPixelChannels(image)*(width-j)*
+        ((width-j)/2L)+GetPixelChannels(image)*((width-j)/2);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        for (u=0; u < (ssize_t) (width-i); u++)
+        MagickRealType
+          alpha,
+          gamma,
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          blur_traits,
+          traits;
+
+        register const double
+          *restrict k;
+
+        register const Quantum
+          *restrict pixels;
+
+        register ssize_t
+          u;
+
+        ssize_t
+          v;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (blur_traits == UndefinedPixelTrait))
+          continue;
+        if ((blur_traits & CopyPixelTrait) != 0)
+          {
+            q[channel]=p[center+i];
+            continue;
+          }
+        k=kernel[j];
+        pixels=p;
+        pixel=bias;
+        gamma=0.0;
+        if ((blur_traits & BlendPixelTrait) == 0)
+          {
+            /*
+              No alpha blending.
+            */
+            for (v=0; v < (ssize_t) (width-j); v++)
+            {
+              for (u=0; u < (ssize_t) (width-j); u++)
+              {
+                pixel+=(*k)*pixels[i];
+                gamma+=(*k);
+                k++;
+                pixels+=GetPixelChannels(image);
+              }
+            }
+            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            q[channel]=ClampToQuantum(gamma*pixel);
+            continue;
+          }
+        /*
+          Alpha blending.
+        */
+        for (v=0; v < (ssize_t) (width-j); v++)
         {
-          alpha=1.0;
-          if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->matte != MagickFalse))
-            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,p));
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            pixel.red+=(*k)*alpha*GetPixelRed(image,p);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            pixel.green+=(*k)*alpha*GetPixelGreen(image,p);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            pixel.blue+=(*k)*alpha*GetPixelBlue(image,p);
-          if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            pixel.black+=(*k)*alpha*GetPixelBlack(image,p);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            pixel.alpha+=(*k)*GetPixelAlpha(image,p);
-          gamma+=(*k)*alpha;
-          k++;
-          p+=GetPixelChannels(image);
+          for (u=0; u < (ssize_t) (width-j); u++)
+          {
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,pixels));
+            pixel+=(*k)*alpha*pixels[i];
+            gamma+=(*k)*alpha;
+            k++;
+            pixels+=GetPixelChannels(image);
+          }
         }
+        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+        q[channel]=ClampToQuantum(gamma*pixel);
       }
-      gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(blur_image,ClampToQuantum(gamma*pixel.red),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(blur_image,ClampToQuantum(gamma*pixel.green),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(blur_image,ClampToQuantum(gamma*pixel.blue),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(blur_image,ClampToQuantum(gamma*pixel.black),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelAlpha(blur_image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(blur_image);
       r+=GetPixelChannels(edge_image);
     }
@@ -442,7 +474,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
 %  The format of the AdaptiveSharpenImage method is:
 %
 %      Image *AdaptiveSharpenImage(const Image *image,const double radius,
-%        const double sigma,ExceptionInfo *exception)
+%        const double sigma,const double bias,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -453,11 +485,13 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
 %
+%    o bias: the bias.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
+  const double sigma,const double bias,ExceptionInfo *exception)
 {
 #define AdaptiveSharpenImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -481,9 +515,6 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 
   MagickOffsetType
     progress;
-
-  PixelInfo
-    bias;
 
   register ssize_t
     i;
@@ -582,8 +613,6 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(image,&bias);
-  SetPixelInfoBias(image,&bias);
   image_view=AcquireCacheView(image);
   edge_view=AcquireCacheView(edge_image);
   sharp_view=AcquireCacheView(sharp_image);
@@ -593,7 +622,6 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
   {
     register const Quantum
-      *restrict p,
       *restrict r;
 
     register Quantum
@@ -614,73 +642,108 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) sharp_image->columns; x++)
     {
-      PixelInfo
-        pixel;
-
-      MagickRealType
-        alpha,
-        gamma;
-
-      register const double
-        *restrict k;
+      register const Quantum
+        *restrict p;
 
       register ssize_t
-        i,
-        u,
-        v;
+        i;
 
-      gamma=0.0;
-      i=(ssize_t) ceil((double) width*QuantumScale*
+      ssize_t
+        center,
+        j;
+
+      j=(ssize_t) ceil((double) width*QuantumScale*
         GetPixelIntensity(edge_image,r)-0.5);
-      if (i < 0)
-        i=0;
+      if (j < 0)
+        j=0;
       else
-        if (i > (ssize_t) width)
-          i=(ssize_t) width;
-      if ((i & 0x01) != 0)
-        i--;
-      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) (width-i)/2L),y-
-        (ssize_t) ((width-i)/2L),width-i,width-i,exception);
+        if (j > (ssize_t) width)
+          j=(ssize_t) width;
+      if ((j & 0x01) != 0)
+        j--;
+      p=GetCacheViewVirtualPixels(image_view,x-((ssize_t) (width-j)/2L),y-
+        (ssize_t) ((width-j)/2L),width-j,width-j,exception);
       if (p == (const Quantum *) NULL)
         break;
-      k=kernel[i];
-      pixel=bias;
-      for (v=0; v < (ssize_t) (width-i); v++)
+      center=(ssize_t) GetPixelChannels(image)*(width-j)*
+        ((width-j)/2L)+GetPixelChannels(image)*((width-j)/2);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        for (u=0; u < (ssize_t) (width-i); u++)
+        MagickRealType
+          alpha,
+          gamma,
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          sharp_traits,
+          traits;
+
+        register const double
+          *restrict k;
+
+        register const Quantum
+          *restrict pixels;
+
+        register ssize_t
+          u;
+
+        ssize_t
+          v;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        sharp_traits=GetPixelChannelMapTraits(sharp_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (sharp_traits == UndefinedPixelTrait))
+          continue;
+        if ((sharp_traits & CopyPixelTrait) != 0)
+          {
+            q[channel]=p[center+i];
+            continue;
+          }
+        k=kernel[j];
+        pixels=p;
+        pixel=bias;
+        gamma=0.0;
+        if ((sharp_traits & BlendPixelTrait) == 0)
+          {
+            /*
+              No alpha blending.
+            */
+            for (v=0; v < (ssize_t) (width-j); v++)
+            {
+              for (u=0; u < (ssize_t) (width-j); u++)
+              {
+                pixel+=(*k)*pixels[i];
+                gamma+=(*k);
+                k++;
+                pixels+=GetPixelChannels(image);
+              }
+            }
+            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            q[channel]=ClampToQuantum(gamma*pixel);
+            continue;
+          }
+        /*
+          Alpha blending.
+        */
+        for (v=0; v < (ssize_t) (width-j); v++)
         {
-          alpha=1.0;
-          if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->matte != MagickFalse))
-            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,p));
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            pixel.red+=(*k)*alpha*GetPixelRed(image,p);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            pixel.green+=(*k)*alpha*GetPixelGreen(image,p);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            pixel.blue+=(*k)*alpha*GetPixelBlue(image,p);
-          if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->colorspace == CMYKColorspace))
-            pixel.black+=(*k)*alpha*GetPixelBlack(image,p);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            pixel.alpha+=(*k)*GetPixelAlpha(image,p);
-          gamma+=(*k)*alpha;
-          k++;
-          p+=GetPixelChannels(image);
+          for (u=0; u < (ssize_t) (width-j); u++)
+          {
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,pixels));
+            pixel+=(*k)*alpha*pixels[i];
+            gamma+=(*k)*alpha;
+            k++;
+            pixels+=GetPixelChannels(image);
+          }
         }
+        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+        q[channel]=ClampToQuantum(gamma*pixel);
       }
-      gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(sharp_image,ClampToQuantum(gamma*pixel.red),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(sharp_image,ClampToQuantum(gamma*pixel.green),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(sharp_image,ClampToQuantum(gamma*pixel.blue),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(sharp_image,ClampToQuantum(gamma*pixel.black),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelAlpha(sharp_image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(sharp_image);
       r+=GetPixelChannels(edge_image);
     }
