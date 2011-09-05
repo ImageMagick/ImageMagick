@@ -645,10 +645,14 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   previous_profile=GetImageProfile(image,name);
   if (previous_profile != (const StringInfo *) NULL)
     {
+      ssize_t
+        length;
+
+      length=GetStringInfoLength(profile);
       SetStringInfoLength(profile,GetStringInfoLength(profile)+
         GetStringInfoLength(previous_profile));
       (void) memcpy(GetStringInfoDatum(profile),GetStringInfoDatum(profile)+
-        GetStringInfoLength(previous_profile),GetStringInfoLength(profile));
+        GetStringInfoLength(previous_profile),length);
       (void) memcpy(GetStringInfoDatum(profile),
         GetStringInfoDatum(previous_profile),
         GetStringInfoLength(previous_profile));
