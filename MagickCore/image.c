@@ -103,11 +103,11 @@
 MagickPrivate const char
   BackgroundColor[] = "#ffffff",  /* white */
   BorderColor[] = "#dfdfdf",  /* gray */
+  DefaultTileFrame[] = "15x15+3+3",
   ForegroundColor[] = "#000",  /* black */
   MatteColor[] = "#bdbdbd";  /* gray */
 
 MagickExport const char
-  DefaultTileFrame[] = "15x15+3+3",
   DefaultTileGeometry[] = "120x120+4+3>",
   DefaultTileLabel[] = "%f\n%G\n%b",
   LoadImageTag[] = "Load/Image",

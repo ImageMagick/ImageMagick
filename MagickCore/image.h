@@ -480,7 +480,6 @@ struct _ImageInfo
 };
 
 extern MagickExport const char
-  DefaultTileFrame[],
   DefaultTileGeometry[],
   DefaultTileLabel[],
   LoadImageTag[],

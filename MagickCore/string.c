@@ -563,7 +563,7 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
 %    o filename: the filename.
 %
 */
-MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
+MagickPrivate StringInfo *ConfigureFileToStringInfo(const char *filename)
 {
   char
     *string;

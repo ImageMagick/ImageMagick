@@ -79,7 +79,6 @@ extern MagickExport StringInfo
   *AcquireStringInfo(const size_t),
   *BlobToStringInfo(const void *,const size_t),
   *CloneStringInfo(const StringInfo *),
-  *ConfigureFileToStringInfo(const char *),
   *DestroyStringInfo(StringInfo *),
   *FileToStringInfo(const char *,const size_t,ExceptionInfo *),
   *SplitStringInfo(StringInfo *,const size_t),
