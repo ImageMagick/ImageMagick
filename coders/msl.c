@@ -1239,7 +1239,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           blur_image=BlurImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,&msl_info->image[n]->exception);
+            geometry_info.sigma,geometry_info.xi,
+            &msl_info->image[n]->exception);
           (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           if (blur_image == (Image *) NULL)
             break;
@@ -1437,7 +1438,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag, "charcoal") == 0)
       {
-        double  radius = 0.0,
+        double bias = 0.0,
+            radius = 0.0,
             sigma = 1.0;
 
         if (msl_info->image[n] == (Image *) NULL)
@@ -1458,6 +1460,17 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             msl_info->attributes[n],(const char *) attributes[i],&exception));
           switch (*keyword)
           {
+            case 'B':
+            case 'b':
+            {
+              if (LocaleCompare(keyword, "bias") == 0)
+              {
+                bias = InterpretLocaleValue(value,(char **) NULL);
+                break;
+              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              break;
+            }
             case 'R':
             case 'r':
             {
@@ -1496,7 +1509,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         Image
           *newImage;
 
-        newImage=CharcoalImage(msl_info->image[n],radius,sigma,
+        newImage=CharcoalImage(msl_info->image[n],radius,sigma,bias,
           &msl_info->image[n]->exception);
         if (newImage == (Image *) NULL)
           break;
@@ -6342,7 +6355,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag,"sharpen") == 0)
       {
-        double  radius = 0.0,
+        double bias = 0.0,
+            radius = 0.0,
             sigma = 1.0;
 
         if (msl_info->image[n] == (Image *) NULL)
@@ -6363,6 +6377,17 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             msl_info->attributes[n],(const char *) attributes[i],&exception));
           switch (*keyword)
           {
+            case 'B':
+            case 'b':
+            {
+              if (LocaleCompare(keyword, "bias") == 0)
+              {
+                bias = InterpretLocaleValue(value,(char **) NULL);
+                break;
+              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+              break;
+            }
             case 'R':
             case 'r':
             {
@@ -6401,7 +6426,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         Image
           *newImage;
 
-        newImage=SharpenImage(msl_info->image[n],radius,sigma,&msl_info->image[n]->exception);
+        newImage=SharpenImage(msl_info->image[n],radius,sigma,bias,
+          &msl_info->image[n]->exception);
         if (newImage == (Image *) NULL)
           break;
         msl_info->image[n]=DestroyImage(msl_info->image[n]);

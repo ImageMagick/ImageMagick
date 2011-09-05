@@ -610,7 +610,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
 %  The format of the CharcoalImage method is:
 %
 %      Image *CharcoalImage(const Image *image,const double radius,
-%        const double sigma,ExceptionInfo *exception)
+%        const double sigma,const double bias,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -620,11 +620,13 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *CharcoalImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
+  const double sigma,const double bias,ExceptionInfo *exception)
 {
   Image
     *charcoal_image,
@@ -645,7 +647,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   clone_image=DestroyImage(clone_image);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
-  charcoal_image=BlurImage(edge_image,radius,sigma,exception);
+  charcoal_image=BlurImage(edge_image,radius,sigma,bias,exception);
   edge_image=DestroyImage(edge_image);
   if (charcoal_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4226,7 +4228,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   }
   border_view=DestroyCacheView(border_view);
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
-  shadow_image=BlurImage(border_image,0.0,sigma,exception);
+  shadow_image=BlurImage(border_image,0.0,sigma,image->bias,exception);
   (void) SetPixelChannelMap(border_image,channel_mask);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
@@ -5212,7 +5214,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
 %  The format of the VignetteImage method is:
 %
 %      Image *VignetteImage(const Image *image,const double radius,
-%        const double sigma,const ssize_t x,const ssize_t y,ExceptionInfo *exception)
+%        const double sigma,const ssize_t x,const ssize_t y,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5275,7 +5278,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   draw_info->primitive=AcquireString(ellipse);
   (void) DrawImage(oval_image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
-  blur_image=BlurImage(oval_image,radius,sigma,exception);
+  blur_image=BlurImage(oval_image,radius,sigma,image->bias,exception);
   oval_image=DestroyImage(oval_image);
   if (blur_image == (Image *) NULL)
     {

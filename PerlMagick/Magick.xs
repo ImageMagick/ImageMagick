@@ -214,7 +214,8 @@ static struct
       {"bordercolor", StringReference}, {"color", StringReference},
       {"compose", MagickComposeOptions} } },
     { "Blur", { {"geometry", StringReference}, {"radius", RealReference},
-      {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
+      {"sigma", RealReference}, {"bias", RealReference},
+      {"channel", MagickChannelOptions} } },
     { "Chop", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
@@ -255,7 +256,8 @@ static struct
     { "Shade", { {"geometry", StringReference}, {"azimuth", RealReference},
       {"elevation", RealReference}, {"gray", MagickBooleanOptions} } },
     { "Sharpen", { {"geometry", StringReference}, {"radius", RealReference},
-      {"sigma", RealReference}, {"channel", MagickChannelOptions} } },
+      {"sigma", RealReference}, {"bias", RealReference},
+      {"channel", MagickChannelOptions} } },
     { "Shear", { {"geometry", StringReference}, {"x", RealReference},
       {"y", RealReference}, { "fill", StringReference},
       {"color", StringReference} } },
@@ -367,7 +369,7 @@ static struct
     { "Threshold", { {"threshold", StringReference},
       {"channel", MagickChannelOptions} } },
     { "Charcoal", { {"geometry", StringReference}, {"radius", RealReference},
-      {"sigma", RealReference} } },
+      {"sigma", RealReference}, {"biabias", RealReference} } },
     { "Trim", { {"fuzz", StringReference} } },
     { "Wave", { {"geometry", StringReference}, {"amplitude", RealReference},
       {"wavelength", RealReference},
@@ -380,7 +382,7 @@ static struct
     { "Deconstruct", },
     { "GaussianBlur", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"channel", MagickChannelOptions} } },
+      {"bias", RealReference}, {"channel", MagickChannelOptions} } },
     { "Convolve", { {"coefficients", ArrayReference},
       {"channel", MagickChannelOptions}, {"bias", StringReference},
       {"kernel", StringReference} } },
@@ -7552,10 +7554,12 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            channel=(ChannelType) argument_list[4].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=BlurImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
+            geometry_info.xi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
@@ -7842,10 +7846,12 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            channel=(ChannelType) argument_list[4].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=SharpenImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
+            geometry_info.xi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
@@ -9028,8 +9034,10 @@ Mogrify(ref,...)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
+          if (attribute_flag[3] != 0)
+            geometry_info.xi=argument_list[3].real_reference;
           image=CharcoalImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
+            geometry_info.xi,exception);
           break;
         }
         case 59:  /* Trim */
@@ -9118,10 +9126,12 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            channel=(ChannelType) argument_list[3].integer_reference;
+            geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            channel=(ChannelType) argument_list[4].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=GaussianBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
+            geometry_info.xi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
