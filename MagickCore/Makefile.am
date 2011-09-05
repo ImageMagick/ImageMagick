@@ -193,6 +193,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/property.h \
 	MagickCore/profile.c \
 	MagickCore/profile.h \
+	MagickCore/profile-profile.h \
 	MagickCore/quantize.c \
 	MagickCore/quantize.h \
 	MagickCore/quantum.c \
@@ -411,6 +412,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
  	MagickCore/policy-private.h \
+ 	MagickCore/profile-private.h \
 	MagickCore/quantum-private.h \
  	MagickCore/random_-private.h \
 	MagickCore/random-private.h \

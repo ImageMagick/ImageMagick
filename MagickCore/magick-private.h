@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 extern MagickPrivate MagickBooleanType
+  IsMagickConflict(const char *),
   MagickComponentGenesis(void);
 
 extern MagickPrivate void

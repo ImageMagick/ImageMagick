@@ -59,8 +59,7 @@ extern MagickExport MagickBooleanType
   DeleteImageProfile(Image *,const char *),
   ProfileImage(Image *,const char *,const void *,const size_t,
     const MagickBooleanType),
-  SetImageProfile(Image *,const char *,const StringInfo *),
-  SyncImageProfiles(Image *);
+  SetImageProfile(Image *,const char *,const StringInfo *);
 
 extern MagickExport StringInfo
   *RemoveImageProfile(Image *,const char *);

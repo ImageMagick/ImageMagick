@@ -28,6 +28,12 @@ extern MagickPrivate MagickBooleanType
 extern MagickPrivate void
   LocaleComponentTerminus(void);
 
+extern MagickPrivate ssize_t
+  FormatLocaleFileList(FILE *,const char *restrict,va_list)
+    magick_attribute((format (printf,2,0))),
+  FormatLocaleStringList(char *restrict,const size_t,const char *restrict,
+    va_list) magick_attribute((format (printf,3,0)));
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

@@ -1051,7 +1051,7 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %    o format:  human readable format.
 %
 */
-MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
+MagickPrivate ssize_t FormatMagickSize(const MagickSizeType size,
   const MagickBooleanType bi,char *format)
 {
   const char
@@ -1205,7 +1205,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
 %    o name: the environment name.
 %
 */
-MagickExport char *GetEnvironmentValue(const char *name)
+MagickPrivate char *GetEnvironmentValue(const char *name)
 {
   const char
     *environment;

@@ -23,7 +23,9 @@ extern "C" {
 #endif
 
 extern MagickPrivate MagickBooleanType
-  ModuleComponentGenesis(void);
+  ModuleComponentGenesis(void),
+  OpenModule(const char *,ExceptionInfo *),
+  OpenModules(ExceptionInfo *);
 
 extern MagickPrivate void
   ModuleComponentTerminus(void);

@@ -55,6 +55,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -1739,7 +1740,7 @@ static void WriteProfileShort(const EndianType endian,
   (void) CopyMagickMemory(p,buffer,2);
 }
 
-MagickExport MagickBooleanType SyncImageProfiles(Image *image)
+MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
 {
 #define MaxDirectoryStack  16
 #define EXIF_DELIMITER  "\n"

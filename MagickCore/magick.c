@@ -902,7 +902,7 @@ static MagickBooleanType InitializeMagickList(ExceptionInfo *exception)
 %    o magick: Specifies the image format.
 %
 */
-MagickExport MagickBooleanType IsMagickConflict(const char *magick)
+MagickPrivate MagickBooleanType IsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
 #if defined(macintosh)

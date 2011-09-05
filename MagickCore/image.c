@@ -71,6 +71,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magic.h"
 #include "MagickCore/magick.h"
+#include "MagickCore/magick-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"

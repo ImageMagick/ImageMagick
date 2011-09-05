@@ -51,6 +51,7 @@
 #include "MagickCore/PreRvIcccm.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
+#include "MagickCore/token-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xwindow-private.h"

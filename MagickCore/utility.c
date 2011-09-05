@@ -48,6 +48,7 @@
 #include "MagickCore/geometry.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
+#include "MagickCore/magick-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
@@ -56,7 +57,9 @@
 #include "MagickCore/signature-private.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
+#include "MagickCore/token-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_HAVE_PROCESS_H)

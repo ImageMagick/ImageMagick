@@ -1176,7 +1176,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType GetBlobError(const Image *image)
+MagickPrivate MagickBooleanType GetBlobError(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1236,7 +1236,7 @@ MagickExport FILE *GetBlobFileHandle(const Image *image)
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 */
-MagickExport void GetBlobInfo(BlobInfo *blob_info)
+MagickPrivate void GetBlobInfo(BlobInfo *blob_info)
 {
   assert(blob_info != (BlobInfo *) NULL);
   (void) ResetMagickMemory(blob_info,0,sizeof(*blob_info));
@@ -1272,7 +1272,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %    o image: the image.
 %
 */
-MagickExport const struct stat *GetBlobProperties(const Image *image)
+MagickPrivate const struct stat *GetBlobProperties(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1407,7 +1407,7 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 %    o image: the image.
 %
 */
-MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
+MagickPrivate StreamHandler GetBlobStreamHandler(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1986,7 +1986,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType IsBlobExempt(const Image *image)
+MagickPrivate MagickBooleanType IsBlobExempt(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2017,7 +2017,7 @@ MagickExport MagickBooleanType IsBlobExempt(const Image *image)
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
+MagickPrivate MagickBooleanType IsBlobSeekable(const Image *image)
 {
   MagickBooleanType
     seekable;
@@ -2053,7 +2053,7 @@ MagickExport MagickBooleanType IsBlobSeekable(const Image *image)
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType IsBlobTemporary(const Image *image)
+MagickPrivate MagickBooleanType IsBlobTemporary(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3611,7 +3611,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
 %    o exempt: Set to true if this blob is exempt from being closed.
 %
 */
-MagickExport void SetBlobExempt(Image *image,const MagickBooleanType exempt)
+MagickPrivate void SetBlobExempt(Image *image,const MagickBooleanType exempt)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3646,7 +3646,7 @@ MagickExport void SetBlobExempt(Image *image,const MagickBooleanType exempt)
 %    o extent:  the blob maximum extent.
 %
 */
-MagickExport MagickBooleanType SetBlobExtent(Image *image,
+MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
   const MagickSizeType extent)
 {
   assert(image != (Image *) NULL);

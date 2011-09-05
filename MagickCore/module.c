@@ -59,6 +59,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -103,6 +104,7 @@ static const ModuleInfo
 
 static MagickBooleanType
   GetMagickModulePath(const char *,MagickModuleType,char *,ExceptionInfo *),
+  InitializeModuleList(ExceptionInfo *),
   UnregisterModule(const ModuleInfo *,ExceptionInfo *);
 
 static void
@@ -861,7 +863,7 @@ static void *DestroyModuleNode(void *module_info)
   return(RelinquishMagickMemory(p));
 }
 
-MagickExport MagickBooleanType InitializeModuleList(
+static MagickBooleanType InitializeModuleList(
   ExceptionInfo *magick_unused(exception))
 {
   if ((module_list == (SplayTreeInfo *) NULL) &&
@@ -1221,7 +1223,7 @@ MagickPrivate void ModuleComponentTerminus(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType OpenModule(const char *module,
+MagickPrivate MagickBooleanType OpenModule(const char *module,
   ExceptionInfo *exception)
 {
   char
@@ -1349,7 +1351,7 @@ MagickExport MagickBooleanType OpenModule(const char *module,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType OpenModules(ExceptionInfo *exception)
+MagickPrivate MagickBooleanType OpenModules(ExceptionInfo *exception)
 {
   char
     **modules;

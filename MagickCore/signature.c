@@ -112,7 +112,7 @@ static void
 %      SignatureInfo *AcquireSignatureInfo(void)
 %
 */
-MagickExport SignatureInfo *AcquireSignatureInfo(void)
+MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
 {
   SignatureInfo
     *signature_info;
@@ -164,7 +164,7 @@ MagickExport SignatureInfo *AcquireSignatureInfo(void)
 %    o signature_info: the cipher signature_info.
 %
 */
-MagickExport SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
+MagickPrivate SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
@@ -203,7 +203,7 @@ MagickExport SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
 %    o signature_info: the address of a structure of type SignatureInfo.
 %
 */
-MagickExport void FinalizeSignature(SignatureInfo *signature_info)
+MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
 {
   register ssize_t
     i;
@@ -293,7 +293,7 @@ MagickExport void FinalizeSignature(SignatureInfo *signature_info)
 %    o signature_info: the signature info.
 %
 */
-MagickExport unsigned int GetSignatureBlocksize(
+MagickPrivate unsigned int GetSignatureBlocksize(
   const SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -324,7 +324,7 @@ MagickExport unsigned int GetSignatureBlocksize(
 %    o signature_info: the signature info.
 %
 */
-MagickExport const StringInfo *GetSignatureDigest(
+MagickPrivate const StringInfo *GetSignatureDigest(
   const SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -355,7 +355,7 @@ MagickExport const StringInfo *GetSignatureDigest(
 %    o signature_info: the signature info.
 %
 */
-MagickExport unsigned int GetSignatureDigestsize(
+MagickPrivate unsigned int GetSignatureDigestsize(
   const SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
@@ -386,7 +386,7 @@ MagickExport unsigned int GetSignatureDigestsize(
 %    o signature_info: the cipher signature_info.
 %
 */
-MagickExport void InitializeSignature(SignatureInfo *signature_info)
+MagickPrivate void InitializeSignature(SignatureInfo *signature_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(signature_info != (SignatureInfo *) NULL);
@@ -429,7 +429,7 @@ MagickExport void InitializeSignature(SignatureInfo *signature_info)
 %    o digest: the digest.
 %
 */
-MagickExport void SetSignatureDigest(SignatureInfo *signature_info,
+MagickPrivate void SetSignatureDigest(SignatureInfo *signature_info,
   const StringInfo *digest)
 {
   /*
@@ -760,7 +760,7 @@ static void TransformSignature(SignatureInfo *signature_info)
 %    o message: the message.
 %
 */
-MagickExport void UpdateSignature(SignatureInfo *signature_info,
+MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
   const StringInfo *message)
 {
   register size_t

@@ -29,21 +29,18 @@ extern "C" {
 typedef struct _SignatureInfo
   SignatureInfo;
 
-extern MagickExport MagickBooleanType
-  SignatureImage(Image *,ExceptionInfo *exception);
-
-extern MagickExport SignatureInfo
+extern MagickPrivate SignatureInfo
   *AcquireSignatureInfo(void),
   *DestroySignatureInfo(SignatureInfo *);
 
-extern MagickExport const StringInfo
+extern MagickPrivate const StringInfo
   *GetSignatureDigest(const SignatureInfo *);
 
-extern MagickExport unsigned int
+extern MagickPrivate unsigned int
   GetSignatureBlocksize(const SignatureInfo *),
   GetSignatureDigestsize(const SignatureInfo *);
 
-extern MagickExport void
+extern MagickPrivate void
   InitializeSignature(SignatureInfo *),
   FinalizeSignature(SignatureInfo *),
   SetSignatureDigest(SignatureInfo *,const StringInfo *),

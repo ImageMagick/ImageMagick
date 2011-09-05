@@ -590,7 +590,7 @@ MagickExport MagickBooleanType GlobExpression(const char *expression,
 %    o path: the path.
 %
 */
-MagickExport MagickBooleanType IsGlob(const char *path)
+MagickPrivate MagickBooleanType IsGlob(const char *path)
 {
   MagickBooleanType
     status;

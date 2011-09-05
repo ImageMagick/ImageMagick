@@ -53,6 +53,7 @@
 #include "MagickCore/semaphore.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -236,7 +237,7 @@ MagickExport LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
 %
 */
 
-MagickExport ssize_t FormatLocaleFileList(FILE *file,
+MagickPrivate ssize_t FormatLocaleFileList(FILE *file,
   const char *restrict format,va_list operands)
 {
   ssize_t
@@ -327,7 +328,7 @@ MagickExport ssize_t FormatLocaleFile(FILE *file,const char *restrict format,
 %
 */
 
-MagickExport ssize_t FormatLocaleStringList(char *restrict string,
+MagickPrivate ssize_t FormatLocaleStringList(char *restrict string,
   const size_t length,const char *restrict format,va_list operands)
 {
   ssize_t

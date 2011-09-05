@@ -25,17 +25,14 @@ extern "C" {
 typedef struct _ResizeFilter
   ResizeFilter;
 
-extern MagickExport MagickRealType
+extern MagickPrivate MagickRealType
   GetResizeFilterSupport(const ResizeFilter *),
   GetResizeFilterWeight(const ResizeFilter *,const MagickRealType);
 
-extern MagickExport ResizeFilter
+extern MagickPrivate ResizeFilter
   *AcquireResizeFilter(const Image *,const FilterTypes,const MagickRealType,
      const MagickBooleanType,ExceptionInfo *),
   *DestroyResizeFilter(ResizeFilter *);
-
-extern MagickExport void
-  SetResizeFilterSupport(ResizeFilter *,const MagickRealType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

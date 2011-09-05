@@ -651,7 +651,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
+MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   const FilterTypes filter,const MagickRealType blur,
   const MagickBooleanType cylindrical,ExceptionInfo *exception)
 {
@@ -1518,7 +1518,7 @@ static MagickRealType BesselOrderOne(MagickRealType x)
 %    o resize_filter: the resize filter.
 %
 */
-MagickExport ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
+MagickPrivate ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
   assert(resize_filter->signature == MagickSignature);
@@ -1550,7 +1550,7 @@ MagickExport ResizeFilter *DestroyResizeFilter(ResizeFilter *resize_filter)
 %    o filter: Image filter to use.
 %
 */
-MagickExport MagickRealType GetResizeFilterSupport(
+MagickPrivate MagickRealType GetResizeFilterSupport(
   const ResizeFilter *resize_filter)
 {
   assert(resize_filter != (ResizeFilter *) NULL);
@@ -1585,7 +1585,7 @@ MagickExport MagickRealType GetResizeFilterSupport(
 %    o x: the point.
 %
 */
-MagickExport MagickRealType GetResizeFilterWeight(
+MagickPrivate MagickRealType GetResizeFilterWeight(
   const ResizeFilter *resize_filter,const MagickRealType x)
 {
   MagickRealType
