@@ -8216,7 +8216,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
       sharp_image=SharpenImage(*image,geometry_info.rho,geometry_info.sigma,
-        exception);
+        geometry_info.xi,exception);
       if (sharp_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8252,7 +8252,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
       blur_image=BlurImage(*image,geometry_info.rho,geometry_info.sigma,
-        exception);
+        geometry_info.xi,exception);
       if (blur_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8745,7 +8745,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=geometry_info.rho;
       charcoal_image=CharcoalImage(*image,geometry_info.rho,geometry_info.sigma,
-        exception);
+        geometry_info.xi,exception);
       if (charcoal_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

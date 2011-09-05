@@ -487,7 +487,7 @@ void Magick::Image::blur( const double radius_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    BlurImage( image(), radius_, sigma_, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, image()->bias, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -500,7 +500,7 @@ void Magick::Image::blurChannel( const ChannelType channel_,
   GetExceptionInfo( &exceptionInfo );
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   MagickCore::Image* newImage =
-    BlurImage( image(), radius_, sigma_, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, image()->bias, &exceptionInfo);
   (void) SetPixelChannelMap( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -557,7 +557,7 @@ void Magick::Image::charcoal( const double radius_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    CharcoalImage( image(), radius_, sigma_, &exceptionInfo );
+    CharcoalImage( image(), radius_, sigma_, image()->bias, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1213,7 +1213,7 @@ void Magick::Image::gaussianBlur ( const double width_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    GaussianBlurImage( image(), width_, sigma_, &exceptionInfo );
+    GaussianBlurImage( image(), width_, sigma_, image()->bias, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1227,7 +1227,7 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
   GetExceptionInfo( &exceptionInfo );
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   MagickCore::Image* newImage =
-    GaussianBlurImage( image(), width_, sigma_, &exceptionInfo );
+    GaussianBlurImage( image(), width_, sigma_, image()->bias, &exceptionInfo );
   (void) SetPixelChannelMap( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -1940,6 +1940,7 @@ void Magick::Image::sharpen ( const double radius_, const double sigma_ )
     SharpenImage( image(),
                   radius_,
                   sigma_,
+                  image()->bias,
                   &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -1956,6 +1957,7 @@ void Magick::Image::sharpenChannel ( const ChannelType channel_,
     SharpenImage( image(),
                          radius_,
                          sigma_,
+                  image()->bias,
                          &exceptionInfo );
   (void) SetPixelChannelMap( image(), channel_mask );
   replaceImage( newImage );

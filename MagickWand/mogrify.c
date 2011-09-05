@@ -706,6 +706,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.0;
             mogrify_image=AdaptiveBlurImage(*image,geometry_info.rho,
               geometry_info.sigma,geometry_info.xi,exception);
             break;
@@ -730,6 +732,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.0;
             mogrify_image=AdaptiveSharpenImage(*image,geometry_info.rho,
               geometry_info.sigma,geometry_info.xi,exception);
             break;
@@ -900,8 +904,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.0;
             mogrify_image=BlurImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("border",option+1) == 0)
@@ -920,8 +926,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             if (*option == '+')
               {
-                (void) QueryColorDatabase(MogrifyBorderColor,&draw_info->border_color,
-                  exception);
+                (void) QueryColorDatabase(MogrifyBorderColor,
+                  &draw_info->border_color,exception);
                 break;
               }
             (void) QueryColorDatabase(argv[i+1],&draw_info->border_color,
@@ -999,8 +1005,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=1.0;
             mogrify_image=CharcoalImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("chop",option+1) == 0)
@@ -1702,8 +1710,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.0;
             mogrify_image=GaussianBlurImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
@@ -2662,8 +2672,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
+            if ((flags & XiValue) == 0)
+              geometry_info.xi=0.0;
             mogrify_image=SharpenImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,geometry_info.xi,exception);
             break;
           }
         if (LocaleCompare("shave",option+1) == 0)
@@ -3216,7 +3228,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-brightness-contrast geometry",
       "                     improve brightness / contrast of the image",
       "-cdl filename        color correct with a color decision list",
-      "-charcoal radius     simulate a charcoal drawing",
+      "-charcoal geometry   simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
       "-clamp               restrict pixel range from 0 to the quantum depth",
       "-clip                clip along the first path from the 8BIM profile",

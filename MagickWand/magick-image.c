@@ -889,7 +889,7 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %  The format of the MagickBlurImage method is:
 %
 %      MagickBooleanType MagickBlurImage(MagickWand *wand,const double radius,
-%        const double sigma)
+%        const double sigmaconst double bias)
 %
 %  A description of each parameter follows:
 %
@@ -900,9 +900,11 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the , in pixels.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double bias)
 {
   Image
     *blur_image;
@@ -913,7 +915,7 @@ WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=BlurImage(wand->images,radius,sigma,wand->exception);
+  blur_image=BlurImage(wand->images,radius,sigma,bias,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -1042,7 +1044,7 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(
 %  The format of the MagickCharcoalImage method is:
 %
 %      MagickBooleanType MagickCharcoalImage(MagickWand *wand,
-%        const double radius,const double sigma)
+%        const double radius,const double sigma,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -1053,9 +1055,11 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double bias)
 {
   Image
     *charcoal_image;
@@ -1066,7 +1070,7 @@ WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  charcoal_image=CharcoalImage(wand->images,radius,sigma,wand->exception);
+  charcoal_image=CharcoalImage(wand->images,radius,sigma,bias,wand->exception);
   if (charcoal_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,charcoal_image);
@@ -3337,7 +3341,7 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 %  The format of the MagickGaussianBlurImage method is:
 %
 %      MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
-%        const double radius,const double sigma)
+%        const double radius,const double sigma,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -3348,9 +3352,11 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double bias)
 {
   Image
     *blur_image;
@@ -3361,7 +3367,7 @@ WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=GaussianBlurImage(wand->images,radius,sigma,wand->exception);
+  blur_image=GaussianBlurImage(wand->images,radius,sigma,bias,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -10223,7 +10229,7 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 %  The format of the MagickSharpenImage method is:
 %
 %      MagickBooleanType MagickSharpenImage(MagickWand *wand,
-%        const double radius,const double sigma)
+%        const double radius,const double sigma,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -10234,9 +10240,11 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
-  const double radius,const double sigma)
+  const double radius,const double sigma,const double bias)
 {
   Image
     *sharp_image;
@@ -10247,7 +10255,7 @@ WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=SharpenImage(wand->images,radius,sigma,wand->exception);
+  sharp_image=SharpenImage(wand->images,radius,sigma,bias,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
