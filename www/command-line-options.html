@@ -1790,10 +1790,11 @@ available:</p>
 </pre>
 
     <p>As a special case, if the <kbd>sRGB</kbd> chunk is not excluded and
-    the PNG encoder recognizes the sRGB ICC profile, the PNG encoder will
-    write the sRGB chunk instead of the 3144-byte profile.  To force the PNG
-    encoder to write the sRGB profile in the output PNG, exclude the sRGB
-    chunk.</p>
+    the PNG encoder recognizes that the image contains the sRGB ICC profile,
+    the PNG encoder will write the <kbd>sRGB</kbd> chunk instead of the entire
+    3144-byte ICC profile.  To force the PNG encoder to write the sRGB
+    profile as an <kbd>iCCP</kbd> chunk in the output PNG instead of the
+    <kbd>sRGB</kbd> chunk, exclude the <kbd>sRGB</kbd> chunk.</p>
 
     <p>The critical PNG chunks <kbd>IHDR</kbd>, <kbd>PLTE</kbd>,
     <kbd>IDAT</kbd>, and <kbd>IEND</kbd> cannot be excluded.  Any such
