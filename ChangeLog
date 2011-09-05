@@ -1,3 +1,7 @@
+2011-09-03  6.7.2-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Recognize the sRGB ICC profile and write the PNG sRGB profile instead
+    of a full iCCP chunk.
+
 2011-09-01  6.7.2-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-2.
 
