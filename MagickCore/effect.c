@@ -4840,9 +4840,6 @@ MagickExport Image *UnsharpMaskImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     register const Quantum
       *restrict p;
 
@@ -4862,63 +4859,41 @@ MagickExport Image *UnsharpMaskImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    pixel=bias;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        {
-          pixel.red=GetPixelRed(image,p)-(MagickRealType) GetPixelRed(image,q);
-          if (fabs(2.0*pixel.red) < quantum_threshold)
-            pixel.red=(MagickRealType) GetPixelRed(image,p);
-          else
-            pixel.red=(MagickRealType) GetPixelRed(image,p)+(pixel.red*amount);
-          SetPixelRed(unsharp_image,ClampToQuantum(pixel.red),q);
-        }
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        {
-          pixel.green=GetPixelGreen(image,p)-
-            (MagickRealType) GetPixelGreen(image,q);
-          if (fabs(2.0*pixel.green) < quantum_threshold)
-            pixel.green=(MagickRealType) GetPixelGreen(image,p);
-          else
-            pixel.green=(MagickRealType) GetPixelGreen(image,p)+
-              (pixel.green*amount);
-          SetPixelGreen(unsharp_image,
-            ClampToQuantum(pixel.green),q);
-        }
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        {
-          pixel.blue=GetPixelBlue(image,p)-(MagickRealType)
-            GetPixelBlue(image,q);
-          if (fabs(2.0*pixel.blue) < quantum_threshold)
-            pixel.blue=(MagickRealType) GetPixelBlue(image,p);
-          else
-            pixel.blue=(MagickRealType) GetPixelBlue(image,p)+
-              (pixel.blue*amount);
-          SetPixelBlue(unsharp_image,ClampToQuantum(pixel.blue),q);
-        }
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        {
-          pixel.black=GetPixelBlack(image,p)-(MagickRealType)
-            GetPixelBlack(image,q);
-          if (fabs(2.0*pixel.black) < quantum_threshold)
-            pixel.black=(MagickRealType) GetPixelBlack(image,p);
-          else
-            pixel.black=(MagickRealType) GetPixelBlack(image,p)+
-              (pixel.black*amount);
-          SetPixelBlack(unsharp_image,ClampToQuantum(pixel.black),q);
-        }
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          pixel.alpha=GetPixelAlpha(image,p)-(MagickRealType)
-            GetPixelAlpha(image,q);
-          if (fabs(2.0*pixel.alpha) < quantum_threshold)
-            pixel.alpha=(MagickRealType) GetPixelAlpha(image,p);
-          else
-            pixel.alpha=GetPixelAlpha(image,p)+(pixel.alpha*amount);
-          SetPixelAlpha(unsharp_image,ClampToQuantum(pixel.alpha),q);
-        }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits,
+          unsharp_traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        unsharp_traits=GetPixelChannelMapTraits(unsharp_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (unsharp_traits == UndefinedPixelTrait))
+          continue;
+        if ((unsharp_traits & CopyPixelTrait) != 0)
+          {
+            q[channel]=p[i];
+            continue;
+          }
+        pixel=p[i]-(MagickRealType) q[channel];
+        if (fabs(2.0*pixel) < quantum_threshold)
+          pixel=(MagickRealType) p[i];
+        else
+          pixel=(MagickRealType) p[i]+amount*pixel;
+        q[channel]=ClampToQuantum(pixel);
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(unsharp_image);
     }
