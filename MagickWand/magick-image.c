@@ -2502,7 +2502,8 @@ WandExport MagickBooleanType MagickDrawImage(MagickWand *wand,
 %
 %  The format of the MagickEdgeImage method is:
 %
-%      MagickBooleanType MagickEdgeImage(MagickWand *wand,const double radius)
+%      MagickBooleanType MagickEdgeImage(MagickWand *wand,const double radius,
+%        const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -2510,9 +2511,11 @@ WandExport MagickBooleanType MagickDrawImage(MagickWand *wand,
 %
 %    o radius: the radius of the pixel neighborhood.
 %
+%    o sigma: the standard deviation of the Gaussian, in pixels.
+%
 */
 WandExport MagickBooleanType MagickEdgeImage(MagickWand *wand,
-  const double radius)
+  const double radius,const double sigma)
 {
   Image
     *edge_image;
@@ -2523,7 +2526,7 @@ WandExport MagickBooleanType MagickEdgeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  edge_image=EdgeImage(wand->images,radius,wand->exception);
+  edge_image=EdgeImage(wand->images,radius,sigma,wand->exception);
   if (edge_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,edge_image);

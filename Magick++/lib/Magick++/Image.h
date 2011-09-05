@@ -284,6 +284,8 @@ namespace Magick
     
     // Edge image (hilight edges in image)
     void            edge ( const double radius_ = 0.0 );
+    void            edge ( const double radius_ = 0.0,
+                           const double sigma_ = 1.0);
     
     // Emboss image (hilight edges with 3D effect)
     // The radius_ parameter specifies the radius of the Gaussian, in

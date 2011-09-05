@@ -7606,7 +7606,8 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             geometry_info.rho=argument_list[0].real_reference;
-          image=EdgeImage(image,geometry_info.rho,exception);
+          image=EdgeImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
           break;
         }
         case 11:  /* Emboss */

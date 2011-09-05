@@ -1409,7 +1409,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
-            mogrify_image=EdgeImage(*image,geometry_info.rho,exception);
+            mogrify_image=EdgeImage(*image,geometry_info.rho,
+              geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("emboss",option+1) == 0)
