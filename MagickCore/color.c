@@ -2257,7 +2257,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   Q u e r y M a g i c k C o l o r C o m p l i a n c e                       %
++   Q u e r y M a g i c k C o l o r C o m p l i a n c e                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2284,7 +2284,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
+MagickPrivate MagickBooleanType QueryMagickColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,
   ExceptionInfo *exception)
 {

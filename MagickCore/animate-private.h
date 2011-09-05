@@ -22,17 +22,6 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_X11_DELEGATE)
-#include "MagickCore/xwindow-private.h"
-
-extern MagickExport Image
-  *XAnimateImages(Display *,XResourceInfo *,char **,const int,Image *,
-    ExceptionInfo *);
-
-extern MagickExport void
-  XAnimateBackgroundImage(Display *,XResourceInfo *,Image *,ExceptionInfo *);
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

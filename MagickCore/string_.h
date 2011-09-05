@@ -47,7 +47,6 @@ extern MagickExport char
   **DestroyStringList(char **),
   *EscapeString(const char *,const char),
   *FileToString(const char *,const size_t,ExceptionInfo *),
-  *GetEnvironmentValue(const char *),
   *StringInfoToHexString(const StringInfo *),
   *StringInfoToString(const StringInfo *),
   **StringToArgv(const char *,int *),
@@ -74,7 +73,6 @@ extern MagickExport size_t
   GetStringInfoLength(const StringInfo *);
 
 extern MagickExport ssize_t
-  FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
   FormatMagickTime(const time_t,const size_t,char *);
 
 extern MagickExport StringInfo

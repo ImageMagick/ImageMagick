@@ -151,7 +151,7 @@ struct _FxInfo
 %    o expression: the expression.
 %
 */
-MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
+MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression)
 {
   char
     fx_op[2];
@@ -1063,7 +1063,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
 %    o fx_info: the fx info.
 %
 */
-MagickExport FxInfo *DestroyFxInfo(FxInfo *fx_info)
+MagickPrivate FxInfo *DestroyFxInfo(FxInfo *fx_info)
 {
   register ssize_t
     i;
@@ -2812,7 +2812,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
   return(alpha);
 }
 
-MagickExport MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
+MagickPrivate MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
   MagickRealType *alpha,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -2840,7 +2840,7 @@ MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
   return(status);
 }
 
-MagickExport MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
+MagickPrivate MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
   const PixelChannel channel,const ssize_t x,const ssize_t y,
   MagickRealType *alpha,ExceptionInfo *exception)
 {
@@ -3538,7 +3538,7 @@ static inline Quantum PlasmaPixel(RandomInfo *random_info,
   return(plasma);
 }
 
-MagickExport MagickBooleanType PlasmaImageProxy(Image *image,
+static MagickBooleanType PlasmaImageProxy(Image *image,
   CacheView *image_view,RandomInfo *random_info,const SegmentInfo *segment,
   size_t attenuate,size_t depth,ExceptionInfo *exception)
 {

@@ -525,7 +525,6 @@ extern MagickExport MagickBooleanType
   ClipImagePath(Image *,const char *,const MagickBooleanType,ExceptionInfo *),
   GetImageAlphaChannel(const Image *),
   IsTaintImage(const Image *),
-  IsMagickConflict(const char *),
   IsHighDynamicRangeImage(const Image *,ExceptionInfo *),
   IsImageObject(const Image *),
   ListMagickInfo(FILE *,ExceptionInfo *),

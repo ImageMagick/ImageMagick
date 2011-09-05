@@ -435,21 +435,21 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/PreRvIcccm.h MagickCore/prepress.c \
 	MagickCore/prepress.h MagickCore/property.c \
 	MagickCore/property.h MagickCore/profile.c \
-	MagickCore/profile.h MagickCore/quantize.c \
-	MagickCore/quantize.h MagickCore/quantum.c \
-	MagickCore/quantum.h MagickCore/quantum-export.c \
-	MagickCore/quantum-import.c MagickCore/quantum-private.h \
-	MagickCore/random.c MagickCore/random_.h \
-	MagickCore/random-private.h MagickCore/registry.c \
-	MagickCore/registry.h MagickCore/resample.c \
-	MagickCore/resample.h MagickCore/resample-private.h \
-	MagickCore/resize.c MagickCore/resize.h \
-	MagickCore/resize-private.h MagickCore/resource.c \
-	MagickCore/resource_.h MagickCore/resource-private.h \
-	MagickCore/segment.c MagickCore/segment.h \
-	MagickCore/semaphore.c MagickCore/semaphore.h \
-	MagickCore/semaphore-private.h MagickCore/shear.c \
-	MagickCore/shear.h MagickCore/signature.c \
+	MagickCore/profile.h MagickCore/profile-profile.h \
+	MagickCore/quantize.c MagickCore/quantize.h \
+	MagickCore/quantum.c MagickCore/quantum.h \
+	MagickCore/quantum-export.c MagickCore/quantum-import.c \
+	MagickCore/quantum-private.h MagickCore/random.c \
+	MagickCore/random_.h MagickCore/random-private.h \
+	MagickCore/registry.c MagickCore/registry.h \
+	MagickCore/resample.c MagickCore/resample.h \
+	MagickCore/resample-private.h MagickCore/resize.c \
+	MagickCore/resize.h MagickCore/resize-private.h \
+	MagickCore/resource.c MagickCore/resource_.h \
+	MagickCore/resource-private.h MagickCore/segment.c \
+	MagickCore/segment.h MagickCore/semaphore.c \
+	MagickCore/semaphore.h MagickCore/semaphore-private.h \
+	MagickCore/shear.c MagickCore/shear.h MagickCore/signature.c \
 	MagickCore/signature.h MagickCore/signature-private.h \
 	MagickCore/splay-tree.c MagickCore/splay-tree.h \
 	MagickCore/static.c MagickCore/static.h MagickCore/statistic.c \
@@ -4002,6 +4002,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/property.h \
 	MagickCore/profile.c \
 	MagickCore/profile.h \
+	MagickCore/profile-profile.h \
 	MagickCore/quantize.c \
 	MagickCore/quantize.h \
 	MagickCore/quantum.c \
@@ -4215,6 +4216,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
  	MagickCore/policy-private.h \
+ 	MagickCore/profile-private.h \
 	MagickCore/quantum-private.h \
  	MagickCore/random_-private.h \
 	MagickCore/random-private.h \

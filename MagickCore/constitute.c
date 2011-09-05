@@ -62,6 +62,7 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/resize.h"

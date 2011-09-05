@@ -25,11 +25,11 @@ extern "C" {
 typedef struct _FxInfo
   FxInfo;
 
-extern MagickExport FxInfo
+extern MagickPrivate FxInfo
   *AcquireFxInfo(const Image *,const char *),
   *DestroyFxInfo(FxInfo *);
 
-extern MagickExport MagickBooleanType
+extern MagickPrivate MagickBooleanType
   FxEvaluateExpression(FxInfo *,MagickRealType *,ExceptionInfo *),
   FxEvaluateChannelExpression(FxInfo *,const PixelChannel,const ssize_t,
    const ssize_t,MagickRealType *,ExceptionInfo *);

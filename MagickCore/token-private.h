@@ -28,6 +28,9 @@ extern "C" {
 
 #define MaxMultibyteCodes  6
 
+extern MagickPrivate MagickBooleanType
+  IsGlob(const char *);
+
 typedef struct
 {
   int

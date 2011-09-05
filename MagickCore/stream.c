@@ -516,7 +516,7 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
 %
 %  GetStreamInfoClientData() gets the stream info client data.
 %
-%  The format of the SetStreamInfoClientData method is:
+%  The format of the GetStreamInfoClientData method is:
 %
 %      const void *GetStreamInfoClientData(StreamInfo *stream_info)
 %
@@ -525,7 +525,7 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
 %    o stream_info: the stream info.
 %
 */
-MagickExport const void *GetStreamInfoClientData(StreamInfo *stream_info)
+MagickPrivate const void *GetStreamInfoClientData(StreamInfo *stream_info)
 {
   assert(stream_info != (StreamInfo *) NULL);
   assert(stream_info->signature == MagickSignature);
@@ -992,7 +992,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 %    o client_data: the client data.
 %
 */
-MagickExport void SetStreamInfoClientData(StreamInfo *stream_info,
+MagickPrivate void SetStreamInfoClientData(StreamInfo *stream_info,
   const void *client_data)
 {
   assert(stream_info != (StreamInfo *) NULL);
