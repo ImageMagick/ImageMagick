@@ -34,6 +34,7 @@ extern MagickPrivate const char
   BackgroundColor[],
   BorderColor[],
   ForegroundColor[],
+  DefaultTileFrame[],
   MatteColor[];
 
 static inline double DegreesToRadians(const double degrees)

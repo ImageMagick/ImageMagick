@@ -15,8 +15,8 @@
 
   MagickCore private configure methods.
 */
-#ifndef _MAGICKCORE_CONFIGURE_H
-#define _MAGICKCORE_CONFIGURE_H
+#ifndef _MAGICKCORE_CONFIGURE_PRIVATE_H
+#define _MAGICKCORE_CONFIGURE_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
