@@ -34,6 +34,7 @@ extern "C" {
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/quantize.h"
+#include "MagickCore/xwindow.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 # define klass  c_class
