@@ -777,7 +777,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         (void) CopyMagickString(p,p+1,MaxTextExtent);
         continue;
       }
-    switch ((int) *p)
+    c=(int) ((unsigned char) *p);
+    switch (c)
     {
       case '%':
       {
