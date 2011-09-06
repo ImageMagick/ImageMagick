@@ -161,7 +161,7 @@ typedef struct _XDrawInfo
     geometry[MaxTextExtent];
 } XDrawInfo;
 
-typedef struct _XImportInfo
+struct _XImportInfo
 {
   MagickBooleanType
     frame,
@@ -169,7 +169,7 @@ typedef struct _XImportInfo
     screen,
     descend,
     silent;
-} XImportInfo;
+};
 
 typedef enum
 {
@@ -247,7 +247,7 @@ typedef struct _XPixelInfo
     pen_index;
 } XPixelInfo;
 
-typedef struct _XResourceInfo
+struct _XResourceInfo
 {
   XrmDatabase
     resource_database;
@@ -351,7 +351,7 @@ typedef struct _XResourceInfo
 
   char
     home_directory[MaxTextExtent];
-} XResourceInfo;
+};
 
 typedef struct _XWindowInfo
 {
