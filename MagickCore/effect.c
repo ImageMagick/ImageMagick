@@ -892,7 +892,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  blur_image=CloneImage(image,0,0,MagickTrue,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   if (fabs(sigma) <= MagickEpsilon)
@@ -944,7 +944,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (y=0; y < (ssize_t) blur_image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
       *restrict p;
@@ -1066,7 +1066,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (x=0; x < (ssize_t) blur_image->columns; x++)
+  for (x=0; x < (ssize_t) image->columns; x++)
   {
     register const Quantum
       *restrict p;
