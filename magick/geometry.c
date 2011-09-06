@@ -93,6 +93,9 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   double
     value;
 
+  int
+    c;
+
   MagickStatusType
     flags;
 
@@ -192,7 +195,8 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   (void) value;
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
-  if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == '\0'))
+  c=(*q);
+  if ((c == -41) || (*q == 'x') || (*q == 'X') || (*q == '\0'))
     {
       /*
         Parse width.
@@ -205,7 +209,8 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       if (p != q)
         flags|=WidthValue;
     }
-  if ((((int) *p) == -41) || (*p == 'x') || (*p == 'X'))
+  c=(*p);
+  if ((c == -41) || (*p == 'x') || (*p == 'X'))
     {
       p++;
       if ((*p != '+') && (*p != '-'))
@@ -747,6 +752,9 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   double
     value;
 
+  int
+    c;
+
   MagickStatusType
     flags;
 
@@ -853,7 +861,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   value=InterpretLocaleValue(p,&q);
   if (LocaleNCompare(p,"0x",2) == 0)
     value=(double) strtol(p,&q,10);
-  if ((((int) *q) == -41) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
+  c=(*q);
+  if ((c == -41) || (*q == 'x') || (*q == 'X') || (*q == ',') ||
       (*q == '/') || (*q == ':') || (*q =='\0'))
     {
       /*
@@ -871,8 +880,9 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         }
     }
   q=p;
-  if ((((int) *p) == -41) || (*p == 'x') || (*p == 'X') || (*p == ',') ||
-      (*p == '/') || (*p == ':'))
+  c=(*p);
+  if ((c == -41) || (*p == 'x') || (*p == 'X') || (*p == ',') || (*p == '/') ||
+      (*p == ':'))
     {
       /*
         Parse sigma.
@@ -880,8 +890,9 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       p++;
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
-      if (((((int) *q) != -41) && (*q != 'x') && (*q != 'X')) ||
-          ((*p != '+') && (*p != '-')))
+      c=(*q);
+      if (((c != -41) && (*q != 'x') && (*q != 'X')) || ((*p != '+') &&
+          (*p != '-')))
         {
           q=p;
           value=InterpretLocaleValue(p,&p);
