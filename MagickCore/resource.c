@@ -1094,6 +1094,7 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
   if (resource_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&resource_semaphore);
   LockSemaphoreInfo(resource_semaphore);
+  value=(char *) NULL;
   switch (type)
   {
     case AreaResource:
@@ -1158,6 +1159,8 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
     default:
       break;
   }
+  if (value != (char *) NULL)
+    value=DestroyString(value);
   UnlockSemaphoreInfo(resource_semaphore);
   return(MagickTrue);
 }
