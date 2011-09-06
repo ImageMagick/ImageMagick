@@ -7612,7 +7612,28 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                           data[54]=='G' && data[55]=='B')
                       {
                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                             "    It is sRGB)");
+                             "    It is HP-Microsoft sRGB)");
+                         if (image->rendering_intent==UndefinedIntent);
+                           image->rendering_intent=PerceptualIntent;
+                      }
+                      else
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                             "    It is not sRGB (%c%c%c%c)",data[52],
+                             data[53],data[54],data[55]);
+                      
+                    }
+                    else if (length == 3052)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "    got a 3052-byte ICC profile (potentially sRGB)");
+
+                      data=GetStringInfoDatum(profile);
+
+                      if (data[336]=='s' && data[337]=='R' &&
+                          data[338]=='G' && data[339]=='B')
+                      {
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                             "    It is ICC no-black sRGB)");
                          if (image->rendering_intent==UndefinedIntent);
                            image->rendering_intent=PerceptualIntent;
                       }
