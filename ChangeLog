@@ -1,3 +1,11 @@
+2011-09-07  6.7.2-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.2-3.
+
+2011-09-05  6.7.2-3 Cristy  <quetzlzacatenango@image...>
+  * A small memory overwrite when reading TIFF with 1-bit alpha (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19417).
+  * Remove a 2 byte memory leak when checking for environment variables.
+
 2011-09-05  6.7.2-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-2.
 
