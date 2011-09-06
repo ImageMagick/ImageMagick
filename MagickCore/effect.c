@@ -3817,9 +3817,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    bias;
-
   RandomInfo
     **restrict random_info;
 
@@ -3852,7 +3849,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(spread_image,&bias);
   width=GetOptimalKernelWidth1D(radius,0.5);
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
@@ -3860,13 +3856,13 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
-  for (y=0; y < (ssize_t) spread_image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     const int
       id = GetOpenMPThreadId();
 
-    PixelInfo
-      pixel;
+    register const Quantum
+      *restrict p;
 
     register Quantum
       *restrict q;
@@ -3876,21 +3872,52 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(spread_view,0,y,spread_image->columns,1,
       exception);
-    if (q == (Quantum *) NULL)
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    pixel=bias;
-    for (x=0; x < (ssize_t) spread_image->columns; x++)
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      (void) InterpolatePixelInfo(image,image_view,
-        UndefinedInterpolatePixel,(double) x+width*(GetPseudoRandomValue(
-        random_info[id])-0.5),(double) y+width*(GetPseudoRandomValue(
-        random_info[id])-0.5),&pixel,exception);
-      SetPixelPixelInfo(spread_image,&pixel,q);
+      PointInfo
+        point;
+
+      register ssize_t
+        i;
+
+      point.x=GetPseudoRandomValue(random_info[id]);
+      point.y=GetPseudoRandomValue(random_info[id]);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          spread_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        spread_traits=GetPixelChannelMapTraits(spread_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (spread_traits == UndefinedPixelTrait))
+          continue;
+        if ((spread_traits & CopyPixelTrait) != 0)
+          {
+            q[channel]=p[i];
+            continue;
+          }
+        status=InterpolatePixelChannel(image,image_view,(PixelChannel) i,
+          MeshInterpolatePixel,(double) x+width*point.x-0.5,(double) y+width*
+          point.y-0.5,&pixel,exception);
+        q[channel]=ClampToQuantum(pixel);
+      }
       q+=GetPixelChannels(spread_image);
     }
     if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
