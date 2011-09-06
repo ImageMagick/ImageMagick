@@ -516,26 +516,26 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
           {
             pixel=(unsigned char) *indexes++;
             *q=((pixel & 0x01) << 7);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum) TransparentOpacity ?
-              1 : 0);
+            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+              TransparentOpacity ? 1 : 0);
             *q|=((pixel & 0x01) << 6);
             p++;
             pixel=(unsigned char) *indexes++;
             *q|=((pixel & 0x01) << 5);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum) TransparentOpacity ?
-              1 : 0);
+            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+              TransparentOpacity ? 1 : 0);
             *q|=((pixel & 0x01) << 4);
             p++;
             pixel=(unsigned char) *indexes++;
             *q|=((pixel & 0x01) << 3);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum) TransparentOpacity ?
-              1 : 0);
+            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+              TransparentOpacity ? 1 : 0);
             *q|=((pixel & 0x01) << 2);
             p++;
             pixel=(unsigned char) *indexes++;
             *q|=((pixel & 0x01) << 1);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum) TransparentOpacity ?
-              1 : 0);
+            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+              TransparentOpacity ? 1 : 0);
             *q|=((pixel & 0x01) << 0);
             p++;
             q++;

@@ -542,7 +542,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           register unsigned char
             pixel;
 
-          for (x=0; x < ((ssize_t) number_pixels-3); x+=4)
+          for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
           {
             for (bit=0; bit < 8; bit+=2)
             {
@@ -561,22 +561,23 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
               q++;
             }
           }
-          for (bit=0; bit < (ssize_t) (number_pixels % 4); bit+=2)
-          {
-            if (quantum_info->min_is_white == MagickFalse)
-              pixel=(unsigned char) (((*p) & (1 << (7-bit))) == 0 ?
-                0x00 : 0x01);
-            else
-              pixel=(unsigned char) (((*p) & (1 << (7-bit))) != 0 ?
-                0x00 : 0x01);
-            SetPixelIndex(indexes+x+bit/2,pixel == 0 ? 0 : 1);
-            SetPixelRed(q,pixel == 0 ? 0 : QuantumRange);
-            SetPixelGreen(q,GetPixelRed(q));
-            SetPixelBlue(q,GetPixelRed(q));
-            SetPixelOpacity(q,((*p) & (1UL << (unsigned char)
-              (6-bit))) == 0 ? TransparentOpacity : OpaqueOpacity);
-            q++;
-          }
+          if ((number_pixels % 4) != 0)
+            for (bit=0; bit < (ssize_t) (number_pixels % 4); bit+=2)
+            {
+              if (quantum_info->min_is_white == MagickFalse)
+                pixel=(unsigned char) (((*p) & (1 << (7-bit))) == 0 ?
+                  0x00 : 0x01);
+              else
+                pixel=(unsigned char) (((*p) & (1 << (7-bit))) != 0 ?
+                  0x00 : 0x01);
+              SetPixelIndex(indexes+x+bit/2,pixel == 0 ? 0 : 1);
+              SetPixelRed(q,pixel == 0 ? 0 : QuantumRange);
+              SetPixelGreen(q,GetPixelRed(q));
+              SetPixelBlue(q,GetPixelRed(q));
+              SetPixelOpacity(q,((*p) & (1UL << (unsigned char)
+                (6-bit))) == 0 ? TransparentOpacity : OpaqueOpacity);
+              q++;
+            }
           break;
         }
         case 4:
@@ -1625,7 +1626,7 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
           register unsigned char
             pixel;
 
-          for (x=0; x < ((ssize_t) number_pixels-3); x+=4)
+          for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
           {
             for (bit=0; bit < 8; bit+=2)
             {
@@ -1640,16 +1641,18 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
             }
             p++;
           }
-          for (bit=0; bit <= (ssize_t) (number_pixels % 4); bit+=2)
-          {
-            pixel=(unsigned char) (((*p) & (1 << (7-bit))) != 0 ? 0x00 : 0x01);
-            SetPixelRed(q,pixel != 0 ? 0 : QuantumRange);
-            SetPixelGreen(q,GetPixelRed(q));
-            SetPixelBlue(q,GetPixelRed(q));
-            SetPixelOpacity(q,((*p) & (1UL << (unsigned char)
-              (6-bit))) == 0 ? TransparentOpacity : OpaqueOpacity);
-            q++;
-          }
+          if ((number_pixels % 4) != 0)
+            for (bit=3; bit >= (ssize_t) (4-(number_pixels % 4)); bit-=2)
+            {
+              pixel=(unsigned char) (((*p) & (1 << (7-bit))) != 0 ? 0x00 :
+                0x01);
+              SetPixelRed(q,pixel != 0 ? 0 : QuantumRange);
+              SetPixelGreen(q,GetPixelRed(q));
+              SetPixelBlue(q,GetPixelRed(q));
+              SetPixelOpacity(q,((*p) & (1UL << (unsigned char)
+                (6-bit))) == 0 ? TransparentOpacity : OpaqueOpacity);
+              q++;
+            }
           if (bit != 0)
             p++;
           break;
