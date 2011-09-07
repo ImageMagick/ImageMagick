@@ -2024,9 +2024,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Median filter image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) ParseGeometry(argv[i+1],&geometry_info);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
             mogrify_image=StatisticImage(*image,MedianStatistic,(size_t)
-              geometry_info.rho,(size_t) geometry_info.rho,exception);
+              geometry_info.rho,(size_t) geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("mode",option+1) == 0)
@@ -2035,9 +2037,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Mode image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) ParseGeometry(argv[i+1],&geometry_info);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
             mogrify_image=StatisticImage(*image,ModeStatistic,(size_t)
-              geometry_info.rho,(size_t) geometry_info.rho,exception);
+              geometry_info.rho,(size_t) geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("modulate",option+1) == 0)
@@ -2137,9 +2141,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '-')
               {
-                (void) ParseGeometry(argv[i+1],&geometry_info);
+                flags=ParseGeometry(argv[i+1],&geometry_info);
+                if ((flags & SigmaValue) == 0)
+                  geometry_info.sigma=geometry_info.rho;
                 mogrify_image=StatisticImage(*image,NonpeakStatistic,(size_t)
-                  geometry_info.rho,(size_t) geometry_info.rho,exception);
+                  geometry_info.rho,(size_t) geometry_info.sigma,exception);
               }
             else
               {
