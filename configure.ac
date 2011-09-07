@@ -3237,7 +3237,7 @@ AM_CONDITIONAL(ZIP_DELEGATE, test "x$ZIP" != "x" )
 # GhostPCL related configuration.
 #
 PCLColorDevice=ppmraw
-PCLCMYKDevice=bmpsep8
+PCLCMYKDevice=pamcmyk32
 PCLMonoDevice=pbmraw
 if test -z "$PCLVersion"; then
     PCLVersion='unknown'
