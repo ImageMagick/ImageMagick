@@ -4169,7 +4169,7 @@ static PixelInfo GetMaximumPixelList(PixelList *pixel_list)
   /*
     Find the maximum value for each of the color.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
@@ -4219,7 +4219,7 @@ static PixelInfo GetMeanPixelList(PixelList *pixel_list)
   /*
     Find the mean value for each of the color.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
@@ -4266,7 +4266,7 @@ static PixelInfo GetMedianPixelList(PixelList *pixel_list)
   /*
     Find the median value for each of the color.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
@@ -4311,7 +4311,7 @@ static PixelInfo GetMinimumPixelList(PixelList *pixel_list)
   /*
     Find the minimum value for each of the color.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     count=0;
@@ -4360,7 +4360,7 @@ static PixelInfo GetModePixelList(PixelList *pixel_list)
   /*
     Make each pixel the 'predominant color' of the specified neighborhood.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
@@ -4413,7 +4413,7 @@ static PixelInfo GetNonpeakPixelList(PixelList *pixel_list)
   /*
     Finds the non peak value for each of the colors.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
@@ -4469,7 +4469,7 @@ static PixelInfo GetStandardDeviationPixelList(PixelList *pixel_list)
   /*
     Find the standard-deviation value for each of the color.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     color=65536L;
@@ -4566,7 +4566,7 @@ static void ResetPixelList(PixelList *pixel_list)
   /*
     Reset the skip-list.
   */
-  for (channel=0; channel < 5; channel++)
+  for (channel=0; channel < ListChannels; channel++)
   {
     list=pixel_list->lists+channel;
     root=list->nodes+65536UL;
