@@ -31,7 +31,7 @@ struct win32_mutex {
 namespace Magick
 {
   // Mutex lock wrapper
-  class MagickDLLDecl MutexLock
+  class MagickPPExport MutexLock
   {
   public:
     // Default constructor
@@ -63,7 +63,7 @@ namespace Magick
   };
 
   // Lock mutex while object is in scope
-  class MagickDLLDecl Lock
+  class MagickPPExport Lock
   {
   public:
     // Construct with mutex lock (locks mutex)

@@ -15,7 +15,7 @@
 
 namespace Magick
 {
-  class MagickDLLDecl CoderInfo
+  class MagickPPExport CoderInfo
   {
   public:
 
