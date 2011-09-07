@@ -18,7 +18,7 @@
 //
 namespace Magick
 {
-  class MagickDLLDecl Montage
+  class MagickPPExport Montage
   {
   public:
     Montage( void );
@@ -105,7 +105,7 @@ namespace Magick
   //
   // Montage With Frames (Extends Basic Montage)
   //
-  class MagickDLLDecl MontageFramed : public Montage
+  class MagickPPExport MontageFramed : public Montage
   {
   public:
     MontageFramed ( void );

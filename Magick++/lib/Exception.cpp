@@ -259,7 +259,7 @@ Magick::ErrorXServer::ErrorXServer ( const std::string& what_ )
 }
 
 // Format and throw exception
-MagickDLLDecl void Magick::throwExceptionExplicit( const ExceptionType severity_,
+MagickPPExport void Magick::throwExceptionExplicit( const ExceptionType severity_,
                                                    const char* reason_,
                                                    const char* description_)
 {
@@ -276,7 +276,7 @@ MagickDLLDecl void Magick::throwExceptionExplicit( const ExceptionType severity_
 }
 
 // Throw C++ exception
-MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
+MagickPPExport void Magick::throwException( ExceptionInfo &exception_ )
 {
   // Just return if there is no reported error
   if ( exception_.severity == UndefinedException )

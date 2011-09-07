@@ -14,7 +14,7 @@
 
 namespace Magick
 {
-  class MagickDLLDecl Pixels
+  class MagickPPExport Pixels
   {
   public:
 
