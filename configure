@@ -33888,7 +33888,7 @@ fi
 # GhostPCL related configuration.
 #
 PCLColorDevice=ppmraw
-PCLCMYKDevice=bmpsep8
+PCLCMYKDevice=pamcmyk32
 PCLMonoDevice=pbmraw
 if test -z "$PCLVersion"; then
     PCLVersion='unknown'
