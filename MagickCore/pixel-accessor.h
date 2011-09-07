@@ -27,6 +27,8 @@ extern "C" {
 #include <MagickCore/color.h>
 #include <MagickCore/image.h>
 
+#undef index
+
 static inline Quantum GetPixelAlpha(const Image *image,const Quantum *pixel)
 {
   return(pixel[image->channel_map[AlphaPixelChannel].channel]);

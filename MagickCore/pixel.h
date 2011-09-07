@@ -26,6 +26,7 @@ extern "C" {
 #include <MagickCore/constitute.h>
 
 #define MaxPixelChannels  32
+#undef index
 
 typedef enum
 {
