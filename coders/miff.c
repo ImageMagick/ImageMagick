@@ -1407,17 +1407,17 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
             length--;
             if (image->storage_class == PseudoClass)
-              SetPixelIndex(image,pixel.index,q);
+              SetPixelIndex(image,ClampToQuantum(pixel.index),q);
             else
               {
-                SetPixelRed(image,pixel.red,q);
-                SetPixelGreen(image,pixel.green,q);
-                SetPixelBlue(image,pixel.blue,q);
+                SetPixelRed(image,ClampToQuantum(pixel.red),q);
+                SetPixelGreen(image,ClampToQuantum(pixel.green),q);
+                SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
                 if (image->colorspace == CMYKColorspace)
-                  SetPixelBlack(image,pixel.black,q);
+                  SetPixelBlack(image,ClampToQuantum(pixel.black),q);
               }
             if (image->matte != MagickFalse)
-              SetPixelAlpha(image,pixel.alpha,q);
+              SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
             q+=GetPixelChannels(image);
           }
           break;
@@ -1675,7 +1675,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
 
           if (image->matte != MagickFalse)
             {
-              value=ScaleQuantumToLong(pixel->alpha);
+              value=ScaleQuantumToLong(ClampToQuantum(pixel->alpha));
               pixels=PopLongPixel(MSBEndian,value,pixels);
             }
           break;
@@ -1687,7 +1687,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
 
           if (image->matte != MagickFalse)
             {
-              value=ScaleQuantumToShort(pixel->alpha);
+              value=ScaleQuantumToShort(ClampToQuantum(pixel->alpha));
               pixels=PopShortPixel(MSBEndian,value,pixels);
             }
           break;
@@ -1699,7 +1699,8 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
 
           if (image->matte != MagickFalse)
             {
-              value=(unsigned char) ScaleQuantumToChar(pixel->alpha);
+              value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
+                pixel->alpha));
               pixels=PopCharPixel(value,pixels);
             }
           break;
@@ -1718,20 +1719,20 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
       unsigned int
         value;
 
-      value=ScaleQuantumToLong(pixel->red);
+      value=ScaleQuantumToLong(ClampToQuantum(pixel->red));
       pixels=PopLongPixel(MSBEndian,value,pixels);
-      value=ScaleQuantumToLong(pixel->green);
+      value=ScaleQuantumToLong(ClampToQuantum(pixel->green));
       pixels=PopLongPixel(MSBEndian,value,pixels);
-      value=ScaleQuantumToLong(pixel->blue);
+      value=ScaleQuantumToLong(ClampToQuantum(pixel->blue));
       pixels=PopLongPixel(MSBEndian,value,pixels);
       if (image->colorspace == CMYKColorspace)
         {
-          value=ScaleQuantumToLong(pixel->black);
+          value=ScaleQuantumToLong(ClampToQuantum(pixel->black));
           pixels=PopLongPixel(MSBEndian,value,pixels);
         }
       if (image->matte != MagickFalse)
         {
-          value=ScaleQuantumToLong(pixel->alpha);
+          value=ScaleQuantumToLong(ClampToQuantum(pixel->alpha));
           pixels=PopLongPixel(MSBEndian,value,pixels);
         }
       break;
@@ -1741,20 +1742,20 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
       unsigned short
         value;
 
-      value=ScaleQuantumToShort(pixel->red);
+      value=ScaleQuantumToShort(ClampToQuantum(pixel->red));
       pixels=PopShortPixel(MSBEndian,value,pixels);
-      value=ScaleQuantumToShort(pixel->green);
+      value=ScaleQuantumToShort(ClampToQuantum(pixel->green));
       pixels=PopShortPixel(MSBEndian,value,pixels);
-      value=ScaleQuantumToShort(pixel->blue);
+      value=ScaleQuantumToShort(ClampToQuantum(pixel->blue));
       pixels=PopShortPixel(MSBEndian,value,pixels);
       if (image->colorspace == CMYKColorspace)
         {
-          value=ScaleQuantumToShort(pixel->black);
+          value=ScaleQuantumToShort(ClampToQuantum(pixel->black));
           pixels=PopShortPixel(MSBEndian,value,pixels);
         }
       if (image->matte != MagickFalse)
         {
-          value=ScaleQuantumToShort(pixel->alpha);
+          value=ScaleQuantumToShort(ClampToQuantum(pixel->alpha));
           pixels=PopShortPixel(MSBEndian,value,pixels);
         }
       break;
@@ -1764,20 +1765,22 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
       unsigned char
         value;
 
-      value=(unsigned char) ScaleQuantumToChar(pixel->red);
+      value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(pixel->red));
       pixels=PopCharPixel(value,pixels);
-      value=(unsigned char) ScaleQuantumToChar(pixel->green);
+      value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(pixel->green));
       pixels=PopCharPixel(value,pixels);
-      value=(unsigned char) ScaleQuantumToChar(pixel->blue);
+      value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(pixel->blue));
       pixels=PopCharPixel(value,pixels);
       if (image->colorspace == CMYKColorspace)
         {
-          value=(unsigned char) ScaleQuantumToChar(pixel->black);
+          value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
+            pixel->black));
           pixels=PopCharPixel(value,pixels);
         }
       if (image->matte != MagickFalse)
         {
-          value=(unsigned char) ScaleQuantumToChar(pixel->alpha);
+          value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
+            pixel->alpha));
           pixels=PopCharPixel(value,pixels);
         }
       break;

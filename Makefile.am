@@ -17,7 +17,7 @@
 #  Top-Level Makefile for building ImageMagick.
 #
 
-AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-zip dist-bzip2 dist-xz dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-zip dist-bzip2 dist-xz foreign
 
 topincludedir = @includedir@/ImageMagick
 

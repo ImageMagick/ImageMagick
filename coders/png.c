@@ -9552,7 +9552,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 ping_bit_depth=1;
                 one=1;
 
-                while ((one << ping_bit_depth) < (ssize_t) number_colors)
+                while ((one << ping_bit_depth) < (size_t) number_colors)
                   ping_bit_depth <<= 1;
               }
 
