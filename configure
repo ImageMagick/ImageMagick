@@ -3583,7 +3583,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5219
+MAGICK_SVN_REVISION=5221
 
 
 
@@ -34543,11 +34543,7 @@ ac_config_commands="$ac_config_commands default"
 
 ac_config_commands="$ac_config_commands MagickCore-config.in"
 
-ac_config_commands="$ac_config_commands Magick-config.in"
-
 ac_config_commands="$ac_config_commands MagickWand-config.in"
-
-ac_config_commands="$ac_config_commands Wand-config.in"
 
 ac_config_commands="$ac_config_commands Magick++-config.in"
 
@@ -35915,9 +35911,7 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
     "MagickCore-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore-config.in" ;;
-    "Magick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick-config.in" ;;
     "MagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickWand-config.in" ;;
-    "Wand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Wand-config.in" ;;
     "Magick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick++-config.in" ;;
     "PerlMagick/check.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/check.sh.in" ;;
 
@@ -37506,9 +37500,7 @@ _LT_EOF
 
  ;;
     "MagickCore-config.in":C) chmod +x MagickCore/MagickCore-config ;;
-    "Magick-config.in":C) chmod +x MagickCore/Magick-config ;;
     "MagickWand-config.in":C) chmod +x MagickWand/MagickWand-config ;;
-    "Wand-config.in":C) chmod +x MagickWand/Wand-config ;;
     "Magick++-config.in":C) chmod +x Magick++/bin/Magick++-config ;;
     "PerlMagick/check.sh.in":C) chmod +x PerlMagick/check.sh ;;
 
