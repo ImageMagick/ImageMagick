@@ -8,6 +8,7 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
+#include <cstring>
 #include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 #include "Magick++/BlobRef.h"
