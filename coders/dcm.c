@@ -3063,9 +3063,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               count=ReadBlob(image,(size_t) quantum*length,data);
               if (count != (ssize_t) (quantum*length))
                 {
-                  (void) FormatLocaleFile(stdout,"count=%d quantum=%d length=%d "
-                    "group=%d\n",(int) count,(int) quantum,(int) length,(int)
-                    group);
+                  (void) FormatLocaleFile(stdout,"count=%d quantum=%d "
+                    "length=%d group=%d\n",(int) count,(int) quantum,(int)
+                    length,(int) group);
                    ThrowReaderException(CorruptImageError,
                      "InsufficientImageDataInFile");
                 }
@@ -3648,7 +3648,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         one=1;
         if (colors == 0)
           colors=one << depth;
-        if (AcquireImageColormap(image,colors) == MagickFalse)
+        if (AcquireImageColormap(image,one << depth) == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         if (redmap != (int *) NULL)
           for (i=0; i < (ssize_t) colors; i++)
@@ -3822,8 +3822,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           ReadDCMLSBShort(stream_info,image)) :
                           ReadDCMLSBShort(stream_info,image));
                       if (signed_data == 1)
-                        pixel_value=((signed short) pixel_value);
-                      if (significant_bits == 12)
                         pixel_value>>=4;
                     }
                   else
