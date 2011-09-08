@@ -1605,7 +1605,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
         Equalize colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+      #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
       for (j=0; j < (ssize_t) image->colors; j++)
       {
@@ -1614,36 +1614,36 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           {
             i=GetPixelChannelMapChannel(image,RedPixelChannel);
             if (black[i] != white[i])
-              image->colormap[i].red=ClampToQuantum(equalize_map[
+              image->colormap[j].red=ClampToQuantum(equalize_map[
                 GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[i].red)]+i);
+                image->colormap[j].red)]+i);
           }
         if (((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) &&
             (white[i]!= black[i]))
           {
             i=GetPixelChannelMapChannel(image,GreenPixelChannel);
             if (black[i] != white[i])
-              image->colormap[i].green=ClampToQuantum(equalize_map[
+              image->colormap[j].green=ClampToQuantum(equalize_map[
                 GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[i].red)]+i);
+                image->colormap[j].red)]+i);
           }
         if (((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) &&
             (white[i]!= black[i]))
           {
             i=GetPixelChannelMapChannel(image,BluePixelChannel);
             if (black[i] != white[i])
-              image->colormap[i].blue=ClampToQuantum(equalize_map[
+              image->colormap[j].blue=ClampToQuantum(equalize_map[
                 GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[i].blue)]+i);
+                image->colormap[j].blue)]+i);
           }
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (white[i]!= black[i]))
           {
             i=GetPixelChannelMapChannel(image,AlphaPixelChannel);
             if (black[i] != white[i])
-              image->colormap[i].alpha=ClampToQuantum(equalize_map[
+              image->colormap[j].alpha=ClampToQuantum(equalize_map[
                 GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[i].alpha)]+i);
+                image->colormap[j].alpha)]+i);
           }
       }
     }
