@@ -369,13 +369,11 @@ extern MagickExport double
   NTElapsedTime(void),
   NTUserTime(void);
 
-extern int
-#if !defined(__MINGW32__)
-  gettimeofday(struct timeval *,struct timezone *);
-#endif
-
 extern MagickExport int
   Exit(int),
+#if !defined(__MINGW32__)
+  gettimeofday(struct timeval *,struct timezone *),
+#endif
   IsWindows95(),
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
