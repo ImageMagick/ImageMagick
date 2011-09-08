@@ -5,7 +5,6 @@
 // Test STL readImages and writeImages functions
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

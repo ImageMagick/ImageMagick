@@ -7,7 +7,6 @@
 // Max run-time size 60MB (as compared with 95MB for PerlMagick) under SPARC Solaris
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

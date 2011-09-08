@@ -7,7 +7,6 @@
 // Usage: analyze file...
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <iostream>
 #include <iomanip>

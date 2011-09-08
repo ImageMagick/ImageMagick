@@ -5,7 +5,6 @@
 // Test STL coalesceImages function
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

@@ -9,7 +9,6 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include <cstdlib>
-#include <cstring>
 #include <string>
 #include <string.h>
 #include <errno.h>

@@ -34,7 +34,6 @@ extern "C" {
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/quantize.h"
-#include "MagickCore/xwindow.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 # define klass  c_class
@@ -162,16 +161,6 @@ typedef struct _XDrawInfo
     geometry[MaxTextExtent];
 } XDrawInfo;
 
-struct _XImportInfo
-{
-  MagickBooleanType
-    frame,
-    borders,
-    screen,
-    descend,
-    silent;
-};
-
 typedef enum
 {
   DefaultState = 0x0000,
@@ -248,7 +237,7 @@ typedef struct _XPixelInfo
     pen_index;
 } XPixelInfo;
 
-struct _XResourceInfo
+typedef struct _XResourceInfo
 {
   XrmDatabase
     resource_database;
@@ -352,7 +341,7 @@ struct _XResourceInfo
 
   char
     home_directory[MaxTextExtent];
-};
+} XResourceInfo;
 
 typedef struct _XWindowInfo
 {
@@ -582,6 +571,26 @@ extern MagickPrivate XVisualInfo
 extern MagickPrivate XWindows
   *XInitializeWindows(Display *,XResourceInfo *),
   *XSetWindows(XWindows *);
+
+extern MagickExport char
+  *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
+  *XGetResourceInstance(XrmDatabase,const char *,const char *,const char *),
+  *XGetScreenDensity(Display *);
+
+extern MagickExport int
+  XError(Display *,XErrorEvent *);
+
+extern MagickExport MagickBooleanType
+  XRemoteCommand(Display *,const char *,const char *);
+
+extern MagickExport void
+  DestroyXResources(void),
+  XDestroyResourceInfo(XResourceInfo *),
+  XGetResourceInfo(const ImageInfo *,XrmDatabase,const char *,XResourceInfo *),
+  XRetainWindowColors(Display *,const Window);
+
+extern MagickExport XrmDatabase
+  XGetResourceDatabase(Display *,const char *);
 
 static inline MagickRealType XPixelIntensity(const XColor *pixel)
 {

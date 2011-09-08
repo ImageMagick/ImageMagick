@@ -4,7 +4,6 @@
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2003
 // 
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

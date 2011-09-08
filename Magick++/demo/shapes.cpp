@@ -7,7 +7,6 @@
 // Concept and algorithms lifted from PerlMagick demo script
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

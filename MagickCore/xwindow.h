@@ -22,42 +22,20 @@
 extern "C" {
 #endif
 
-#if defined(MAGICKCORE_X11_DELEGATE)
-#include <X11/Xos.h>
-#include <X11/Xlib.h>
-#include <X11/Xresource.h>
-
 typedef struct _XImportInfo
-  XImportInfo;
-
-typedef struct _XResourceInfo
-  XResourceInfo;
-
-extern MagickExport char
-  *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
-  *XGetResourceInstance(XrmDatabase,const char *,const char *,const char *),
-  *XGetScreenDensity(Display *);
-
-extern MagickExport int
-  XError(Display *,XErrorEvent *);
-
-extern MagickExport XrmDatabase
-  XGetResourceDatabase(Display *,const char *);
-
-extern MagickExport void
-  XGetResourceInfo(const ImageInfo *,XrmDatabase,const char *,XResourceInfo *),
-  XRetainWindowColors(Display *,const Window);
-#endif
+{
+  MagickBooleanType
+    frame,
+    borders,
+    screen,
+    descend,
+    silent;
+} XImportInfo;
 
 extern MagickExport Image
   *XImportImage(const ImageInfo *,XImportInfo *);
 
-extern MagickExport MagickBooleanType
-  XRemoteCommand(Display *,const char *,const char *);
-
 extern MagickExport void
-  DestroyXResources(void),
-  XDestroyResourceInfo(XResourceInfo *),
   XGetImportInfo(XImportInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
