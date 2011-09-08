@@ -5,6 +5,7 @@
 // Test Magick::Color classes
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

@@ -5,6 +5,7 @@
 // Test Magick::CoderInfo class and Magick::coderInfoList
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

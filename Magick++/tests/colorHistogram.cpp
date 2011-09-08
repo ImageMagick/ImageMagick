@@ -8,6 +8,7 @@
 #undef USE_VECTOR
 #define USE_MAP
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

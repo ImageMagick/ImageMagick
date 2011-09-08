@@ -5,6 +5,7 @@
 // Test reading/writing BLOBs using Magick++
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>
