@@ -2302,7 +2302,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (void) ThrowMagickException(&image->exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'",
               "unable to copy profile");
-            return(MagickFalse);
+            return((Image *) NULL);
           }
           SetStringInfoDatum(profile,(const unsigned char *) info);
           (void) SetImageProfile(image,"icc",profile);
