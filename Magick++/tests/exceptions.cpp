@@ -5,7 +5,6 @@
 // Tests for throwing exceptions
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

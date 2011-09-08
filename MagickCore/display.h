@@ -27,17 +27,6 @@ extern MagickExport MagickBooleanType
   RemoteDisplayCommand(const ImageInfo *,const char *,const char *,
     ExceptionInfo *);
 
-#if defined(MAGICKCORE_X11_DELEGATE)
-#include "MagickCore/xwindow.h"
-
-extern MagickExport Image
-  *XDisplayImage(Display *,XResourceInfo *,char **,int,Image **,size_t *,
-    ExceptionInfo *);
-
-extern MagickExport MagickBooleanType XDisplayBackgroundImage(Display *,
-  XResourceInfo *,Image *,ExceptionInfo *);
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

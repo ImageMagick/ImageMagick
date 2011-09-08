@@ -12,7 +12,6 @@
 // by Cristy.
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

@@ -5,7 +5,6 @@
 // Test STL morphImages function
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

@@ -8,7 +8,6 @@
 // flipped and morphed version to "flip_out.miff".
 //
 
-#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

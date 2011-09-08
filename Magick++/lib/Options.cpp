@@ -10,7 +10,6 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
-#include <cstring>
 #include <string>
 #include <string.h>
 #include <stdlib.h>
