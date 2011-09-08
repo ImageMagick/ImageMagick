@@ -374,7 +374,7 @@ extern MagickExport int
 #if !defined(__MINGW32__)
   gettimeofday(struct timeval *,struct timezone *),
 #endif
-  IsWindows95(),
+  IsWindows95(void),
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
   NTControlHandler(void),
