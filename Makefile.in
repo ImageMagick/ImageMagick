@@ -2249,8 +2249,8 @@ am__remove_distdir = \
   { test ! -d "$(distdir)" \
     || { find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr "$(distdir)"; }; }
-DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2 $(distdir).tar.xz \
-	$(distdir).zip
+DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2 \
+	$(distdir).tar.lzma $(distdir).tar.xz $(distdir).zip
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
@@ -2619,7 +2619,7 @@ top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
-AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-zip dist-bzip2 dist-xz foreign
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-zip dist-bzip2 dist-xz dist-lzma foreign
 topincludedir = @includedir@/ImageMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
@@ -11029,7 +11029,6 @@ dist-gzip: distdir
 dist-bzip2: distdir
 	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	$(am__remove_distdir)
-
 dist-lzma: distdir
 	tardir=$(distdir) && $(am__tar) | lzma -9 -c >$(distdir).tar.lzma
 	$(am__remove_distdir)
@@ -11052,6 +11051,7 @@ dist-zip: distdir
 dist dist-all: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
+	tardir=$(distdir) && $(am__tar) | lzma -9 -c >$(distdir).tar.lzma
 	tardir=$(distdir) && $(am__tar) | xz -c >$(distdir).tar.xz
 	-rm -f $(distdir).zip
 	zip -rq $(distdir).zip $(distdir)
