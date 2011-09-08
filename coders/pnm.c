@@ -564,9 +564,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixel.blue=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
                   pixel.blue,max_value)];
               }
-            SetPixelRed(image,pixel.red,q);
-            SetPixelGreen(image,pixel.green,q);
-            SetPixelBlue(image,pixel.blue,q);
+            SetPixelRed(image,ClampToQuantum(pixel.red),q);
+            SetPixelGreen(image,ClampToQuantum(pixel.green),q);
+            SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
