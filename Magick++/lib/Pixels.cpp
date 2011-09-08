@@ -8,6 +8,8 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
+#include <cstring>
+#include <cstring>
 #include "Magick++/Include.h"
 #include <string> // This is here to compile with Visual C++
 #include "Magick++/Thread.h"

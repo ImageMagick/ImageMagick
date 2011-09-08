@@ -8,6 +8,7 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
+#include <cstring>
 #include "Magick++/TypeMetric.h"
 #include <string.h>
 
