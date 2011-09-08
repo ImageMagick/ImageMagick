@@ -324,7 +324,7 @@ MagickExport int gettimeofday (struct timeval *time_value,
 %      int IsWindows95()
 %
 */
-MagickExport int IsWindows95()
+MagickExport int IsWindows95(void)
 {
   OSVERSIONINFO
     version_info;
