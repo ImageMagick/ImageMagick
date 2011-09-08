@@ -5,6 +5,7 @@
 // Test STL appendImages function
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

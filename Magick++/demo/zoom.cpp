@@ -8,6 +8,7 @@
 //             [-resample resolution] input_file output_file
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <iostream>
 #include <string>

@@ -5,6 +5,7 @@
 // Tests for setting/getting Magick::Image attributes
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>

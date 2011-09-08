@@ -6,6 +6,7 @@
 // The PerlMagick "piddle" demo is written by John Cristy
 //
 
+#include <cstring>
 #include <Magick++.h>
 #include <string>
 #include <iostream>
