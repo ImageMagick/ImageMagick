@@ -282,6 +282,8 @@ extern "C" {
 #define _O_TEMPORARY 0
 #endif
 
+#undef gettimeofday
+
 #if !defined(XS_VERSION)
 struct dirent
 {
