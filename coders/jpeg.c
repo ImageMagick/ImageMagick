@@ -649,11 +649,11 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
         length;
 
       length=GetStringInfoLength(profile);
+      SetStringInfoLength(profile,GetStringInfoLength(profile)+
+        GetStringInfoLength(previous_profile));
       (void) memmove(GetStringInfoDatum(profile)+
         GetStringInfoLength(previous_profile),GetStringInfoDatum(profile),
         length);
-      (void) memcpy(GetStringInfoDatum(profile),GetStringInfoDatum(profile)+
-        GetStringInfoLength(previous_profile),length);
       (void) memcpy(GetStringInfoDatum(profile),
         GetStringInfoDatum(previous_profile),
         GetStringInfoLength(previous_profile));
