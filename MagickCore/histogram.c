@@ -965,7 +965,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %  The format of the MinMaxStretchImage method is:
 %
 %      MagickBooleanType MinMaxStretchImage(Image *image,const double black,
-%        const double white,ExceptionInfo *exception)
+%        const double white,const double gamma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -974,18 +974,21 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
 %    o black, white:  move the black / white point inward from the minimum and
 %      maximum points by this color value.
 %
+%    o gamma: the gamma.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
-  const double black,const double white,ExceptionInfo *exception)
+  const double black,const double white,const double gamma,
+  ExceptionInfo *exception)
 {
-  ChannelType
-    channel_mask;
-
   double
     min,
     max;
+
+  register ssize_t
+    i;
 
   MagickStatusType
     status;
@@ -1000,64 +1003,31 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0,exception);
+        status&=LevelImage(image,min,max,gamma,exception);
       return(status != 0 ? MagickTrue : MagickFalse);
     }
   /*
     Auto-level each channel separately.
   */
-  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-    {
-      channel_mask=SetPixelChannelMask(image,RedChannel);
-      (void) GetImageRange(image,&min,&max,exception);
-      min+=black;
-      max-=white;
-      if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
-    }
-  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-    {
-      channel_mask=SetPixelChannelMask(image,GreenChannel);
-      (void) GetImageRange(image,&min,&max,exception);
-      min+=black;
-      max-=white;
-      if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
-    }
-  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-    {
-      channel_mask=SetPixelChannelMask(image,BlueChannel);
-      (void) GetImageRange(image,&min,&max,exception);
-      min+=black;
-      max-=white;
-      if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
-    }
-  if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-       (image->colorspace == CMYKColorspace))
-    {
-      channel_mask=SetPixelChannelMask(image,BlackChannel);
-      (void) GetImageRange(image,&min,&max,exception);
-      min+=black;
-      max-=white;
-      if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
-    }
-  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-       (image->matte == MagickTrue))
-    {
-      channel_mask=SetPixelChannelMask(image,AlphaChannel);
-      (void) GetImageRange(image,&min,&max,exception);
-      min+=black;
-      max-=white;
-      if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,1.0,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
-    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    ChannelType
+      channel_mask;
+
+    PixelTrait
+      traits;
+
+    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    channel_mask=SetPixelChannelMask(image,i);
+    status&=GetImageRange(image,&min,&max,exception);
+    min+=black;
+    max-=white;
+    if (fabs(min-max) >= MagickEpsilon)
+      status&=LevelImage(image,min,max,gamma,exception);
+    (void) SetPixelChannelMask(image,channel_mask);
+  }
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
