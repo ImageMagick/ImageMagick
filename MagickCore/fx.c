@@ -4264,7 +4264,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 %  The format of the SketchImage method is:
 %
 %    Image *SketchImage(const Image *image,const double radius,
-%      const double sigma,const double angle,ExceptionInfo *exception)
+%      const double sigma,const double angle,const double bias,
+%      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4275,13 +4276,16 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o angle: Apply the effect along this angle.
+%    o angle: apply the effect along this angle.
+%
+%    o bias: the bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *SketchImage(const Image *image,const double radius,
-  const double sigma,const double angle,ExceptionInfo *exception)
+  const double sigma,const double angle,const double bias,
+  ExceptionInfo *exception)
 {
   CacheView
     *random_view;
@@ -4364,7 +4368,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       random_image=DestroyImage(random_image);
       return(random_image);
     }
-  blur_image=MotionBlurImage(random_image,radius,sigma,angle,exception);
+  blur_image=MotionBlurImage(random_image,radius,sigma,angle,bias,exception);
   random_image=DestroyImage(random_image);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);

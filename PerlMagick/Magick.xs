@@ -395,7 +395,8 @@ static struct
       {"channel", MagickChannelOptions} } },
     { "MotionBlur", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"angle", RealReference}, {"channel", MagickChannelOptions} } },
+      {"angle", RealReference}, {"bias", RealReference},
+      {"channel", MagickChannelOptions} } },
     { "OrderedDither", { {"threshold", StringReference},
       {"channel", MagickChannelOptions} } },
     { "Shave", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -466,7 +467,7 @@ static struct
       {"bias", RealReference}, {"channel", MagickChannelOptions} } },
     { "Sketch", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"angle", RealReference} } },
+      {"angle", RealReference}, {"bias", RealReference} } },
     { "UniqueColors", },
     { "AdaptiveResize", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
@@ -9311,10 +9312,12 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
-            channel=(ChannelType) argument_list[4].integer_reference;
+            geometry_info.psi=argument_list[4].real_reference;
+          if (attribute_flag[5] != 0)
+            channel=(ChannelType) argument_list[5].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=MotionBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
+            geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
@@ -10026,8 +10029,10 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             geometry_info.xi=argument_list[3].real_reference;
+          if (attribute_flag[4] != 0)
+            geometry_info.psi=argument_list[4].real_reference;
           image=SketchImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
+            geometry_info.xi,geometry_info.psi,exception);
           break;
         }
         case 104:  /* UniqueColors */
