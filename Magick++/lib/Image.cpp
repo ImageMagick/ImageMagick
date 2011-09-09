@@ -1407,7 +1407,7 @@ void            Magick::Image::motionBlur ( const double radius_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    MotionBlurImage( image(), radius_, sigma_, angle_, &exceptionInfo);
+    MotionBlurImage( image(), radius_, sigma_, angle_, 0.0, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

@@ -51,7 +51,7 @@ extern MagickExport Image
   *ShadowImage(const Image *,const double,const double,const ssize_t,
     const ssize_t,ExceptionInfo *),
   *SketchImage(const Image *,const double,const double,const double,
-    ExceptionInfo *),
+    const double,ExceptionInfo *),
   *SteganoImage(const Image *,const Image *,ExceptionInfo *),
   *StereoImage(const Image *,const Image *,ExceptionInfo *),
   *StereoAnaglyphImage(const Image *,const Image *,const ssize_t,const ssize_t,

@@ -12,7 +12,9 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-/* #undef BUILD_MODULES */
+#ifndef MAGICKCORE_BUILD_MODULES
+#define MAGICKCORE_BUILD_MODULES 1
+#endif
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -78,7 +80,9 @@
 #endif
 
 /* Define if you have FFTW library */
-/* #undef FFTW_DELEGATE */
+#ifndef MAGICKCORE_FFTW_DELEGATE
+#define MAGICKCORE_FFTW_DELEGATE 1
+#endif
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
@@ -1204,7 +1208,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib/llvm:/usr/lib64/llvm:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/R/lib:/usr/lib64/alliance/lib:/usr/lib64/atlas:/opt/modules/pkg/intel/f77/10.0.025/lib:/usr/lib64/kicad:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mpich2/lib/:/usr/lib64/mysql:/usr/lib64/octave/3.4.2:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
 #endif
 
 /* The archive extension */
@@ -1255,7 +1259,9 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-/* #undef OPENEXR_DELEGATE */
+#ifndef MAGICKCORE_OPENEXR_DELEGATE
+#define MAGICKCORE_OPENEXR_DELEGATE 1
+#endif
 
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef MAGICKCORE_PACKAGE_BUGREPORT
@@ -1310,7 +1316,9 @@
 #endif
 
 /* Define if you have RSVG library */
-/* #undef RSVG_DELEGATE */
+#ifndef MAGICKCORE_RSVG_DELEGATE
+#define MAGICKCORE_RSVG_DELEGATE 1
+#endif
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
@@ -1456,7 +1464,9 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have WMF library */
-/* #undef WMF_DELEGATE */
+#ifndef MAGICKCORE_WMF_DELEGATE
+#define MAGICKCORE_WMF_DELEGATE 1
+#endif
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

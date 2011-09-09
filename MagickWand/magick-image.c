@@ -6570,7 +6570,8 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 %  The format of the MagickMotionBlurImage method is:
 %
 %      MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
-%        const double radius,const double sigma,const double angle)
+%        const double radius,const double sigma,const double angle,
+%        const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -6585,7 +6586,7 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double angle)
+  const double radius,const double sigma,const double angle,const double bias)
 {
   Image
     *blur_image;
@@ -6596,7 +6597,8 @@ WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=MotionBlurImage(wand->images,radius,sigma,angle,wand->exception);
+  blur_image=MotionBlurImage(wand->images,radius,sigma,angle,bias,
+    wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -10503,7 +10505,8 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
 %  The format of the MagickSketchImage method is:
 %
 %      MagickBooleanType MagickSketchImage(MagickWand *wand,
-%        const double radius,const double sigma,const double angle)
+%        const double radius,const double sigma,const double angle,
+%        const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -10514,11 +10517,13 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o angle: Apply the effect along this angle.
+%    o angle: apply the effect along this angle.
+%
+%    o bias: the bias.
 %
 */
 WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
-  const double radius,const double sigma,const double angle)
+  const double radius,const double sigma,const double angle,const double bias)
 {
   Image
     *sketch_image;
@@ -10529,7 +10534,8 @@ WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sketch_image=SketchImage(wand->images,radius,sigma,angle,wand->exception);
+  sketch_image=SketchImage(wand->images,radius,sigma,angle,bias,
+    wand->exception);
   if (sketch_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sketch_image);
