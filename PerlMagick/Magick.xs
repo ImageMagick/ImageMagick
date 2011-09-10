@@ -511,7 +511,8 @@ static struct
       {"virtual-pixel", MagickVirtualPixelOptions} } },
     { "SelectiveBlur", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"threshold", RealReference}, {"channel", MagickChannelOptions} } },
+      {"threshold", RealReference}, {"bias", RealReference},
+      {"channel", MagickChannelOptions} } },
     { "HaldClut", { {"image", ImageReference},
       {"channel", MagickChannelOptions} } },
     { "BlueShift", { {"factor", StringReference} } },
@@ -10437,10 +10438,12 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             geometry_info.xi=argument_list[3].integer_reference;;
           if (attribute_flag[4] != 0)
-            channel=(ChannelType) argument_list[4].integer_reference;
+            geometry_info.psi=argument_list[4].integer_reference;;
+          if (attribute_flag[5] != 0)
+            channel=(ChannelType) argument_list[5].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=SelectiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
+            geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
