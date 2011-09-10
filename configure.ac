@@ -2398,7 +2398,6 @@ AC_SUBST(OPENEXR_LIBS)
 
 dnl ===========================================================================
 
-if test "$have_zlib" == 'yes'; then
 #
 # Check for PNG delegate library.
 #
@@ -2415,7 +2414,7 @@ fi
 have_png='no'
 PNG_LIBS=''
 
-if test "$with_png" != 'no'; then
+if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   AC_MSG_CHECKING(for PNG support )
   AC_MSG_RESULT()
@@ -2426,12 +2425,12 @@ if test "$with_png" != 'no'; then
 
   if test $passed -gt 0; then
     for var in 5 4 2 '' ; do
-      if test "x${var}" == 'x' ; then
-        pnglib='png'
-      else
-        pnglib="png1${var}"
-      fi
       if test "$have_png" == 'no' ; then
+        if test "x${var}" == 'x' ; then
+          pnglib='png'
+        else
+          pnglib="png1${var}"
+        fi
 
 #       Test for compatible LIBPNG library
         failed=0
@@ -2493,14 +2492,14 @@ return 0;
             AC_MSG_CHECKING(if ${pnglib} package is complete)
             if test $passed -gt 0 ; then
               if test $failed -gt 0 ; then
-                AC_MSG_RESULT(no -- some components failed test)
-                have_png='no (failed tests)'
+                  AC_MSG_RESULT(no -- some components failed test)
+                  have_png='no (failed tests)'
               else
-                PNG_LIBS="-l${pnglib}"
-                LIBS="$PNG_LIBS $LIBS"
-                AC_DEFINE(PNG_DELEGATE,1,Define if you have PNG library)
-                AC_MSG_RESULT(yes)
-                have_png='yes'
+                  PNG_LIBS="-l${pnglib}"
+                  LIBS="$PNG_LIBS $LIBS"
+                  AC_DEFINE(PNG_DELEGATE,1,Define if you have PNG library)
+                  AC_MSG_RESULT(yes)
+                  have_png='yes'
               fi
             fi
           fi
@@ -2512,9 +2511,7 @@ fi
 
 AM_CONDITIONAL(PNG_DELEGATE,test "$have_png" = 'yes')
 AC_SUBST(PNG_LIBS)
-else
-  AC_MSG_RESULT(PNG requires zlib support)
-fi
+
 
 dnl ===========================================================================
 
