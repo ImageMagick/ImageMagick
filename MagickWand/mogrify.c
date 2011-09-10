@@ -2560,7 +2560,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & PercentValue) != 0)
               geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
             mogrify_image=SelectiveBlurImage(*image,geometry_info.rho,
-              geometry_info.sigma,geometry_info.xi,exception);
+              geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
             break;
           }
         if (LocaleCompare("separate",option+1) == 0)

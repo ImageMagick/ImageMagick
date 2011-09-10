@@ -89,7 +89,7 @@ extern MagickExport Image
   *PreviewImage(const Image *,const PreviewType,ExceptionInfo *),
   *RadialBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *SelectiveBlurImage(const Image *,const double,const double,const double,
-    ExceptionInfo *),
+    const double,ExceptionInfo *),
   *ShadeImage(const Image *,const MagickBooleanType,const double,const double,
     ExceptionInfo *),
   *SharpenImage(const Image *,const double,const double,const double,

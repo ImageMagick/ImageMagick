@@ -8318,7 +8318,8 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %  The format of the MagickSelectiveBlurImage method is:
 %
 %      MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
-%        const double radius,const double sigma,const double threshold)
+%        const double radius,const double sigma,const double threshold,
+%        const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -8332,9 +8333,12 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %    o threshold: only pixels within this contrast threshold are included
 %      in the blur operation.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double threshold)
+  const double radius,const double sigma,const double threshold,
+  const double bias)
 {
   Image
     *blur_image;
@@ -8345,7 +8349,7 @@ WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=SelectiveBlurImage(wand->images,radius,sigma,threshold,
+  blur_image=SelectiveBlurImage(wand->images,radius,sigma,threshold,bias,
     wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
