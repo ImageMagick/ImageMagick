@@ -7513,7 +7513,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %  The format of the MagickRadialBlurImage method is:
 %
 %      MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
-%        const double angle)
+%        const double angle,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -7521,9 +7521,11 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %
 %    o angle: the angle of the blur in degrees.
 %
+%    o bias: the bias.
+%
 */
 WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
-  const double angle)
+  const double angle,const double bias)
 {
   Image
     *blur_image;
@@ -7534,7 +7536,7 @@ WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=RadialBlurImage(wand->images,angle,wand->exception);
+  blur_image=RadialBlurImage(wand->images,angle,bias,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);

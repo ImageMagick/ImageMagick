@@ -2359,8 +2359,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Radial blur image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            mogrify_image=RadialBlurImage(*image,InterpretLocaleValue(argv[i+1],
-              (char **) NULL),exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            mogrify_image=RadialBlurImage(*image,geometry_info.rho,
+              geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("raise",option+1) == 0)
