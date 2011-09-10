@@ -2832,7 +2832,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %  The format of the RadialBlurImage method is:
 %
 %    Image *RadialBlurImage(const Image *image,const double angle,
-%      ExceptionInfo *exception)
+%      const double blur,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2840,11 +2840,13 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %
 %    o angle: the angle of the radial blur.
 %
+%    o blur: the blur.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *RadialBlurImage(const Image *image,
-  const double angle,ExceptionInfo *exception)
+  const double angle,const double bias,ExceptionInfo *exception)
 {
   CacheView
     *blur_view,
@@ -2858,9 +2860,6 @@ MagickExport Image *RadialBlurImage(const Image *image,
 
   MagickOffsetType
     progress;
-
-  PixelInfo
-    bias;
 
   MagickRealType
     blur_radius,
@@ -2924,7 +2923,6 @@ MagickExport Image *RadialBlurImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(image,&bias);
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2983,7 +2981,11 @@ MagickExport Image *RadialBlurImage(const Image *image,
               step=n-1;
         }
       normalize=0.0;
-      qixel=bias;
+      qixel.red=bias;
+      qixel.green=bias;
+      qixel.blue=bias;
+      qixel.black=bias;
+      qixel.alpha=bias;
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) == 0) ||
           (image->matte == MagickFalse))
         {

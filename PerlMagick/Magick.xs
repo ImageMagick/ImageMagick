@@ -423,7 +423,7 @@ static struct
     { "WhiteThreshold", { {"threshold", StringReference},
       {"channel", MagickChannelOptions} } },
     { "RadialBlur", { {"geometry", StringReference}, {"angle", RealReference},
-      {"channel", MagickChannelOptions} } },
+      {"bias", RealReference}, {"channel", MagickChannelOptions} } },
     { "Thumbnail", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
     { "Strip", },
@@ -9634,15 +9634,16 @@ Mogrify(ref,...)
             {
               flags=ParseGeometry(argument_list[0].string_reference,
                 &geometry_info);
-              if ((flags & SigmaValue) == 0)
-                geometry_info.sigma=1.0;
             }
           if (attribute_flag[1] != 0)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
-            channel=(ChannelType) argument_list[2].integer_reference;
+            geometry_info.sigma=argument_list[2].real_reference;
+          if (attribute_flag[3] != 0)
+            channel=(ChannelType) argument_list[3].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          image=RadialBlurImage(image,geometry_info.rho,exception);
+          image=RadialBlurImage(image,geometry_info.rho,geometry_info.sigma,
+            exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
