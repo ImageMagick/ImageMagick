@@ -5345,9 +5345,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    zero;
-
   MagickRealType
     *sine_map;
 
@@ -5395,7 +5392,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(wave_image,&zero);
   image_view=AcquireCacheView(image);
   wave_view=AcquireCacheView(wave_image);
   (void) SetCacheViewVirtualPixelMethod(image_view,
@@ -5405,9 +5401,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 #endif
   for (y=0; y < (ssize_t) wave_image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     register Quantum
       *restrict q;
 
@@ -5423,13 +5416,34 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         status=MagickFalse;
         continue;
       }
-    pixel=zero;
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      (void) InterpolatePixelInfo(image,image_view,
-        UndefinedInterpolatePixel,(double) x,(double) (y-sine_map[x]),&pixel,
-        exception);
-      SetPixelPixelInfo(wave_image,&pixel,q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        double
+          pixel;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          wave_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        wave_traits=GetPixelChannelMapTraits(wave_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (wave_traits == UndefinedPixelTrait))
+          continue;
+        status=InterpolatePixelChannel(image,image_view,(PixelChannel) i,
+          MeshInterpolatePixel,(double) x,(double) (y-sine_map[x]),&pixel,
+          exception);
+        q[channel]=ClampToQuantum(pixel);
+      }
       q+=GetPixelChannels(wave_image);
     }
     if (SyncCacheViewAuthenticPixels(wave_view,exception) == MagickFalse)
