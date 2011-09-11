@@ -1213,7 +1213,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   CacheView
     *image_view;
 
-  LongPixelPacket
+  PixelLongPacket
     levels;
 
   MagickBooleanType
@@ -1315,7 +1315,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   /* Parse level values as a geometry */
   /* This difficult!
    * How to map   GeometryInfo structure elements into
-   * LongPixelPacket structure elements, but according to channel?
+   * PixelLongPacket structure elements, but according to channel?
    * Note the channels list may skip elements!!!!
    * EG  -channel BA  -ordered-dither map,2,3
    * will need to map  g.rho -> l.blue, and g.sigma -> l.alpha

@@ -225,7 +225,8 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
 %  triangulation.
 %
 %      MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
-%        const size_t columns,const size_t rows)
+%        const size_t columns,const size_t rows,
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -235,9 +236,11 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
 %
 %    o rows: the number of rows in the scaled image.
 %
+%    o interpolate: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
-  const size_t columns,const size_t rows)
+  const size_t columns,const size_t rows,const PixelInterpolateMethod method)
 {
   Image
     *resize_image;
@@ -248,7 +251,8 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  resize_image=AdaptiveResizeImage(wand->images,columns,rows,wand->exception);
+  resize_image=AdaptiveResizeImage(wand->images,columns,rows,method,
+    wand->exception);
   if (resize_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,resize_image);
@@ -1281,7 +1285,7 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
 %  The format of the MagickClutImage method is:
 %
 %      MagickBooleanType MagickClutImage(MagickWand *wand,
-%        const MagickWand *clut_wand)
+%        const MagickWand *clut_wand,const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -1289,9 +1293,11 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
 %
 %    o clut_image: the clut image.
 %
+%    o method: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickClutImage(MagickWand *wand,
-  const MagickWand *clut_wand)
+  const MagickWand *clut_wand,const PixelInterpolateMethod method)
 {
   MagickBooleanType
     status;
@@ -1302,7 +1308,7 @@ WandExport MagickBooleanType MagickClutImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->images == (Image *) NULL) || (clut_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ClutImage(wand->images,clut_wand->images,&wand->images->exception);
+  status=ClutImage(wand->images,clut_wand->images,method,wand->exception);
   return(status);
 }
 
@@ -4757,14 +4763,15 @@ WandExport InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
 %
 %  The format of the MagickGetImageInterpolateMethod method is:
 %
-%      InterpolatePixelMethod MagickGetImageInterpolateMethod(MagickWand *wand)
+%      PixelInterpolateMethod MagickGetImagePixelInterpolateMethod(
+%        MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport InterpolatePixelMethod MagickGetImageInterpolateMethod(
+WandExport PixelInterpolateMethod MagickGetImageInterpolateMethod(
   MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
@@ -7167,7 +7174,8 @@ WandExport MagickBooleanType MagickPingImageFile(MagickWand *wand,FILE *file)
 %  The format of the MagickPolaroidImage method is:
 %
 %      MagickBooleanType MagickPolaroidImage(MagickWand *wand,
-%        const DrawingWand *drawing_wand,const double angle)
+%        const DrawingWand *drawing_wand,const double angle,
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -7177,9 +7185,12 @@ WandExport MagickBooleanType MagickPingImageFile(MagickWand *wand,FILE *file)
 %
 %    o angle: Apply the effect along this angle.
 %
+%    o method: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
-  const DrawingWand *drawing_wand,const double angle)
+  const DrawingWand *drawing_wand,const double angle,
+  const PixelInterpolateMethod method)
 {
   DrawInfo
     *draw_info;
@@ -7196,7 +7207,8 @@ WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
   draw_info=PeekDrawingWand(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     return(MagickFalse);
-  polaroid_image=PolaroidImage(wand->images,draw_info,angle,wand->exception);
+  polaroid_image=PolaroidImage(wand->images,draw_info,angle,method,
+    wand->exception);
   if (polaroid_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,polaroid_image);
@@ -9428,12 +9440,12 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageInterpolateMethod() sets the image interpolate pixel method.
+%  MagickSetImagePixelInterpolateMethod() sets the image interpolate pixel method.
 %
-%  The format of the MagickSetImageInterpolateMethod method is:
+%  The format of the MagickSetImagePixelInterpolateMethod method is:
 %
-%      MagickBooleanType MagickSetImageInterpolateMethod(MagickWand *wand,
-%        const InterpolatePixelMethod method)
+%      MagickBooleanType MagickSetImagePixelInterpolateMethod(MagickWand *wand,
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -9443,8 +9455,8 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 %      Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor.
 %
 */
-WandExport MagickBooleanType MagickSetImageInterpolateMethod(MagickWand *wand,
-  const InterpolatePixelMethod method)
+WandExport MagickBooleanType MagickSetImagePixelInterpolateMethod(MagickWand *wand,
+  const PixelInterpolateMethod method)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -10787,7 +10799,8 @@ WandExport MagickBooleanType MagickSpliceImage(MagickWand *wand,
 %
 %  The format of the MagickSpreadImage method is:
 %
-%      MagickBooleanType MagickSpreadImage(MagickWand *wand,const double radius)
+%      MagickBooleanType MagickSpreadImage(MagickWand *wand,const double radius,
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -10795,9 +10808,11 @@ WandExport MagickBooleanType MagickSpliceImage(MagickWand *wand,
 %
 %    o radius:  Choose a random pixel in a neighborhood of this extent.
 %
+%    o method: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
-  const double radius)
+  const double radius,const PixelInterpolateMethod method)
 {
   Image
     *spread_image;
@@ -10808,7 +10823,7 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  spread_image=SpreadImage(wand->images,radius,wand->exception);
+  spread_image=SpreadImage(wand->images,radius,method,wand->exception);
   if (spread_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,spread_image);
@@ -11740,8 +11755,9 @@ WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
 %
 %  The format of the MagickWaveImage method is:
 %
-%      MagickBooleanType MagickWaveImage(MagickWand *wand,const double amplitude,
-%        const double wave_length)
+%      MagickBooleanType MagickWaveImage(MagickWand *wand,
+%        const double amplitude,const double wave_length,
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -11750,9 +11766,12 @@ WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
 %    o amplitude, wave_length:  Define the amplitude and wave length of the
 %      sine wave.
 %
+%    o method: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickWaveImage(MagickWand *wand,
-  const double amplitude,const double wave_length)
+  const double amplitude,const double wave_length,
+  const PixelInterpolateMethod method)
 {
   Image
     *wave_image;
@@ -11763,7 +11782,8 @@ WandExport MagickBooleanType MagickWaveImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  wave_image=WaveImage(wand->images,amplitude,wave_length,wand->exception);
+  wave_image=WaveImage(wand->images,amplitude,wave_length,method,
+    wand->exception);
   if (wave_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,wave_image);

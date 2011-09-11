@@ -555,7 +555,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,2,magick);
   do
   {
-    LongPixelPacket
+    PixelLongPacket
       shift;
 
     PixelPacket

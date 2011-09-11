@@ -3629,7 +3629,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
 %
 %      MagickBooleanType InterpolatePixelChannel(const Image *image,
 %        const CacheView *image_view,const PixelChannel channel,
-%        const InterpolatePixelMethod method,const double x,const double y,
+%        const PixelInterpolateMethod method,const double x,const double y,
 %        double *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -3689,7 +3689,7 @@ static inline ssize_t NearestNeighbor(const MagickRealType x)
 
 MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   const CacheView *image_view,const PixelChannel channel,
-  const InterpolatePixelMethod method,const double x,const double y,
+  const PixelInterpolateMethod method,const double x,const double y,
   double *pixel,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -4045,6 +4045,511 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I n t e r p o l a t e P i x e l C h a n n e l s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InterpolatePixelChannels() applies a pixel interpolation method between a
+%  floating point coordinate and the pixels surrounding that coordinate.  No
+%  pixel area resampling, or scaling of the result is performed.
+%
+%  The format of the InterpolatePixelChannels method is:
+%
+%      MagickBooleanType InterpolatePixelChannels(const Image *source,
+%        const CacheView *source_view,const Image *destination,
+%        const PixelInterpolateMethod method,const double x,const double y,
+%        Quantum *pixel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o source: the source.
+%
+%    o source_view: the source view.
+%
+%    o destination: the destination image.
+%
+%    o method: the pixel color interpolation method.
+%
+%    o x,y: A double representing the current (x,y) position of the pixel.
+%
+%    o pixel: return the interpolated pixel here.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
+  const CacheView *source_view,const Image *destination,
+  const PixelInterpolateMethod method,const double x,const double y,
+  Quantum *pixel,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  MagickRealType
+    alpha[16],
+    gamma,
+    pixels[16];
+
+  PixelChannel
+    channel;
+
+  PixelTrait
+    destination_traits,
+    traits;
+
+  register const Quantum
+    *p;
+
+  register ssize_t
+    i;
+
+  ssize_t
+    x_offset,
+    y_offset;
+
+  assert(source != (Image *) NULL);
+  assert(source != (Image *) NULL);
+  assert(source->signature == MagickSignature);
+  assert(source_view != (CacheView *) NULL);
+  status=MagickTrue;
+  x_offset=(ssize_t) floor(x);
+  y_offset=(ssize_t) floor(y);
+  switch (method == UndefinedInterpolatePixel ? source->interpolate : method)
+  {
+    case AverageInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(source_view,x_offset-1,y_offset-1,4,4,
+        exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        double
+          sum;
+
+        register ssize_t
+          j;
+
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        for (j=0; j < 16; j++)
+          pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+        if ((traits & BlendPixelTrait) == 0)
+          {
+            for (j=0; j < 16; j++)
+              pixel[channel]+=0.0625*pixels[j];
+            continue;
+          }
+        sum=0.0;
+        for (j=0; j < 16; j++)
+        {
+          alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+            GetPixelChannels(source));
+          pixels[j]*=alpha[j];
+          gamma=1.0/(fabs((double) alpha[j]) <= MagickEpsilon ? 1.0 : alpha[j]);
+          sum+=gamma*0.0625*pixels[j];
+        }
+        pixel[channel]=ClampToQuantum(sum);
+      }
+      break;
+    }
+    case BicubicInterpolatePixel:
+    {
+      MagickRealType
+        u[4],
+        v[4];
+
+      PointInfo
+        delta;
+
+      p=GetCacheViewVirtualPixels(source_view,x_offset-1,y_offset-1,4,4,
+        exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        register ssize_t
+          j;
+
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        if ((traits & BlendPixelTrait) == 0)
+          for (j=0; j < 16; j++)
+          {
+            alpha[j]=1.0;
+            pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+          }
+        else
+          for (j=0; j < 16; j++)
+          {
+            alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+              GetPixelChannels(source));
+            pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
+          }
+        delta.x=x-x_offset;
+        delta.y=y-y_offset;
+        for (j=0; j < 4; j++)
+        {
+          u[0]=(pixels[4*j+3]-pixels[4*j+2])-(pixels[4*j+0]-pixels[4*j+1]);
+          u[1]=(pixels[4*j+0]-pixels[4*j+1])-u[0];
+          u[2]=pixels[4*j+2]-pixels[4*j+0];
+          u[3]=pixels[4*j+1];
+          v[j]=(delta.x*delta.x*delta.x*u[0])+(delta.x*delta.x*u[1])+(delta.x*
+            u[2])+u[3];
+        }
+        u[0]=(v[3]-v[2])-(v[0]-v[1]);
+        u[1]=(v[0]-v[1])-u[0];
+        u[2]=v[2]-v[0];
+        u[3]=v[1];
+        pixel[channel]=ClampToQuantum((delta.y*delta.y*delta.y*u[0])+(delta.y*
+          delta.y*u[1])+(delta.y*u[2])+u[3]);
+      }
+      break;
+    }
+    case BilinearInterpolatePixel:
+    default:
+    {
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,2,2,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        PointInfo
+          delta,
+          epsilon;
+
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        delta.x=x-x_offset;
+        delta.y=y-y_offset;
+        epsilon.x=1.0-delta.x;
+        epsilon.y=1.0-delta.y;
+        pixels[0]=(MagickRealType) p[0*GetPixelChannels(source)+i];
+        pixels[1]=(MagickRealType) p[1*GetPixelChannels(source)+i];
+        pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
+        pixels[3]=(MagickRealType) p[3*GetPixelChannels(source)+i];
+        if ((traits & BlendPixelTrait) == 0)
+          {
+            gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
+            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            pixel[channel]=ClampToQuantum(gamma*(epsilon.y*(epsilon.x*pixels[0]+
+              delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+delta.x*
+              pixels[3])));
+            continue;
+          }
+        alpha[0]=QuantumScale*GetPixelAlpha(source,p+0*
+          GetPixelChannels(source));
+        alpha[1]=QuantumScale*GetPixelAlpha(source,p+1*
+          GetPixelChannels(source));
+        alpha[2]=QuantumScale*GetPixelAlpha(source,p+2*
+          GetPixelChannels(source));
+        alpha[3]=QuantumScale*GetPixelAlpha(source,p+3*
+          GetPixelChannels(source));
+        pixels[0]*=alpha[0];
+        pixels[1]*=alpha[1];
+        pixels[2]*=alpha[2];
+        pixels[3]*=alpha[3];
+        gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
+          (epsilon.x*alpha[2]+delta.x*alpha[3])));
+        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+        pixel[channel]=ClampToQuantum(gamma*(epsilon.y*(epsilon.x*pixels[0]+
+          delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+delta.x*pixels[3])));
+      }
+      break;
+    }
+    case FilterInterpolatePixel:
+    {
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        CacheView
+          *filter_view;
+
+        Image
+          *excerpt_source,
+          *filter_source;
+
+        RectangleInfo
+          geometry;
+
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        geometry.width=4L;
+        geometry.height=4L;
+        geometry.x=x_offset-1;
+        geometry.y=y_offset-1;
+        excerpt_source=ExcerptImage(source,&geometry,exception);
+        if (excerpt_source == (Image *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        filter_source=ResizeImage(excerpt_source,1,1,source->filter,
+          source->blur,exception);
+        excerpt_source=DestroyImage(excerpt_source);
+        if (filter_source == (Image *) NULL)
+          continue;
+        filter_view=AcquireCacheView(filter_source);
+        p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
+        if (p == (const Quantum *) NULL)
+          status=MagickFalse;
+        else
+          pixel[channel]=p[i];
+        filter_view=DestroyCacheView(filter_view);
+        filter_source=DestroyImage(filter_source);
+      }
+      break;
+    }
+    case IntegerInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,1,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        pixel[channel]=p[i];
+      }
+      break;
+    }
+    case NearestNeighborInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(source_view,NearestNeighbor(x),
+        NearestNeighbor(y),1,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        pixel[channel]=p[i];
+      }
+      break;
+    }
+    case MeshInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,2,2,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        PointInfo
+          delta,
+          luminance;
+
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+       pixels[0]=(MagickRealType) p[0*GetPixelChannels(source)+i];
+       pixels[1]=(MagickRealType) p[1*GetPixelChannels(source)+i];
+       pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
+       pixels[3]=(MagickRealType) p[3*GetPixelChannels(source)+i];
+       if ((traits & BlendPixelTrait) == 0)
+         {
+           alpha[0]=1.0;
+           alpha[1]=1.0;
+           alpha[2]=1.0;
+           alpha[3]=1.0;
+         }
+       else
+         {
+           alpha[0]=QuantumScale*GetPixelAlpha(source,p+0*
+             GetPixelChannels(source));
+           alpha[1]=QuantumScale*GetPixelAlpha(source,p+1*
+             GetPixelChannels(source));
+           alpha[2]=QuantumScale*GetPixelAlpha(source,p+2*
+             GetPixelChannels(source));
+           alpha[3]=QuantumScale*GetPixelAlpha(source,p+3*
+             GetPixelChannels(source));
+         }
+       delta.x=x-x_offset;
+       delta.y=y-y_offset;
+       luminance.x=GetPixelLuminance(source,p)-(double)
+         GetPixelLuminance(source,p+3*GetPixelChannels(source));
+       luminance.y=GetPixelLuminance(source,p+1*GetPixelChannels(source))-
+         (double) GetPixelLuminance(source,p+2*GetPixelChannels(source));
+       if (fabs(luminance.x) < fabs(luminance.y))
+         {
+           /*
+             Diagonal 0-3 NW-SE.
+           */
+           if (delta.x <= delta.y)
+             {
+               /*
+                 Bottom-left triangle (pixel: 2, diagonal: 0-3).
+               */
+               delta.y=1.0-delta.y;
+               gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
+               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+               pixel[channel]=ClampToQuantum(gamma*MeshInterpolate(&delta,
+                 pixels[2],pixels[3],pixels[0]));
+             }
+           else
+             {
+               /*
+                 Top-right triangle (pixel: 1, diagonal: 0-3).
+               */
+               delta.x=1.0-delta.x;
+               gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
+               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+               pixel[channel]=ClampToQuantum(gamma*MeshInterpolate(&delta,
+                 pixels[1],pixels[0],pixels[3]));
+             }
+         }
+       else
+         {
+           /*
+             Diagonal 1-2 NE-SW.
+           */
+           if (delta.x <= (1.0-delta.y))
+             {
+               /*
+                 Top-left triangle (pixel: 0, diagonal: 1-2).
+               */
+               gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
+               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+               pixel[channel]=ClampToQuantum(gamma*MeshInterpolate(&delta,
+                 pixels[0],pixels[1],pixels[2]));
+             }
+           else
+             {
+               /*
+                 Bottom-right triangle (pixel: 3, diagonal: 1-2).
+               */
+               delta.x=1.0-delta.x;
+               delta.y=1.0-delta.y;
+               gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
+               gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+               pixel[channel]=ClampToQuantum(gamma*MeshInterpolate(&delta,
+                 pixels[3],pixels[2],pixels[1]));
+             }
+         }
+      }
+      break;
+    }
+    case SplineInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(source_view,x_offset-1,y_offset-1,4,4,
+        exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        double
+          sum;
+
+        MagickRealType
+          dx,
+          dy;
+
+        PointInfo
+          delta;
+
+        register ssize_t
+          j;
+
+        ssize_t
+          k,
+          n;
+
+        traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        destination_traits=GetPixelChannelMapTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        if ((traits & BlendPixelTrait) == 0)
+          for (j=0; j < 16; j++)
+          {
+            alpha[j]=1.0;
+            pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+          }
+        else
+          for (j=0; j < 16; j++)
+          {
+            alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+              GetPixelChannels(source));
+            pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
+          }
+        delta.x=x-x_offset;
+        delta.y=y-y_offset;
+        sum=0.0;
+        n=0;
+        for (j=(-1); j < 3L; j++)
+        {
+          dy=CubicWeightingFunction((MagickRealType) j-delta.y);
+          for (k=(-1); k < 3L; k++)
+          {
+            dx=CubicWeightingFunction(delta.x-(MagickRealType) k);
+            gamma=1.0/(fabs((double) alpha[n]) <= MagickEpsilon ? 1.0 :
+              alpha[n]);
+            sum+=gamma*dx*dy*pixels[n];
+            n++;
+          }
+        }
+        pixel[channel]=ClampToQuantum(sum);
+      }
+      break;
+    }
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I n t e r p o l a t e P i x e l I n f o                                   %
 %                                                                             %
 %                                                                             %
@@ -4058,7 +4563,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
 %  The format of the InterpolatePixelInfo method is:
 %
 %      MagickBooleanType InterpolatePixelInfo(const Image *image,
-%        const CacheView *image_view,const InterpolatePixelMethod method,
+%        const CacheView *image_view,const PixelInterpolateMethod method,
 %        const double x,const double y,PixelInfo *pixel,
 %        ExceptionInfo *exception)
 %
@@ -4145,7 +4650,7 @@ static void BicubicInterpolate(const PixelInfo *pixels,const double dx,
 }
 
 MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
-  const CacheView *image_view,const InterpolatePixelMethod method,
+  const CacheView *image_view,const PixelInterpolateMethod method,
   const double x,const double y,PixelInfo *pixel,ExceptionInfo *exception)
 {
   MagickBooleanType

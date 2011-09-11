@@ -720,7 +720,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseRegionGeometry(*image,argv[i+1],&geometry,exception);
             mogrify_image=AdaptiveResizeImage(*image,geometry.width,
-              geometry.height,exception);
+              geometry.height,(*image)->interpolate,exception);
             break;
           }
         if (LocaleCompare("adaptive-sharpen",option+1) == 0)
@@ -2238,7 +2238,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 flags=ParseGeometry(argv[i+1],&geometry_info);
                 angle=geometry_info.rho;
               }
-            mogrify_image=PolaroidImage(*image,draw_info,angle,exception);
+            mogrify_image=PolaroidImage(*image,draw_info,angle,
+              (*image)->interpolate,exception);
             break;
           }
         if (LocaleCompare("posterize",option+1) == 0)
@@ -2789,7 +2790,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            mogrify_image=SpreadImage(*image,geometry_info.rho,exception);
+            mogrify_image=SpreadImage(*image,geometry_info.rho,
+              (*image)->interpolate,exception);
             break;
           }
         if (LocaleCompare("statistic",option+1) == 0)
@@ -3098,7 +3100,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
             mogrify_image=WaveImage(*image,geometry_info.rho,
-              geometry_info.sigma,exception);
+              geometry_info.sigma,(*image)->interpolate,exception);
             break;
           }
         if (LocaleCompare("weight",option+1) == 0)
@@ -7345,7 +7347,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 status=MagickFalse;
                 break;
               }
-            (void) ClutImage(image,clut_image,exception);
+            (void) ClutImage(image,clut_image,image->interpolate,exception);
             clut_image=DestroyImage(clut_image);
             *images=DestroyImageList(*images);
             *images=image;

@@ -248,7 +248,7 @@ struct _Image
   ssize_t
     start_loop;
 
-  InterpolatePixelMethod
+  PixelInterpolateMethod
     interpolate;       /* Interpolation of color for between pixel lookups */
 
   MagickBooleanType

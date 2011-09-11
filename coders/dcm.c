@@ -3774,7 +3774,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           byte;
 
-        LongPixelPacket
+        PixelLongPacket
           pixel;
 
         /*

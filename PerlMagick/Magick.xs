@@ -261,7 +261,8 @@ static struct
     { "Shear", { {"geometry", StringReference}, {"x", RealReference},
       {"y", RealReference}, { "fill", StringReference},
       {"color", StringReference} } },
-    { "Spread", { {"radius", RealReference} } },
+    { "Spread", { {"radius", RealReference},
+      {"interpolate", MagickInterpolateOptions} } },
     { "Swirl", { {"degrees", RealReference},
       {"interpolate", MagickInterpolateOptions} } },
     { "Resize", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -472,7 +473,7 @@ static struct
     { "AdaptiveResize", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"filter", MagickFilterOptions}, {"support", StringReference },
-      {"blur", RealReference } } },
+      {"blur", RealReference }, {"interpolate", MagickInterpolateOptions} } },
     { "ClipMask", { {"mask", ImageReference} } },
     { "LinearStretch", { {"levels", StringReference},
       {"black-point", RealReference},{"white-point", RealReference} } },
@@ -482,7 +483,8 @@ static struct
       {"font", StringReference}, {"stroke", StringReference},
       {"fill", StringReference}, {"strokewidth", RealReference},
       {"pointsize", RealReference}, {"gravity", MagickGravityOptions},
-      {"background", StringReference} } },
+      {"background", StringReference},
+      {"interpolate", MagickInterpolateOptions} } },
     { "FloodfillPaint", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -492,6 +494,7 @@ static struct
       {"virtual-pixel", MagickVirtualPixelOptions},
       {"best-fit", MagickBooleanOptions} } },
     { "Clut", { {"image", ImageReference},
+      {"interpolate", MagickInterpolateOptions},
       {"channel", MagickChannelOptions} } },
     { "LiquidRescale", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
@@ -7694,7 +7697,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=0.5;
           if (attribute_flag[1] != 0)
-            image->interpolate=(InterpolatePixelMethod)
+            image->interpolate=(PixelInterpolateMethod)
               argument_list[1].integer_reference;
           image=ImplodeImage(image,argument_list[0].real_reference,
             exception);
@@ -7883,9 +7886,16 @@ Mogrify(ref,...)
         }
         case 29:  /* Spread */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=1.0;
-          image=SpreadImage(image,argument_list[0].real_reference,exception);
+          method=UndefinedInterpolatePixel;
+          if (attribute_flag[1] != 0)
+            method=(PixelInterpolateMethod) argument_list[1].integer_reference;
+          image=SpreadImage(image,argument_list[0].real_reference,method,
+            exception);
           break;
         }
         case 30:  /* Swirl */
@@ -7893,7 +7903,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=50.0;
           if (attribute_flag[1] != 0)
-            image->interpolate=(InterpolatePixelMethod)
+            image->interpolate=(PixelInterpolateMethod)
               argument_list[1].integer_reference;
           image=SwirlImage(image,argument_list[0].real_reference,exception);
           break;
@@ -8262,7 +8272,7 @@ Mogrify(ref,...)
             QueryColorDatabase(argument_list[9].string_reference,
               &composite_image->background_color,exception);
           if (attribute_flag[12] != 0) /* "interpolate=>" */
-            image->interpolate=(InterpolatePixelMethod)
+            image->interpolate=(PixelInterpolateMethod)
               argument_list[12].integer_reference;
           if (attribute_flag[13] != 0)   /* "args=>" */
             (void) SetImageArtifact(composite_image,"compose:args",
@@ -8609,7 +8619,7 @@ Mogrify(ref,...)
                 }
             }
           if (attribute_flag[23] != 0)
-            image->interpolate=(InterpolatePixelMethod)
+            image->interpolate=(PixelInterpolateMethod)
               argument_list[23].integer_reference;
           if ((attribute_flag[24] != 0) &&
               (draw_info->fill_pattern != (Image *) NULL))
@@ -9052,6 +9062,9 @@ Mogrify(ref,...)
         }
         case 60:  /* Wave */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] != 0)
             {
               flags=ParseGeometry(argument_list[0].string_reference,
@@ -9063,11 +9076,11 @@ Mogrify(ref,...)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
+          method=UndefinedInterpolatePixel;
           if (attribute_flag[3] != 0)
-            image->interpolate=(InterpolatePixelMethod)
-              argument_list[3].integer_reference;
+            method=(PixelInterpolateMethod) argument_list[3].integer_reference;
           image=WaveImage(image,geometry_info.rho,geometry_info.sigma,
-            exception);
+            method,exception);
           break;
         }
         case 61:  /* Separate */
@@ -9513,7 +9526,7 @@ Mogrify(ref,...)
               current.rx*affine.tx+current.sy*affine.ty+current.ty;
           }
           if (attribute_flag[6] != 0)
-            image->interpolate=(InterpolatePixelMethod)
+            image->interpolate=(PixelInterpolateMethod)
               argument_list[6].integer_reference;
           if (attribute_flag[7] != 0)
             QueryColorDatabase(argument_list[7].string_reference,
@@ -10044,6 +10057,9 @@ Mogrify(ref,...)
         }
         case 105:  /* AdaptiveResize */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] != 0)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
@@ -10058,8 +10074,11 @@ Mogrify(ref,...)
               argument_list[4].string_reference);
           if (attribute_flag[5] != 0)
             image->blur=argument_list[5].real_reference;
+          method=UndefinedInterpolatePixel;
+          if (attribute_flag[6] != 0)
+            method=(PixelInterpolateMethod) argument_list[6].integer_reference;
           image=AdaptiveResizeImage(image,geometry.width,geometry.height,
-            exception);
+            method,exception);
           break;
         }
         case 106:  /* ClipMask */
@@ -10125,6 +10144,9 @@ Mogrify(ref,...)
           double
             angle;
 
+          PixelInterpolateMethod
+            method;
+
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
           if (attribute_flag[0] != 0)
@@ -10152,7 +10174,10 @@ Mogrify(ref,...)
           if (attribute_flag[8] != 0)
             (void) QueryColorDatabase(argument_list[8].string_reference,
               &image->background_color,exception);
-          image=PolaroidImage(image,draw_info,angle,exception);
+          method=UndefinedInterpolatePixel;
+          if (attribute_flag[9] != 0)
+            method=(PixelInterpolateMethod) argument_list[9].integer_reference;
+          image=PolaroidImage(image,draw_info,angle,method,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -10247,16 +10272,23 @@ Mogrify(ref,...)
         }
         case 113:  /* Clut */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] == 0)
             {
               ThrowPerlException(exception,OptionError,"ClutImageRequired",
                 PackageName);
               goto PerlException;
             }
+          method=UndefinedInterpolatePixel;
           if (attribute_flag[1] != 0)
-            channel=(ChannelType) argument_list[1].integer_reference;
+            method=(PixelInterpolateMethod) argument_list[1].integer_reference;
+          if (attribute_flag[2] != 0)
+            channel=(ChannelType) argument_list[2].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) ClutImage(image,argument_list[0].image_reference,exception);
+          (void) ClutImage(image,argument_list[0].image_reference,method,
+            exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
