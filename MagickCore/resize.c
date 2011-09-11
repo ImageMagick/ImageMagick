@@ -1160,7 +1160,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 
   CacheView
     *image_view,
-    *interpolate_view,
     *resize_view;
 
   Image
@@ -1199,7 +1198,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
-  interpolate_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
@@ -1209,9 +1207,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     PointInfo
       offset;
 
-    register const Quantum
-      *restrict p;
-
     register Quantum
       *restrict q;
 
@@ -1220,10 +1215,9 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if (q == (Quantum *) NULL)
       continue;
     offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
@@ -1250,12 +1244,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (resize_traits == UndefinedPixelTrait))
           continue;
-        if ((resize_traits & CopyPixelTrait) != 0)
-          {
-            q[channel]=p[i];
-            continue;
-          }
-        status=InterpolatePixelChannel(image,interpolate_view,(PixelChannel) i,
+        status=InterpolatePixelChannel(image,image_view,(PixelChannel) i,
           MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
         q[channel]=ClampToQuantum(pixel);
       }
@@ -1278,7 +1267,6 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
       }
   }
   resize_view=DestroyCacheView(resize_view);
-  interpolate_view=DestroyCacheView(interpolate_view);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     resize_image=DestroyImage(resize_image);
