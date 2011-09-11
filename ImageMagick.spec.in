@@ -252,8 +252,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc QuickStart.txt ChangeLog Platforms.txt
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore.so.4*
-%{_libdir}/libMagickWand.so.4*
+%{_libdir}/libMagickCore.so.5*
+%{_libdir}/libMagickWand.so.5*
 %{_bindir}/[a-z]*
 %{_sysconfdir}/%{name}
 %{_libdir}/%{name}-%{VERSION}
@@ -296,7 +296,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++.so.4*
+%{_libdir}/libMagick++.so.5*
 
 %files c++-devel
 %defattr(-,root,root,-)
