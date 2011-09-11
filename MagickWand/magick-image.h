@@ -67,12 +67,13 @@ extern WandExport ImageType
 extern WandExport InterlaceType
   MagickGetImageInterlaceScheme(MagickWand *);
 
-extern WandExport InterpolatePixelMethod
-  MagickGetImageInterpolateMethod(MagickWand *);
+extern WandExport PixelInterpolateMethod
+  MagickGetImagePixelInterpolateMethod(MagickWand *);
 
 extern WandExport MagickBooleanType
   MagickAdaptiveBlurImage(MagickWand *,const double,const double,const double),
-  MagickAdaptiveResizeImage(MagickWand *,const size_t,const size_t),
+  MagickAdaptiveResizeImage(MagickWand *,const size_t,const size_t,
+    const PixelInterpolateMethod),
   MagickAdaptiveSharpenImage(MagickWand *,const double,const double,
     const double),
   MagickAdaptiveThresholdImage(MagickWand *,const size_t,const size_t,
@@ -96,7 +97,7 @@ extern WandExport MagickBooleanType
   MagickClampImage(MagickWand *),
   MagickClipImage(MagickWand *),
   MagickClipImagePath(MagickWand *,const char *,const MagickBooleanType),
-  MagickClutImage(MagickWand *,const MagickWand *),
+  MagickClutImage(MagickWand *,const MagickWand *,const PixelInterpolateMethod),
   MagickColorDecisionListImage(MagickWand *,const char *),
   MagickColorizeImage(MagickWand *,const PixelWand *,const PixelWand *),
   MagickColorMatrixImage(MagickWand *,const KernelInfo *),
@@ -196,7 +197,8 @@ extern WandExport MagickBooleanType
   MagickPingImage(MagickWand *,const char *),
   MagickPingImageBlob(MagickWand *,const void *,const size_t),
   MagickPingImageFile(MagickWand *,FILE *),
-  MagickPolaroidImage(MagickWand *,const DrawingWand *,const double),
+  MagickPolaroidImage(MagickWand *,const DrawingWand *,const double,
+    const PixelInterpolateMethod),
   MagickPosterizeImage(MagickWand *,const size_t,const MagickBooleanType),
   MagickPreviousImage(MagickWand *),
   MagickQuantizeImage(MagickWand *,const size_t,const ColorspaceType,
@@ -253,7 +255,7 @@ extern WandExport MagickBooleanType
   MagickSetImageGravity(MagickWand *,const GravityType),
   MagickSetImageGreenPrimary(MagickWand *,const double,const double),
   MagickSetImageInterlaceScheme(MagickWand *,const InterlaceType),
-  MagickSetImageInterpolateMethod(MagickWand *,const InterpolatePixelMethod),
+  MagickSetImagePixelInterpolateMethod(MagickWand *,const PixelInterpolateMethod),
   MagickSetImageIterations(MagickWand *,const size_t),
   MagickSetImageMatte(MagickWand *,const MagickBooleanType),
   MagickSetImageMatteColor(MagickWand *,const PixelWand *),
@@ -285,7 +287,7 @@ extern WandExport MagickBooleanType
     const double *),
   MagickSpliceImage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),
-  MagickSpreadImage(MagickWand *,const double),
+  MagickSpreadImage(MagickWand *,const double,const PixelInterpolateMethod),
   MagickStatisticImage(MagickWand *,const StatisticType,const size_t,
     const size_t),
   MagickStripImage(MagickWand *),
@@ -303,7 +305,8 @@ extern WandExport MagickBooleanType
     const double),
   MagickVignetteImage(MagickWand *,const double,const double,const ssize_t,
     const ssize_t),
-  MagickWaveImage(MagickWand *,const double,const double),
+  MagickWaveImage(MagickWand *,const double,const double,
+    const PixelInterpolateMethod),
   MagickWhiteThresholdImage(MagickWand *,const PixelWand *),
   MagickWriteImage(MagickWand *,const char *),
   MagickWriteImageFile(MagickWand *,FILE *),

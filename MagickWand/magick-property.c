@@ -995,19 +995,19 @@ WandExport InterlaceType MagickGetInterlaceScheme(MagickWand *wand)
 %
 %  The format of the MagickGetInterpolateMethod method is:
 %
-%      InterpolatePixelMethod MagickGetInterpolateMethod(MagickWand *wand)
+%      PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport InterpolatePixelMethod MagickGetInterpolateMethod(MagickWand *wand)
+WandExport PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
 {
   const char
     *option;
 
-  InterpolatePixelMethod
+  PixelInterpolateMethod
     method;
 
   assert(wand != (MagickWand *) NULL);
@@ -1017,7 +1017,7 @@ WandExport InterpolatePixelMethod MagickGetInterpolateMethod(MagickWand *wand)
   option=GetImageOption(wand->image_info,"interpolate");
   if (option == (const char *) NULL)
     return(UndefinedInterpolatePixel);
-  method=(InterpolatePixelMethod) ParseCommandOption(MagickInterpolateOptions,
+  method=(PixelInterpolateMethod) ParseCommandOption(MagickInterpolateOptions,
     MagickFalse,option);
   return(method);
 }
@@ -2425,7 +2425,7 @@ WandExport MagickBooleanType MagickSetInterlaceScheme(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
-  const InterpolatePixelMethod method)
+  const PixelInterpolateMethod method)
 {
   MagickBooleanType
     status;

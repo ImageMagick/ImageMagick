@@ -39,7 +39,7 @@ typedef enum
   MeshInterpolatePixel,
   NearestNeighborInterpolatePixel,
   SplineInterpolatePixel
-} InterpolatePixelMethod;
+} PixelInterpolateMethod;
 
 typedef enum
 {
@@ -69,26 +69,6 @@ typedef enum
   BlendPixelTrait = 0x000004
 } PixelTrait;
 
-typedef struct _DoublePixelPacket
-{
-  double
-    red,
-    green,
-    blue,
-    alpha,
-    black;
-} DoublePixelPacket;
-
-typedef struct _LongPixelPacket
-{
-  unsigned int
-    red,
-    green,
-    blue,
-    alpha,
-    black;
-} LongPixelPacket;
-
 typedef struct _PixelChannelMap
 {
   PixelChannel
@@ -97,6 +77,16 @@ typedef struct _PixelChannelMap
   PixelTrait
     traits;
 } PixelChannelMap;
+
+typedef struct _PixelDoublePacket
+{
+  double
+    red,
+    green,
+    blue,
+    alpha,
+    black;
+} PixelDoublePacket;
 
 typedef struct _PixelInfo
 {
@@ -124,6 +114,16 @@ typedef struct _PixelInfo
     index;
 } PixelInfo;
 
+typedef struct _PixelLongPacket
+{
+  unsigned int
+    red,
+    green,
+    blue,
+    alpha,
+    black;
+} PixelLongPacket;
+
 typedef struct _PixelPacket
 {
   Quantum
@@ -150,10 +150,13 @@ extern MagickExport MagickBooleanType
   ImportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,const void *,ExceptionInfo *),
   InterpolatePixelChannel(const Image *,const CacheView_ *,
-    const PixelChannel,const InterpolatePixelMethod,const double,const double,
+    const PixelChannel,const PixelInterpolateMethod,const double,const double,
     double *,ExceptionInfo *),
+  InterpolatePixelChannels(const Image *,const CacheView_ *,const Image *,
+    const PixelInterpolateMethod,const double,const double,Quantum *,
+    ExceptionInfo *),
   InterpolatePixelInfo(const Image *,const CacheView_ *,
-    const InterpolatePixelMethod,const double,const double,PixelInfo *,
+    const PixelInterpolateMethod,const double,const double,PixelInfo *,
     ExceptionInfo *),
   IsFuzzyEquivalencePixel(const Image *,const Quantum *,
     const Quantum *),

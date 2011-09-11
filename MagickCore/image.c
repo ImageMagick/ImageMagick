@@ -4346,7 +4346,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickFalse,option);
   option=GetImageOption(image_info,"interpolate");
   if (option != (const char *) NULL)
-    image->interpolate=(InterpolatePixelMethod) ParseCommandOption(
+    image->interpolate=(PixelInterpolateMethod) ParseCommandOption(
       MagickInterpolateOptions,MagickFalse,option);
   option=GetImageOption(image_info,"loop");
   if (option != (const char *) NULL)

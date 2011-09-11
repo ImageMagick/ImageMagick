@@ -3773,7 +3773,8 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
 %  The format of the AnnotateImage method is:
 %
 %      Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
-%        const double angle,ExceptionInfo exception)
+%        const double angle,const PixelInterpolateMethod method,
+%        ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
@@ -3783,11 +3784,14 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
 %
 %    o angle: Apply the effect along this angle.
 %
+%    o method: the pixel interpolation method.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
-  const double angle,ExceptionInfo *exception)
+  const double angle,const PixelInterpolateMethod method,
+  ExceptionInfo *exception)
 {
   const char
     *value;
@@ -3896,7 +3900,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     return((Image *) NULL);
   picture_image=rotate_image;
   bend_image=WaveImage(picture_image,0.01*picture_image->rows,2.0*
-    picture_image->columns,exception);
+    picture_image->columns,method,exception);
   picture_image=DestroyImage(picture_image);
   if (bend_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5315,7 +5319,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
 %  The format of the WaveImage method is:
 %
 %      Image *WaveImage(const Image *image,const double amplitude,
-%        const double wave_length,ExceptionInfo *exception)
+%        const double wave_length,const PixelInterpolateMethod method,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5324,11 +5329,14 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
 %    o amplitude, wave_length:  Define the amplitude and wave length of the
 %      sine wave.
 %
+%    o interpolate: the pixel interpolation method.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *WaveImage(const Image *image,const double amplitude,
-  const double wave_length,ExceptionInfo *exception)
+  const double wave_length,const PixelInterpolateMethod method,
+  ExceptionInfo *exception)
 {
 #define WaveImageTag  "Wave/Image"
 
@@ -5418,32 +5426,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       }
     for (x=0; x < (ssize_t) wave_image->columns; x++)
     {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          wave_traits,
-          traits;
-
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
-        wave_traits=GetPixelChannelMapTraits(wave_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (wave_traits == UndefinedPixelTrait))
-          continue;
-        status=InterpolatePixelChannel(image,image_view,(PixelChannel) i,
-          MeshInterpolatePixel,(double) x,(double) (y-sine_map[x]),&pixel,
-          exception);
-        q[channel]=ClampToQuantum(pixel);
-      }
+      status=InterpolatePixelChannels(image,image_view,wave_image,method,
+        (double) x,(double) (y-sine_map[x]),q,exception);
       q+=GetPixelChannels(wave_image);
     }
     if (SyncCacheViewAuthenticPixels(wave_view,exception) == MagickFalse)

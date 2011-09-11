@@ -277,7 +277,7 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %  The format of the ClutImage method is:
 %
 %      MagickBooleanType ClutImage(Image *image,Image *clut_image,
-%        ExceptionInfo *exception)
+%        const PixelInterpolateMethod method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -285,13 +285,13 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 %
 %    o clut_image: the color lookup table image for replacement color values.
 %
-%    o channel: the channel.
+%    o method: the pixel interpolation method.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
-  ExceptionInfo *exception)
+  const PixelInterpolateMethod method,ExceptionInfo *exception)
 {
 #define ClutImageTag  "Clut/Image"
 
@@ -345,9 +345,9 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
 
     for (i=0; i < (ssize_t) GetPixelChannels(clut_image); i++)
       (void) InterpolatePixelChannel(clut_image,clut_view,(PixelChannel) i,
-        UndefinedInterpolatePixel,QuantumScale*x*(clut_image->columns-adjust),
-        QuantumScale*x*(clut_image->rows-adjust),clut_map+x*
-        GetPixelChannels(clut_image)+i,exception);
+        method,QuantumScale*x*(clut_image->columns-adjust),QuantumScale*x*
+        (clut_image->rows-adjust),clut_map+x*GetPixelChannels(clut_image)+i,
+        exception);
   }
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireCacheView(image);

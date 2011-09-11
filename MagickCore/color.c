@@ -2322,7 +2322,7 @@ MagickPrivate MagickBooleanType QueryMagickColorCompliance(const char *name,
       char
         c;
 
-      LongPixelPacket
+      PixelLongPacket
         pixel;
 
       QuantumAny

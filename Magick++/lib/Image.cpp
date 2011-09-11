@@ -2047,6 +2047,7 @@ void Magick::Image::spread ( const size_t amount_ )
   MagickCore::Image* newImage =
     SpreadImage( image(),
 		 amount_,
+                 image()->interpolate,
 		 &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -2253,6 +2254,7 @@ void Magick::Image::wave ( const double amplitude_, const double wavelength_ )
     WaveImage( image(),
 	       amplitude_,
 	       wavelength_,
+	       image()->interpolate,
 	       &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );

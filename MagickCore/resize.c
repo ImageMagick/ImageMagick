@@ -1140,7 +1140,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 %  The format of the AdaptiveResizeImage method is:
 %
 %      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
-%        const size_t rows,ExceptionInfo *exception)
+%        const size_t rows,const PixelInterpolateMethod method,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1150,11 +1151,14 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 %
 %    o rows: the number of rows in the resized image.
 %
+%    o method: the pixel interpolation method.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *AdaptiveResizeImage(const Image *image,
-  const size_t columns,const size_t rows,ExceptionInfo *exception)
+  const size_t columns,const size_t rows,const PixelInterpolateMethod method,
+  ExceptionInfo *exception)
 {
 #define AdaptiveResizeImageTag  "Resize/Image"
 
@@ -1222,32 +1226,9 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      register ssize_t
-        i;
-
       offset.x=((MagickRealType) (x+0.5)*image->columns/resize_image->columns);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          resize_traits,
-          traits;
-
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
-        resize_traits=GetPixelChannelMapTraits(resize_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (resize_traits == UndefinedPixelTrait))
-          continue;
-        status=InterpolatePixelChannel(image,image_view,(PixelChannel) i,
-          MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
-        q[channel]=ClampToQuantum(pixel);
-      }
+      status=InterpolatePixelChannels(image,image_view,resize_image,
+        method,offset.x-0.5,offset.y-0.5,q,exception);
       q+=GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)

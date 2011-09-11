@@ -8669,7 +8669,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=1.0;
       wave_image=WaveImage(*image,geometry_info.rho,geometry_info.sigma,
-        exception);
+        (*image)->interpolate,exception);
       if (wave_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

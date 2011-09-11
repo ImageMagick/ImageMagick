@@ -2623,7 +2623,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case SpreadPreview:
       {
-        preview_image=SpreadImage(thumbnail,radius,exception);
+        preview_image=SpreadImage(thumbnail,radius,thumbnail->interpolate,
+          exception);
         (void) FormatLocaleString(label,MaxTextExtent,"spread %g",
           radius+0.5);
         break;
@@ -2692,7 +2693,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       case WavePreview:
       {
         degrees+=5.0f;
-        preview_image=WaveImage(thumbnail,0.5*degrees,2.0*degrees,exception);
+        preview_image=WaveImage(thumbnail,0.5*degrees,2.0*degrees,
+          image->interpolate,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"wave %gx%g",
           0.5*degrees,2.0*degrees);
         break;
@@ -3713,19 +3715,21 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %  The format of the SpreadImage method is:
 %
 %      Image *SpreadImage(const Image *image,const double radius,
-%        ExceptionInfo *exception)
+%        const PixelInterpolateMethod method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o radius:  Choose a random pixel in a neighborhood of this extent.
+%    o radius:  choose a random pixel in a neighborhood of this extent.
+%
+%    o method:  the pixel interpolation method.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *SpreadImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+  const PixelInterpolateMethod method,ExceptionInfo *exception)
 {
 #define SpreadImageTag  "Spread/Image"
 
@@ -3810,39 +3814,10 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
       PointInfo
         point;
 
-      register ssize_t
-        i;
-
       point.x=GetPseudoRandomValue(random_info[id]);
       point.y=GetPseudoRandomValue(random_info[id]);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        MagickRealType
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          spread_traits,
-          traits;
-
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
-        spread_traits=GetPixelChannelMapTraits(spread_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (spread_traits == UndefinedPixelTrait))
-          continue;
-        if ((spread_traits & CopyPixelTrait) != 0)
-          {
-            q[channel]=p[i];
-            continue;
-          }
-        status=InterpolatePixelChannel(image,image_view,(PixelChannel) i,
-          MeshInterpolatePixel,(double) x+width*point.x-0.5,(double) y+width*
-          point.y-0.5,&pixel,exception);
-        q[channel]=ClampToQuantum(pixel);
-      }
+      status=InterpolatePixelChannels(image,image_view,spread_image,method,
+        (double) x+width*point.x-0.5,(double) y+width*point.y-0.5,q,exception);
       q+=GetPixelChannels(spread_image);
     }
     if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)

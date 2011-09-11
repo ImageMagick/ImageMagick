@@ -75,7 +75,7 @@ extern MagickExport MagickBooleanType
   ResamplePixelColor(ResampleFilter *,const double,const double,
     PixelInfo *),
   SetResampleFilterInterpolateMethod(ResampleFilter *,
-    const InterpolatePixelMethod),
+    const PixelInterpolateMethod),
   SetResampleFilterVirtualPixelMethod(ResampleFilter *,
     const VirtualPixelMethod);
 

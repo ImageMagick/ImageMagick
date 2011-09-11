@@ -2000,7 +2000,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   double
     file_gamma;
 
-  LongPixelPacket
+  PixelLongPacket
     transparent_color;
 
   MagickBooleanType

@@ -104,7 +104,7 @@ struct _ResampleFilter
   ssize_t
     image_area;
 
-  InterpolatePixelMethod
+  PixelInterpolateMethod
     interpolate;
 
   VirtualPixelMethod
@@ -1382,7 +1382,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 %
 */
 MagickExport MagickBooleanType SetResampleFilterInterpolateMethod(
-  ResampleFilter *resample_filter,const InterpolatePixelMethod method)
+  ResampleFilter *resample_filter,const PixelInterpolateMethod method)
 {
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickSignature);

@@ -3443,7 +3443,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             value);
           if (interpolate < 0)
             break;
-          image->interpolate=(InterpolatePixelMethod) interpolate;
+          image->interpolate=(PixelInterpolateMethod) interpolate;
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,

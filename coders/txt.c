@@ -373,7 +373,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y,
     y_offset;
 
-  LongPixelPacket
+  PixelLongPacket
     pixel;
 
   MagickBooleanType
