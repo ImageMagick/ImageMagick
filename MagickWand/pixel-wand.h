@@ -51,6 +51,9 @@ extern WandExport MagickBooleanType
   PixelClearException(PixelWand *),
   PixelSetColor(PixelWand *,const char *);
 
+extern WandExport PixelInfo
+  PixelGetPixel(const PixelWand *);
+
 extern WandExport PixelWand
   *ClonePixelWand(const PixelWand *),
   **ClonePixelWands(const PixelWand **,const size_t),

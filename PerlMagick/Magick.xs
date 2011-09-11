@@ -9681,16 +9681,16 @@ Mogrify(ref,...)
         }
         case 85:  /* Tint */
         {
-          PixelPacket
-            target;
+          PixelInfo
+            tint;
 
-          (void) GetOneVirtualPixel(image,0,0,&target,exception);
+          GetPixelInfo(image,&tint);
           if (attribute_flag[0] != 0)
-            (void) QueryColorDatabase(argument_list[0].string_reference,&target,
+            (void) QueryMagickColor(argument_list[0].string_reference,&tint,
               exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100";
-          image=TintImage(image,argument_list[1].string_reference,target,
+          image=TintImage(image,argument_list[1].string_reference,&tint,
             exception);
           break;
         }

@@ -434,6 +434,12 @@ $example->Label('Swirl');
 $example->Swirl(90);
 push(@$images,$example);
 
+print "Tint...\n";
+$example=$model->Clone();
+$example->Label('Tint');
+$example->Tint('wheat');
+push(@$images,$example);
+
 print "Unsharp Mask...\n";
 $example=$model->Clone();
 $example->Label('Unsharp Mask');

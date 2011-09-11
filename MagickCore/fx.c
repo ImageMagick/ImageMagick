@@ -406,9 +406,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(noise_image,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelBlack(image,p),noise_type,attenuate)),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelAlpha(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelAlpha(image,p),noise_type,attenuate)),q);
+      if ((GetPixelAlphaTraits(image) & CopyPixelTrait) != 0)
+        SetPixelAlpha(noise_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(noise_image);
     }
@@ -5043,7 +5042,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 %  The format of the TintImage method is:
 %
 %      Image *TintImage(const Image *image,const char *opacity,
-%        const PixelPacket tint,ExceptionInfo *exception)
+%        const PixelInfo *tint,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5057,7 +5056,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 %
 */
 MagickExport Image *TintImage(const Image *image,const char *opacity,
-  const PixelPacket tint,ExceptionInfo *exception)
+  const PixelInfo *tint,ExceptionInfo *exception)
 {
 #define TintImageTag  "Tint/Image"
 
@@ -5076,6 +5075,9 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
 
   MagickOffsetType
     progress;
+
+  MagickRealType
+    intensity;
 
   PixelInfo
     color_vector,
@@ -5109,6 +5111,7 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   /*
     Determine RGB values of the color.
   */
+  GetPixelInfo(image,&pixel);
   flags=ParseGeometry(opacity,&geometry_info);
   pixel.red=geometry_info.rho;
   if ((flags & SigmaValue) != 0)
@@ -5123,12 +5126,12 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
     pixel.alpha=geometry_info.psi;
   else
     pixel.alpha=(MagickRealType) OpaqueAlpha;
-  color_vector.red=(MagickRealType) (pixel.red*tint.red/100.0-
-    GetPixelPacketIntensity(&tint));
-  color_vector.green=(MagickRealType) (pixel.green*tint.green/100.0-
-    GetPixelPacketIntensity(&tint));
-  color_vector.blue=(MagickRealType) (pixel.blue*tint.blue/100.0-
-    GetPixelPacketIntensity(&tint));
+  intensity=(MagickRealType) GetPixelInfoIntensity(tint);
+  color_vector.red=(MagickRealType) (pixel.red*tint->red/100.0-intensity);
+  color_vector.green=(MagickRealType) (pixel.green*tint->green/100.0-intensity);
+  color_vector.blue=(MagickRealType) (pixel.blue*tint->blue/100.0-intensity);
+  color_vector.black=(MagickRealType) (pixel.black*tint->black/100.0-intensity);
+  color_vector.alpha=(MagickRealType) (pixel.alpha*tint->alpha/100.0-intensity);
   /*
     Tint image.
   */
@@ -5168,19 +5171,36 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       MagickRealType
         weight;
 
-      weight=QuantumScale*GetPixelRed(image,p)-0.5;
-      pixel.red=(MagickRealType) GetPixelRed(image,p)+color_vector.red*
-        (1.0-(4.0*(weight*weight)));
-      SetPixelRed(tint_image,ClampToQuantum(pixel.red),q);
-      weight=QuantumScale*GetPixelGreen(image,p)-0.5;
-      pixel.green=(MagickRealType) GetPixelGreen(image,p)+color_vector.green*
-        (1.0-(4.0*(weight*weight)));
-      SetPixelGreen(tint_image,ClampToQuantum(pixel.green),q);
-      weight=QuantumScale*GetPixelBlue(image,p)-0.5;
-      pixel.blue=(MagickRealType) GetPixelBlue(image,p)+color_vector.blue*
-        (1.0-(4.0*(weight*weight)));
-      SetPixelBlue(tint_image,ClampToQuantum(pixel.blue),q);
-      SetPixelAlpha(tint_image,GetPixelAlpha(image,p),q);
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+        {
+          weight=QuantumScale*GetPixelRed(image,p)-0.5;
+          pixel.red=(MagickRealType) GetPixelRed(image,p)+
+            color_vector.red*(1.0-(4.0*(weight*weight)));
+          SetPixelRed(tint_image,ClampToQuantum(pixel.red),q);
+        }
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+        {
+          weight=QuantumScale*GetPixelGreen(image,p)-0.5;
+          pixel.green=(MagickRealType) GetPixelGreen(image,p)+
+            color_vector.green*(1.0-(4.0*(weight*weight)));
+          SetPixelGreen(tint_image,ClampToQuantum(pixel.green),q);
+        }
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+        {
+          weight=QuantumScale*GetPixelBlue(image,p)-0.5;
+          pixel.blue=(MagickRealType) GetPixelBlue(image,p)+
+            color_vector.blue*(1.0-(4.0*(weight*weight)));
+          SetPixelBlue(tint_image,ClampToQuantum(pixel.blue),q);
+        }
+      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
+        {
+          weight=QuantumScale*GetPixelBlack(image,p)-0.5;
+          pixel.black=(MagickRealType) GetPixelBlack(image,p)+
+            color_vector.black*(1.0-(4.0*(weight*weight)));
+          SetPixelBlack(tint_image,ClampToQuantum(pixel.black),q);
+        }
+      if ((GetPixelAlphaTraits(image) & CopyPixelTrait) != 0)
+        SetPixelAlpha(tint_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);
     }

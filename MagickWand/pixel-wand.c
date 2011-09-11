@@ -1267,6 +1267,37 @@ WandExport Quantum PixelGetOpacityQuantum(const PixelWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   P i x e l G e t P i x e l                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetPixel() returns the pixel wand pixel.
+%
+%  The format of the PixelGetPixel method is:
+%
+%      PixelInfo PixelGetPixel(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the pixel wand.
+%
+*/
+WandExport PixelInfo PixelGetPixel(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  return(wand->pixel);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i x e l G e t Q u a n t u m P a c k e t                                 %
 %                                                                             %
 %                                                                             %
