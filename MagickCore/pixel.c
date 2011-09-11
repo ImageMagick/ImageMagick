@@ -3927,7 +3927,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       delta.y=y-y_offset;
       luminance.x=GetPixelLuminance(image,p)-(double)
         GetPixelLuminance(image,p+3*GetPixelChannels(image));
-      luminance.y=GetPixelLuminance(image,p+1*GetPixelChannels(image))-(double)
+      luminance.y=GetPixelLuminance(image,p+GetPixelChannels(image))-(double)
         GetPixelLuminance(image,p+2*GetPixelChannels(image));
       if (fabs(luminance.x) < fabs(luminance.y))
         {
@@ -4247,8 +4247,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         delta.y=y-y_offset;
         epsilon.x=1.0-delta.x;
         epsilon.y=1.0-delta.y;
-        pixels[0]=(MagickRealType) p[0*GetPixelChannels(source)+i];
-        pixels[1]=(MagickRealType) p[1*GetPixelChannels(source)+i];
+        pixels[0]=(MagickRealType) p[i];
+        pixels[1]=(MagickRealType) p[GetPixelChannels(source)+i];
         pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
         pixels[3]=(MagickRealType) p[3*GetPixelChannels(source)+i];
         if ((traits & BlendPixelTrait) == 0)
@@ -4260,10 +4260,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
               pixels[3])));
             continue;
           }
-        alpha[0]=QuantumScale*GetPixelAlpha(source,p+0*
-          GetPixelChannels(source));
-        alpha[1]=QuantumScale*GetPixelAlpha(source,p+1*
-          GetPixelChannels(source));
+        alpha[0]=QuantumScale*GetPixelAlpha(source,p);
+        alpha[1]=QuantumScale*GetPixelAlpha(source,p+GetPixelChannels(source));
         alpha[2]=QuantumScale*GetPixelAlpha(source,p+2*
           GetPixelChannels(source));
         alpha[3]=QuantumScale*GetPixelAlpha(source,p+3*
@@ -4387,8 +4385,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-       pixels[0]=(MagickRealType) p[0*GetPixelChannels(source)+i];
-       pixels[1]=(MagickRealType) p[1*GetPixelChannels(source)+i];
+       pixels[0]=(MagickRealType) p[i];
+       pixels[1]=(MagickRealType) p[GetPixelChannels(source)+i];
        pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
        pixels[3]=(MagickRealType) p[3*GetPixelChannels(source)+i];
        if ((traits & BlendPixelTrait) == 0)
@@ -4400,9 +4398,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
          }
        else
          {
-           alpha[0]=QuantumScale*GetPixelAlpha(source,p+0*
-             GetPixelChannels(source));
-           alpha[1]=QuantumScale*GetPixelAlpha(source,p+1*
+           alpha[0]=QuantumScale*GetPixelAlpha(source,p);
+           alpha[1]=QuantumScale*GetPixelAlpha(source,p+
              GetPixelChannels(source));
            alpha[2]=QuantumScale*GetPixelAlpha(source,p+2*
              GetPixelChannels(source));
@@ -4413,7 +4410,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
        delta.y=y-y_offset;
        luminance.x=GetPixelLuminance(source,p)-(double)
          GetPixelLuminance(source,p+3*GetPixelChannels(source));
-       luminance.y=GetPixelLuminance(source,p+1*GetPixelChannels(source))-
+       luminance.y=GetPixelLuminance(source,p+GetPixelChannels(source))-
          (double) GetPixelLuminance(source,p+2*GetPixelChannels(source));
        if (fabs(luminance.x) < fabs(luminance.y))
          {
@@ -4691,7 +4688,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
       AlphaBlendPixelInfo(image,p+4*GetPixelChannels(image),pixels+4,alpha+4);
@@ -4745,7 +4742,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
       AlphaBlendPixelInfo(image,p+4*GetPixelChannels(image),pixels+4,alpha+4);
@@ -4787,7 +4784,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
       delta.x=x-x_offset;
@@ -4878,10 +4875,10 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       delta.y=y-y_offset;
       luminance.x=GetPixelLuminance(image,p)-(double)
         GetPixelLuminance(image,p+3*GetPixelChannels(image));
-      luminance.y=GetPixelLuminance(image,p+1*GetPixelChannels(image))-(double)
+      luminance.y=GetPixelLuminance(image,p+GetPixelChannels(image))-(double)
         GetPixelLuminance(image,p+2*GetPixelChannels(image));
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
       if (fabs(luminance.x) < fabs(luminance.y))
@@ -5015,7 +5012,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       AlphaBlendPixelInfo(image,p,pixels+0,alpha+0);
-      AlphaBlendPixelInfo(image,p+1*GetPixelChannels(image),pixels+1,alpha+1);
+      AlphaBlendPixelInfo(image,p+GetPixelChannels(image),pixels+1,alpha+1);
       AlphaBlendPixelInfo(image,p+2*GetPixelChannels(image),pixels+2,alpha+2);
       AlphaBlendPixelInfo(image,p+3*GetPixelChannels(image),pixels+3,alpha+3);
       AlphaBlendPixelInfo(image,p+4*GetPixelChannels(image),pixels+4,alpha+4);

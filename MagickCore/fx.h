@@ -58,7 +58,7 @@ extern MagickExport Image
   *StereoAnaglyphImage(const Image *,const Image *,const ssize_t,const ssize_t,
      ExceptionInfo *),
   *SwirlImage(const Image *,double,ExceptionInfo *),
-  *TintImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
+  *TintImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
   *VignetteImage(const Image *,const double,const double,const ssize_t,
     const ssize_t,ExceptionInfo *),
   *WaveImage(const Image *,const double,const double,

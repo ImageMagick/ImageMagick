@@ -11273,7 +11273,7 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   Image
     *tint_image;
 
-  PixelPacket
+  PixelInfo
     target;
 
   assert(wand != (MagickWand *) NULL);
@@ -11288,8 +11288,8 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
     PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetOpacityQuantum(opacity)));
-  PixelGetQuantumPacket(tint,&target);
-  tint_image=TintImage(wand->images,percent_opaque,target,wand->exception);
+  target=PixelGetPixel(tint);
+  tint_image=TintImage(wand->images,percent_opaque,&target,wand->exception);
   if (tint_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,tint_image);
