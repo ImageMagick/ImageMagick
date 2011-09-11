@@ -29,19 +29,12 @@ PACKAGE_CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print 
 PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 
 #
-# Libtool library revision control info: See the libtool documentation under
-# the heading "Libtool's versioning system" in order to understand the meaning
-# of these fields.
-#
-# Here are a set of rules to help you update your library version
-# information:
-#
-#   If there is any interface change, increment CURRENT (major).  If that
-#   interface change does not break upward compatibility (i.e. it is an
-#   addition), increment AGE (micro), Otherwise AGE is reset to 0. If CURRENT
-#   has changed, REVISION (minor) is set to 0, otherwise REVISION is
-#   incremented.
-
-MAGICK_LIBRARY_CURRENT=4
-MAGICK_LIBRARY_REVISION=1
-MAGICK_LIBRARY_AGE=1
+# Versions are denoted using a standard triplet of integers:
+# MAJOR.MINOR.PATCH. The basic intent is that MAJOR versions are
+# incompatible, large-scale upgrades of the API. MINOR versions retain
+# source and binary compatibility with older minor versions, and changes
+# in the PATCH level are perfectly compatible, forwards and backwards.
+# See http://apr.apache.org/versioning.html.
+MAGICK_LIBRARY_CURRENT=5
+MAGICK_LIBRARY_REVISION=0
+MAGICK_LIBRARY_AGE=0
