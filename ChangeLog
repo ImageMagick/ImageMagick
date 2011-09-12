@@ -1,5 +1,7 @@
 2011-09-12  6.7.2-6 Cristy  <quetzlzacatenango@image...>
   * Expand pixel range for 12 bit DCM images stored in 16-bit words.
+  * Gray images not displayed properly when saved as MIFF with sRGB
+    colorspace.
 
 2011-09-10  6.7.2-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-4.
