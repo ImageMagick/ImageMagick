@@ -420,7 +420,7 @@ CFLAGS="$CL_CFLAGS $CFLAGS"
 LIBS="$CL_LIBS $LIBS"
 AC_SUBST(CL_CFLAGS)
 if test "$enable_opencl" != no; then
-  if test "_OPENCL" = '1'; then
+  if test "X$ax_cv_check_cl_libcl" != Xno; then :
     MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
   fi
 fi
