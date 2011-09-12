@@ -1222,7 +1222,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     packet_size=(size_t) (quantum_info->depth/8);
     if (image->storage_class == DirectClass)
       packet_size=(size_t) (3*quantum_info->depth/8);
-    if (image->colorspace == GRAYColorspace)
+    if (image->type == GrayscaleType)
       packet_size=quantum_info->depth/8;
     if (image->matte != MagickFalse)
       packet_size+=quantum_info->depth/8;
@@ -1256,7 +1256,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->matte != MagickFalse)
           quantum_type=IndexAlphaQuantum;
       }
-    if (image->colorspace == GRAYColorspace)
+    if (image->type == GrayscaleType)
       {
         quantum_type=GrayQuantum;
         if (image->matte != MagickFalse)
