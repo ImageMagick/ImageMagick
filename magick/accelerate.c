@@ -162,7 +162,7 @@ typedef struct _ConvolveInfo
     width,
     height;
 
-  cl_bool
+  cl_uint
     matte;
 
   cl_mem
@@ -180,6 +180,7 @@ static char
     "  return(offset);\n"
     "}\n"
     "\n"
+    "#pragma OPENCL EXTENSION cl_khr_fp64: enable\n"
     "static inline CLQuantum ClampToQuantum(const double value)\n"
     "{\n"
     "#if defined(MAGICKCORE_HDRI_SUPPORT)\n"
@@ -195,7 +196,7 @@ static char
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
     "  __constant double *filter,const unsigned long width,const unsigned long height,\n"
-    "  const bool matte,__global CLPixelType *output)\n"
+    "  const unsigned int matte,__global CLPixelType *output)\n"
     "{\n"
     "  const unsigned long columns = get_global_size(0);\n"
     "  const unsigned long rows = get_global_size(1);\n"
@@ -374,8 +375,8 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
     &convolve_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  convolve_info->matte=(cl_bool) image->matte;
-  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_bool),(void *)
+  convolve_info->matte=(cl_uint) image->matte;
+  status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_uint),(void *)
     &convolve_info->matte);
   if (status != CL_SUCCESS)
     return(MagickFalse);
@@ -464,8 +465,17 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   char
     options[MaxTextExtent];
 
+  cl_context_properties
+    context_properties[3];
+
   cl_int
     status;
+
+  cl_platform_id
+    platforms[1];
+
+  cl_uint
+    number_platforms;
 
   ConvolveInfo
     *convolve_info;
@@ -488,16 +498,27 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   /*
     Create OpenCL context.
   */
-  convolve_info->context=clCreateContextFromType((cl_context_properties *)
-    NULL,(cl_device_type) CL_DEVICE_TYPE_GPU,ConvolveNotify,exception,&status);
+  status=clGetPlatformIDs(0,NULL,&number_platforms);
+  if (status == CL_SUCCESS)
+    status=clGetPlatformIDs(1,platforms,NULL);
+  if (status != CL_SUCCESS)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
+        "failed to create OpenCL context","`%s' (%d)",image->filename,status);
+      convolve_info=DestroyConvolveInfo(convolve_info);
+      return((ConvolveInfo *) NULL);
+    }
+  context_properties[0]=CL_CONTEXT_PLATFORM;
+  context_properties[1]=(cl_context_properties) platforms[0];
+  context_properties[2]=0;
+  convolve_info->context=clCreateContextFromType(context_properties,
+    (cl_device_type) CL_DEVICE_TYPE_GPU,ConvolveNotify,exception,&status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
-    convolve_info->context=clCreateContextFromType((cl_context_properties *)
-      NULL,(cl_device_type) CL_DEVICE_TYPE_CPU,ConvolveNotify,exception,
-      &status);
+    convolve_info->context=clCreateContextFromType(context_properties,
+      (cl_device_type) CL_DEVICE_TYPE_CPU,ConvolveNotify,exception,&status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
-    convolve_info->context=clCreateContextFromType((cl_context_properties *)
-      NULL,(cl_device_type) CL_DEVICE_TYPE_DEFAULT,ConvolveNotify,exception,
-      &status);
+    convolve_info->context=clCreateContextFromType(context_properties,
+      (cl_device_type) CL_DEVICE_TYPE_DEFAULT,ConvolveNotify,exception,&status);
   if ((convolve_info->context == (cl_context) NULL) || (status != CL_SUCCESS))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateWarning,
