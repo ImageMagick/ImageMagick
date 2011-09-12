@@ -1290,6 +1290,9 @@ MagickExport Image *ConvolveImage(const Image *image,
       }
       message=DestroyString(message);
     }
+  status=AccelerateConvolveImage(image,kernel_info,convolve_image,exception);
+  if (status == MagickTrue)
+    return(convolve_image);
   /*
     Convolve image.
   */
