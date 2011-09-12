@@ -8553,7 +8553,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(degrees,&geometry_info);
-      swirl_image=SwirlImage(*image,geometry_info.rho,exception);
+      swirl_image=SwirlImage(*image,geometry_info.rho,(*image)->interpolate,
+        exception);
       if (swirl_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8588,7 +8589,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(factor,&geometry_info);
-      implode_image=ImplodeImage(*image,geometry_info.rho,exception);
+      implode_image=ImplodeImage(*image,geometry_info.rho,(*image)->interpolate,
+        exception);
       if (implode_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

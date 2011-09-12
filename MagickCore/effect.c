@@ -2678,7 +2678,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case SwirlPreview:
       {
-        preview_image=SwirlImage(thumbnail,degrees,exception);
+        preview_image=SwirlImage(thumbnail,degrees,image->interpolate,
+          exception);
         (void) FormatLocaleString(label,MaxTextExtent,"swirl %g",degrees);
         degrees+=45.0;
         break;
@@ -2686,7 +2687,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       case ImplodePreview:
       {
         degrees+=0.1f;
-        preview_image=ImplodeImage(thumbnail,degrees,exception);
+        preview_image=ImplodeImage(thumbnail,degrees,image->interpolate,
+          exception);
         (void) FormatLocaleString(label,MaxTextExtent,"implode %g",degrees);
         break;
       }

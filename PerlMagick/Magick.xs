@@ -7688,19 +7688,23 @@ Mogrify(ref,...)
           if ((attribute_flag[5] != 0) || (attribute_flag[6] != 0))
             image->matte_color=fill_color;
           if (attribute_flag[7] != 0)
-            image->compose=(CompositeOperator) argument_list[7].integer_reference;
+            image->compose=(CompositeOperator)
+              argument_list[7].integer_reference;
           image=FrameImage(image,&frame_info,exception);
           break;
         }
         case 16:  /* Implode */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=0.5;
+          method=UndefinedInterpolatePixel;
           if (attribute_flag[1] != 0)
-            image->interpolate=(PixelInterpolateMethod)
-              argument_list[1].integer_reference;
+            method=(PixelInterpolateMethod) argument_list[1].integer_reference;
           image=ImplodeImage(image,argument_list[0].real_reference,
-            exception);
+            method,exception);
           break;
         }
         case 17:  /* Magnify */
@@ -7900,12 +7904,16 @@ Mogrify(ref,...)
         }
         case 30:  /* Swirl */
         {
+          PixelInterpolateMethod
+            method;
+
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=50.0;
+          method=UndefinedInterpolatePixel;
           if (attribute_flag[1] != 0)
-            image->interpolate=(PixelInterpolateMethod)
-              argument_list[1].integer_reference;
-          image=SwirlImage(image,argument_list[0].real_reference,exception);
+            method=(PixelInterpolateMethod) argument_list[1].integer_reference;
+          image=SwirlImage(image,argument_list[0].real_reference,
+            method,exception);
           break;
         }
         case 31:  /* Resize */
