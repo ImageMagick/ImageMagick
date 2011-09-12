@@ -1906,8 +1906,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if ((image->storage_class == PseudoClass) &&
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
       (void) SetImageStorageClass(image,DirectClass);
-    if ((image->colorspace != sRGBColorspace) &&
-        (IsGrayImage(image,&image->exception) != MagickFalse))
+    if (IsGrayImage(image,&image->exception) != MagickFalse)
       {
         image->storage_class=DirectClass;
         (void) SetImageColorspace(image,GRAYColorspace);
@@ -1939,8 +1938,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     packet_size=(size_t) (quantum_info->depth/8);
     if (image->storage_class == DirectClass)
       packet_size=(size_t) (3*quantum_info->depth/8);
-    if ((image->colorspace != sRGBColorspace) &&
-        (IsGrayImage(image,&image->exception) != MagickFalse))
+    if (IsGrayImage(image,&image->exception) != MagickFalse)
       packet_size=(size_t) (quantum_info->depth/8);
     if (image->matte != MagickFalse)
       packet_size+=quantum_info->depth/8;
