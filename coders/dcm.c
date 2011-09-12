@@ -3821,8 +3821,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         pixel_value=(int) (polarity != MagickFalse ? (max_value-
                           ReadDCMLSBShort(stream_info,image)) :
                           ReadDCMLSBShort(stream_info,image));
-                      if (signed_data == 12)
-                        pixel_value>>=4;
                     }
                   else
                     {
@@ -3845,7 +3843,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 index=pixel_value;
                 if (window_width == 0)
                   {
-                    if (signed_data == 12)
+                    if (signed_data == 1)
                       index=pixel_value-32767;
                   }
                 else
@@ -3951,7 +3949,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           pixel_value=(int) (polarity != MagickFalse ?
                             (max_value-ReadDCMLSBShort(stream_info,image)) :
                             ReadDCMLSBShort(stream_info,image));
-                        if (signed_data == 12)
+                        if (signed_data == 1)
                           pixel_value=((signed short) pixel_value);
                       }
                     else
@@ -3975,7 +3973,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=pixel_value;
                   if (window_width == 0)
                     {
-                      if (signed_data == 12)
+                      if (signed_data == 1)
                         index=pixel_value-32767;
                     }
                   else
