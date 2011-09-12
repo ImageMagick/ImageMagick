@@ -1251,7 +1251,7 @@ void Magick::Image::implode ( const double factor_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    ImplodeImage( image(), factor_, &exceptionInfo );
+    ImplodeImage( image(), factor_, image()->interpolate, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2088,7 +2088,7 @@ void Magick::Image::swirl ( const double degrees_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    SwirlImage( image(), degrees_,
+    SwirlImage( image(), degrees_, image()->interpolate,
 		&exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );

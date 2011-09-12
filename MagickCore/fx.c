@@ -3096,7 +3096,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
 %  The format of the ImplodeImage method is:
 %
 %      Image *ImplodeImage(const Image *image,const double amount,
-%        ExceptionInfo *exception)
+%        const PixelInterpolateMethod method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3108,11 +3108,13 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
 %
 %    o amount:  Define the extent of the implosion.
 %
+%    o method: the pixel interpolation method.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *ImplodeImage(const Image *image,const double amount,
-  ExceptionInfo *exception)
+  const PixelInterpolateMethod method,ExceptionInfo *exception)
 {
 #define ImplodeImageTag  "Implode/Image"
 
@@ -3128,9 +3130,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 
   MagickOffsetType
     progress;
-
-  PixelInfo
-    zero;
 
   MagickRealType
     radius;
@@ -3151,7 +3150,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  implode_image=CloneImage(image,0,0,MagickTrue,exception);
+  implode_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(implode_image,DirectClass,exception) == MagickFalse)
@@ -3182,7 +3182,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(implode_image,&zero);
   image_view=AcquireCacheView(image);
   implode_view=AcquireCacheView(implode_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3190,9 +3189,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     MagickRealType
       distance;
 
@@ -3215,7 +3211,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         continue;
       }
     delta.y=scale.y*(double) (y-center.y);
-    pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
@@ -3235,11 +3230,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           if (distance > 0.0)
             factor=pow(sin((double) (MagickPI*sqrt((double) distance)/
               radius/2)),-amount);
-          (void) InterpolatePixelInfo(image,image_view,
-            UndefinedInterpolatePixel,(double) (factor*delta.x/scale.x+
-            center.x),(double) (factor*delta.y/scale.y+center.y),&pixel,
-            exception);
-          SetPixelPixelInfo(implode_image,&pixel,q);
+          status=InterpolatePixelChannels(image,image_view,implode_image,method,
+            (double) (factor*delta.x/scale.x+center.x),(double) (factor*delta.y/
+            scale.y+center.y),q,exception);
         }
       q+=GetPixelChannels(implode_image);
     }
@@ -4303,9 +4296,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   MagickBooleanType
     status;
 
-  PixelInfo
-    zero;
-
   RandomInfo
     **restrict random_info;
 
@@ -4320,7 +4310,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   if (random_image == (Image *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
-  GetPixelInfo(random_image,&zero);
   random_info=AcquireRandomInfoThreadSet();
   random_view=AcquireCacheView(random_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4330,9 +4319,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   {
     const int
       id = GetOpenMPThreadId();
-
-    PixelInfo
-      pixel;
 
     register ssize_t
       x;
@@ -4349,16 +4335,25 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
         status=MagickFalse;
         continue;
       }
-    pixel=zero;
     for (x=0; x < (ssize_t) random_image->columns; x++)
     {
-      pixel.red=(MagickRealType) (QuantumRange*
-        GetPseudoRandomValue(random_info[id]));
-      pixel.green=pixel.red;
-      pixel.blue=pixel.red;
-      if (image->colorspace == CMYKColorspace)
-        pixel.black=pixel.red;
-      SetPixelPixelInfo(random_image,&pixel,q);
+      MagickRealType
+        value;
+
+      register ssize_t
+        i;
+
+      value=GetPseudoRandomValue(random_info[id]);
+      for (i=0; i < (ssize_t) GetPixelChannels(random_image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(random_image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        q[i]=ClampToQuantum(QuantumRange*value);
+      }
       q+=GetPixelChannels(random_image);
     }
     if (SyncCacheViewAuthenticPixels(random_view,exception) == MagickFalse)
@@ -4500,12 +4495,21 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((MagickRealType) GetPixelRed(image,q) > threshold)
-        SetPixelRed(image,QuantumRange-GetPixelRed(image,q),q);
-      if ((MagickRealType) GetPixelGreen(image,q) > threshold)
-        SetPixelGreen(image,QuantumRange-GetPixelGreen(image,q),q);
-      if ((MagickRealType) GetPixelBlue(image,q) > threshold)
-        SetPixelBlue(image,QuantumRange-GetPixelBlue(image,q),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits == UndefinedPixelTrait) ||
+            ((traits & CopyPixelTrait) != 0))
+          continue;
+        if ((MagickRealType) q[i] > threshold)
+          q[i]=QuantumRange-q[i];
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -4807,19 +4811,20 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       exception);
     q=GetVirtualPixels(right_image,0,y,right_image->columns,1,exception);
     r=QueueAuthenticPixels(stereo_image,0,y,stereo_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) ||
-        (q == (Quantum *) NULL) || (r == (Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL) ||
+        (r == (Quantum *) NULL))
       break;
     for (x=0; x < (ssize_t) stereo_image->columns; x++)
     {
       SetPixelRed(image,GetPixelRed(left_image,p),r);
-      SetPixelGreen(image,GetPixelGreen(left_image,q),r);
-      SetPixelBlue(image,GetPixelBlue(left_image,q),r);
-      SetPixelAlpha(image,(GetPixelAlpha(left_image,p)+
-        GetPixelAlpha(left_image,q))/2,r);
+      SetPixelGreen(image,GetPixelGreen(right_image,q),r);
+      SetPixelBlue(image,GetPixelBlue(right_image,q),r);
+      if ((GetPixelAlphaTraits(stereo_image) & CopyPixelTrait) != 0)
+        SetPixelAlpha(image,(GetPixelAlpha(left_image,p)+
+          GetPixelAlpha(right_image,q))/2,r);
       p+=GetPixelChannels(left_image);
-      q++;
-      r++;
+      q+=GetPixelChannels(right_image);
+      r+=GetPixelChannels(stereo_image);
     }
     if (SyncAuthenticPixels(stereo_image,exception) == MagickFalse)
       break;
@@ -4860,7 +4865,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
 %  The format of the SwirlImage method is:
 %
 %      Image *SwirlImage(const Image *image,double degrees,
-%        ExceptionInfo *exception)
+%        const PixelInterpolateMethod method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4868,11 +4873,13 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
 %
 %    o degrees: Define the tightness of the swirling effect.
 %
+%    o method: the pixel interpolation method.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *SwirlImage(const Image *image,double degrees,
-  ExceptionInfo *exception)
+  const PixelInterpolateMethod method,ExceptionInfo *exception)
 {
 #define SwirlImageTag  "Swirl/Image"
 
@@ -4888,9 +4895,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
   MagickOffsetType
     progress;
-
-  PixelInfo
-    zero;
 
   MagickRealType
     radius;
@@ -4911,7 +4915,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  swirl_image=CloneImage(image,0,0,MagickTrue,exception);
+  swirl_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(swirl_image,DirectClass,exception) == MagickFalse)
@@ -4940,7 +4944,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(swirl_image,&zero);
   image_view=AcquireCacheView(image);
   swirl_view=AcquireCacheView(swirl_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4948,9 +4951,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     MagickRealType
       distance;
 
@@ -4973,7 +4973,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
         continue;
       }
     delta.y=scale.y*(double) (y-center.y);
-    pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
@@ -4994,11 +4993,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           factor=1.0-sqrt((double) distance)/radius;
           sine=sin((double) (degrees*factor*factor));
           cosine=cos((double) (degrees*factor*factor));
-          (void) InterpolatePixelInfo(image,image_view,
-            UndefinedInterpolatePixel,(double) ((cosine*delta.x-sine*delta.y)/
-            scale.x+center.x),(double) ((sine*delta.x+cosine*delta.y)/scale.y+
-            center.y),&pixel,exception);
-          SetPixelPixelInfo(swirl_image,&pixel,q);
+          status=InterpolatePixelChannels(image,image_view,swirl_image,method,
+            ((cosine*delta.x-sine*delta.y)/scale.x+center.x),(double)
+            ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,exception);
         }
       q+=GetPixelChannels(swirl_image);
     }
@@ -5114,18 +5111,24 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   GetPixelInfo(image,&pixel);
   flags=ParseGeometry(opacity,&geometry_info);
   pixel.red=geometry_info.rho;
+  pixel.green=geometry_info.rho;
+  pixel.blue=geometry_info.rho;
+  pixel.black=geometry_info.rho;
+  pixel.alpha=OpaqueAlpha;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
-  else
-    pixel.green=pixel.red;
   if ((flags & XiValue) != 0)
     pixel.blue=geometry_info.xi;
+  if (image->colorspace == CMYKColorspace)
+    {
+      if ((flags & PsiValue) != 0)
+        pixel.black=geometry_info.psi;
+      if ((flags & ChiValue) != 0)
+        pixel.alpha=geometry_info.chi;
+    }
   else
-    pixel.blue=pixel.red;
-  if ((flags & PsiValue) != 0)
-    pixel.alpha=geometry_info.psi;
-  else
-    pixel.alpha=(MagickRealType) OpaqueAlpha;
+    if ((flags & PsiValue) != 0)
+      pixel.alpha=geometry_info.psi;
   intensity=(MagickRealType) GetPixelInfoIntensity(tint);
   color_vector.red=(MagickRealType) (pixel.red*tint->red/100.0-intensity);
   color_vector.green=(MagickRealType) (pixel.green*tint->green/100.0-intensity);
@@ -5171,35 +5174,35 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       MagickRealType
         weight;
 
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelRedTraits(tint_image) & UpdatePixelTrait) != 0)
         {
           weight=QuantumScale*GetPixelRed(image,p)-0.5;
           pixel.red=(MagickRealType) GetPixelRed(image,p)+
             color_vector.red*(1.0-(4.0*(weight*weight)));
           SetPixelRed(tint_image,ClampToQuantum(pixel.red),q);
         }
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelGreenTraits(tint_image) & UpdatePixelTrait) != 0)
         {
           weight=QuantumScale*GetPixelGreen(image,p)-0.5;
           pixel.green=(MagickRealType) GetPixelGreen(image,p)+
             color_vector.green*(1.0-(4.0*(weight*weight)));
           SetPixelGreen(tint_image,ClampToQuantum(pixel.green),q);
         }
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelBlueTraits(tint_image) & UpdatePixelTrait) != 0)
         {
           weight=QuantumScale*GetPixelBlue(image,p)-0.5;
           pixel.blue=(MagickRealType) GetPixelBlue(image,p)+
             color_vector.blue*(1.0-(4.0*(weight*weight)));
           SetPixelBlue(tint_image,ClampToQuantum(pixel.blue),q);
         }
-      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelBlackTraits(tint_image) & UpdatePixelTrait) != 0)
         {
           weight=QuantumScale*GetPixelBlack(image,p)-0.5;
           pixel.black=(MagickRealType) GetPixelBlack(image,p)+
             color_vector.black*(1.0-(4.0*(weight*weight)));
           SetPixelBlack(tint_image,ClampToQuantum(pixel.black),q);
         }
-      if ((GetPixelAlphaTraits(image) & CopyPixelTrait) != 0)
+      if ((GetPixelAlphaTraits(tint_image) & CopyPixelTrait) != 0)
         SetPixelAlpha(tint_image,GetPixelAlpha(image,p),q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);

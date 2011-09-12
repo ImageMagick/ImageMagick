@@ -1792,7 +1792,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            mogrify_image=ImplodeImage(*image,geometry_info.rho,exception);
+            mogrify_image=ImplodeImage(*image,geometry_info.rho,
+              interpolate_method,exception);
             break;
           }
         if (LocaleCompare("interline-spacing",option+1) == 0)
@@ -2883,7 +2884,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParseGeometry(argv[i+1],&geometry_info);
-            mogrify_image=SwirlImage(*image,geometry_info.rho,exception);
+            mogrify_image=SwirlImage(*image,geometry_info.rho,
+              interpolate_method,exception);
             break;
           }
         break;

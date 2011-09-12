@@ -5790,7 +5790,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
 %  The format of the MagickImplodeImage method is:
 %
 %      MagickBooleanType MagickImplodeImage(MagickWand *wand,
-%        const double radius)
+%        const double radius,const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -5798,9 +5798,11 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
 %
 %    o amount: Define the extent of the implosion.
 %
+%    o method: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickImplodeImage(MagickWand *wand,
-  const double amount)
+  const double amount,const PixelInterpolateMethod method)
 {
   Image
     *implode_image;
@@ -5811,7 +5813,7 @@ WandExport MagickBooleanType MagickImplodeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  implode_image=ImplodeImage(wand->images,amount,wand->exception);
+  implode_image=ImplodeImage(wand->images,amount,method,wand->exception);
   if (implode_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,implode_image);
@@ -11040,7 +11042,8 @@ WandExport MagickBooleanType MagickStripImage(MagickWand *wand)
 %
 %  The format of the MagickSwirlImage method is:
 %
-%      MagickBooleanType MagickSwirlImage(MagickWand *wand,const double degrees)
+%      MagickBooleanType MagickSwirlImage(MagickWand *wand,const double degrees,
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -11048,9 +11051,11 @@ WandExport MagickBooleanType MagickStripImage(MagickWand *wand)
 %
 %    o degrees: Define the tightness of the swirling effect.
 %
+%    o method: the pixel interpolation method.
+%
 */
 WandExport MagickBooleanType MagickSwirlImage(MagickWand *wand,
-  const double degrees)
+  const double degrees,const PixelInterpolateMethod method)
 {
   Image
     *swirl_image;
@@ -11061,7 +11066,7 @@ WandExport MagickBooleanType MagickSwirlImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  swirl_image=SwirlImage(wand->images,degrees,wand->exception);
+  swirl_image=SwirlImage(wand->images,degrees,method,wand->exception);
   if (swirl_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,swirl_image);
@@ -11282,12 +11287,21 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(percent_opaque,MaxTextExtent,
-    "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-    PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetOpacityQuantum(opacity)));
+  if (wand->images->colorspace != CMYKColorspace)
+    (void) FormatLocaleString(percent_opaque,MaxTextExtent,
+      "%g,%g,%g,%g",(double) (100.0*QuantumScale*
+      PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetOpacityQuantum(opacity)));
+  else
+    (void) FormatLocaleString(percent_opaque,MaxTextExtent,
+      "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
+      PixelGetCyanQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetMagentaQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetYellowQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetBlackQuantum(opacity)),(double) (100.0*QuantumScale*
+      PixelGetOpacityQuantum(opacity)));
   target=PixelGetPixel(tint);
   tint_image=TintImage(wand->images,percent_opaque,&target,wand->exception);
   if (tint_image == (Image *) NULL)
