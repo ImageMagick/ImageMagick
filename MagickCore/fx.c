@@ -3195,6 +3195,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     PointInfo
       delta;
 
+    register const Quantum
+      *restrict p;
+
     register ssize_t
       x;
 
@@ -3203,9 +3206,10 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 
     if (status == MagickFalse)
       continue;
+    p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(implode_view,0,y,implode_image->columns,1,
       exception);
-    if (q == (Quantum *) NULL)
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -3213,12 +3217,20 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     delta.y=scale.y*(double) (y-center.y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      register ssize_t
+        i;
+
       /*
         Determine if the pixel is within an ellipse.
       */
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
-      if (distance < (radius*radius))
+      if (distance >= (radius*radius))
+        {
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+            q[i]=p[i];
+        }
+      else
         {
           double
             factor;
@@ -3234,6 +3246,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
             (double) (factor*delta.x/scale.x+center.x),(double) (factor*delta.y/
             scale.y+center.y),q,exception);
         }
+      p+=GetPixelChannels(image);
       q+=GetPixelChannels(implode_image);
     }
     if (SyncCacheViewAuthenticPixels(implode_view,exception) == MagickFalse)
@@ -4957,6 +4970,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     PointInfo
       delta;
 
+    register const Quantum
+      *restrict p;
+
     register ssize_t
       x;
 
@@ -4965,9 +4981,10 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
     if (status == MagickFalse)
       continue;
+    p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(swirl_view,0,y,swirl_image->columns,1,
       exception);
-    if (q == (Quantum *) NULL)
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -4975,12 +4992,20 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     delta.y=scale.y*(double) (y-center.y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      register ssize_t
+        i;
+
       /*
         Determine if the pixel is within an ellipse.
       */
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
-      if (distance < (radius*radius))
+      if (distance >= (radius*radius))
+        {
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+            q[i]=p[i];
+        }
+      else
         {
           MagickRealType
             cosine,
@@ -4997,6 +5022,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
             ((cosine*delta.x-sine*delta.y)/scale.x+center.x),(double)
             ((sine*delta.x+cosine*delta.y)/scale.y+center.y),q,exception);
         }
+      p+=GetPixelChannels(image);
       q+=GetPixelChannels(swirl_image);
     }
     if (SyncCacheViewAuthenticPixels(swirl_view,exception) == MagickFalse)
