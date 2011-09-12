@@ -52,6 +52,7 @@
 #include "MagickCore/colormap.h"
 #include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/constitute.h"
@@ -589,8 +590,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
       (image->type == GrayscaleMatteType))
     return(MagickTrue);
-  if ((image->colorspace != RGBColorspace) &&
-      (image->colorspace != GRAYColorspace))
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
   type=BilevelType;
   image_view=AcquireCacheView(image);
@@ -674,8 +674,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->type == BilevelType)
     return(MagickTrue);
-  if ((image->colorspace != RGBColorspace) &&
-      (image->colorspace != GRAYColorspace))
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
   type=BilevelType;
   image_view=AcquireCacheView(image);
