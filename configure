@@ -21054,7 +21054,7 @@ if test "$enable_zero_configuration" = 'yes'; then
 
 $as_echo "#define ZERO_CONFIGURATION_SUPPORT 1" >>confdefs.h
 
-    MAGICK_FEATURES="Zero Configuration $MAGICK_FEATURES"
+    MAGICK_FEATURES="Zero-Configuration $MAGICK_FEATURES"
 fi
 
 # Build a high dynamic range version of ImageMagick.
