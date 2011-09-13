@@ -252,8 +252,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc QuickStart.txt ChangeLog Platforms.txt
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore.so.4*
-%{_libdir}/libMagickWand.so.4*
+%{_libdir}/libMagickCore.so*
+%{_libdir}/libMagickWand.so*
 %{_bindir}/[a-z]*
 %{_sysconfdir}/%{name}
 %{_libdir}/%{name}-%{VERSION}
@@ -266,21 +266,16 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root,-)
 %{_bindir}/MagickCore-config
-%{_bindir}/Magick-config
 %{_bindir}/MagickWand-config
-%{_bindir}/Wand-config
-%{_libdir}/libMagickCore.so
-%{_libdir}/libMagickWand.so
+%{_libdir}/libMagickCore.so*
+%{_libdir}/libMagickWand.so*
 %{_libdir}/pkgconfig/MagickCore.pc
 %{_libdir}/pkgconfig/ImageMagick.pc
 %{_libdir}/pkgconfig/MagickWand.pc
-%{_libdir}/pkgconfig/Wand.pc
 %dir %{_includedir}/%{name}
-%{_includedir}/%{name}/magick
-%{_includedir}/%{name}/wand
-%{_mandir}/man1/Magick-config.*
+%{_includedir}/%{name}/MagickCore
+%{_includedir}/%{name}/MagickWand
 %{_mandir}/man1/MagickCore-config.*
-%{_mandir}/man1/Wand-config.*
 %{_mandir}/man1/MagickWand-config.*
 
 %files djvu
@@ -296,7 +291,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++.so.4*
+%{_libdir}/libMagick++.so*
 
 %files c++-devel
 %defattr(-,root,root,-)
@@ -304,7 +299,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/Magick++-config
 %{_includedir}/%{name}/Magick++
 %{_includedir}/%{name}/Magick++.h
-%{_libdir}/libMagick++.so
+%{_libdir}/libMagick++.so*
 %{_libdir}/pkgconfig/Magick++.pc
 %{_libdir}/pkgconfig/ImageMagick++.pc
 %{_mandir}/man1/Magick++-config.*
