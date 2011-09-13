@@ -753,9 +753,9 @@ MagickExport void *RelinquishMagickMemory(void *memory)
 #if !defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   memory_methods.destroy_memory_handler(memory);
 #else
+  LockSemaphoreInfo(memory_semaphore);
   assert((SizeOfBlock(memory) % (4*sizeof(size_t))) == 0);
   assert((*BlockHeader(NextBlock(memory)) & PreviousBlockBit) != 0);
-  LockSemaphoreInfo(memory_semaphore);
   if ((*BlockHeader(memory) & PreviousBlockBit) == 0)
     {
       void
