@@ -4,7 +4,7 @@
     colorspace.
 
 2011-09-10  6.7.2-5 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.2-4.
+  * New version 6.7.2-5.
 
 2011-09-10  6.7.2-5 Cristy  <quetzlzacatenango@image...>
   * SO bump.
@@ -26,7 +26,7 @@
 2011-09-05  6.7.2-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-2.
 
-2011-09-03  6.7.2-3 Glenn Randers-Pehrson <glennrp@image...>
+2011-09-03  6.7.2-2 Glenn Randers-Pehrson <glennrp@image...>
   * Recognize the sRGB ICC profile and write the PNG sRGB profile instead
     of a full iCCP chunk.
 
@@ -42,7 +42,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19429).
 
 2011-08-29  6.7.2-1 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.1-1.
+  * New version 6.7.2-1.
 
 2011-08-29  6.7.2-1 Cristy  <quetzlzacatenango@image...>
   * The AllChannels defined changed to 0x7ffffff to avoid integer overflow.
