@@ -52,6 +52,8 @@
 #include "magick/studio.h"
 #include "magick/accelerate.h"
 #include "magick/artifact.h"
+#include "magick/cache.h"
+#include "magick/cache-private.h"
 #include "magick/cache-view.h"
 #include "magick/color-private.h"
 #include "magick/enhance.h"
@@ -66,7 +68,6 @@
 #include "magick/monitor-private.h"
 #include "magick/accelerate.h"
 #include "magick/option.h"
-#include "magick/pixel-private.h"
 #include "magick/prepress.h"
 #include "magick/quantize.h"
 #include "magick/registry.h"
@@ -180,22 +181,21 @@ static char
     "  return(offset);\n"
     "}\n"
     "\n"
-    "#pragma OPENCL EXTENSION cl_khr_fp64: enable\n"
-    "static inline CLQuantum ClampToQuantum(const double value)\n"
+    "static inline CLQuantum ClampToQuantum(const float value)\n"
     "{\n"
     "#if defined(MAGICKCORE_HDRI_SUPPORT)\n"
     "  return((CLQuantum) value)\n"
     "#else\n"
     "  if (value < 0.0)\n"
     "    return((CLQuantum) 0);\n"
-    "  if (value >= (double) QuantumRange)\n"
+    "  if (value >= (float) QuantumRange)\n"
     "    return((CLQuantum) QuantumRange);\n"
     "  return((CLQuantum) (value+0.5));\n"
     "#endif\n"
     "}\n"
     "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
-    "  __constant double *filter,const unsigned long width,const unsigned long height,\n"
+    "  __constant float *filter,const unsigned long width,const unsigned long height,\n"
     "  const unsigned int matte,__global CLPixelType *output)\n"
     "{\n"
     "  const unsigned long columns = get_global_size(0);\n"
@@ -204,11 +204,11 @@ static char
     "  const long x = get_global_id(0);\n"
     "  const long y = get_global_id(1);\n"
     "\n"
-    "  const double scale = (1.0/QuantumRange);\n"
+    "  const float scale = (1.0/QuantumRange);\n"
     "  const long mid_width = (width-1)/2;\n"
     "  const long mid_height = (height-1)/2;\n"
-    "  double4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
-    "  double gamma = 0.0;\n"
+    "  float4 sum = { 0.0, 0.0, 0.0, 0.0 };\n"
+    "  float gamma = 0.0;\n"
     "  register unsigned long i = 0;\n"
     "\n"
     "  int method = 0;\n"
@@ -248,7 +248,7 @@ static char
     "        {\n"
     "          const unsigned long index=ClampToCanvas(y+v,rows)*columns+\n"
     "            ClampToCanvas(x+u,columns);\n"
-    "          const double alpha=scale*(QuantumRange-input[index].w);\n"
+    "          const float alpha=scale*input[index].w;\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
     "          sum.y+=alpha*filter[i]*input[index].y;\n"
     "          sum.z+=alpha*filter[i]*input[index].z;\n"
@@ -282,7 +282,7 @@ static char
     "        for (long u=(-mid_width); u <= mid_width; u++)\n"
     "        {\n"
     "          const unsigned long index=(y+v)*columns+(x+u);\n"
-    "          const double alpha=scale*(QuantumRange-input[index].w);\n"
+    "          const float alpha=scale*input[index].w;\n"
     "          sum.x+=alpha*filter[i]*input[index].x;\n"
     "          sum.y+=alpha*filter[i]*input[index].y;\n"
     "          sum.z+=alpha*filter[i]*input[index].z;\n"
@@ -319,8 +319,8 @@ static void ConvolveNotify(const char *message,const void *data,size_t length,
 }
 
 static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
-  const Image *image,const void *pixels,double *filter,
-  const size_t width,const size_t height,void *convolve_pixels)
+  const Image *image,const void *pixels,float *filter,const size_t width,
+  const size_t height,void *convolve_pixels)
 {
   cl_int
     status;
@@ -342,7 +342,7 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
     return(MagickFalse);
   length=width*height;
   convolve_info->filter=clCreateBuffer(convolve_info->context,(cl_mem_flags)
-    (CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR),length*sizeof(cl_double),filter,
+    (CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR),length*sizeof(cl_float),filter,
     &status);
   if ((convolve_info->filter == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
@@ -395,6 +395,7 @@ static void DestroyConvolveBuffers(ConvolveInfo *convolve_info)
   cl_int
     status;
 
+  (void) status;
   if (convolve_info->convolve_pixels != (cl_mem) NULL)
     status=clReleaseMemObject(convolve_info->convolve_pixels);
   if (convolve_info->pixels != (cl_mem) NULL)
@@ -408,6 +409,7 @@ static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
   cl_int
     status;
 
+  (void) status;
   if (convolve_info->kernel != (cl_kernel) NULL)
     status=clReleaseKernel(convolve_info->kernel);
   if (convolve_info->program != (cl_program) NULL)
@@ -421,8 +423,8 @@ static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
 }
 
 static MagickBooleanType EnqueueConvolveKernel(ConvolveInfo *convolve_info,
-  const Image *image,const void *pixels,double *filter,
-  const size_t width,const size_t height,void *convolve_pixels)
+  const Image *image,const void *pixels,float *filter,const size_t width,
+  const size_t height,void *convolve_pixels)
 {
   cl_int
     status;
@@ -437,7 +439,7 @@ static MagickBooleanType EnqueueConvolveKernel(ConvolveInfo *convolve_info,
     NULL);
   length=width*height;
   status=clEnqueueWriteBuffer(convolve_info->command_queue,
-    convolve_info->filter,CL_TRUE,0,length*sizeof(cl_double),filter,0,NULL,
+    convolve_info->filter,CL_TRUE,0,length*sizeof(cl_float),filter,0,NULL,
     NULL);
   if (status != CL_SUCCESS)
     return(MagickFalse);
@@ -572,7 +574,7 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
       convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
-  (void) FormatLocaleString(options,MaxTextExtent,CLOptions,(double)
+  (void) FormatLocaleString(options,MaxTextExtent,CLOptions,(float)
     QuantumRange,MagickEpsilon);
   status=clBuildProgram(convolve_info->program,1,convolve_info->devices,options,
     NULL,NULL);
@@ -636,6 +638,9 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
     const void
       *pixels;
 
+    float
+      *filter;
+
     ConvolveInfo
       *convolve_info;
 
@@ -644,6 +649,9 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
 
     MagickSizeType
       length;
+
+    register ssize_t
+      i;
 
     void
       *convolve_pixels;
@@ -654,29 +662,43 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
     pixels=AcquirePixelCachePixels(image,&length,exception);
     if (pixels == (const void *) NULL)
       {
+        convolve_info=DestroyConvolveInfo(convolve_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
           "UnableToReadPixelCache","`%s'",image->filename);
-        convolve_info=DestroyConvolveInfo(convolve_info);
         return(MagickFalse);
       }
     convolve_pixels=GetPixelCachePixels(convolve_image,&length,exception);
     if (convolve_pixels == (void *) NULL)
       {
+        convolve_info=DestroyConvolveInfo(convolve_info);
         (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
           "UnableToReadPixelCache","`%s'",image->filename);
-        convolve_info=DestroyConvolveInfo(convolve_info);
         return(MagickFalse);
       }
-    status=BindConvolveParameters(convolve_info,image,pixels,kernel->values,
+    filter=(float *) AcquireQuantumMemory(kernel->width,kernel->height*
+      sizeof(*filter));
+    if (filter == (float *) NULL)
+      {
+        DestroyConvolveBuffers(convolve_info);
+        convolve_info=DestroyConvolveInfo(convolve_info);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        return(MagickFalse);
+      }
+    for (i=0; i < (size_t) (kernel->width*kernel->height); i++)
+      filter[i]=(float) kernel->values[i];
+    status=BindConvolveParameters(convolve_info,image,pixels,filter,
       kernel->width,kernel->height,convolve_pixels);
     if (status == MagickFalse)
       {
+        filter=(float *) RelinquishMagickMemory(filter);
         DestroyConvolveBuffers(convolve_info);
         convolve_info=DestroyConvolveInfo(convolve_info);
         return(MagickFalse);
       }
-    status=EnqueueConvolveKernel(convolve_info,image,pixels,kernel->values,
+    status=EnqueueConvolveKernel(convolve_info,image,pixels,filter,
       kernel->width,kernel->height,convolve_pixels);
+    filter=(float *) RelinquishMagickMemory(filter);
     if (status == MagickFalse)
       {
         DestroyConvolveBuffers(convolve_info);
