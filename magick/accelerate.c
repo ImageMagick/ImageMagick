@@ -500,8 +500,8 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
   /*
     Create OpenCL context.
   */
-  status=clGetPlatformIDs(0,NULL,&number_platforms);
-  if (status == CL_SUCCESS)
+  status=clGetPlatformIDs(0,(cl_platform_id *) NULL,&number_platforms);
+  if ((status == CL_SUCCESS) && (number_platforms > 0))
     status=clGetPlatformIDs(1,platforms,NULL);
   if (status != CL_SUCCESS)
     {
