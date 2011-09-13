@@ -628,6 +628,7 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
   assert(exception->signature == MagickSignature);
   if ((image->storage_class != DirectClass) || 
       (image->colorspace == CMYKColorspace))
+    return(MagickFalse);
   if ((GetImageVirtualPixelMethod(image) != UndefinedVirtualPixelMethod) &&
       (GetImageVirtualPixelMethod(image) != EdgeVirtualPixelMethod))
     return(MagickFalse);
