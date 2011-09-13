@@ -633,6 +633,8 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
   if ((GetImageVirtualPixelMethod(image) != UndefinedVirtualPixelMethod) &&
       (GetImageVirtualPixelMethod(image) != EdgeVirtualPixelMethod))
     return(MagickFalse);
+  if (GetPixelChannels(image) != 4)
+    return(MagickFalse);
 #if !defined(MAGICKCORE_OPENCL_SUPPORT)
   return(MagickFalse);
 #else
