@@ -1465,7 +1465,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
 static MagickBooleanType LoadDelegateLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   return(LoadDelegateList(DelegateMap,"built-in",0,exception));
 #else
   const StringInfo

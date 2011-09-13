@@ -954,7 +954,7 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
 MagickExport MagickBooleanType LoadMimeLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   return(LoadMimeList(MimeMap,"built-in",0,exception));
 #else
   const StringInfo

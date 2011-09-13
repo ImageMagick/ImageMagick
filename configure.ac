@@ -565,15 +565,16 @@ if test "$enable_cipher" = 'yes'; then
     AC_DEFINE(CIPHER_SUPPORT,1,[permit enciphering and deciphering image pixels])
 fi
 
-# Build an embeddable version of ImageMagick.
-AC_ARG_ENABLE([embeddable],
-    [AC_HELP_STRING([--enable-embeddable],
+# Build an zero-configuration version of ImageMagick.
+AC_ARG_ENABLE([zero-configuration],
+    [AC_HELP_STRING([--enable-zero-configuration],
                     [enable self-contained, embeddable, zero-configuration ImageMagick])],
-    [enable_embeddable=$enableval],
-    [enable_embeddable='no'])
+    [enable_zero_configuration=$enableval],
+    [enable_zero_configuration='no'])
 
-if test "$enable_embeddable" = 'yes'; then
-    AC_DEFINE(EMBEDDABLE_SUPPORT,1,[Build self-contained, embeddable, zero-configuration ImageMagick])
+if test "$enable_zero_configuration" = 'yes'; then
+    AC_DEFINE(ZERO_CONFIGURATION_SUPPORT,1,[Build self-contained, embeddable, zero-configuration ImageMagick])
+    MAGICK_FEATURES="Zero Configuration $MAGICK_FEATURES"
 fi
 
 # Build a high dynamic range version of ImageMagick.
