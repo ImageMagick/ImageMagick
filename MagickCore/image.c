@@ -2756,9 +2756,16 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPacket(image,&pixel,q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(image,pixel.black,q);
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+        SetPixelRed(image,ClampToQuantum(background.red),q);
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+        SetPixelGreen(image,ClampToQuantum(background.green),q);
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+        SetPixelBlue(image,ClampToQuantum(background.blue),q);
+      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
+        SetPixelBlack(image,ClampToQuantum(background.black),q);
+      if ((GetPixelAlphaTraits(image) & CopyPixelTrait) != 0)
+        SetPixelAlpha(image,ClampToQuantum(background.alpha),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

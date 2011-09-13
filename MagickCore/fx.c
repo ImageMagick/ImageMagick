@@ -4136,9 +4136,6 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 {
 #define ShadowImageTag  "Shadow/Image"
 
-  CacheView
-    *border_view;
-
   ChannelType
     channel_mask;
 
@@ -4147,17 +4144,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
     *clone_image,
     *shadow_image;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
   RectangleInfo
     border_info;
-
-  ssize_t
-    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4184,58 +4172,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   /*
     Shadow image.
   */
-  status=MagickTrue;
-  progress=0;
-  border_view=AcquireCacheView(border_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) border_image->rows; y++)
-  {
-    register ssize_t
-      x;
-
-    register Quantum
-      *restrict q;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(border_view,0,y,border_image->columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) border_image->columns; x++)
-    {
-      SetPixelRed(border_image,border_image->background_color.red,q);
-      SetPixelGreen(border_image,border_image->background_color.green,q);
-      SetPixelBlue(border_image,border_image->background_color.blue,q);
-      if (border_image->matte == MagickFalse)
-        SetPixelAlpha(border_image,border_image->background_color.alpha,q);
-      else
-        SetPixelAlpha(border_image,ClampToQuantum((MagickRealType)
-          (GetPixelAlpha(border_image,q)*opacity/100.0)),q);
-      q+=GetPixelChannels(border_image);
-    }
-    if (SyncCacheViewAuthenticPixels(border_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (border_image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ShadowImage)
-#endif
-        proceed=SetImageProgress(border_image,ShadowImageTag,progress++,
-          border_image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  border_view=DestroyCacheView(border_view);
+  SetImageBackgroundColor(border_image);
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
   shadow_image=BlurImage(border_image,0.0,sigma,image->bias,exception);
   (void) SetPixelChannelMap(border_image,channel_mask);

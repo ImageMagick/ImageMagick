@@ -224,7 +224,9 @@
 #endif
 
 /* Define to 1 if you have the <CL/cl.h> header file. */
-/* #undef HAVE_CL_CL_H */
+#ifndef MAGICKCORE_HAVE_CL_CL_H
+#define MAGICKCORE_HAVE_CL_CL_H 1
+#endif
 
 /* Define to 1 if you have the <complex.h> header file. */
 #ifndef MAGICKCORE_HAVE_COMPLEX_H
@@ -1525,7 +1527,9 @@
 /* #undef _MINIX */
 
 /* Define this for the OpenCL Accelerator */
-/* #undef _OPENCL */
+#ifndef MAGICKCORE__OPENCL
+#define MAGICKCORE__OPENCL 1
+#endif
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */
