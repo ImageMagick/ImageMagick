@@ -1277,7 +1277,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
 static MagickBooleanType LoadTypeLists(const char *filename,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   return(LoadTypeList(TypeMap,"built-in",0,exception));
 #else
   char

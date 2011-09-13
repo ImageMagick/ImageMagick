@@ -1315,7 +1315,7 @@ static MagickBooleanType LoadLocaleList(const char *xml,const char *filename,
 static MagickBooleanType LoadLocaleLists(const char *filename,
   const char *locale,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_EMBEDDABLE_SUPPORT)
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
   return(LoadLocaleList(LocaleMap,"built-in",locale,0,exception));
 #else
   const StringInfo

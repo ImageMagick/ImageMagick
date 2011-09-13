@@ -66,9 +66,6 @@
 /* Define if you have Display Postscript */
 /* #undef DPS_DELEGATE */
 
-/* Build self-contained, embeddable, zero-configuration ImageMagick */
-/* #undef EMBEDDABLE_SUPPORT */
-
 /* exclude deprecated methods in MagickCore API */
 /* #undef EXCLUDE_DEPRECATED */
 
@@ -1487,6 +1484,9 @@
 
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */
+
+/* Build self-contained, embeddable, zero-configuration ImageMagick */
+/* #undef ZERO_CONFIGURATION_SUPPORT */
 
 /* Define if you have zlib compression library */
 #ifndef MAGICKCORE_ZLIB_DELEGATE

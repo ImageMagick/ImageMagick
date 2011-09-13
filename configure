@@ -1096,7 +1096,7 @@ enable_delegate_build
 enable_deprecated
 enable_installed
 enable_cipher
-enable_embeddable
+enable_zero_configuration
 enable_hdri
 enable_assert
 enable_maintainer_mode
@@ -1821,7 +1821,8 @@ Optional Features:
                           MagickWand API's
   --disable-installed     Formally install ImageMagick under PREFIX
   --disable-cipher        disable enciphering and deciphering image pixels
-  --enable-embeddable     enable self-contained, embeddable,
+  --enable-zero-configuration
+                          enable self-contained, embeddable,
                           zero-configuration ImageMagick
   --enable-hdri           accurately represent the wide range of intensity
                           levels found in real scenes
@@ -3583,7 +3584,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5245
+MAGICK_SVN_REVISION=5289
 
 
 
@@ -21040,19 +21041,20 @@ $as_echo "#define CIPHER_SUPPORT 1" >>confdefs.h
 
 fi
 
-# Build an embeddable version of ImageMagick.
-# Check whether --enable-embeddable was given.
-if test "${enable_embeddable+set}" = set; then :
-  enableval=$enable_embeddable; enable_embeddable=$enableval
+# Build an zero-configuration version of ImageMagick.
+# Check whether --enable-zero-configuration was given.
+if test "${enable_zero_configuration+set}" = set; then :
+  enableval=$enable_zero_configuration; enable_zero_configuration=$enableval
 else
-  enable_embeddable='no'
+  enable_zero_configuration='no'
 fi
 
 
-if test "$enable_embeddable" = 'yes'; then
+if test "$enable_zero_configuration" = 'yes'; then
 
-$as_echo "#define EMBEDDABLE_SUPPORT 1" >>confdefs.h
+$as_echo "#define ZERO_CONFIGURATION_SUPPORT 1" >>confdefs.h
 
+    MAGICK_FEATURES="Zero Configuration $MAGICK_FEATURES"
 fi
 
 # Build a high dynamic range version of ImageMagick.
