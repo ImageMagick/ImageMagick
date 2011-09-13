@@ -35,7 +35,7 @@
     @import url("../www/magick.css");
   </style>
   <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -161,6 +161,9 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
 </div>
 <div  class="sponsor">
@@ -203,7 +206,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Webdesign" href="http://www.renehornig.com/">Webdesign</a><!-- 20111001000240 -->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -307,7 +310,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.2-5 2011-09-01 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.2-6 2011-09-01 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -762,7 +765,7 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
 <p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
 
 <p>Here is an example OpenCL kernel that convolves an image:</p>
@@ -777,16 +780,16 @@ static inline long ClampToCanvas(const long offset,const ulong range)
   return(offset);
 }
 
-static inline CLQuantum ClampToQuantum(const double value)
+static inline CLQuantum ClampToQuantum(const float value)
 {
   if (value &lt; 0.0)
     return((CLQuantum) 0);
-  if (value >= (double) QuantumRange)
+  if (value >= (float) QuantumRange)
     return((CLQuantum) QuantumRange);
   return((CLQuantum) (value+0.5));
 }
 
-__kernel void Convolve(const __global CLPixelType *source,__constant double *filter,
+__kernel void Convolve(const __global CLPixelType *source,__constant float *filter,
   const ulong width,const ulong height,__global CLPixelType *destination)
 {
   const ulong columns = get_global_size(0);
@@ -795,11 +798,11 @@ __kernel void Convolve(const __global CLPixelType *source,__constant double *fil
   const long x = get_global_id(0);
   const long y = get_global_id(1);
 
-  const double scale = (1.0/QuantumRange);
+  const float scale = (1.0/QuantumRange);
   const long mid_width = (width-1)/2;
   const long mid_height = (height-1)/2;
-  double4 sum = { 0.0, 0.0, 0.0, 0.0 };
-  double gamma = 0.0;
+  float4 sum = { 0.0, 0.0, 0.0, 0.0 };
+  float gamma = 0.0;
   register ulong i = 0;
 
   for (long v=(-mid_height); v &lt;= mid_height; v++)
@@ -808,7 +811,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant double *fil
     {
       register const ulong index=ClampToCanvas(y+v,rows)*columns+ClampToCanvas(x+u,
         columns);
-      const double alpha=scale*(QuantumRange-source[index].w);
+      const float alpha=scale*(QuantumRange-source[index].w);
       sum.x+=alpha*filter[i]*source[index].x;
       sum.y+=alpha*filter[i]*source[index].y;
       sum.z+=alpha*filter[i]*source[index].z;

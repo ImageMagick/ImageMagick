@@ -35,7 +35,7 @@
     @import url("../www/magick.css");
   </style>
   <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -161,6 +161,9 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
 </div>
 <div  class="sponsor">
@@ -203,7 +206,7 @@
   <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
 </div>
 </div>
 </div>
@@ -216,8 +219,15 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-09-10  6.7.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.2-4.</dd>
+<dl><dt>2011-09-13  6.7.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-6.</dd>
+<dt>2011-09-12  6.7.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Expand pixel range for 12 bit DCM images stored in 16-bit words.</dd>
+  <dd> Gray images not displayed properly when saved as MIFF with sRGB    colorspace.</dd>
+  <dd> OpenCL's clCreateContextFromType() no longer returns a system default.</dd>
+  <dd> Use -enable-zero-configuration for zero configuration ImageMagick    (previously -enable-embeddable).</dd>
+<dt>2011-09-10  6.7.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-5.</dd>
 <dt>2011-09-10  6.7.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> SO bump.</dd>
 <dt>2011-09-09  6.7.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -231,7 +241,7 @@
   <dd> Remove a 2 byte memory leak when checking for environment variables.</dd>
 <dt>2011-09-05  6.7.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.2-2.</dd>
-<dt>2011-09-03  6.7.2-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dt>2011-09-03  6.7.2-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Recognize the sRGB ICC profile and write the PNG sRGB profile instead    of a full iCCP chunk.</dd>
 <dt>2011-08-31  6.7.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Write grayscale MIFF as a single gray pixel component, not RGB (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=19403).</dd>
@@ -240,7 +250,7 @@
   <dd> Account for DCm bits allocated 16 and significant bits 12 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19420).</dd>
   <dd> Fix bug when appending JPEG image profiles (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19429).</dd>
 <dt>2011-08-29  6.7.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.1-1.</dd>
+  <dd> New version 6.7.2-1.</dd>
 <dt>2011-08-29  6.7.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The AllChannels defined changed to 0x7ffffff to avoid integer overflow.</dd>
 <dt>2011-08-26  6.7.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
