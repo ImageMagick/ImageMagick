@@ -53,7 +53,7 @@ extern "C" {
 #define MagickHDRIFeature  " "
 #endif
 #if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-#define MagickZeroConfigurationFeature  "Zero Configuration "
+#define MagickZeroConfigurationFeature  "Zero-Configuration "
 #else
 #define MagickZeroConfigurationFeature  " "
 #endif
