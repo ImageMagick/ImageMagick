@@ -646,8 +646,7 @@ static inline void SetPixelPixelInfo(const Image *image,
 static inline void SetPixelYellow(const Image *image,const Quantum yellow,
   Quantum *pixel)
 {
-  pixel[image->channel_map[YellowPixelChannel].channel]=
-    yellow;
+  pixel[image->channel_map[YellowPixelChannel].channel]=yellow;
 }
 
 static inline void SetPixelYellowTraits(Image *image,const PixelTrait traits)
