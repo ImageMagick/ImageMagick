@@ -321,8 +321,8 @@ static void ConvolveNotify(const char *message,const void *data,size_t length,
 }
 
 static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
-  const Image *image,const void *pixels,double *filter,
-  const size_t width,const size_t height,void *convolve_pixels)
+  const Image *image,const void *pixels,double *filter,const size_t width,
+  const size_t height,void *convolve_pixels)
 {
   cl_int
     status;
@@ -425,8 +425,8 @@ static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
 }
 
 static MagickBooleanType EnqueueConvolveKernel(ConvolveInfo *convolve_info,
-  const Image *image,const void *pixels,double *filter,
-  const size_t width,const size_t height,void *convolve_pixels)
+  const Image *image,const void *pixels,double *filter,const size_t width,
+  const size_t height,void *convolve_pixels)
 {
   cl_int
     status;

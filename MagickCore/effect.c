@@ -3144,10 +3144,10 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
     i;
 
   size_t
-    center,
     width;
 
   ssize_t
+    center,
     j,
     u,
     v,
@@ -3219,8 +3219,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*(width/2L)+
-    GetPixelChannels(image)*(width/2L);
+  center=(ssize_t) (GetPixelChannels(image)*(image->columns+width)*(width/2L)+
+    GetPixelChannels(image)*(width/2L));
   image_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3300,7 +3300,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
         k=kernel;
         pixel=bias;
         pixels=p;
-        intensity=GetPixelIntensity(image,p+center);
+        intensity=(MagickRealType) GetPixelIntensity(image,p+center);
         gamma=0.0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
