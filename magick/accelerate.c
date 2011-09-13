@@ -685,7 +685,7 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
         return(MagickFalse);
       }
-    for (i=0; i < (size_t) (kernel->width*kernel->height); i++)
+    for (i=0; i < (ssize_t) (kernel->width*kernel->height); i++)
       filter[i]=(float) kernel->values[i];
     status=BindConvolveParameters(convolve_info,image,pixels,filter,
       kernel->width,kernel->height,convolve_pixels);
