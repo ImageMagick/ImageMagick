@@ -52,7 +52,12 @@ extern "C" {
 #else
 #define MagickHDRIFeature  " "
 #endif
-#define MagickFeatures MagickOpenMPFeature MagickOpenCLFeature MagickHDRIFeature
+#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#define MagickZeroConfigurationFeature  "Zero Configuration "
+#else
+#define MagickZeroConfigurationFeature  " "
+#endif
+#define MagickFeatures MagickOpenMPFeature MagickOpenCLFeature MagickHDRIFeature MagickZeroConfigurationFeature
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
