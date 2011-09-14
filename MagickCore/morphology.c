@@ -240,7 +240,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   GeometryInfo
     args;
 
-  kernel=(KernelInfo *) AcquireMagickMemory(sizeof(*kernel));
+  kernel=(KernelInfo *) AcquireQuantumMemory(1,sizeof(*kernel));
   if (kernel == (KernelInfo *)NULL)
     return(kernel);
   (void) ResetMagickMemory(kernel,0,sizeof(*kernel));
@@ -314,7 +314,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     }
 
   /* Read in the kernel values from rest of input string argument */
-  kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+  kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                         kernel->height*sizeof(double));
   if (kernel->values == (double *) NULL)
     return(DestroyKernelInfo(kernel));
@@ -1030,7 +1030,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         kernel->height = kernel->width = (size_t) 1;
         kernel->x = kernel->y = (ssize_t) 0;
-        kernel->values=(double *) AcquireAlignedMemory(1,sizeof(double));
+        kernel->values=(double *) AcquireQuantumMemory(1,sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->maximum = kernel->values[0] = args->rho;
@@ -1053,7 +1053,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma2);
         kernel->height = kernel->width;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -1144,7 +1144,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->x = (ssize_t) (kernel->width-1)/2;
         kernel->y = 0;
         kernel->negative_range = kernel->positive_range = 0.0;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -1228,7 +1228,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->x = kernel->y = 0;
         kernel->height = 1;
         kernel->negative_range = kernel->positive_range = 0.0;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -1499,7 +1499,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -1540,7 +1540,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->y = (ssize_t) args->psi;
             scale = 1.0;
           }
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -1561,7 +1561,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -1587,7 +1587,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -1609,7 +1609,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -1630,7 +1630,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -1671,7 +1671,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
           kernel->height = kernel->width;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -2041,7 +2041,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -2061,7 +2061,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                                 kernel->height*sizeof(double));
           if (kernel->values == (double *) NULL)
             return(DestroyKernelInfo(kernel));
@@ -2081,7 +2081,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -2106,7 +2106,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(double *) AcquireQuantumMemory(kernel->width,
                               kernel->height*sizeof(double));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
@@ -2171,7 +2171,7 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
   *new_kernel=(*kernel); /* copy values in structure */
 
   /* replace the values with a copy of the values */
-  new_kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+  new_kernel->values=(double *) AcquireQuantumMemory(kernel->width,
     kernel->height*sizeof(double));
   if (new_kernel->values == (double *) NULL)
     return(DestroyKernelInfo(new_kernel));
