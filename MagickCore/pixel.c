@@ -168,7 +168,7 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
   PixelInfo
     *pixel_info;
 
-  pixel_info=(PixelInfo *) AcquireAlignedMemory(1,sizeof(*pixel_info));
+  pixel_info=(PixelInfo *) AcquireQuantumMemory(1,sizeof(*pixel_info));
   if (pixel_info == (PixelInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *pixel_info=(*pixel);

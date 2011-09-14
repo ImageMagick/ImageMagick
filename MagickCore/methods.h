@@ -37,7 +37,7 @@ extern "C" {
 #define PrependMagickMethod(method) \
   EvaluateMagickPrefix(MAGICKCORE_NAMESPACE_PREFIX,method)
 
-#define AcquireAlignedMemory  PrependMagickMethod(AcquireAlignedMemory)
+#define AcquireQuantumMemory  PrependMagickMethod(AcquireQuantumMemory)
 #define AcquireCacheViewIndexes  PrependMagickMethod(AcquireCacheViewIndexes)
 #define AcquireCacheViewPixels  PrependMagickMethod(AcquireCacheViewPixels)
 #define AcquireCacheView  PrependMagickMethod(AcquireCacheView)
@@ -980,7 +980,7 @@ extern "C" {
 #define RegisterYUVImage  PrependMagickMethod(RegisterYUVImage)
 #define RegistryComponentGenesis  PrependMagickMethod(RegistryComponentGenesis)
 #define RegistryComponentTerminus  PrependMagickMethod(RegistryComponentTerminus)
-#define RelinquishAlignedMemory  PrependMagickMethod(RelinquishAlignedMemory)
+#define RelinquishMagickMemory  PrependMagickMethod(RelinquishMagickMemory)
 #define RelinquishMagickMatrix  PrependMagickMethod(RelinquishMagickMatrix)
 #define RelinquishMagickMemory  PrependMagickMethod(RelinquishMagickMemory)
 #define RelinquishMagickResource  PrependMagickMethod(RelinquishMagickResource)

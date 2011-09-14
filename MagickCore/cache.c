@@ -186,7 +186,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   CacheInfo
     *cache_info;
 
-  cache_info=(CacheInfo *) AcquireAlignedMemory(1,sizeof(*cache_info));
+  cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
@@ -255,7 +255,7 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   register ssize_t
     i;
 
-  nexus_info=(NexusInfo **) AcquireAlignedMemory(number_threads,
+  nexus_info=(NexusInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*nexus_info));
   if (nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -783,7 +783,7 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
   */
   if (cache_info->debug != MagickFalse)
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
-  blob=(unsigned char *) AcquireAlignedMemory(MagickMaxBufferExtent,
+  blob=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
     sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
@@ -949,7 +949,7 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
   length=(size_t) MagickMax(MagickMax(cache_info->number_channels,
     clone_info->number_channels)*sizeof(Quantum),MagickMax(
     cache_info->metacontent_extent,clone_info->metacontent_extent));
-  blob=(unsigned char *) AcquireAlignedMemory(length,sizeof(*blob));
+  blob=(unsigned char *) AcquireQuantumMemory(length,sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1483,7 +1483,7 @@ MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
     if (nexus_info[i]->cache != (Quantum *) NULL)
       RelinquishCacheNexusPixels(nexus_info[i]);
     nexus_info[i]->signature=(~MagickSignature);
-    nexus_info[i]=(NexusInfo *) RelinquishMagickMemory(nexus_info[i]);
+    nexus_info[i]=(NexusInfo *) RelinquishAlignedMemory(nexus_info[i]);
   }
   nexus_info=(NexusInfo **) RelinquishMagickMemory(nexus_info);
   return(nexus_info);
@@ -3253,7 +3253,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
           /*
             Acquire a metacontent buffer.
           */
-          virtual_metacontent=(void *) AcquireAlignedMemory(1,
+          virtual_metacontent=(void *) AcquireQuantumMemory(1,
             cache_info->metacontent_extent);
           if (virtual_metacontent == (void *) NULL)
             {
@@ -3922,7 +3922,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
 static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
 {
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,(size_t)
+  cache_info->pixels=(Quantum *) AcquireQuantumMemory(1,(size_t)
     cache_info->length);
   if (cache_info->pixels == (Quantum *) NULL)
     {
@@ -4986,7 +4986,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(CacheInfo *cache_info,
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
   nexus_info->mapped=MagickFalse;
-  nexus_info->cache=(Quantum *) AcquireAlignedMemory(1,(size_t)
+  nexus_info->cache=(Quantum *) AcquireQuantumMemory(1,(size_t)
     nexus_info->length);
   if (nexus_info->cache == (Quantum *) NULL)
     {
