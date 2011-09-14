@@ -1802,7 +1802,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->values=(double *) AcquireQuantumMemory(kernel_info->width,
+  kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
   if (kernel_info->values == (double *) NULL)
     {
@@ -1892,7 +1892,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->values=(double *) AcquireQuantumMemory(kernel_info->width,
+  kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
   if (kernel_info->values == (double *) NULL)
     {
@@ -1993,7 +1993,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   kernel_info->height=width;
   kernel_info->bias=bias;
   kernel_info->signature=MagickSignature;
-  kernel_info->values=(double *) AcquireQuantumMemory(kernel_info->width,
+  kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
   if (kernel_info->values == (double *) NULL)
     {
@@ -3677,7 +3677,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   kernel_info->height=width;
   kernel_info->bias=bias;
   kernel_info->signature=MagickSignature;
-  kernel_info->values=(double *) AcquireQuantumMemory(kernel_info->width,
+  kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
   if (kernel_info->values == (double *) NULL)
     {

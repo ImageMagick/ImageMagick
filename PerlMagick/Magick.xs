@@ -9182,7 +9182,7 @@ Mogrify(ref,...)
               order=(size_t) sqrt(av_len(av)+1);
               kernel->width=order;
               kernel->height=order;
-              kernel->values=(double *) AcquireQuantumMemory(order,order*
+              kernel->values=(double *) AcquireAlignedMemory(order,order*
                 sizeof(*kernel->values));
               if (kernel->values == (double *) NULL)
                 {
