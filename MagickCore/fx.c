@@ -4163,7 +4163,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   border_info.x=0;
   border_info.y=0;
   (void) QueryColorDatabase("none",&clone_image->border_color,exception);
-  border_image=BorderImage(clone_image,&border_info,exception);
+  border_image=BorderImage(clone_image,&border_info,image->compose,exception);
   clone_image=DestroyImage(clone_image);
   if (border_image == (Image *) NULL)
     return((Image *) NULL);

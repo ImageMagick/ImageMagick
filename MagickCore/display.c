@@ -8861,7 +8861,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         exception);
       (void) ParsePageGeometry(*image,geometry,&page_geometry,
         exception);
-      border_image=BorderImage(*image,&page_geometry,exception);
+      border_image=BorderImage(*image,&page_geometry,(*image)->compose,
+        exception);
       if (border_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8917,7 +8918,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       frame_info.y=(ssize_t) frame_info.height;
       frame_info.width=(*image)->columns+2*frame_info.width;
       frame_info.height=(*image)->rows+2*frame_info.height;
-      frame_image=FrameImage(*image,&frame_info,exception);
+      frame_image=FrameImage(*image,&frame_info,(*image)->compose,exception);
       if (frame_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

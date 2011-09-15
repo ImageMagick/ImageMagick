@@ -750,7 +750,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               border_info.width=(width-image->columns+1)/2;
               border_info.height=(height-image->rows+1)/2;
             }
-          border_image=BorderImage(image,&border_info,exception);
+          border_image=BorderImage(image,&border_info,image->compose,exception);
           if (border_image != (Image *) NULL)
             {
               image=DestroyImage(image);
@@ -795,7 +795,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           if (value != (const char *) NULL)
             extract_info.height+=(size_t) ((metrics.ascent-
               metrics.descent+4)*MultilineCensus(value));
-          frame_image=FrameImage(image,&extract_info,exception);
+          frame_image=FrameImage(image,&extract_info,image->compose,exception);
           if (frame_image != (Image *) NULL)
             {
               image=DestroyImage(image);
