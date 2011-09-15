@@ -617,6 +617,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   ChannelType
     channel;
 
+  CompositeOperator
+    compose;
+
   const char
     *format,
     *option;
@@ -672,6 +675,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   SetGeometryInfo(&geometry_info);
   GetPixelInfo(*image,&fill);
   SetPixelInfoPacket(*image,&(*image)->background_color,&fill);
+  compose=(*image)->compose;
   interpolate_method=UndefinedInterpolatePixel;
   channel=mogrify_info->channel;
   format=GetImageOption(mogrify_info,"format");
@@ -923,7 +927,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
             if ((flags & SigmaValue) == 0)
               geometry.height=geometry.width;
-            mogrify_image=BorderImage(*image,&geometry,exception);
+            mogrify_image=BorderImage(*image,&geometry,compose,exception);
             break;
           }
         if (LocaleCompare("bordercolor",option+1) == 0)
@@ -1168,6 +1172,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickColorspaceOptions,MagickFalse,argv[i+1]);
             (void) TransformImageColorspace(*image,colorspace);
             InheritException(exception,&(*image)->exception);
+            break;
+          }
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+            (void) SyncImageSettings(mogrify_info,*image);
+            compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
+              MagickFalse,argv[i+1]);
             break;
           }
         if (LocaleCompare("contrast",option+1) == 0)
@@ -1624,7 +1635,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             frame_info.y=(ssize_t) frame_info.height;
             frame_info.width=(*image)->columns+2*frame_info.width;
             frame_info.height=(*image)->rows+2*frame_info.height;
-            mogrify_image=FrameImage(*image,&frame_info,exception);
+            mogrify_image=FrameImage(*image,&frame_info,compose,exception);
             break;
           }
         if (LocaleCompare("function",option+1) == 0)

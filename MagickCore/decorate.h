@@ -38,8 +38,10 @@ typedef struct _FrameInfo
 } FrameInfo;
 
 extern MagickExport Image
-  *BorderImage(const Image *,const RectangleInfo *,ExceptionInfo *),
-  *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *);
+  *BorderImage(const Image *,const RectangleInfo *,const CompositeOperator,
+    ExceptionInfo *),
+  *FrameImage(const Image *,const FrameInfo *,const CompositeOperator,
+    ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   RaiseImage(Image *,const RectangleInfo *,const MagickBooleanType,

@@ -86,19 +86,22 @@
 %  The format of the BorderImage method is:
 %
 %      Image *BorderImage(const Image *image,const RectangleInfo *border_info,
-%        ExceptionInfo *exception)
+%        const CompositeOperator compose,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o border_info:  Define the width and height of the border.
+%    o border_info:  define the width and height of the border.
+%
+%    o compose:  the composite operator.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *BorderImage(const Image *image,
-  const RectangleInfo *border_info,ExceptionInfo *exception)
+  const RectangleInfo *border_info,const CompositeOperator compose,
+  ExceptionInfo *exception)
 {
   Image
     *border_image,
@@ -122,7 +125,7 @@ MagickExport Image *BorderImage(const Image *image,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   clone_image->matte_color=image->border_color;
-  border_image=FrameImage(clone_image,&frame_info,exception);
+  border_image=FrameImage(clone_image,&frame_info,compose,exception);
   clone_image=DestroyImage(clone_image);
   if (border_image != (Image *) NULL)
     border_image->matte_color=image->matte_color;
@@ -149,7 +152,7 @@ MagickExport Image *BorderImage(const Image *image,
 %  The format of the FrameImage method is:
 %
 %      Image *FrameImage(const Image *image,const FrameInfo *frame_info,
-%        ExceptionInfo *exception)
+%        const CompositeOperator compose,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -157,11 +160,13 @@ MagickExport Image *BorderImage(const Image *image,
 %
 %    o frame_info: Define the width and height of the frame and its bevels.
 %
+%    o compose: the composite operator.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
-  ExceptionInfo *exception)
+  const CompositeOperator compose,ExceptionInfo *exception)
 {
 #define FrameImageTag  "Frame/Image"
 
@@ -425,8 +430,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     /*
       Set frame interior to interior color.
     */
-    if ((image->compose != CopyCompositeOp) &&
-        ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
+    if ((compose != CopyCompositeOp) && ((compose != OverCompositeOp) ||
+        (image->matte != MagickFalse)))
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetPixelPixelInfo(frame_image,&interior,q);
@@ -584,14 +589,14 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   frame_view=DestroyCacheView(frame_view);
   image_view=DestroyCacheView(image_view);
-  if ((image->compose != CopyCompositeOp) &&
-      ((image->compose != OverCompositeOp) || (image->matte != MagickFalse)))
+  if ((compose != CopyCompositeOp) && ((compose != OverCompositeOp) ||
+      (image->matte != MagickFalse)))
     {
       x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
         frame_info->inner_bevel);
       y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
         frame_info->inner_bevel);
-      (void) CompositeImage(frame_image,image->compose,image,x,y);
+      (void) CompositeImage(frame_image,compose,image,x,y);
     }
   return(frame_image);
 }

@@ -515,7 +515,7 @@ void Magick::Image::border( const Geometry &geometry_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    BorderImage( image(), &borderInfo, &exceptionInfo);
+    BorderImage( image(), &borderInfo, image()->compose, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1126,7 +1126,7 @@ void Magick::Image::frame ( const Geometry &geometry_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    FrameImage( image(), &info, &exceptionInfo );
+    FrameImage( image(), &info, image()->compose, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1146,7 +1146,7 @@ void Magick::Image::frame ( const size_t width_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    FrameImage( image(), &info, &exceptionInfo );
+    FrameImage( image(), &info, image()->compose, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

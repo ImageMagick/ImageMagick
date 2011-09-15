@@ -1351,7 +1351,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           border_image=BorderImage(msl_info->image[n],&geometry,
-            &msl_info->image[n]->exception);
+            msl_info->image[n]->compose,&msl_info->image[n]->exception);
           if (border_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -3158,7 +3158,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           frame_info.width=msl_info->image[n]->columns+2*frame_info.x;
           frame_info.height=msl_info->image[n]->rows+2*frame_info.y;
           frame_image=FrameImage(msl_info->image[n],&frame_info,
-            &msl_info->image[n]->exception);
+            msl_info->image[n]->compose,&msl_info->image[n]->exception);
           if (frame_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);

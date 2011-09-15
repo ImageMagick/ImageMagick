@@ -944,7 +944,7 @@ WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickBorderImage(MagickWand *wand,
 %        const PixelWand *bordercolor,const size_t width,
-%        const size_t height)
+%        const size_t height,const CompositeOperator compose)
 %
 %  A description of each parameter follows:
 %
@@ -956,10 +956,12 @@ WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
 %
 %    o height: the border height.
 %
+%    o compose: the composite operator.
+%
 */
 WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
-  const PixelWand *bordercolor,const size_t width,
-  const size_t height)
+  const PixelWand *bordercolor,const size_t width,const size_t height,
+  const CompositeOperator compose)
 {
   Image
     *border_image;
@@ -978,7 +980,7 @@ WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
   border_info.x=0;
   border_info.y=0;
   PixelGetQuantumPacket(bordercolor,&wand->images->border_color);
-  border_image=BorderImage(wand->images,&border_info,wand->exception);
+  border_image=BorderImage(wand->images,&border_info,compose,wand->exception);
   if (border_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,border_image);
@@ -3141,7 +3143,7 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 %      MagickBooleanType MagickFrameImage(MagickWand *wand,
 %        const PixelWand *matte_color,const size_t width,
 %        const size_t height,const ssize_t inner_bevel,
-%        const ssize_t outer_bevel)
+%        const ssize_t outer_bevel,const CompositeOperator compose)
 %
 %  A description of each parameter follows:
 %
@@ -3157,10 +3159,13 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 %
 %    o outer_bevel: the outer bevel width.
 %
+%    o compose: the composite operator.
+%
 */
 WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
-  const PixelWand *matte_color,const size_t width,
-  const size_t height,const ssize_t inner_bevel,const ssize_t outer_bevel)
+  const PixelWand *matte_color,const size_t width,const size_t height,
+  const ssize_t inner_bevel,const ssize_t outer_bevel,
+  const CompositeOperator compose)
 {
   Image
     *frame_image;
@@ -3182,7 +3187,7 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
   frame_info.inner_bevel=inner_bevel;
   frame_info.outer_bevel=outer_bevel;
   PixelGetQuantumPacket(matte_color,&wand->images->matte_color);
-  frame_image=FrameImage(wand->images,&frame_info,wand->exception);
+  frame_image=FrameImage(wand->images,&frame_info,compose,wand->exception);
   if (frame_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,frame_image);

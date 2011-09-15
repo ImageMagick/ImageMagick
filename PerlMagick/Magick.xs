@@ -7518,6 +7518,9 @@ Mogrify(ref,...)
         }
         case 5:  /* Border */
         {
+          CompositeOperator
+            compose;
+
           geometry.width=0;
           geometry.height=0;
           if (attribute_flag[0] != 0)
@@ -7540,9 +7543,10 @@ Mogrify(ref,...)
           if (attribute_flag[5] != 0)
             QueryColorDatabase(argument_list[5].string_reference,
               &image->border_color,exception);
+          compose=image->compose;
           if (attribute_flag[6] != 0)
-            image->compose=(CompositeOperator) argument_list[6].integer_reference;
-          image=BorderImage(image,&geometry,exception);
+            compose=(CompositeOperator) argument_list[6].integer_reference;
+          image=BorderImage(image,&geometry,compose,exception);
           break;
         }
         case 6:  /* Blur */
@@ -7653,6 +7657,9 @@ Mogrify(ref,...)
         }
         case 15:  /* Frame */
         {
+          CompositeOperator
+            compose;
+
           FrameInfo
             frame_info;
 
@@ -7687,10 +7694,10 @@ Mogrify(ref,...)
           frame_info.height=image->rows+2*frame_info.y;
           if ((attribute_flag[5] != 0) || (attribute_flag[6] != 0))
             image->matte_color=fill_color;
+          compose=image->compose;
           if (attribute_flag[7] != 0)
-            image->compose=(CompositeOperator)
-              argument_list[7].integer_reference;
-          image=FrameImage(image,&frame_info,exception);
+            compose=(CompositeOperator) argument_list[7].integer_reference;
+          image=FrameImage(image,&frame_info,compose,exception);
           break;
         }
         case 16:  /* Implode */

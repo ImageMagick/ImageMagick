@@ -1005,7 +1005,8 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       */
       border_info.width=(geometry.width-tile_image->columns+1) >> 1;
       border_info.height=(geometry.height-tile_image->rows+1) >> 1;
-      bordered_image=BorderImage(tile_image,&border_info,&image->exception);
+      bordered_image=BorderImage(tile_image,&border_info,image->compose,
+        &image->exception);
       if (bordered_image == (Image *) NULL)
         return(MagickFalse);
       tile_image=DestroyImage(tile_image);

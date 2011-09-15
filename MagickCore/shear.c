@@ -1972,7 +1972,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   integral_image->compose=CopyCompositeOp;
   border_info.width=(size_t) x_offset;
   border_info.height=(size_t) y_offset;
-  rotate_image=BorderImage(integral_image,&border_info,exception);
+  rotate_image=BorderImage(integral_image,&border_info,image->compose,
+    exception);
   integral_image=DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2117,7 +2118,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   integral_image->compose=CopyCompositeOp;
   border_info.width=(size_t) x_offset;
   border_info.height=(size_t) y_offset;
-  shear_image=BorderImage(integral_image,&border_info,exception);
+  shear_image=BorderImage(integral_image,&border_info,image->compose,exception);
   integral_image=DestroyImage(integral_image);
   if (shear_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
