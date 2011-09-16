@@ -256,7 +256,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         Extract URL base from filename.
       */
       p=strrchr(image->filename,'/');
-      if (p)
+      if (p != (char *) NULL)
         {
           p++;
           (void) CopyMagickString(url,image_info->magick,MaxTextExtent);
