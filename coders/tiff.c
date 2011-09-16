@@ -994,10 +994,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
     TIFFGetProperties(tiff,image);
-    option=GetImageOption(image_info,"tiff:exif");
-    if ((option != (const char *) NULL) &&
-        (IsMagickTrue(option) != MagickFalse))
-      TIFFGetEXIFProperties(tiff,image);
+    TIFFGetEXIFProperties(tiff,image);
     TIFFGetProfiles(tiff,image,exception);
     /*
       Allocate memory for the image and pixel buffer.
