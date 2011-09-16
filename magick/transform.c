@@ -793,8 +793,8 @@ MagickExport Image *CropImageToTiles(const Image *image,
           width+=(geometry.x < 0 ? -1 : 1)*geometry.x;
           height+=(geometry.y < 0 ? -1 : 1)*geometry.y;
         }
-      delta.x=(double) (width+geometry.width >> 1)/geometry.width;
-      delta.y=(double) (height+geometry.height >> 1)/geometry.height;
+      delta.x=(double) (width+(geometry.width >> 1))/geometry.width;
+      delta.y=(double) (height+(geometry.height >> 1))/geometry.height;
       for (offset.y=0; offset.y < (double) height; )
       {
         if ((flags & AspectValue) == 0)
