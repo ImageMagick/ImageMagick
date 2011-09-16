@@ -2,6 +2,7 @@
   * Convert empty .htm / .html file no longer removes source file.
   * -crop 11x2@ now returns 22 images as expected.
   * Enable reading the EXIF profile in a TIFF image under Windows.
+  * Support drawing text with bitmap font.
 
 2011-09-13  6.7.2-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-6.
