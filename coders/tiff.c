@@ -112,11 +112,11 @@ static const ExifInfo
     { EXIFTAG_EXPOSUREPROGRAM, TIFF_SHORT, "exif:ExposureProgram" },
     { EXIFTAG_SPECTRALSENSITIVITY, TIFF_ASCII, "exif:SpectralSensitivity" },
     { EXIFTAG_ISOSPEEDRATINGS, TIFF_SHORT, "exif:ISOSpeedRatings" },
-    { EXIFTAG_OECF, TIFF_UNDEFINED, "exif:OptoelectricConversionFactor" },
-    { EXIFTAG_EXIFVERSION, TIFF_UNDEFINED, "exif:ExifVersion" },
+    { EXIFTAG_OECF, TIFF_NOTYPE, "exif:OptoelectricConversionFactor" },
+    { EXIFTAG_EXIFVERSION, TIFF_NOTYPE, "exif:ExifVersion" },
     { EXIFTAG_DATETIMEORIGINAL, TIFF_ASCII, "exif:DateTimeOriginal" },
     { EXIFTAG_DATETIMEDIGITIZED, TIFF_ASCII, "exif:DateTimeDigitized" },
-    { EXIFTAG_COMPONENTSCONFIGURATION, TIFF_UNDEFINED, "exif:ComponentsConfiguration" },
+    { EXIFTAG_COMPONENTSCONFIGURATION, TIFF_NOTYPE, "exif:ComponentsConfiguration" },
     { EXIFTAG_COMPRESSEDBITSPERPIXEL, TIFF_RATIONAL, "exif:CompressedBitsPerPixel" },
     { EXIFTAG_SHUTTERSPEEDVALUE, TIFF_SRATIONAL, "exif:ShutterSpeedValue" },
     { EXIFTAG_APERTUREVALUE, TIFF_RATIONAL, "exif:ApertureValue" },
@@ -128,29 +128,29 @@ static const ExifInfo
     { EXIFTAG_LIGHTSOURCE, TIFF_SHORT, "exif:LightSource" },
     { EXIFTAG_FLASH, TIFF_SHORT, "exif:Flash" },
     { EXIFTAG_FOCALLENGTH, TIFF_RATIONAL, "exif:FocalLength" },
-    /* { EXIFTAG_SUBJECTAREA, TIFF_SHORT, "exif:SubjectArea" }, */
-    { EXIFTAG_MAKERNOTE, TIFF_UNDEFINED, "exif:MakerNote" },
-    { EXIFTAG_USERCOMMENT, TIFF_UNDEFINED, "exif:UserComment" },
+    { EXIFTAG_SUBJECTAREA, TIFF_NOTYPE, "exif:SubjectArea" },
+    { EXIFTAG_MAKERNOTE, TIFF_NOTYPE, "exif:MakerNote" },
+    { EXIFTAG_USERCOMMENT, TIFF_NOTYPE, "exif:UserComment" },
     { EXIFTAG_SUBSECTIME, TIFF_ASCII, "exif:SubSecTime" },
     { EXIFTAG_SUBSECTIMEORIGINAL, TIFF_ASCII, "exif:SubSecTimeOriginal" },
     { EXIFTAG_SUBSECTIMEDIGITIZED, TIFF_ASCII, "exif:SubSecTimeDigitized" },
-    { EXIFTAG_FLASHPIXVERSION, TIFF_UNDEFINED, "exif:FlashpixVersion" },
+    { EXIFTAG_FLASHPIXVERSION, TIFF_NOTYPE, "exif:FlashpixVersion" },
     { EXIFTAG_PIXELXDIMENSION, TIFF_LONG, "exif:PixelXDimension" },
     { EXIFTAG_PIXELXDIMENSION, TIFF_SHORT, "exif:PixelXDimension" },
     { EXIFTAG_PIXELYDIMENSION, TIFF_LONG, "exif:PixelYDimension" },
     { EXIFTAG_PIXELYDIMENSION, TIFF_SHORT, "exif:PixelYDimension" },
     { EXIFTAG_RELATEDSOUNDFILE, TIFF_ASCII, "exif:RelatedSoundFile" },
     { EXIFTAG_FLASHENERGY, TIFF_RATIONAL, "exif:FlashEnergy" },
-    { EXIFTAG_SPATIALFREQUENCYRESPONSE, TIFF_UNDEFINED, "exif:SpatialFrequencyResponse" },
+    { EXIFTAG_SPATIALFREQUENCYRESPONSE, TIFF_NOTYPE, "exif:SpatialFrequencyResponse" },
     { EXIFTAG_FOCALPLANEXRESOLUTION, TIFF_RATIONAL, "exif:FocalPlaneXResolution" },
     { EXIFTAG_FOCALPLANEYRESOLUTION, TIFF_RATIONAL, "exif:FocalPlaneYResolution" },
     { EXIFTAG_FOCALPLANERESOLUTIONUNIT, TIFF_SHORT, "exif:FocalPlaneResolutionUnit" },
     { EXIFTAG_SUBJECTLOCATION, TIFF_SHORT, "exif:SubjectLocation" },
     { EXIFTAG_EXPOSUREINDEX, TIFF_RATIONAL, "exif:ExposureIndex" },
     { EXIFTAG_SENSINGMETHOD, TIFF_SHORT, "exif:SensingMethod" },
-    { EXIFTAG_FILESOURCE, TIFF_UNDEFINED, "exif:FileSource" },
-    { EXIFTAG_SCENETYPE, TIFF_UNDEFINED, "exif:SceneType" },
-    { EXIFTAG_CFAPATTERN, TIFF_UNDEFINED, "exif:CFAPattern" },
+    { EXIFTAG_FILESOURCE, TIFF_NOTYPE, "exif:FileSource" },
+    { EXIFTAG_SCENETYPE, TIFF_NOTYPE, "exif:SceneType" },
+    { EXIFTAG_CFAPATTERN, TIFF_NOTYPE, "exif:CFAPattern" },
     { EXIFTAG_CUSTOMRENDERED, TIFF_SHORT, "exif:CustomRendered" },
     { EXIFTAG_EXPOSUREMODE, TIFF_SHORT, "exif:ExposureMode" },
     { EXIFTAG_WHITEBALANCE, TIFF_SHORT, "exif:WhiteBalance" },
@@ -161,7 +161,7 @@ static const ExifInfo
     { EXIFTAG_CONTRAST, TIFF_SHORT, "exif:Contrast" },
     { EXIFTAG_SATURATION, TIFF_SHORT, "exif:Saturation" },
     { EXIFTAG_SHARPNESS, TIFF_SHORT, "exif:Sharpness" },
-    { EXIFTAG_DEVICESETTINGDESCRIPTION, TIFF_UNDEFINED, "exif:DeviceSettingDescription" },
+    { EXIFTAG_DEVICESETTINGDESCRIPTION, TIFF_NOTYPE, "exif:DeviceSettingDescription" },
     { EXIFTAG_SUBJECTDISTANCERANGE, TIFF_SHORT, "exif:SubjectDistanceRange" },
     { EXIFTAG_IMAGEUNIQUEID, TIFF_ASCII, "exif:ImageUniqueID" },
     { 0, 0, (char *) NULL }
@@ -579,6 +579,9 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
   uint32
     offset;
 
+  void
+    *sans;
+
   /*
     Read EXIF properties.
   */
@@ -587,6 +590,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
   directory=TIFFCurrentDirectory(tiff);
   if (TIFFReadEXIFDirectory(tiff,offset) == 0)
     return;
+  sans=NULL;
   for (i=0; exif_info[i].tag != 0; i++)
   {
     *value='\0';
@@ -597,36 +601,38 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
         char
           *ascii;
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&ascii) != 0)
+        ascii=(char *) NULL;
+        if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans) != 0) &&
+            (ascii != (char *) NULL) && (*ascii != '\0'))
           (void) CopyMagickMemory(value,ascii,MaxTextExtent);
         break;
       }
       case TIFF_SHORT:
       {
         uint16
-          shorty;
+          shorty[2] = { 0, 0};
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&shorty) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",shorty);
+        if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",(int) shorty[0]);
         break;
       }
       case TIFF_LONG:
       {
         uint32
-          ssize_ty;
+          longy;
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&ssize_ty) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%d",ssize_ty);
+        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
         break;
       }
       case TIFF_RATIONAL:
       case TIFF_SRATIONAL:
       {
         float
-          rational;
+          rational[16];
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&rational) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",rational);
+        if (TIFFGetField(tiff,exif_info[i].tag,&rational,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",rational[0]);
         break;
       }
       default:
@@ -985,10 +991,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
     TIFFGetProperties(tiff,image);
-    option=GetImageOption(image_info,"tiff:exif");
-    if ((option != (const char *) NULL) &&
-        (IsMagickTrue(option) != MagickFalse))
-      TIFFGetEXIFProperties(tiff,image);
+    TIFFGetEXIFProperties(tiff,image);
     TIFFGetProfiles(tiff,image);
     /*
       Allocate memory for the image and pixel buffer.
