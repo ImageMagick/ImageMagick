@@ -782,7 +782,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     *buffer;
 
   /*
-    Return if destination file already exists and is not empty.
+    Return if destination file already exists.
   */
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
