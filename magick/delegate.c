@@ -787,7 +787,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
   status=GetPathAttributes(destination,&attributes);
-  if ((status != MagickFalse) && (attributes.st_size != 0))
+  if (status != MagickFalse)
     return(MagickTrue);
   /*
     Copy source file to destination.
@@ -903,8 +903,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         }
       image_info->temporary=MagickTrue;
     }
-  if ((delegate_info->mode != 0) &&
-      (((decode != (const char *) NULL) &&
+  if ((delegate_info->mode != 0) && (((decode != (const char *) NULL) &&
         (delegate_info->encode != (char *) NULL)) ||
        ((encode != (const char *) NULL) &&
         (delegate_info->decode != (char *) NULL))))
