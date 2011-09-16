@@ -7209,8 +7209,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XSaveImage(display,resource_info,windows,*image,exception);
       if (status == MagickFalse)
         {
-          XNoticeWidget(display,windows,"Unable to write X image:",
-            (*image)->filename);
+          char
+            message[MaxTextExtent];
+
+          (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",
+            exception->reason != (char *) NULL ? exception->reason : "",
+            exception->description != (char *) NULL ? exception->description :
+            "");
+          XNoticeWidget(display,windows,"Unable to save file:",message);
           break;
         }
       break;
@@ -7223,8 +7229,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XPrintImage(display,resource_info,windows,*image,exception);
       if (status == MagickFalse)
         {
-          XNoticeWidget(display,windows,"Unable to print X image:",
-            (*image)->filename);
+          char
+            message[MaxTextExtent];
+
+          (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",
+            exception->reason != (char *) NULL ? exception->reason : "",
+            exception->description != (char *) NULL ? exception->description :
+            "");
+          XNoticeWidget(display,windows,"Unable to print file:",message);
           break;
         }
       break;
