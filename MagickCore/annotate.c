@@ -1349,6 +1349,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       continue;
     bitmap=(FT_BitmapGlyph) glyph.image;
     point.x=offset->x+bitmap->left;
+    if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+      point.x=offset->x+(origin.x >> 6);
     point.y=offset->y-bitmap->top;
     if (draw_info->render != MagickFalse)
       {
@@ -1358,11 +1360,15 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         MagickBooleanType
           status;
 
+        register unsigned char
+          *p;
+
         /*
           Rasterize the glyph.
         */
         status=MagickTrue;
         image_view=AcquireCacheView(image);
+        p=bitmap->bitmap.buffer;
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
           MagickBooleanType
@@ -1381,10 +1387,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           register ssize_t
             x;
 
-          register unsigned char
-            *p;
-
           ssize_t
+            n,
             x_offset,
             y_offset;
 
@@ -1403,18 +1407,20 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 bitmap->bitmap.width,1,exception);
               active=q != (Quantum *) NULL ? MagickTrue : MagickFalse;
             }
-          p=bitmap->bitmap.buffer+y*bitmap->bitmap.width;
-          for (x=0; x < (ssize_t) bitmap->bitmap.width; x++)
+          n=y*bitmap->bitmap.pitch;
+          for (x=0; x < (ssize_t) bitmap->bitmap.width; x++, n++)
           {
             x_offset++;
-            if ((*p == 0) || (x_offset < 0) ||
-                (x_offset >= (ssize_t) image->columns))
+            if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
               {
-                p++;
                 q+=GetPixelChannels(image);
                 continue;
               }
-            fill_opacity=(MagickRealType) (*p)/(bitmap->bitmap.num_grays-1);
+            if (bitmap->bitmap.pixel_mode != ft_pixel_mode_mono)
+              fill_opacity=(MagickRealType) (p[n])/(bitmap->bitmap.num_grays-1);
+            else
+              fill_opacity=((p[(x >> 3)+y*bitmap->bitmap.pitch] &
+                (1 << (~x & 0x07)))) == 0 ? 0.0 : 1.0;
             if (draw_info->text_antialias == MagickFalse)
               fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
             if (active == MagickFalse)
@@ -1422,7 +1428,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 exception);
             if (q == (Quantum *) NULL)
               {
-                p++;
                 q+=GetPixelChannels(image);
                 continue;
               }
@@ -1436,7 +1441,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 if (sync == MagickFalse)
                   status=MagickFalse;
               }
-            p++;
             q+=GetPixelChannels(image);
           }
           sync=SyncCacheViewAuthenticPixels(image_view,exception);
