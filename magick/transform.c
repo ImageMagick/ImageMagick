@@ -715,12 +715,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CropImageToTiles() will crop a single image, into a possible list of tiles.
+%  CropImageToTiles() crops a single image, into a possible list of tiles.
 %  This may include a single sub-region of the image.  This basically applies
 %  all the normal geometry flags for Crop.
 %
-%      Image *CropImageToTiles(const Image *image,const RectangleInfo
-%         *crop_geometry, ExceptionInfo *exception)
+%      Image *CropImageToTiles(const Image *image,
+%        const RectangleInfo *crop_geometry, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -758,7 +758,6 @@ MagickExport Image *CropImageToTiles(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-
   crop_image=NewImageList();
   next=NewImageList();
   flags=ParseGravityGeometry(image,crop_geometry,&geometry,exception);
@@ -794,8 +793,8 @@ MagickExport Image *CropImageToTiles(const Image *image,
           width+=(geometry.x < 0 ? -1 : 1)*geometry.x;
           height+=(geometry.y < 0 ? -1 : 1)*geometry.y;
         }
-      delta.x=(double) width/geometry.width;
-      delta.y=(double) height/geometry.height;
+      delta.x=(double) (width+geometry.width >> 1)/geometry.width;
+      delta.y=(double) (height+geometry.height >> 1)/geometry.height;
       for (offset.y=0; offset.y < (double) height; )
       {
         if ((flags & AspectValue) == 0)
@@ -847,7 +846,6 @@ MagickExport Image *CropImageToTiles(const Image *image,
       ClearMagickException(exception);
       return(crop_image);
     }
-
   if (((geometry.width == 0) && (geometry.height == 0)) ||
       ((flags & XValue) != 0) || ((flags & YValue) != 0))
     {
