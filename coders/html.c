@@ -260,7 +260,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         Extract URL base from filename.
       */
       p=strrchr(image->filename,'/');
-      if (p)
+      if (p != (char *) NULL)
         {
           p++;
           (void) CopyMagickString(url,image_info->magick,MaxTextExtent);
@@ -292,8 +292,6 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         Open output image file.
       */
       assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       /*
