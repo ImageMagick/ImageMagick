@@ -540,8 +540,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XSaveImage(display,resource_info,windows,*image);
       if (status == MagickFalse)
         {
-          XNoticeWidget(display,windows,"Unable to write X image:",
-            (*image)->filename);
+          char
+            message[MaxTextExtent];
+
+          (void) FormatLocaleString(message,MaxTextExtent,"%s:%s",
+            (*image)->exception.reason != (char *) NULL ?
+            (*image)->exception.reason : "",
+            (*image)->exception.description != (char *) NULL ?
+            (*image)->exception.description : "");
+          XNoticeWidget(display,windows,"Unable to save file:",message);
           break;
         }
       break;

@@ -151,6 +151,17 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToInitializeSemaphore");
       }
+#if defined(MAGICKCORE_DEBUG)
+#if defined(PTHREAD_MUTEX_ERRORCHECK)
+    status=pthread_mutex_settype(&mutex_info,PTHREAD_MUTEX_ERRORCHECK);
+    if (status != 0)
+      {
+        errno=status;
+        ThrowFatalException(ResourceLimitFatalError,
+          "UnableToInitializeSemaphore");
+      }
+#endif
+#endif
     status=pthread_mutex_init(&semaphore_info->mutex,&mutex_info);
     if (status != 0)
       {
