@@ -536,15 +536,26 @@ MagickExport Image *AppendImages(const Image *images,
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelRed(append_image,GetPixelRed(image,p),q);
-        SetPixelGreen(append_image,GetPixelGreen(image,p),q);
-        SetPixelBlue(append_image,GetPixelBlue(image,p),q);
-        if ((image->colorspace == CMYKColorspace) &&
-            (append_image->colorspace == CMYKColorspace))
-          SetPixelBlack(append_image,GetPixelBlack(image,p),q);
-        SetPixelAlpha(append_image,OpaqueAlpha,q);
-        if (image->matte != MagickFalse)
-          SetPixelAlpha(append_image,GetPixelAlpha(image,p),q);
+        register ssize_t
+          i;
+
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        {
+          PixelChannel
+            channel;
+
+          PixelTrait
+            append_traits,
+            traits;
+
+          traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+          channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+          append_traits=GetPixelChannelMapTraits(append_image,channel);
+          if ((traits == UndefinedPixelTrait) ||
+              (append_traits == UndefinedPixelTrait))
+            continue;
+          q[channel]=p[i];
+        }
         p+=GetPixelChannels(image);
         q+=GetPixelChannels(append_image);
       }
@@ -1005,15 +1016,20 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline size_t MagickMin(const size_t x,const size_t y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
 {
 #define CombineImageTag  "Combine/Image"
 
   CacheView
     *combine_view;
-
-  const Image
-    *next;
 
   Image
     *combine_image;
@@ -1036,11 +1052,6 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
-  {
-    if ((next->columns != image->columns) || (next->rows != image->rows))
-      ThrowImageException(OptionError,"ImagesAreNotTheSameSize");
-  }
   combine_image=CloneImage(image,0,0,MagickTrue,exception);
   if (combine_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1051,7 +1062,6 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
     }
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
     combine_image->matte=MagickTrue;
-  (void) SetImageBackgroundColor(combine_image);
   /*
     Combine images.
   */
@@ -1076,7 +1086,7 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
       *restrict q;
 
     register ssize_t
-      x;
+      i;
 
     if (status == MagickFalse)
       continue;
@@ -1088,103 +1098,55 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
         continue;
       }
     next=image;
-    if (((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) &&
-        (next != (Image *) NULL))
-      {
-        image_view=AcquireCacheView(next);
-        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          continue;
-        q=pixels;
-        for (x=0; x < (ssize_t) combine_image->columns; x++)
-        {
-          SetPixelRed(image,GetPixelIntensity(image,p),q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(combine_image);
-        }
-        image_view=DestroyCacheView(image_view);
-        next=GetNextImageInList(next);
-      }
-    if (((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) &&
-        (next != (Image *) NULL))
-      {
-        image_view=AcquireCacheView(next);
-        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          continue;
-        q=pixels;
-        for (x=0; x < (ssize_t) combine_image->columns; x++)
-        {
-          SetPixelGreen(image,GetPixelIntensity(image,p),q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(combine_image);
-        }
-        image_view=DestroyCacheView(image_view);
-        next=GetNextImageInList(next);
-      }
-    if (((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) &&
-        (next != (Image *) NULL))
-      {
-        image_view=AcquireCacheView(next);
-        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          continue;
-        q=pixels;
-        for (x=0; x < (ssize_t) combine_image->columns; x++)
-        {
-          SetPixelBlue(image,GetPixelIntensity(image,p),q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(combine_image);
-        }
-        image_view=DestroyCacheView(image_view);
-        next=GetNextImageInList(next);
-      }
-    if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-        (image->colorspace == CMYKColorspace) && (next != (Image *) NULL))
-      {
-        image_view=AcquireCacheView(next);
-        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          continue;
-        q=pixels;
-        for (x=0; x < (ssize_t) combine_image->columns; x++)
-        {
-          SetPixelBlack(image,GetPixelIntensity(image,p),q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(combine_image);
-        }
-        image_view=DestroyCacheView(image_view);
-        next=GetNextImageInList(next);
-      }
-    if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-        (next != (Image *) NULL))
-      {
-        image_view=AcquireCacheView(next);
-        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          continue;
-        q=pixels;
-        for (x=0; x < (ssize_t) combine_image->columns; x++)
-        {
-          SetPixelAlpha(image,GetPixelIntensity(image,p),q);
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(combine_image);
-        }
-        image_view=DestroyCacheView(image_view);
-        next=GetNextImageInList(next);
-      }
-    if (SyncCacheViewAuthenticPixels(combine_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
+    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    {
+      PixelChannel
+        channel;
 
-        proceed=SetImageProgress(image,CombineImageTag,progress++,
-          combine_image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
+      PixelTrait
+        combine_traits,
+        traits;
+
+      register ssize_t
+        x;
+
+      if (next == (Image *) NULL)
+        continue;
+      traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+      channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+      combine_traits=GetPixelChannelMapTraits(combine_image,channel);
+      if ((traits == UndefinedPixelTrait) ||
+          (combine_traits == UndefinedPixelTrait))
+        continue;
+      image_view=AcquireCacheView(next);
+      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+      if (p == (const Quantum *) NULL)
+        continue;
+      q=pixels;
+      for (x=0; x < (ssize_t) combine_image->columns; x++)
+      {
+        if (x < (ssize_t) image->columns)
+          {
+            q[i]=p[i];
+            p+=GetPixelChannels(image);
+          }
+        q+=GetPixelChannels(combine_image);
       }
+      image_view=DestroyCacheView(image_view);
+      next=GetNextImageInList(next);
+      if (SyncCacheViewAuthenticPixels(combine_view,exception) == MagickFalse)
+        status=MagickFalse;
+      if (image->progress_monitor != (MagickProgressMonitor) NULL)
+        {
+          MagickBooleanType
+            proceed;
+
+          proceed=SetImageProgress(image,CombineImageTag,progress++,
+            combine_image->rows);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
+        }
+    }
   }
   combine_view=DestroyCacheView(combine_view);
   if (status == MagickFalse)
@@ -1871,9 +1833,6 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
   MagickBooleanType
     status;
 
-  PixelInfo
-    zero;
-
   ssize_t
     y;
 
@@ -1909,29 +1868,28 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfo(image,p,&pixel);
-      if ((pixel.red < 0.0) || (pixel.red > QuantumRange) ||
-          (pixel.red != (QuantumAny) pixel.red))
-        break;
-      if ((pixel.green < 0.0) || (pixel.green > QuantumRange) ||
-          (pixel.green != (QuantumAny) pixel.green))
-        break;
-      if ((pixel.blue < 0.0) || (pixel.blue > QuantumRange) ||
-          (pixel.blue != (QuantumAny) pixel.blue))
-        break;
-      if (pixel.colorspace == CMYKColorspace)
-        {
-          if ((pixel.black < 0.0) || (pixel.black > QuantumRange) ||
-              (pixel.black != (QuantumAny) pixel.black))
-            break;
-        }
-      if (pixel.matte != MagickFalse)
-        {
-          if ((pixel.alpha < 0.0) || (pixel.alpha > QuantumRange) ||
-              (pixel.alpha != (QuantumAny) pixel.alpha))
-            break;
-        }
+      PixelTrait
+        traits;
+
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          pixel;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        pixel=(MagickRealType) p[i]; 
+        if ((pixel < 0.0) || (pixel > QuantumRange) ||
+            (pixel != (QuantumAny) pixel))
+          break;
+      }
       p+=GetPixelChannels(image);
+      if (i < (ssize_t) GetPixelChannels(image))
+        status=MagickFalse;
     }
     if (x < (ssize_t) image->columns)
       status=MagickFalse;
@@ -2092,8 +2050,7 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %  The format of the NewMagickImage method is:
 %
 %      Image *NewMagickImage(const ImageInfo *image_info,
-%        const size_t width,const size_t height,
-%        const PixelInfo *background)
+%        const size_t width,const size_t height,const PixelInfo *background)
 %
 %  A description of each parameter follows:
 %
@@ -2107,8 +2064,7 @@ MagickExport MagickBooleanType ModifyImage(Image **image,
 %
 */
 MagickExport Image *NewMagickImage(const ImageInfo *image_info,
-  const size_t width,const size_t height,
-  const PixelInfo *background)
+  const size_t width,const size_t height,const PixelInfo *background)
 {
   CacheView
     *image_view;
@@ -2119,11 +2075,11 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
+
+  ssize_t
+    y;
 
   assert(image_info != (const ImageInfo *) NULL);
   if (image_info->debug != MagickFalse)
