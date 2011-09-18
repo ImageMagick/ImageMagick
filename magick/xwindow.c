@@ -342,8 +342,8 @@ MagickExport void DestroyXResources(void)
               segment_info[0].shmid=(-1);
             }
 #endif
-        magick_windows[i]->segment_info=(void *)
-          RelinquishMagickMemory(magick_windows[i]->segment_info);
+        magick_windows[i]->segment_info=(void *) RelinquishMagickMemory(
+          magick_windows[i]->segment_info);
       }
   }
   windows->icon_resources=(XResourceInfo *)
