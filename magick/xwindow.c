@@ -379,6 +379,12 @@ MagickExport void DestroyXResources(void)
     }
   if (windows->class_hints != (XClassHint *) NULL)
     {
+      if (windows->class_hints->res_name != (char *) NULL)
+        windows->class_hints->res_name=DestroyString(
+          windows->class_hints->res_name);
+      if (windows->class_hints->res_class != (char *) NULL)
+        windows->class_hints->res_class=DestroyString(
+          windows->class_hints->res_class);
       XFree(windows->class_hints);
       windows->class_hints=(XClassHint *) NULL;
     }
