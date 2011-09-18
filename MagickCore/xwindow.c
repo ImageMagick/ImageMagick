@@ -2493,7 +2493,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
             Set this pixel to the background color.
           */
           SetPixelPacket(draw_image,&draw_image->background_color,q);
-          SetPixelAlpha(draw_image,(Quantum) (draw_info->stencil == 
+          SetPixelAlpha(draw_image,(Quantum) (draw_info->stencil ==
             OpaqueStencil ? TransparentAlpha : OpaqueAlpha),q);
         }
       else
