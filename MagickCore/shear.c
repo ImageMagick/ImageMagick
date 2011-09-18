@@ -1081,9 +1081,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 90 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,1) shared(progress, status) omp_throttle(1)
-#endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
@@ -1122,6 +1119,9 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               status=MagickFalse;
               break;
             }
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+          #pragma omp parallel for schedule(static,1) shared(progress, status)
+#endif
           for (y=0; y < (ssize_t) width; y++)
           {
             register const Quantum
@@ -1130,13 +1130,15 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             register ssize_t
               x;
 
+            if (status == MagickFalse)
+              continue;
             q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
               (rotate_image->columns-(tile_y+height)),y+tile_x,height,1,
               exception);
             if (q == (Quantum *) NULL)
               {
                 status=MagickFalse;
-                break;
+                continue;
               }
             tile_pixels=p+((height-1)*width+y)*GetPixelChannels(image);
             for (x=0; x < (ssize_t) height; x++)
@@ -1199,7 +1201,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 180 degrees.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,8) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1289,9 +1291,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 270 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,1) shared(progress,status) omp_throttle(1)
-#endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
@@ -1330,6 +1329,9 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               status=MagickFalse;
               break;
             }
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+          #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
           for (y=0; y < (ssize_t) width; y++)
           {
             register const Quantum
@@ -1338,12 +1340,14 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             register ssize_t
               x;
 
+            if (status == MagickFalse)
+              continue;
             q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(ssize_t) (y+
               rotate_image->rows-(tile_x+width)),height,1,exception);
             if (q == (Quantum *) NULL)
               {
                 status=MagickFalse;
-                break;
+                continue;
               }
             tile_pixels=p+((width-1)-y)*GetPixelChannels(image);
             for (x=0; x < (ssize_t) height; x++)
