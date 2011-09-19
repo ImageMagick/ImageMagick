@@ -289,29 +289,6 @@ static inline MagickBooleanType IsPixelGray(const Image *image,
 static inline MagickBooleanType IsPixelInfoEquivalent(const PixelInfo *p,
   const PixelInfo *q)
 {
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
-      (p->alpha != OpaqueAlpha))
-    return(MagickFalse);
-  if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
-      (q->alpha != OpaqueAlpha))
-    return(MagickFalse);
-  if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
-    {
-      if (p->alpha != q->alpha)
-        return(MagickFalse);
-      if (p->alpha == TransparentAlpha)
-        return(MagickTrue);
-    }
-  if (p->red != q->red)
-    return(MagickFalse);
-  if (p->green != q->green)
-    return(MagickFalse);
-  if (p->blue != q->blue)
-    return(MagickFalse);
-  if ((p->colorspace == CMYKColorspace) && (p->black != q->black))
-    return(MagickFalse);
-#else
   if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
       (fabs(p->alpha-OpaqueAlpha) > 0.5))
     return(MagickFalse);
@@ -333,7 +310,6 @@ static inline MagickBooleanType IsPixelInfoEquivalent(const PixelInfo *p,
     return(MagickFalse);
   if ((p->colorspace == CMYKColorspace) && (fabs(p->black-q->black) > 0.5))
     return(MagickFalse);
-#endif
   return(MagickTrue);
 }
 
