@@ -424,7 +424,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create colormap.
       */
-      if (AcquireImageColormap(image,(size_t) visual_info->colormap_size) == MagickFalse)
+      if (AcquireImageColormap(image,(size_t) visual_info->colormap_size,exception) == MagickFalse)
         {
           image=DestroyImage(image);
           colors=(XColor *) RelinquishMagickMemory(colors);
