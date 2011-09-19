@@ -140,7 +140,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
-    channel_mask=SetPixelChannelMask(image,(ChannelType) i);
+    channel_mask=SetPixelChannelMask(image,(ChannelType) (1 << i));
     status=GetImageMean(image,&mean,&sans,exception);
     gamma=log(mean*QuantumScale)/log_mean;
     status&=LevelImage(image,0.0,(double) QuantumRange,gamma,exception);

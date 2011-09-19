@@ -418,13 +418,17 @@ static inline MagickBooleanType IsPixelPacketMonochrome(
 static inline void SetPacketPixelInfo(const Image *image,
   const PixelInfo *pixel_info,PixelPacket *packet)
 {
-  packet->red=ClampToQuantum(pixel_info->red);
-  packet->green=ClampToQuantum(pixel_info->green);
-  packet->blue=ClampToQuantum(pixel_info->blue);
-  packet->alpha=ClampToQuantum(pixel_info->alpha);
-  if (image->colorspace == CMYKColorspace)
+  if ((image->channel_map[RedPixelChannel].traits & UpdatePixelTrait) != 0)
+    packet->red=ClampToQuantum(pixel_info->red);
+  if ((image->channel_map[GreenPixelChannel].traits & UpdatePixelTrait) != 0)
+    packet->green=ClampToQuantum(pixel_info->green);
+  if ((image->channel_map[BluePixelChannel].traits & UpdatePixelTrait) != 0)
+    packet->blue=ClampToQuantum(pixel_info->blue);
+  if ((image->channel_map[BlackPixelChannel].traits & UpdatePixelTrait) != 0)
     packet->black=ClampToQuantum(pixel_info->black);
-  if (image->storage_class == PseudoClass)
+  if ((image->channel_map[AlphaPixelChannel].traits & CopyPixelTrait) != 0)
+    packet->alpha=ClampToQuantum(pixel_info->alpha);
+  if ((image->channel_map[IndexPixelChannel].traits & CopyPixelTrait) != 0)
     packet->index=ClampToQuantum(pixel_info->index);
 }
 
@@ -554,13 +558,17 @@ static inline void SetPixelIndexTraits(Image *image,const PixelTrait traits)
 static inline void SetPixelInfo(const Image *image,const Quantum *pixel,
   PixelInfo *pixel_info)
 {
-  pixel_info->red=(MagickRealType) GetPixelRed(image,pixel);
-  pixel_info->green=(MagickRealType) GetPixelGreen(image,pixel);
-  pixel_info->blue=(MagickRealType) GetPixelBlue(image,pixel);
-  pixel_info->alpha=(MagickRealType) GetPixelAlpha(image,pixel);
-  if (image->colorspace == CMYKColorspace)
+  if ((image->channel_map[RedPixelChannel].traits & UpdatePixelTrait) != 0)
+    pixel_info->red=(MagickRealType) GetPixelRed(image,pixel);
+  if ((image->channel_map[GreenPixelChannel].traits & UpdatePixelTrait) != 0)
+    pixel_info->green=(MagickRealType) GetPixelGreen(image,pixel);
+  if ((image->channel_map[BluePixelChannel].traits & UpdatePixelTrait) != 0)
+    pixel_info->blue=(MagickRealType) GetPixelBlue(image,pixel);
+  if ((image->channel_map[BlackPixelChannel].traits & UpdatePixelTrait) != 0)
     pixel_info->black=(MagickRealType) GetPixelBlack(image,pixel);
-  if (image->storage_class == PseudoClass)
+  if ((image->channel_map[AlphaPixelChannel].traits & CopyPixelTrait) != 0)
+    pixel_info->alpha=(MagickRealType) GetPixelAlpha(image,pixel);
+  if ((image->channel_map[IndexPixelChannel].traits & CopyPixelTrait) != 0)
     pixel_info->index=(MagickRealType) GetPixelIndex(image,pixel);
 }
 
@@ -592,8 +600,7 @@ static inline void SetPixelInfoPacket(const Image *image,
 static inline void SetPixelMagenta(const Image *image,const Quantum magenta,
   Quantum *pixel)
 {
-  pixel[image->channel_map[MagentaPixelChannel].channel]=
-    magenta;
+  pixel[image->channel_map[MagentaPixelChannel].channel]=magenta;
 }
 
 static inline void SetPixelMagentaTraits(Image *image,const PixelTrait traits)
@@ -638,7 +645,8 @@ static inline void SetPixelPixelInfo(const Image *image,
   SetPixelRed(image,ClampToQuantum(pixel_info->red),packet);
   SetPixelGreen(image,ClampToQuantum(pixel_info->green),packet);
   SetPixelBlue(image,ClampToQuantum(pixel_info->blue),packet);
-  SetPixelAlpha(image,ClampToQuantum(pixel_info->alpha),packet);
+  if (image->matte != MagickFalse)
+    SetPixelAlpha(image,ClampToQuantum(pixel_info->alpha),packet);
   if (image->colorspace == CMYKColorspace)
     SetPixelBlack(image,ClampToQuantum(pixel_info->black),packet);
 }
