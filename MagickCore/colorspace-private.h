@@ -34,7 +34,9 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
     magenta,
     yellow;
                                                                                 
-  if ((pixel->red == 0) && (pixel->green == 0) && (pixel->blue == 0))
+  if ((fabs(pixel->red) < MagickEpsilon) &&
+      (fabs(pixel->green) < MagickEpsilon) &&
+      (fabs(pixel->blue) < MagickEpsilon))
     {
       pixel->black=(MagickRealType) QuantumRange;
       return;

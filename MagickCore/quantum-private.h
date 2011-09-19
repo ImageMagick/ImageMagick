@@ -186,7 +186,7 @@ static inline void InitializeQuantumState(const QuantumInfo *quantum_info,
   quantum_state->minimum=quantum_info->minimum;
   quantum_state->scale=quantum_info->scale;
   quantum_state->inverse_scale=1.0;
-  if (quantum_state->scale != 0.0)
+  if (fabs(quantum_state->scale) >= MagickEpsilon)
     quantum_state->inverse_scale/=quantum_state->scale;
   quantum_state->pixel=0U;
   quantum_state->bits=0U;
