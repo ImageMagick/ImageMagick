@@ -1296,7 +1296,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       glyph.id=FT_Get_Char_Index(face,'?');
     if ((glyph.id != 0) && (last_glyph.id != 0))
       {
-        if (fabs(draw_info->kerning) >= MagickEpsilon)
+        if (draw_info->kerning != 0.0)
           origin.x+=(FT_Pos) (64.0*direction*draw_info->kerning);
         else
           if (FT_HAS_KERNING(face))
@@ -1322,13 +1322,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (status != 0)
       continue;
     if ((p == draw_info->text) || (bounds.xMin < metrics->bounds.x1))
-      metrics->bounds.x1=(MagickRealType) bounds.xMin;
+      metrics->bounds.x1=bounds.xMin;
     if ((p == draw_info->text) || (bounds.yMin < metrics->bounds.y1))
-      metrics->bounds.y1=(MagickRealType) bounds.yMin;
+      metrics->bounds.y1=bounds.yMin;
     if ((p == draw_info->text) || (bounds.xMax > metrics->bounds.x2))
-      metrics->bounds.x2=(MagickRealType) bounds.xMax;
+      metrics->bounds.x2=bounds.xMax;
     if ((p == draw_info->text) || (bounds.yMax > metrics->bounds.y2))
-      metrics->bounds.y2=(MagickRealType) bounds.yMax;
+      metrics->bounds.y2=bounds.yMax;
     if (draw_info->render != MagickFalse)
       if ((draw_info->stroke.alpha != TransparentAlpha) ||
           (draw_info->stroke_pattern != (Image *) NULL))
@@ -1407,9 +1407,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 bitmap->bitmap.width,1,exception);
               active=q != (Quantum *) NULL ? MagickTrue : MagickFalse;
             }
-          n=y*bitmap->bitmap.pitch;
-          for (x=0; x < (ssize_t) bitmap->bitmap.width; x++, n++)
+          n=y*bitmap->bitmap.pitch-1;
+          for (x=0; x < (ssize_t) bitmap->bitmap.width; x++)
           {
+            n++;
             x_offset++;
             if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
               {
@@ -1451,14 +1452,14 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       }
     if ((bitmap->left+bitmap->bitmap.width) > metrics->width)
       metrics->width=bitmap->left+bitmap->bitmap.width;
-    if ((fabs(draw_info->interword_spacing) >= MagickEpsilon) &&
+    if ((draw_info->interword_spacing != 0.0) &&
         (IsUTFSpace(GetUTFCode(p)) != MagickFalse) &&
         (IsUTFSpace(code) == MagickFalse))
       origin.x+=(FT_Pos) (64.0*direction*draw_info->interword_spacing);
     else
       origin.x+=(FT_Pos) (direction*face->glyph->advance.x);
-    metrics->origin.x=(MagickRealType) origin.x;
-    metrics->origin.y=(MagickRealType) origin.y;
+    metrics->origin.x=origin.x;
+    metrics->origin.y=origin.y;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
@@ -1669,9 +1670,9 @@ static MagickBooleanType RenderPostscript(Image *image,
   /*
     Sample to compute bounding box.
   */
-  identity=(fabs(draw_info->affine.sx-draw_info->affine.sy) < MagickEpsilon) &&
-    (fabs(draw_info->affine.rx) < MagickEpsilon) &&
-    (fabs(draw_info->affine.ry) < MagickEpsilon) ?  MagickTrue : MagickFalse;
+  identity=(draw_info->affine.sx == draw_info->affine.sy) &&
+    (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0) ?
+    MagickTrue : MagickFalse;
   extent.x=0.0;
   extent.y=0.0;
   for (i=0; i <= (ssize_t) (strlen(draw_info->text)+2); i++)
@@ -2039,13 +2040,12 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
   */
   width=annotate_info.width;
   height=annotate_info.height;
-  if ((fabs(draw_info->affine.rx) >= MagickEpsilon) ||
-      (fabs(draw_info->affine.ry) >= MagickEpsilon))
+  if ((draw_info->affine.rx != 0.0) || (draw_info->affine.ry != 0.0))
     {
-      if ((fabs(draw_info->affine.sx-draw_info->affine.sy) < MagickEpsilon) &&
-          (fabs(draw_info->affine.rx+draw_info->affine.ry) < MagickEpsilon))
-        annotate_info.degrees=(MagickRealType) ((180.0/MagickPI)*
-          atan2(draw_info->affine.rx,draw_info->affine.sx));
+      if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
+          ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))
+        annotate_info.degrees=(180.0/MagickPI)*
+          atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
   (void) FormatLocaleString(annotate_info.geometry,MaxTextExtent,
     "%.20gx%.20g%+.20g%+.20g",(double) width,(double) height,
