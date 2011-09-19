@@ -1882,7 +1882,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
         if (traits == UndefinedPixelTrait)
           continue;
-        pixel=(MagickRealType) p[i]; 
+        pixel=(MagickRealType) p[i];
         if ((pixel < 0.0) || (pixel > QuantumRange) ||
             (pixel != (QuantumAny) pixel))
           break;
@@ -2310,35 +2310,24 @@ MagickExport MagickBooleanType SeparateImage(Image *image)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        {
-          SetPixelGreen(image,GetPixelRed(image,q),q);
-          SetPixelBlue(image,GetPixelRed(image,q),q);
-        }
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        {
-          SetPixelRed(image,GetPixelGreen(image,q),q);
-          SetPixelBlue(image,GetPixelGreen(image,q),q);
-        }
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        {
-          SetPixelRed(image,GetPixelBlue(image,q),q);
-          SetPixelGreen(image,GetPixelBlue(image,q),q);
-        }
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        {
-          SetPixelRed(image,GetPixelBlack(image,q),q);
-          SetPixelGreen(image,GetPixelBlack(image,q),q);
-          SetPixelBlue(image,GetPixelBlack(image,q),q);
-        }
-      if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->matte != MagickFalse))
-        {
-          SetPixelRed(image,GetPixelAlpha(image,q),q);
-          SetPixelGreen(image,GetPixelAlpha(image,q),q);
-          SetPixelBlue(image,GetPixelAlpha(image,q),q);
-        }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        register ssize_t
+          j;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) != 0)
+          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+            q[j]=q[i];
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2396,52 +2385,35 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     *images,
     *separate_image;
 
+  register ssize_t
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   images=NewImageList();
-  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-    {
-      separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      channel_mask=SetPixelChannelMask(separate_image,RedChannel);
-      (void) SeparateImage(separate_image);
-      (void) SetPixelChannelMap(separate_image,channel_mask);
-      AppendImageToList(&images,separate_image);
-    }
-  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-    {
-      separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      channel_mask=SetPixelChannelMask(separate_image,GreenChannel);
-      (void) SeparateImage(separate_image);
-      (void) SetPixelChannelMap(separate_image,channel_mask);
-      AppendImageToList(&images,separate_image);
-    }
-  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-    {
-      separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      channel_mask=SetPixelChannelMask(separate_image,BlueChannel);
-      (void) SeparateImage(separate_image);
-      (void) SetPixelChannelMap(separate_image,channel_mask);
-      AppendImageToList(&images,separate_image);
-    }
-  if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->colorspace == CMYKColorspace))
-    {
-      separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      channel_mask=SetPixelChannelMask(separate_image,BlackChannel);
-      (void) SeparateImage(separate_image);
-      (void) SetPixelChannelMap(separate_image,channel_mask);
-      AppendImageToList(&images,separate_image);
-    }
-  if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-    {
-      separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      channel_mask=SetPixelChannelMask(separate_image,AlphaChannel);
-      (void) SeparateImage(separate_image);
-      (void) SetPixelChannelMap(separate_image,channel_mask);
-      AppendImageToList(&images,separate_image);
-    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelTrait
+      traits;
+
+    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    if (traits == UndefinedPixelTrait)
+      continue;
+    if ((traits & UpdatePixelTrait) != 0)
+      {
+        separate_image=CloneImage(image,0,0,MagickTrue,exception);
+        if (separate_image != (Image *) NULL)
+          {
+            channel_mask=SetPixelChannelMask(separate_image,
+              (ChannelType) (1 << i));
+            (void) SeparateImage(separate_image);
+            (void) SetPixelChannelMap(separate_image,channel_mask);
+            AppendImageToList(&images,separate_image);
+          }
+      }
+  }
   return(images);
 }
 
@@ -2524,9 +2496,9 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         ConvertRGBToCMYK(&background);
       SetPacketPixelInfo(image,&background,&pixel);
       image_view=AcquireCacheView(image);
-      #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp parallel for schedule(dynamic,4) shared(status)
-      #endif
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(dynamic,4) shared(status)
+#endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         register Quantum
@@ -2547,13 +2519,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (GetPixelAlpha(image,q) == TransparentAlpha)
-            {
-              SetPixelRed(image,pixel.red,q);
-              SetPixelGreen(image,pixel.green,q);
-              SetPixelBlue(image,pixel.blue,q);
-              if (image->colorspace == CMYKColorspace)
-                SetPixelBlack(image,pixel.black,q);
-            }
+            SetPixelPixelInfo(image,&background,q);
           q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2712,16 +2678,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,ClampToQuantum(background.red),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,ClampToQuantum(background.green),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,ClampToQuantum(background.blue),q);
-      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlack(image,ClampToQuantum(background.black),q);
-      if ((GetPixelAlphaTraits(image) & CopyPixelTrait) != 0)
-        SetPixelAlpha(image,ClampToQuantum(background.alpha),q);
+      SetPixelPixelInfo(image,&background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
