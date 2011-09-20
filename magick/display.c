@@ -14578,7 +14578,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Window name is the base of the filename.
       */
       GetPathComponent(display_image->magick_filename,TailPath,filename);
-      if (GetImageListLength(display_image) == 1)
+      if (display_image->scene == 0)
         (void) FormatLocaleString(windows->image.name,MaxTextExtent,
           "%s: %s",MagickPackageName,filename);
       else
