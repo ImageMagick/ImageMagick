@@ -535,6 +535,9 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   const MagickBooleanType split,TypeMetric *metrics,char **caption)
 {
+  char
+    *text;
+
   MagickBooleanType
     status;
 
@@ -552,6 +555,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   ssize_t
     n;
 
+  text=AcquireString(draw_info->text);
   q=draw_info->text;
   s=(char *) NULL;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -567,8 +571,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     if (status == MagickFalse)
       break;
     width=(size_t) floor(metrics->width+0.5);
-    if (width <= image->columns)
+    if ((width <= image->columns) || (strcmp(text,draw_info->text) == 0))
       continue;
+    (void) strcpy(text,draw_info->text);
     if ((s != (char *) NULL) && (GetUTFOctets(s) == 1))
       {
         *s='\n';
@@ -595,6 +600,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     q=draw_info->text;
     s=(char *) NULL;
   }
+  text=DestroyString(text);
   n=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
     if (GetUTFCode(p) == '\n')
