@@ -667,6 +667,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           state|=ExitState;
         if (LocaleCompare(filename,"-") == 0)
           state|=ExitState;
+        RemoveAllImageStack();
         continue;
       }
     pend=image != (Image *) NULL ? MagickTrue : MagickFalse;
