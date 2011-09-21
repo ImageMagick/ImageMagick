@@ -60,7 +60,7 @@
 %
 */
 
-int MogrifyMain(int argc,char **argv)
+static int MogrifyMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;

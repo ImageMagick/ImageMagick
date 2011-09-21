@@ -64,7 +64,7 @@
 %
 */
 
-int ImportMain(int argc,char **argv)
+static int ImportMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;
