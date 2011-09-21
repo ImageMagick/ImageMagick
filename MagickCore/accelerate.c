@@ -396,7 +396,7 @@ static void DestroyConvolveBuffers(ConvolveInfo *convolve_info)
   cl_int
     status;
 
-  (void) status;
+  status=0;
   if (convolve_info->convolve_pixels != (cl_mem) NULL)
     status=clReleaseMemObject(convolve_info->convolve_pixels);
   if (convolve_info->pixels != (cl_mem) NULL)
@@ -410,7 +410,7 @@ static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
   cl_int
     status;
 
-  (void) status;
+  status=0;
   if (convolve_info->kernel != (cl_kernel) NULL)
     status=clReleaseKernel(convolve_info->kernel);
   if (convolve_info->program != (cl_program) NULL)

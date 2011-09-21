@@ -502,7 +502,7 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
   const CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(const CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->debug != MagickFalse)
@@ -2572,7 +2572,7 @@ MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
   MagickSizeType
     extent;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   extent=(MagickSizeType) nexus_info->region.width*nexus_info->region.height;
@@ -2613,7 +2613,7 @@ MagickPrivate void *GetPixelCacheNexusMetacontent(const Cache cache,
   CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
@@ -2653,7 +2653,7 @@ MagickPrivate Quantum *GetPixelCacheNexusPixels(const Cache cache,
   CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
