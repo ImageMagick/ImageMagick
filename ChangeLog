@@ -4,6 +4,7 @@
 2011-09-20  6.7.2-8 Cristy  <quetzlzacatenango@image...>
   * Prevent infinite loop when font is too large for specified width (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19502).
+  * Fix LFS cross-compile detection (patch from Mike Frysinger).
 
 2011-09-15  6.7.2-7 Cristy  <quetzlzacatenango@image...>
   * Convert empty .htm / .html file no longer removes source file.
