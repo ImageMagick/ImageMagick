@@ -8260,7 +8260,7 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
   */
   i=0;
   n=GetImageListLength(*images);
-  for (;;)
+  for ( ; ; )
   {
 #if 0
   (void) FormatLocaleFile(stderr,"mogrify %ld of %ld\n",(long)

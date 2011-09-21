@@ -425,7 +425,7 @@ static ssize_t WriteCALSRecord(Image *image,const char *data)
   if (i < 128)
     {
       i=128-i;
-      (void) ResetMagickMemory(pad,' ',(const size_t) i);
+      (void) ResetMagickMemory(pad,' ',(size_t) i);
       count=WriteBlob(image,(size_t) i,(const unsigned char *) pad);
     }
   return(count);

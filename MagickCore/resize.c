@@ -933,7 +933,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
     sigma=InterpretLocaleValue(artifact,(char **) NULL);  /* override sigma */
-  if (GaussianFilter != (FilterTypes) NULL)
+  if (GaussianFilter)
     {
       /*
         Define coefficents for Gaussian.

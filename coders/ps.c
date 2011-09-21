@@ -1044,7 +1044,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       q=PopHexPixel(hex_digits,ScaleQuantumToChar(pixel.green),q); \
       q=PopHexPixel(hex_digits,ScaleQuantumToChar(pixel.blue),q); \
     } \
-  q=PopHexPixel(hex_digits,(const size_t) MagickMin(length,0xff),q); \
+  q=PopHexPixel(hex_digits,(size_t) MagickMin(length,0xff),q); \
 }
 
   static const char
