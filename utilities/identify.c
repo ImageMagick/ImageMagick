@@ -59,7 +59,7 @@
 %
 */
 
-int IdentifyMain(int argc,char **argv)
+static int IdentifyMain(int argc,char **argv)
 {
   char
     *metadata;

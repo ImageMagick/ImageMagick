@@ -72,7 +72,7 @@
 %
 */
 
-int DisplayMain(int argc,char **argv)
+static int DisplayMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;

@@ -77,7 +77,7 @@
 %
 */
 
-int ConjureMain(int argc,char **argv)
+static int ConjureMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;
