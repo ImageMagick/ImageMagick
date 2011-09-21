@@ -3584,7 +3584,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5300
+MAGICK_SVN_REVISION=5362
 
 
 
@@ -9557,9 +9557,11 @@ fi
 
 LFS_CPPFLAGS=''
 if test "$enable_largefile" != no; then
-    if test "$ac_cv_sys_file_offset_bits" != 'no'; then
-        LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
-    else
+    case $ac_cv_sys_file_offset_bits in
+    no)
+        # nothing to do here as the host supports LFS fine
+        ;;
+    unknown)
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for native large file support" >&5
 $as_echo_n "checking for native large file support... " >&6; }
         if test "$cross_compiling" = yes; then :
@@ -9595,7 +9597,11 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-    fi
+        ;;
+    *)
+        LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+        ;;
+    esac
     if test "$ac_cv_sys_large_files" != 'no'; then
         LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
     fi
