@@ -403,6 +403,7 @@ static void DestroyConvolveBuffers(ConvolveInfo *convolve_info)
     status=clReleaseMemObject(convolve_info->pixels);
   if (convolve_info->filter != (cl_mem) NULL)
     status=clReleaseMemObject(convolve_info->filter);
+  (void) status;
 }
 
 static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
@@ -419,6 +420,7 @@ static ConvolveInfo *DestroyConvolveInfo(ConvolveInfo *convolve_info)
     status=clReleaseCommandQueue(convolve_info->command_queue);
   if (convolve_info->context != (cl_context) NULL)
     status=clReleaseContext(convolve_info->context);
+  (void) status;
   convolve_info=(ConvolveInfo *) RelinquishMagickMemory(convolve_info);
   return(convolve_info);
 }

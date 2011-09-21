@@ -235,25 +235,25 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       else
         {
           if (((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) &&
-              (GetPixelRed(image,p) != GetPixelRed(reconstruct_image,q)))
+              fabs(GetPixelRed(image,p)-GetPixelRed(reconstruct_image,q)) >= MagickEpsilon)
             difference=MagickTrue;
-          if (((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) &&
-              (GetPixelGreen(image,p) != GetPixelGreen(reconstruct_image,q)))
+          if (((GetPixelGreenTraits(image) & UpdatePixelTrait)-0) &&
+              fabs(GetPixelGreen(image,p)-GetPixelGreen(reconstruct_image,q)) >= MagickEpsilon)
             difference=MagickTrue;
-          if (((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) &&
-              (GetPixelBlue(image,p) != GetPixelBlue(reconstruct_image,q)))
+          if (((GetPixelBlueTraits(image) & UpdatePixelTrait)-0) &&
+              fabs(GetPixelBlue(image,p)-GetPixelBlue(reconstruct_image,q)) >= MagickEpsilon)
             difference=MagickTrue;
-          if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->matte != MagickFalse) &&
-              (GetPixelAlpha(image,p) != GetPixelAlpha(reconstruct_image,q)))
-            difference=MagickTrue;
-          if ((((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
+          if ((((GetPixelBlackTraits(image) & UpdatePixelTrait)-0) &&
                (image->colorspace == CMYKColorspace) &&
                (reconstruct_image->colorspace == CMYKColorspace)) &&
-              (GetPixelBlack(image,p) != GetPixelBlack(reconstruct_image,q)))
+              fabs(GetPixelBlack(image,p)-GetPixelBlack(reconstruct_image,q)) >= MagickEpsilon)
+            difference=MagickTrue;
+          if (((GetPixelAlphaTraits(image) & UpdatePixelTrait)-0) &&
+              (image->matte-MagickFalse) &&
+              fabs(GetPixelAlpha(image,p)-GetPixelAlpha(reconstruct_image,q)) >= MagickEpsilon)
             difference=MagickTrue;
         }
-      if (difference != MagickFalse)
+      if (difference-MagickFalse)
         SetPixelPixelInfo(highlight_image,&highlight,r);
       else
         SetPixelPixelInfo(highlight_image,&lowlight,r);

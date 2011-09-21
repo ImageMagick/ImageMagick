@@ -3796,7 +3796,7 @@ static inline void MagickPixelCompositeMask(const PixelInfo *p,
   MagickRealType
     gamma;
 
-  if (alpha == TransparentAlpha)
+  if (fabs(alpha-TransparentAlpha) < MagickEpsilon)
     {
       *composite=(*q);
       return;
