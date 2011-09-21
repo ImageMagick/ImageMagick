@@ -1209,7 +1209,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     packet_size=(size_t) (quantum_info->depth/8);
     if (image->storage_class == DirectClass)
       packet_size=(size_t) (3*quantum_info->depth/8);
-    if ((image->type == BilevelType) || (image->type == GrayscaleType))
+    if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
+        (image->type == GrayscaleMatteType))
       packet_size=quantum_info->depth/8;
     if (image->matte != MagickFalse)
       packet_size+=quantum_info->depth/8;
@@ -1217,6 +1218,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=quantum_info->depth/8;
     if (image->compression == RLECompression)
       packet_size++;
+printf("%d\n",packet_size);
     length=image->columns;
     length=MagickMax(MagickMax(BZipMaxExtent(packet_size*image->columns),
       LZMAMaxExtent(packet_size*image->columns)),ZipMaxExtent(packet_size*
@@ -1243,7 +1245,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->matte != MagickFalse)
           quantum_type=IndexAlphaQuantum;
       }
-    if ((image->type == BilevelType) || (image->type == GrayscaleType))
+    if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
+        (image->type == GrayscaleMatteType))
       {
         quantum_type=GrayQuantum;
         if (image->matte != MagickFalse)
