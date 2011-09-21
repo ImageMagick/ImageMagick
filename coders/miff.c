@@ -1218,7 +1218,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=quantum_info->depth/8;
     if (image->compression == RLECompression)
       packet_size++;
-printf("%d\n",packet_size);
     length=image->columns;
     length=MagickMax(MagickMax(BZipMaxExtent(packet_size*image->columns),
       LZMAMaxExtent(packet_size*image->columns)),ZipMaxExtent(packet_size*
