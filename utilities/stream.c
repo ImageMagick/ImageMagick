@@ -60,7 +60,7 @@
 %
 */
 
-int StreamMain(int argc,char **argv)
+static int StreamMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;
