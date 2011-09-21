@@ -58,7 +58,7 @@
 %
 */
 
-int CompositeMain(int argc,char **argv)
+static int CompositeMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;

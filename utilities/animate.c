@@ -67,7 +67,7 @@
 %
 */
 
-int AnimateMain(int argc,char **argv)
+static int AnimateMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;

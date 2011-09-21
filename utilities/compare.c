@@ -59,7 +59,7 @@
 %
 */
 
-int CompareMain(int argc,char **argv)
+static int CompareMain(int argc,char **argv)
 {
   char
     *metadata;

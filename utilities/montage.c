@@ -60,7 +60,7 @@
 %
 */
 
-int MontageMain(int argc,char **argv)
+static int MontageMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;

@@ -64,7 +64,7 @@
 %
 */
 
-int ConvertMain(int argc,char **argv)
+static int ConvertMain(int argc,char **argv)
 {
   ExceptionInfo
     *exception;
