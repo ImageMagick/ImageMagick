@@ -1426,7 +1426,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
   if (color.depth > 8)
     {
 #define SVGCompliant(component) ((MagickRealType) \
-   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))));
+   ScaleCharToQuantum(ScaleQuantumToChar(ClampToQuantum(component))))
 
       MagickStatusType
         status;
@@ -1434,13 +1434,18 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
       /*
         SVG requires color depths > 8 expressed as percentages.
       */
-      status=color.red == SVGCompliant(color.red);
-      status&=color.green == SVGCompliant(color.green);
-      status&=color.blue == SVGCompliant(color.blue);
-      if (color.colorspace == CMYKColorspace)
-        status&=color.black == SVGCompliant(color.black);
+      status=fabs(color.red-SVGCompliant(color.red)) < MagickEpsilon ?
+        MagickTrue : MagickFalse;
+      status&=fabs(color.green-SVGCompliant(color.green)) < MagickEpsilon ?
+        MagickTrue : MagickFalse;
+      status&=fabs(color.blue-SVGCompliant(color.blue)) < MagickEpsilon ?
+        MagickTrue : MagickFalse;
+      if (color.colorspace-CMYKColorspace)
+        status&=fabs(color.black-SVGCompliant(color.black)) < MagickEpsilon ?
+          MagickTrue : MagickFalse;
       if (color.matte != MagickFalse)
-        status&=color.alpha == SVGCompliant(color.alpha);
+        status&=fabs(color.alpha-SVGCompliant(color.alpha)) < MagickEpsilon ?
+          MagickTrue : MagickFalse;
       if (status != MagickFalse)
         color.depth=8;
     }
@@ -2623,9 +2628,11 @@ MagickExport MagickBooleanType QueryMagickColorname(const Image *image,
   p=(const ColorInfo *) GetNextValueInLinkedList(color_list);
   while (p != (const ColorInfo *) NULL)
   {
-    if (((p->compliance & compliance) != 0) && ((p->color.red == color->red)) &&
-         (p->color.green == color->green) && (p->color.blue == color->blue) &&
-         (p->color.alpha == opacity))
+    if (((p->compliance & compliance) != 0) &&
+        ((fabs(p->color.red-color->red) < MagickEpsilon)) &&
+         (fabs(p->color.green-color->green) < MagickEpsilon) &&
+         (fabs(p->color.blue-color->blue) < MagickEpsilon) &&
+         (fabs(p->color.alpha-opacity) < MagickEpsilon))
       {
         (void) CopyMagickString(name,p->name,MaxTextExtent);
         break;

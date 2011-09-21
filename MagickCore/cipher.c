@@ -337,7 +337,7 @@ static void FinalizeRoundKey(const unsigned int *ciphertext,
   {
     value=ciphertext[i] ^ key[i];
     for (j=0; j < 4; j++)
-      *p++=(value >> (8*j)) & 0xff;
+      *p++=(unsigned char) ((value >> (8*j)) & 0xff);
   }
   /*
     Reset registers.

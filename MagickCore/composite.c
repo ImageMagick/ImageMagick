@@ -625,19 +625,19 @@ static void CompositeHSB(const MagickRealType red,const MagickRealType green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=(double) (QuantumScale*max);
-  if (max == 0.0)
+  if (fabs(max) < MagickEpsilon)
     return;
   *saturation=(double) (1.0-min/max);
   delta=max-min;
-  if (delta == 0.0)
+  if (fabs(delta) < MagickEpsilon)
     return;
-  if (red == max)
+  if (fabs(red-max) < MagickEpsilon)
     *hue=(double) ((green-blue)/delta);
   else
-    if (green == max)
+    if (fabs(green-max) < MagickEpsilon)
       *hue=(double) (2.0+(blue-red)/delta);
     else
-      if (blue == max)
+      if (fabs(blue-max) < MagickEpsilon)
         *hue=(double) (4.0+(red-green)/delta);
   *hue/=6.0;
   if (*hue < 0.0)

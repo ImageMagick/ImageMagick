@@ -162,7 +162,8 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   *L=0.0;
   *a=0.5;
   *b=0.5;
-  if ((X == 0.0) && (Y == 0.0) && (Z == 0.0))
+  if ((fabs(X) < MagickEpsilon) && (fabs(Y) < MagickEpsilon) &&
+      (fabs(Z) < MagickEpsilon))
     return;
   fx=LabF1(X/D50X);
   fy=LabF1(Y/D50Y);
@@ -620,8 +621,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
-        gamma=1.0/InterpretLocaleValue(value,(char **) NULL) != 0.0 ?
-          InterpretLocaleValue(value,(char **) NULL) : 1.0;
+        gamma=1.0/fabs(InterpretLocaleValue(value,(char **) NULL)) >=
+          MagickEpsilon ? InterpretLocaleValue(value,(char **) NULL) : 1.0;
       film_gamma=FilmGamma;
       value=GetImageProperty(image,"film-gamma");
       if (value != (const char *) NULL)
@@ -2068,8 +2069,8 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
-        gamma=1.0/InterpretLocaleValue(value,(char **) NULL) != 0.0 ?
-          InterpretLocaleValue(value,(char **) NULL) : 1.0;
+        gamma=1.0/fabs(InterpretLocaleValue(value,(char **) NULL)) >=
+          MagickEpsilon ? InterpretLocaleValue(value,(char **) NULL) : 1.0;
       film_gamma=FilmGamma;
       value=GetImageProperty(image,"film-gamma");
       if (value != (const char *) NULL)
