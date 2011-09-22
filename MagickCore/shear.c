@@ -739,9 +739,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if (((MagickRealType) GetPixelRed(image,p) < threshold) ||
-          ((MagickRealType) GetPixelGreen(image,p) < threshold) ||
-          ((MagickRealType) GetPixelBlue(image,p) < threshold))
+      if (GetPixelIntensity(image,p) < threshold)
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -790,9 +788,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if (((MagickRealType) GetPixelRed(image,p) < threshold) ||
-          ((MagickRealType) GetPixelGreen(image,p) < threshold) ||
-          ((MagickRealType) GetPixelBlue(image,p) < threshold))
+      if (GetPixelIntensity(image,p) < threshold)
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -859,7 +855,8 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
       background.red+=QuantumScale*GetPixelRed(image,p);
       background.green+=QuantumScale*GetPixelGreen(image,p);
       background.blue+=QuantumScale*GetPixelBlue(image,p);
-      background.alpha+=QuantumScale*GetPixelAlpha(image,p);
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+        background.alpha+=QuantumScale*GetPixelAlpha(image,p);
       count++;
       p+=GetPixelChannels(image);
     }
@@ -871,8 +868,9 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
     background.green/count);
   image->background_color.blue=ClampToQuantum((MagickRealType) QuantumRange*
     background.blue/count);
-  image->background_color.alpha=ClampToQuantum((MagickRealType) QuantumRange*
-    background.alpha/count);
+  if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+    image->background_color.alpha=ClampToQuantum((MagickRealType) QuantumRange*
+      background.alpha/count);
 }
 
 MagickExport Image *DeskewImage(const Image *image,const double threshold,
@@ -1081,14 +1079,16 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 90 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
+      tile_y=0;
+      for ( ; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
           tile_x;
 
         if (status == MagickFalse)
           continue;
-        for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
+        tile_x=0;
+        for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
         {
           MagickBooleanType
             sync;
@@ -1291,14 +1291,16 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 270 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
+      tile_y=0;
+      for ( ; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
           tile_x;
 
         if (status == MagickFalse)
           continue;
-        for (tile_x=0; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
+        tile_x=0;
+        for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
         {
           MagickBooleanType
             sync;
