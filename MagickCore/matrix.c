@@ -89,7 +89,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 
   matrix=(double **) AcquireQuantumMemory(number_rows,sizeof(*matrix));
   if (matrix == (double **) NULL)
-    return((double **)NULL);
+    return((double **) NULL);
   for (i=0; i < (ssize_t) number_rows; i++)
   {
     matrix[i]=(double *) AcquireQuantumMemory(size,sizeof(*matrix[i]));
@@ -125,8 +125,8 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  The format of the GaussJordanElimination method is:
 %
-%      MagickBooleanType GaussJordanElimination(double **matrix,double **vectors,
-%        const size_t rank,const size_t number_vectors)
+%      MagickBooleanType GaussJordanElimination(double **matrix,
+%        double **vectors,const size_t rank,const size_t number_vectors)
 %
 %  A description of each parameter follows:
 %
@@ -174,7 +174,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array'. For
-%  details see    http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
+%  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination.
 %
 */
 MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
@@ -311,13 +311,13 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 %    o vectors: the result vectors to add terms/results to.
 %
 %    o terms: the pre-calculated terms (without the unknown coefficent
-%             weights) that forms the equation being added.
+%      weights) that forms the equation being added.
 %
 %    o results: the result(s) that should be generated from the given terms
-%               weighted by the yet-to-be-solved coefficents.
+%      weighted by the yet-to-be-solved coefficents.
 %
 %    o rank: the rank or size of the dimentions of the square matrix.
-%            Also the length of vectors, and number of terms being added.
+%      Also the length of vectors, and number of terms being added.
 %
 %    o number_vectors: Number of result vectors, and number or results being
 %      added.  Also represents the number of separable systems of equations
@@ -370,7 +370,6 @@ MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
     for (i=0; i < (ssize_t) number_vectors; i++)
       vectors[i][j]+=results[i]*terms[j];
   }
-  return;
 }
 
 /*
@@ -413,4 +412,3 @@ MagickExport double **RelinquishMagickMatrix(double **matrix,
   matrix=(double **) RelinquishMagickMemory(matrix);
   return(matrix);
 }
-
