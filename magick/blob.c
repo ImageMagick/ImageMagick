@@ -2395,7 +2395,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
       *mode=(*type);
       mode[1]='\0';
-      image->blob->file=(FILE *) popen(filename+1,mode);
+      image->blob->file=(FILE *) popen_utf8(filename+1,mode);
       if (image->blob->file == (FILE *) NULL)
         {
           ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);

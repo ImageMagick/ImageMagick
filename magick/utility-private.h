@@ -110,6 +110,42 @@ static inline int open_utf8(const char *path,int flags,int mode)
 #endif
 }
 
+static inline FILE *popen_utf8(const char *command,const char *type)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+  return(fopen(command,type));
+#else
+   FILE
+     *file;
+
+   int
+     status;
+
+   WCHAR
+     *type_wide,
+     *command_wide;
+
+   command_wide=(WCHAR *) NULL;
+   count=MultiByteToWideChar(CP_UTF8,0,command,-1,NULL,0);
+   command_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*command_wide));
+   if (command_wide == (WCHAR *) NULL)
+     return(-1);
+   count=MultiByteToWideChar(CP_UTF8,0,command,-1,command_wide,count);
+   count=MultiByteToWideChar(CP_UTF8,0,type,-1,NULL,0);
+   type_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*type_wide));
+   if (type_wide == (WCHAR *) NULL)
+     {
+       command_wide=RelinquishMagickMemory(command_wide);
+       return(-1);
+     }
+   count=MultiByteToWideChar(CP_UTF8,0,type,-1,type_wide,count);
+   file=_wpopen(path_wide,type_width);
+   type_wide=RelinquishMagickMemory(type_wide);
+   path_wide=RelinquishMagickMemory(path_wide);
+   return(file);
+#endif
+}
+
 static inline int remove_utf8(const char *path)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
