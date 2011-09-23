@@ -392,7 +392,7 @@ static size_t GetNumberChannels(const Image *image)
   register ssize_t
     i;
 
-  size_t
+  ssize_t
     channels;
 
   channels=0;
@@ -1349,51 +1349,34 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickRealType
-        distance;
+      register ssize_t
+        i;
 
-      distance=fabs(GetPixelRed(image,p)-(double)
-        GetPixelRed(reconstruct_image,q));
-      mean_error_per_pixel+=distance;
-      mean_error+=distance*distance;
-      if (distance > maximum_error)
-        maximum_error=distance;
-      area++;
-      distance=fabs(GetPixelGreen(image,p)-(double)
-        GetPixelGreen(reconstruct_image,q));
-      mean_error_per_pixel+=distance;
-      mean_error+=distance*distance;
-      if (distance > maximum_error)
-        maximum_error=distance;
-      area++;
-      distance=fabs(GetPixelBlue(image,p)-(double)
-        GetPixelBlue(reconstruct_image,q));
-      mean_error_per_pixel+=distance;
-      mean_error+=distance*distance;
-      if (distance > maximum_error)
-        maximum_error=distance;
-      area++;
-      if (image->matte != MagickFalse)
-        {
-          distance=fabs(GetPixelAlpha(image,p)-(double)
-            GetPixelAlpha(reconstruct_image,q));
-          mean_error_per_pixel+=distance;
-          mean_error+=distance*distance;
-          if (distance > maximum_error)
-            maximum_error=distance;
-          area++;
-        }
-      if ((image->colorspace == CMYKColorspace) &&
-          (reconstruct_image->colorspace == CMYKColorspace))
-        {
-          distance=fabs(GetPixelBlack(image,p)-(double)
-            GetPixelBlack(reconstruct_image,q));
-          mean_error_per_pixel+=distance;
-          mean_error+=distance*distance;
-          if (distance > maximum_error)
-            maximum_error=distance;
-          area++;
-        }
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        MagickRealType
+          distance;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          reconstruct_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        reconstruct_traits=GetPixelChannelMapTraits(reconstruct_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (reconstruct_traits == UndefinedPixelTrait))
+          continue;
+        distance=fabs(p[i]-(double) q[channel]);
+        mean_error_per_pixel+=distance;
+        mean_error+=distance*distance;
+        if (distance > maximum_error)
+          maximum_error=distance;
+        area++;
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
@@ -1469,9 +1452,6 @@ static double GetNCCDistortion(const Image *image,
   ssize_t
     y;
 
-  unsigned long
-    number_channels;
-  
   /*
     Normalize to account for variation due to lighting and exposure condition.
   */
@@ -1502,29 +1482,27 @@ static double GetNCCDistortion(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      distortion+=area*QuantumScale*(GetPixelRed(image,p)-
-        image_statistics[RedChannel].mean)*(
-        GetPixelRed(reconstruct_image,q)-
-        reconstruct_statistics[RedChannel].mean);
-      distortion+=area*QuantumScale*(GetPixelGreen(image,p)-
-        image_statistics[GreenChannel].mean)*(
-        GetPixelGreen(reconstruct_image,q)-
-        reconstruct_statistics[GreenChannel].mean);
-      distortion+=area*QuantumScale*(GetPixelBlue(image,p)-
-        GetPixelBlue(reconstruct_image,q)-
-        image_statistics[BlueChannel].mean)*(
-        reconstruct_statistics[BlueChannel].mean);
-      if ((image->colorspace == CMYKColorspace) &&
-          (reconstruct_image->colorspace == CMYKColorspace))
-        distortion+=area*QuantumScale*(GetPixelBlack(image,p)-
-          image_statistics[BlackChannel].mean)*(
-          GetPixelBlack(reconstruct_image,q)-
-          reconstruct_statistics[BlackChannel].mean);
-      if (image->matte != MagickFalse)
-        distortion+=area*QuantumScale*(GetPixelAlpha(image,p)-
-          image_statistics[OpacityChannel].mean)*(
-          GetPixelAlpha(reconstruct_image,q)-
-          reconstruct_statistics[OpacityChannel].mean);
+     register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          reconstruct_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        reconstruct_traits=GetPixelChannelMapTraits(reconstruct_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (reconstruct_traits == UndefinedPixelTrait))
+          continue;
+        distortion+=area*QuantumScale*(p[i]-image_statistics[i].mean)*
+          (q[channel]-reconstruct_statistics[channel].mean);
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
     }
@@ -1538,12 +1516,7 @@ static double GetNCCDistortion(const Image *image,
     reconstruct_statistics[MaxPixelChannels].standard_deviation;
   gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
   distortion=QuantumRange*gamma*distortion;
-  number_channels=3;
-  if (image->matte != MagickFalse)
-    number_channels++;
-  if (image->colorspace == CMYKColorspace)
-    number_channels++;
-  distortion=sqrt(distortion/number_channels);
+  distortion=sqrt(distortion/GetNumberChannels(image));
   /*
     Free resources.
   */
@@ -1615,7 +1588,8 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
     image->rows-reference->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(similarity_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(similarity_image,DirectClass,exception);
+  if (status == MagickFalse)
     {
       similarity_image=DestroyImage(similarity_image);
       return((Image *) NULL);
