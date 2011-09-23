@@ -3745,7 +3745,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 break;
             }
             if ((IsPathAccessible(backup_filename) != MagickFalse) ||
-                (rename(image->filename,backup_filename) != 0))
+                (rename_utf8(image->filename,backup_filename) != 0))
               *backup_filename='\0';
           }
         /*

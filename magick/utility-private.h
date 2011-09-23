@@ -58,9 +58,6 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
    FILE
      *file;
 
-   int
-     status;
-
    WCHAR
      *mode_wide,
      *path_wide;
@@ -113,13 +110,10 @@ static inline int open_utf8(const char *path,int flags,int mode)
 static inline FILE *popen_utf8(const char *command,const char *type)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
-  return(fopen(command,type));
+  return(popen(command,type));
 #else
    FILE
      *file;
-
-   int
-     status;
 
    WCHAR
      *type_wide,
@@ -165,6 +159,43 @@ static inline int remove_utf8(const char *path)
      return(-1);
    count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
    status=_wremove(path_wide);
+   path_wide=RelinquishMagickMemory(path_wide);
+   return(status);
+#endif
+}
+
+static inline int rename_utf8(const char *source,const char *destination)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+  return(rename(source,destination));
+#else
+   FILE
+     *file;
+
+   int
+     status;
+
+   WCHAR
+     *destination_wide,
+     *source_wide;
+
+   source_wide=(WCHAR *) NULL;
+   count=MultiByteToWideChar(CP_UTF8,0,source,-1,NULL,0);
+   source_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*source_wide));
+   if (source_wide == (WCHAR *) NULL)
+     return(-1);
+   count=MultiByteToWideChar(CP_UTF8,0,source,-1,source_wide,count);
+   count=MultiByteToWideChar(CP_UTF8,0,destination,-1,NULL,0);
+   destination_wide=(WCHAR *) AcquireQuantumMemory(count,
+     sizeof(*destination_wide));
+   if (destination_wide == (WCHAR *) NULL)
+     {
+       source_wide=RelinquishMagickMemory(source_wide);
+       return(-1);
+     }
+   count=MultiByteToWideChar(CP_UTF8,0,destination,-1,destination_wide,count);
+   status=_wrename(path_wide,destination_width);
+   destination_wide=RelinquishMagickMemory(destination_wide);
    path_wide=RelinquishMagickMemory(path_wide);
    return(status);
 #endif
