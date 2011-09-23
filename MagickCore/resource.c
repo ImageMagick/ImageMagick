@@ -301,7 +301,7 @@ MagickPrivate void AsynchronousResourceComponentTerminus(void)
   path=(const char *) GetNextKeyInSplayTree(temporary_resources);
   while (path != (const char *) NULL)
   {
-    (void) remove(path);
+    (void) remove_utf8(path);
     path=(const char *) GetNextKeyInSplayTree(temporary_resources);
   }
 }
@@ -333,7 +333,7 @@ MagickPrivate void AsynchronousResourceComponentTerminus(void)
 
 static void *DestroyTemporaryResources(void *temporary_resource)
 {
-  (void) remove((char *) temporary_resource);
+  (void) remove_utf8((char *) temporary_resource);
   temporary_resource=DestroyString((char *) temporary_resource);
   return((void *) NULL);
 }
@@ -474,7 +474,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
-    file=open(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,S_MODE);
+    file=open_utf8(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,S_MODE);
     if ((file >= 0) || (errno != EEXIST))
       break;
   }
@@ -863,8 +863,8 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
     }
   (void) CopyMagickString(cache_path,path,MaxTextExtent);
   AppendImageFormat("cache",cache_path);
-  (void) remove(cache_path);
-  return(remove(path) == 0 ? MagickTrue : MagickFalse);
+  (void) remove_utf8(cache_path);
+  return(remove_utf8(path) == 0 ? MagickTrue : MagickFalse);
 }
 
 /*

@@ -1199,7 +1199,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
               return(MagickFalse);
             }
           log_info->append=IsPathAccessible(filename);
-          log_info->file=OpenMagickStream(filename,"ab");
+          log_info->file=fopen_utf8(filename,"ab");
           filename=(char  *) RelinquishMagickMemory(filename);
           if (log_info->file == (FILE *) NULL)
             {

@@ -60,6 +60,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Forward declarations.
@@ -417,10 +418,10 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   /*
     Copy source file to destination.
   */
-  destination_file=open(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
+  destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
-  source_file=open(source,O_RDONLY | O_BINARY);
+  source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
       (void) close(destination_file);
