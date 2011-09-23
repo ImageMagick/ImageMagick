@@ -46,6 +46,7 @@
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
 #include "magick/string-private.h"
+#include "magick/utility-private.h"
 
 /*
   Define declarations.
@@ -107,7 +108,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   /*
     Open output file.
   */
-  output=OpenMagickStream(argv[argc-1],"wb");
+  output=fopen_utf8(argv[argc-1],"wb");
   if (output == (FILE *) NULL)
     {
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -116,13 +117,13 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
     }
   for (i=2; i < (ssize_t) (argc-1); i++)
   {
-    input=OpenMagickStream(argv[i],"rb");
+    input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
     for (c=fgetc(input); c != EOF; c=fgetc(input))
       (void) fputc((char) c,output);
     (void) fclose(input);
-    (void) remove(argv[i]);
+    (void) remove_utf8(argv[i]);
   }
   (void) fclose(output);
   return(MagickTrue);

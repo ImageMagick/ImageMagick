@@ -50,6 +50,7 @@
 #include "magick/monitor-private.h"
 #include "magick/thread-private.h"
 #include "magick/string-private.h"
+#include "magick/utility-private.h"
 
 /*
   Define declarations.
@@ -331,7 +332,7 @@ static MagickBooleanType IsPathWritable(const char *path)
 {
   if (IsPathAccessible(path) == MagickFalse)
     return(MagickFalse);
-  if (access(path,W_OK) != 0)
+  if (access_utf8(path,W_OK) != 0)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -3753,7 +3754,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         image_info->synchronize=MagickTrue;
         status&=WriteImages(image_info,image,image->filename,exception);
         if ((status == MagickFalse) && (*backup_filename != '\0'))
-          (void) remove(backup_filename);
+          (void) remove_utf8(backup_filename);
         RemoveAllImageStack();
         continue;
       }

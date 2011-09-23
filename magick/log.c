@@ -57,6 +57,7 @@
 #include "magick/thread_.h"
 #include "magick/thread-private.h"
 #include "magick/utility.h"
+#include "magick/utility-private.h"
 #include "magick/version.h"
 #include "magick/xml-tree.h"
 
@@ -1196,7 +1197,7 @@ MagickBooleanType LogMagickEventList(const LogEventType type,const char *module,
               return(MagickFalse);
             }
           log_info->append=IsPathAccessible(filename);
-          log_info->file=OpenMagickStream(filename,"ab");
+          log_info->file=fopen_utf8(filename,"ab");
           filename=(char  *) RelinquishMagickMemory(filename);
           if (log_info->file == (FILE *) NULL)
             {

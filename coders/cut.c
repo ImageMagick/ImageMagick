@@ -67,6 +67,7 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 #include "magick/utility.h"
+#include "magick/utility-private.h"
 
 typedef struct
 {
@@ -390,14 +391,14 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   (void) CopyMagickString(clone_info->filename+i,".PAL",(size_t)
     (MaxTextExtent-i));
-  if((clone_info->file=OpenMagickStream(clone_info->filename,"rb"))==NULL)
+  if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL)
     {
       (void) CopyMagickString(clone_info->filename+i,".pal",(size_t)
         (MaxTextExtent-i));
-      if((clone_info->file=OpenMagickStream(clone_info->filename,"rb"))==NULL)
+      if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL)
         {
           clone_info->filename[i]='\0';
-          if((clone_info->file=OpenMagickStream(clone_info->filename,"rb"))==NULL)
+          if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL)
             {
               clone_info=DestroyImageInfo(clone_info);
               clone_info=NULL;

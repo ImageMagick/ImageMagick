@@ -52,6 +52,7 @@
 #include "magick/resource_.h"
 #include "magick/signature-private.h"
 #include "magick/string_.h"
+#include "magick/utility-private.h"
 
 /*
   Static declarations.
@@ -584,7 +585,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
     *map;
 
   assert(filename != (const char *) NULL);
-  file=open(filename,O_RDONLY | O_BINARY);
+  file=open_utf8(filename,O_RDONLY | O_BINARY,0);
   if (file == -1)
     return((StringInfo *) NULL);
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);

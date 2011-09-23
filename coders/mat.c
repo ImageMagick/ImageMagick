@@ -72,6 +72,7 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 #include "magick/transform.h"
+#include "magick/utility-private.h"
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
  #include "zlib.h"
 #endif
@@ -491,7 +492,7 @@ int status;
   {
     fclose(clone_info->file);
     clone_info->file = NULL;
-    (void) unlink(clone_info->filename);
+    (void) remove_utf8(clone_info->filename);
   }
 
   CacheBlock = AcquireQuantumMemory((size_t)((Size<16384)?Size:16384),sizeof(unsigned char *));
@@ -555,7 +556,7 @@ EraseFile:
     fclose(clone_info->file);
     clone_info->file = NULL;
 UnlinkFile:
-    (void) unlink(clone_info->filename);
+    (void) remove_utf8(clone_info->filename);
     return NULL; 
   }
 
@@ -995,7 +996,7 @@ done_reading:
     {
             fclose(clone_info->file);
             clone_info->file = NULL;
-            (void) unlink(clone_info->filename);
+            (void) remove_utf8(clone_info->filename);
     }
         }    
       }
@@ -1051,7 +1052,7 @@ done_reading:
     {
       fclose(clone_info->file);
       clone_info->file = NULL;
-      (void) unlink(clone_info->filename);
+      (void) remove_utf8(clone_info->filename);
     }
     DestroyImageInfo(clone_info);
     clone_info = NULL;

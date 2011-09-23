@@ -57,6 +57,7 @@
 #include "magick/module.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
+#include "magick/utility-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -301,7 +302,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(read_info->filename);
   if (unique_file != -1)
-    file=OpenMagickStream(read_info->filename,"wb");
+    file=fopen_utf8(read_info->filename,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);
@@ -325,7 +326,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         *message;
 
-      (void) remove(read_info->filename);
+      (void) remove_utf8(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       message=GetExceptionMessage(errno);
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
