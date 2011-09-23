@@ -1226,7 +1226,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->type == GrayscaleMatteType))
       packet_size=quantum_info->depth/8;
     if (image->matte != MagickFalse)
-      packet_size=quantum_info->depth/8;
+      packet_size+=quantum_info->depth/8;
     if (image->colorspace == CMYKColorspace)
       packet_size+=quantum_info->depth/8;
     if (image->compression == RLECompression)
