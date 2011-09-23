@@ -84,6 +84,7 @@
 #include "magick/transform.h"
 #include "magick/threshold.h"
 #include "magick/utility.h"
+#include "magick/utility-private.h"
 #include "magick/version.h"
 #include "magick/widget.h"
 #include "magick/xwindow-private.h"
@@ -7206,7 +7207,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XFileBrowserWidget(display,windows,"Delete",filename);
       if (*filename == '\0')
         break;
-      status=remove(filename) != 0 ? MagickTrue : MagickFalse;
+      status=remove_utf8(filename) != 0 ? MagickTrue : MagickFalse;
       if (status != MagickFalse)
         XNoticeWidget(display,windows,"Unable to delete image file:",filename);
       break;
@@ -13084,7 +13085,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       status=XConfirmWidget(display,windows,"Really delete tile",filename);
       if (status <= 0)
         break;
-      status=remove(filename) != 0 ? MagickTrue : MagickFalse;
+      status=remove_utf8(filename) != 0 ? MagickTrue : MagickFalse;
       if (status != MagickFalse)
         {
           XNoticeWidget(display,windows,"Unable to delete image file:",

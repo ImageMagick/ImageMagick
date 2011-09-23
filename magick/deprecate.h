@@ -115,6 +115,9 @@ extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *) magick_attribute((deprecated));
 
+extern MagickExport FILE
+  *OpenMagickStream(const char *,const char *);
+
 extern MagickExport Image
   *AllocateImage(const ImageInfo *) magick_attribute((deprecated)),
   *AverageImages(const Image *,ExceptionInfo *),

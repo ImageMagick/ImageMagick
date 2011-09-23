@@ -4939,6 +4939,185 @@ MagickExport CacheView *OpenCacheView(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   O p e n M a g i c k S t r e a m                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  OpenMagickStream() opens the file at the specified path and return the
+%  associated stream.
+%
+%  The path of the OpenMagickStream method is:
+%
+%      FILE *OpenMagickStream(const char *path,const char *mode)
+%
+%  A description of each parameter follows.
+%
+%   o  path: the file path.
+%
+%   o  mode: the file mode.
+%
+*/
+
+#if defined(MAGICKCORE_HAVE__WFOPEN)
+static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
+{
+  register const unsigned char
+    *p;
+
+  if (utf16 != (wchar_t *) NULL)
+    {
+      register wchar_t
+        *q;
+
+      wchar_t
+        c;
+
+      /*
+        Convert UTF-8 to UTF-16.
+      */
+      q=utf16;
+      for (p=utf8; *p != '\0'; p++)
+      {
+        if ((*p & 0x80) == 0)
+          *q=(*p);
+        else
+          if ((*p & 0xE0) == 0xC0)
+            {
+              c=(*p);
+              *q=(c & 0x1F) << 6;
+              p++;
+              if ((*p & 0xC0) != 0x80)
+                return(0);
+              *q|=(*p & 0x3F);
+            }
+          else
+            if ((*p & 0xF0) == 0xE0)
+              {
+                c=(*p);
+                *q=c << 12;
+                p++;
+                if ((*p & 0xC0) != 0x80)
+                  return(0);
+                c=(*p);
+                *q|=(c & 0x3F) << 6;
+                p++;
+                if ((*p & 0xC0) != 0x80)
+                  return(0);
+                *q|=(*p & 0x3F);
+              }
+            else
+              return(0);
+        q++;
+      }
+      *q++='\0';
+      return(q-utf16);
+    }
+  /*
+    Compute UTF-16 string length.
+  */
+  for (p=utf8; *p != '\0'; p++)
+  {
+    if ((*p & 0x80) == 0)
+      ;
+    else
+      if ((*p & 0xE0) == 0xC0)
+        {
+          p++;
+          if ((*p & 0xC0) != 0x80)
+            return(0);
+        }
+      else
+        if ((*p & 0xF0) == 0xE0)
+          {
+            p++;
+            if ((*p & 0xC0) != 0x80)
+              return(0);
+            p++;
+            if ((*p & 0xC0) != 0x80)
+              return(0);
+         }
+       else
+         return(0);
+  }
+  return(p-utf8);
+}
+
+static wchar_t *ConvertUTF8ToUTF16(const unsigned char *source)
+{
+  size_t
+    length;
+
+  wchar_t
+    *utf16;
+
+  length=UTF8ToUTF16(source,(wchar_t *) NULL);
+  if (length == 0)
+    {
+      register ssize_t
+        i;
+
+      /*
+        Not UTF-8, just copy.
+      */
+      length=strlen((const char *) source);
+      utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
+      if (utf16 == (wchar_t *) NULL)
+        return((wchar_t *) NULL);
+      for (i=0; i <= (ssize_t) length; i++)
+        utf16[i]=source[i];
+      return(utf16);
+    }
+  utf16=(wchar_t *) AcquireQuantumMemory(length+1,sizeof(*utf16));
+  if (utf16 == (wchar_t *) NULL)
+    return((wchar_t *) NULL);
+  length=UTF8ToUTF16(source,utf16);
+  return(utf16);
+}
+#endif
+
+MagickExport FILE *OpenMagickStream(const char *path,const char *mode)
+{
+  FILE
+    *file;
+
+  if ((path == (const char *) NULL) || (mode == (const char *) NULL))
+    {
+      errno=EINVAL;
+      return((FILE *) NULL);
+    }
+  file=(FILE *) NULL;
+#if defined(MAGICKCORE_HAVE__WFOPEN)
+  {
+    wchar_t
+      *unicode_mode,
+      *unicode_path;
+
+    unicode_path=ConvertUTF8ToUTF16((const unsigned char *) path);
+    if (unicode_path == (wchar_t *) NULL)
+      return((FILE *) NULL);
+    unicode_mode=ConvertUTF8ToUTF16((const unsigned char *) mode);
+    if (unicode_mode == (wchar_t *) NULL)
+      {
+        unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);
+        return((FILE *) NULL);
+      }
+    file=_wfopen(unicode_path,unicode_mode);
+    unicode_mode=(wchar_t *) RelinquishMagickMemory(unicode_mode);
+    unicode_path=(wchar_t *) RelinquishMagickMemory(unicode_path);
+  }
+#endif
+  if (file == (FILE *) NULL)
+    file=fopen(path,mode);
+  return(file);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P a i n t F l o o d f i l l I m a g e                                     %
 %                                                                             %
 %                                                                             %
@@ -4965,8 +5144,9 @@ MagickExport CacheView *OpenCacheView(const Image *image)
 %  The format of the PaintFloodfillImage method is:
 %
 %      MagickBooleanType PaintFloodfillImage(Image *image,
-%        const ChannelType channel,const MagickPixelPacket target,const ssize_t x,
-%        const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
+%        const ChannelType channel,const MagickPixelPacket target,
+%        const ssize_t x,const ssize_t y,const DrawInfo *draw_info,
+%        const PaintMethod method)
 %
 %  A description of each parameter follows:
 %

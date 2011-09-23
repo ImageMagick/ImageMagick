@@ -62,6 +62,7 @@
 #include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
+#include "magick/utility-private.h"
 #if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include <sys/mman.h>
 #endif
@@ -250,7 +251,7 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
   if (*filename == '\0')
     file=AcquireUniqueFileResource(filename);
   else
-    file=open(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,S_MODE);
+    file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,S_MODE);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -920,7 +921,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
   *length=0;
   file=fileno(stdin);
   if (LocaleCompare(filename,"-") != 0)
-    file=open(filename,O_RDONLY | O_BINARY);
+    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToOpenFile",filename);
@@ -1109,7 +1110,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
   assert(image->signature == MagickSignature);
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
-  file=open(filename,O_RDONLY | O_BINARY);
+  file=open_utf8(filename,O_RDONLY | O_BINARY,0);
   if (file == -1)
     {
       ThrowFileException(&image->exception,BlobError,"UnableToOpenBlob",
@@ -1620,7 +1621,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     if (LocaleCompare(filename,"-") == 0)
       file=fileno(stdout);
     else
-      file=open(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,S_MODE);
+      file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,S_MODE);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -1929,7 +1930,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   /*
     Inject into image stream.
   */
-  file=open(filename,O_RDONLY | O_BINARY);
+  file=open_utf8(filename,O_RDONLY | O_BINARY,0);
   if (file == -1)
     {
       (void) RelinquishUniqueFileResource(filename);
@@ -2409,7 +2410,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #if defined(S_ISFIFO)
   if ((status == MagickTrue) && S_ISFIFO(image->blob->properties.st_mode))
     {
-      image->blob->file=(FILE *) OpenMagickStream(filename,type);
+      image->blob->file=(FILE *) fopen_utf8(filename,type);
       if (image->blob->file == (FILE *) NULL)
         {
           ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);
@@ -2462,7 +2463,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   else
     if (*type == 'r')
       {
-        image->blob->file=(FILE *) OpenMagickStream(filename,type);
+        image->blob->file=(FILE *) fopen_utf8(filename,type);
         if (image->blob->file != (FILE *) NULL)
           {
             size_t
@@ -2570,7 +2571,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
           else
 #endif
             {
-              image->blob->file=(FILE *) OpenMagickStream(filename,type);
+              image->blob->file=(FILE *) fopen_utf8(filename,type);
               if (image->blob->file != (FILE *) NULL)
                 {
                   image->blob->type=FileStream;

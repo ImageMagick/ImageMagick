@@ -40,9 +40,6 @@ extern MagickExport char
   **GetPathComponents(const char *,size_t *),
   **ListFiles(const char *,const char *,size_t *);
 
-extern MagickExport FILE
-  *OpenMagickStream(const char *,const char *);
-
 extern MagickExport int
   SystemCommand(const MagickBooleanType,const MagickBooleanType,const char *,
     ExceptionInfo *);
