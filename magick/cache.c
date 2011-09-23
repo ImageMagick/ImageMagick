@@ -4310,7 +4310,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
           /*
             Usurp existing persistent pixel cache.
           */
-          status=rename(cache_info->cache_filename,filename);
+          status=rename_utf8(cache_info->cache_filename,filename);
           if (status == 0)
             {
               (void) CopyMagickString(cache_info->cache_filename,filename,
