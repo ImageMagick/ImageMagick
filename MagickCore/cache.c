@@ -642,24 +642,24 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
     {
       case ReadMode:
       {
-        file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
+        file=open_utf8(cache_info->cache_filename,O_RDONLY | O_BINARY,0);
         break;
       }
       case WriteMode:
       {
-        file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
-          O_EXCL,S_MODE);
+        file=open_utf8(cache_info->cache_filename,O_WRONLY | O_CREAT |
+          O_BINARY | O_EXCL,S_MODE);
         if (file == -1)
-          file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
+          file=open_utf8(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
         break;
       }
       case IOMode:
       default:
       {
-        file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
+        file=open_utf8(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
           O_EXCL,S_MODE);
         if (file == -1)
-          file=open(cache_info->cache_filename,O_RDWR | O_BINARY,S_MODE);
+          file=open_utf8(cache_info->cache_filename,O_RDWR | O_BINARY,S_MODE);
         break;
       }
     }

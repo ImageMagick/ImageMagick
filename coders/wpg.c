@@ -63,6 +63,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 typedef struct
    {
@@ -743,7 +744,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   /* Obtain temporary file */
   AcquireUniqueFilename(postscript_file);
-  ps_file=OpenMagickStream(postscript_file,"wb");
+  ps_file=fopen_utf8(postscript_file,"wb");
   if (ps_file == (FILE *) NULL)
     goto FINISH;
 

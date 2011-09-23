@@ -60,6 +60,7 @@
 #include "MagickCore/thread_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 /*
   Define declarations.
 */
@@ -455,7 +456,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #endif
     if (file != -1)
       (void) close(file);
-    (void) remove(filename);
+    (void) remove_utf8(filename);
     SetStringInfoLength(chaos,strlen(filename));
     SetStringInfoDatum(chaos,(unsigned char *) filename);
     ConcatenateStringInfo(entropy,chaos);
@@ -528,7 +529,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     filename=AcquireString("/dev/urandom");
     device=StringToStringInfo(filename);
     device=DestroyStringInfo(device);
-    file=open(filename,O_RDONLY | O_BINARY);
+    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
     filename=DestroyString(filename);
     if (file != -1)
       {
@@ -546,14 +547,14 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
         filename=AcquireString("/dev/random");
         device=StringToStringInfo(filename);
         device=DestroyStringInfo(device);
-        file=open(filename,O_RDONLY | O_BINARY);
+        file=open_utf8(filename,O_RDONLY | O_BINARY,0);
         filename=DestroyString(filename);
         if (file == -1)
           {
             filename=AcquireString("/dev/srandom");
             device=StringToStringInfo(filename);
             device=DestroyStringInfo(device);
-            file=open(filename,O_RDONLY | O_BINARY);
+            file=open_utf8(filename,O_RDONLY | O_BINARY,0);
           }
         if (file != -1)
           {
