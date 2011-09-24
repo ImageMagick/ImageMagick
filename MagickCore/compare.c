@@ -402,7 +402,7 @@ static size_t GetNumberChannels(const Image *image)
       traits;
 
     traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-    if (traits != UndefinedPixelTrait)
+    if ((traits & UpdatePixelTrait) != 0)
       channels++;
   }
   return(channels);
@@ -966,7 +966,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
             (reconstruct_traits == UndefinedPixelTrait))
           continue;
         distance=QuantumScale*fabs(p[i]-(double) q[channel]);
-        if (distance > channel_distortion[RedChannel])
+        if (distance > channel_distortion[i])
           channel_distortion[i]=distance;
         if (distance > channel_distortion[MaxPixelChannels])
           channel_distortion[MaxPixelChannels]=distance;
