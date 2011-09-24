@@ -166,8 +166,7 @@ static PixelInfo **AcquirePixelThreadSet(const Image *image,
     length=image->columns;
     if (length < number_images)
       length=number_images;
-    pixels[i]=(PixelInfo *) AcquireQuantumMemory(length,
-      sizeof(**pixels));
+    pixels[i]=(PixelInfo *) AcquireQuantumMemory(length,sizeof(**pixels));
     if (pixels[i] == (PixelInfo *) NULL)
       return(DestroyPixelThreadSet(pixels));
     for (j=0; j < (ssize_t) length; j++)
@@ -239,9 +238,9 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     {
       /*
         This returns a 'floored modulus' of the addition which is a
-        positive result.  It differs from  % or fmod() which returns a
-        'truncated modulus' result, where floor() is replaced by trunc()
-        and could return a negative result (which is clipped).
+        positive result.  It differs from % or fmod() that returns a
+        'truncated modulus' result, where floor() is replaced by trunc() and
+        could return a negative result (which is clipped).
       */
       result=pixel+value;
       result-=(QuantumRange+1.0)*floor((double) result/(QuantumRange+1.0));
@@ -756,28 +755,20 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetPixelRed(image,q),op,value)),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetPixelGreen(image,q),op,value)),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetPixelBlue(image,q),op,value)),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,ClampToQuantum(ApplyEvaluateOperator(
-          random_info[id],GetPixelBlack(image,q),op,value)),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (image->matte == MagickFalse)
-            SetPixelAlpha(image,ClampToQuantum(ApplyEvaluateOperator(
-              random_info[id],GetPixelAlpha(image,q),op,value)),q);
-          else
-            SetPixelAlpha(image,ClampToQuantum(ApplyEvaluateOperator(
-              random_info[id],GetPixelAlpha(image,q),op,value)),q);
-        }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        q[i]=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q[i],op,
+          value));
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1110,53 +1101,53 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
     {
       channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[RedChannel].mean;
+        channel_statistics[RedPixelChannel].mean;
       channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[RedChannel].variance-
-        channel_statistics[RedChannel].mean*
-        channel_statistics[RedChannel].mean;
+        channel_statistics[RedPixelChannel].variance-
+        channel_statistics[RedPixelChannel].mean*
+        channel_statistics[RedPixelChannel].mean;
       channels++;
     }
   if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
     {
       channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[GreenChannel].mean;
+        channel_statistics[GreenPixelChannel].mean;
       channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[GreenChannel].variance-
-        channel_statistics[GreenChannel].mean*
-        channel_statistics[GreenChannel].mean;
+        channel_statistics[GreenPixelChannel].variance-
+        channel_statistics[GreenPixelChannel].mean*
+        channel_statistics[GreenPixelChannel].mean;
       channels++;
     }
   if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
     {
       channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[BlueChannel].mean;
+        channel_statistics[BluePixelChannel].mean;
       channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[BlueChannel].variance-
-        channel_statistics[BlueChannel].mean*
-        channel_statistics[BlueChannel].mean;
+        channel_statistics[BluePixelChannel].variance-
+        channel_statistics[BluePixelChannel].mean*
+        channel_statistics[BluePixelChannel].mean;
       channels++;
     }
   if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
       (image->colorspace == CMYKColorspace))
     {
       channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[BlackChannel].mean;
+        channel_statistics[BlackPixelChannel].mean;
       channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[BlackChannel].variance-
-        channel_statistics[BlackChannel].mean*
-        channel_statistics[BlackChannel].mean;
+        channel_statistics[BlackPixelChannel].variance-
+        channel_statistics[BlackPixelChannel].mean*
+        channel_statistics[BlackPixelChannel].mean;
       channels++;
     }
   if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
       (image->matte != MagickFalse))
     {
       channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[AlphaChannel].mean;
+        channel_statistics[AlphaPixelChannel].mean;
       channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[AlphaChannel].variance-
-        channel_statistics[AlphaChannel].mean*
-        channel_statistics[AlphaChannel].mean;
+        channel_statistics[AlphaPixelChannel].variance-
+        channel_statistics[AlphaPixelChannel].mean*
+        channel_statistics[AlphaPixelChannel].mean;
       channels++;
     }
   channel_statistics[MaxPixelChannels].mean/=channels;
@@ -1437,7 +1428,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 %  mean, for example, like this:
 %
 %      channel_statistics=GetImageStatistics(image,exception);
-%      red_mean=channel_statistics[RedChannel].mean;
+%      red_mean=channel_statistics[RedPixelChannel].mean;
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
 %
@@ -1453,6 +1444,28 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static size_t GetImageChannels(const Image *image)
+{
+  register ssize_t
+    i;
+
+  size_t
+    channels;
+
+  channels=0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelTrait
+      traits;
+
+    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    if ((traits & UpdatePixelTrait) != 0)
+      channels++;
+  }
+  return(channels);
+}
+
 MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1473,8 +1486,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
   size_t
     channels,
-    depth,
-    length;
+    depth;
 
   ssize_t
     y;
@@ -1483,12 +1495,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  length=MaxPixelChannels+1UL;
-  channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(length,
-    sizeof(*channel_statistics));
+  channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
+    MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(channel_statistics,0,length*
+  (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
@@ -1507,150 +1518,40 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    for (x=0; x < (ssize_t) image->columns; )
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel_statistics[RedChannel].depth != MAGICKCORE_QUANTUM_DEPTH)
-        {
-          depth=channel_statistics[RedChannel].depth;
-          range=GetQuantumRange(depth);
-          status=GetPixelRed(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-            GetPixelRed(image,p),range),range) ? MagickTrue : MagickFalse;
-          if (status != MagickFalse)
-            {
-              channel_statistics[RedChannel].depth++;
-              continue;
-            }
-        }
-      if (channel_statistics[GreenChannel].depth != MAGICKCORE_QUANTUM_DEPTH)
-        {
-          depth=channel_statistics[GreenChannel].depth;
-          range=GetQuantumRange(depth);
-          status=GetPixelGreen(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-            GetPixelGreen(image,p),range),range) ? MagickTrue : MagickFalse;
-          if (status != MagickFalse)
-            {
-              channel_statistics[GreenChannel].depth++;
-              continue;
-            }
-        }
-      if (channel_statistics[BlueChannel].depth != MAGICKCORE_QUANTUM_DEPTH)
-        {
-          depth=channel_statistics[BlueChannel].depth;
-          range=GetQuantumRange(depth);
-          status=GetPixelBlue(image,p) != ScaleAnyToQuantum(ScaleQuantumToAny(
-            GetPixelBlue(image,p),range),range) ? MagickTrue : MagickFalse;
-          if (status != MagickFalse)
-            {
-              channel_statistics[BlueChannel].depth++;
-              continue;
-            }
-        }
-      if (image->matte != MagickFalse)
-        {
-          if (channel_statistics[AlphaChannel].depth != MAGICKCORE_QUANTUM_DEPTH)
-            {
-              depth=channel_statistics[AlphaChannel].depth;
-              range=GetQuantumRange(depth);
-              status=GetPixelAlpha(image,p) != ScaleAnyToQuantum(
-                ScaleQuantumToAny(GetPixelAlpha(image,p),range),range) ?
-                MagickTrue : MagickFalse;
-              if (status != MagickFalse)
-                {
-                  channel_statistics[AlphaChannel].depth++;
-                  continue;
-                }
-            }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if (channel_statistics[i].depth != MAGICKCORE_QUANTUM_DEPTH)
+          {
+            depth=channel_statistics[i].depth;
+            range=GetQuantumRange(depth);
+            status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),
+              range) ? MagickTrue : MagickFalse;
+            if (status != MagickFalse)
+              {
+                channel_statistics[i].depth++;
+                continue;
+              }
           }
-      if (image->colorspace == CMYKColorspace)
-        {
-          if (channel_statistics[BlackChannel].depth != MAGICKCORE_QUANTUM_DEPTH)
-            {
-              depth=channel_statistics[BlackChannel].depth;
-              range=GetQuantumRange(depth);
-              status=GetPixelBlack(image,p) != ScaleAnyToQuantum(
-                ScaleQuantumToAny(GetPixelBlack(image,p),range),range) ?
-                MagickTrue : MagickFalse;
-              if (status != MagickFalse)
-                {
-                  channel_statistics[BlackChannel].depth++;
-                  continue;
-                }
-            }
-        }
-      if ((double) GetPixelRed(image,p) < channel_statistics[RedChannel].minima)
-        channel_statistics[RedChannel].minima=(double) GetPixelRed(image,p);
-      if ((double) GetPixelRed(image,p) > channel_statistics[RedChannel].maxima)
-        channel_statistics[RedChannel].maxima=(double) GetPixelRed(image,p);
-      channel_statistics[RedChannel].sum+=GetPixelRed(image,p);
-      channel_statistics[RedChannel].sum_squared+=(double)
-        GetPixelRed(image,p)*GetPixelRed(image,p);
-      channel_statistics[RedChannel].sum_cubed+=(double)
-        GetPixelRed(image,p)*GetPixelRed(image,p)*GetPixelRed(image,p);
-      channel_statistics[RedChannel].sum_fourth_power+=(double)
-        GetPixelRed(image,p)*GetPixelRed(image,p)*GetPixelRed(image,p)*
-        GetPixelRed(image,p);
-      if ((double) GetPixelGreen(image,p) < channel_statistics[GreenChannel].minima)
-        channel_statistics[GreenChannel].minima=(double)
-          GetPixelGreen(image,p);
-      if ((double) GetPixelGreen(image,p) > channel_statistics[GreenChannel].maxima)
-        channel_statistics[GreenChannel].maxima=(double) GetPixelGreen(image,p);
-      channel_statistics[GreenChannel].sum+=GetPixelGreen(image,p);
-      channel_statistics[GreenChannel].sum_squared+=(double)
-        GetPixelGreen(image,p)*GetPixelGreen(image,p);
-      channel_statistics[GreenChannel].sum_cubed+=(double)
-        GetPixelGreen(image,p)*GetPixelGreen(image,p)*GetPixelGreen(image,p);
-      channel_statistics[GreenChannel].sum_fourth_power+=(double)
-        GetPixelGreen(image,p)*GetPixelGreen(image,p)*GetPixelGreen(image,p)*
-        GetPixelGreen(image,p);
-      if ((double) GetPixelBlue(image,p) < channel_statistics[BlueChannel].minima)
-        channel_statistics[BlueChannel].minima=(double) GetPixelBlue(image,p);
-      if ((double) GetPixelBlue(image,p) > channel_statistics[BlueChannel].maxima)
-        channel_statistics[BlueChannel].maxima=(double) GetPixelBlue(image,p);
-      channel_statistics[BlueChannel].sum+=GetPixelBlue(image,p);
-      channel_statistics[BlueChannel].sum_squared+=(double)
-        GetPixelBlue(image,p)*GetPixelBlue(image,p);
-      channel_statistics[BlueChannel].sum_cubed+=(double)
-        GetPixelBlue(image,p)*GetPixelBlue(image,p)*GetPixelBlue(image,p);
-      channel_statistics[BlueChannel].sum_fourth_power+=(double)
-        GetPixelBlue(image,p)*GetPixelBlue(image,p)*GetPixelBlue(image,p)*
-        GetPixelBlue(image,p);
-      if (image->colorspace == CMYKColorspace)
-        {
-          if ((double) GetPixelBlack(image,p) < channel_statistics[BlackChannel].minima)
-            channel_statistics[BlackChannel].minima=(double)
-              GetPixelBlack(image,p);
-          if ((double) GetPixelBlack(image,p) > channel_statistics[BlackChannel].maxima)
-            channel_statistics[BlackChannel].maxima=(double)
-              GetPixelBlack(image,p);
-          channel_statistics[BlackChannel].sum+=GetPixelBlack(image,p);
-          channel_statistics[BlackChannel].sum_squared+=(double)
-            GetPixelBlack(image,p)*GetPixelBlack(image,p);
-          channel_statistics[BlackChannel].sum_cubed+=(double)
-            GetPixelBlack(image,p)*GetPixelBlack(image,p)*
-            GetPixelBlack(image,p);
-          channel_statistics[BlackChannel].sum_fourth_power+=(double)
-            GetPixelBlack(image,p)*GetPixelBlack(image,p)*
-            GetPixelBlack(image,p)*GetPixelBlack(image,p);
-        }
-      if (image->matte != MagickFalse)
-        {
-          if ((double) GetPixelAlpha(image,p) < channel_statistics[AlphaChannel].minima)
-            channel_statistics[AlphaChannel].minima=(double)
-              GetPixelAlpha(image,p);
-          if ((double) GetPixelAlpha(image,p) > channel_statistics[AlphaChannel].maxima)
-            channel_statistics[AlphaChannel].maxima=(double)
-              GetPixelAlpha(image,p);
-          channel_statistics[AlphaChannel].sum+=GetPixelAlpha(image,p);
-          channel_statistics[AlphaChannel].sum_squared+=(double)
-            GetPixelAlpha(image,p)*GetPixelAlpha(image,p);
-          channel_statistics[AlphaChannel].sum_cubed+=(double)
-            GetPixelAlpha(image,p)*GetPixelAlpha(image,p)*
-            GetPixelAlpha(image,p);
-          channel_statistics[AlphaChannel].sum_fourth_power+=(double)
-            GetPixelAlpha(image,p)*GetPixelAlpha(image,p)*
-            GetPixelAlpha(image,p)*GetPixelAlpha(image,p);
-        }
-      x++;
+        if ((double) p[i] < channel_statistics[i].minima)
+          channel_statistics[i].minima=(double) p[i];
+        if ((double) p[i] > channel_statistics[i].maxima)
+          channel_statistics[i].maxima=(double) p[i];
+        channel_statistics[i].sum+=p[i];
+        channel_statistics[i].sum_squared+=(double) p[i]*p[i];
+        channel_statistics[i].sum_cubed+=(double) p[i]*p[i]*p[i];
+        channel_statistics[i].sum_fourth_power+=(double) p[i]*p[i]*p[i]*p[i];
+      }
       p+=GetPixelChannels(image);
     }
   }
@@ -1693,11 +1594,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
   }
-  channels=3;
-  if (image->matte != MagickFalse)
-    channels++;
-  if (image->colorspace == CMYKColorspace)
-    channels++;
+  channels=GetImageChannels(image);
   channel_statistics[MaxPixelChannels].sum/=channels;
   channel_statistics[MaxPixelChannels].sum_squared/=channels;
   channel_statistics[MaxPixelChannels].sum_cubed/=channels;
