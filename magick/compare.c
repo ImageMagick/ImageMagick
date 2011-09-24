@@ -110,8 +110,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   Image
     *highlight_image;
 
-  highlight_image=CompareImageChannels(image,reconstruct_image,CompositeChannels,
-    metric,distortion,exception);
+  highlight_image=CompareImageChannels(image,reconstruct_image,
+    CompositeChannels,metric,distortion,exception);
   return(highlight_image);
 }
 
@@ -131,9 +131,6 @@ MagickExport Image *CompareImageChannels(Image *image,
     *difference_image,
     *highlight_image;
 
-  ssize_t
-    y;
-
   MagickBooleanType
     status;
 
@@ -141,6 +138,9 @@ MagickExport Image *CompareImageChannels(Image *image,
     highlight,
     lowlight,
     zero;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -222,11 +222,11 @@ MagickExport Image *CompareImageChannels(Image *image,
     register IndexPacket
       *restrict highlight_indexes;
 
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict r;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
