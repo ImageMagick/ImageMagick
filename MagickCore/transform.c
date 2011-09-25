@@ -205,7 +205,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
             if ((traits == UndefinedPixelTrait) ||
                 (chop_traits == UndefinedPixelTrait))
               continue;
-            q[channel]=p[i];
+            SetPixelChannel(chop_image,channel,p[i],q);
           }
           q+=GetPixelChannels(chop_image);
         }
@@ -276,7 +276,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
             if ((traits == UndefinedPixelTrait) ||
                 (chop_traits == UndefinedPixelTrait))
               continue;
-            q[channel]=p[i];
+            SetPixelChannel(chop_image,channel,p[i],q);
           }
           q+=GetPixelChannels(chop_image);
         }
@@ -629,7 +629,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         if ((traits == UndefinedPixelTrait) ||
             (crop_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(crop_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(crop_image);
@@ -981,7 +981,7 @@ MagickExport Image *ExcerptImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (excerpt_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(excerpt_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(excerpt_image);
@@ -1181,7 +1181,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
         if ((traits == UndefinedPixelTrait) ||
             (flip_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(flip_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(flip_image);
@@ -1323,7 +1323,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
         if ((traits == UndefinedPixelTrait) ||
             (flop_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(flop_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
     }
@@ -1450,7 +1450,7 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
         if ((source_traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(destination,channel,p[i],q);
       }
       p+=GetPixelChannels(source);
       q+=GetPixelChannels(destination);
@@ -1768,7 +1768,7 @@ MagickExport Image *SpliceImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(splice_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
@@ -1795,7 +1795,7 @@ MagickExport Image *SpliceImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(splice_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
@@ -1864,7 +1864,7 @@ MagickExport Image *SpliceImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(splice_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
@@ -1891,7 +1891,7 @@ MagickExport Image *SpliceImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(splice_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
@@ -2196,7 +2196,7 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
         if ((traits == UndefinedPixelTrait) ||
             (transpose_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(transpose_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(transpose_image);
@@ -2343,7 +2343,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         if ((traits == UndefinedPixelTrait) ||
             (transverse_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[i];
+        SetPixelChannel(transverse_image,channel,p[i],q);
       }
       p+=GetPixelChannels(image);
     }

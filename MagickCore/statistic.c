@@ -569,7 +569,8 @@ MagickExport Image *EvaluateImages(const Image *images,
             if ((evaluate_traits & UpdatePixelTrait) == 0)
               continue;
             evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(random_info[id],
-              p[channel],op,evaluate_pixel[j].channel[i]);
+              GetPixelChannel(evaluate_image,channel,p),op,
+              evaluate_pixel[j].channel[i]);
           }
           image_view=DestroyCacheView(image_view);
           next=GetNextImageInList(next);
@@ -674,8 +675,8 @@ MagickExport Image *EvaluateImages(const Image *images,
             if ((traits & UpdatePixelTrait) == 0)
               continue;
             evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(random_info[id],
-              p[channel],j == 0 ? AddEvaluateOperator : op,
-              evaluate_pixel[x].channel[i]);
+              GetPixelChannel(evaluate_image,channel,p),j == 0 ?
+              AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
           }
           p+=GetPixelChannels(next);
         }

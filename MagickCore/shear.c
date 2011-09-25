@@ -1163,10 +1163,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                   continue;
                 if ((rotate_traits & CopyPixelTrait) != 0)
                   {
-                    q[channel]=tile_pixels[i];
+                    SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
                     continue;
                   }
-                q[channel]=tile_pixels[i];
+                SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
               }
               tile_pixels-=width*GetPixelChannels(image);
               q+=GetPixelChannels(rotate_image);
@@ -1251,10 +1251,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               continue;
             if ((rotate_traits & CopyPixelTrait) != 0)
               {
-                q[channel]=p[i];
+                SetPixelChannel(rotate_image,channel,p[i],q);
                 continue;
               }
-            q[channel]=p[i];
+            SetPixelChannel(rotate_image,channel,p[i],q);
           }
           p+=GetPixelChannels(image);
         }
@@ -1374,10 +1374,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                   continue;
                 if ((rotate_traits & CopyPixelTrait) != 0)
                   {
-                    q[channel]=tile_pixels[i];
+                    SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
                     continue;
                   }
-                q[channel]=tile_pixels[i];
+                SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
               }
               tile_pixels+=width*GetPixelChannels(image);
               q+=GetPixelChannels(rotate_image);

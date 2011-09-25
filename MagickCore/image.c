@@ -554,7 +554,7 @@ MagickExport Image *AppendImages(const Image *images,
           if ((traits == UndefinedPixelTrait) ||
               (append_traits == UndefinedPixelTrait))
             continue;
-          q[channel]=p[i];
+          SetPixelChannel(append_image,channel,p[i],q);
         }
         p+=GetPixelChannels(image);
         q+=GetPixelChannels(append_image);
