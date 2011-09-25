@@ -128,27 +128,32 @@
 %
 */
 
-static PixelInfo **DestroyPixelThreadSet(PixelInfo **pixels)
+typedef struct _WenusInfo
+{
+  MagickRealType
+    channel[MaxPixelChannels];
+} WenusInfo;
+
+static WenusInfo **DestroyPixelThreadSet(WenusInfo **pixels)
 {
   register ssize_t
     i;
 
-  assert(pixels != (PixelInfo **) NULL);
+  assert(pixels != (WenusInfo **) NULL);
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-    if (pixels[i] != (PixelInfo *) NULL)
-      pixels[i]=(PixelInfo *) RelinquishMagickMemory(pixels[i]);
-  pixels=(PixelInfo **) RelinquishMagickMemory(pixels);
+    if (pixels[i] != (WenusInfo *) NULL)
+      pixels[i]=(WenusInfo *) RelinquishMagickMemory(pixels[i]);
+  pixels=(WenusInfo **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
-static PixelInfo **AcquirePixelThreadSet(const Image *image,
+static WenusInfo **AcquirePixelThreadSet(const Image *image,
   const size_t number_images)
 {
   register ssize_t
-    i,
-    j;
+    i;
 
-  PixelInfo
+  WenusInfo
     **pixels;
 
   size_t
@@ -156,21 +161,29 @@ static PixelInfo **AcquirePixelThreadSet(const Image *image,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixels=(PixelInfo **) AcquireQuantumMemory(number_threads,
-    sizeof(*pixels));
-  if (pixels == (PixelInfo **) NULL)
-    return((PixelInfo **) NULL);
+  pixels=(WenusInfo **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
+  if (pixels == (WenusInfo **) NULL)
+    return((WenusInfo **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
+    register ssize_t
+      j;
+
     length=image->columns;
     if (length < number_images)
       length=number_images;
-    pixels[i]=(PixelInfo *) AcquireQuantumMemory(length,sizeof(**pixels));
-    if (pixels[i] == (PixelInfo *) NULL)
+    pixels[i]=(WenusInfo *) AcquireQuantumMemory(length,sizeof(**pixels));
+    if (pixels[i] == (WenusInfo *) NULL)
       return(DestroyPixelThreadSet(pixels));
     for (j=0; j < (ssize_t) length; j++)
-      GetPixelInfo(image,&pixels[i][j]);
+    {
+      register ssize_t
+        k;
+
+      for (k=0; k < MaxPixelChannels; k++)
+        pixels[i][j].channel[k]=0.0;
+    }
   }
   return(pixels);
 }
@@ -188,18 +201,22 @@ extern "C" {
 
 static int IntensityCompare(const void *x,const void *y)
 {
-  const PixelInfo
+  const WenusInfo
     *color_1,
     *color_2;
 
-  int
-    intensity;
+  MagickRealType
+    distance;
 
-  color_1=(const PixelInfo *) x;
-  color_2=(const PixelInfo *) y;
-  intensity=(int) GetPixelInfoIntensity(color_2)-(int)
-    GetPixelInfoIntensity(color_1);
-  return(intensity);
+  register ssize_t
+    i;
+
+  color_1=(const WenusInfo *) x;
+  color_2=(const WenusInfo *) y;
+  distance=0.0;
+  for (i=0; i < MaxPixelChannels; i++)
+    distance+=color_1->channel[i]-(MagickRealType) color_2->channel[i];
+  return(distance < 0 ? -1 : distance > 0 ? 1 : 0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -418,9 +435,8 @@ MagickExport Image *EvaluateImages(const Image *images,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    **restrict evaluate_pixels,
-    zero;
+  WenusInfo
+    **restrict evaluate_pixels;
 
   RandomInfo
     **restrict random_info;
@@ -461,7 +477,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     }
   number_images=GetImageListLength(images);
   evaluate_pixels=AcquirePixelThreadSet(images,number_images);
-  if (evaluate_pixels == (PixelInfo **) NULL)
+  if (evaluate_pixels == (WenusInfo **) NULL)
     {
       evaluate_image=DestroyImage(evaluate_image);
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -473,7 +489,6 @@ MagickExport Image *EvaluateImages(const Image *images,
   */
   status=MagickTrue;
   progress=0;
-  GetPixelInfo(images,&zero);
   random_info=AcquireRandomInfoThreadSet();
   evaluate_view=AcquireCacheView(evaluate_image);
   if (op == MedianEvaluateOperator)
@@ -491,7 +506,7 @@ MagickExport Image *EvaluateImages(const Image *images,
       const int
         id = GetOpenMPThreadId();
 
-      register PixelInfo
+      register WenusInfo
         *evaluate_pixel;
 
       register Quantum
@@ -513,15 +528,20 @@ MagickExport Image *EvaluateImages(const Image *images,
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
         register ssize_t
-          i;
+          j,
+          k;
 
-        for (i=0; i < (ssize_t) number_images; i++)
-          evaluate_pixel[i]=zero;
+        for (j=0; j < (ssize_t) number_images; j++)
+          for (k=0; k < MaxPixelChannels; k++)
+            evaluate_pixel[j].channel[k]=0.0;
         next=images;
-        for (i=0; i < (ssize_t) number_images; i++)
+        for (j=0; j < (ssize_t) number_images; j++)
         {
           register const Quantum
             *p;
+
+          register ssize_t
+            i;
 
           image_view=AcquireCacheView(next);
           p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
@@ -530,37 +550,34 @@ MagickExport Image *EvaluateImages(const Image *images,
               image_view=DestroyCacheView(image_view);
               break;
             }
-          evaluate_pixel[i].red=ApplyEvaluateOperator(random_info[id],
-            GetPixelRed(next,p),op,evaluate_pixel[i].red);
-          evaluate_pixel[i].green=ApplyEvaluateOperator(random_info[id],
-            GetPixelGreen(next,p),op,evaluate_pixel[i].green);
-          evaluate_pixel[i].blue=ApplyEvaluateOperator(random_info[id],
-            GetPixelBlue(next,p),op,evaluate_pixel[i].blue);
-          if (evaluate_image->colorspace == CMYKColorspace)
-            evaluate_pixel[i].black=ApplyEvaluateOperator(random_info[id],
-              GetPixelBlack(next,p),op,evaluate_pixel[i].black);
-          evaluate_pixel[i].alpha=ApplyEvaluateOperator(random_info[id],
-            GetPixelAlpha(next,p),op,evaluate_pixel[i].alpha);
+          for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+          {
+            PixelChannel
+              channel;
+
+            PixelTrait
+              evaluate_traits,
+              traits;
+
+            evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
+              (PixelChannel) i);
+            channel=GetPixelChannelMapChannel(evaluate_image,(PixelChannel) i);
+            traits=GetPixelChannelMapTraits(next,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (evaluate_traits == UndefinedPixelTrait))
+              continue;
+            if ((evaluate_traits & UpdatePixelTrait) == 0)
+              continue;
+            evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(random_info[id],
+              p[channel],op,evaluate_pixel[j].channel[i]);
+          }
           image_view=DestroyCacheView(image_view);
           next=GetNextImageInList(next);
         }
         qsort((void *) evaluate_pixel,number_images,sizeof(*evaluate_pixel),
           IntensityCompare);
-        SetPixelRed(evaluate_image,
-          ClampToQuantum(evaluate_pixel[i/2].red),q);
-        SetPixelGreen(evaluate_image,
-          ClampToQuantum(evaluate_pixel[i/2].green),q);
-        SetPixelBlue(evaluate_image,
-          ClampToQuantum(evaluate_pixel[i/2].blue),q);
-        if (evaluate_image->colorspace == CMYKColorspace)
-          SetPixelBlack(evaluate_image,
-          ClampToQuantum(evaluate_pixel[i/2].black),q);
-        if (evaluate_image->matte == MagickFalse)
-          SetPixelAlpha(evaluate_image,
-            ClampToQuantum(evaluate_pixel[i/2].alpha),q);
-        else
-          SetPixelAlpha(evaluate_image,
-            ClampToQuantum(evaluate_pixel[i/2].alpha),q);
+        for (k=0; k < (ssize_t) GetPixelChannels(evaluate_image); k++)
+          q[k]=ClampToQuantum(evaluate_pixel[j/2].channel[k]);
         q+=GetPixelChannels(evaluate_image);
       }
       if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
@@ -581,7 +598,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     }
   else
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+    #pragma omp parallel for schedule(dynamic) shared(progress,status)
 #endif
     for (y=0; y < (ssize_t) evaluate_image->rows; y++)
     {
@@ -598,11 +615,14 @@ MagickExport Image *EvaluateImages(const Image *images,
         i,
         x;
 
-      register PixelInfo
+      register WenusInfo
         *evaluate_pixel;
 
       register Quantum
         *restrict q;
+
+      ssize_t
+        j;
 
       if (status == MagickFalse)
         continue;
@@ -614,10 +634,11 @@ MagickExport Image *EvaluateImages(const Image *images,
           continue;
         }
       evaluate_pixel=evaluate_pixels[id];
-      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
-        evaluate_pixel[x]=zero;
+      for (j=0; j < (ssize_t) evaluate_image->columns; j++)
+        for (i=0; i < MaxPixelChannels; i++)
+          evaluate_pixel[j].channel[i]=0.0;
       next=images;
-      for (i=0; i < (ssize_t) number_images; i++)
+      for (j=0; j < (ssize_t) number_images; j++)
       {
         register const Quantum
           *p;
@@ -631,22 +652,31 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
         for (x=0; x < (ssize_t) next->columns; x++)
         {
-          evaluate_pixel[x].red=ApplyEvaluateOperator(random_info[id],
-            GetPixelRed(next,p),i == 0 ? AddEvaluateOperator : op,
-            evaluate_pixel[x].red);
-          evaluate_pixel[x].green=ApplyEvaluateOperator(random_info[id],
-            GetPixelGreen(next,p),i == 0 ? AddEvaluateOperator : op,
-              evaluate_pixel[x].green);
-          evaluate_pixel[x].blue=ApplyEvaluateOperator(random_info[id],
-            GetPixelBlue(next,p),i == 0 ? AddEvaluateOperator : op,
-              evaluate_pixel[x].blue);
-          if (evaluate_image->colorspace == CMYKColorspace)
-            evaluate_pixel[x].black=ApplyEvaluateOperator(random_info[id],
-              GetPixelBlack(next,p),i == 0 ? AddEvaluateOperator : op,
-              evaluate_pixel[x].black);
-          evaluate_pixel[x].alpha=ApplyEvaluateOperator(random_info[id],
-            GetPixelAlpha(next,p),i == 0 ? AddEvaluateOperator : op,
-            evaluate_pixel[x].alpha);
+          register ssize_t
+            i;
+
+          for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+          {
+            PixelChannel
+              channel;
+
+            PixelTrait
+              evaluate_traits,
+              traits;
+
+            evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
+              (PixelChannel) i);
+            channel=GetPixelChannelMapChannel(evaluate_image,(PixelChannel) i);
+            traits=GetPixelChannelMapTraits(next,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (evaluate_traits == UndefinedPixelTrait))
+              continue;
+            if ((traits & UpdatePixelTrait) == 0)
+              continue;
+            evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(random_info[id],
+              p[channel],j == 0 ? AddEvaluateOperator : op,
+              evaluate_pixel[x].channel[i]);
+          }
           p+=GetPixelChannels(next);
         }
         image_view=DestroyCacheView(image_view);
@@ -655,26 +685,29 @@ MagickExport Image *EvaluateImages(const Image *images,
       if (op == MeanEvaluateOperator)
         for (x=0; x < (ssize_t) evaluate_image->columns; x++)
         {
-          evaluate_pixel[x].red/=number_images;
-          evaluate_pixel[x].green/=number_images;
-          evaluate_pixel[x].blue/=number_images;
-          evaluate_pixel[x].black/=number_images;
-          evaluate_pixel[x].alpha/=number_images;
+          register ssize_t
+            i;
+
+          for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+            evaluate_pixel[x].channel[i]/=(MagickRealType) number_images;
         }
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
-        SetPixelRed(evaluate_image,ClampToQuantum(evaluate_pixel[x].red),q);
-        SetPixelGreen(evaluate_image,ClampToQuantum(evaluate_pixel[x].green),q);
-        SetPixelBlue(evaluate_image,ClampToQuantum(evaluate_pixel[x].blue),q);
-        if (evaluate_image->colorspace == CMYKColorspace)
-          SetPixelBlack(evaluate_image,ClampToQuantum(evaluate_pixel[x].black),
-            q);
-        if (evaluate_image->matte == MagickFalse)
-          SetPixelAlpha(evaluate_image,ClampToQuantum(evaluate_pixel[x].alpha),
-            q);
-        else
-          SetPixelAlpha(evaluate_image,ClampToQuantum(evaluate_pixel[x].alpha),
-            q);
+        register ssize_t
+          i;
+
+        for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+        {
+          PixelTrait
+            traits;
+
+          traits=GetPixelChannelMapTraits(evaluate_image,(PixelChannel) i);
+          if (traits == UndefinedPixelTrait)
+            continue;
+          if ((traits & UpdatePixelTrait) == 0)
+            continue;
+          q[i]=ClampToQuantum(evaluate_pixel[x].channel[i]);
+        }
         q+=GetPixelChannels(evaluate_image);
       }
       if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
@@ -1358,9 +1391,9 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         #pragma omp critical (MagickCore_GetImageRange)
 #endif
         {
-          if ((double) p[i] < *minima)
+          if (p[i] < *minima)
             *minima=(double) p[i];
-          if ((double) p[i] > *maxima)
+          if (p[i] > *maxima)
             *maxima=(double) p[i];
         }
       }
