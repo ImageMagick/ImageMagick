@@ -31,11 +31,11 @@ extern "C" {
 #define MagickLibVersion  0x672
 #define MagickLibVersionText  "6.7.2"
 #define MagickLibVersionNumber  5,0,0
-#define MagickLibAddendum  "-9"
+#define MagickLibAddendum  "-10"
 #define MagickLibInterface  5
 #define MagickLibMinInterface  5
 #define MagickReleaseDate  "2011-09-25"
-#define MagickChangeDate   "20110925"
+#define MagickChangeDate   "20110926"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #define MagickOpenMPFeature  "OpenMP "
