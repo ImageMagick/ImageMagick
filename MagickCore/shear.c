@@ -1079,8 +1079,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 90 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      tile_y=0;
-      for ( ; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+      #pragma omp parallel for schedule(static,1) shared(progress, status)
+#endif
+      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
           tile_x;
@@ -1119,9 +1121,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               status=MagickFalse;
               break;
             }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
-          #pragma omp parallel for schedule(static,1) shared(progress, status)
-#endif
           for (y=0; y < (ssize_t) width; y++)
           {
             register const Quantum
@@ -1161,11 +1160,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;
-                if ((rotate_traits & CopyPixelTrait) != 0)
-                  {
-                    SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
-                    continue;
-                  }
                 SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
               }
               tile_pixels-=width*GetPixelChannels(image);
@@ -1249,11 +1243,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             if ((traits == UndefinedPixelTrait) ||
                 (rotate_traits == UndefinedPixelTrait))
               continue;
-            if ((rotate_traits & CopyPixelTrait) != 0)
-              {
-                SetPixelChannel(rotate_image,channel,p[i],q);
-                continue;
-              }
             SetPixelChannel(rotate_image,channel,p[i],q);
           }
           p+=GetPixelChannels(image);
@@ -1291,8 +1280,10 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 270 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      tile_y=0;
-      for ( ; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+      #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
           tile_x;
@@ -1331,9 +1322,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               status=MagickFalse;
               break;
             }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
-          #pragma omp parallel for schedule(static,1) shared(progress,status)
-#endif
           for (y=0; y < (ssize_t) width; y++)
           {
             register const Quantum
@@ -1372,11 +1360,6 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;
-                if ((rotate_traits & CopyPixelTrait) != 0)
-                  {
-                    SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
-                    continue;
-                  }
                 SetPixelChannel(rotate_image,channel,tile_pixels[i],q);
               }
               tile_pixels+=width*GetPixelChannels(image);
