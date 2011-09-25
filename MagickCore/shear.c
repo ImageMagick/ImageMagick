@@ -1175,6 +1175,9 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_IntegralRotateImage)
+#endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
@@ -1255,6 +1258,28 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_IntegralRotateImage)
+#endif
+            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
+              image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+        image->rows-1,image->rows);
+      Swap(page.width,page.height);
+      Swap(page.x,page.y);
+      if (page.width != 0)
+        page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
+      break;
+    }
+    case 2:
+    {
+      /*
+        Rotate 180 degrees.
+      */
             proceed=SetImageProgress(image,RotateImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -1375,6 +1400,28 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_IntegralRotateImage)
+#endif
+            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
+              image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+      (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
+        image->rows-1,image->rows);
+      Swap(page.width,page.height);
+      Swap(page.x,page.y);
+      if (page.width != 0)
+        page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
+      break;
+    }
+    case 2:
+    {
+      /*
+        Rotate 180 degrees.
+      */
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
