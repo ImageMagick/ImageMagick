@@ -842,63 +842,79 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
     case PolynomialFunction:
     {
       /*
-       * Polynomial
-       * Parameters:   polynomial constants,  highest to lowest order
-       *   For example:      c0*x^3 + c1*x^2 + c2*x  + c3
-       */
+        Polynomial: polynomial constants, highest to lowest order
+        (e.g. c0*x^3 + c1*x^2 + c2*x + c3).
+      */
       result=0.0;
       for (i=0; i < (ssize_t) number_parameters; i++)
-        result = result*QuantumScale*pixel + parameters[i];
-      result *= QuantumRange;
+        result=result*QuantumScale*pixel+parameters[i];
+      result*=QuantumRange;
       break;
     }
     case SinusoidFunction:
     {
-      /* Sinusoid Function
-       * Parameters:   Freq, Phase, Ampl, bias
-       */
-      double  freq,phase,ampl,bias;
-      freq  = ( number_parameters >= 1 ) ? parameters[0] : 1.0;
-      phase = ( number_parameters >= 2 ) ? parameters[1] : 0.0;
-      ampl  = ( number_parameters >= 3 ) ? parameters[2] : 0.5;
-      bias  = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
-      result=(MagickRealType) (QuantumRange*(ampl*sin((double) (2.0*MagickPI*
-        (freq*QuantumScale*pixel + phase/360.0) )) + bias ) );
+      MagickRealType
+        amplitude,
+        bias,
+        frequency,
+        phase;
+
+      /*
+        Sinusoid: frequency, phase, amplitude, bias.
+      */
+      frequency=(number_parameters >= 1) ? parameters[0] : 1.0;
+      phase=(number_parameters >= 2) ? parameters[1] : 0.0;
+      amplitude=(number_parameters >= 3) ? parameters[2] : 0.5;
+      bias=(number_parameters >= 4) ? parameters[3] : 0.5;
+      result=(MagickRealType) (QuantumRange*(amplitude*sin((double) (2.0*
+        MagickPI*(frequency*QuantumScale*pixel+phase/360.0)))+bias));
       break;
     }
     case ArcsinFunction:
     {
-      /* Arcsin Function  (peged at range limits for invalid results)
-       * Parameters:   Width, Center, Range, Bias
-       */
-      double  width,range,center,bias;
-      width  = ( number_parameters >= 1 ) ? parameters[0] : 1.0;
-      center = ( number_parameters >= 2 ) ? parameters[1] : 0.5;
-      range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0;
-      bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
-      result = 2.0/width*(QuantumScale*pixel - center);
+      MagickRealType
+        bias,
+        center,
+        range,
+        width;
+
+      /*
+        Arcsin (peged at range limits for invalid results):
+        width, center, range, and bias.
+      */
+      width=(number_parameters >= 1) ? parameters[0] : 1.0;
+      center=(number_parameters >= 2) ? parameters[1] : 0.5;
+      range=(number_parameters >= 3) ? parameters[2] : 1.0;
+      bias=(number_parameters >= 4) ? parameters[3] : 0.5;
+      result=2.0/width*(QuantumScale*pixel-center);
       if ( result <= -1.0 )
-        result = bias - range/2.0;
-      else if ( result >= 1.0 )
-        result = bias + range/2.0;
+        result=bias-range/2.0;
       else
-        result=(MagickRealType) (range/MagickPI*asin((double) result)+bias);
-      result *= QuantumRange;
+        if (result >= 1.0)
+          result=bias+range/2.0;
+        else
+          result=(MagickRealType) (range/MagickPI*asin((double) result)+bias);
+      result*=QuantumRange;
       break;
     }
     case ArctanFunction:
     {
-      /* Arctan Function
-       * Parameters:   Slope, Center, Range, Bias
-       */
-      double  slope,range,center,bias;
-      slope  = ( number_parameters >= 1 ) ? parameters[0] : 1.0;
-      center = ( number_parameters >= 2 ) ? parameters[1] : 0.5;
-      range  = ( number_parameters >= 3 ) ? parameters[2] : 1.0;
-      bias   = ( number_parameters >= 4 ) ? parameters[3] : 0.5;
+      MagickRealType
+        center,
+        bias,
+        range,
+        slope;
+
+      /*
+        Arctan: slope, center, range, and bias.
+      */
+      slope=(number_parameters >= 1) ? parameters[0] : 1.0;
+      center=(number_parameters >= 2) ? parameters[1] : 0.5;
+      range=(number_parameters >= 3) ? parameters[2] : 1.0;
+      bias=(number_parameters >= 4) ? parameters[3] : 0.5;
       result=(MagickRealType) (MagickPI*slope*(QuantumScale*pixel-center));
       result=(MagickRealType) (QuantumRange*(range/MagickPI*atan((double)
-                  result) + bias ) );
+        result)+bias));
       break;
     }
     case UndefinedFunction:
@@ -941,11 +957,11 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t
-      x;
-
     register Quantum
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -957,28 +973,22 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,ApplyFunction(GetPixelRed(image,q),function,
-          number_parameters,parameters,exception),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,ApplyFunction(GetPixelGreen(image,q),function,
-          number_parameters,parameters,exception),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,ApplyFunction(GetPixelBlue(image,q),function,
-          number_parameters,parameters,exception),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,ApplyFunction(GetPixelBlack(image,q),function,
-          number_parameters,parameters,exception),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (image->matte == MagickFalse)
-            SetPixelAlpha(image,ApplyFunction(GetPixelAlpha(image,q),function,
-              number_parameters,parameters,exception),q);
-          else
-            SetPixelAlpha(image,ApplyFunction(GetPixelAlpha(image,q),function,
-              number_parameters,parameters,exception),q);
-        }
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ApplyFunction(q[i],function,number_parameters,parameters,
+          exception);
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1085,8 +1095,11 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   ChannelStatistics
     *channel_statistics;
 
+  register ssize_t
+    i;
+
   size_t
-    channels;
+    area;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1095,64 +1108,28 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
-  channels=0;
+  area=0;
   channel_statistics[MaxPixelChannels].mean=0.0;
   channel_statistics[MaxPixelChannels].standard_deviation=0.0;
-  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-    {
-      channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[RedPixelChannel].mean;
-      channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[RedPixelChannel].variance-
-        channel_statistics[RedPixelChannel].mean*
-        channel_statistics[RedPixelChannel].mean;
-      channels++;
-    }
-  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-    {
-      channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[GreenPixelChannel].mean;
-      channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[GreenPixelChannel].variance-
-        channel_statistics[GreenPixelChannel].mean*
-        channel_statistics[GreenPixelChannel].mean;
-      channels++;
-    }
-  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-    {
-      channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[BluePixelChannel].mean;
-      channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[BluePixelChannel].variance-
-        channel_statistics[BluePixelChannel].mean*
-        channel_statistics[BluePixelChannel].mean;
-      channels++;
-    }
-  if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->colorspace == CMYKColorspace))
-    {
-      channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[BlackPixelChannel].mean;
-      channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[BlackPixelChannel].variance-
-        channel_statistics[BlackPixelChannel].mean*
-        channel_statistics[BlackPixelChannel].mean;
-      channels++;
-    }
-  if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->matte != MagickFalse))
-    {
-      channel_statistics[MaxPixelChannels].mean+=
-        channel_statistics[AlphaPixelChannel].mean;
-      channel_statistics[MaxPixelChannels].standard_deviation+=
-        channel_statistics[AlphaPixelChannel].variance-
-        channel_statistics[AlphaPixelChannel].mean*
-        channel_statistics[AlphaPixelChannel].mean;
-      channels++;
-    }
-  channel_statistics[MaxPixelChannels].mean/=channels;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelTrait
+      traits;
+
+    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    if (traits == UndefinedPixelTrait)
+      continue;
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    channel_statistics[MaxPixelChannels].mean+=channel_statistics[i].mean;
+    channel_statistics[MaxPixelChannels].standard_deviation+=
+      channel_statistics[i].variance-channel_statistics[i].mean*
+      channel_statistics[i].mean;
+    area++;
+  }
+  channel_statistics[MaxPixelChannels].mean/=area;
   channel_statistics[MaxPixelChannels].standard_deviation=
-    sqrt(channel_statistics[MaxPixelChannels].standard_deviation/channels);
+    sqrt(channel_statistics[MaxPixelChannels].standard_deviation/area);
   *mean=channel_statistics[MaxPixelChannels].mean;
   *standard_deviation=channel_statistics[MaxPixelChannels].standard_deviation;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
@@ -1193,6 +1170,9 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
 MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   double *kurtosis,double *skewness,ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   double
     area,
     mean,
@@ -1201,6 +1181,9 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
     sum_cubes,
     sum_fourth_power;
 
+  MagickBooleanType
+    status;
+
   ssize_t
     y;
 
@@ -1208,6 +1191,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=MagickTrue;
   *kurtosis=0.0;
   *skewness=0.0;
   area=0.0;
@@ -1216,6 +1200,10 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   sum_squares=0.0;
   sum_cubes=0.0;
   sum_fourth_power=0.0;
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) omp_throttle(1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1224,71 +1212,44 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
     register ssize_t
       x;
 
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_GetImageKurtosis)
+#endif
         {
-          mean+=GetPixelRed(image,p);
-          sum_squares+=(double) GetPixelRed(image,p)*GetPixelRed(image,p);
-          sum_cubes+=(double) GetPixelRed(image,p)*GetPixelRed(image,p)*
-            GetPixelRed(image,p);
-          sum_fourth_power+=(double) GetPixelRed(image,p)*
-            GetPixelRed(image,p)*GetPixelRed(image,p)*GetPixelRed(image,p);
+          mean+=p[i];
+          sum_squares+=(double) p[i]*p[i];
+          sum_cubes+=(double) p[i]*p[i]*p[i];
+          sum_fourth_power+=(double) p[i]*p[i]*p[i]*p[i];
           area++;
         }
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        {
-          mean+=GetPixelGreen(image,p);
-          sum_squares+=(double) GetPixelGreen(image,p)*GetPixelGreen(image,p);
-          sum_cubes+=(double) GetPixelGreen(image,p)*GetPixelGreen(image,p)*
-            GetPixelGreen(image,p);
-          sum_fourth_power+=(double) GetPixelGreen(image,p)*
-            GetPixelGreen(image,p)*GetPixelGreen(image,p)*
-            GetPixelGreen(image,p);
-          area++;
-        }
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        {
-          mean+=GetPixelBlue(image,p);
-          sum_squares+=(double) GetPixelBlue(image,p)*GetPixelBlue(image,p);
-          sum_cubes+=(double) GetPixelBlue(image,p)*GetPixelBlue(image,p)*
-            GetPixelBlue(image,p);
-          sum_fourth_power+=(double) GetPixelBlue(image,p)*
-            GetPixelBlue(image,p)*GetPixelBlue(image,p)*
-            GetPixelBlue(image,p);
-          area++;
-        }
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        {
-          mean+=GetPixelBlack(image,p);
-          sum_squares+=(double) GetPixelBlack(image,p)*GetPixelBlack(image,p);
-          sum_cubes+=(double) GetPixelBlack(image,p)*GetPixelBlack(image,p)*
-            GetPixelBlack(image,p);
-          sum_fourth_power+=(double) GetPixelBlack(image,p)*
-            GetPixelBlack(image,p)*GetPixelBlack(image,p)*
-            GetPixelBlack(image,p);
-          area++;
-        }
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          mean+=GetPixelAlpha(image,p);
-          sum_squares+=(double) GetPixelAlpha(image,p)*GetPixelAlpha(image,p);
-          sum_cubes+=(double) GetPixelAlpha(image,p)*GetPixelAlpha(image,p)*
-            GetPixelAlpha(image,p);
-          sum_fourth_power+=(double) GetPixelAlpha(image,p)*
-            GetPixelAlpha(image,p)*GetPixelAlpha(image,p)*
-            GetPixelAlpha(image,p);
-          area++;
-        }
+      }
       p+=GetPixelChannels(image);
     }
   }
-  if (y < (ssize_t) image->rows)
-    return(MagickFalse);
+  image_view=DestroyCacheView(image_view);
   if (area != 0.0)
     {
       mean/=area;
@@ -1307,7 +1268,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
       *skewness=sum_cubes-3.0*mean*sum_squares+2.0*mean*mean*mean;
       *skewness/=standard_deviation*standard_deviation*standard_deviation;
     }
-  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*
@@ -1397,9 +1358,9 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         #pragma omp critical (MagickCore_GetImageRange)
 #endif
         {
-          if (p[i] < *minima)
+          if ((double) p[i] < *minima)
             *minima=(double) p[i];
-          if (p[i] > *maxima)
+          if ((double) p[i] > *maxima)
             *maxima=(double) p[i];
         }
       }
