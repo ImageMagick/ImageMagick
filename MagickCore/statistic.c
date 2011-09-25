@@ -1342,8 +1342,11 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
 MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   double *maxima,ExceptionInfo *exception)
 {
-  PixelInfo
-    pixel;
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
 
   ssize_t
     y;
@@ -1352,9 +1355,13 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=MagickTrue;
   *maxima=(-1.0E-37);
   *minima=1.0E+37;
-  GetPixelInfo(image,&pixel);
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) omp_throttle(1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1363,52 +1370,44 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
     register ssize_t
       x;
 
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfo(image,p,&pixel);
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_GetImageRange)
+#endif
         {
-          if (pixel.red < *minima)
-            *minima=(double) pixel.red;
-          if (pixel.red > *maxima)
-            *maxima=(double) pixel.red;
+          if (p[i] < *minima)
+            *minima=(double) p[i];
+          if (p[i] > *maxima)
+            *maxima=(double) p[i];
         }
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (pixel.green < *minima)
-            *minima=(double) pixel.green;
-          if (pixel.green > *maxima)
-            *maxima=(double) pixel.green;
-        }
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (pixel.blue < *minima)
-            *minima=(double) pixel.blue;
-          if (pixel.blue > *maxima)
-            *maxima=(double) pixel.blue;
-        }
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        {
-          if (pixel.black < *minima)
-            *minima=(double) pixel.black;
-          if (pixel.black > *maxima)
-            *maxima=(double) pixel.black;
-        }
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        {
-          if (pixel.alpha < *minima)
-            *minima=(double) pixel.alpha;
-          if (pixel.alpha > *maxima)
-            *maxima=(double) pixel.alpha;
-        }
+      }
       p+=GetPixelChannels(image);
     }
   }
-  return(y == (ssize_t) image->rows ? MagickTrue : MagickFalse);
+  image_view=DestroyCacheView(image_view);
+  return(status);
 }
 
 /*
