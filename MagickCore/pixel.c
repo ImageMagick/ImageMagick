@@ -3870,7 +3870,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       if (p == (const Quantum *) NULL)
         status=MagickFalse;
       else
-        *pixel=(double) p[channel];
+        *pixel=(double) GetPixelChannel(image,channel,p);
       filter_view=DestroyCacheView(filter_view);
       filter_image=DestroyImage(filter_image);
       break;
@@ -3883,7 +3883,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      *pixel=(double) p[channel];
+      *pixel=(double) GetPixelChannel(image,channel,p);
       break;
     }
     case NearestNeighborInterpolatePixel:
@@ -3895,7 +3895,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      *pixel=(double) p[channel];
+      *pixel=(double) GetPixelChannel(image,channel,p);
       break;
     }
     case MeshInterpolatePixel:

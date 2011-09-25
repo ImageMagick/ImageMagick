@@ -391,8 +391,9 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
             (clut_traits == UndefinedPixelTrait) ||
             ((traits & UpdatePixelTrait) == 0))
           continue;
-        q[channel]=ClampToQuantum(clut_map[ScaleQuantumToMap(q[channel])*
-          GetPixelChannels(clut_image)+channel]);
+        SetPixelChannel(clut_image,channel,ClampToQuantum(clut_map[
+          ScaleQuantumToMap(GetPixelChannel(clut_image,channel,q))*
+          GetPixelChannels(clut_image)+channel]),q);
       }
       q+=GetPixelChannels(image);
     }
@@ -1285,8 +1286,9 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define EnhancePixel(weight) \
-  mean=((MagickRealType) r[i]+q[channel])/2.0; \
-  distance=(MagickRealType) r[i]-(MagickRealType) q[channel]; \
+  mean=((MagickRealType) r[i]+GetPixelChannel(enhance_image,channel,q))/2.0; \
+  distance=(MagickRealType) r[i]-(MagickRealType) GetPixelChannel( \
+    enhance_image,channel,q); \
   distance_squared=QuantumScale*(2.0*((MagickRealType) QuantumRange+1.0)+ \
     mean)*distance*distance; \
   if (distance_squared < ((MagickRealType) QuantumRange*(MagickRealType) \
@@ -1397,7 +1399,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         if ((traits == UndefinedPixelTrait) ||
             (enhance_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[center+i];
+        SetPixelChannel(enhance_image,channel,p[center+i],q);
         if ((enhance_traits & CopyPixelTrait) != 0)
           continue;
         /*
@@ -1420,7 +1422,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         r=p+4*GetPixelChannels(image)*(image->columns+4);
         EnhancePixel(5.0); EnhancePixel(8.0); EnhancePixel(10.0);
           EnhancePixel(8.0); EnhancePixel(5.0);
-        q[channel]=ClampToQuantum(aggregate/total_weight);
+        SetPixelChannel(enhance_image,channel,ClampToQuantum(aggregate/
+          total_weight),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(enhance_image);

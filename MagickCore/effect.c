@@ -379,7 +379,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
           continue;
         if ((blur_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
           }
         k=kernel[j];
@@ -402,7 +402,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
               }
             }
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            q[channel]=ClampToQuantum(gamma*pixel);
+            SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
         /*
@@ -420,7 +420,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,
           }
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(blur_image);
       r+=GetPixelChannels(edge_image);
@@ -701,7 +701,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           continue;
         if ((sharp_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(sharp_image,channel,p[center+i],q);
             continue;
           }
         k=kernel[j];
@@ -724,7 +724,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
               }
             }
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            q[channel]=ClampToQuantum(gamma*pixel);
+            SetPixelChannel(sharp_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
         /*
@@ -742,7 +742,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           }
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(sharp_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(sharp_image);
       r+=GetPixelChannels(edge_image);
@@ -1002,7 +1002,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
           continue;
         if ((blur_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
           }
         k=kernel;
@@ -1019,7 +1019,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
               k++;
               pixels+=GetPixelChannels(image);
             }
-            q[channel]=ClampToQuantum(pixel);
+            SetPixelChannel(blur_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
         /*
@@ -1035,7 +1035,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
           pixels+=GetPixelChannels(image);
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(blur_image);
@@ -1123,7 +1123,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
           continue;
         if ((blur_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
           }
         k=kernel;
@@ -1140,7 +1140,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
               k++;
               pixels+=GetPixelChannels(blur_image);
             }
-            q[channel]=ClampToQuantum(pixel);
+            SetPixelChannel(blur_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
         /*
@@ -1157,7 +1157,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
           pixels+=GetPixelChannels(blur_image);
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(blur_image);
       q+=GetPixelChannels(blur_image);
@@ -1367,7 +1367,7 @@ MagickExport Image *ConvolveImage(const Image *image,
           continue;
         if ((convolve_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(convolve_image,channel,p[center+i],q);
             continue;
           }
         k=kernel_info->values;
@@ -1388,7 +1388,7 @@ MagickExport Image *ConvolveImage(const Image *image,
               }
               pixels+=image->columns*GetPixelChannels(image);
             }
-            q[channel]=ClampToQuantum(pixel);
+            SetPixelChannel(convolve_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
         /*
@@ -1408,7 +1408,7 @@ MagickExport Image *ConvolveImage(const Image *image,
           pixels+=image->columns*GetPixelChannels(image);
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(convolve_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(convolve_image);
@@ -1710,7 +1710,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       j++;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        q[channel]=pixel[j++];
+        SetPixelChannel(despeckle_image,channel,pixel[j++],q);
         q+=GetPixelChannels(despeckle_image);
       }
       sync=SyncCacheViewAuthenticPixels(despeckle_view,exception);
@@ -2224,7 +2224,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           continue;
         if ((blur_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[i];
+            SetPixelChannel(blur_image,channel,p[i],q);
             continue;
           }
         k=kernel;
@@ -2243,7 +2243,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
               pixel+=(*k)*r[i];
               k++;
             }
-            q[channel]=ClampToQuantum(pixel);
+            SetPixelChannel(blur_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
         alpha=0.0;
@@ -2263,7 +2263,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           k++;
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(blur_image);
@@ -3011,7 +3011,7 @@ MagickExport Image *RadialBlurImage(const Image *image,
           continue;
         if ((blur_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[i];
+            SetPixelChannel(blur_image,channel,p[i],q);
             continue;
           }
         gamma=0.0;
@@ -3033,7 +3033,7 @@ MagickExport Image *RadialBlurImage(const Image *image,
               gamma++;
             }
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            q[channel]=ClampToQuantum(gamma*pixel);
+            SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
         for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
@@ -3051,7 +3051,7 @@ MagickExport Image *RadialBlurImage(const Image *image,
           gamma+=GetPixelAlpha(image,r);
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(blur_image);
@@ -3294,7 +3294,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
           continue;
         if ((blur_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
           }
         k=kernel;
@@ -3321,11 +3321,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
             }
             if (fabs((double) gamma) < MagickEpsilon)
               {
-                q[channel]=p[center+i];
+                SetPixelChannel(blur_image,channel,p[center+i],q);
                 continue;
               }
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            q[channel]=ClampToQuantum(gamma*pixel);
+            SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
         for (v=0; v < (ssize_t) width; v++)
@@ -3347,11 +3347,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,
         }
         if (fabs((double) gamma) < MagickEpsilon)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
           }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(blur_image);
@@ -3562,15 +3562,16 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
           continue;
         if ((shade_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=center[i];
+            SetPixelChannel(shade_image,channel,center[i],q);
             continue;
           }
         if (gray != MagickFalse)
           {
-            q[channel]=ClampToQuantum(shade);
+            SetPixelChannel(shade_image,channel,ClampToQuantum(shade),q);
             continue;
           }
-        q[channel]=ClampToQuantum(QuantumScale*shade*center[i]);
+        SetPixelChannel(shade_image,channel,ClampToQuantum(QuantumScale*shade*
+          center[i]),q);
       }
       pre+=GetPixelChannels(image);
       center+=GetPixelChannels(image);
@@ -4437,7 +4438,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
           continue;
         if ((statistic_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(statistic_image,channel,p[center+i],q);
             continue;
           }
         pixels=p;
@@ -4501,7 +4502,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
             break;
           }
         }
-        q[channel]=pixel;
+        SetPixelChannel(statistic_image,channel,pixel,q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(statistic_image);
@@ -4657,15 +4658,15 @@ MagickExport Image *UnsharpMaskImage(const Image *image,
           continue;
         if ((unsharp_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[i];
+            SetPixelChannel(unsharp_image,channel,p[i],q);
             continue;
           }
-        pixel=p[i]-(MagickRealType) q[channel];
+        pixel=p[i]-(MagickRealType) GetPixelChannel(unsharp_image,channel,q);
         if (fabs(2.0*pixel) < quantum_threshold)
           pixel=(MagickRealType) p[i];
         else
           pixel=(MagickRealType) p[i]+amount*pixel;
-        q[channel]=ClampToQuantum(pixel);
+        SetPixelChannel(unsharp_image,channel,ClampToQuantum(pixel),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(unsharp_image);

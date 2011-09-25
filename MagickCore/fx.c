@@ -3043,7 +3043,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
           continue;
         if ((fx_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[i];
+            SetPixelChannel(fx_image,channel,p[i],q);
             continue;
           }
         alpha=0.0;

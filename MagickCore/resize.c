@@ -1775,7 +1775,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       if ((traits == UndefinedPixelTrait) ||
           (rescale_traits == UndefinedPixelTrait))
         continue;
-      q[channel]=ClampToQuantum(QuantumRange*packet[i]);
+      SetPixelChannel(rescale_image,channel,ClampToQuantum(QuantumRange*
+        packet[i]),q);
     }
     if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
       break;
@@ -2212,7 +2213,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
               stop-1.0)+0.5);
             k=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
               (contribution[j-start].pixel-contribution[0].pixel);
-            q[channel]=p[k*GetPixelChannels(image)+i];
+            SetPixelChannel(resize_image,channel,p[k*GetPixelChannels(image)+i],
+              q);
             continue;
           }
         pixel=0.0;
@@ -2228,7 +2230,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
               alpha=contribution[j].weight;
               pixel+=alpha*p[k*GetPixelChannels(image)+i];
             }
-            q[channel]=ClampToQuantum(pixel);
+            SetPixelChannel(resize_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
         /*
@@ -2245,7 +2247,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           gamma+=alpha;
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
     }
@@ -2424,7 +2426,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
               stop-1.0)+0.5);
             k=(ssize_t) ((contribution[j-start].pixel-contribution[0].pixel)*
               image->columns+x);
-            q[channel]=p[k*GetPixelChannels(image)+i];
+            SetPixelChannel(resize_image,channel,p[k*GetPixelChannels(image)+i],
+              q);
             continue;
           }
         pixel=0.0;
@@ -2440,7 +2443,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
               alpha=contribution[j].weight;
               pixel+=alpha*p[k*GetPixelChannels(image)+i];
             }
-            q[channel]=ClampToQuantum(pixel);
+            SetPixelChannel(resize_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
         gamma=0.0;
@@ -2454,7 +2457,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           gamma+=alpha;
         }
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        q[channel]=ClampToQuantum(gamma*pixel);
+        SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
     }
@@ -2727,7 +2730,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
         if ((traits == UndefinedPixelTrait) ||
             (sample_traits == UndefinedPixelTrait))
           continue;
-        q[channel]=p[x_offset[x]*GetPixelChannels(image)+i];
+        SetPixelChannel(sample_image,channel,p[x_offset[x]*GetPixelChannels(
+          image)+i],q);
       }
       q+=GetPixelChannels(sample_image);
     }
@@ -3027,15 +3031,15 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               continue;
             if ((scale_traits & BlendPixelTrait) == 0)
               {
-                q[channel]=ClampToQuantum(scanline[x*
-                  GetPixelChannels(image)+i]);
+                SetPixelChannel(scale_image,channel,ClampToQuantum(scanline[
+                  x*GetPixelChannels(image)+i]),q);
                 continue;
               }
             alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
               GetPixelChannelMapChannel(image,AlphaPixelChannel)];
             gamma=1.0/(fabs((double) alpha) <= MagickEpsilon ? 1.0 : alpha);
-            q[channel]=ClampToQuantum(gamma*scanline[x*GetPixelChannels(image)+
-              i]);
+            SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*scanline[
+              x*GetPixelChannels(image)+i]),q);
           }
           q+=GetPixelChannels(scale_image);
         }
@@ -3115,15 +3119,15 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             continue;
           if ((scale_traits & BlendPixelTrait) == 0)
             {
-              q[channel]=ClampToQuantum(scale_scanline[x*
-                GetPixelChannels(scale_image)+channel]);
+              SetPixelChannel(scale_image,channel,ClampToQuantum(
+                scale_scanline[x*GetPixelChannels(scale_image)+channel]),q);
               continue;
             }
           alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
             GetPixelChannelMapChannel(image,AlphaPixelChannel)];
           gamma=1.0/(fabs((double) alpha) <= MagickEpsilon ? 1.0 : alpha);
-          q[channel]=ClampToQuantum(gamma*scale_scanline[
-            x*GetPixelChannels(scale_image)+channel]);
+          SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*
+            scale_scanline[x*GetPixelChannels(scale_image)+channel]),q);
         }
         q+=GetPixelChannels(scale_image);
       }

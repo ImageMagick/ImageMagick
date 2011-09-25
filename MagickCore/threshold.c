@@ -260,7 +260,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           continue;
         if ((threshold_traits & CopyPixelTrait) != 0)
           {
-            q[channel]=p[center+i];
+            SetPixelChannel(threshold_image,channel,p[center+i],q);
             continue;
           }
         pixels=p;
@@ -275,8 +275,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           pixels+=image->columns*GetPixelChannels(image);
         }
         mean=pixel/number_pixels+bias;
-        q[channel]=(Quantum) (((MagickRealType) p[center+i] <= mean) ? 0 :
-          QuantumRange);
+        SetPixelChannel(threshold_image,channel,ClampToQuantum(((MagickRealType)
+          p[center+i] <= mean) ? 0 : QuantumRange),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(threshold_image);
