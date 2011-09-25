@@ -1,3 +1,9 @@
+2011-09-26  6.7.2-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.2-9.
+
+2011-09-26  6.7.2-9 Cristy  <quetzlzacatenango@image...>
+  * Fix race condition on image rotate @ 90 degrees.
+
 2011-09-25  6.7.2-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-8.
 
