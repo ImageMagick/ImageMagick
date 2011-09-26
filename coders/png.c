@@ -7613,7 +7613,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    {
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    It is the HP-Microsoft sRGB)");
-                      if (image->rendering_intent==UndefinedIntent);
+                      if (image->rendering_intent==UndefinedIntent)
                         image->rendering_intent=PerceptualIntent;
                    }
                    else
@@ -7634,7 +7634,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    {
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    It is the ICC no-black sRGB)");
-                      if (image->rendering_intent==UndefinedIntent);
+                      if (image->rendering_intent==UndefinedIntent)
                         image->rendering_intent=PerceptualIntent;
                    }
                    else
@@ -7687,7 +7687,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Freeing bogus colormap");
-           (void *) RelinquishMagickMemory(image->colormap);
+           (void) RelinquishMagickMemory(image->colormap);
            image->colormap=NULL;
         }
     }
