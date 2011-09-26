@@ -1947,7 +1947,7 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *wand,
   n=0;
   p=CurrentContext->dash_pattern;
   if (p != (const double *) NULL)
-    while (*p++ != 0.0)
+    while (fabs(*p++) >= MagickEpsilon)
       n++;
   *number_elements=n;
   dash_array=(double *) NULL;
@@ -2551,7 +2551,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
         *dash_pattern;
 
       dash_pattern=AcquireString((char *) NULL);
-      for (i=0; CurrentContext->dash_pattern[i] != 0.0; i++)
+      for (i=0; fabs(CurrentContext->dash_pattern[i]) >= MagickEpsilon; i++)
       {
         if (i != 0)
           (void) ConcatenateString(&dash_pattern,",");
@@ -5439,7 +5439,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
   update=MagickFalse;
   q=CurrentContext->dash_pattern;
   if (q != (const double *) NULL)
-    while (*q++ != 0.0)
+    while (fabs(*q++) < MagickEpsilon)
       n_old++;
   if ((n_old == 0) && (n_new == 0))
     update=MagickFalse;
@@ -5955,7 +5955,7 @@ WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (CurrentContext->kerning != kerning))
+      ((CurrentContext->kerning-kerning) >= MagickEpsilon))
     {
       CurrentContext->kerning=kerning;
       (void) MvgPrintf(wand,"kerning %lf\n",kerning);
@@ -5996,7 +5996,7 @@ WandExport void DrawSetTextInterlineSpacing(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (CurrentContext->interline_spacing != interline_spacing))
+      ((CurrentContext->interline_spacing-interline_spacing) >= MagickEpsilon))
     {
       CurrentContext->interline_spacing=interline_spacing;
       (void) MvgPrintf(wand,"interline-spacing %lf\n",interline_spacing);
@@ -6037,7 +6037,7 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) &&
-      (CurrentContext->interword_spacing != interword_spacing))
+      ((CurrentContext->interword_spacing-interword_spacing) >= MagickEpsilon))
     {
       CurrentContext->interword_spacing=interword_spacing;
       (void) MvgPrintf(wand,"interword-spacing %lf\n",interword_spacing);

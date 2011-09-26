@@ -77,7 +77,7 @@ extern WandExport MagickBooleanType
   MagickAdaptiveSharpenImage(MagickWand *,const double,const double,
     const double),
   MagickAdaptiveThresholdImage(MagickWand *,const size_t,const size_t,
-    const ssize_t),
+    const double),
   MagickAddImage(MagickWand *,const MagickWand *),
   MagickAddNoiseImage(MagickWand *,const NoiseType),
   MagickAffineTransformImage(MagickWand *,const DrawingWand *),
