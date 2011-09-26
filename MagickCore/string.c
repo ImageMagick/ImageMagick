@@ -3,33 +3,33 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                  SSSSS   TTTTT  RRRR   IIIII  N   N   GGGG                  %
-%                  SS        T    R   R    I    NN  N  G                      %
-%                   SSS      T    RRRR     I    N N N  G GGG                  %
-%                     SS     T    R R      I    N  NN  G   G                  %
-%                  SSSSS     T    R  R   IIIII  N   N   GGGG                  %
+%                  sssss   ttttt  rrrr   iiiii  n   n   gggg                  %
+%                  ss        t    r   r    i    nn  n  g                      %
+%                   sss      t    rrrr     i    n n n  g ggg                  %
+%                     ss     t    r r      i    n  nn  g   g                  %
+%                  sssss     t    r  r   iiiii  n   n   gggg                  %
 %                                                                             %
 %                                                                             %
-%                        MagickCore String Methods                            %
+%                        MagickCore string methods                            %
 %                                                                             %
-%                             Software Design                                 %
-%                               John Cristy                                   %
-%                               August 2003                                   %
+%                             software design                                 %
+%                               john cristy                                   %
+%                               august 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2011 ImageMagick Studio LLC, a non-profit organization      %
+%  copyright 1999-2011 imagemagick studio llc, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  You may not use this file except in compliance with the License.  You may  %
-%  obtain a copy of the License at                                            %
+%  you may not use this file except in compliance with the license.  you may  %
+%  obtain a copy of the license at                                            %
 %                                                                             %
 %    http://www.imagemagick.org/script/license.php                            %
 %                                                                             %
-%  Unless required by applicable law or agreed to in writing, software        %
-%  distributed under the License is distributed on an "AS IS" BASIS,          %
-%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
-%  See the License for the specific language governing permissions and        %
-%  limitations under the License.                                             %
+%  unless required by applicable law or agreed to in writing, software        %
+%  distributed under the license is distributed on an "as is" basis,          %
+%  without warranties or conditions of any kind, either express or implied.   %
+%  see the license for the specific language governing permissions and        %
+%  limitations under the license.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -37,7 +37,7 @@
 */
 
 /*
-  Include declarations.
+  include declarations.
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
@@ -55,11 +55,11 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  Static declarations.
+  static declarations.
 */
 #if !defined(MAGICKCORE_HAVE_STRCASECMP) || !defined(MAGICKCORE_HAVE_STRNCASECMP)
 static const unsigned char
-  AsciiMap[] =
+  asciimap[] =
   {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
     0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
@@ -564,7 +564,7 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
 %    o filename: the filename.
 %
 */
-MagickPrivate StringInfo *ConfigureFileToStringInfo(const char *filename)
+MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
 {
   char
     *string;
@@ -1052,7 +1052,7 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %    o format:  human readable format.
 %
 */
-MagickPrivate ssize_t FormatMagickSize(const MagickSizeType size,
+MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   const MagickBooleanType bi,char *format)
 {
   const char
@@ -1206,7 +1206,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
 %    o name: the environment name.
 %
 */
-MagickPrivate char *GetEnvironmentValue(const char *name)
+MagickExport char *GetEnvironmentValue(const char *name)
 {
   const char
     *environment;
