@@ -171,7 +171,7 @@ typedef struct _ConvolveInfo
     filter;
 } ConvolveInfo;
 
-static char
+static const char
   *ConvolveKernel =
     "static inline long ClampToCanvas(const long offset,const unsigned long range)\n"
     "{\n"
