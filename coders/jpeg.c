@@ -292,10 +292,10 @@ static MagickBooleanType JPEGErrorHandler(j_common_ptr jpeg_info)
       "[%s] JPEG Trace: \"%s\"",image->filename,message);
   if (error_manager->finished != MagickFalse)
     (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      CorruptImageWarning,(char *) message,image->filename);
+      CorruptImageWarning,(char *) message,"`%s'",image->filename);
   else
     (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      CorruptImageError,(char *) message,image->filename);
+      CorruptImageError,(char *) message,"`%s'",image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
