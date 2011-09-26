@@ -1528,7 +1528,6 @@
 
 /* Define this for the OpenCL Accelerator */
 #ifndef MAGICKCORE__OPENCL
-#define MAGICKCORE__OPENCL 1
 #endif
 
 /* Define to 2 if the system does not provide POSIX.1 features except with

@@ -333,7 +333,7 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
 %  The format of the AdaptiveThresholdImage method is:
 %
 %      MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
-%        const size_t width,const size_t height,const ssize_t offset)
+%        const size_t width,const size_t height,const double bias)
 %
 %  A description of each parameter follows:
 %
@@ -343,11 +343,11 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
 %
 %    o height: the height of the local neighborhood.
 %
-%    o offset: the mean offset.
+%    o offset: the mean bias.
 %
 */
 WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
-  const size_t width,const size_t height,const ssize_t offset)
+  const size_t width,const size_t height,const double bias)
 {
   Image
     *threshold_image;
@@ -358,7 +358,7 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  threshold_image=AdaptiveThresholdImage(wand->images,width,height,offset,
+  threshold_image=AdaptiveThresholdImage(wand->images,width,height,bias,
     wand->exception);
   if (threshold_image == (Image *) NULL)
     return(MagickFalse);
@@ -607,10 +607,10 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
     return(MagickFalse);
   (void) CloneString(&draw_info->text,text);
   (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",x,y);
-  draw_info->affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
-  draw_info->affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
-  draw_info->affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-  draw_info->affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+  draw_info->affine.sx=cos((double) DegreesToRadians(fmod(angle,360.0)));
+  draw_info->affine.rx=sin((double) DegreesToRadians(fmod(angle,360.0)));
+  draw_info->affine.ry=(-sin((double) DegreesToRadians(fmod(angle,360.0))));
+  draw_info->affine.sy=cos((double) DegreesToRadians(fmod(angle,360.0)));
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(wand->images,draw_info,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);

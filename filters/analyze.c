@@ -192,7 +192,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     (void) FormatLocaleString(text,MaxTextExtent,"%g",
       brightness_standard_deviation);
     (void) SetImageProperty(image,"filter:brightness:standard-deviation",text);
-    if (brightness_standard_deviation != 0)
+    if (fabs(brightness_standard_deviation) >= MagickEpsilon)
       brightness_kurtosis=(brightness_sum_x4/area-4.0*brightness_mean*
         brightness_sum_x3/area+6.0*brightness_mean*brightness_mean*
         brightness_sum_x2/area-3.0*brightness_mean*brightness_mean*
@@ -216,7 +216,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     (void) FormatLocaleString(text,MaxTextExtent,"%g",
       saturation_standard_deviation);
     (void) SetImageProperty(image,"filter:saturation:standard-deviation",text);
-    if (saturation_standard_deviation != 0)
+    if (fabs(saturation_standard_deviation) >= MagickEpsilon)
       saturation_kurtosis=(saturation_sum_x4/area-4.0*saturation_mean*
         saturation_sum_x3/area+6.0*saturation_mean*saturation_mean*
         saturation_sum_x2/area-3.0*saturation_mean*saturation_mean*
@@ -225,7 +225,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         saturation_standard_deviation)-3.0;
     (void) FormatLocaleString(text,MaxTextExtent,"%g",saturation_kurtosis);
     (void) SetImageProperty(image,"filter:saturation:kurtosis",text);
-    if (saturation_standard_deviation != 0)
+    if (fabs(saturation_standard_deviation) >= MagickEpsilon)
       saturation_skewness=(saturation_sum_x3/area-3.0*saturation_mean*
         saturation_sum_x2/area+2.0*saturation_mean*saturation_mean*
         saturation_mean)/(saturation_standard_deviation*

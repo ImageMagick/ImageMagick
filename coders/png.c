@@ -12846,9 +12846,12 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          for (i=0; i < (ssize_t) image->colors; i++)
          {
-           chunk[4+i*3]=ScaleQuantumToChar(image->colormap[i].red) & 0xff;
-           chunk[5+i*3]=ScaleQuantumToChar(image->colormap[i].green) & 0xff;
-           chunk[6+i*3]=ScaleQuantumToChar(image->colormap[i].blue) & 0xff;
+           chunk[4+i*3]=(unsigned char) (ScaleQuantumToChar(
+             image->colormap[i].red) & 0xff);
+           chunk[5+i*3]=(unsigned char) (ScaleQuantumToChar(
+             image->colormap[i].green) & 0xff);
+           chunk[6+i*3]=(unsigned char) (ScaleQuantumToChar(
+             image->colormap[i].blue) & 0xff);
          }
 
          (void) WriteBlob(image,data_length+4,chunk);

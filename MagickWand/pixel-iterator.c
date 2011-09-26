@@ -728,15 +728,6 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
 %    o number_wands: the number of pixel wands.
 %
 */
-
-WandExport PixelWand **PixelGetPreviousRow(PixelIterator *iterator)
-{
-  size_t
-    number_wands;
-
-  return(PixelGetPreviousIteratorRow(iterator,&number_wands));
-}
-
 WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
   size_t *number_wands)
 {
