@@ -1,3 +1,6 @@
+2010-11-21  7.0.0-0 Anthony  <anthony@griffith...>
+  * new module "operator.c" which will holds the standard CLI options
+
 2010-11-21  6.6.6-0 Cristy  <quetzlzacatenango@image...>
   * Add DrawGetFontResolution() / DrawSetFontResolution().
 
