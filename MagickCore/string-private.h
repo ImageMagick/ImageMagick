@@ -22,15 +22,6 @@
 extern "C" {
 #endif
 
-extern MagickPrivate char
-  *GetEnvironmentValue(const char *);
-
-extern MagickPrivate ssize_t
-  FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *);
-
-extern MagickPrivate StringInfo
-  *ConfigureFileToStringInfo(const char *);
-
 static inline double SiPrefixToDouble(const char *string,const double interval)
 {
   char
