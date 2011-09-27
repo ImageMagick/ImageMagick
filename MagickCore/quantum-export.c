@@ -2721,17 +2721,15 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
             }
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            pixel=(unsigned int) ScaleQuantumToAny(
-              GetPixelRed(image,p),range);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(image,p),range);
             q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(
-              GetPixelGreen(image,p),range);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(image,p),
+              range);
             q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(
-              GetPixelBlue(image,p),range);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
             q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(
-              GetPixelAlpha(image,p),range);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelAlpha(image,p),
+              range);
             q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
             p+=channels;
             q+=quantum_info->pad;
