@@ -46,6 +46,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/signature.h"
@@ -476,20 +477,15 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   char
     *hex_signature;
 
-  QuantumInfo
-    *quantum_info;
-
-  QuantumType
-    quantum_type;
+  QuantumAny
+    pixel,
+    range;
 
   register const Quantum
     *p;
 
   SignatureInfo
     *signature_info;
-
-  size_t
-    length;
 
   ssize_t
     y;
@@ -507,36 +503,44 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  quantum_type=RGBQuantum;
-  if (image->matte != MagickFalse)
-    quantum_type=RGBAQuantum;
-  if (image->colorspace == CMYKColorspace)
-    {
-      quantum_type=CMYKQuantum;
-      if (image->matte != MagickFalse)
-        quantum_type=CMYKAQuantum;
-    }
   signature_info=AcquireSignatureInfo();
-  signature=AcquireStringInfo(quantum_info->extent);
-  pixels=GetQuantumPixels(quantum_info);
+  signature=AcquireStringInfo(sizeof(QuantumAny));
+  pixels=GetStringInfoDatum(signature);
+  range=GetQuantumRange(image->depth);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register ssize_t
+      x;
+
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
-      pixels,&image->exception);
-    SetStringInfoLength(signature,length);
-    SetStringInfoDatum(signature,pixels);
-    UpdateSignature(signature_info,signature);
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelTrait
+          traits;
+
+        register ssize_t
+          j;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        pixel=ScaleQuantumToAny(p[i],range);
+        for (j=0; j < (ssize_t) sizeof(QuantumAny); j++)
+          pixels[j]=(unsigned char) ((pixel >> (j*8)) & 0xff);
+        UpdateSignature(signature_info,signature);
+      }
+      p+=GetPixelChannels(image);
+    }
   }
   image_view=DestroyCacheView(image_view);
-  quantum_info=DestroyQuantumInfo(quantum_info);
   FinalizeSignature(signature_info);
   hex_signature=StringInfoToHexString(GetSignatureDigest(signature_info));
   (void) DeleteImageProperty(image,"signature");
