@@ -683,15 +683,33 @@ MagickExport Image *EvaluateImages(const Image *images,
         image_view=DestroyCacheView(image_view);
         next=GetNextImageInList(next);
       }
-      if (op == MeanEvaluateOperator)
-        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
-        {
-          register ssize_t
-            i;
+      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+      {
+        register ssize_t
+           i;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
-            evaluate_pixel[x].channel[i]/=(MagickRealType) number_images;
+        switch (op)
+        {
+          case MeanEvaluateOperator:
+          {
+            for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+              evaluate_pixel[x].channel[i]/=(MagickRealType) number_images;
+            break;
+          }
+          case MultiplyEvaluateOperator:
+          {
+            for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+            {
+              register ssize_t
+                j;
+
+              for (j=0; j < (ssize_t) (number_images-1); j++)
+                evaluate_pixel[x].channel[i]*=QuantumScale;
+            }
+            break;
+          }
         }
+      }
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
         register ssize_t
