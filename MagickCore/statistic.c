@@ -708,6 +708,8 @@ MagickExport Image *EvaluateImages(const Image *images,
             }
             break;
           }
+          default:
+            break;
         }
       }
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
