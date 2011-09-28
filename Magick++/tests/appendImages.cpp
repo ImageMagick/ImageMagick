@@ -42,7 +42,7 @@ int main( int /*argc*/, char ** argv)
     appendImages( &appended, imageList.begin(), imageList.end() );
     // appended.display();
     if (( appended.signature() != "3a90bb0bb8f69f6788ab99e9e25598a0d6c5cdbbb797f77ad68011e0a8b1689d" ) &&
-        ( appended.signature() != "08da95f96ad8a98885d30b8d3198206baee5dc43030a15960953ffd8719f51bc" ) &&
+        ( appended.signature() != "a251c7b271e711604c800658cf80ad17ef32328ab9b24fca54438b214224c3d9" ) &&
         ( appended.signature() != "229ff72f812e5f536245dc3b4502a0bc2ab2363f67c545863a85ab91ebfbfb83" ) &&
         ( appended.signature() != "b98c42c55fc4e661cb3684154256809c03c0c6b53da2738b6ce8066e1b6ddef0" ))
       {
@@ -57,7 +57,7 @@ int main( int /*argc*/, char ** argv)
     // Vertical
     appendImages( &appended, imageList.begin(), imageList.end(), true );
     if (( appended.signature() != "d73d25ccd6011936d08b6d0d89183b7a61790544c2195269aff4db2f782ffc08" ) &&
-        ( appended.signature() != "aa99c258c20eccd697eb95f4a0e223b3bddd1706ab3dd3f831a1664a4b23461f" ) &&
+        ( appended.signature() != "a251c7b271e711604c800658cf80ad17ef32328ab9b24fca54438b214224c3d9" ) &&
         ( appended.signature() != "11b97ba6ac1664aa1c2faed4c86195472ae9cce2ed75402d975bb4ffcf1de751" ) &&
         ( appended.signature() != "cae4815eeb3cb689e73b94d897a9957d3414d1d4f513e8b5e52579b05d164bfe" ))
       {
