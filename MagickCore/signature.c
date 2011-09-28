@@ -477,9 +477,8 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   char
     *hex_signature;
 
-  QuantumAny
-    pixel,
-    range;
+  double
+    pixel;
 
   register const Quantum
     *p;
@@ -505,9 +504,8 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   signature_info=AcquireSignatureInfo();
   signature=AcquireStringInfo(image->columns*GetPixelChannels(image)*
-    sizeof(QuantumAny));
+    sizeof(pixel));
   pixels=GetStringInfoDatum(signature);
-  range=GetQuantumRange(image->depth);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -537,9 +535,11 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
         if (traits == UndefinedPixelTrait)
           continue;
-        pixel=ScaleQuantumToAny(p[i],range);
-        for (j=0; j < (ssize_t) sizeof(QuantumAny); j++)
-          *q++=(unsigned char) ((pixel >> (j*8)) & 0xff);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        pixel=QuantumScale*p[i];
+        for (j=0; j < (ssize_t) sizeof(pixel); j++)
+          *q++=(unsigned char) (&pixel)[j];
       }
       p+=GetPixelChannels(image);
     }
