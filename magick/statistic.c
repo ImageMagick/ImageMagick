@@ -688,6 +688,21 @@ MagickExport Image *EvaluateImages(const Image *images,
           evaluate_pixel[x].opacity/=number_images;
           evaluate_pixel[x].index/=number_images;
         }
+      if (op == MultiplyEvaluateOperator)
+        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        {
+          register ssize_t
+            j;
+
+          for (j=0; x < (ssize_t) (number_images-1); j++)
+          {
+            evaluate_pixel[x].red*=QuantumScale;
+            evaluate_pixel[x].green*=QuantumScale;
+            evaluate_pixel[x].blue*=QuantumScale;
+            evaluate_pixel[x].opacity*=QuantumScale;
+            evaluate_pixel[x].index*=QuantumScale;
+          }
+        }
       for (x=0; x < (ssize_t) evaluate_image->columns; x++)
       {
         SetPixelRed(q,ClampToQuantum(evaluate_pixel[x].red));
