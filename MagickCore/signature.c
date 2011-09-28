@@ -504,7 +504,8 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   signature_info=AcquireSignatureInfo();
-  signature=AcquireStringInfo(sizeof(QuantumAny));
+  signature=AcquireStringInfo(image->columns*GetPixelChannels(image)*
+    sizeof(QuantumAny));
   pixels=GetStringInfoDatum(signature);
   range=GetQuantumRange(image->depth);
   image_view=AcquireCacheView(image);
@@ -513,9 +514,13 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     register ssize_t
       x;
 
+    register unsigned char
+      *q;
+
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -534,11 +539,12 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
           continue;
         pixel=ScaleQuantumToAny(p[i],range);
         for (j=0; j < (ssize_t) sizeof(QuantumAny); j++)
-          pixels[j]=(unsigned char) ((pixel >> (j*8)) & 0xff);
-        UpdateSignature(signature_info,signature);
+          *q++=(unsigned char) ((pixel >> (j*8)) & 0xff);
       }
       p+=GetPixelChannels(image);
     }
+    SetStringInfoLength(signature,(size_t) (q-pixels));
+    UpdateSignature(signature_info,signature);
   }
   image_view=DestroyCacheView(image_view);
   FinalizeSignature(signature_info);
