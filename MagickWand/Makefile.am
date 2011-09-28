@@ -50,6 +50,8 @@ MAGICKWAND_SOURCES = \
 	MagickWand/mogrify-private.h \
 	MagickWand/montage.c \
 	MagickWand/montage.h \
+	MagickWand/operation.c \
+	MagickWand/operation.h \
 	MagickWand/pixel-iterator.c \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.c \
@@ -79,6 +81,7 @@ MAGICKWAND_INCLUDE_HDRS = \
 	MagickWand/magick-property.h \
 	MagickWand/mogrify.h \
 	MagickWand/montage.h \
+	MagickWand/operation.h \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.h \
 	MagickWand/stream.h \

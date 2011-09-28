@@ -14,7 +14,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                               September 2011                                   %
+%                               September 2011                                %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2011 ImageMagick Studio LLC, a non-profit organization      %
@@ -43,6 +43,7 @@
 %
 % Anthony Thyssen, Sept 2011
 */
+#if 0
 
 /*
   Include declarations.
@@ -401,7 +402,7 @@ static Image *SparseColorOption(const Image *image,
 %
 */
 WandExport MagickBooleanType SettingsOptionInfo(ImageInfo *image_info,
-  const int wand_unused(argc),const char **argv,ExceptionInfo *exception)
+  const int argc,const char **argv,ExceptionInfo *exception)
 {
   GeometryInfo
     geometry_info;
@@ -4949,4 +4950,4 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
 
   return(status != 0 ? MagickTrue : MagickFalse);
 }
-
+#endif
