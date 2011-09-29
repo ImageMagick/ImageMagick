@@ -209,7 +209,7 @@ struct _Image
     extract_info;
 
   double
-    bias,
+    bias,           /* depreciated ? */
     blur,
     fuzz;           /* current color fuzz attribute */
 
@@ -271,7 +271,7 @@ struct _Image
     type;
 
   MagickBooleanType
-    dither;            /* dithering method during color reduction */
+    dither;            /* dithering on/off */
 
   MagickSizeType
     extent;
@@ -288,7 +288,7 @@ struct _Image
     sync;
 
   ChannelType
-    channel_mask;  
+    channel_mask;
 
   PixelChannelMap
     *channel_map;
