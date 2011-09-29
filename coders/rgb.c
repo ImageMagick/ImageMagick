@@ -483,8 +483,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelGreen(image,
-                  GetPixelGreen(canvas_image,p),q);
+                SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
               }
@@ -536,8 +535,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelBlue(image,
-                  GetPixelBlue(canvas_image,p),q);
+                SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
               }
@@ -598,8 +596,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetPixelAlpha(image,
-                      GetPixelAlpha(canvas_image,p),q);
+                    SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                     p+=GetPixelChannels(canvas_image);
                     q+=GetPixelChannels(image);
                   }
@@ -757,8 +754,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelGreen(image,
-                  GetPixelGreen(canvas_image,p),q);
+                SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
               }
@@ -829,8 +825,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelBlue(image,
-                  GetPixelBlue(canvas_image,p),q);
+                SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
               }
@@ -903,8 +898,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
-                    SetPixelAlpha(image,
-                      GetPixelAlpha(canvas_image,p),q);
+                    SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                     p+=GetPixelChannels(canvas_image);
                     q+=GetPixelChannels(image);
                   }
