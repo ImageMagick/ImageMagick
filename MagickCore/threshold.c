@@ -182,7 +182,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(threshold_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(threshold_image,DirectClass,exception);
+  if (status == MagickFalse)
     {
       threshold_image=DestroyImage(threshold_image);
       return((Image *) NULL);
@@ -759,6 +760,54 @@ MagickExport ThresholdMap *DestroyThresholdMap(ThresholdMap *map)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  G e t T h r e s h o l d M a p                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetThresholdMap() loads and searches one or more threshold map files for the
+%  map matching the given name or alias.
+%
+%  The format of the GetThresholdMap method is:
+%
+%      ThresholdMap *GetThresholdMap(const char *map_id,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o map_id:  ID of the map to look for.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
+  ExceptionInfo *exception)
+{
+  const StringInfo
+    *option;
+
+  LinkedListInfo
+    *options;
+
+  ThresholdMap
+    *map;
+
+  map=(ThresholdMap *)NULL;
+  options=GetConfigureOptions(ThresholdsFilename,exception);
+  while ((option=(const StringInfo *) GetNextValueInLinkedList(options)) !=
+         (const StringInfo *) NULL && (map == (ThresholdMap *) NULL))
+    map=GetThresholdMapFile((const char *) GetStringInfoDatum(option),
+      GetStringInfoPath(option),map_id,exception);
+  options=DestroyConfigureOptions(options);
+  return(map);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  G e t T h r e s h o l d M a p F i l e                                      %
 %                                                                             %
 %                                                                             %
@@ -787,220 +836,175 @@ MagickExport ThresholdMap *DestroyThresholdMap(ThresholdMap *map)
 MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
   const char *filename,const char *map_id,ExceptionInfo *exception)
 {
+  char
+    *p;
+
   const char
-    *attr,
+    *attribute,
     *content;
 
   double
     value;
 
-  ThresholdMap
-     *map;
-
-  XMLTreeInfo
-     *description,
-     *levels,
-     *threshold,
-     *thresholds;
-
-  map = (ThresholdMap *)NULL;
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Loading threshold map file \"%s\" ...",filename);
-  thresholds=NewXMLTree(xml,exception);
-  if ( thresholds == (XMLTreeInfo *)NULL )
-    return(map);
-
-  for( threshold = GetXMLTreeChild(thresholds,"threshold");
-       threshold != (XMLTreeInfo *)NULL;
-       threshold = GetNextXMLTreeTag(threshold) ) {
-    attr = GetXMLTreeAttribute(threshold, "map");
-    if ( (attr != (char *)NULL) && (LocaleCompare(map_id,attr) == 0) )
-      break;
-    attr = GetXMLTreeAttribute(threshold, "alias");
-    if ( (attr != (char *)NULL) && (LocaleCompare(map_id,attr) == 0) )
-      break;
-  }
-  if ( threshold == (XMLTreeInfo *)NULL ) {
-    return(map);
-  }
-  description = GetXMLTreeChild(threshold,"description");
-  if ( description == (XMLTreeInfo *)NULL ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlMissingElement", "<description>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    return(map);
-  }
-  levels = GetXMLTreeChild(threshold,"levels");
-  if ( levels == (XMLTreeInfo *)NULL ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlMissingElement", "<levels>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    return(map);
-  }
-
-  /* The map has been found -- Allocate a Threshold Map to return */
-  map = (ThresholdMap *)AcquireMagickMemory(sizeof(ThresholdMap));
-  if ( map == (ThresholdMap *)NULL )
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
-  map->map_id = (char *)NULL;
-  map->description = (char *)NULL;
-  map->levels = (ssize_t *) NULL;
-
-  /* Assign Basic Attributes */
-  attr = GetXMLTreeAttribute(threshold, "map");
-  if ( attr != (char *)NULL )
-    map->map_id = ConstantString(attr);
-
-  content = GetXMLTreeContent(description);
-  if ( content != (char *)NULL )
-    map->description = ConstantString(content);
-
-  attr = GetXMLTreeAttribute(levels, "width");
-  if ( attr == (char *)NULL ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlMissingAttribute", "<levels width>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-  map->width = StringToUnsignedLong(attr);
-  if ( map->width == 0 ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-     "XmlInvalidAttribute", "<levels width>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-
-  attr = GetXMLTreeAttribute(levels, "height");
-  if ( attr == (char *)NULL ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlMissingAttribute", "<levels height>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-  map->height = StringToUnsignedLong(attr);
-  if ( map->height == 0 ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlInvalidAttribute", "<levels height>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-
-  attr = GetXMLTreeAttribute(levels, "divisor");
-  if ( attr == (char *)NULL ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlMissingAttribute", "<levels divisor>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-  map->divisor = (ssize_t) StringToLong(attr);
-  if ( map->divisor < 2 ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlInvalidAttribute", "<levels divisor>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-
-  /* Allocate theshold levels array */
-  content = GetXMLTreeContent(levels);
-  if ( content == (char *)NULL ) {
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "XmlMissingContent", "<levels>, map \"%s\"", map_id);
-    thresholds = DestroyXMLTree(thresholds);
-    map = DestroyThresholdMap(map);
-    return(map);
-  }
-  map->levels=(ssize_t *) AcquireQuantumMemory((size_t) map->width,map->height*
-    sizeof(*map->levels));
-  if ( map->levels == (ssize_t *)NULL )
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
-  { /* parse levels into integer array */
-    ssize_t i;
-    char *p;
-    for( i=0; i< (ssize_t) (map->width*map->height); i++) {
-      map->levels[i] = (ssize_t)strtol(content, &p, 10);
-      if ( p == content ) {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "XmlInvalidContent", "<level> too few values, map \"%s\"", map_id);
-        thresholds = DestroyXMLTree(thresholds);
-        map = DestroyThresholdMap(map);
-        return(map);
-      }
-      if ( map->levels[i] < 0 || map->levels[i] > map->divisor ) {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "XmlInvalidContent", "<level> %.20g out of range, map \"%s\"",
-          (double) map->levels[i],map_id);
-        thresholds = DestroyXMLTree(thresholds);
-        map = DestroyThresholdMap(map);
-        return(map);
-      }
-      content = p;
-    }
-    value=(double) strtol(content,&p,10);
-    (void) value;
-    if (p != content)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "XmlInvalidContent", "<level> too many values, map \"%s\"", map_id);
-       thresholds=DestroyXMLTree(thresholds);
-       map=DestroyThresholdMap(map);
-       return(map);
-     }
-  }
-  thresholds=DestroyXMLTree(thresholds);
-  return(map);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  G e t T h r e s h o l d M a p                                              %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetThresholdMap() load and search one or more threshold map files for the
-%  a map matching the given name or aliase.
-%
-%  The format of the GetThresholdMap method is:
-%
-%      ThresholdMap *GetThresholdMap(const char *map_id,
-%         ExceptionInfo *exception)
-%
-%  A description of each parameter follows.
-%
-%    o map_id:  ID of the map to look for.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
-  ExceptionInfo *exception)
-{
-  const StringInfo
-    *option;
-
-  LinkedListInfo
-    *options;
+  register ssize_t
+    i;
 
   ThresholdMap
     *map;
 
-  map=(ThresholdMap *)NULL;
-  options=GetConfigureOptions(ThresholdsFilename,exception);
-  while (( option=(const StringInfo *) GetNextValueInLinkedList(options) )
-          != (const StringInfo *) NULL && map == (ThresholdMap *)NULL )
-    map=GetThresholdMapFile((const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),map_id,exception);
-  options=DestroyConfigureOptions(options);
+  XMLTreeInfo
+    *description,
+    *levels,
+    *threshold,
+    *thresholds;
+
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Loading threshold map file \"%s\" ...",filename);
+  map=(ThresholdMap *) NULL;
+  thresholds=NewXMLTree(xml,exception);
+  if (thresholds == (XMLTreeInfo *) NULL)
+    return(map);
+  for (threshold=GetXMLTreeChild(thresholds,"threshold");
+       threshold != (XMLTreeInfo *) NULL;
+       threshold=GetNextXMLTreeTag(threshold))
+  {
+    attribute=GetXMLTreeAttribute(threshold,"map");
+    if ((attribute != (char *) NULL) && (LocaleCompare(map_id,attribute) == 0))
+      break;
+    attribute=GetXMLTreeAttribute(threshold,"alias");
+    if ((attribute != (char *) NULL) && (LocaleCompare(map_id,attribute) == 0))
+      break;
+  }
+  if (threshold == (XMLTreeInfo *) NULL)
+    return(map);
+  description=GetXMLTreeChild(threshold,"description");
+  if (description == (XMLTreeInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlMissingElement", "<description>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      return(map);
+    }
+  levels=GetXMLTreeChild(threshold,"levels");
+  if (levels == (XMLTreeInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlMissingElement", "<levels>, map \"%s\"", map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      return(map);
+    }
+  map=(ThresholdMap *) AcquireMagickMemory(sizeof(ThresholdMap));
+  if (map == (ThresholdMap *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
+  map->map_id=(char *) NULL;
+  map->description=(char *) NULL;
+  map->levels=(ssize_t *) NULL;
+  attribute=GetXMLTreeAttribute(threshold,"map");
+  if (attribute != (char *) NULL)
+    map->map_id=ConstantString(attribute);
+  content=GetXMLTreeContent(description);
+  if (content != (char *) NULL)
+    map->description=ConstantString(content);
+  attribute=GetXMLTreeAttribute(levels,"width");
+  if (attribute == (char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlMissingAttribute", "<levels width>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  map->width=StringToUnsignedLong(attribute);
+  if (map->width == 0)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+       "XmlInvalidAttribute", "<levels width>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  attribute=GetXMLTreeAttribute(levels,"height");
+  if (attribute == (char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlMissingAttribute", "<levels height>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  map->height=StringToUnsignedLong(attribute);
+  if (map->height == 0)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlInvalidAttribute", "<levels height>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  attribute=GetXMLTreeAttribute(levels,"divisor");
+  if (attribute == (char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlMissingAttribute", "<levels divisor>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  map->divisor=(ssize_t) StringToLong(attribute);
+  if (map->divisor < 2)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlInvalidAttribute", "<levels divisor>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  content=GetXMLTreeContent(levels);
+  if (content == (char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlMissingContent", "<levels>, map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  map->levels=(ssize_t *) AcquireQuantumMemory((size_t) map->width,map->height*
+    sizeof(*map->levels));
+  if (map->levels == (ssize_t *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
+  for (i=0; i < (ssize_t) (map->width*map->height); i++)
+  {
+    map->levels[i]=(ssize_t) strtol(content,&p,10);
+    if (p == content)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "XmlInvalidContent", "<level> too few values, map \"%s\"",map_id);
+        thresholds=DestroyXMLTree(thresholds);
+        map=DestroyThresholdMap(map);
+        return(map);
+      }
+    if ((map->levels[i] < 0) || (map->levels[i] > map->divisor))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "XmlInvalidContent", "<level> %.20g out of range, map \"%s\"",
+          (double) map->levels[i],map_id);
+        thresholds=DestroyXMLTree(thresholds);
+        map=DestroyThresholdMap(map);
+        return(map);
+      }
+    content=p;
+  }
+  value=(double) strtol(content,&p,10);
+  (void) value;
+  if (p != content)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "XmlInvalidContent", "<level> too many values, map \"%s\"",map_id);
+     thresholds=DestroyXMLTree(thresholds);
+     map=DestroyThresholdMap(map);
+     return(map);
+   }
+  thresholds=DestroyXMLTree(thresholds);
   return(map);
 }
 
@@ -1058,7 +1062,8 @@ MagickBooleanType ListThresholdMapFile(FILE *file,const char *xml,
   (void) FormatLocaleFile(file,
     "----------------------------------------------------\n");
   threshold=GetXMLTreeChild(thresholds,"threshold");
-  for ( ; threshold != (XMLTreeInfo *) NULL; threshold=GetNextXMLTreeTag(threshold))
+  for ( ; threshold != (XMLTreeInfo *) NULL;
+          threshold=GetNextXMLTreeTag(threshold))
   {
     map=GetXMLTreeAttribute(threshold,"map");
     if (map == (char *) NULL)
@@ -1073,7 +1078,7 @@ MagickBooleanType ListThresholdMapFile(FILE *file,const char *xml,
     if (description == (XMLTreeInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "XmlMissingElement", "<description>, map \"%s\"", map);
+          "XmlMissingElement", "<description>, map \"%s\"",map);
         thresholds=DestroyXMLTree(thresholds);
         return(MagickFalse);
       }
@@ -1240,11 +1245,11 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
            (*p != '\0')) {
       if ((p-threshold_map) >= (MaxTextExtent-1))
         break;
-      token[p-threshold_map] = *p;
+      token[p-threshold_map]=(*p);
       p++;
     }
-    token[p-threshold_map] = '\0';
-    map = GetThresholdMap(token, exception);
+    token[p-threshold_map]='\0';
+    map=GetThresholdMap(token, exception);
     if (map == (ThresholdMap *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -1259,16 +1264,16 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   { /* parse directly as a comma separated list of integers */
     char *p;
 
-    p = strchr((char *) threshold_map,',');
+    p=strchr((char *) threshold_map,',');
     levels.red=0;
     levels.green=0;
     levels.blue=0;
     levels.black=0;
     levels.alpha=0;
     if ( p != (char *)NULL && isdigit((int) ((unsigned char) *(++p))) )
-      levels.black = (unsigned int) strtoul(p, &p, 10);
+      levels.black=(unsigned int) strtoul(p, &p, 10);
     else
-      levels.black = 2;
+      levels.black=2;
 
     if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
       levels.red=levels.black;
@@ -1290,16 +1295,16 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
       p=strchr((char *) threshold_map,',');
       p++;
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        levels.red = (unsigned int) strtoul(p, &p, 10),   (void)(*p == ',' && p++);
+        levels.red=(unsigned int) strtoul(p, &p, 10),   (void)(*p == ',' && p++);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        levels.green = (unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
+        levels.green=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        levels.blue = (unsigned int) strtoul(p, &p, 10),  (void)(*p == ',' && p++);
+        levels.blue=(unsigned int) strtoul(p, &p, 10),  (void)(*p == ',' && p++);
       if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0 &&
           (image->colorspace == CMYKColorspace))
         levels.black=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        levels.alpha = (unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
+        levels.alpha=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
     }
   }
 #else
@@ -1324,15 +1329,15 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
     ssize_t
       d;
 
-    /* d = number of psuedo-level divisions added between color levels */
-    d = map->divisor-1;
+    /* d=number of psuedo-level divisions added between color levels */
+    d=map->divisor-1;
 
     /* reduce levels to levels - 1 */
-    levels.red     = levels.red     ? levels.red-1     : 0;
-    levels.green   = levels.green   ? levels.green-1   : 0;
-    levels.blue    = levels.blue    ? levels.blue-1    : 0;
-    levels.black   = levels.black   ? levels.black-1   : 0;
-    levels.alpha = levels.alpha ? levels.alpha-1 : 0;
+    levels.red    =levels.red     ? levels.red-1     : 0;
+    levels.green  =levels.green   ? levels.green-1   : 0;
+    levels.blue   =levels.blue    ? levels.blue-1    : 0;
+    levels.black  =levels.black   ? levels.black-1   : 0;
+    levels.alpha=levels.alpha ? levels.alpha-1 : 0;
 
     if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
       return(MagickFalse);
@@ -1369,51 +1374,51 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
           Figure out the dither threshold for this pixel
           This must be a integer from 1 to map->divisor-1
         */
-        threshold = map->levels[(x%map->width) +map->width*(y%map->height)];
+        threshold=map->levels[(x%map->width) +map->width*(y%map->height)];
 
         /* Dither each channel in the image as appropriate
           Notes on the integer Math...
-              total number of divisions = (levels-1)*(divisor-1)+1)
-              t1 = this colors psuedo_level =
+              total number of divisions=(levels-1)*(divisor-1)+1)
+              t1=this colors psuedo_level =
                       q->red * total_divisions / (QuantumRange+1)
-              l = posterization level       0..levels
-              t = dither threshold level    0..divisor-1  NB: 0 only on last
+              l=posterization level       0..levels
+              t=dither threshold level    0..divisor-1  NB: 0 only on last
               Each color_level is of size   QuantumRange / (levels-1)
               NB: All input levels and divisor are already had 1 subtracted
               Opacity is inverted so 'off' represents transparent.
         */
         if (levels.red != 0) {
-          t = (ssize_t) (QuantumScale*GetPixelRed(image,q)*(levels.red*d+1));
-          l = t/d;  t = t-l*d;
+          t=(ssize_t) (QuantumScale*GetPixelRed(image,q)*(levels.red*d+1));
+          l=t/d;  t = t-l*d;
           SetPixelRed(image,RoundToQuantum((MagickRealType)
             ((l+(t >= threshold))*(MagickRealType) QuantumRange/levels.red)),q);
         }
         if (levels.green != 0) {
-          t = (ssize_t) (QuantumScale*GetPixelGreen(image,q)*
+          t=(ssize_t) (QuantumScale*GetPixelGreen(image,q)*
             (levels.green*d+1));
-          l = t/d;  t = t-l*d;
+          l=t/d;  t = t-l*d;
           SetPixelGreen(image,RoundToQuantum((MagickRealType)
             ((l+(t >= threshold))*(MagickRealType) QuantumRange/levels.green)),q);
         }
         if (levels.blue != 0) {
-          t = (ssize_t) (QuantumScale*GetPixelBlue(image,q)*
+          t=(ssize_t) (QuantumScale*GetPixelBlue(image,q)*
             (levels.blue*d+1));
-          l = t/d;  t = t-l*d;
+          l=t/d;  t = t-l*d;
           SetPixelBlue(image,RoundToQuantum((MagickRealType)
             ((l+(t >= threshold))*(MagickRealType) QuantumRange/levels.blue)),q);
         }
         if (levels.alpha != 0) {
-          t = (ssize_t) ((1.0-QuantumScale*GetPixelAlpha(image,q))*
+          t=(ssize_t) ((1.0-QuantumScale*GetPixelAlpha(image,q))*
             (levels.alpha*d+1));
-          l = t/d;  t = t-l*d;
+          l=t/d;  t = t-l*d;
           SetPixelAlpha(image,RoundToQuantum((MagickRealType)
             ((1.0-l-(t >= threshold))*(MagickRealType) QuantumRange/
             levels.alpha)),q);
         }
         if (levels.black != 0) {
-          t = (ssize_t) (QuantumScale*GetPixelBlack(image,q)*
+          t=(ssize_t) (QuantumScale*GetPixelBlack(image,q)*
             (levels.black*d+1));
-          l = t/d;  t = t-l*d;
+          l=t/d;  t = t-l*d;
           SetPixelBlack(image,RoundToQuantum((MagickRealType)
             ((l+(t>=threshold))*(MagickRealType) QuantumRange/levels.black)),q);
         }
