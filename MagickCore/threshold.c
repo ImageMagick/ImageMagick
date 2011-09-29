@@ -109,6 +109,12 @@ struct _ThresholdMap
 };
 
 /*
+  Forward declarations.
+*/
+static ThresholdMap
+  *GetThresholdMapFile(const char *,const char *,const char *,ExceptionInfo *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -833,7 +839,7 @@ MagickExport ThresholdMap *GetThresholdMap(const char *map_id,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport ThresholdMap *GetThresholdMapFile(const char *xml,
+static ThresholdMap *GetThresholdMapFile(const char *xml,
   const char *filename,const char *map_id,ExceptionInfo *exception)
 {
   char
