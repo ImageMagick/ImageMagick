@@ -2271,7 +2271,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
 %  QueryMagickColorCompliance() returns the red, green, blue, and alpha
 %  intensities for a given color name and standards compliance.
 %
-%  The format of the QueryMagickColor method is:
+%  The format of the QueryMagickColorCompliance method is:
 %
 %      MagickBooleanType QueryMagickColor(const char *name,
 %        const ComplianceType compliance,PixelInfo *color,
