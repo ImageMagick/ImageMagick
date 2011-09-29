@@ -31,8 +31,7 @@ extern MagickExport Image
 
 extern MagickExport ThresholdMap
   *DestroyThresholdMap(ThresholdMap *),
-  *GetThresholdMap(const char *,ExceptionInfo *),
-  *GetThresholdMapFile(const char *,const char *,const char *,ExceptionInfo *);
+  *GetThresholdMap(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   BilevelImage(Image *,const double),
