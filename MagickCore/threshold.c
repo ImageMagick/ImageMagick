@@ -81,6 +81,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
+#include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
@@ -1212,14 +1213,23 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   CacheView
     *image_view;
 
-  PixelLongPacket
-    levels;
+  char
+    token[MaxTextExtent];
+
+  const char
+    *p;
 
   MagickBooleanType
     status;
 
   MagickOffsetType
     progress;
+
+  MagickRealType
+    levels[MaxPixelChannels];
+
+  register ssize_t
+    i;
 
   ssize_t
     y;
@@ -1235,218 +1245,118 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   assert(exception->signature == MagickSignature);
   if (threshold_map == (const char *) NULL)
     return(MagickTrue);
+  p=(char *) threshold_map;
+  while (((isspace((int) ((unsigned char) *p)) != 0) || (*p == ',')) &&
+         (*p != '\0'))
+    p++;
+  threshold_map=p;
+  while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != ',')) &&
+         (*p != '\0'))
   {
-    char
-      token[MaxTextExtent];
-
-    register const char
-      *p;
-
-    p=(char *)threshold_map;
-    while (((isspace((int) ((unsigned char) *p)) != 0) || (*p == ',')) &&
-           (*p != '\0'))
-      p++;
-    threshold_map=p;
-    while (((isspace((int) ((unsigned char) *p)) == 0) && (*p != ',')) &&
-           (*p != '\0')) {
-      if ((p-threshold_map) >= (MaxTextExtent-1))
-        break;
-      token[p-threshold_map]=(*p);
-      p++;
-    }
-    token[p-threshold_map]='\0';
-    map=GetThresholdMap(token, exception);
-    if (map == (ThresholdMap *) NULL)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "InvalidArgument","%s : '%s'","ordered-dither",threshold_map);
-        return(MagickFalse);
-      }
+    if ((p-threshold_map) >= (MaxTextExtent-1))
+      break;
+    token[p-threshold_map]=(*p);
+    p++;
   }
-  /* Set channel levels from extra comma separated arguments
-     Default to 2, the single value given, or individual channel values
-  */
-#if 1
-  { /* parse directly as a comma separated list of integers */
-    char *p;
-
-    p=strchr((char *) threshold_map,',');
-    levels.red=0;
-    levels.green=0;
-    levels.blue=0;
-    levels.black=0;
-    levels.alpha=0;
-    if ( p != (char *)NULL && isdigit((int) ((unsigned char) *(++p))) )
-      levels.black=(unsigned int) strtoul(p, &p, 10);
-    else
-      levels.black=2;
-
-    if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-      levels.red=levels.black;
-    if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-      levels.green=levels.black;
-    if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-      levels.blue=levels.black;
-    if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-        (image->colorspace == CMYKColorspace))
-      levels.black=levels.black;
-    if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-        (image->matte != MagickFalse))
-      levels.alpha=levels.black;
-    /*
-      If more than a single number, each channel has a separate value.
-    */
-    if (p != (char *) NULL && *p == ',')
-      {
-      p=strchr((char *) threshold_map,',');
-      p++;
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        levels.red=(unsigned int) strtoul(p, &p, 10),   (void)(*p == ',' && p++);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        levels.green=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        levels.blue=(unsigned int) strtoul(p, &p, 10),  (void)(*p == ',' && p++);
-      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0 &&
-          (image->colorspace == CMYKColorspace))
-        levels.black=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        levels.alpha=(unsigned int) strtoul(p, &p, 10), (void)(*p == ',' && p++);
-    }
-  }
-#else
-  /* Parse level values as a geometry */
-  /* This difficult!
-   * How to map   GeometryInfo structure elements into
-   * PixelLongPacket structure elements, but according to channel?
-   * Note the channels list may skip elements!!!!
-   * EG  -channel BA  -ordered-dither map,2,3
-   * will need to map  g.rho -> l.blue, and g.sigma -> l.alpha
-   * A simpler way is needed, probably converting geometry to a temporary
-   * array, then using channel to advance the index into ssize_t pixel packet.
-   */
-#endif
-
-#if 0
-printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
-     levels.red, levels.green, levels.blue, levels.alpha, levels.index);
-#endif
-
-  { /* Do the posterized ordered dithering of the image */
-    ssize_t
-      d;
-
-    /* d=number of psuedo-level divisions added between color levels */
-    d=map->divisor-1;
-
-    /* reduce levels to levels - 1 */
-    levels.red    =levels.red     ? levels.red-1     : 0;
-    levels.green  =levels.green   ? levels.green-1   : 0;
-    levels.blue   =levels.blue    ? levels.blue-1    : 0;
-    levels.black  =levels.black   ? levels.black-1   : 0;
-    levels.alpha=levels.alpha ? levels.alpha-1 : 0;
-
-    if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+  token[p-threshold_map]='\0';
+  map=GetThresholdMap(token,exception);
+  if (map == (ThresholdMap *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "InvalidArgument","%s : '%s'","ordered-dither",threshold_map);
       return(MagickFalse);
-    status=MagickTrue;
-    progress=0;
-    image_view=AcquireCacheView(image);
+    }
+  for (i=0; i < MaxPixelChannels; i++)
+    levels[i]=2.0;
+  p=strchr((char *) threshold_map,',');
+  if ((p != (char *) NULL) && (isdigit((int) ((unsigned char) *(++p))) != 0))
+    for (i=0; (*p != '\0') && (i < MaxPixelChannels); i++)
+    {
+      GetMagickToken(p,&p,token);
+      if (*token == ',')
+        GetMagickToken(p,&p,token);
+      levels[i]=InterpretLocaleValue(token,(char **) NULL);
+    }
+  for (i=0; i < MaxPixelChannels; i++)
+    if (fabs(levels[i]) >= 1)
+      levels[i]-=1.0;
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-    for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    register Quantum
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        x;
+        i;
 
-      register Quantum
-        *restrict q;
+      ssize_t
+        n;
 
-      if (status == MagickFalse)
-        continue;
-      q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-      if (q == (Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      for (x=0; x < (ssize_t) image->columns; x++)
+      n=0;
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        register ssize_t
+
+        PixelTrait
+          traits;
+
+        ssize_t
           threshold,
           t,
           l;
 
-        /*
-          Figure out the dither threshold for this pixel
-          This must be a integer from 1 to map->divisor-1
-        */
-        threshold=map->levels[(x%map->width) +map->width*(y%map->height)];
-
-        /* Dither each channel in the image as appropriate
-          Notes on the integer Math...
-              total number of divisions=(levels-1)*(divisor-1)+1)
-              t1=this colors psuedo_level =
-                      q->red * total_divisions / (QuantumRange+1)
-              l=posterization level       0..levels
-              t=dither threshold level    0..divisor-1  NB: 0 only on last
-              Each color_level is of size   QuantumRange / (levels-1)
-              NB: All input levels and divisor are already had 1 subtracted
-              Opacity is inverted so 'off' represents transparent.
-        */
-        if (levels.red != 0) {
-          t=(ssize_t) (QuantumScale*GetPixelRed(image,q)*(levels.red*d+1));
-          l=t/d;  t = t-l*d;
-          SetPixelRed(image,RoundToQuantum((MagickRealType)
-            ((l+(t >= threshold))*(MagickRealType) QuantumRange/levels.red)),q);
-        }
-        if (levels.green != 0) {
-          t=(ssize_t) (QuantumScale*GetPixelGreen(image,q)*
-            (levels.green*d+1));
-          l=t/d;  t = t-l*d;
-          SetPixelGreen(image,RoundToQuantum((MagickRealType)
-            ((l+(t >= threshold))*(MagickRealType) QuantumRange/levels.green)),q);
-        }
-        if (levels.blue != 0) {
-          t=(ssize_t) (QuantumScale*GetPixelBlue(image,q)*
-            (levels.blue*d+1));
-          l=t/d;  t = t-l*d;
-          SetPixelBlue(image,RoundToQuantum((MagickRealType)
-            ((l+(t >= threshold))*(MagickRealType) QuantumRange/levels.blue)),q);
-        }
-        if (levels.alpha != 0) {
-          t=(ssize_t) ((1.0-QuantumScale*GetPixelAlpha(image,q))*
-            (levels.alpha*d+1));
-          l=t/d;  t = t-l*d;
-          SetPixelAlpha(image,RoundToQuantum((MagickRealType)
-            ((1.0-l-(t >= threshold))*(MagickRealType) QuantumRange/
-            levels.alpha)),q);
-        }
-        if (levels.black != 0) {
-          t=(ssize_t) (QuantumScale*GetPixelBlack(image,q)*
-            (levels.black*d+1));
-          l=t/d;  t = t-l*d;
-          SetPixelBlack(image,RoundToQuantum((MagickRealType)
-            ((l+(t>=threshold))*(MagickRealType) QuantumRange/levels.black)),q);
-        }
-        q+=GetPixelChannels(image);
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if (fabs(levels[n]) >= MagickEpsilon)
+          {
+            threshold=map->levels[(x % map->width)+map->width*(y %
+              map->height)];
+            t=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
+            l=t/(map->divisor-1);
+            t=t-l*(map->divisor-1);
+            q[i]=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
+              (MagickRealType) QuantumRange/levels[n]));
+          }
+        n++;
       }
-      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-        status=MagickFalse;
-      if (image->progress_monitor != (MagickProgressMonitor) NULL)
-        {
-          MagickBooleanType
-            proceed;
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_OrderedPosterizeImage)
+#pragma omp critical (MagickCore_OrderedPosterizeImage)
 #endif
-          proceed=SetImageProgress(image,DitherImageTag,progress++,image->rows);
-          if (proceed == MagickFalse)
-            status=MagickFalse;
-        }
-    }
-    image_view=DestroyCacheView(image_view);
+        proceed=SetImageProgress(image,DitherImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
+  image_view=DestroyCacheView(image_view);
   map=DestroyThresholdMap(map);
   return(MagickTrue);
 }
@@ -1579,7 +1489,6 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
 
         PixelTrait
           traits;
-
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
         if ((traits & UpdatePixelTrait) == 0)
