@@ -1315,28 +1315,23 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
       n=0;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-
         PixelTrait
           traits;
 
         ssize_t
-          threshold,
-          t,
-          l;
+          level,
+          threshold;
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (fabs(levels[n]) >= MagickEpsilon)
-          {
-            threshold=map->levels[(x % map->width)+map->width*(y %
-              map->height)];
-            t=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
-            l=t/(map->divisor-1);
-            t=t-l*(map->divisor-1);
-            q[i]=RoundToQuantum((MagickRealType) ((l+(t >= threshold))*
-              (MagickRealType) QuantumRange/levels[n]));
-          }
+        if (fabs(levels[n++]) < MagickEpsilon)
+          continue;
+        threshold=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
+        level=threshold/(map->divisor-1);
+        threshold-=level*(map->divisor-1);
+        q[i]=RoundToQuantum((level+(threshold >= map->levels[(x % map->width)+
+          map->width*(y % map->height)]))*QuantumRange/levels[n]);
         n++;
       }
       q+=GetPixelChannels(image);
