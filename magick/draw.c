@@ -4709,7 +4709,7 @@ MagickExport void GetAffineMatrix(AffineMatrix *affine_matrix)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetDrawInfo() initializes draw_info to default values.
+%  GetDrawInfo() initializes draw_info to default values from image_info.
 %
 %  The format of the GetDrawInfo method is:
 %
