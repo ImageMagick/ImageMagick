@@ -215,9 +215,9 @@ MagickExport DrawInfo *AcquireDrawInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneDrawInfo() makes a copy of the given draw info structure.  If NULL
-%  is specified, a new image info structure is created initialized to
-%  default values.
+%  CloneDrawInfo() makes a copy of the given draw_info structure.  If NULL
+%  is specified, a new draw_info structure is created initialized to
+%  default values, according to the given image_info.
 %
 %  The format of the CloneDrawInfo method is:
 %
