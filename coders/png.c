@@ -7573,6 +7573,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    * Note that this will not involve any changes to the actual pixels
    * but merely passes information to applications that read the resulting
    * PNG image.
+   *
+   * To do: recognize other variants of the sRGB profile.  Check the
+   * "intent" field within the profile instead of assuming it's "perceptual".
    */
    if (ping_exclude_sRGB == MagickFalse)
    {
