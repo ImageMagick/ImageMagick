@@ -7657,6 +7657,27 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                           data[53],data[54],data[55]);
                    
                  }
+                 else if (length == 60960)
+                 {
+                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "    got a 60960-byte ICC profile (potentially sRGB)");
+
+                   data=GetStringInfoDatum(profile);
+
+                   if (data[269]=='s' && data[271]=='R' &&
+                       data[273]=='G' && data[275]=='B')
+                   {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "    It is the ICC v4 sRGB)");
+                      if (image->rendering_intent==UndefinedIntent)
+                        image->rendering_intent=PerceptualIntent;
+                   }
+                   else
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "    It is not sRGB (%c%c%c%c)",
+                          data[269],data[271],data[273],data[275]);
+                   
+                 }
                  else if (length == 3052)
                  {
                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7674,8 +7695,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    }
                    else
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is not sRGB (%c%c%c%c)",data[52],
-                          data[53],data[54],data[55]);
+                          "    It is not sRGB (%c%c%c%c)",data[336],
+                          data[337],data[338],data[339]);
                    
                  }
                  else
