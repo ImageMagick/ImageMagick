@@ -837,7 +837,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %
 */
 
-static void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
+static void Contrast(const int sign,double *red,double *green,double *blue)
 {
   double
     brightness,
@@ -847,9 +847,9 @@ static void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   /*
     Enhance contrast: dark color become darker, light color become lighter.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
   hue=0.0;
   saturation=0.0;
   brightness=0.0;
@@ -912,7 +912,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    Quantum
+    double
       blue,
       green,
       red;
@@ -2659,8 +2659,8 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
 */
 
 static void ModulateHSB(const double percent_hue,
-  const double percent_saturation,const double percent_brightness,
-  Quantum *red,Quantum *green,Quantum *blue)
+  const double percent_saturation,const double percent_brightness,double *red,
+  double *green,double *blue)
 {
   double
     brightness,
@@ -2670,9 +2670,9 @@ static void ModulateHSB(const double percent_hue,
   /*
     Increase or decrease color brightness, saturation, or hue.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
   ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
@@ -2685,8 +2685,8 @@ static void ModulateHSB(const double percent_hue,
 }
 
 static void ModulateHSL(const double percent_hue,
-  const double percent_saturation,const double percent_lightness,
-  Quantum *red,Quantum *green,Quantum *blue)
+  const double percent_saturation,const double percent_lightness,double *red,
+  double *green,double *blue)
 {
   double
     hue,
@@ -2696,9 +2696,9 @@ static void ModulateHSL(const double percent_hue,
   /*
     Increase or decrease color lightness, saturation, or hue.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
   ConvertRGBToHSL(*red,*green,*blue,&hue,&saturation,&lightness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
@@ -2710,7 +2710,7 @@ static void ModulateHSL(const double percent_hue,
   ConvertHSLToRGB(hue,saturation,lightness,red,green,blue);
 }
 
-static void ModulateHWB(const double percent_hue,const double percent_whiteness,  const double percent_blackness,Quantum *red,Quantum *green,Quantum *blue)
+static void ModulateHWB(const double percent_hue,const double percent_whiteness,  const double percent_blackness,double *red,double *green,double *blue)
 {
   double
     blackness,
@@ -2720,9 +2720,9 @@ static void ModulateHWB(const double percent_hue,const double percent_whiteness,
   /*
     Increase or decrease color blackness, whiteness, or hue.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
   ConvertRGBToHWB(*red,*green,*blue,&hue,&whiteness,&blackness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
@@ -2839,7 +2839,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    Quantum
+    double
       blue,
       green,
       red;
@@ -2885,9 +2885,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
           break;
         }
       }
-      SetPixelRed(image,red,q);
-      SetPixelGreen(image,green,q);
-      SetPixelBlue(image,blue,q);
+      SetPixelRed(image,ClampToQuantum(red),q);
+      SetPixelGreen(image,ClampToQuantum(green),q);
+      SetPixelBlue(image,ClampToQuantum(blue),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

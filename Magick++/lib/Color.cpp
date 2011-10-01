@@ -301,7 +301,7 @@ Magick::ColorHSL::ColorHSL ( double hue_,
 			     double luminosity_ )
   : Color ()
 {
-  Quantum red, green, blue;
+  double red, green, blue;
 
   ConvertHSLToRGB ( hue_,
 		 saturation_,
@@ -346,7 +346,7 @@ void Magick::ColorHSL::hue ( double hue_ )
 
   hue_val = hue_;
 
-  Quantum red, green, blue;
+  double red, green, blue;
   ConvertHSLToRGB ( hue_val,
 		 saturation_val,
 		 luminosity_val,
@@ -384,7 +384,7 @@ void Magick::ColorHSL::saturation ( double saturation_ )
   
   saturation_val = saturation_;
   
-  Quantum red, green, blue;
+  double red, green, blue;
   ConvertHSLToRGB ( hue_val,
 		 saturation_val,
 		 luminosity_val,
@@ -422,7 +422,7 @@ void Magick::ColorHSL::luminosity ( double luminosity_ )
   
   luminosity_val = luminosity_;
   
-  Quantum red, green, blue;
+  double red, green, blue;
   ConvertHSLToRGB ( hue_val,
 		 saturation_val,
 		 luminosity_val,
