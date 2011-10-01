@@ -111,7 +111,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   if (tile_image == (Image *) NULL)
     return((Image *) NULL);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   if (*image_info->filename == '\0')

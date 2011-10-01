@@ -161,14 +161,18 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       return((Image *) NULL);
     }
   (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel,exception);
-  (void) QueryMagickColor("#f1001ecc",&highlight,exception);
+  (void) QueryMagickColorCompliance("#f1001ecc",AllCompliance,&highlight,
+    exception);
   artifact=GetImageArtifact(image,"highlight-color");
   if (artifact != (const char *) NULL)
-    (void) QueryMagickColor(artifact,&highlight,exception);
-  (void) QueryMagickColor("#ffffffcc",&lowlight,exception);
+    (void) QueryMagickColorCompliance(artifact,AllCompliance,&highlight,
+      exception);
+  (void) QueryMagickColorCompliance("#ffffffcc",AllCompliance,&lowlight,
+    exception);
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
-    (void) QueryMagickColor(artifact,&lowlight,exception);
+    (void) QueryMagickColorCompliance(artifact,AllCompliance,&lowlight,
+      exception);
   if (highlight_image->colorspace == CMYKColorspace)
     {
       ConvertRGBToCMYK(&highlight);

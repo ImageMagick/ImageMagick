@@ -962,7 +962,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   one=1;
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -1168,7 +1168,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
 
               /* Allocate next image structure. */
-              AcquireNextImage(image_info,image);
+              AcquireNextImage(image_info,image,exception);
               image->depth=8;
               if (image->next == (Image *) NULL)
                 goto Finish;
@@ -1345,7 +1345,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     
 
               /* Allocate next image structure. */
-              AcquireNextImage(image_info,image);
+              AcquireNextImage(image_info,image,exception);
               image->depth=8;
               if (image->next == (Image *) NULL)
                 goto Finish;

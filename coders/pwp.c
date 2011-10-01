@@ -165,7 +165,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  pwp_image=AcquireImage(image_info);
+  pwp_image=AcquireImage(image_info,exception);
   image=pwp_image;
   status=OpenBlob(image_info,pwp_image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)

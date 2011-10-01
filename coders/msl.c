@@ -49,8 +49,8 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color.h"
-#include "MagickCore/colormap.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colormap.h"
 #include "MagickCore/composite.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/decorate.h"
@@ -571,7 +571,8 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1],
     msl_info->draw_info[n-1]);
   if (image == (Image *) NULL)
-    msl_info->attributes[n]=AcquireImage(msl_info->image_info[n]);
+    msl_info->attributes[n]=AcquireImage(msl_info->image_info[n],
+      &image->exception);
   else
     msl_info->attributes[n]=CloneImage(image,0,0,MagickTrue,&image->exception);
   msl_info->image[n]=(Image *) image;
@@ -860,8 +861,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->fill,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"family") == 0)
@@ -958,8 +959,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"stretch") == 0)
                     {
-                      option=ParseCommandOption(MagickStretchOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickStretchOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedStretchType",
                           value);
@@ -968,8 +969,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword, "stroke") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->stroke,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->stroke,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
@@ -1017,8 +1018,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "undercolor") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->undercolor,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->undercolor,&exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1295,7 +1296,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &msl_info->image[n]->border_color,&exception);
                       break;
                     }
@@ -1400,7 +1401,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,&target,
+                      (void) QueryColorCompliance(value,AllCompliance,&target,
                         &msl_info->image[n]->exception);
                       break;
                     }
@@ -1658,7 +1659,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"bordercolor") == 0)
                     {
-                      (void) QueryMagickColor(value,&target,&exception);
+                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                        &target,&exception);
                       paint_method=FillToBorderMethod;
                       break;
                     }
@@ -1671,8 +1673,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->fill,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"fuzz") == 0)
@@ -1862,7 +1864,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword, "color") == 0)
                     {
-                      (void) QueryColorDatabase(value,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &composite_image->background_color,&exception);
                       break;
                     }
@@ -2480,8 +2482,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->fill,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"family") == 0)
@@ -2583,8 +2585,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"stretch") == 0)
                     {
-                      option=ParseCommandOption(MagickStretchOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickStretchOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedStretchType",
                           value);
@@ -2593,8 +2595,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword, "stroke") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->stroke,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->stroke,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
@@ -2642,8 +2644,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "undercolor") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->undercolor,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->undercolor,&exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3070,7 +3072,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &msl_info->image[n]->matte_color,&exception);
                       break;
                     }
@@ -3694,7 +3696,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"bordercolor") == 0)
                     {
-                      (void) QueryMagickColor(value,&target,&exception);
+                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                        &target,&exception);
                       paint_method=FillToBorderMethod;
                       break;
                     }
@@ -4230,8 +4233,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          (void) QueryMagickColor("none",&target,&exception);
-          (void) QueryMagickColor("none",&fill_color,&exception);
+          (void) QueryMagickColorCompliance("none",AllCompliance,&target,
+            &exception);
+          (void) QueryMagickColorCompliance("none",AllCompliance,&fill_color,
+            &exception);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
@@ -4263,7 +4268,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) QueryMagickColor(value,&fill_color,&exception);
+                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                        &fill_color,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"fuzz") == 0)
@@ -4649,8 +4655,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->fill,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->fill,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"family") == 0)
@@ -4747,8 +4753,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"stretch") == 0)
                     {
-                      option=ParseCommandOption(MagickStretchOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickStretchOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedStretchType",
                           value);
@@ -4757,8 +4763,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword, "stroke") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->stroke,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->stroke,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
@@ -4806,8 +4812,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "undercolor") == 0)
                     {
-                      (void) QueryColorDatabase(value,&draw_info->undercolor,
-                        &exception);
+                      (void) QueryColorCompliance(value,AllCompliance,
+                        &draw_info->undercolor,&exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -6551,7 +6557,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword, "fill") == 0)
                     {
-                      (void) QueryColorDatabase(value,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &msl_info->image[n]->background_color,&exception);
                       break;
                     }
@@ -7200,7 +7206,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 PixelInfo
                   target;
 
-                (void) QueryMagickColor(value,&target,&exception);
+                (void) QueryMagickColorCompliance(value,AllCompliance,&target,
+                  &exception);
                 (void) TransparentPaintImage(msl_info->image[n],&target,
                   TransparentAlpha,MagickFalse,&msl_info->image[n]->exception);
                 break;
@@ -7699,7 +7706,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(image != (Image **) NULL);
-  msl_image=AcquireImage(image_info);
+  msl_image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,msl_image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -7733,7 +7740,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,Image **im
       "UnableToInterpretMSLImage");
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  *msl_info.attributes=AcquireImage(image_info);
+  *msl_info.attributes=AcquireImage(image_info,exception);
   msl_info.group_info[0].numImages=0;
   /* the first slot is used to point to the MSL file image */
   *msl_info.image=msl_image;
@@ -7992,8 +7999,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"background") == 0)
         {
-          (void) QueryColorDatabase(value,&image_info->background_color,
-            exception);
+          (void) QueryColorCompliance(value,AllCompliance,
+            &image_info->background_color,exception);
           break;
         }
       if (LocaleCompare(keyword,"bias") == 0)
@@ -8017,8 +8024,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"bordercolor") == 0)
         {
-          (void) QueryColorDatabase(value,&image_info->border_color,
-            exception);
+          (void) QueryColorCompliance(value,AllCompliance,
+            &image_info->border_color,exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -8041,7 +8048,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"fill") == 0)
         {
-          (void) QueryColorDatabase(value,&draw_info->fill,exception);
+          (void) QueryColorCompliance(value,AllCompliance,&draw_info->fill,
+            exception);
           (void) SetImageOption(image_info,keyword,value);
           break;
         }
@@ -8091,8 +8099,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"mattecolor") == 0)
         {
-          (void) QueryColorDatabase(value,&image_info->matte_color,
-            exception);
+          (void) QueryColorCompliance(value,AllCompliance,
+            &image_info->matte_color,exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -8133,7 +8141,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       if (LocaleCompare(keyword,"stroke") == 0)
         {
-          (void) QueryColorDatabase(value,&draw_info->stroke,exception);
+          (void) QueryColorCompliance(value,AllCompliance,&draw_info->stroke,
+            exception);
           (void) SetImageOption(image_info,keyword,value);
           break;
         }

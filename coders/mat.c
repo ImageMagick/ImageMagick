@@ -550,7 +550,7 @@ DblBreak:
   RelinquishMagickMemory(DecompressBlock);
 
   if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
-  if( (image2 = AcquireImage(clone_info))==NULL ) goto EraseFile;  
+  if( (image2 = AcquireImage(clone_info,exception))==NULL ) goto EraseFile;  
   status = OpenBlob(clone_info,image2,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
   {
@@ -644,7 +644,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
      Open image file.
    */
-  image = AcquireImage(image_info);
+  image = AcquireImage(image_info,exception);
 
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == MagickFalse)
@@ -1005,7 +1005,7 @@ done_reading:
       }
 
       /* Allocate next image structure. */    
-    AcquireNextImage(image_info,image);
+    AcquireNextImage(image_info,image,exception);
     if (image->next == (Image *) NULL) break;                
     image=SyncNextImageInList(image);
     image->columns=image->rows=0;

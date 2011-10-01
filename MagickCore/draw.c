@@ -1273,7 +1273,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
     coordinates;
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  (void) QueryColorDatabase("#0000",&clone_info->fill,&image->exception);
+  (void) QueryColorCompliance("#0000",AllCompliance,&clone_info->fill,
+    &image->exception);
   resolution.x=DefaultResolution;
   resolution.y=DefaultResolution;
   if (clone_info->density != (char *) NULL)
@@ -1325,10 +1326,10 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction != 0)
-          (void) QueryColorDatabase("red",&clone_info->stroke,
+          (void) QueryColorCompliance("red",AllCompliance,&clone_info->stroke,
             &image->exception);
         else
-          (void) QueryColorDatabase("green",&clone_info->stroke,
+          (void) QueryColorCompliance("green",AllCompliance,&clone_info->stroke,
             &image->exception);
         start.x=(double) (polygon_info->edges[i].bounds.x1-mid);
         start.y=(double) (polygon_info->edges[i].bounds.y1-mid);
@@ -1342,7 +1343,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
         (void) DrawPrimitive(image,clone_info,primitive_info);
       }
     }
-  (void) QueryColorDatabase("blue",&clone_info->stroke,&image->exception);
+  (void) QueryColorCompliance("blue",AllCompliance,&clone_info->stroke,
+    &image->exception);
   start.x=(double) (bounds.x1-mid);
   start.y=(double) (bounds.y1-mid);
   end.x=(double) (bounds.x2+mid);
@@ -1421,8 +1423,8 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
       (void) SetImageClipMask(image,clip_mask,exception);
       clip_mask=DestroyImage(clip_mask);
     }
-  (void) QueryColorDatabase("#00000000",&image->clip_mask->background_color,
-    &image->exception);
+  (void) QueryColorCompliance("#00000000",AllCompliance,
+    &image->clip_mask->background_color,&image->exception);
   image->clip_mask->background_color.alpha=(Quantum) TransparentAlpha;
   (void) SetImageBackgroundColor(image->clip_mask);
   if (image->debug != MagickFalse)
@@ -1430,7 +1432,8 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
       draw_info->clip_mask);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,value);
-  (void) QueryColorDatabase("#ffffff",&clone_info->fill,&image->exception);
+  (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
+    &image->exception);
   clone_info->clip_mask=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info,exception);
   status|=NegateImage(image->clip_mask,MagickFalse,&image->exception);
@@ -1782,7 +1785,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       graphic_context[n]->viewbox.height=image->rows;
     }
   token=AcquireString(primitive);
-  (void) QueryColorDatabase("#000000",&start_color,&image->exception);
+  (void) QueryColorCompliance("#000000",AllCompliance,&start_color,
+    &image->exception);
   if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -1859,8 +1863,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("border-color",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            (void) QueryColorDatabase(token,&graphic_context[n]->border_color,
-              &image->exception);
+            (void) QueryColorCompliance(token,AllCompliance,
+              &graphic_context[n]->border_color,&image->exception);
             break;
           }
         status=MagickFalse;
@@ -1985,8 +1989,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 &graphic_context[n]->fill_pattern,exception);
             else
               {
-                status=QueryColorDatabase(token,&graphic_context[n]->fill,
-                  &image->exception);
+                status=QueryColorCompliance(token,AllCompliance,
+                  &graphic_context[n]->fill,&image->exception);
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2498,7 +2502,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               stop_color;
 
             GetMagickToken(q,&q,token);
-            (void) QueryColorDatabase(token,&stop_color,&image->exception);
+            (void) QueryColorCompliance(token,AllCompliance,&stop_color,
+              &image->exception);
             (void) GradientImage(image,LinearGradient,ReflectSpread,
               &start_color,&stop_color,&image->exception);
             start_color=stop_color;
@@ -2514,8 +2519,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 &graphic_context[n]->stroke_pattern,exception);
             else
               {
-                status=QueryColorDatabase(token,&graphic_context[n]->stroke,
-                  &image->exception);
+                status=QueryColorCompliance(token,AllCompliance,
+                  &graphic_context[n]->stroke,&image->exception);
                 if (status == MagickFalse)
                   {
                     ImageInfo
@@ -2697,8 +2702,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("text-undercolor",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            (void) QueryColorDatabase(token,&graphic_context[n]->undercolor,
-              &image->exception);
+            (void) QueryColorCompliance(token,AllCompliance,
+              &graphic_context[n]->undercolor,&image->exception);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
@@ -3523,10 +3528,10 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     *pattern=DestroyImage(*pattern);
   image_info=AcquireImageInfo();
   image_info->size=AcquireString(geometry);
-  *pattern=AcquireImage(image_info);
+  *pattern=AcquireImage(image_info,&image->exception);
   image_info=DestroyImageInfo(image_info);
-  (void) QueryColorDatabase("#00000000",&(*pattern)->background_color,
-    &image->exception);
+  (void) QueryColorCompliance("#00000000",AllCompliance,
+    &(*pattern)->background_color,&image->exception);
   (void) SetImageBackgroundColor(*pattern);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
@@ -4758,8 +4763,10 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   clone_info=CloneImageInfo(image_info);
   GetAffineMatrix(&draw_info->affine);
   exception=AcquireExceptionInfo();
-  (void) QueryColorDatabase("#000F",&draw_info->fill,exception);
-  (void) QueryColorDatabase("#FFF0",&draw_info->stroke,exception);
+  (void) QueryColorCompliance("#000F",AllCompliance,&draw_info->fill,
+    exception);
+  (void) QueryColorCompliance("#FFF0",AllCompliance,&draw_info->stroke,
+    exception);
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
   draw_info->alpha=OpaqueAlpha;
@@ -4802,16 +4809,19 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
       MagickDirectionOptions,MagickFalse,option);
   option=GetImageOption(clone_info,"fill");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&draw_info->fill,exception);
+    (void) QueryColorCompliance(option,AllCompliance,&draw_info->fill,
+      exception);
   option=GetImageOption(clone_info,"stroke");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&draw_info->stroke,exception);
+    (void) QueryColorCompliance(option,AllCompliance,&draw_info->stroke,
+      exception);
   option=GetImageOption(clone_info,"strokewidth");
   if (option != (const char *) NULL)
     draw_info->stroke_width=InterpretLocaleValue(option,(char **) NULL);
   option=GetImageOption(clone_info,"undercolor");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&draw_info->undercolor,exception);
+    (void) QueryColorCompliance(option,AllCompliance,&draw_info->undercolor,
+      exception);
   option=GetImageOption(clone_info,"gravity");
   if (option != (const char *) NULL)
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,

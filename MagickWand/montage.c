@@ -510,7 +510,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) QueryColorDatabase(argv[i],
+            (void) QueryColorCompliance(argv[i],AllCompliance,
               &montage_info->background_color,exception);
             break;
           }
@@ -561,8 +561,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) QueryColorDatabase(argv[i],&montage_info->border_color,
-              exception);
+            (void) QueryColorCompliance(argv[i],AllCompliance,
+              &montage_info->border_color,exception);
             break;
           }
         if (LocaleCompare("borderwidth",option+1) == 0)
@@ -911,14 +911,15 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("fill",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&montage_info->fill,exception);
+            (void) QueryColorCompliance("none",AllCompliance,
+              &montage_info->fill,exception);
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) QueryColorDatabase(argv[i],&montage_info->fill,
-              exception);
+            (void) QueryColorCompliance(argv[i],AllCompliance,
+              &montage_info->fill,exception);
             break;
           }
         if (LocaleCompare("filter",option+1) == 0)
@@ -1183,8 +1184,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) QueryColorDatabase(argv[i],&montage_info->matte_color,
-              exception);
+            (void) QueryColorCompliance(argv[i],AllCompliance,
+              &montage_info->matte_color,exception);
             break;
           }
         if (LocaleCompare("mode",option+1) == 0)
@@ -1486,14 +1487,15 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("stroke",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&montage_info->stroke,exception);
+            (void) QueryColorCompliance("none",AllCompliance,
+              &montage_info->stroke,exception);
             if (*option == '+')
               break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) QueryColorDatabase(argv[i],&montage_info->stroke,
-              exception);
+            (void) QueryColorCompliance(argv[i],AllCompliance,
+              &montage_info->stroke,exception);
             break;
           }
         if (LocaleCompare("strip",option+1) == 0)

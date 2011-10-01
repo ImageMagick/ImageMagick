@@ -982,7 +982,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
       /*
         Read reconstruct image.
       */
-      reconstruct_image=AcquireImage(image_info);
+      reconstruct_image=AcquireImage(image_info,exception);
       (void) SetImageExtent(reconstruct_image,reference_image->columns,
         reference_image->rows,exception);
       (void) SetImageColorspace(reconstruct_image,reference_image->colorspace,

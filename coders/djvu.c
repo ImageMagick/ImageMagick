@@ -780,7 +780,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadDJVUImage()");
   (void) logging;
 
-  image = AcquireImage(image_info); /* mmc: ?? */
+  image = AcquireImage(image_info,exception); /* mmc: ?? */
 
 
   lc = (LoadContext *) NULL;

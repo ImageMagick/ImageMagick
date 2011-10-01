@@ -196,7 +196,7 @@ const Magick::Color& Magick::Color::operator = ( const std::string &x11color_ )
   PixelPacket target_color;
   ExceptionInfo exception;
   GetExceptionInfo( &exception );
-  if ( QueryColorDatabase( x11color_.c_str(), &target_color, &exception ) )
+  if ( QueryColorCompliance( x11color_.c_str(), AllCompliance, &target_color, &exception ) )
     {
       redQuantum( target_color.red );
       greenQuantum( target_color.green );

@@ -121,13 +121,14 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   if (image->columns == 0)
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
-  status=QueryMagickColor((char *) image_info->filename,&color,exception);
+  status=QueryMagickColorCompliance((char *) image_info->filename,AllCompliance,
+    &color,exception);
   if (status == MagickFalse)
     {
       image=DestroyImage(image);

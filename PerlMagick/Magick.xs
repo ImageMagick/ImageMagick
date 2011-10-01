@@ -1164,7 +1164,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"background") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,exception);
+          (void) QueryColorCompliance(SvPV(sval,na),AllCompliance,&target_color,
+            exception);
           if (info)
             info->image_info->background_color=target_color;
           for ( ; image; image=image->next)
@@ -1192,7 +1193,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"bordercolor") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,exception);
+          (void) QueryColorCompliance(SvPV(sval,na),AllCompliance,&target_color,
+            exception);
           if (info)
             info->image_info->border_color=target_color;
           for ( ; image; image=image->next)
@@ -1247,7 +1249,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               i%=image->colors;
             if ((strchr(SvPV(sval,na),',') == 0) ||
                 (strchr(SvPV(sval,na),')') != 0))
-              QueryColorDatabase(SvPV(sval,na),image->colormap+i,exception);
+              QueryColorCompliance(SvPV(sval,na),AllCompliance,
+                image->colormap+i,exception);
             else
               {
                 color=image->colormap+i;
@@ -1679,7 +1682,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"mattecolor") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,exception);
+          (void) QueryColorCompliance(SvPV(sval,na),AllCompliance,&target_color,
+            exception);
           if (info)
             info->image_info->matte_color=target_color;
           for ( ; image; image=image->next)
@@ -1814,7 +1818,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               {
                 if ((strchr(SvPV(sval,na),',') == 0) ||
                     (strchr(SvPV(sval,na),')') != 0))
-                  QueryMagickColor(SvPV(sval,na),&pixel,exception);
+                  QueryMagickColorCompliance(SvPV(sval,na),AllCompliance,
+                    &pixel,exception);
                 else
                   {
                     GetPixelInfo(image,&pixel);
@@ -2060,7 +2065,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"transparent-color") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,exception);
+          (void) QueryColorCompliance(SvPV(sval,na),AllCompliance,&target_color,
+            exception);
           if (info)
             info->image_info->transparent_color=target_color;
           for ( ; image; image=image->next)
@@ -3952,8 +3958,8 @@ Flatten(ref)
       }
     background_color=image->background_color;
     if (items == 2)
-      (void) QueryColorDatabase((char *) SvPV(ST(1),na),&background_color,
-        exception);
+      (void) QueryColorCompliance((char *) SvPV(ST(1),na),AllCompliance,
+        &background_color,exception);
     else
       for (i=2; i < items; i+=2)
       {
@@ -3965,8 +3971,8 @@ Flatten(ref)
           {
             if (LocaleCompare(attribute,"background") == 0)
               {
-                (void) QueryColorDatabase((char *) SvPV(ST(1),na),
-                  &background_color,exception);
+                (void) QueryColorCompliance((char *) SvPV(ST(1),na),
+                  AllCompliance,&background_color,exception);
                 break;
               }
             ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -7508,8 +7514,8 @@ Mogrify(ref,...)
 
           (void) GetOneVirtualPixel(image,0,0,&target,exception);
           if (attribute_flag[0] != 0)
-            (void) QueryColorDatabase(argument_list[0].string_reference,&target,
-              exception);
+            (void) QueryColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&target,exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100%";
           image=ColorizeImage(image,argument_list[1].string_reference,target,
@@ -7535,14 +7541,14 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.height=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            QueryColorDatabase(argument_list[3].string_reference,
-              &image->border_color,exception);
+            QueryColorCompliance(argument_list[3].string_reference,
+              AllCompliance,&image->border_color,exception);
           if (attribute_flag[4] != 0)
-            QueryColorDatabase(argument_list[4].string_reference,
-              &image->border_color,exception);
+            QueryColorCompliance(argument_list[4].string_reference,
+              AllCompliance,&image->border_color,exception);
           if (attribute_flag[5] != 0)
-            QueryColorDatabase(argument_list[5].string_reference,
-              &image->border_color,exception);
+            QueryColorCompliance(argument_list[5].string_reference,
+              AllCompliance,&image->border_color,exception);
           compose=image->compose;
           if (attribute_flag[6] != 0)
             compose=(CompositeOperator) argument_list[6].integer_reference;
@@ -7683,11 +7689,11 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             frame_info.outer_bevel=argument_list[4].integer_reference;
           if (attribute_flag[5] != 0)
-            QueryColorDatabase(argument_list[5].string_reference,&fill_color,
-              exception);
+            QueryColorCompliance(argument_list[5].string_reference,
+              AllCompliance,&fill_color,exception);
           if (attribute_flag[6] != 0)
-            QueryColorDatabase(argument_list[6].string_reference,&fill_color,
-              exception);
+            QueryColorCompliance(argument_list[6].string_reference,
+              AllCompliance,&fill_color,exception);
           frame_info.x=(ssize_t) frame_info.width;
           frame_info.y=(ssize_t) frame_info.height;
           frame_info.width=image->columns+2*frame_info.x;
@@ -7795,14 +7801,14 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=90.0;
           if (attribute_flag[1] != 0)
-            QueryColorDatabase(argument_list[1].string_reference,
-              &image->background_color,exception);
+            QueryColorCompliance(argument_list[1].string_reference,
+              AllCompliance,&image->background_color,exception);
           if (attribute_flag[2] != 0)
-            QueryColorDatabase(argument_list[2].string_reference,
-              &image->background_color,exception);
+            QueryColorCompliance(argument_list[2].string_reference,
+              AllCompliance,&image->background_color,exception);
           if (attribute_flag[3] != 0)
-            QueryColorDatabase(argument_list[3].string_reference,
-              &image->background_color,exception);
+            QueryColorCompliance(argument_list[3].string_reference,
+              AllCompliance,&image->background_color,exception);
           image=RotateImage(image,argument_list[0].real_reference,exception);
           break;
         }
@@ -7886,11 +7892,11 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            QueryColorDatabase(argument_list[3].string_reference,
-              &image->background_color,exception);
+            QueryColorCompliance(argument_list[3].string_reference,
+              AllCompliance,&image->background_color,exception);
           if (attribute_flag[4] != 0)
-            QueryColorDatabase(argument_list[4].string_reference,
-              &image->background_color,exception);
+            QueryColorCompliance(argument_list[4].string_reference,
+              AllCompliance,&image->background_color,exception);
           image=ShearImage(image,geometry_info.rho,geometry_info.sigma,
             exception);
           break;
@@ -7972,20 +7978,20 @@ Mogrify(ref,...)
             (void) CloneString(&draw_info->density,
               argument_list[3].string_reference);
           if (attribute_flag[4] != 0)
-            (void) QueryColorDatabase(argument_list[4].string_reference,
-              &draw_info->undercolor,exception);
+            (void) QueryColorCompliance(argument_list[4].string_reference,
+              AllCompliance,&draw_info->undercolor,exception);
           if (attribute_flag[5] != 0)
             {
-              (void) QueryColorDatabase(argument_list[5].string_reference,
-                &draw_info->stroke,exception);
+              (void) QueryColorCompliance(argument_list[5].string_reference,
+                AllCompliance,&draw_info->stroke,exception);
               if (argument_list[5].image_reference != (Image *) NULL)
                 draw_info->stroke_pattern=CloneImage(
                   argument_list[5].image_reference,0,0,MagickTrue,exception);
             }
           if (attribute_flag[6] != 0)
             {
-              (void) QueryColorDatabase(argument_list[6].string_reference,
-                &draw_info->fill,exception);
+              (void) QueryColorCompliance(argument_list[6].string_reference,
+                AllCompliance,&draw_info->fill,exception);
               if (argument_list[6].image_reference != (Image *) NULL)
                 draw_info->fill_pattern=CloneImage(
                   argument_list[6].image_reference,0,0,MagickTrue,exception);
@@ -8000,10 +8006,11 @@ Mogrify(ref,...)
                 geometry_info.sigma=geometry_info.xi;
             }
           if (attribute_flag[8] != 0)
-            (void) QueryColorDatabase(argument_list[8].string_reference,
-              &draw_info->fill,exception);
+            (void) QueryColorCompliance(argument_list[8].string_reference,
+              AllCompliance,&draw_info->fill,exception);
           if (attribute_flag[11] != 0)
-            draw_info->gravity=(GravityType) argument_list[11].integer_reference;
+            draw_info->gravity=(GravityType)
+              argument_list[11].integer_reference;
           if (attribute_flag[25] != 0)
             {
               AV
@@ -8185,15 +8192,15 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.y=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            (void) QueryColorDatabase(argument_list[3].string_reference,
-              &draw_info->fill,exception);
+            (void) QueryColorCompliance(argument_list[3].string_reference,
+              AllCompliance,&draw_info->fill,exception);
           (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,&target,
             exception);
           invert=MagickFalse;
           if (attribute_flag[4] != 0)
             {
-              QueryMagickColor(argument_list[4].string_reference,&target,
-                exception);
+              QueryMagickColorCompliance(argument_list[4].string_reference,
+                AllCompliance,&target,exception);
               invert=MagickTrue;
             }
           if (attribute_flag[5] != 0)
@@ -8273,7 +8280,8 @@ Mogrify(ref,...)
                     for (x=0; x < (ssize_t) composite_image->columns; x++)
                     {
                       if (GetPixelAlpha(image,q) == OpaqueAlpha)
-                        SetPixelAlpha(composite_image,ClampToQuantum(opacity),q);
+                        SetPixelAlpha(composite_image,ClampToQuantum(opacity),
+                          q);
                       q+=GetPixelChannels(composite_image);
                     }
                     sync=SyncCacheViewAuthenticPixels(composite_view,exception);
@@ -8284,8 +8292,8 @@ Mogrify(ref,...)
                 }
             }
           if (attribute_flag[9] != 0)    /* "color=>" */
-            QueryColorDatabase(argument_list[9].string_reference,
-              &composite_image->background_color,exception);
+            QueryColorCompliance(argument_list[9].string_reference,
+              AllCompliance,&composite_image->background_color,exception);
           if (attribute_flag[12] != 0) /* "interpolate=>" */
             image->interpolate=(PixelInterpolateMethod)
               argument_list[12].integer_reference;
@@ -8471,16 +8479,16 @@ Mogrify(ref,...)
             }
           if (attribute_flag[3] != 0)
             {
-              (void) QueryColorDatabase(argument_list[3].string_reference,
-                &draw_info->stroke,exception);
+              (void) QueryColorCompliance(argument_list[3].string_reference,
+                AllCompliance,&draw_info->stroke,exception);
               if (argument_list[3].image_reference != (Image *) NULL)
                 draw_info->stroke_pattern=CloneImage(
                   argument_list[3].image_reference,0,0,MagickTrue,exception);
             }
           if (attribute_flag[4] != 0)
             {
-              (void) QueryColorDatabase(argument_list[4].string_reference,
-                &draw_info->fill,exception);
+              (void) QueryColorCompliance(argument_list[4].string_reference,
+                AllCompliance,&draw_info->fill,exception);
               if (argument_list[4].image_reference != (Image *) NULL)
                 draw_info->fill_pattern=CloneImage(
                   argument_list[4].image_reference,0,0,MagickTrue,exception);
@@ -8491,8 +8499,8 @@ Mogrify(ref,...)
             (void) CloneString(&draw_info->font,
               argument_list[6].string_reference);
           if (attribute_flag[7] != 0)
-            (void) QueryColorDatabase(argument_list[7].string_reference,
-              &draw_info->border_color,exception);
+            (void) QueryColorCompliance(argument_list[7].string_reference,
+              AllCompliance,&draw_info->border_color,exception);
           if (attribute_flag[8] != 0)
             draw_info->affine.tx=argument_list[8].real_reference;
           if (attribute_flag[9] != 0)
@@ -8749,8 +8757,8 @@ Mogrify(ref,...)
           (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,&target,
             exception);
           if (attribute_flag[4] != 0)
-            QueryMagickColor(argument_list[4].string_reference,&target,
-              exception);
+            QueryMagickColorCompliance(argument_list[4].string_reference,
+              AllCompliance,&target,exception);
           if (attribute_flag[3] != 0)
             target.alpha=SiPrefixToDouble(argument_list[3].string_reference,
               QuantumRange);
@@ -8839,14 +8847,16 @@ Mogrify(ref,...)
             fill_color,
             target;
 
-          (void) QueryMagickColor("none",&target,exception);
-          (void) QueryMagickColor("none",&fill_color,exception);
+          (void) QueryMagickColorCompliance("none",AllCompliance,&target,
+             exception);
+          (void) QueryMagickColorCompliance("none",AllCompliance,&fill_color,
+            exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColor(argument_list[0].string_reference,
-              &target,exception);
+            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&target,exception);
           if (attribute_flag[1] != 0)
-            (void) QueryMagickColor(argument_list[1].string_reference,
-              &fill_color,exception);
+            (void) QueryMagickColorCompliance(argument_list[1].string_reference,
+              AllCompliance,&fill_color,exception);
           if (attribute_flag[2] != 0)
             image->fuzz=SiPrefixToDouble(argument_list[2].string_reference,
               QuantumRange);
@@ -8880,10 +8890,11 @@ Mogrify(ref,...)
               MagickTrue : MagickFalse;
           if (attribute_flag[4] != 0)
             quantize_info->measure_error=
-              argument_list[4].integer_reference != 0 ? MagickTrue : MagickFalse;
+              argument_list[4].integer_reference != 0 ? MagickTrue :
+              MagickFalse;
           if (attribute_flag[5] != 0)
-            (void) QueryColorDatabase(argument_list[5].string_reference,
-              &image->transparent_color,exception);
+            (void) QueryColorCompliance(argument_list[5].string_reference,
+              AllCompliance,&image->transparent_color,exception);
           if (attribute_flag[5] && argument_list[5].integer_reference)
             {
               (void) QuantizeImages(quantize_info,image,exception);
@@ -9012,10 +9023,11 @@ Mogrify(ref,...)
           PixelInfo
             target;
 
-          (void) QueryMagickColor("none",&target,exception);
+          (void) QueryMagickColorCompliance("none",AllCompliance,&target,
+            exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColor(argument_list[0].string_reference,&target,
-              exception);
+            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&target,exception);
           opacity=TransparentAlpha;
           if (attribute_flag[1] != 0)
             opacity=SiPrefixToDouble(argument_list[1].string_reference,
@@ -9544,8 +9556,8 @@ Mogrify(ref,...)
             image->interpolate=(PixelInterpolateMethod)
               argument_list[6].integer_reference;
           if (attribute_flag[7] != 0)
-            QueryColorDatabase(argument_list[7].string_reference,
-              &image->background_color,exception);
+            QueryColorCompliance(argument_list[7].string_reference,
+              AllCompliance,&image->background_color,exception);
           image=AffineTransformImage(image,&draw_info->affine,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -9701,8 +9713,8 @@ Mogrify(ref,...)
 
           GetPixelInfo(image,&tint);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColor(argument_list[0].string_reference,&tint,
-              exception);
+            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&tint,exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100";
           image=TintImage(image,argument_list[1].string_reference,&tint,
@@ -9735,8 +9747,8 @@ Mogrify(ref,...)
             image->fuzz=SiPrefixToDouble(argument_list[5].string_reference,
               QuantumRange);
           if (attribute_flag[6] != 0)
-            (void) QueryColorDatabase(argument_list[6].string_reference,
-              &image->background_color,exception);
+            (void) QueryColorCompliance(argument_list[6].string_reference,
+              AllCompliance,&image->background_color,exception);
           if (attribute_flag[7] != 0)
             image->gravity=(GravityType) argument_list[7].integer_reference;
           image=SpliceImage(image,&geometry,exception);
@@ -9860,8 +9872,8 @@ Mogrify(ref,...)
             image->fuzz=SiPrefixToDouble(argument_list[5].string_reference,
               QuantumRange);
           if (attribute_flag[6] != 0)
-            (void) QueryColorDatabase(argument_list[6].string_reference,
-              &image->background_color,exception);
+            (void) QueryColorCompliance(argument_list[6].string_reference,
+              AllCompliance,&image->background_color,exception);
           image=ExtentImage(image,&geometry,exception);
           break;
         }
@@ -9887,8 +9899,8 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             geometry_info.psi=argument_list[4].integer_reference;
           if (attribute_flag[5] != 0)
-            (void) QueryColorDatabase(argument_list[5].string_reference,
-              &image->background_color,exception);
+            (void) QueryColorCompliance(argument_list[5].string_reference,
+              AllCompliance,&image->background_color,exception);
           image=VignetteImage(image,geometry_info.rho,geometry_info.sigma,
             (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-
             0.5),exception);
@@ -10175,11 +10187,11 @@ Mogrify(ref,...)
             (void) CloneString(&draw_info->font,
               argument_list[2].string_reference);
           if (attribute_flag[3] != 0)
-            (void) QueryColorDatabase(argument_list[3].string_reference,
-              &draw_info->stroke,exception);
+            (void) QueryColorCompliance(argument_list[3].string_reference,
+              AllCompliance,&draw_info->stroke,exception);
           if (attribute_flag[4] != 0)
-            (void) QueryColorDatabase(argument_list[4].string_reference,
-              &draw_info->fill,exception);
+            (void) QueryColorCompliance(argument_list[4].string_reference,
+              AllCompliance,&draw_info->fill,exception);
           if (attribute_flag[5] != 0)
             draw_info->stroke_width=argument_list[5].real_reference;
           if (attribute_flag[6] != 0)
@@ -10187,8 +10199,8 @@ Mogrify(ref,...)
           if (attribute_flag[7] != 0)
             draw_info->gravity=(GravityType) argument_list[7].integer_reference;
           if (attribute_flag[8] != 0)
-            (void) QueryColorDatabase(argument_list[8].string_reference,
-              &image->background_color,exception);
+            (void) QueryColorCompliance(argument_list[8].string_reference,
+              AllCompliance,&image->background_color,exception);
           method=UndefinedInterpolatePixel;
           if (attribute_flag[9] != 0)
             method=(PixelInterpolateMethod) argument_list[9].integer_reference;
@@ -10217,13 +10229,13 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.y=argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            (void) QueryColorDatabase(argument_list[3].string_reference,
-              &draw_info->fill,exception);
+            (void) QueryColorCompliance(argument_list[3].string_reference,
+              AllCompliance,&draw_info->fill,exception);
           (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,&target,
             exception);
           if (attribute_flag[4] != 0)
-            QueryMagickColor(argument_list[4].string_reference,&target,
-              exception);
+            QueryMagickColorCompliance(argument_list[4].string_reference,
+              AllCompliance,&target,exception);
           if (attribute_flag[5] != 0)
             image->fuzz=SiPrefixToDouble(argument_list[5].string_reference,
               QuantumRange);
@@ -10565,14 +10577,18 @@ Mogrify(ref,...)
             black_point,
             white_point;
 
-          (void) QueryMagickColor("#000000",&black_point,exception);
-          (void) QueryMagickColor("#ffffff",&white_point,exception);
+          (void) QueryMagickColorCompliance("#000000",AllCompliance,
+            &black_point,exception);
+          (void) QueryMagickColorCompliance("#ffffff",AllCompliance,
+            &white_point,exception);
           if (attribute_flag[1] != 0)
-             (void) QueryMagickColor(argument_list[1].string_reference,
-               &black_point,exception);
+             (void) QueryMagickColorCompliance(
+               argument_list[1].string_reference,AllCompliance,&black_point,
+               exception);
           if (attribute_flag[2] != 0)
-             (void) QueryMagickColor(argument_list[2].string_reference,
-               &white_point,exception);
+             (void) QueryMagickColorCompliance(
+               argument_list[2].string_reference,AllCompliance,&white_point,
+               exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
@@ -10699,10 +10715,11 @@ Mogrify(ref,...)
           PixelInfo
             color;
 
-          (void) QueryMagickColor("none",&color,exception);
+          (void) QueryMagickColorCompliance("none",AllCompliance,&color,
+            exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColor(argument_list[0].string_reference,
-              &color,exception);
+            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&color,exception);
           (void) SetImageColor(image,&color);
           break;
         }
@@ -10887,7 +10904,8 @@ Montage(ref,...)
     */
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     montage_info=CloneMontageInfo(info->image_info,(MontageInfo *) NULL);
-    (void) QueryMagickColor("none",&transparent_color,exception);
+    (void) QueryMagickColorCompliance("none",AllCompliance,&transparent_color,
+      exception);
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -10898,7 +10916,7 @@ Montage(ref,...)
         {
           if (LocaleCompare(attribute,"background") == 0)
             {
-              (void) QueryColorDatabase(SvPV(ST(i),na),
+              (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
                 &montage_info->background_color,exception);
               for (next=image; next; next=next->next)
                 next->background_color=montage_info->background_color;
@@ -10911,7 +10929,7 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"bordercolor") == 0)
             {
-              (void) QueryColorDatabase(SvPV(ST(i),na),
+              (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
                 &montage_info->border_color,exception);
               for (next=image; next; next=next->next)
                 next->border_color=montage_info->border_color;
@@ -10952,8 +10970,8 @@ Montage(ref,...)
         {
           if (LocaleCompare(attribute,"fill") == 0)
             {
-              (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->fill,
-                exception);
+              (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
+                &montage_info->fill,exception);
               break;
             }
           if (LocaleCompare(attribute,"font") == 0)
@@ -11044,7 +11062,7 @@ Montage(ref,...)
         {
           if (LocaleCompare(attribute,"mattecolor") == 0)
             {
-              (void) QueryColorDatabase(SvPV(ST(i),na),
+              (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
                 &montage_info->matte_color,exception);
               for (next=image; next; next=next->next)
                 next->matte_color=montage_info->matte_color;
@@ -11055,8 +11073,8 @@ Montage(ref,...)
               ssize_t
                 in;
 
-              in=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-                ParseCommandOption(MagickModeOptions,MagickFalse,SvPV(ST(i),na));
+              in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
+                MagickModeOptions,MagickFalse,SvPV(ST(i),na));
               switch (in)
               {
                 default:
@@ -11122,8 +11140,8 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"stroke") == 0)
             {
-              (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke,
-                exception);
+              (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
+                &montage_info->stroke,exception);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -11162,7 +11180,8 @@ Montage(ref,...)
               PixelInfo
                 transparent_color;
 
-              QueryMagickColor(SvPV(ST(i),na),&transparent_color,exception);
+              QueryMagickColorCompliance(SvPV(ST(i),na),AllCompliance,
+                &transparent_color,exception);
               for (next=image; next; next=next->next)
                 (void) TransparentPaintImage(next,&transparent_color,
                   TransparentAlpha,MagickFalse,exception);
@@ -11799,7 +11818,7 @@ QueryColor(ref,...)
     for (i=1; i < items; i++)
     {
       name=(char *) SvPV(ST(i),na);
-      if (QueryMagickColor(name,&color,exception) == MagickFalse)
+      if (QueryMagickColorCompliance(name,AllCompliance,&color,exception) == MagickFalse)
         {
           PUSHs(&sv_undef);
           continue;
@@ -11881,7 +11900,8 @@ QueryColorname(ref,...)
     EXTEND(sp,items);
     for (i=1; i < items; i++)
     {
-      (void) QueryColorDatabase(SvPV(ST(i),na),&target_color,exception);
+      (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,&target_color,
+        exception);
       (void) QueryColorname(image,&target_color,SVGCompliance,message,
         exception);
       PUSHs(sv_2mortal(newSVpv(message,0)));
@@ -12171,8 +12191,8 @@ QueryFontMetrics(ref,...)
           if (LocaleCompare(attribute,"fill") == 0)
             {
               if (info)
-                (void) QueryColorDatabase(SvPV(ST(i),na),&draw_info->fill,
-                  &image->exception);
+                (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
+                  &draw_info->fill,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"font") == 0)
@@ -12293,8 +12313,8 @@ QueryFontMetrics(ref,...)
           if (LocaleCompare(attribute,"stroke") == 0)
             {
               if (info)
-                (void) QueryColorDatabase(SvPV(ST(i),na),&draw_info->stroke,
-                  &image->exception);
+                (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
+                  &draw_info->stroke,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"style") == 0)
@@ -12576,8 +12596,8 @@ QueryMultilineFontMetrics(ref,...)
           if (LocaleCompare(attribute,"fill") == 0)
             {
               if (info)
-                (void) QueryColorDatabase(SvPV(ST(i),na),&draw_info->fill,
-                  &image->exception);
+                (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
+                  &draw_info->fill,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"font") == 0)
@@ -12666,8 +12686,8 @@ QueryMultilineFontMetrics(ref,...)
           if (LocaleCompare(attribute,"stroke") == 0)
             {
               if (info)
-                (void) QueryColorDatabase(SvPV(ST(i),na),&draw_info->stroke,
-                  &image->exception);
+                (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
+                  &draw_info->stroke,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"style") == 0)

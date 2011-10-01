@@ -126,7 +126,7 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   if (LocaleNCompare(image_info->filename,"data:",5) == 0)
     return(ReadInlineImage(image_info,image_info->filename,exception));
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {

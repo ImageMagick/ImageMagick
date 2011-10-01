@@ -3827,8 +3827,8 @@ static MagickBooleanType XColorEditImage(Display *display,
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
               (DrawInfo *) NULL);
-            (void) QueryColorDatabase(resource_info->pen_colors[pen_id],
-              &draw_info->fill,exception);
+            (void) QueryColorCompliance(resource_info->pen_colors[pen_id],
+              AllCompliance,&draw_info->fill,exception);
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
               MagickFalse : MagickTrue,exception);
@@ -6599,7 +6599,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       /*
         Save image before transformations are applied.
       */
-      cache_image=AcquireImage((ImageInfo *) NULL);
+      cache_image=AcquireImage((ImageInfo *) NULL,exception);
       if (cache_image == (Image *) NULL)
         break;
       XSetCursorState(display,windows,MagickTrue);
@@ -7640,8 +7640,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         exception);
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) QueryColorDatabase(color,&(*image)->background_color,
-        exception);
+      (void) QueryColorCompliance(color,AllCompliance,
+        &(*image)->background_color,exception);
       flags=ParseGeometry(geometry,&geometry_info);
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=geometry_info.rho;
@@ -8869,7 +8869,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         exception);
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) QueryColorDatabase(color,&(*image)->border_color,
+      (void) QueryColorCompliance(color,AllCompliance,&(*image)->border_color,
         exception);
       (void) ParsePageGeometry(*image,geometry,&page_geometry,
         exception);
@@ -8918,7 +8918,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         exception);
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) QueryColorDatabase(color,&(*image)->matte_color,
+      (void) QueryColorCompliance(color,AllCompliance,&(*image)->matte_color,
         exception);
       (void) ParsePageGeometry(*image,geometry,&page_geometry,
         exception);

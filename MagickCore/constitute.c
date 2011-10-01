@@ -196,7 +196,7 @@ MagickExport Image *ConstituteImage(const size_t columns,
   assert(pixels != (void *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage((ImageInfo *) NULL);
+  image=AcquireImage((ImageInfo *) NULL,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((columns == 0) || (rows == 0))
@@ -483,7 +483,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       MagickBooleanType
         status;
 
-      image=AcquireImage(read_info);
+      image=AcquireImage(read_info,exception);
       (void) CopyMagickString(image->filename,read_info->filename,
         MaxTextExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -541,7 +541,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       /*
         Let our decoding delegate process the image.
       */
-      image=AcquireImage(read_info);
+      image=AcquireImage(read_info,exception);
       if (image == (Image *) NULL)
         {
           read_info=DestroyImageInfo(read_info);

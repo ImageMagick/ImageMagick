@@ -179,6 +179,9 @@ namespace Magick
   using MagickCore::YPbPrColorspace;
   using MagickCore::YUVColorspace;
   
+  // Compliance types
+  using MagickCore::AllCompliance;
+
   // Composition operations
   using MagickCore::AtopCompositeOp;
   using MagickCore::BlendCompositeOp;
@@ -829,8 +832,6 @@ namespace Magick
   using MagickCore::QuantizeImage;
   using MagickCore::QuantizeInfo;
   using MagickCore::QuantumInfo;
-  using MagickCore::QueryColorDatabase;
-  using MagickCore::QueryMagickColor;
   using MagickCore::QueueAuthenticPixels;
   using MagickCore::QueueCacheViewAuthenticPixels;
   using MagickCore::RaiseImage;

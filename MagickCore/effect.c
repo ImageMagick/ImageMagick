@@ -2404,7 +2404,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
     (void) SetImageProperty(thumbnail,"label",DefaultTileLabel);
     if (i == (NumberTiles/2))
       {
-        (void) QueryColorDatabase("#dfdfdf",&thumbnail->matte_color,exception);
+        (void) QueryColorCompliance("#dfdfdf",AllCompliance,
+          &thumbnail->matte_color,exception);
         AppendImageToList(&images,thumbnail);
         continue;
       }

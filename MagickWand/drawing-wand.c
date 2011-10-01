@@ -517,7 +517,7 @@ WandExport void ClearDrawingWand(DrawingWand *wand)
   wand->indent_depth=0;
   wand->path_operation=PathDefaultOperation;
   wand->path_mode=DefaultPathMode;
-  wand->image=AcquireImage((const ImageInfo *) NULL);
+  wand->image=AcquireImage((const ImageInfo *) NULL,wand->exception);
   ClearMagickException(wand->exception);
   wand->destroy=MagickTrue;
   wand->debug=IsEventLogging();
@@ -6181,7 +6181,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        (void) QueryColorDatabase(value,&CurrentContext->fill,wand->exception);
+        (void) QueryColorCompliance(value,AllCompliance,&CurrentContext->fill,
+          wand->exception);
     }
   child=GetXMLTreeChild(xml_info,"fill-opacity");
   if (child != (XMLTreeInfo *) NULL)
@@ -6248,7 +6249,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        (void) QueryColorDatabase(value,&CurrentContext->stroke,
+        (void) QueryColorCompliance(value,AllCompliance,&CurrentContext->stroke,
           wand->exception);
     }
   child=GetXMLTreeChild(xml_info,"stroke-antialias");
@@ -6383,8 +6384,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        (void) QueryColorDatabase(value,&CurrentContext->undercolor,
-          wand->exception);
+        (void) QueryColorCompliance(value,AllCompliance,
+          &CurrentContext->undercolor,wand->exception);
     }
   child=GetXMLTreeChild(xml_info,"vector-graphics");
   if (child != (XMLTreeInfo *) NULL)
@@ -6645,8 +6646,8 @@ WandExport DrawingWand *NewDrawingWand(void)
   wand->indent_depth=0;
   wand->path_operation=PathDefaultOperation;
   wand->path_mode=DefaultPathMode;
-  wand->image=AcquireImage((const ImageInfo *) NULL);
   wand->exception=AcquireExceptionInfo();
+  wand->image=AcquireImage((const ImageInfo *) NULL,wand->exception);
   wand->destroy=MagickTrue;
   wand->debug=IsEventLogging();
   wand->signature=WandSignature;

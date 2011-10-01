@@ -135,7 +135,7 @@ const double
 %
 %  The format of the AcquireImage method is:
 %
-%      Image *AcquireImage(const ImageInfo *image_info)
+%      Image *AcquireImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -143,8 +143,11 @@ const double
 %      structure.  For example, filename, compression, depth, background color,
 %      and others.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport Image *AcquireImage(const ImageInfo *image_info)
+MagickExport Image *AcquireImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   const char
     *option;
@@ -175,12 +178,14 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   image->compose=OverCompositeOp;
   image->blur=1.0;
   GetExceptionInfo(&image->exception);
-  (void) QueryColorDatabase(BackgroundColor,&image->background_color,
-    &image->exception);
-  (void) QueryColorDatabase(BorderColor,&image->border_color,&image->exception);
-  (void) QueryColorDatabase(MatteColor,&image->matte_color,&image->exception);
-  (void) QueryColorDatabase(TransparentColor,&image->transparent_color,
-    &image->exception);
+  (void) QueryColorCompliance(BackgroundColor,AllCompliance,
+    &image->background_color,exception);
+  (void) QueryColorCompliance(BorderColor,AllCompliance,&image->border_color,
+    exception);
+  (void) QueryColorCompliance(MatteColor,AllCompliance,&image->matte_color,
+    exception);
+  (void) QueryColorCompliance(TransparentColor,AllCompliance,
+    &image->transparent_color,exception);
   image->x_resolution=DefaultResolution;
   image->y_resolution=DefaultResolution;
   image->units=PixelsPerInchResolution;
@@ -344,7 +349,8 @@ MagickExport ImageInfo *AcquireImageInfo(void)
 %
 %  The format of the AcquireNextImage method is:
 %
-%      void AcquireNextImage(const ImageInfo *image_info,Image *image)
+%      void AcquireNextImage(const ImageInfo *image_info,Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -354,8 +360,11 @@ MagickExport ImageInfo *AcquireImageInfo(void)
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport void AcquireNextImage(const ImageInfo *image_info,Image *image)
+MagickExport void AcquireNextImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   /*
     Allocate image structure.
@@ -364,7 +373,7 @@ MagickExport void AcquireNextImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  image->next=AcquireImage(image_info);
+  image->next=AcquireImage(image_info,exception);
   if (GetNextImageInList(image) == (Image *) NULL)
     return;
   (void) CopyMagickString(GetNextImageInList(image)->filename,image->filename,
@@ -1484,12 +1493,14 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   if (synchronize != (const char *) NULL)
     image_info->synchronize=IsMagickTrue(synchronize);
   exception=AcquireExceptionInfo();
-  (void) QueryColorDatabase(BackgroundColor,&image_info->background_color,
+  (void) QueryColorCompliance(BackgroundColor,AllCompliance,
+    &image_info->background_color,exception);
+  (void) QueryColorCompliance(BorderColor,AllCompliance,
+    &image_info->border_color,exception);
+  (void) QueryColorCompliance(MatteColor,AllCompliance,&image_info->matte_color,
     exception);
-  (void) QueryColorDatabase(BorderColor,&image_info->border_color,exception);
-  (void) QueryColorDatabase(MatteColor,&image_info->matte_color,exception);
-  (void) QueryColorDatabase(TransparentColor,&image_info->transparent_color,
-    exception);
+  (void) QueryColorCompliance(TransparentColor,AllCompliance,
+    &image_info->transparent_color,exception);
   exception=DestroyExceptionInfo(exception);
   image_info->debug=IsEventLogging();
   image_info->signature=MagickSignature;
@@ -2086,7 +2097,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image_info->signature == MagickSignature);
   assert(background != (const PixelInfo *) NULL);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   image->columns=width;
   image->rows=height;
   image->colorspace=background->colorspace;
@@ -3172,7 +3183,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       /*
         Determine the image format from the first few bytes of the file.
       */
-      image=AcquireImage(image_info);
+      image=AcquireImage(image_info,exception);
       (void) CopyMagickString(image->filename,image_info->filename,
         MaxTextExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -4178,7 +4189,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   option=GetImageOption(image_info,"background");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&image->background_color,
+    (void) QueryColorCompliance(option,AllCompliance,&image->background_color,
       &image->exception);
   option=GetImageOption(image_info,"bias");
   if (option != (const char *) NULL)
@@ -4198,7 +4209,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"bordercolor");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&image->border_color,&image->exception);
+    (void) QueryColorCompliance(option,AllCompliance,&image->border_color,
+      &image->exception);
   option=GetImageOption(image_info,"colors");
   if (option != (const char *) NULL)
     image->colors=StringToUnsignedLong(option);
@@ -4273,7 +4285,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->iterations=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"mattecolor");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&image->matte_color,&image->exception);
+    (void) QueryColorCompliance(option,AllCompliance,&image->matte_color,
+      &image->exception);
   option=GetImageOption(image_info,"orient");
   if (option != (const char *) NULL)
     image->orientation=(OrientationType) ParseCommandOption(
@@ -4321,7 +4334,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"transparent-color");
   if (option != (const char *) NULL)
-    (void) QueryColorDatabase(option,&image->transparent_color,
+    (void) QueryColorCompliance(option,AllCompliance,&image->transparent_color,
       &image->exception);
   option=GetImageOption(image_info,"type");
   if (option != (const char *) NULL)
