@@ -3488,7 +3488,7 @@ Magick::Color Magick::Image::pixelColor ( const ssize_t x_,
   if ( pixel )
     {
       PixelPacket packet;
-      MagickCore::GetPixelPacket(constImage(),pixel,&packet);
+      MagickCore::GetPixelPacketPixel(constImage(),pixel,&packet);
       return Color( packet );
     }
 

@@ -4228,7 +4228,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              GetPixelPacket(image,q,&pixel);
+              GetPixelPacketPixel(image,q,&pixel);
               if (IsFuzzyEquivalencePixelPacket(image,&pixel,&target) == MagickFalse)
                 {
                   q+=GetPixelChannels(image);
@@ -4344,7 +4344,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              GetPixelPacket(image,q,&pixel);
+              GetPixelPacketPixel(image,q,&pixel);
               if (IsFuzzyEquivalencePixelPacket(image,&pixel,&target) == MagickFalse)
                 {
                   q+=GetPixelChannels(image);
