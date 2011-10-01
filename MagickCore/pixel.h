@@ -105,12 +105,15 @@ typedef struct _PixelInfo
   size_t
     depth;
 
-  MagickRealType
+  MagickSizeType
+    count;
+
+  double
     red,
     green,
     blue,
-    alpha,
     black,
+    alpha,
     index;
 } PixelInfo;
 
@@ -126,16 +129,31 @@ typedef struct _PixelLongPacket
 
 typedef struct _PixelPacket
 {
-  Quantum
+  ClassType
+    storage_class;
+
+  ColorspaceType
+    colorspace;
+
+  MagickBooleanType
+    matte;
+
+  double
+    fuzz;
+
+  size_t
+    depth;
+
+  MagickSizeType
+    count;
+
+  double
     red,
     green,
     blue,
-    alpha,
     black,
+    alpha,
     index;
-
- MagickSizeType
-    count;
 } PixelPacket;
 
 typedef struct _CacheView

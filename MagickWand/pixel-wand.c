@@ -2029,7 +2029,7 @@ WandExport void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
 WandExport void PixelSetHSL(PixelWand *wand,const double hue,
   const double saturation,const double lightness)
 {
-  Quantum
+  double
     blue,
     green,
     red;

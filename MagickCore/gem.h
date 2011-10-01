@@ -29,9 +29,9 @@ extern MagickExport double
   ExpandAffine(const AffineMatrix *);
 
 extern MagickExport void
-  ConvertHSLToRGB(const double,const double,const double,Quantum *,Quantum *,
-    Quantum *),
-  ConvertRGBToHSL(const Quantum,const Quantum,const Quantum,double *,double *,
+  ConvertHSLToRGB(const double,const double,const double,double *,double *,
+    double *),
+  ConvertRGBToHSL(const double,const double,const double,double *,double *,
     double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

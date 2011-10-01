@@ -28,21 +28,21 @@ extern "C" {
 #include <magick/image-private.h>
 #include <magick/quantum-private.h>
 
-static inline MagickPixelPacket *CloneMagickPixelPacket(
-  const MagickPixelPacket *pixel)
+static inline MagickPixelInfo *CloneMagickPixelInfo(
+  const MagickPixelInfo *pixel)
 {
-  MagickPixelPacket
+  MagickPixelInfo
     *clone_pixel;
 
-  clone_pixel=(MagickPixelPacket *) AcquireAlignedMemory(1,
+  clone_pixel=(MagickPixelInfo *) AcquireAlignedMemory(1,
     sizeof(*clone_pixel));
-  if (clone_pixel == (MagickPixelPacket *) NULL)
+  if (clone_pixel == (MagickPixelInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *clone_pixel=(*pixel);
   return(clone_pixel);
 }
 
-static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
+static inline MagickBooleanType IsGrayPixel(const PixelInfo *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((GetPixelRed(pixel) == GetPixelGreen(pixel)) && 
@@ -63,7 +63,7 @@ static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
+static inline MagickBooleanType IsMonochromePixel(const PixelInfo *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (((GetPixelRed(pixel) == 0) ||
@@ -88,8 +88,8 @@ static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
   return(MagickFalse);
 }
 
-static inline void SetMagickPixelPacket(const Image *image,
-  const PixelPacket *color,const IndexPacket *index,MagickPixelPacket *pixel)
+static inline void SetMagickPixelInfo(const Image *image,
+  const PixelInfo *color,const IndexPacket *index,MagickPixelInfo *pixel)
 {
   pixel->red=(MagickRealType) GetPixelRed(color);
   pixel->green=(MagickRealType) GetPixelGreen(color);
@@ -100,8 +100,8 @@ static inline void SetMagickPixelPacket(const Image *image,
     pixel->index=(MagickRealType) GetPixelIndex(index);
 }
 
-static inline void SetMagickPixelPacketBias(const Image *image,
-  MagickPixelPacket *pixel)
+static inline void SetMagickPixelInfoBias(const Image *image,
+  MagickPixelInfo *pixel)
 {
   /*
     Obsoleted by MorphologyApply().
@@ -113,8 +113,8 @@ static inline void SetMagickPixelPacketBias(const Image *image,
   pixel->index=image->bias;
 }
 
-static inline void SetPixelPacket(const Image *image,
-  const MagickPixelPacket *pixel,PixelPacket *color,IndexPacket *index)
+static inline void SetPixelInfo(const Image *image,
+  const MagickPixelInfo *pixel,PixelInfo *color,IndexPacket *index)
 {
   SetPixelRed(color,ClampToQuantum(pixel->red));
   SetPixelGreen(color,ClampToQuantum(pixel->green));
