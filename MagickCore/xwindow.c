@@ -540,7 +540,7 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   /*
     Initialize annotated image.
   */
-  annotate_image=AcquireImage((ImageInfo *) NULL);
+  annotate_image=AcquireImage((ImageInfo *) NULL,&image->exception);
   if (annotate_image == (Image *) NULL)
     return(MagickFalse);
   annotate_image->columns=annotate_info->width;
@@ -2453,7 +2453,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   /*
     Initialize draw image.
   */
-  draw_image=AcquireImage((ImageInfo *) NULL);
+  draw_image=AcquireImage((ImageInfo *) NULL,&image->exception);
   if (draw_image == (Image *) NULL)
     return(MagickFalse);
   draw_image->columns=draw_info->width;
@@ -4328,7 +4328,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         /*
           Allocate image structure.
         */
-        composite_image=AcquireImage((ImageInfo *) NULL);
+        composite_image=AcquireImage((ImageInfo *) NULL,&image->exception);
         if (composite_image == (Image *) NULL)
           {
             XDestroyImage(ximage);
@@ -7769,7 +7769,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
             /*
               Improve image appearance with error diffusion.
             */
-            affinity_image=AcquireImage((ImageInfo *) NULL);
+            affinity_image=AcquireImage((ImageInfo *) NULL,&image->exception);
             if (affinity_image == (Image *) NULL)
               ThrowXWindowFatalException(ResourceLimitFatalError,
                 "UnableToDitherImage",image->filename);
@@ -8630,12 +8630,12 @@ MagickPrivate MagickBooleanType XMagickProgressMonitor(const char *tag,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  XQueryColorDatabase() looks up a RGB values for a color given in the target
+%  XQueryColorCompliance() looks up a RGB values for a color given in the target
 %  string.
 %
 %  The format of the XQueryColorDatabase method is:
 %
-%      MagickBooleanType XQueryColorDatabase(const char *target,XColor *color)
+%      MagickBooleanType XQueryColorCompliance(const char *target,XColor *color)
 %
 %  A description of each parameter follows:
 %
@@ -8645,7 +8645,7 @@ MagickPrivate MagickBooleanType XMagickProgressMonitor(const char *tag,
 %      color is returned as this value.
 %
 */
-MagickPrivate MagickBooleanType XQueryColorDatabase(const char *target,
+MagickPrivate MagickBooleanType XQueryColorCompliance(const char *target,
   XColor *color)
 {
   Colormap

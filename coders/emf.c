@@ -467,7 +467,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     width,
     y;
 
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (hemf == (HENHMETAFILE) NULL)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");

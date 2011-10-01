@@ -3633,7 +3633,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadPNGImage()");
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
@@ -3834,7 +3834,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "  AcquireNextImage()");
 
-      AcquireNextImage(image_info,image);
+      AcquireNextImage(image_info,image,exception);
 
       if (GetNextImageInList(image) == (Image *) NULL)
         return((Image *) NULL);
@@ -3995,7 +3995,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
         GetImageInfo(color_image_info);
-        color_image=AcquireImage(color_image_info);
+        color_image=AcquireImage(color_image_info,exception);
 
         if (color_image == (Image *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -4020,7 +4020,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
             GetImageInfo(alpha_image_info);
-            alpha_image=AcquireImage(alpha_image_info);
+            alpha_image=AcquireImage(alpha_image_info,exception);
 
             if (alpha_image == (Image *) NULL)
               {
@@ -4498,7 +4498,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadJNGImage()");
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
@@ -4674,7 +4674,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadMNGImage()");
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
@@ -4876,7 +4876,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (GetAuthenticPixelQueue(image) != (Quantum *) NULL)
               {
                 /* Allocate next image structure.  */
-                AcquireNextImage(image_info,image);
+                AcquireNextImage(image_info,image,exception);
 
                 if (GetNextImageInList(image) == (Image *) NULL)
                   return((Image *) NULL);
@@ -5327,7 +5327,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /* Allocate next image structure.  */
                 if (GetAuthenticPixelQueue(image) != (Quantum *) NULL)
                   {
-                    AcquireNextImage(image_info,image);
+                    AcquireNextImage(image_info,image,exception);
 
                     if (GetNextImageInList(image) == (Image *) NULL)
                       {
@@ -5881,7 +5881,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     /*
                       Allocate next image structure.
                     */
-                    AcquireNextImage(image_info,image);
+                    AcquireNextImage(image_info,image,exception);
 
                     if (GetNextImageInList(image) == (Image *) NULL)
                       {
@@ -5934,7 +5934,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Allocate next image structure.
               */
-              AcquireNextImage(image_info,image);
+              AcquireNextImage(image_info,image,exception);
 
               if (GetNextImageInList(image) == (Image *) NULL)
                 {
@@ -5983,7 +5983,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Allocate next image structure.
             */
-            AcquireNextImage(image_info,image);
+            AcquireNextImage(image_info,image,exception);
 
             if (GetNextImageInList(image) == (Image *) NULL)
               {
@@ -6178,7 +6178,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "    Allocate magnified image");
 
-                AcquireNextImage(image_info,image);
+                AcquireNextImage(image_info,image,exception);
 
                 if (GetNextImageInList(image) == (Image *) NULL)
                   {
@@ -6750,7 +6750,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Allocate next image structure.
           */
-          AcquireNextImage(image_info,image);
+          AcquireNextImage(image_info,image,exception);
           if (GetNextImageInList(image) == (Image *) NULL)
             {
               image=DestroyImageList(image);
@@ -7657,27 +7657,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                           data[53],data[54],data[55]);
                    
                  }
-                 else if (length == 60960)
-                 {
-                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "    got a 60960-byte ICC profile (potentially sRGB)");
-
-                   data=GetStringInfoDatum(profile);
-
-                   if (data[269]=='s' && data[271]=='R' &&
-                       data[273]=='G' && data[275]=='B')
-                   {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is the ICC v4 sRGB)");
-                      if (image->rendering_intent==UndefinedIntent)
-                        image->rendering_intent=PerceptualIntent;
-                   }
-                   else
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is not sRGB (%c%c%c%c)",
-                          data[269],data[271],data[273],data[275]);
-                   
-                 }
                  else if (length == 3052)
                  {
                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7695,8 +7674,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                    }
                    else
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is not sRGB (%c%c%c%c)",data[336],
-                          data[337],data[338],data[339]);
+                          "    It is not sRGB (%c%c%c%c)",data[52],
+                          data[53],data[54],data[55]);
                    
                  }
                  else

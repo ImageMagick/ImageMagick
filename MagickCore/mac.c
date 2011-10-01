@@ -1234,7 +1234,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   /*
     Open image file.
   */
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(NULL);

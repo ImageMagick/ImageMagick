@@ -266,7 +266,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -370,7 +370,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (n != 0)
       {
         /* Start a new image */
-        AcquireNextImage(image_info,image);
+        AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
             image = DestroyImageList(image);

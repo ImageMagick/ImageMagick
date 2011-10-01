@@ -1760,7 +1760,7 @@ WandExport MagickBooleanType PixelSetColor(PixelWand *wand,const char *color)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  status=QueryMagickColor(color,&pixel,wand->exception);
+  status=QueryMagickColorCompliance(color,AllCompliance,&pixel,wand->exception);
   if (status != MagickFalse)
     wand->pixel=pixel;
   return(status);

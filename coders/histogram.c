@@ -292,8 +292,8 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram image.
   */
-  (void) QueryColorDatabase("#000000",&histogram_image->background_color,
-    exception);
+  (void) QueryColorCompliance("#000000",AllCompliance,
+    &histogram_image->background_color,exception);
   (void) SetImageBackgroundColor(histogram_image);
   for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {

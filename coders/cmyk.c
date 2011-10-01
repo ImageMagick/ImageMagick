@@ -137,7 +137,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   image->colorspace=CMYKColorspace;
@@ -1046,7 +1046,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         /*
           Allocate next image structure.
         */
-        AcquireNextImage(image_info,image);
+        AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
             image=DestroyImageList(image);

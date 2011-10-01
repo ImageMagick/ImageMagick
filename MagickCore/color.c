@@ -1954,7 +1954,8 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"color") == 0)
           {
-            (void) QueryMagickColor(token,&color_info->color,exception);
+            (void) QueryMagickColorCompliance(token,AllCompliance,
+              &color_info->color,exception);
             break;
           }
         if (LocaleCompare((char *) keyword,"compliance") == 0)
@@ -2182,41 +2183,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   Q u e r y C o l o r D a t a b a s e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  QueryColorDatabase() returns the red, green, blue, and opacity intensities
-%  for a given color name.
-%
-%  The format of the QueryColorDatabase method is:
-%
-%      MagickBooleanType QueryColorDatabase(const char *name,PixelPacket *color,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o name: the color name (e.g. white, blue, yellow).
-%
-%    o color: the red, green, blue, and opacity intensities values of the
-%      named color in this structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType QueryColorDatabase(const char *name,
-  PixelPacket *color,ExceptionInfo *exception)
-{
-  return(QueryColorCompliance(name,AllCompliance,color,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  Q u e r y C o l o r n a m e                                                %
 %                                                                             %
 %                                                                             %
@@ -2273,7 +2239,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
 %
 %  The format of the QueryMagickColorCompliance method is:
 %
-%      MagickBooleanType QueryMagickColor(const char *name,
+%      MagickBooleanType QueryMagickColorCompliance(const char *name,
 %        const ComplianceType compliance,PixelInfo *color,
 %        ExceptionInfo *exception)
 %
@@ -2289,7 +2255,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate MagickBooleanType QueryMagickColorCompliance(const char *name,
+MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,
   ExceptionInfo *exception)
 {
@@ -2526,41 +2492,6 @@ MagickPrivate MagickBooleanType QueryMagickColorCompliance(const char *name,
   color->alpha=(MagickRealType) p->color.alpha;
   color->black=0.0;
   return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   Q u e r y M a g i c k C o l o r                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  QueryMagickColor() returns the red, green, blue, and opacity intensities
-%  for a given color name.
-%
-%  The format of the QueryMagickColor method is:
-%
-%      MagickBooleanType QueryMagickColor(const char *name,
-%        PixelInfo *color,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o name: the color name (e.g. white, blue, yellow).
-%
-%    o color: the red, green, blue, and opacity intensities values of the
-%      named color in this structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType QueryMagickColor(const char *name,
-  PixelInfo *color,ExceptionInfo *exception)
-{
-  return(QueryMagickColorCompliance(name,AllCompliance,color,exception));
 }
 
 /*

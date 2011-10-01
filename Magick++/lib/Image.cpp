@@ -1484,8 +1484,10 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
   PixelInfo pen;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) QueryMagickColor(std::string(opaqueColor_).c_str(),&opaque, &exceptionInfo);
-  (void) QueryMagickColor(std::string(penColor_).c_str(),&pen, &exceptionInfo);
+  (void) QueryMagickColorCompliance(std::string(opaqueColor_).c_str(),
+    AllCompliance, &opaque, &exceptionInfo);
+  (void) QueryMagickColorCompliance(std::string(penColor_).c_str(),
+    AllCompliance, &pen, &exceptionInfo);
   OpaquePaintImage ( image(), &opaque, &pen, MagickFalse, &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2141,7 +2143,8 @@ void Magick::Image::transparent ( const Color &color_ )
   std::string color = color_;
 
   PixelInfo target;
-  (void) QueryMagickColor(std::string(color_).c_str(),&target,&image()->exception);
+  (void) QueryMagickColorCompliance(std::string(color_).c_str(),AllCompliance,
+    &target,&image()->exception);
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
@@ -2166,10 +2169,10 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
 
   PixelInfo targetLow;
   PixelInfo targetHigh;
-  (void) QueryMagickColor(std::string(colorLow_).c_str(),&targetLow,
-    &image()->exception);
-  (void) QueryMagickColor(std::string(colorHigh_).c_str(),&targetHigh,
-    &image()->exception);
+  (void) QueryMagickColorCompliance(std::string(colorLow_).c_str(),
+    AllCompliance,&targetLow,&image()->exception);
+  (void) QueryMagickColorCompliance(std::string(colorHigh_).c_str(),
+    AllCompliance,&targetHigh,&image()->exception);
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
@@ -4271,7 +4274,13 @@ MagickCore::Image * Magick::Image::replaceImage
   if( replacement_ )
     image = replacement_;
   else
-    image = AcquireImage(constImageInfo());
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      image = AcquireImage(constImageInfo(), &exceptionInfo);
+      throwException( exceptionInfo );
+      (void) DestroyExceptionInfo( &exceptionInfo );
+    }
 
   {
     Lock( &_imgRef->_mutexLock );

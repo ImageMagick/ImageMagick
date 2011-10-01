@@ -94,12 +94,15 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   char
     colorname[MaxTextExtent];
 
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
   PixelPacket
     start_color,
     stop_color;
-
-  Image
-    *image;
 
   /*
     Initialize Image structure.
@@ -111,14 +114,15 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   (void) SetImageOpacity(image,(Quantum) TransparentAlpha);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
-  if (QueryColorDatabase(colorname,&start_color,exception) == MagickFalse)
+  status=QueryColorCompliance(colorname,AllCompliance,&start_color,exception);
+  if (status == MagickFalse)
     {
       image=DestroyImage(image);
       return((Image *) NULL);
@@ -127,7 +131,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   if (GetPixelPacketIntensity(&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
-  if (QueryColorDatabase(colorname,&stop_color,exception) == MagickFalse)
+  status=QueryColorCompliance(colorname,AllCompliance,&stop_color,exception);
+  if (status == MagickFalse)
     {
       image=DestroyImage(image);
       return((Image *) NULL);

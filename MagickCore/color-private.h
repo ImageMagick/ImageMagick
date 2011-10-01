@@ -25,9 +25,7 @@ extern "C" {
 #include "MagickCore/image.h"
 
 extern MagickPrivate MagickBooleanType
-  ColorComponentGenesis(void),
-  QueryMagickColorCompliance(const char *,const ComplianceType,PixelInfo *,
-    ExceptionInfo *);
+  ColorComponentGenesis(void);
 
 extern MagickPrivate void
   ColorComponentTerminus(void);

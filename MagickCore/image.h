@@ -499,7 +499,7 @@ extern MagickExport FILE
   *GetImageInfoFile(const ImageInfo *);
 
 extern MagickExport Image
-  *AcquireImage(const ImageInfo *),
+  *AcquireImage(const ImageInfo *,ExceptionInfo *),
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),
   *CloneImage(const Image *,const size_t,const size_t,const MagickBooleanType,
     ExceptionInfo *),
@@ -556,7 +556,7 @@ extern MagickExport VirtualPixelMethod
   SetImageVirtualPixelMethod(const Image *,const VirtualPixelMethod);
 
 extern MagickExport void
-  AcquireNextImage(const ImageInfo *,Image *),
+  AcquireNextImage(const ImageInfo *,Image *,ExceptionInfo *),
   DestroyImagePixels(Image *),
   DisassociateImageStream(Image *),
   GetImageException(Image *,ExceptionInfo *),

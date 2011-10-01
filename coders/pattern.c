@@ -988,7 +988,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
         Tile pattern across image canvas.
       */
       pattern_image=image;
-      image=AcquireImage(blob_info);
+      image=AcquireImage(blob_info,exception);
       image->background_color=pattern_image->background_color;
       (void) SetImageBackgroundColor(image);
       (void) TextureImage(image,pattern_image);

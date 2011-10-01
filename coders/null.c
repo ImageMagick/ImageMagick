@@ -121,7 +121,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   if (image->columns == 0)
     image->columns=1;
   if (image->rows == 0)

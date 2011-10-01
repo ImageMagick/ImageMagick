@@ -1472,7 +1472,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
               p+=strlen(name);
             }
           else
-            if (QueryMagickColor(name,&pixel,fx_info->exception) != MagickFalse)
+            if (QueryMagickColorCompliance(name,AllCompliance,&pixel,fx_info->exception) != MagickFalse)
               {
                 (void) AddValueToSplayTree(fx_info->colors,ConstantString(name),
                   ClonePixelInfo(&pixel));
@@ -3897,7 +3897,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
         quantum,(ssize_t) (image->rows+3*quantum/2));
       caption_image=DestroyImage(caption_image);
     }
-  (void) QueryColorDatabase("none",&picture_image->background_color,exception);
+  (void) QueryColorCompliance("none",AllCompliance,
+    &picture_image->background_color,exception);
   (void) SetImageAlphaChannel(picture_image,OpaqueAlphaChannel,exception);
   rotate_image=RotateImage(picture_image,90.0,exception);
   picture_image=DestroyImage(picture_image);
@@ -3935,7 +3936,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   (void) CompositeImage(polaroid_image,OverCompositeOp,picture_image,
     (ssize_t) (-0.01*picture_image->columns/2.0),0L);
   picture_image=DestroyImage(picture_image);
-  (void) QueryColorDatabase("none",&polaroid_image->background_color,exception);
+  (void) QueryColorCompliance("none",AllCompliance,
+    &polaroid_image->background_color,exception);
   rotate_image=RotateImage(polaroid_image,angle,exception);
   polaroid_image=DestroyImage(polaroid_image);
   if (rotate_image == (Image *) NULL)
@@ -4162,7 +4164,8 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   border_info.height=(size_t) floor(2.0*sigma+0.5);
   border_info.x=0;
   border_info.y=0;
-  (void) QueryColorDatabase("none",&clone_image->border_color,exception);
+  (void) QueryColorCompliance("none",AllCompliance,&clone_image->border_color,
+    exception);
   border_image=BorderImage(clone_image,&border_info,image->compose,exception);
   clone_image=DestroyImage(clone_image);
   if (border_image == (Image *) NULL)
@@ -5261,11 +5264,14 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
-  (void) QueryColorDatabase("#000000",&oval_image->background_color,exception);
+  (void) QueryColorCompliance("#000000",AllCompliance,
+    &oval_image->background_color,exception);
   (void) SetImageBackgroundColor(oval_image);
   draw_info=CloneDrawInfo((const ImageInfo *) NULL,(const DrawInfo *) NULL);
-  (void) QueryColorDatabase("#ffffff",&draw_info->fill,exception);
-  (void) QueryColorDatabase("#ffffff",&draw_info->stroke,exception);
+  (void) QueryColorCompliance("#ffffff",AllCompliance,&draw_info->fill,
+    exception);
+  (void) QueryColorCompliance("#ffffff",AllCompliance,&draw_info->stroke,
+    exception);
   (void) FormatLocaleString(ellipse,MaxTextExtent,
     "ellipse %g,%g,%g,%g,0.0,360.0",image->columns/2.0,
     image->rows/2.0,image->columns/2.0-x,image->rows/2.0-y);

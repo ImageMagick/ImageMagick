@@ -3288,7 +3288,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     {
       if (LocaleCompare(property,"background") == 0)
         {
-          (void) QueryColorDatabase(value,&image->background_color,exception);
+          (void) QueryColorCompliance(value,AllCompliance,
+            &image->background_color,exception);
           break;
         }
       if (LocaleCompare(property,"bias") == 0)

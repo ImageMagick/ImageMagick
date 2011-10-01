@@ -997,7 +997,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   debug=IsEventLogging();
   (void) debug;
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {

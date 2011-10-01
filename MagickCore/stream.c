@@ -141,14 +141,18 @@ static Quantum
 %
 %  The format of the AcquireStreamInfo method is:
 %
-%      StreamInfo *AcquireStreamInfo(const ImageInfo *image_info)
+%      StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info)
+MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   StreamInfo
     *stream_info;
@@ -163,7 +167,7 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   stream_info->map=ConstantString("RGB");
   stream_info->storage_type=CharPixel;
-  stream_info->stream=AcquireImage(image_info);
+  stream_info->stream=AcquireImage(image_info,exception);
   stream_info->signature=MagickSignature;
   return(stream_info);
 }

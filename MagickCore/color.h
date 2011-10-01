@@ -77,10 +77,10 @@ extern MagickExport MagickBooleanType
   ListColorInfo(FILE *,ExceptionInfo *),
   QueryColorCompliance(const char *,const ComplianceType,PixelPacket *,
     ExceptionInfo *),
-  QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *),
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
     ExceptionInfo *),
-  QueryMagickColor(const char *,PixelInfo *,ExceptionInfo *),
+  QueryMagickColorCompliance(const char *,const ComplianceType,PixelInfo *,
+    ExceptionInfo *),
   QueryMagickColorname(const Image *,const PixelInfo *,const ComplianceType,
     char *,ExceptionInfo *);
 

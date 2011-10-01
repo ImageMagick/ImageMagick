@@ -37,7 +37,7 @@ extern MagickExport MagickBooleanType
   WriteStream(const ImageInfo *,Image *,StreamHandler);
 
 extern MagickExport StreamInfo
-  *AcquireStreamInfo(const ImageInfo *),
+  *AcquireStreamInfo(const ImageInfo *,ExceptionInfo *),
   *DestroyStreamInfo(StreamInfo *);
 
 extern MagickExport void

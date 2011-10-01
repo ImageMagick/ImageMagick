@@ -250,7 +250,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   option=(char *) NULL;
   pend=MagickFalse;
   respect_parenthesis=MagickFalse;
-  stream_info=AcquireStreamInfo(image_info);
+  stream_info=AcquireStreamInfo(image_info,exception);
   status=MagickTrue;
   /*
     Stream an image.

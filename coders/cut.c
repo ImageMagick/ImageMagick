@@ -325,7 +325,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -417,7 +417,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
 
-  if( (palette=AcquireImage(clone_info))==NULL ) goto NoPalette;
+  if( (palette=AcquireImage(clone_info,exception))==NULL ) goto NoPalette;
   status=OpenBlob(clone_info,palette,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {

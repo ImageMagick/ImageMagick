@@ -188,7 +188,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -201,7 +201,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
     Convert MPEG to PAM with delegate.
   */
   read_info=CloneImageInfo(image_info);
-  image=AcquireImage(image_info);
+  image=AcquireImage(image_info,exception);
   (void) InvokeDelegate(read_info,image,"mpeg:decode",(char *) NULL,exception);
   image=DestroyImage(image);
   (void) FormatLocaleString(read_info->filename,MaxTextExtent,"%s.%s",
