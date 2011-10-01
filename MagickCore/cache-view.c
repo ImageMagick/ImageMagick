@@ -673,7 +673,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  GetPixelPacket(cache_view->image,p,pixel);
+  GetPixelPacketPixel(cache_view->image,p,pixel);
   if (GetPixelCacheColorspace(cache_view->image->cache) == CMYKColorspace)
     pixel->black=GetPixelBlack(cache_view->image,p);
   return(MagickTrue);
@@ -730,7 +730,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
     exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  GetPixelPacket(cache_view->image,p,pixel);
+  GetPixelPacketPixel(cache_view->image,p,pixel);
   if (GetPixelCacheColorspace(cache_view->image->cache) == CMYKColorspace)
     pixel->black=GetPixelBlack(cache_view->image,p);
   return(MagickTrue);
@@ -790,7 +790,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  GetPixelPacket(cache_view->image,p,pixel);
+  GetPixelPacketPixel(cache_view->image,p,pixel);
   if (GetPixelCacheColorspace(cache_view->image->cache) == CMYKColorspace)
     pixel->black=GetPixelBlack(cache_view->image,p);
   return(MagickTrue);

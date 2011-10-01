@@ -8079,7 +8079,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_opaque == 0)
                      {
-                       GetPixelPacket(image, q, opaque);
+                       GetPixelPacketPixel(image, q, opaque);
                        opaque[0].alpha=OpaqueAlpha;
                        number_opaque=1;
                      }
@@ -8094,7 +8094,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_opaque < 259)
                      {
                        number_opaque++;
-                       GetPixelPacket(image, q, opaque+i);
+                       GetPixelPacketPixel(image, q, opaque+i);
                        opaque[i].alpha=OpaqueAlpha;
                      }
                  }
@@ -8105,7 +8105,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_transparent == 0)
                      {
-                       GetPixelPacket(image, q, transparent);
+                       GetPixelPacketPixel(image, q, transparent);
                        ping_trans_color.red=(unsigned short)
                          GetPixelRed(image,q);
                        ping_trans_color.green=(unsigned short)
@@ -8127,7 +8127,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_transparent < 259)
                      {
                        number_transparent++;
-                       GetPixelPacket(image,q,transparent+i);
+                       GetPixelPacketPixel(image,q,transparent+i);
                      }
                  }
              }
@@ -8137,7 +8137,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_semitransparent == 0)
                      {
-                       GetPixelPacket(image,q,semitransparent);
+                       GetPixelPacketPixel(image,q,semitransparent);
                        number_semitransparent = 1;
                      }
 
@@ -8153,7 +8153,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_semitransparent < 259)
                      {
                        number_semitransparent++;
-                       GetPixelPacket(image, q, semitransparent+i);
+                       GetPixelPacketPixel(image, q, semitransparent+i);
                      }
                  }
              }

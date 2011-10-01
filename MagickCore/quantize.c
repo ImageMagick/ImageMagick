@@ -594,7 +594,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
             PixelPacket
               packet;
 
-            GetPixelPacket(image,q+count*GetPixelChannels(image),&packet);
+            GetPixelPacketPixel(image,q+count*GetPixelChannels(image),&packet);
             if (IsPixelEquivalent(image,q,&packet) == MagickFalse)
               break;
           }
@@ -838,7 +838,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         PixelPacket
           packet;
 
-        GetPixelPacket(image,p+count*GetPixelChannels(image),&packet);
+        GetPixelPacketPixel(image,p+count*GetPixelChannels(image),&packet);
         if (IsPixelEquivalent(image,p,&packet) == MagickFalse)
           break;
       }
@@ -933,7 +933,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
         PixelPacket
           packet;
 
-        GetPixelPacket(image,p+count*GetPixelChannels(image),&packet);
+        GetPixelPacketPixel(image,p+count*GetPixelChannels(image),&packet);
         if (IsPixelEquivalent(image,p,&packet) == MagickFalse)
           break;
       }

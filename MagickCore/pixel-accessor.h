@@ -198,7 +198,7 @@ static inline PixelTrait GetPixelRedTraits(const Image *image)
   return(image->channel_map[RedPixelChannel].traits);
 }
 
-static inline void GetPixelPacket(const Image *image,const Quantum *pixel,
+static inline void GetPixelPacketPixel(const Image *image,const Quantum *pixel,
   PixelPacket *packet)
 {
   packet->red=pixel[image->channel_map[RedPixelChannel].channel];

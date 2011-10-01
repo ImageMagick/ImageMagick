@@ -1883,7 +1883,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                 p=GetVirtualPixels(image,0,y,image->columns,1,exception);
                 if (p == (const Quantum *) NULL)
                   break;
-                GetPixelPacket(image,p,&pixel);
+                GetPixelPacketPixel(image,p,&pixel);
                 length=255;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
@@ -1907,7 +1907,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                         }
                       length=0;
                     }
-                  GetPixelPacket(image,p,&pixel);
+                  GetPixelPacketPixel(image,p,&pixel);
                   p+=GetPixelChannels(image);
                 }
                 WriteRunlengthPacket(image,pixel,length,p);

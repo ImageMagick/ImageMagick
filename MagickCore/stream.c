@@ -451,7 +451,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
   q=GetAuthenticPixelsStream(image,x,y,1,1,exception);
   if (q != (Quantum *) NULL)
     return(MagickFalse);
-  GetPixelPacket(image,q,pixel);
+  GetPixelPacketPixel(image,q,pixel);
   return(MagickTrue);
 }
 
@@ -501,7 +501,7 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
   p=GetVirtualPixelStream(image,virtual_pixel_method,x,y,1,1,exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  GetPixelPacket(image,p,pixel);
+  GetPixelPacketPixel(image,p,pixel);
   if (image->colorspace == CMYKColorspace)
     pixel->black=GetPixelBlack(image,p);
   return(MagickTrue);

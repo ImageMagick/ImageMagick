@@ -3770,7 +3770,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
                   {
-                    GetPixelPacket(*image,q,&pixel);
+                    GetPixelPacketPixel(*image,q,&pixel);
                     if (IsFuzzyEquivalencePixelPacket(*image,&pixel,&target))
                       {
                         SetPixelRed(*image,ScaleShortToQuantum(
@@ -10113,7 +10113,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                GetPixelPacket(*image,q,&pixel);
+                GetPixelPacketPixel(*image,q,&pixel);
                 if (IsFuzzyEquivalencePixelPacket(*image,&pixel,&target))
                   SetPixelAlpha(*image,(Quantum) StringToLong(matte),q);
                 q+=GetPixelChannels(*image);
