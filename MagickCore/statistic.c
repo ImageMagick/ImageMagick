@@ -1371,8 +1371,8 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  *maxima=(-MagickMaxFloat);
-  *minima=MagickMaxFloat;
+  *maxima=(-MagickHuge);
+  *minima=MagickHuge;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic) shared(status) omp_throttle(1)
@@ -1518,8 +1518,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     channel_statistics[i].depth=1;
-    channel_statistics[i].maxima=(-MagickMaxFloat);
-    channel_statistics[i].minima=MagickMaxFloat;
+    channel_statistics[i].maxima=(-MagickHuge);
+    channel_statistics[i].minima=MagickHuge;
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {

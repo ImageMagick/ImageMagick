@@ -1729,7 +1729,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k P i x e l P a c k e t                                   %
+%   G e t P i x e l I n f o                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1748,8 +1748,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 %    o pixel: Specifies a pointer to a PixelPacket structure.
 %
 */
-MagickExport void GetPixelInfo(const Image *image,
-  PixelInfo *pixel)
+MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 {
   pixel->storage_class=DirectClass;
   pixel->colorspace=RGBColorspace;
