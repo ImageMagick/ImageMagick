@@ -34,7 +34,7 @@ configlib_DATA = \
 	config/magic.xml \
 	config/mime.xml \
 	config/policy.xml \
-	config/sRGB.icm \
+	config/sRGB.icc \
 	config/thresholds.xml \
 	config/type.xml \
 	config/type-dejavu.xml \
@@ -55,7 +55,7 @@ CONFIG_EXTRA_DIST = \
 	config/magic.xml \
 	config/mime.xml \
 	config/policy.xml \
-	config/sRGB.icm \
+	config/sRGB.icc \
 	config/thresholds.xml \
 	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
