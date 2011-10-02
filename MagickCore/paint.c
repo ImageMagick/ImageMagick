@@ -194,6 +194,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     Push initial segment on stack.
   */
   status=MagickTrue;
+  fill_color.black=0.0;
+  fill_color.index=0.0;
   x=x_offset;
   y=y_offset;
   start=0;
@@ -332,7 +334,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     {
       if (GetPixelAlpha(floodplane_image,p) != OpaqueAlpha)
         {
-          (void) GetFillColor(draw_info,x,y,&fill_color);
+          (void) GetFillColor(draw_info,x,y,&fill_color,exception);
           SetPixelInfoPacket(image,&fill_color,&fill);
           if (image->colorspace == CMYKColorspace)
             ConvertRGBToCMYK(&fill);

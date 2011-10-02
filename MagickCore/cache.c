@@ -125,9 +125,9 @@ static const void
 
 static MagickBooleanType
   GetOneAuthenticPixelFromCache(Image *,const ssize_t,const ssize_t,
-    PixelPacket *,ExceptionInfo *),
+    Quantum *,ExceptionInfo *),
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
-    const ssize_t,const ssize_t,PixelPacket *,ExceptionInfo *),
+    const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
   ReadPixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *),
   ReadPixelCachePixels(CacheInfo *,NexusInfo *,ExceptionInfo *),
@@ -2106,7 +2106,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %  The format of the GetOneAuthenticPixel() method is:
 %
 %      MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
-%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2120,7 +2120,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %
 */
 MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
-  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2128,20 +2128,36 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
   register Quantum
     *q;
 
+  register ssize_t
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   if (cache_info->methods.get_one_authentic_pixel_from_handler !=
        (GetOneAuthenticPixelFromHandler) NULL)
     return(cache_info->methods.get_one_authentic_pixel_from_handler(image,x,y,
       pixel,exception));
   q=GetAuthenticPixelsCache(image,x,y,1UL,1UL,exception);
   if (q == (Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,q,pixel);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=q[i];
+  }
   return(MagickTrue);
 }
 
@@ -2162,7 +2178,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
 %  The format of the GetOneAuthenticPixelFromCache() method is:
 %
 %      MagickBooleanType GetOneAuthenticPixelFromCache(const Image image,
-%        const ssize_t x,const ssize_t y,PixelPacket *pixel,
+%        const ssize_t x,const ssize_t y,Quantum *pixel,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2177,7 +2193,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
 %
 */
 static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
-  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2188,18 +2204,34 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
   register Quantum
     *q;
 
+  register ssize_t
+    i;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   q=GetAuthenticPixelCacheNexus(image,x,y,1UL,1UL,cache_info->nexus_info[id],
     exception);
   if (q == (Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,q,pixel);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=q[i];
+  }
   return(MagickTrue);
 }
 
@@ -2283,7 +2315,7 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
 %
 %      MagickBooleanType GetOneVirtualMethodPixel(const Image image,
 %        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-%        const ssize_t y,PixelPacket *pixel,ExceptionInfo exception)
+%        const ssize_t y,Quantum *pixel,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
@@ -2300,7 +2332,7 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
 */
 MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2311,12 +2343,15 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
   const Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   if (cache_info->methods.get_one_virtual_pixel_from_handler !=
        (GetOneVirtualPixelFromHandler) NULL)
     return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
@@ -2325,10 +2360,21 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
   p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
     cache_info->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,p,pixel);
-  if (image->colorspace == CMYKColorspace)
-    pixel->black=GetPixelBlack(image,p);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 
@@ -2350,7 +2396,7 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
 %  The format of the GetOneVirtualPixel() method is:
 %
 %      MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
-%        const ssize_t y,PixelPacket *pixel,ExceptionInfo exception)
+%        const ssize_t y,Quantum *pixel,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
@@ -2364,7 +2410,7 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
 %
 */
 MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
-  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2375,12 +2421,15 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   const Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   if (cache_info->methods.get_one_virtual_pixel_from_handler !=
        (GetOneVirtualPixelFromHandler) NULL)
     return(cache_info->methods.get_one_virtual_pixel_from_handler(image,
@@ -2389,10 +2438,21 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
   p=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
     1UL,1UL,cache_info->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,p,pixel);
-  if (image->colorspace == CMYKColorspace)
-    pixel->black=GetPixelBlack(image,p);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 
@@ -2415,7 +2475,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
 %
 %      MagickBooleanType GetOneVirtualPixelFromCache(const Image image,
 %        const VirtualPixelMethod method,const ssize_t x,const ssize_t y,
-%        PixelPacket *pixel,ExceptionInfo *exception)
+%        Quantum *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2432,7 +2492,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
 */
 static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  Quantum *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2443,20 +2503,34 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
   const Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
     cache_info->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,p,pixel);
-  if (image->colorspace == CMYKColorspace)
-    pixel->black=GetPixelBlack(image,p);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 

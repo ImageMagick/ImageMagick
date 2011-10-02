@@ -72,12 +72,11 @@ extern MagickExport ExceptionInfo
 
 extern MagickExport MagickBooleanType
   GetOneCacheViewVirtualPixel(const CacheView *,const ssize_t,const ssize_t,
-    PixelPacket *,ExceptionInfo *),
-  GetOneCacheViewVirtualMethodPixel(const CacheView *,
-    const VirtualPixelMethod,const ssize_t,const ssize_t,PixelPacket *,
-    ExceptionInfo *),
+    Quantum *,ExceptionInfo *),
+  GetOneCacheViewVirtualMethodPixel(const CacheView *,const VirtualPixelMethod,
+    const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   GetOneCacheViewAuthenticPixel(const CacheView *,const ssize_t,const ssize_t,
-    PixelPacket *,ExceptionInfo *),
+    Quantum *,ExceptionInfo *),
   SetCacheViewStorageClass(CacheView *,const ClassType),
   SetCacheViewVirtualPixelMethod(CacheView *,const VirtualPixelMethod),
   SyncCacheViewAuthenticPixels(CacheView *,ExceptionInfo *);
