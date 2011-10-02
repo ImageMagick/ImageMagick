@@ -2011,9 +2011,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.alpha=ClampToQuantum((MagickRealType)
-              QuantumRange*factor*InterpretLocaleValue(token,
-              (char **) NULL));
+            graphic_context[n]->fill.alpha=(MagickRealType) QuantumRange*
+              factor*InterpretLocaleValue(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -2217,8 +2216,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             graphic_context[n]->alpha=ClampToQuantum((MagickRealType)
               QuantumRange*(1.0-((1.0-QuantumScale*graphic_context[n]->alpha)*
               factor*InterpretLocaleValue(token,(char **) NULL))));
-            graphic_context[n]->fill.alpha=graphic_context[n]->alpha;
-            graphic_context[n]->stroke.alpha=graphic_context[n]->alpha;
+            graphic_context[n]->fill.alpha=(double) graphic_context[n]->alpha;
+            graphic_context[n]->stroke.alpha=(double) graphic_context[n]->alpha;
             break;
           }
         status=MagickFalse;
@@ -2639,9 +2638,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->stroke.alpha=ClampToQuantum((MagickRealType)
-              QuantumRange*factor*InterpretLocaleValue(token,
-              (char **) NULL));
+            graphic_context[n]->stroke.alpha=(MagickRealType) QuantumRange*
+              factor*InterpretLocaleValue(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -4221,10 +4219,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
 
           (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
             exception);
-          target.red=virtual_pixel[RedPixelChannel];
-          target.green=virtual_pixel[GreenPixelChannel];
-          target.blue=virtual_pixel[BluePixelChannel];
-          target.alpha=virtual_pixel[AlphaPixelChannel];
+          target.red=(double) virtual_pixel[RedPixelChannel];
+          target.green=(double) virtual_pixel[GreenPixelChannel];
+          target.blue=(double) virtual_pixel[BluePixelChannel];
+          target.alpha=(double) virtual_pixel[AlphaPixelChannel];
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
@@ -4324,7 +4322,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           if (q == (Quantum *) NULL)
             break;
           (void) GetFillColor(draw_info,x,y,&pixel,exception);
-          SetPixelAlpha(image,pixel.alpha,q);
+          SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
         }
@@ -4342,10 +4340,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
 
           (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
             exception);
-          target.red=virtual_pixel[RedPixelChannel];
-          target.green=virtual_pixel[GreenPixelChannel];
-          target.blue=virtual_pixel[BluePixelChannel];
-          target.alpha=virtual_pixel[AlphaPixelChannel];
+          target.red=(double) virtual_pixel[RedPixelChannel];
+          target.green=(double) virtual_pixel[GreenPixelChannel];
+          target.blue=(double) virtual_pixel[BluePixelChannel];
+          target.alpha=(double) virtual_pixel[AlphaPixelChannel];
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
@@ -4367,7 +4365,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelAlpha(image,pixel.alpha,q);
+              SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4422,7 +4420,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelAlpha(image,pixel.alpha,q);
+              SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
