@@ -50,10 +50,10 @@ static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
 #endif
     status=GetOneVirtualMethodPixel(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,pixel,exception);
-    fill->red=pixel[RedPixelChannel];
-    fill->green=pixel[GreenPixelChannel];
-    fill->blue=pixel[BluePixelChannel];
-    fill->alpha=pixel[AlphaPixelChannel];
+    fill->red=(double) pixel[RedPixelChannel];
+    fill->green=(double) pixel[GreenPixelChannel];
+    fill->blue=(double) pixel[BluePixelChannel];
+    fill->alpha=(double) pixel[AlphaPixelChannel];
     return(status);
   }
 }
@@ -82,10 +82,10 @@ static inline MagickBooleanType GetStrokeColor(const DrawInfo *draw_info,
 #endif
     status=GetOneVirtualMethodPixel(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,pixel,exception);
-    stroke->red=pixel[RedPixelChannel];
-    stroke->green=pixel[GreenPixelChannel];
-    stroke->blue=pixel[BluePixelChannel];
-    stroke->alpha=pixel[AlphaPixelChannel];
+    stroke->red=(double) pixel[RedPixelChannel];
+    stroke->green=(double) pixel[GreenPixelChannel];
+    stroke->blue=(double) pixel[BluePixelChannel];
+    stroke->alpha=(double) pixel[AlphaPixelChannel];
     return(status);
   }
 }

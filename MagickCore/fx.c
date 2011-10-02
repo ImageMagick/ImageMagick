@@ -1670,8 +1670,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             lightness,
             saturation;
 
-          ConvertRGBToHSL(ClampToQuantum(pixel.red),ClampToQuantum(pixel.green),
-            ClampToQuantum(pixel.blue),&hue,&saturation,&lightness);
+          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
+            &lightness);
           return(hue);
         }
       break;
@@ -1714,8 +1714,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             lightness,
             saturation;
 
-          ConvertRGBToHSL(ClampToQuantum(pixel.red),ClampToQuantum(pixel.green),
-            ClampToQuantum(pixel.blue),&hue,&saturation,&lightness);
+          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
+            &lightness);
           return(lightness);
         }
       if (LocaleCompare(symbol,"luminance") == 0)
@@ -1789,8 +1789,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             lightness,
             saturation;
 
-          ConvertRGBToHSL(ClampToQuantum(pixel.red),ClampToQuantum(pixel.green),
-            ClampToQuantum(pixel.blue),&hue,&saturation,&lightness);
+          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
+            &lightness);
           return(saturation);
         }
       if (LocaleNCompare(symbol,"skewness",8) == 0)
@@ -3545,16 +3545,29 @@ static inline Quantum PlasmaPixel(RandomInfo *random_info,
   return(plasma);
 }
 
-static MagickBooleanType PlasmaImageProxy(Image *image,
-  CacheView *image_view,RandomInfo *random_info,const SegmentInfo *segment,
-  size_t attenuate,size_t depth,ExceptionInfo *exception)
+static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
+  CacheView *u_view,CacheView *v_view,RandomInfo *random_info,
+  const SegmentInfo *segment,size_t attenuate,size_t depth,
+  ExceptionInfo *exception)
 {
   MagickRealType
     plasma;
 
-  PixelPacket
-    u,
-    v;
+  PixelChannel
+    channel;
+
+  PixelTrait
+    traits;
+
+  register const Quantum
+    *restrict u,
+    *restrict v;
+
+  register Quantum
+    *restrict q;
+
+  register ssize_t
+    i;
 
   ssize_t
     x,
@@ -3579,23 +3592,23 @@ static MagickBooleanType PlasmaImageProxy(Image *image,
       local_info=(*segment);
       local_info.x2=(double) x_mid;
       local_info.y2=(double) y_mid;
-      (void) PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth,exception);
+      (void) PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
+        &local_info,attenuate,depth,exception);
       local_info=(*segment);
       local_info.y1=(double) y_mid;
       local_info.x2=(double) x_mid;
-      (void) PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth,exception);
+      (void) PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
+        &local_info,attenuate,depth,exception);
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y2=(double) y_mid;
-      (void) PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth,exception);
+      (void) PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
+        &local_info,attenuate,depth,exception);
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y1=(double) y_mid;
-      return(PlasmaImageProxy(image,image_view,random_info,&local_info,
-        attenuate,depth,exception));
+      return(PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
+        &local_info,attenuate,depth,exception));
     }
   x_mid=(ssize_t) ceil((segment->x1+segment->x2)/2-0.5);
   y_mid=(ssize_t) ceil((segment->y1+segment->y2)/2-0.5);
@@ -3608,26 +3621,26 @@ static MagickBooleanType PlasmaImageProxy(Image *image,
   plasma=(MagickRealType) QuantumRange/(2.0*attenuate);
   if ((segment->x1 != (double) x_mid) || (segment->x2 != (double) x_mid))
     {
-      register Quantum
-        *restrict q;
-
       /*
         Left pixel.
       */
       x=(ssize_t) ceil(segment->x1-0.5);
-      (void) GetOneCacheViewVirtualPixel(image_view,x,(ssize_t)
-        ceil(segment->y1-0.5),&u,exception);
-      (void) GetOneCacheViewVirtualPixel(image_view,x,(ssize_t)
-        ceil(segment->y2-0.5),&v,exception);
+      u=GetCacheViewVirtualPixels(u_view,x,(ssize_t) ceil(segment->y1-0.5),
+        1,1,exception);
+      v=GetCacheViewVirtualPixels(v_view,x,(ssize_t) ceil(segment->y2-0.5),
+        1,1,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
-      if (q == (Quantum *) NULL)
+      if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
+          (q == (Quantum *) NULL))
         return(MagickTrue);
-      SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
-        (u.red+v.red)/2.0,plasma),q);
-      SetPixelGreen(image,PlasmaPixel(random_info,(MagickRealType)
-        (u.green+v.green)/2.0,plasma),q);
-      SetPixelBlue(image,PlasmaPixel(random_info,(MagickRealType)
-        (u.blue+v.blue)/2.0,plasma),q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+      }
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
       if (segment->x1 != segment->x2)
         {
@@ -3635,19 +3648,22 @@ static MagickBooleanType PlasmaImageProxy(Image *image,
             Right pixel.
           */
           x=(ssize_t) ceil(segment->x2-0.5);
-          (void) GetOneCacheViewVirtualPixel(image_view,x,(ssize_t)
-            ceil(segment->y1-0.5),&u,exception);
-          (void) GetOneCacheViewVirtualPixel(image_view,x,(ssize_t)
-            ceil(segment->y2-0.5),&v,exception);
+          u=GetCacheViewVirtualPixels(u_view,x,(ssize_t) ceil(segment->y1-0.5),
+            1,1,exception);
+          v=GetCacheViewVirtualPixels(v_view,x,(ssize_t) ceil(segment->y2-0.5),
+            1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
-          if (q == (Quantum *) NULL)
+          if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
+              (q == (Quantum *) NULL))
             return(MagickTrue);
-          SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.red+v.red)/2.0,plasma),q);
-          SetPixelGreen(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.green+v.green)/2.0,plasma),q);
-          SetPixelBlue(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.blue+v.blue)/2.0,plasma),q);
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+            channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+            if (traits == UndefinedPixelTrait)
+              continue;
+            q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+          }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
     }
@@ -3655,89 +3671,91 @@ static MagickBooleanType PlasmaImageProxy(Image *image,
     {
       if ((segment->x1 != (double) x_mid) || (segment->y2 != (double) y_mid))
         {
-          register Quantum
-            *restrict q;
-
           /*
             Bottom pixel.
           */
           y=(ssize_t) ceil(segment->y2-0.5);
-          (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
-            ceil(segment->x1-0.5),y,&u,exception);
-          (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
-            ceil(segment->x2-0.5),y,&v,exception);
+          u=GetCacheViewVirtualPixels(u_view,(ssize_t) ceil(segment->x1-0.5),y,
+            1,1,exception);
+          v=GetCacheViewVirtualPixels(v_view,(ssize_t) ceil(segment->x2-0.5),y,
+            1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
-          if (q == (Quantum *) NULL)
+          if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
+              (q == (Quantum *) NULL))
             return(MagickTrue);
-          SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.red+v.red)/2.0,plasma),q);
-          SetPixelGreen(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.green+v.green)/2.0,plasma),q);
-          SetPixelBlue(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.blue+v.blue)/2.0,plasma),q);
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+            channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+            if (traits == UndefinedPixelTrait)
+              continue;
+            q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+          }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
       if (segment->y1 != segment->y2)
         {
-          register Quantum
-            *restrict q;
-
           /*
             Top pixel.
           */
           y=(ssize_t) ceil(segment->y1-0.5);
-          (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
-            ceil(segment->x1-0.5),y,&u,exception);
-          (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t)
-            ceil(segment->x2-0.5),y,&v,exception);
+          u=GetCacheViewVirtualPixels(u_view,(ssize_t) ceil(segment->x1-0.5),y,
+            1,1,exception);
+          v=GetCacheViewVirtualPixels(v_view,(ssize_t) ceil(segment->x2-0.5),y,
+            1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
-          if (q == (Quantum *) NULL)
+          if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
+              (q == (Quantum *) NULL))
             return(MagickTrue);
-          SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.red+v.red)/2.0,plasma),q);
-          SetPixelGreen(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.green+v.green)/2.0,plasma),q);
-          SetPixelBlue(image,PlasmaPixel(random_info,(MagickRealType)
-            (u.blue+v.blue)/2.0,plasma),q);
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+            channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+            if (traits == UndefinedPixelTrait)
+              continue;
+            q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+          }
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
         }
     }
   if ((segment->x1 != segment->x2) || (segment->y1 != segment->y2))
     {
-      register Quantum
-        *restrict q;
-
       /*
         Middle pixel.
       */
       x=(ssize_t) ceil(segment->x1-0.5);
       y=(ssize_t) ceil(segment->y1-0.5);
-      (void) GetOneVirtualPixel(image,x,y,&u,exception);
+      u=GetCacheViewVirtualPixels(u_view,x,y,1,1,exception);
       x=(ssize_t) ceil(segment->x2-0.5);
       y=(ssize_t) ceil(segment->y2-0.5);
-      (void) GetOneCacheViewVirtualPixel(image_view,x,y,&v,exception);
+      v=GetCacheViewVirtualPixels(v_view,x,y,1,1,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x_mid,y_mid,1,1,exception);
-      if (q == (Quantum *) NULL)
+      if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
+          (q == (Quantum *) NULL))
         return(MagickTrue);
-      SetPixelRed(image,PlasmaPixel(random_info,(MagickRealType)
-        (u.red+v.red)/2.0,plasma),q);
-      SetPixelGreen(image,PlasmaPixel(random_info,(MagickRealType)
-        (u.green+v.green)/2.0,plasma),q);
-      SetPixelBlue(image,PlasmaPixel(random_info,(MagickRealType)
-        (u.blue+v.blue)/2.0,plasma),q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
+      }
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
     }
   if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
 MagickExport MagickBooleanType PlasmaImage(Image *image,
   const SegmentInfo *segment,size_t attenuate,size_t depth,
   ExceptionInfo *exception)
 {
   CacheView
-    *image_view;
+    *image_view,
+    *u_view,
+    *v_view;
 
   MagickBooleanType
     status;
@@ -3754,10 +3772,14 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   image_view=AcquireCacheView(image);
+  u_view=AcquireCacheView(image);
+  v_view=AcquireCacheView(image);
   random_info=AcquireRandomInfo();
-  status=PlasmaImageProxy(image,image_view,random_info,segment,attenuate,depth,
-    exception);
+  status=PlasmaImageProxy(image,image_view,u_view,v_view,random_info,segment,
+    attenuate,depth,exception);
   random_info=DestroyRandomInfo(random_info);
+  v_view=DestroyCacheView(v_view);
+  u_view=DestroyCacheView(u_view);
   image_view=DestroyCacheView(image_view);
   return(status);
 }
@@ -4175,7 +4197,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   /*
     Shadow image.
   */
-  SetImageBackgroundColor(border_image);
+  (void) SetImageBackgroundColor(border_image);
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
   shadow_image=BlurImage(border_image,0.0,sigma,image->bias,exception);
   (void) SetPixelChannelMap(border_image,channel_mask);
@@ -4591,7 +4613,15 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     {
       for (x=0; (x < (ssize_t) watermark->columns) && (j < (ssize_t) depth); x++)
       {
-        (void) GetOneCacheViewVirtualPixel(watermark_view,x,y,&pixel,exception);
+        Quantum
+          virtual_pixel[MaxPixelChannels];
+
+        (void) GetOneCacheViewVirtualPixel(watermark_view,x,y,virtual_pixel,
+          exception);
+        pixel.red=(double) virtual_pixel[RedPixelChannel];
+        pixel.green=(double) virtual_pixel[GreenPixelChannel];
+        pixel.blue=(double) virtual_pixel[BluePixelChannel];
+        pixel.alpha=(double) virtual_pixel[AlphaPixelChannel];
         if ((k/(ssize_t) stegano_image->columns) >= (ssize_t) stegano_image->rows)
           break;
         q=GetCacheViewAuthenticPixels(stegano_view,k % (ssize_t)

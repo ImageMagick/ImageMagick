@@ -710,15 +710,15 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
-    cdl_map[i].red=ClampToQuantum((MagickRealType) ScaleMapToQuantum(
-      (MagickRealType) (MaxMap*(pow(color_correction.red.slope*i/MaxMap+
-      color_correction.red.offset,color_correction.red.power)))));
-    cdl_map[i].green=ClampToQuantum((MagickRealType) ScaleMapToQuantum(
-      (MagickRealType) (MaxMap*(pow(color_correction.green.slope*i/MaxMap+
-      color_correction.green.offset,color_correction.green.power)))));
-    cdl_map[i].blue=ClampToQuantum((MagickRealType) ScaleMapToQuantum(
-      (MagickRealType) (MaxMap*(pow(color_correction.blue.slope*i/MaxMap+
-      color_correction.blue.offset,color_correction.blue.power)))));
+    cdl_map[i].red=(MagickRealType) ScaleMapToQuantum((MagickRealType)
+      (MaxMap*(pow(color_correction.red.slope*i/MaxMap+
+      color_correction.red.offset,color_correction.red.power))));
+    cdl_map[i].green=(MagickRealType) ScaleMapToQuantum((MagickRealType)
+      (MaxMap*(pow(color_correction.green.slope*i/MaxMap+
+      color_correction.green.offset,color_correction.green.power))));
+    cdl_map[i].blue=(MagickRealType) ScaleMapToQuantum((MagickRealType)
+      (MaxMap*(pow(color_correction.blue.slope*i/MaxMap+
+      color_correction.blue.offset,color_correction.blue.power))));
   }
   if (image->storage_class == PseudoClass)
     {
@@ -735,15 +735,15 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 
         luma=0.2126*image->colormap[i].red+0.7152*image->colormap[i].green+
           0.0722*image->colormap[i].blue;
-        image->colormap[i].red=ClampToQuantum(luma+
-          color_correction.saturation*cdl_map[ScaleQuantumToMap(
-          image->colormap[i].red)].red-luma);
-        image->colormap[i].green=ClampToQuantum(luma+
-          color_correction.saturation*cdl_map[ScaleQuantumToMap(
-          image->colormap[i].green)].green-luma);
-        image->colormap[i].blue=ClampToQuantum(luma+
-          color_correction.saturation*cdl_map[ScaleQuantumToMap(
-          image->colormap[i].blue)].blue-luma);
+        image->colormap[i].red=luma+color_correction.saturation*
+          cdl_map[ScaleQuantumToMap(ClampToQuantum(
+          image->colormap[i].red))].red-luma;
+        image->colormap[i].green=luma+color_correction.saturation*
+          cdl_map[ScaleQuantumToMap(ClampToQuantum(
+          image->colormap[i].green))].green-luma;
+        image->colormap[i].blue=luma+color_correction.saturation*
+          cdl_map[ScaleQuantumToMap(ClampToQuantum(
+          image->colormap[i].blue))].blue-luma;
       }
     }
   /*
@@ -933,13 +933,13 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      red=GetPixelRed(image,q);
-      green=GetPixelGreen(image,q);
-      blue=GetPixelBlue(image,q);
+      red=(double) GetPixelRed(image,q);
+      green=(double) GetPixelGreen(image,q);
+      blue=(double) GetPixelBlue(image,q);
       Contrast(sign,&red,&green,&blue);
-      SetPixelRed(image,red,q);
-      SetPixelGreen(image,green,q);
-      SetPixelBlue(image,blue,q);
+      SetPixelRed(image,ClampToQuantum(red),q);
+      SetPixelGreen(image,ClampToQuantum(green),q);
+      SetPixelBlue(image,ClampToQuantum(blue),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1164,33 +1164,29 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
           {
             i=GetPixelChannelMapChannel(image,RedPixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].red=ClampToQuantum(stretch_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].red)]+i);
+              image->colormap[j].red=stretch_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))]+i;
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelMapChannel(image,GreenPixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].green=ClampToQuantum(stretch_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].green)]+i);
+              image->colormap[j].green=stretch_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))]+i;
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelMapChannel(image,BluePixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].blue=ClampToQuantum(stretch_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].blue)]+i);
+              image->colormap[j].blue=stretch_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))]+i;
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelMapChannel(image,AlphaPixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].alpha=ClampToQuantum(stretch_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].alpha)]+i);
+              image->colormap[j].alpha=stretch_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))]+i;
           }
       }
     }
@@ -1617,36 +1613,32 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           {
             i=GetPixelChannelMapChannel(image,RedPixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].red=ClampToQuantum(equalize_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].red)]+i);
+              image->colormap[j].red=equalize_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))]+i;
           }
         if (((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) &&
             (white[i]!= black[i]))
           {
             i=GetPixelChannelMapChannel(image,GreenPixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].green=ClampToQuantum(equalize_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].red)]+i);
+              image->colormap[j].green=equalize_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))]+i;
           }
         if (((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) &&
             (white[i]!= black[i]))
           {
             i=GetPixelChannelMapChannel(image,BluePixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].blue=ClampToQuantum(equalize_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].blue)]+i);
+              image->colormap[j].blue=equalize_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))]+i;
           }
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (white[i]!= black[i]))
           {
             i=GetPixelChannelMapChannel(image,AlphaPixelChannel);
             if (black[i] != white[i])
-              image->colormap[j].alpha=ClampToQuantum(equalize_map[
-                GetPixelChannels(image)*ScaleQuantumToMap(
-                image->colormap[j].alpha)]+i);
+              image->colormap[j].alpha=equalize_map[GetPixelChannels(image)*
+                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))]+i;
           }
       }
     }
@@ -1752,14 +1744,14 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   CacheView
     *image_view;
 
+  double
+    *gamma_map;
+
   MagickBooleanType
     status;
 
   MagickOffsetType
     progress;
-
-  Quantum
-    *gamma_map;
 
   register ssize_t
     i;
@@ -1776,8 +1768,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (gamma == 1.0)
     return(MagickTrue);
-  gamma_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*gamma_map));
-  if (gamma_map == (Quantum *) NULL)
+  gamma_map=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*gamma_map));
+  if (gamma_map == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
@@ -1786,8 +1778,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   #pragma omp parallel for
 #endif
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      gamma_map[i]=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
-        MagickRealType) (MaxMap*pow((double) i/MaxMap,1.0/gamma))));
+      gamma_map[i]=(MagickRealType) ScaleMapToQuantum((
+        MagickRealType) (MaxMap*pow((double) i/MaxMap,1.0/gamma)));
   if (image->storage_class == PseudoClass)
     {
       /*
@@ -1800,16 +1792,16 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           image->colormap[i].red=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].red)];
+            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           image->colormap[i].green=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].green)];
+            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))];
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           image->colormap[i].blue=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].blue)];
+            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))];
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           image->colormap[i].alpha=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].alpha)];
+            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))];
       }
     }
   /*
@@ -1849,7 +1841,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
 
         traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
         if ((traits & UpdatePixelTrait) != 0)
-          q[i]=gamma_map[ScaleQuantumToMap(q[i])];
+          q[i]=ClampToQuantum(gamma_map[ScaleQuantumToMap(q[i])]);
       }
       q+=GetPixelChannels(image);
     }
@@ -1870,7 +1862,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       }
   }
   image_view=DestroyCacheView(image_view);
-  gamma_map=(Quantum *) RelinquishMagickMemory(gamma_map);
+  gamma_map=(double *) RelinquishMagickMemory(gamma_map);
   if (image->gamma != 0.0)
     image->gamma*=gamma;
   return(status);
@@ -2156,13 +2148,17 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
         Level colormap.
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=LevelQuantum(image->colormap[i].red);
+        image->colormap[i].red=(double) LevelQuantum(
+          image->colormap[i].red);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=LevelQuantum(image->colormap[i].green);
+        image->colormap[i].green=(double) LevelQuantum(
+          image->colormap[i].green);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=LevelQuantum(image->colormap[i].blue);
+        image->colormap[i].blue=(double) LevelQuantum(
+          image->colormap[i].blue);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=LevelQuantum(image->colormap[i].alpha);
+        image->colormap[i].alpha=(double) LevelQuantum(
+          image->colormap[i].alpha);
       }
   /*
     Level image.
@@ -2309,13 +2305,17 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
         Level colormap.
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=LevelizeValue(image->colormap[i].red);
+        image->colormap[i].red=(double) LevelizeValue(
+          image->colormap[i].red);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=LevelizeValue(image->colormap[i].green);
+        image->colormap[i].green=(double) LevelizeValue(
+          image->colormap[i].green);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=LevelizeValue(image->colormap[i].blue);
+        image->colormap[i].blue=(double) LevelizeValue(
+          image->colormap[i].blue);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=LevelizeValue(image->colormap[i].alpha);
+        image->colormap[i].alpha=(double) LevelizeValue(
+          image->colormap[i].alpha);
     }
   /*
     Level image.
@@ -2860,9 +2860,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      red=GetPixelRed(image,q);
-      green=GetPixelGreen(image,q);
-      blue=GetPixelBlue(image,q);
+      red=(double) GetPixelRed(image,q);
+      green=(double) GetPixelGreen(image,q);
+      blue=(double) GetPixelBlue(image,q);
       switch (colorspace)
       {
         case HSBColorspace:
@@ -3264,17 +3264,17 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].red)]);
+          image->colormap[i].red=sigmoidal_map[ScaleQuantumToMap(
+            ClampToQuantum(image->colormap[i].red))];
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].green)]);
+          image->colormap[i].green=sigmoidal_map[ScaleQuantumToMap(
+            ClampToQuantum(image->colormap[i].green))];
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].blue)]);
+          image->colormap[i].blue=sigmoidal_map[ScaleQuantumToMap(
+            ClampToQuantum(image->colormap[i].blue))];
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].alpha)]);
+          image->colormap[i].alpha=sigmoidal_map[ScaleQuantumToMap(
+            ClampToQuantum(image->colormap[i].alpha))];
       }
     }
   /*
