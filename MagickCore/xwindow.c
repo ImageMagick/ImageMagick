@@ -481,6 +481,9 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   Pixmap
     annotate_pixmap;
 
+  Quantum
+    virtual_pixel[MaxPixelChannels];
+
   unsigned int
     depth,
     height,
@@ -553,8 +556,12 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,
-    &annotate_image->background_color,&image->exception);
+  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,virtual_pixel,
+    &image->exception);
+  annotate_image->background_color.red=virtual_pixel[RedPixelChannel];
+  annotate_image->background_color.green=virtual_pixel[GreenPixelChannel];
+  annotate_image->background_color.blue=virtual_pixel[BluePixelChannel];
+  annotate_image->background_color.alpha=virtual_pixel[AlphaPixelChannel];
   if (annotate_info->stencil == ForegroundStencil)
     annotate_image->matte=MagickTrue;
   exception=(&image->exception);
@@ -2308,6 +2315,9 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   MagickBooleanType
     matte;
 
+  Quantum
+    virtual_pixel[MaxPixelChannels];
+
   Pixmap
     draw_pixmap;
 
@@ -2466,8 +2476,12 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,
-    &draw_image->background_color,&image->exception);
+  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,virtual_pixel,
+    &image->exception);
+  draw_image->background_color.red=virtual_pixel[RedPixelChannel];
+  draw_image->background_color.green=virtual_pixel[GreenPixelChannel];
+  draw_image->background_color.blue=virtual_pixel[BluePixelChannel];
+  draw_image->background_color.alpha=virtual_pixel[AlphaPixelChannel];
   if (SetImageStorageClass(draw_image,DirectClass,&image->exception) == MagickFalse)
     return(MagickFalse);
   draw_image->matte=MagickTrue;

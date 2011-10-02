@@ -1760,9 +1760,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             *composite_image,
             *rotate_image;
 
-          PixelPacket
-            target;
-
           /*
             Composite image.
           */
@@ -1789,8 +1786,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"compose") == 0)
                     {
-                      option=ParseCommandOption(MagickComposeOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickComposeOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedComposeType",
                           value);
@@ -1883,14 +1880,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         &geometry,&exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
-                      (void) GetOneVirtualPixel(msl_info->image[n],geometry.x,
-                        geometry.y,&target,&exception);
                       break;
                     }
                   if (LocaleCompare(keyword,"gravity") == 0)
                     {
-                      option=ParseCommandOption(MagickGravityOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickGravityOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedGravityType",
                           value);
@@ -2046,8 +2041,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"x") == 0)
                     {
                       geometry.x=StringToLong(value);
-                      (void) GetOneVirtualPixel(msl_info->image[n],geometry.x,
-                        geometry.y,&target,&exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2060,8 +2053,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"y") == 0)
                     {
                       geometry.y=StringToLong(value);
-                      (void) GetOneVirtualPixel(msl_info->image[n],geometry.x,
-                        geometry.y,&target,&exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2093,7 +2084,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               */
               geometry.x-=(ssize_t) (rotate_image->columns-
                 composite_image->columns)/2;
-              geometry.y-=(ssize_t) (rotate_image->rows-composite_image->rows)/2;
+              geometry.y-=(ssize_t) (rotate_image->rows-
+                composite_image->rows)/2;
               CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
               rotate_image=DestroyImage(rotate_image);
             }

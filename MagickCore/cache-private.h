@@ -41,9 +41,9 @@ typedef void
 
 typedef MagickBooleanType
   (*GetOneAuthenticPixelFromHandler)(Image *,const ssize_t,const ssize_t,
-    PixelPacket *,ExceptionInfo *),
+    Quantum *,ExceptionInfo *),
   (*GetOneVirtualPixelFromHandler)(const Image *,const VirtualPixelMethod,
-    const ssize_t,const ssize_t,PixelPacket *,ExceptionInfo *),
+    const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   (*SyncAuthenticPixelsHandler)(Image *,ExceptionInfo *);
 
 typedef const Quantum

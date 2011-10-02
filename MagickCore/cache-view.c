@@ -642,7 +642,7 @@ MagickExport const Quantum *GetCacheViewVirtualPixels(
 %
 %      MagickBooleaNType GetOneCacheViewAuthenticPixel(
 %        const CacheView *cache_view,const ssize_t x,const ssize_t y,
-%        PixelPacket *pixel,ExceptionInfo *exception)
+%        Quantum *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -656,8 +656,8 @@ MagickExport const Quantum *GetCacheViewVirtualPixels(
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,Quantum *pixel,
+  ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
@@ -665,17 +665,31 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
   Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  *pixel=cache_view->image->background_color;
   assert(id < (int) cache_view->number_threads);
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetAuthenticPixelCacheNexus(cache_view->image,x,y,1,1,
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(cache_view->image,p,pixel);
-  if (GetPixelCacheColorspace(cache_view->image->cache) == CMYKColorspace)
-    pixel->black=GetPixelBlack(cache_view->image,p);
+    {
+      pixel[RedPixelChannel]=cache_view->image->background_color.red;
+      pixel[GreenPixelChannel]=cache_view->image->background_color.green;
+      pixel[BluePixelChannel]=cache_view->image->background_color.blue;
+      pixel[AlphaPixelChannel]=cache_view->image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(cache_view->image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 
@@ -698,7 +712,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
 %
 %      MagickBooleanType GetOneCacheViewVirtualPixel(
 %        const CacheView *cache_view,const ssize_t x,const ssize_t y,
-%        PixelPacket *pixel,ExceptionInfo *exception)
+%        Quantum *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -712,8 +726,8 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
 %
 */
 MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
-  const CacheView *cache_view,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  const CacheView *cache_view,const ssize_t x,const ssize_t y,Quantum *pixel,
+  ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
@@ -721,18 +735,32 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
   const Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  *pixel=cache_view->image->background_color;
   assert(id < (int) cache_view->number_threads);
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
     exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(cache_view->image,p,pixel);
-  if (GetPixelCacheColorspace(cache_view->image->cache) == CMYKColorspace)
-    pixel->black=GetPixelBlack(cache_view->image,p);
+    {
+      pixel[RedPixelChannel]=cache_view->image->background_color.red;
+      pixel[GreenPixelChannel]=cache_view->image->background_color.green;
+      pixel[BluePixelChannel]=cache_view->image->background_color.blue;
+      pixel[AlphaPixelChannel]=cache_view->image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(cache_view->image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 
@@ -757,7 +785,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
 %      MagickBooleanType GetOneCacheViewVirtualMethodPixel(
 %        const CacheView *cache_view,
 %        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -774,7 +802,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
 */
 MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
   const CacheView *cache_view,const VirtualPixelMethod virtual_pixel_method,
-  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   const int
     id = GetOpenMPThreadId();
@@ -782,17 +810,31 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
   const Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
-  *pixel=cache_view->image->background_color;
   assert(id < (int) cache_view->number_threads);
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetVirtualPixelsFromNexus(cache_view->image,virtual_pixel_method,x,y,1,1,
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(cache_view->image,p,pixel);
-  if (GetPixelCacheColorspace(cache_view->image->cache) == CMYKColorspace)
-    pixel->black=GetPixelBlack(cache_view->image,p);
+    {
+      pixel[RedPixelChannel]=cache_view->image->background_color.red;
+      pixel[GreenPixelChannel]=cache_view->image->background_color.green;
+      pixel[BluePixelChannel]=cache_view->image->background_color.blue;
+      pixel[AlphaPixelChannel]=cache_view->image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(cache_view->image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 

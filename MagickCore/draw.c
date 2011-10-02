@@ -3916,7 +3916,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
           if ((x == (ssize_t) ceil(primitive_info->point.x-0.5)) &&
               (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             {
-              (void) GetStrokeColor(draw_info,x,y,&pixel);
+              (void) GetStrokeColor(draw_info,x,y,&pixel,exception);
               SetPixelPacket(image,&pixel,q);
             }
           q+=GetPixelChannels(image);
@@ -3980,11 +3980,11 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
           fill_opacity=fill_opacity > 0.25 ? 1.0 : 0.0;
           stroke_opacity=stroke_opacity > 0.25 ? 1.0 : 0.0;
         }
-      (void) GetFillColor(draw_info,x,y,&fill_color);
+      (void) GetFillColor(draw_info,x,y,&fill_color,exception);
       fill_opacity=fill_opacity*fill_color.alpha;
       CompositePixelOver(image,&fill_color,fill_opacity,q,(MagickRealType)
         GetPixelAlpha(image,q),q);
-      (void) GetStrokeColor(draw_info,x,y,&stroke_color);
+      (void) GetStrokeColor(draw_info,x,y,&stroke_color,exception);
       stroke_opacity=stroke_opacity*stroke_color.alpha;
       CompositePixelOver(image,&stroke_color,stroke_opacity,q,(MagickRealType)
         GetPixelAlpha(image,q),q);
@@ -4180,7 +4180,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
       if (q == (Quantum *) NULL)
         break;
-      (void) GetFillColor(draw_info,x,y,&fill_color);
+      (void) GetFillColor(draw_info,x,y,&fill_color,exception);
       CompositePixelOver(image,&fill_color,(MagickRealType) fill_color.alpha,q,
         (MagickRealType) GetPixelAlpha(image,q),q);
       (void) SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4202,7 +4202,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
           if (q == (Quantum *) NULL)
             break;
-          (void) GetFillColor(draw_info,x,y,&pixel);
+          (void) GetFillColor(draw_info,x,y,&pixel,exception);
           SetPixelPacket(image,&pixel,q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
@@ -4216,7 +4216,15 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             pixel,
             target;
 
-          (void) GetOneCacheViewVirtualPixel(image_view,x,y,&target,exception);
+          Quantum
+            virtual_pixel[MaxPixelChannels];
+
+          (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
+            exception);
+          target.red=virtual_pixel[RedPixelChannel];
+          target.green=virtual_pixel[GreenPixelChannel];
+          target.blue=virtual_pixel[BluePixelChannel];
+          target.alpha=virtual_pixel[AlphaPixelChannel];
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
@@ -4234,7 +4242,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   q+=GetPixelChannels(image);
                   continue;
                 }
-              (void) GetFillColor(draw_info,x,y,&pixel);
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelPacket(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
@@ -4284,7 +4292,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              (void) GetFillColor(draw_info,x,y,&pixel);
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelPacket(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
@@ -4315,7 +4323,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
           if (q == (Quantum *) NULL)
             break;
-          (void) GetFillColor(draw_info,x,y,&pixel);
+          (void) GetFillColor(draw_info,x,y,&pixel,exception);
           SetPixelAlpha(image,pixel.alpha,q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
@@ -4329,7 +4337,15 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             pixel,
             target;
 
-          (void) GetOneCacheViewVirtualPixel(image_view,x,y,&target,exception);
+          Quantum
+            virtual_pixel[MaxPixelChannels];
+
+          (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
+            exception);
+          target.red=virtual_pixel[RedPixelChannel];
+          target.green=virtual_pixel[GreenPixelChannel];
+          target.blue=virtual_pixel[BluePixelChannel];
+          target.alpha=virtual_pixel[AlphaPixelChannel];
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
@@ -4350,7 +4366,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   q+=GetPixelChannels(image);
                   continue;
                 }
-              (void) GetFillColor(draw_info,x,y,&pixel);
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelAlpha(image,pixel.alpha,q);
               q+=GetPixelChannels(image);
             }
@@ -4405,7 +4421,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              (void) GetFillColor(draw_info,x,y,&pixel);
+              (void) GetFillColor(draw_info,x,y,&pixel,exception);
               SetPixelAlpha(image,pixel.alpha,q);
               q+=GetPixelChannels(image);
             }

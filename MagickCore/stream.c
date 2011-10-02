@@ -425,7 +425,7 @@ static Quantum *GetAuthenticPixelsFromStream(const Image *image)
 %  The format of the GetOneAuthenticPixelFromStream() method is:
 %
 %      MagickBooleanType GetOneAuthenticPixelFromStream(const Image image,
-%        const ssize_t x,const ssize_t y,PixelPacket *pixel,
+%        const ssize_t x,const ssize_t y,Quantum *pixel,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -440,18 +440,34 @@ static Quantum *GetAuthenticPixelsFromStream(const Image *image)
 %
 */
 static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
-  const ssize_t x,const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 {
   register Quantum
     *q;
 
+  register ssize_t
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   q=GetAuthenticPixelsStream(image,x,y,1,1,exception);
   if (q != (Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,q,pixel);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=q[i];
+  }
   return(MagickTrue);
 }
 
@@ -473,7 +489,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
 %
 %      MagickBooleanType GetOneVirtualPixelFromStream(const Image image,
 %        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-%        const ssize_t y,PixelPacket *pixel,ExceptionInfo *exception)
+%        const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -490,20 +506,34 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
 */
 static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
-  PixelPacket *pixel,ExceptionInfo *exception)
+  Quantum *pixel,ExceptionInfo *exception)
 {
   const Quantum
     *p;
 
+  register ssize_t
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  *pixel=image->background_color;
+  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetVirtualPixelStream(image,virtual_pixel_method,x,y,1,1,exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelPacketPixel(image,p,pixel);
-  if (image->colorspace == CMYKColorspace)
-    pixel->black=GetPixelBlack(image,p);
+    {
+      pixel[RedPixelChannel]=image->background_color.red;
+      pixel[GreenPixelChannel]=image->background_color.green;
+      pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[AlphaPixelChannel]=image->background_color.alpha;
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    pixel[channel]=p[i];
+  }
   return(MagickTrue);
 }
 
