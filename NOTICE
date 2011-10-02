@@ -1,3 +1,9 @@
+This copyright is limited to the embedded sRGB v4 profile:
+
+The sRGB profile is provided "AS IS" WITH NO EXPRESS OR IMPLIED WARRANTY, permission to use, copy and distribute this file for any purpose is hereby granted without fee, provided that the file is not changed including the ICC copyright notice tag, and that the name of ICC shall not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission. ICC makes no representations about the suitability of this software for any purpose.
+
+* * *
+
 This copyright is limited to magick/utility.c/Base64Decode() and Base64Encode(), incorporated from the OpenSSH package:
 
   Copyright (c) 2000 Markus Friedl.  All rights reserved.
@@ -56,4 +62,3 @@ This copyright is limited to the Magick++ API in the Magick++ folder:
   This copyright notice shall be included in all copies or substantial portions of Magick++. The copyright to Magick++ is retained by its author and shall not be subsumed or replaced by any other copyright.
                                                                             
   The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall Bob Friesenhahn be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with Magick++ or the use or other dealings in Magick++.
-  
