@@ -1205,68 +1205,6 @@ WandExport void PixelGetMagickColor(const PixelWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P i x e l G e t O p a c i t y                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelGetOpacity() returns the normalized opacity color of the pixel wand.
-%
-%  The format of the PixelGetOpacity method is:
-%
-%      double PixelGetOpacity(const PixelWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the pixel wand.
-%
-*/
-WandExport double PixelGetOpacity(const PixelWand *wand)
-{
-  assert(wand != (const PixelWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  return((double) QuantumScale*wand->pixel.alpha);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P i x e l G e t O p a c i t y Q u a n t u m                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelGetOpacityQuantum() returns the opacity color of the pixel wand.
-%
-%  The format of the PixelGetOpacityQuantum method is:
-%
-%      Quantum PixelGetOpacityQuantum(const PixelWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the pixel wand.
-%
-*/
-WandExport Quantum PixelGetOpacityQuantum(const PixelWand *wand)
-{
-  assert(wand != (const PixelWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  return(ClampToQuantum(wand->pixel.alpha));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   P i x e l G e t P i x e l                                                 %
 %                                                                             %
 %                                                                             %
@@ -1571,22 +1509,22 @@ WandExport void PixelSetAlpha(PixelWand *wand,const double alpha)
 %  The format of the PixelSetAlphaQuantum method is:
 %
 %      void PixelSetAlphaQuantum(PixelWand *wand,
-%        const Quantum opacity)
+%        const Quantum alpha)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the pixel wand.
 %
-%    o opacity: the opacity color.
+%    o alpha: the alpha color.
 %
 */
-WandExport void PixelSetAlphaQuantum(PixelWand *wand,const Quantum opacity)
+WandExport void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
 {
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.alpha=(MagickRealType) opacity;
+  wand->pixel.alpha=(MagickRealType) alpha;
 }
 
 /*
@@ -2178,75 +2116,6 @@ WandExport void PixelSetPixelInfo(PixelWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(color != (const PixelInfo *) NULL);
   wand->pixel=(*color);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P i x e l S e t O p a c i t y                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelSetOpacity() sets the normalized opacity color of the pixel wand.
-%
-%  The format of the PixelSetOpacity method is:
-%
-%      void PixelSetOpacity(PixelWand *wand,const double opacity)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the pixel wand.
-%
-%    o opacity: the opacity color.
-%
-*/
-WandExport void PixelSetOpacity(PixelWand *wand,const double opacity)
-{
-  assert(wand != (const PixelWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.matte=MagickTrue;
-  wand->pixel.alpha=(MagickRealType) ClampToQuantum((MagickRealType)
-    QuantumRange*opacity);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P i x e l S e t O p a c i t y Q u a n t u m                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelSetOpacityQuantum() sets the opacity color of the pixel wand.
-%
-%  The format of the PixelSetOpacityQuantum method is:
-%
-%      void PixelSetOpacityQuantum(PixelWand *wand,
-%        const Quantum opacity)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the pixel wand.
-%
-%    o opacity: the opacity color.
-%
-*/
-WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
-{
-  assert(wand != (const PixelWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.alpha=(MagickRealType) opacity;
 }
 
 /*

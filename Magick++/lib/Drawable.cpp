@@ -609,17 +609,17 @@ Magick::DrawableBase* Magick::DrawableFillRule::copy() const
 }
 
 // Specify drawing fill alpha
-Magick::DrawableFillOpacity::~DrawableFillOpacity ( void )
+Magick::DrawableFillAlpha::~DrawableFillAlpha ( void )
 {
 }
-void Magick::DrawableFillOpacity::operator()
+void Magick::DrawableFillAlpha::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  DrawSetFillOpacity( context_, _alpha );
+  DrawSetFillAlpha( context_, _alpha );
 }
-Magick::DrawableBase* Magick::DrawableFillOpacity::copy() const
+Magick::DrawableBase* Magick::DrawableFillAlpha::copy() const
 {
-  return new DrawableFillOpacity(*this);
+  return new DrawableFillAlpha(*this);
 }
 
 // Specify text font
@@ -1222,17 +1222,17 @@ Magick::DrawableBase* Magick::DrawableStrokeColor::copy() const
 }
 
 // Stroke alpha
-Magick::DrawableStrokeOpacity::~DrawableStrokeOpacity ( void )
+Magick::DrawableStrokeAlpha::~DrawableStrokeAlpha ( void )
 {
 }
-void Magick::DrawableStrokeOpacity::operator()
+void Magick::DrawableStrokeAlpha::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  DrawSetStrokeOpacity( context_, _alpha );
+  DrawSetStrokeAlpha( context_, _alpha );
 }
-Magick::DrawableBase* Magick::DrawableStrokeOpacity::copy() const
+Magick::DrawableBase* Magick::DrawableStrokeAlpha::copy() const
 {
-  return new DrawableStrokeOpacity(*this);
+  return new DrawableStrokeAlpha(*this);
 }
 
 // Stroke width

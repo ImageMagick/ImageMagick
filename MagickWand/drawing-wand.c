@@ -1454,19 +1454,19 @@ WandExport void DrawGetFillColor(const DrawingWand *wand,PixelWand *fill_color)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawGetFillOpacity() returns the opacity used when drawing using the fill
+%  DrawGetFillAlpha() returns the alpha used when drawing using the fill
 %  color or fill texture.  Fully opaque is 1.0.
 %
-%  The format of the DrawGetFillOpacity method is:
+%  The format of the DrawGetFillAlpha method is:
 %
-%      double DrawGetFillOpacity(const DrawingWand *wand)
+%      double DrawGetFillAlpha(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
 */
-WandExport double DrawGetFillOpacity(const DrawingWand *wand)
+WandExport double DrawGetFillAlpha(const DrawingWand *wand)
 {
   double
     alpha;
@@ -1799,19 +1799,19 @@ WandExport GravityType DrawGetGravity(const DrawingWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawGetOpacity() returns the opacity used when drawing with the fill
+%  DrawGetAlpha() returns the alpha used when drawing with the fill
 %  or stroke color or texture.  Fully opaque is 1.0.
 %
-%  The format of the DrawGetOpacity method is:
+%  The format of the DrawGetAlpha method is:
 %
-%      double DrawGetOpacity(const DrawingWand *wand)
+%      double DrawGetAlpha(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
 */
-WandExport double DrawGetOpacity(const DrawingWand *wand)
+WandExport double DrawGetAlpha(const DrawingWand *wand)
 {
   double
     alpha;
@@ -2108,18 +2108,18 @@ WandExport size_t DrawGetStrokeMiterLimit(const DrawingWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawGetStrokeOpacity() returns the opacity of stroked object outlines.
+%  DrawGetStrokeAlpha() returns the alpha of stroked object outlines.
 %
-%  The format of the DrawGetStrokeOpacity method is:
+%  The format of the DrawGetStrokeAlpha method is:
 %
-%      double DrawGetStrokeOpacity(const DrawingWand *wand)
+%      double DrawGetStrokeAlpha(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
 */
-WandExport double DrawGetStrokeOpacity(const DrawingWand *wand)
+WandExport double DrawGetStrokeAlpha(const DrawingWand *wand)
 {
   double
     alpha;
@@ -2470,7 +2470,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);
     }
-  child=AddChildToXMLTree(xml_info,"fill-opacity",0);
+  child=AddChildToXMLTree(xml_info,"fill-alpha",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%g",
@@ -2591,7 +2591,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
         CurrentContext->miterlimit);
       (void) SetXMLTreeContent(child,value);
     }
-  child=AddChildToXMLTree(xml_info,"stroke-opacity",0);
+  child=AddChildToXMLTree(xml_info,"stroke-alpha",0);
   if (child != (XMLTreeInfo *) NULL)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%g",
@@ -2686,7 +2686,7 @@ WandExport void DrawGetTextUnderColor(const DrawingWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawLine() draws a line on the image using the current stroke color,
-%  stroke opacity, and stroke width.
+%  stroke alpha, and stroke width.
 %
 %  The format of the DrawLine method is:
 %
@@ -2727,9 +2727,9 @@ WandExport void DrawLine(DrawingWand *wand,const double sx,const double sy,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawMatte() paints on the image's opacity channel in order to set effected
+%  DrawMatte() paints on the image's alpha channel in order to set effected
 %  pixels to transparent.
-%  to influence the opacity of pixels. The available paint
+%  to influence the alpha of pixels. The available paint
 %  methods are:
 %
 %    PointMethod: Select the target pixel
@@ -4712,35 +4712,35 @@ WandExport void DrawSetFillColor(DrawingWand *wand,const PixelWand *fill_wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetFillOpacity() sets the opacity to use when drawing using the fill
+%  DrawSetFillAlpha() sets the alpha to use when drawing using the fill
 %  color or fill texture.  Fully opaque is 1.0.
 %
-%  The format of the DrawSetFillOpacity method is:
+%  The format of the DrawSetFillAlpha method is:
 %
-%      void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
+%      void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
-%    o fill_opacity: fill opacity
+%    o fill_alpha: fill alpha
 %
 */
-WandExport void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
+WandExport void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
 {
   Quantum
-    opacity;
+    alpha;
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  opacity=ClampToQuantum((double) QuantumRange*(1.0-fill_opacity));
+  alpha=ClampToQuantum((double) QuantumRange*(1.0-fill_alpha));
   if ((wand->filter_off != MagickFalse) ||
-      (CurrentContext->fill.alpha != opacity))
+      (CurrentContext->fill.alpha != alpha))
     {
-      CurrentContext->fill.alpha=opacity;
-      (void) MvgPrintf(wand,"fill-opacity %g\n",fill_opacity);
+      CurrentContext->fill.alpha=alpha;
+      (void) MvgPrintf(wand,"fill-alpha %g\n",fill_alpha);
     }
 }
 
@@ -4798,35 +4798,35 @@ WandExport MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetOpacity() sets the opacity to use when drawing using the fill or
+%  DrawSetAlpha() sets the alpha to use when drawing using the fill or
 %  stroke color or texture.  Fully opaque is 1.0.
 %
-%  The format of the DrawSetOpacity method is:
+%  The format of the DrawSetAlpha method is:
 %
-%      void DrawSetOpacity(DrawingWand *wand,const double opacity)
+%      void DrawSetAlpha(DrawingWand *wand,const double alpha)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
-%    o opacity: fill opacity
+%    o alpha: fill alpha
 %
 */
-WandExport void DrawSetOpacity(DrawingWand *wand,const double opacity)
+WandExport void DrawSetAlpha(DrawingWand *wand,const double alpha)
 {
   Quantum
-    quantum_opacity;
+    quantum_alpha;
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  quantum_opacity=ClampToQuantum((double) QuantumRange*(1.0-opacity));
+  quantum_alpha=ClampToQuantum((double) QuantumRange*(1.0-alpha));
   if ((wand->filter_off != MagickFalse) ||
-      (CurrentContext->alpha != quantum_opacity))
+      (CurrentContext->alpha != quantum_alpha))
     {
-      CurrentContext->alpha=(Quantum) opacity;
-      (void) MvgPrintf(wand,"opacity %g\n",opacity);
+      CurrentContext->alpha=(Quantum) alpha;
+      (void) MvgPrintf(wand,"alpha %g\n",alpha);
     }
 }
 
@@ -5678,36 +5678,36 @@ WandExport void DrawSetStrokeMiterLimit(DrawingWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetStrokeOpacity() specifies the opacity of stroked object outlines.
+%  DrawSetStrokeAlpha() specifies the alpha of stroked object outlines.
 %
-%  The format of the DrawSetStrokeOpacity method is:
+%  The format of the DrawSetStrokeAlpha method is:
 %
-%      void DrawSetStrokeOpacity(DrawingWand *wand,
-%        const double stroke_opacity)
+%      void DrawSetStrokeAlpha(DrawingWand *wand,
+%        const double stroke_alpha)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the drawing wand.
 %
-%    o stroke_opacity: stroke opacity.  The value 1.0 is opaque.
+%    o stroke_alpha: stroke alpha.  The value 1.0 is opaque.
 %
 */
-WandExport void DrawSetStrokeOpacity(DrawingWand *wand,
-  const double stroke_opacity)
+WandExport void DrawSetStrokeAlpha(DrawingWand *wand,
+  const double stroke_alpha)
 {
   Quantum
-    opacity;
+    alpha;
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  opacity=ClampToQuantum((double) QuantumRange*(1.0-stroke_opacity));
+  alpha=ClampToQuantum((double) QuantumRange*(1.0-stroke_alpha));
   if ((wand->filter_off != MagickFalse) ||
-      (CurrentContext->stroke.alpha != opacity))
+      (CurrentContext->stroke.alpha != alpha))
     {
-      CurrentContext->stroke.alpha=opacity;
-      (void) MvgPrintf(wand,"stroke-opacity %g\n",stroke_opacity);
+      CurrentContext->stroke.alpha=alpha;
+      (void) MvgPrintf(wand,"stroke-alpha %g\n",stroke_alpha);
     }
 }
 
@@ -6184,7 +6184,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
         (void) QueryColorCompliance(value,AllCompliance,&CurrentContext->fill,
           wand->exception);
     }
-  child=GetXMLTreeChild(xml_info,"fill-opacity");
+  child=GetXMLTreeChild(xml_info,"fill-alpha");
   if (child != (XMLTreeInfo *) NULL)
     {
       value=GetXMLTreeContent(child);
@@ -6348,7 +6348,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
       if (value != (const char *) NULL)
         CurrentContext->miterlimit=StringToUnsignedLong(value);
     }
-  child=GetXMLTreeChild(xml_info,"stroke-opacity");
+  child=GetXMLTreeChild(xml_info,"stroke-alpha");
   if (child != (XMLTreeInfo *) NULL)
     {
       value=GetXMLTreeContent(child);

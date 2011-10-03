@@ -1950,14 +1950,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       opacity=StringToLong(value);
                       if (compose != DissolveCompositeOp)
                         {
-                          (void) SetImageOpacity(composite_image,(Quantum)
+                          (void) SetImageAlpha(composite_image,(Quantum)
                             opacity);
                           break;
                         }
                       (void) SetImageArtifact(msl_info->image[n],
                                             "compose:args",value);
                       if (composite_image->matte != MagickTrue)
-                        (void) SetImageOpacity(composite_image,OpaqueAlpha);
+                        (void) SetImageAlpha(composite_image,OpaqueAlpha);
                       composite_view=AcquireCacheView(composite_image);
                       for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
@@ -6101,7 +6101,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     opac = (int)(QuantumRange * ((float)opac/100));
                   } else
                     opac = StringToLong( value );
-                  (void) SetImageOpacity( msl_info->image[n], (Quantum) opac );
+                  (void) SetImageAlpha( msl_info->image[n], (Quantum) opac );
                   break;
               }
               (void) SetMSLAttributes(msl_info,keyword,value);

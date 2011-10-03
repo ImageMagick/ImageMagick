@@ -8239,7 +8239,7 @@ Mogrify(ref,...)
           if (attribute_flag[6] != 0) /* opacity  */
             {
               if (compose != DissolveCompositeOp)
-                (void) SetImageOpacity(composite_image,(Quantum)
+                (void) SetImageAlpha(composite_image,(Quantum)
                   SiPrefixToDouble(argument_list[6].string_reference,
                   QuantumRange));
               else
@@ -8271,7 +8271,7 @@ Mogrify(ref,...)
                   opacity=(Quantum) SiPrefixToDouble(
                     argument_list[6].string_reference,QuantumRange);
                   if (composite_image->matte != MagickTrue)
-                    (void) SetImageOpacity(composite_image,OpaqueAlpha);
+                    (void) SetImageAlpha(composite_image,OpaqueAlpha);
                   composite_view=AcquireCacheView(composite_image);
                   for (y=0; y < (ssize_t) composite_image->rows ; y++)
                   {
@@ -8753,7 +8753,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.y=argument_list[2].integer_reference;
           if (image->matte == MagickFalse)
-            (void) SetImageOpacity(image,OpaqueAlpha);
+            (void) SetImageAlpha(image,OpaqueAlpha);
           (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,&target,
             exception);
           if (attribute_flag[4] != 0)

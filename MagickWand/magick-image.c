@@ -822,7 +822,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
   (void) FormatLocaleString(thresholds,MaxTextExtent,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
-    PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
+    PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
   status=BlackThresholdImage(wand->images,thresholds,&wand->images->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
@@ -1434,7 +1434,7 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
 %  The format of the MagickColorizeImage method is:
 %
 %      MagickBooleanType MagickColorizeImage(MagickWand *wand,
-%        const PixelWand *colorize,const PixelWand *opacity)
+%        const PixelWand *colorize,const PixelWand *alpha)
 %
 %  A description of each parameter follows:
 %
@@ -1442,11 +1442,11 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
 %
 %    o colorize: the colorize pixel wand.
 %
-%    o opacity: the opacity pixel wand.
+%    o alpha: the alpha pixel wand.
 %
 */
 WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
-  const PixelWand *colorize,const PixelWand *opacity)
+  const PixelWand *colorize,const PixelWand *alpha)
 {
   char
     percent_opaque[MaxTextExtent];
@@ -1465,10 +1465,10 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(percent_opaque,MaxTextExtent,
     "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-    PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetOpacityQuantum(opacity)));
+    PixelGetRedQuantum(alpha)),(double) (100.0*QuantumScale*
+    PixelGetGreenQuantum(alpha)),(double) (100.0*QuantumScale*
+    PixelGetBlueQuantum(alpha)),(double) (100.0*QuantumScale*
+    PixelGetAlphaQuantum(alpha)));
   PixelGetQuantumPacket(colorize,&target);
   colorize_image=ColorizeImage(wand->images,percent_opaque,target,
     wand->exception);
@@ -2049,7 +2049,7 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan,
+%      A = alpha (0 is transparent), O = alpha (0 is opaque), C = cyan,
 %      Y = yellow, M = magenta, K = black, I = intensity (for grayscale),
 %      P = pad.
 %
@@ -2822,7 +2822,7 @@ WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan,
+%      A = alpha (0 is transparent), O = alpha (0 is opaque), C = cyan,
 %      Y = yellow, M = magenta, K = black, I = intensity (for grayscale),
 %      P = pad.
 %
@@ -5862,7 +5862,7 @@ WandExport MagickBooleanType MagickImplodeImage(MagickWand *wand,
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha (0 is transparent), O = opacity (0 is opaque), C = cyan,
+%      A = alpha (0 is transparent), O = alpha (0 is opaque), C = cyan,
 %      Y = yellow, M = magenta, K = black, I = intensity (for grayscale),
 %      P = pad.
 %
@@ -9549,7 +9549,7 @@ WandExport MagickBooleanType MagickSetImageMatte(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if ((wand->images->matte == MagickFalse) && (matte != MagickFalse))
-    (void) SetImageOpacity(wand->images,OpaqueAlpha);
+    (void) SetImageAlpha(wand->images,OpaqueAlpha);
   wand->images->matte=matte;
   return(MagickTrue);
 }
@@ -9603,11 +9603,11 @@ WandExport MagickBooleanType MagickSetImageMatteColor(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageOpacity() sets the image to the specified opacity level.
+%  MagickSetImageAlpha() sets the image to the specified alpha level.
 %
-%  The format of the MagickSetImageOpacity method is:
+%  The format of the MagickSetImageAlpha method is:
 %
-%      MagickBooleanType MagickSetImageOpacity(MagickWand *wand,
+%      MagickBooleanType MagickSetImageAlpha(MagickWand *wand,
 %        const double alpha)
 %
 %  A description of each parameter follows:
@@ -9618,7 +9618,7 @@ WandExport MagickBooleanType MagickSetImageMatteColor(MagickWand *wand,
 %      transparent.
 %
 */
-WandExport MagickBooleanType MagickSetImageOpacity(MagickWand *wand,
+WandExport MagickBooleanType MagickSetImageAlpha(MagickWand *wand,
   const double alpha)
 {
   MagickBooleanType
@@ -9630,7 +9630,7 @@ WandExport MagickBooleanType MagickSetImageOpacity(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageOpacity(wand->images,ClampToQuantum(QuantumRange*alpha));
+  status=SetImageAlpha(wand->images,ClampToQuantum(QuantumRange*alpha));
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   return(status);
@@ -10203,13 +10203,13 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 %  The format of the MagickShadowImage method is:
 %
 %      MagickBooleanType MagickShadowImage(MagickWand *wand,
-%        const double opacity,const double sigma,const ssize_t x,const ssize_t y)
+%        const double alpha,const double sigma,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o opacity: percentage transparency.
+%    o alpha: percentage transparency.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
@@ -10219,7 +10219,7 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
-  const double opacity,const double sigma,const ssize_t x,const ssize_t y)
+  const double alpha,const double sigma,const ssize_t x,const ssize_t y)
 {
   Image
     *shadow_image;
@@ -10230,7 +10230,7 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  shadow_image=ShadowImage(wand->images,opacity,sigma,x,y,wand->exception);
+  shadow_image=ShadowImage(wand->images,alpha,sigma,x,y,wand->exception);
   if (shadow_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,shadow_image);
@@ -11263,7 +11263,7 @@ WandExport MagickBooleanType MagickThumbnailImage(MagickWand *wand,
 %  The format of the MagickTintImage method is:
 %
 %      MagickBooleanType MagickTintImage(MagickWand *wand,
-%        const PixelWand *tint,const PixelWand *opacity)
+%        const PixelWand *tint,const PixelWand *alpha)
 %
 %  A description of each parameter follows:
 %
@@ -11271,11 +11271,11 @@ WandExport MagickBooleanType MagickThumbnailImage(MagickWand *wand,
 %
 %    o tint: the tint pixel wand.
 %
-%    o opacity: the opacity pixel wand.
+%    o alpha: the alpha pixel wand.
 %
 */
 WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
-  const PixelWand *tint,const PixelWand *opacity)
+  const PixelWand *tint,const PixelWand *alpha)
 {
   char
     percent_opaque[MaxTextExtent];
@@ -11295,18 +11295,18 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   if (wand->images->colorspace != CMYKColorspace)
     (void) FormatLocaleString(percent_opaque,MaxTextExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetOpacityQuantum(opacity)));
+      PixelGetRedQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetGreenQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetBlueQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetAlphaQuantum(alpha)));
   else
     (void) FormatLocaleString(percent_opaque,MaxTextExtent,
       "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetCyanQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetMagentaQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetYellowQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetBlackQuantum(opacity)),(double) (100.0*QuantumScale*
-      PixelGetOpacityQuantum(opacity)));
+      PixelGetCyanQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetMagentaQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetYellowQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetBlackQuantum(alpha)),(double) (100.0*QuantumScale*
+      PixelGetAlphaQuantum(alpha)));
   target=PixelGetPixel(tint);
   tint_image=TintImage(wand->images,percent_opaque,&target,wand->exception);
   if (tint_image == (Image *) NULL)
@@ -11440,7 +11440,7 @@ WandExport MagickBooleanType MagickTransformImageColorspace(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o target: Change this target color to specified opacity value within
+%    o target: Change this target color to specified alpha value within
 %      the image.
 %
 %    o alpha: the level of transparency: 1.0 is fully opaque and 0.0 is fully
@@ -11854,7 +11854,7 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
   (void) FormatLocaleString(thresholds,MaxTextExtent,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
-    PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
+    PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
   status=WhiteThresholdImage(wand->images,thresholds,&wand->images->exception);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);

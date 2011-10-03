@@ -38,7 +38,7 @@ extern WandExport double
   PixelGetFuzz(const PixelWand *),
   PixelGetGreen(const PixelWand *),
   PixelGetMagenta(const PixelWand *),
-  PixelGetOpacity(const PixelWand *),
+  PixelGetAlpha(const PixelWand *),
   PixelGetRed(const PixelWand *),
   PixelGetYellow(const PixelWand *);
 
@@ -70,7 +70,7 @@ extern WandExport Quantum
   PixelGetGreenQuantum(const PixelWand *),
   PixelGetIndex(const PixelWand *),
   PixelGetMagentaQuantum(const PixelWand *),
-  PixelGetOpacityQuantum(const PixelWand *),
+  PixelGetAlphaQuantum(const PixelWand *),
   PixelGetRedQuantum(const PixelWand *),
   PixelGetYellowQuantum(const PixelWand *);
 
@@ -101,8 +101,8 @@ extern WandExport void
   PixelSetMagenta(PixelWand *,const double),
   PixelSetMagentaQuantum(PixelWand *,const Quantum),
   PixelSetPixelInfo(PixelWand *,const PixelInfo *),
-  PixelSetOpacity(PixelWand *,const double),
-  PixelSetOpacityQuantum(PixelWand *,const Quantum),
+  PixelSetAlpha(PixelWand *,const double),
+  PixelSetAlphaQuantum(PixelWand *,const Quantum),
   PixelSetQuantumPacket(PixelWand *,const PixelPacket *),
   PixelSetQuantumPixel(const Image *,const Quantum *,PixelWand *),
   PixelSetRed(PixelWand *,const double),

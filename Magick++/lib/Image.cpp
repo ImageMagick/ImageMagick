@@ -996,7 +996,7 @@ void Magick::Image::floodFillColor( const Geometry &point_,
 
 // Floodfill pixels matching color (within fuzz factor) of target
 // pixel(x,y) with replacement alpha value using method.
-void Magick::Image::floodFillOpacity( const ssize_t x_,
+void Magick::Image::floodFillAlpha( const ssize_t x_,
                                       const ssize_t y_,
                                       const unsigned int alpha_,
                                       const PaintMethod method_ )
@@ -1458,7 +1458,7 @@ void Magick::Image::oilPaint ( const double radius_, const double sigma_ )
 void Magick::Image::alpha ( const unsigned int alpha_ )
 {
   modifyImage();
-  SetImageOpacity( image(), alpha_ );
+  SetImageAlpha( image(), alpha_ );
 }
 
 // Change the color of an opaque pixel to the pen color.
@@ -3306,7 +3306,7 @@ void Magick::Image::matte ( const bool matteFlag_ )
   // desired, then set the matte channel to opaque.
   if ((matteFlag_ && !constImage()->matte) ||
       (constImage()->matte && !matteFlag_))
-    SetImageOpacity(image(),OpaqueAlpha);
+    SetImageAlpha(image(),OpaqueAlpha);
 
   image()->matte = (MagickBooleanType) matteFlag_;
 }

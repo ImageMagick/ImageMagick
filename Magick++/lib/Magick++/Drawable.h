@@ -897,15 +897,15 @@ private:
 };
 
 // Specify drawing fill alpha
-class MagickPPExport DrawableFillOpacity : public DrawableBase
+class MagickPPExport DrawableFillAlpha : public DrawableBase
 {
 public:
-  DrawableFillOpacity ( double alpha_ )
+  DrawableFillAlpha ( double alpha_ )
     : _alpha(alpha_)
     {
     }
 
-  /*virtual*/ ~DrawableFillOpacity ( void );
+  /*virtual*/ ~DrawableFillAlpha ( void );
 
   // Operator to invoke equivalent draw API call
   /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;
@@ -1808,15 +1808,15 @@ private:
 };
 
 // Stroke alpha
-class MagickPPExport DrawableStrokeOpacity : public DrawableBase
+class MagickPPExport DrawableStrokeAlpha : public DrawableBase
 {
 public:
-  DrawableStrokeOpacity ( double alpha_ )
+  DrawableStrokeAlpha ( double alpha_ )
     : _alpha(alpha_)
     {
     }
 
-  /*virtual*/ ~DrawableStrokeOpacity ( void );
+  /*virtual*/ ~DrawableStrokeAlpha ( void );
 
   // Operator to invoke equivalent draw API call
   /*virtual*/ void operator()( MagickCore::DrawingWand *context_ ) const;

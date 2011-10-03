@@ -2580,13 +2580,13 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case OpaqueAlphaChannel:
     {
-      status=SetImageOpacity(image,OpaqueAlpha);
+      status=SetImageAlpha(image,OpaqueAlpha);
       image->matte=MagickTrue;
       break;
     }
     case TransparentAlphaChannel:
     {
-      status=SetImageOpacity(image,TransparentAlpha);
+      status=SetImageAlpha(image,TransparentAlpha);
       image->matte=MagickTrue;
       break;
     }
@@ -2594,7 +2594,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     {
       if (image->matte == MagickFalse)
         {
-          status=SetImageOpacity(image,OpaqueAlpha);
+          status=SetImageAlpha(image,OpaqueAlpha);
           image->matte=MagickTrue;
         }
       break;
@@ -3376,28 +3376,27 @@ MagickExport MagickBooleanType SetImageMask(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     S e t I m a g e O p a c i t y                                           %
+%     S e t I m a g e A l p h a                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageOpacity() sets the opacity levels of the image.
+%  SetImageAlphs() sets the alpha levels of the image.
 %
-%  The format of the SetImageOpacity method is:
+%  The format of the SetImageAlpha method is:
 %
-%      MagickBooleanType SetImageOpacity(Image *image,const Quantum opacity)
+%      MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o opacity: the level of transparency: 0 is fully opaque and QuantumRange is
+%    o Alpha: the level of transparency: 0 is fully opaque and QuantumRange is
 %      fully transparent.
 %
 */
-MagickExport MagickBooleanType SetImageOpacity(Image *image,
-  const Quantum opacity)
+MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha)
 {
   CacheView
     *image_view;
@@ -3415,7 +3414,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  image->matte=opacity != OpaqueAlpha ? MagickTrue : MagickFalse;
+  image->matte=alpha != OpaqueAlpha ? MagickTrue : MagickFalse;
   status=MagickTrue;
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
@@ -3440,7 +3439,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelAlpha(image,opacity,q);
+      SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

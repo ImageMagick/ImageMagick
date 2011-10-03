@@ -260,7 +260,7 @@ extern WandExport MagickBooleanType
   MagickSetImageIterations(MagickWand *,const size_t),
   MagickSetImageMatte(MagickWand *,const MagickBooleanType),
   MagickSetImageMatteColor(MagickWand *,const PixelWand *),
-  MagickSetImageOpacity(MagickWand *,const double),
+  MagickSetImageAlpha(MagickWand *,const double),
   MagickSetImageOrientation(MagickWand *,const OrientationType),
   MagickSetImagePage(MagickWand *,const size_t,const size_t,const ssize_t,
     const ssize_t),

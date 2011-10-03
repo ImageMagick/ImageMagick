@@ -10061,7 +10061,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       /* Add an opaque matte channel */
       image->matte = MagickTrue;
-      (void) SetImageOpacity(image,0);
+      (void) SetImageAlpha(image,OpaqueAlpha);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
