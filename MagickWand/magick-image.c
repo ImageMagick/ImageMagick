@@ -1478,7 +1478,7 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
       PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetAlphaQuantum(blend)));
-  target=PixelGetPixel(tint);
+  target=PixelGetPixel(colorize);
   colorize_image=ColorizeImage(wand->images,percent_blend,&target,
     wand->exception);
   if (colorize_image == (Image *) NULL)
