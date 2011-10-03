@@ -95,7 +95,7 @@
 /* Define if you have FlashPIX library */
 /* #undef FPX_DELEGATE */
 
-/* Define if you have FREETYPE library */
+/* Define if you have FreeType (TrueType font) library */
 #ifndef MAGICKCORE_FREETYPE_DELEGATE
 #define MAGICKCORE_FREETYPE_DELEGATE 1
 #endif
@@ -338,6 +338,11 @@
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #ifndef MAGICKCORE_HAVE_FSEEKO
 #define MAGICKCORE_HAVE_FSEEKO 1
+#endif
+
+/* Define to 1 if you have the <ft2build.h> header file. */
+#ifndef MAGICKCORE_HAVE_FT2BUILD_H
+#define MAGICKCORE_HAVE_FT2BUILD_H 1
 #endif
 
 /* Define to 1 if you have the `ftime' function. */
@@ -1226,7 +1231,7 @@
 #define MAGICKCORE_LT_OBJDIR ".libs/"
 #endif
 
-/* Define if you have LZMA library */
+/* Define if you have lzma compression library */
 #ifndef MAGICKCORE_LZMA_DELEGATE
 #define MAGICKCORE_LZMA_DELEGATE 1
 #endif
