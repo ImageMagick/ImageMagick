@@ -1680,7 +1680,7 @@ dnl ===========================================================================
 #
 # Check for FFTW delegate library.
 #
-AC_ARG_WITH([fftw],
+AC_ARG_WITH(fftw,
     [AC_HELP_STRING([--without-fftw],
                     [disable FFTW support])],
     [with_fftw=$withval],
@@ -1690,33 +1690,22 @@ if test "$with_fftw" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fftw=$with_fftw "
 fi
 
-have_fftw='no'
-FFTW_LIBS=''
-if test "$with_fftw" != 'no'; then
+FFTW_PKG=""
+if test "x$with_fftw" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for FFTW])
+    PKG_CHECK_MODULES(FFTW3,[fftw3], have_fftw=yes, have_fftw=no)
     AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    AC_CHECK_HEADER(fftw3.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(fftw3,fftw_execute,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING([if FFTW package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_fftw='no (failed tests)'
-        else
-            FFTW_LIBS='-lfftw3'
-            LIBS="$FFTW_LIBS $LIBS"
-            AC_DEFINE(FFTW_DELEGATE,1,Define if you have FFTW library)
-            AC_MSG_RESULT([yes])
-            have_fftw='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
+fi
+
+if test "$have_fftw" = 'yes'; then
+    AC_DEFINE(FFTW_DELEGATE,1,Define if you have FFTW library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$FFTW_CFLAGS $CPPFLAGS"
     fi
 fi
+
 AM_CONDITIONAL(FFTW_DELEGATE, test "$have_fftw" = 'yes')
+AC_SUBST(FFTW_CFLAGS)
 AC_SUBST(FFTW_LIBS)
 
 dnl ===========================================================================
@@ -1804,84 +1793,36 @@ AC_SUBST(FONTCONFIG_LIBS)
 dnl ===========================================================================
 
 #
-# Check for freetype delegate library.
+# Check for FREETYPE delegate library.
 #
-AC_ARG_WITH([freetype],
+AC_ARG_WITH(freetype,
     [AC_HELP_STRING([--without-freetype],
-                    [disable Freetype support])],
+                    [disable FREETYPE support])],
     [with_freetype=$withval],
     [with_freetype='yes'])
-
 
 if test "$with_freetype" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-freetype=$with_freetype "
 fi
 
-have_freetype='no'
-FREETYPE_LIBS=''
-if test "$with_freetype" != 'no'; then
+FREETYPE_PKG=""
+if test "x$with_freetype" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for FreeType 2.0])
+    PKG_CHECK_MODULES(FREETYPE2,[freetype2], have_freetype=yes, have_freetype=no)
     AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    PERSIST_LIBS="$LIBS"
-    PERSIST_CPPFLAGS="$CPPFLAGS"
-    if test "$enable_delegate_build" != 'no' && test -d "$builddir/freetype/include"; then
-        :
-    else
-        freetype_config=''
-        AC_CHECK_PROGS(freetype_config,freetype-config,)dnl
-        if test -n "$freetype_config"; then
-            freetype_cflags=`$freetype_config --cflags`
-            freetype_libs=`$freetype_config --libs`
-            LIBS="$LIBS $freetype_libs"
-            CPPFLAGS="$freetype_cflags $CPPFLAGS"
-        fi
-    fi
+fi
 
-dnl First see if there is a library
-    if test "$FREETYPE_LIBS" = ''; then
-        AC_CHECK_LIB(freetype,FT_Init_FreeType,FREETYPE_LIBS='-lfreetype',,)
-        if test "$FREETYPE_LIBS" != ''; then
-            passed=`expr $passed + 1`
-        else
-            failed=`expr $failed + 1`
-            LIBS="$PERSIST_LIBS"
-        fi
-    fi
-
-dnl Now test for the headers
-    AC_CHECK_HEADER([ft2build.h],[FT2BUILD_H='#include <ft2build.h>'],[ft2build=''],[])
-    AC_CHECK_HEADER(freetype/freetype.h,[have_freetype_h='yes'],[have_freetype_h='no'],[$FT2BUILD_H])
-    if test "$ac_cv_header_ft2build_h" = 'yes' || test "$have_freetype_h" = 'yes'; then
-        passed=`expr $passed + 1`
-    else
-        failed=`expr $failed + 1`
-        CPPFLAGS="$PERSIST_CPPFLAGS"
-    fi
-
-    AC_MSG_CHECKING([if FreeType package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            FREETYPE_LIBS=''
-            AC_MSG_RESULT([no -- some components failed test])
-            have_freetype='no (failed tests)'
-        else
-            LIBS="$FREETYPE_LIBS $LIBS"
-            AC_DEFINE(FREETYPE_DELEGATE,1,Define if you have FreeType (TrueType font) library)
-            if test "$ac_cv_header_ft2build_h" = 'yes'; then
-                AC_DEFINE([HAVE_FT2BUILD_H],[1],[Define to 1 if you have the <ft2build.h> header file.])
-            fi
-            AC_MSG_RESULT([yes])
-            have_freetype='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
+if test "$have_freetype" = 'yes'; then
+    AC_DEFINE(FREETYPE_DELEGATE,1,Define if you have FREETYPE library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$FREETYPE_CFLAGS $CPPFLAGS"
     fi
 fi
-AM_CONDITIONAL(FREETYPE_DELEGATE,test "$have_freetype" = 'yes')
+
+AM_CONDITIONAL(FREETYPE_DELEGATE, test "$have_freetype" = 'yes')
+AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_LIBS)
+
 
 dnl ===========================================================================
 
@@ -2326,45 +2267,35 @@ AC_SUBST(LQR_LIBS)
 
 dnl ===========================================================================
 
-# Disable LZMA (lzma library)
+#
+# Check for LZMA delegate library.
+#
 AC_ARG_WITH(lzma,
-	      [  --without-lzma          disable LZMA support],
-	      [with_lzma=$withval],
-	      [with_lzma='yes'])
-if test "$with_lzma" != 'yes' ; then
+    [AC_HELP_STRING([--without-lzma],
+                    [disable LZMA support])],
+    [with_lzma=$withval],
+    [with_lzma='yes'])
+
+if test "$with_lzma" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lzma=$with_lzma "
 fi
 
-#
-# Check for LZMA
-#
-have_lzma='no'
-LZMA_LIBS=''
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'; then
+LZMA_PKG=""
+if test "x$with_lzma" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-  AC_MSG_CHECKING(for LZMA)
-  AC_MSG_RESULT()
-  failed=0
-  passed=0
-  AC_CHECK_HEADER(lzma.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(lzma,lzma_code,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_MSG_CHECKING(if LZMA package is complete)
-  if test $passed -gt 0; then
-    if test $failed -gt 0; then
-      AC_MSG_RESULT(no -- some components failed test)
-      have_lzma='no (failed tests)'
-    else
-      LZMA_LIBS='-llzma'
-      LIBS="$LZMA_LIBS $LIBS"
-      AC_DEFINE(LZMA_DELEGATE,1,Define if you have lzma compression library)
-      AC_MSG_RESULT(yes)
-      have_lzma='yes'
-    fi
-  else
-    AC_MSG_RESULT(no)
-  fi
+    PKG_CHECK_MODULES(LZMA,[liblzma], have_lzma=yes, have_lzma=no)
+    AC_MSG_RESULT([])
 fi
+
+if test "$have_lzma" = 'yes'; then
+    AC_DEFINE(LZMA_DELEGATE,1,Define if you have LZMA library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$LZMA_CFLAGS $CPPFLAGS"
+    fi
+fi
+
 AM_CONDITIONAL(LZMA_DELEGATE, test "$have_lzma" = 'yes')
+AC_SUBST(LZMA_CFLAGS)
 AC_SUBST(LZMA_LIBS)
 
 dnl ===========================================================================
@@ -2418,107 +2349,23 @@ if test "$with_png" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
 fi
 
-have_png='no'
-PNG_LIBS=''
-
-if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
-  AC_MSG_RESULT([-------------------------------------------------------------])
-  AC_MSG_CHECKING(for PNG support )
-  AC_MSG_RESULT()
-  failed=0
-  passed=0
-  AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
-     failed=`expr $failed + 1`,)
-
-  if test $passed -gt 0; then
-    for var in 5 4 2 '' ; do
-      if test "$have_png" == 'no' ; then
-        if test "x${var}" == 'x' ; then
-          pnglib='png'
-        else
-          pnglib="png1${var}"
-        fi
-
-#       Test for compatible LIBPNG library
-        failed=0
-        passed=0
-        if test "$with_png" == 'yes' -o "$with_png" == "libpng1${var}" ; then
-          if test "${pnglib}" != 'png' ; then
-            AC_MSG_CHECKING(for LIBPNG1${var} support )
-            AC_TRY_COMPILE(
-#include <stdio.h>
-#include <stdlib.h>
-#include <png.h>
-,
-changequote(<<, >>)dnl
-<<
-#if PNG_LIBPNG_VER_MINOR != ${var}
-#error LIBPNG library must be version 1${var}!
-Kaboom, Kaboom
-#endif
-return 0;
->>,
-            changequote([, ])dnl
-            ac_cv_libpng_ok='yes',
-            ac_cv_libpng_ok='no')
-            if test "$ac_cv_libpng_ok" = 'yes' ; then
-              passed=`expr $passed + 1`
-              AC_MSG_RESULT(yes)
-            else
-              failed=`expr $failed + 1`
-              AC_MSG_RESULT(no)
-            fi
-          else
-            passed=`expr $passed + 1`
-            AC_MSG_RESULT(yes)
-          fi
-        fi
-
-        if test $passed -gt 0 -a $failed -le 0; then
-          if test "1${var}" = '15' ; then
-            AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-            AC_CHECK_LIB(png15,png_longjmp,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-          fi
-          if test "1${var}" = '14' ; then
-            AC_CHECK_LIB(png14,png_get_io_ptr,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-            AC_CHECK_LIB(png14,png_get_io_state,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-          fi
-          if test "1${var}" = '12' ; then
-            AC_CHECK_LIB(png12,png_get_io_ptr,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-          fi
-          if test "1${var}" = '1' ; then
-              AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,
-                 failed=`expr $failed + 1`,)
-          fi
-          if test $passed -gt 0 -a $failed -le 0 ; then
-            AC_MSG_CHECKING(if ${pnglib} package is complete)
-            if test $passed -gt 0 ; then
-              if test $failed -gt 0 ; then
-                  AC_MSG_RESULT(no -- some components failed test)
-                  have_png='no (failed tests)'
-              else
-                  PNG_LIBS="-l${pnglib}"
-                  LIBS="$PNG_LIBS $LIBS"
-                  AC_DEFINE(PNG_DELEGATE,1,Define if you have PNG library)
-                  AC_MSG_RESULT(yes)
-                  have_png='yes'
-              fi
-            fi
-          fi
-        fi
-      fi
-    done
-  fi
+PNG_PKG=""
+if test "x$with_png" = "xyes"; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    PKG_CHECK_MODULES(PNG,[libpng], have_png=yes, have_png=no)
+    AC_MSG_RESULT([])
 fi
 
-AM_CONDITIONAL(PNG_DELEGATE,test "$have_png" = 'yes')
-AC_SUBST(PNG_LIBS)
+if test "$have_png" = 'yes'; then
+    AC_DEFINE(PNG_DELEGATE,1,Define if you have PNG library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$PNG_CFLAGS $CPPFLAGS"
+    fi
+fi
 
+AM_CONDITIONAL(PNG_DELEGATE, test "$have_png" = 'yes')
+AC_SUBST(PNG_CFLAGS)
+AC_SUBST(PNG_LIBS)
 
 dnl ===========================================================================
 
@@ -2725,69 +2572,35 @@ AC_SUBST(WMF_LIBS)
 
 dnl ===========================================================================
 
-
-dnl ===========================================================================
-
 #
 # Check for XML delegate library.
 #
-AC_ARG_WITH([xml],
+AC_ARG_WITH(xml,
     [AC_HELP_STRING([--without-xml],
                     [disable XML support])],
     [with_xml=$withval],
-    [with_xml=$have_x])
+    [with_xml='yes'])
 
-if test "$with_xml" != 'yes' ; then
+if test "$with_xml" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-xml=$with_xml "
 fi
 
-have_xml='no'
-XML_LIBS=''
-if test "$with_xml" != 'no'; then
+XML_PKG=""
+if test "x$with_xml" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for XML])
+    PKG_CHECK_MODULES(XML2,[libxml-2.0], have_xml=yes, have_xml=no)
     AC_MSG_RESULT([])
-    PERSIST_LDFLAGS=$LDFLAGS
-    PERSIST_CPPFLAGS=$CPPFLAGS
-    xml2_config=''
-    AC_PATH_PROG(xml2_config,xml2-config,)dnl
-    if test -n "$xml2_config"; then
-        # Debian installs libxml headers under /usr/include/libxml2/libxml with
-        # the shared library installed under /usr/lib, whereas the package
-        # installs itself under $prefix/libxml and $prefix/lib.
-        xml2_prefix=`xml2-config --prefix`
-        if test -d "${xml2_prefix}/include/libxml2"; then
-            CPPFLAGS="$CPPFLAGS -I${xml2_prefix}/include/libxml2"
-        fi
-        if test "${xml2_prefix}" != '/usr'; then
-            LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
-        fi
-    fi
-    failed=0
-    passed=0
-    AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml2,xmlSAXVersion,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(xml2,xmlParseChunk,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(xml2,xmlCreatePushParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING([if XML package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_xml='no (failed tests)'
-            LDFLAGS="$PERSIST_LDFLAGS"
-            CPPFLAGS="$PERSIST_CPPFLAGS"
-        else
-            XML_LIBS='-lxml2'
-            LIBS="$XML_LIBS $LIBS"
-            AC_DEFINE(XML_DELEGATE,1,Define if you have XML library)
-            AC_MSG_RESULT([yes])
-            have_xml='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
+fi
+
+if test "$have_xml" = 'yes'; then
+    AC_DEFINE(XML_DELEGATE,1,Define if you have XML library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$XML_CFLAGS $CPPFLAGS"
     fi
 fi
-AM_CONDITIONAL(XML_DELEGATE,test "$have_xml" = 'yes')
+
+AM_CONDITIONAL(XML_DELEGATE, test "$have_xml" = 'yes')
+AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 
 dnl ===========================================================================

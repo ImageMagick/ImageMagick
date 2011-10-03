@@ -730,9 +730,11 @@ LIBRARY_PATH
 EXECUTABLE_PATH
 PERLMAINCC
 XML_LIBS
+XML_CFLAGS
 XML_DELEGATE_FALSE
 XML_DELEGATE_TRUE
-xml2_config
+XML2_LIBS
+XML2_CFLAGS
 WMF_LIBS
 WMF_DELEGATE_FALSE
 WMF_DELEGATE_TRUE
@@ -750,16 +752,18 @@ CAIRO_SVG_LIBS
 CAIRO_SVG_CFLAGS
 RSVG_LIBS
 RSVG_CFLAGS
-PNG_LIBS
 PNG_DELEGATE_FALSE
 PNG_DELEGATE_TRUE
+PNG_LIBS
+PNG_CFLAGS
 OPENEXR_DELEGATE_FALSE
 OPENEXR_DELEGATE_TRUE
 OPENEXR_LIBS
 OPENEXR_CFLAGS
-LZMA_LIBS
 LZMA_DELEGATE_FALSE
 LZMA_DELEGATE_TRUE
+LZMA_LIBS
+LZMA_CFLAGS
 LQR_DELEGATE_FALSE
 LQR_DELEGATE_TRUE
 LQR_LIBS
@@ -784,9 +788,11 @@ GS_LIBS
 GS_DELEGATE_FALSE
 GS_DELEGATE_TRUE
 FREETYPE_LIBS
+FREETYPE_CFLAGS
 FREETYPE_DELEGATE_FALSE
 FREETYPE_DELEGATE_TRUE
-freetype_config
+FREETYPE2_LIBS
+FREETYPE2_CFLAGS
 FONTCONFIG_DELEGATE_FALSE
 FONTCONFIG_DELEGATE_TRUE
 FONTCONFIG_LIBS
@@ -795,8 +801,11 @@ FPX_LIBS
 FPX_DELEGATE_FALSE
 FPX_DELEGATE_TRUE
 FFTW_LIBS
+FFTW_CFLAGS
 FFTW_DELEGATE_FALSE
 FFTW_DELEGATE_TRUE
+FFTW3_LIBS
+FFTW3_CFLAGS
 DJVU_LIBS
 DJVU_DELEGATE_FALSE
 DJVU_DELEGATE_TRUE
@@ -1162,18 +1171,28 @@ CXXCPP
 XMKMF
 AUTOTRACE_CFLAGS
 AUTOTRACE_LIBS
+FFTW3_CFLAGS
+FFTW3_LIBS
 FONTCONFIG_CFLAGS
 FONTCONFIG_LIBS
+FREETYPE2_CFLAGS
+FREETYPE2_LIBS
 GVC_CFLAGS
 GVC_LIBS
 LQR_CFLAGS
 LQR_LIBS
+LZMA_CFLAGS
+LZMA_LIBS
 OPENEXR_CFLAGS
 OPENEXR_LIBS
+PNG_CFLAGS
+PNG_LIBS
 RSVG_CFLAGS
 RSVG_LIBS
 CAIRO_SVG_CFLAGS
-CAIRO_SVG_LIBS'
+CAIRO_SVG_LIBS
+XML2_CFLAGS
+XML2_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1877,7 +1896,7 @@ Optional Packages:
   --without-fftw          disable FFTW support
   --without-fpx           disable FlashPIX support
   --without-fontconfig    disable fontconfig support
-  --without-freetype      disable Freetype support
+  --without-freetype      disable FREETYPE support
   --without-gslib         enable Ghostscript library support
   --with-fontpath=DIR     prepend to default font search path
   --with-gs-font-dir=DIR  Ghostscript font directory
@@ -1917,24 +1936,37 @@ Some influential environment variables:
               C compiler flags for AUTOTRACE, overriding pkg-config
   AUTOTRACE_LIBS
               linker flags for AUTOTRACE, overriding pkg-config
+  FFTW3_CFLAGS
+              C compiler flags for FFTW3, overriding pkg-config
+  FFTW3_LIBS  linker flags for FFTW3, overriding pkg-config
   FONTCONFIG_CFLAGS
               C compiler flags for FONTCONFIG, overriding pkg-config
   FONTCONFIG_LIBS
               linker flags for FONTCONFIG, overriding pkg-config
+  FREETYPE2_CFLAGS
+              C compiler flags for FREETYPE2, overriding pkg-config
+  FREETYPE2_LIBS
+              linker flags for FREETYPE2, overriding pkg-config
   GVC_CFLAGS  C compiler flags for GVC, overriding pkg-config
   GVC_LIBS    linker flags for GVC, overriding pkg-config
   LQR_CFLAGS  C compiler flags for LQR, overriding pkg-config
   LQR_LIBS    linker flags for LQR, overriding pkg-config
+  LZMA_CFLAGS C compiler flags for LZMA, overriding pkg-config
+  LZMA_LIBS   linker flags for LZMA, overriding pkg-config
   OPENEXR_CFLAGS
               C compiler flags for OPENEXR, overriding pkg-config
   OPENEXR_LIBS
               linker flags for OPENEXR, overriding pkg-config
+  PNG_CFLAGS  C compiler flags for PNG, overriding pkg-config
+  PNG_LIBS    linker flags for PNG, overriding pkg-config
   RSVG_CFLAGS C compiler flags for RSVG, overriding pkg-config
   RSVG_LIBS   linker flags for RSVG, overriding pkg-config
   CAIRO_SVG_CFLAGS
               C compiler flags for CAIRO_SVG, overriding pkg-config
   CAIRO_SVG_LIBS
               linker flags for CAIRO_SVG, overriding pkg-config
+  XML2_CFLAGS C compiler flags for XML2, overriding pkg-config
+  XML2_LIBS   linker flags for XML2, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -3584,7 +3616,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5481
+MAGICK_SVN_REVISION=5486
 
 
 
@@ -28182,89 +28214,90 @@ if test "$with_fftw" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fftw=$with_fftw "
 fi
 
-have_fftw='no'
-FFTW_LIBS=''
-if test "$with_fftw" != 'no'; then
+FFTW_PKG=""
+if test "x$with_fftw" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FFTW" >&5
-$as_echo_n "checking for FFTW... " >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FFTW3" >&5
+$as_echo_n "checking for FFTW3... " >&6; }
+
+if test -n "$FFTW3_CFLAGS"; then
+    pkg_cv_FFTW3_CFLAGS="$FFTW3_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"fftw3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "fftw3") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_FFTW3_CFLAGS=`$PKG_CONFIG --cflags "fftw3" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$FFTW3_LIBS"; then
+    pkg_cv_FFTW3_LIBS="$FFTW3_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"fftw3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "fftw3") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_FFTW3_LIBS=`$PKG_CONFIG --libs "fftw3" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        FFTW3_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "fftw3" 2>&1`
+        else
+	        FFTW3_PKG_ERRORS=`$PKG_CONFIG --print-errors "fftw3" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$FFTW3_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_fftw=no
+elif test $pkg_failed = untried; then
+	have_fftw=no
+else
+	FFTW3_CFLAGS=$pkg_cv_FFTW3_CFLAGS
+	FFTW3_LIBS=$pkg_cv_FFTW3_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_fftw=yes
+fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "fftw3.h" "ac_cv_header_fftw3_h" "$ac_includes_default"
-if test "x$ac_cv_header_fftw3_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
 fi
 
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for fftw_execute in -lfftw3" >&5
-$as_echo_n "checking for fftw_execute in -lfftw3... " >&6; }
-if ${ac_cv_lib_fftw3_fftw_execute+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfftw3  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char fftw_execute ();
-int
-main ()
-{
-return fftw_execute ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_fftw3_fftw_execute=yes
-else
-  ac_cv_lib_fftw3_fftw_execute=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_fftw3_fftw_execute" >&5
-$as_echo "$ac_cv_lib_fftw3_fftw_execute" >&6; }
-if test "x$ac_cv_lib_fftw3_fftw_execute" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if FFTW package is complete" >&5
-$as_echo_n "checking if FFTW package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_fftw='no (failed tests)'
-        else
-            FFTW_LIBS='-lfftw3'
-            LIBS="$FFTW_LIBS $LIBS"
+if test "$have_fftw" = 'yes'; then
 
 $as_echo "#define FFTW_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_fftw='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$FFTW_CFLAGS $CPPFLAGS"
     fi
 fi
+
  if test "$have_fftw" = 'yes'; then
   FFTW_DELEGATE_TRUE=
   FFTW_DELEGATE_FALSE='#'
@@ -28272,6 +28305,7 @@ else
   FFTW_DELEGATE_TRUE='#'
   FFTW_DELEGATE_FALSE=
 fi
+
 
 
 
@@ -28515,7 +28549,7 @@ fi
 
 
 #
-# Check for freetype delegate library.
+# Check for FREETYPE delegate library.
 #
 
 # Check whether --with-freetype was given.
@@ -28526,177 +28560,94 @@ else
 fi
 
 
-
 if test "$with_freetype" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-freetype=$with_freetype "
 fi
 
-have_freetype='no'
-FREETYPE_LIBS=''
-if test "$with_freetype" != 'no'; then
+FREETYPE_PKG=""
+if test "x$with_freetype" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType 2.0" >&5
-$as_echo_n "checking for FreeType 2.0... " >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FREETYPE2" >&5
+$as_echo_n "checking for FREETYPE2... " >&6; }
+
+if test -n "$FREETYPE2_CFLAGS"; then
+    pkg_cv_FREETYPE2_CFLAGS="$FREETYPE2_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"freetype2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "freetype2") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_FREETYPE2_CFLAGS=`$PKG_CONFIG --cflags "freetype2" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$FREETYPE2_LIBS"; then
+    pkg_cv_FREETYPE2_LIBS="$FREETYPE2_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"freetype2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "freetype2") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_FREETYPE2_LIBS=`$PKG_CONFIG --libs "freetype2" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        FREETYPE2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "freetype2" 2>&1`
+        else
+	        FREETYPE2_PKG_ERRORS=`$PKG_CONFIG --print-errors "freetype2" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$FREETYPE2_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_freetype=no
+elif test $pkg_failed = untried; then
+	have_freetype=no
+else
+	FREETYPE2_CFLAGS=$pkg_cv_FREETYPE2_CFLAGS
+	FREETYPE2_LIBS=$pkg_cv_FREETYPE2_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_freetype=yes
+fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    failed=0
-    passed=0
-    PERSIST_LIBS="$LIBS"
-    PERSIST_CPPFLAGS="$CPPFLAGS"
-    if test "$enable_delegate_build" != 'no' && test -d "$builddir/freetype/include"; then
-        :
-    else
-        freetype_config=''
-        for ac_prog in freetype-config
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_freetype_config+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$freetype_config"; then
-  ac_cv_prog_freetype_config="$freetype_config" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_freetype_config="$ac_prog"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-freetype_config=$ac_cv_prog_freetype_config
-if test -n "$freetype_config"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $freetype_config" >&5
-$as_echo "$freetype_config" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 fi
 
-
-  test -n "$freetype_config" && break
-done
-        if test -n "$freetype_config"; then
-            freetype_cflags=`$freetype_config --cflags`
-            freetype_libs=`$freetype_config --libs`
-            LIBS="$LIBS $freetype_libs"
-            CPPFLAGS="$freetype_cflags $CPPFLAGS"
-        fi
-    fi
-
-    if test "$FREETYPE_LIBS" = ''; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_Init_FreeType in -lfreetype" >&5
-$as_echo_n "checking for FT_Init_FreeType in -lfreetype... " >&6; }
-if ${ac_cv_lib_freetype_FT_Init_FreeType+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfreetype  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char FT_Init_FreeType ();
-int
-main ()
-{
-return FT_Init_FreeType ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_freetype_FT_Init_FreeType=yes
-else
-  ac_cv_lib_freetype_FT_Init_FreeType=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_freetype_FT_Init_FreeType" >&5
-$as_echo "$ac_cv_lib_freetype_FT_Init_FreeType" >&6; }
-if test "x$ac_cv_lib_freetype_FT_Init_FreeType" = xyes; then :
-  FREETYPE_LIBS='-lfreetype'
-fi
-
-        if test "$FREETYPE_LIBS" != ''; then
-            passed=`expr $passed + 1`
-        else
-            failed=`expr $failed + 1`
-            LIBS="$PERSIST_LIBS"
-        fi
-    fi
-
-    ac_fn_c_check_header_mongrel "$LINENO" "ft2build.h" "ac_cv_header_ft2build_h" "$ac_includes_default"
-if test "x$ac_cv_header_ft2build_h" = xyes; then :
-  FT2BUILD_H='#include <ft2build.h>'
-else
-  ft2build=''
-fi
-
-
-    ac_fn_c_check_header_compile "$LINENO" "freetype/freetype.h" "ac_cv_header_freetype_freetype_h" "$FT2BUILD_H
-"
-if test "x$ac_cv_header_freetype_freetype_h" = xyes; then :
-  have_freetype_h='yes'
-else
-  have_freetype_h='no'
-fi
-
-
-    if test "$ac_cv_header_ft2build_h" = 'yes' || test "$have_freetype_h" = 'yes'; then
-        passed=`expr $passed + 1`
-    else
-        failed=`expr $failed + 1`
-        CPPFLAGS="$PERSIST_CPPFLAGS"
-    fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if FreeType package is complete" >&5
-$as_echo_n "checking if FreeType package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            FREETYPE_LIBS=''
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_freetype='no (failed tests)'
-        else
-            LIBS="$FREETYPE_LIBS $LIBS"
+if test "$have_freetype" = 'yes'; then
 
 $as_echo "#define FREETYPE_DELEGATE 1" >>confdefs.h
 
-            if test "$ac_cv_header_ft2build_h" = 'yes'; then
-
-$as_echo "#define HAVE_FT2BUILD_H 1" >>confdefs.h
-
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_freetype='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$FREETYPE_CFLAGS $CPPFLAGS"
     fi
 fi
+
  if test "$have_freetype" = 'yes'; then
   FREETYPE_DELEGATE_TRUE=
   FREETYPE_DELEGATE_FALSE='#'
@@ -28704,6 +28655,8 @@ else
   FREETYPE_DELEGATE_TRUE='#'
   FREETYPE_DELEGATE_FALSE=
 fi
+
+
 
 
 
@@ -29803,7 +29756,9 @@ fi
 
 
 
-# Disable LZMA (lzma library)
+#
+# Check for LZMA delegate library.
+#
 
 # Check whether --with-lzma was given.
 if test "${with_lzma+set}" = set; then :
@@ -29812,96 +29767,95 @@ else
   with_lzma='yes'
 fi
 
-if test "$with_lzma" != 'yes' ; then
+
+if test "$with_lzma" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lzma=$with_lzma "
 fi
 
-#
-# Check for LZMA
-#
-have_lzma='no'
-LZMA_LIBS=''
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'; then
+LZMA_PKG=""
+if test "x$with_lzma" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA" >&5
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA" >&5
 $as_echo_n "checking for LZMA... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+
+if test -n "$LZMA_CFLAGS"; then
+    pkg_cv_LZMA_CFLAGS="$LZMA_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblzma\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "liblzma") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LZMA_CFLAGS=`$PKG_CONFIG --cflags "liblzma" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LZMA_LIBS"; then
+    pkg_cv_LZMA_LIBS="$LZMA_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblzma\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "liblzma") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LZMA_LIBS=`$PKG_CONFIG --libs "liblzma" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LZMA_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "liblzma" 2>&1`
+        else
+	        LZMA_PKG_ERRORS=`$PKG_CONFIG --print-errors "liblzma" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LZMA_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_lzma=no
+elif test $pkg_failed = untried; then
+	have_lzma=no
+else
+	LZMA_CFLAGS=$pkg_cv_LZMA_CFLAGS
+	LZMA_LIBS=$pkg_cv_LZMA_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_lzma=yes
+fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-  failed=0
-  passed=0
-  ac_fn_c_check_header_mongrel "$LINENO" "lzma.h" "ac_cv_header_lzma_h" "$ac_includes_default"
-if test "x$ac_cv_header_lzma_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
 fi
 
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for lzma_code in -llzma" >&5
-$as_echo_n "checking for lzma_code in -llzma... " >&6; }
-if ${ac_cv_lib_lzma_lzma_code+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llzma  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char lzma_code ();
-int
-main ()
-{
-return lzma_code ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_lzma_lzma_code=yes
-else
-  ac_cv_lib_lzma_lzma_code=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lzma_lzma_code" >&5
-$as_echo "$ac_cv_lib_lzma_lzma_code" >&6; }
-if test "x$ac_cv_lib_lzma_lzma_code" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LZMA package is complete" >&5
-$as_echo_n "checking if LZMA package is complete... " >&6; }
-  if test $passed -gt 0; then
-    if test $failed -gt 0; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-      have_lzma='no (failed tests)'
-    else
-      LZMA_LIBS='-llzma'
-      LIBS="$LZMA_LIBS $LIBS"
+if test "$have_lzma" = 'yes'; then
 
 $as_echo "#define LZMA_DELEGATE 1" >>confdefs.h
 
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      have_lzma='yes'
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$LZMA_CFLAGS $CPPFLAGS"
     fi
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  fi
 fi
+
  if test "$have_lzma" = 'yes'; then
   LZMA_DELEGATE_TRUE=
   LZMA_DELEGATE_FALSE='#'
@@ -29909,6 +29863,7 @@ else
   LZMA_DELEGATE_TRUE='#'
   LZMA_DELEGATE_FALSE=
 fi
+
 
 
 
@@ -30044,370 +29999,88 @@ if test "$with_png" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
 fi
 
-have_png='no'
-PNG_LIBS=''
-
-if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+PNG_PKG=""
+if test "x$with_png" = "xyes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PNG support " >&5
-$as_echo_n "checking for PNG support ... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-  failed=0
-  passed=0
-  ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
-if test "x$ac_cv_header_png_h" = xyes; then :
-  passed=`expr $passed + 1`
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PNG" >&5
+$as_echo_n "checking for PNG... " >&6; }
+
+if test -n "$PNG_CFLAGS"; then
+    pkg_cv_PNG_CFLAGS="$PNG_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libpng\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libpng") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PNG_CFLAGS=`$PKG_CONFIG --cflags "libpng" 2>/dev/null`
 else
-  failed=`expr $failed + 1`
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$PNG_LIBS"; then
+    pkg_cv_PNG_LIBS="$PNG_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libpng\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libpng") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PNG_LIBS=`$PKG_CONFIG --libs "libpng" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
 fi
 
 
 
-  if test $passed -gt 0; then
-    for var in 5 4 2 '' ; do
-      if test "$have_png" == 'no' ; then
-        if test "x${var}" == 'x' ; then
-          pnglib='png'
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        PNG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libpng" 2>&1`
         else
-          pnglib="png1${var}"
+	        PNG_PKG_ERRORS=`$PKG_CONFIG --print-errors "libpng" 2>&1`
         fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$PNG_PKG_ERRORS" >&5
 
-#       Test for compatible LIBPNG library
-        failed=0
-        passed=0
-        if test "$with_png" == 'yes' -o "$with_png" == "libpng1${var}" ; then
-          if test "${pnglib}" != 'png' ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG1${var} support " >&5
-$as_echo_n "checking for LIBPNG1${var} support ... " >&6; }
-            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <png.h>
-
-int
-main ()
-{
-
-#if PNG_LIBPNG_VER_MINOR != ${var}
-#error LIBPNG library must be version 1${var}!
-Kaboom, Kaboom
-#endif
-return 0;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-              ac_cv_libpng_ok='yes'
-else
-  ac_cv_libpng_ok='no'
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-            if test "$ac_cv_libpng_ok" = 'yes' ; then
-              passed=`expr $passed + 1`
-              { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            else
-              failed=`expr $failed + 1`
-              { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-            fi
-          else
-            passed=`expr $passed + 1`
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+                have_png=no
+elif test $pkg_failed = untried; then
+	have_png=no
+else
+	PNG_CFLAGS=$pkg_cv_PNG_CFLAGS
+	PNG_LIBS=$pkg_cv_PNG_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-          fi
-        fi
-
-        if test $passed -gt 0 -a $failed -le 0; then
-          if test "1${var}" = '15' ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
-$as_echo_n "checking for png_get_io_ptr in -lpng15... " >&6; }
-if ${ac_cv_lib_png15_png_get_io_ptr+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng15  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char png_get_io_ptr ();
-int
-main ()
-{
-return png_get_io_ptr ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_png15_png_get_io_ptr=yes
-else
-  ac_cv_lib_png15_png_get_io_ptr=no
+	have_png=yes
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png15_png_get_io_ptr" >&5
-$as_echo "$ac_cv_lib_png15_png_get_io_ptr" >&6; }
-if test "x$ac_cv_lib_png15_png_get_io_ptr" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
 fi
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_longjmp in -lpng15" >&5
-$as_echo_n "checking for png_longjmp in -lpng15... " >&6; }
-if ${ac_cv_lib_png15_png_longjmp+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng15  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char png_longjmp ();
-int
-main ()
-{
-return png_longjmp ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_png15_png_longjmp=yes
-else
-  ac_cv_lib_png15_png_longjmp=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png15_png_longjmp" >&5
-$as_echo "$ac_cv_lib_png15_png_longjmp" >&6; }
-if test "x$ac_cv_lib_png15_png_longjmp" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-          fi
-          if test "1${var}" = '14' ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng14" >&5
-$as_echo_n "checking for png_get_io_ptr in -lpng14... " >&6; }
-if ${ac_cv_lib_png14_png_get_io_ptr+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng14  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char png_get_io_ptr ();
-int
-main ()
-{
-return png_get_io_ptr ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_png14_png_get_io_ptr=yes
-else
-  ac_cv_lib_png14_png_get_io_ptr=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png14_png_get_io_ptr" >&5
-$as_echo "$ac_cv_lib_png14_png_get_io_ptr" >&6; }
-if test "x$ac_cv_lib_png14_png_get_io_ptr" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_state in -lpng14" >&5
-$as_echo_n "checking for png_get_io_state in -lpng14... " >&6; }
-if ${ac_cv_lib_png14_png_get_io_state+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng14  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char png_get_io_state ();
-int
-main ()
-{
-return png_get_io_state ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_png14_png_get_io_state=yes
-else
-  ac_cv_lib_png14_png_get_io_state=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png14_png_get_io_state" >&5
-$as_echo "$ac_cv_lib_png14_png_get_io_state" >&6; }
-if test "x$ac_cv_lib_png14_png_get_io_state" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-          fi
-          if test "1${var}" = '12' ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng12" >&5
-$as_echo_n "checking for png_get_io_ptr in -lpng12... " >&6; }
-if ${ac_cv_lib_png12_png_get_io_ptr+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng12  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char png_get_io_ptr ();
-int
-main ()
-{
-return png_get_io_ptr ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_png12_png_get_io_ptr=yes
-else
-  ac_cv_lib_png12_png_get_io_ptr=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png12_png_get_io_ptr" >&5
-$as_echo "$ac_cv_lib_png12_png_get_io_ptr" >&6; }
-if test "x$ac_cv_lib_png12_png_get_io_ptr" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-          fi
-          if test "1${var}" = '1' ; then
-              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng" >&5
-$as_echo_n "checking for png_get_io_ptr in -lpng... " >&6; }
-if ${ac_cv_lib_png_png_get_io_ptr+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char png_get_io_ptr ();
-int
-main ()
-{
-return png_get_io_ptr ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_png_png_get_io_ptr=yes
-else
-  ac_cv_lib_png_png_get_io_ptr=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png_png_get_io_ptr" >&5
-$as_echo "$ac_cv_lib_png_png_get_io_ptr" >&6; }
-if test "x$ac_cv_lib_png_png_get_io_ptr" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-          fi
-          if test $passed -gt 0 -a $failed -le 0 ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking if ${pnglib} package is complete" >&5
-$as_echo_n "checking if ${pnglib} package is complete... " >&6; }
-            if test $passed -gt 0 ; then
-              if test $failed -gt 0 ; then
-                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-                  have_png='no (failed tests)'
-              else
-                  PNG_LIBS="-l${pnglib}"
-                  LIBS="$PNG_LIBS $LIBS"
+if test "$have_png" = 'yes'; then
 
 $as_echo "#define PNG_DELEGATE 1" >>confdefs.h
 
-                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-                  have_png='yes'
-              fi
-            fi
-          fi
-        fi
-      fi
-    done
-  fi
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$PNG_CFLAGS $CPPFLAGS"
+    fi
 fi
 
  if test "$have_png" = 'yes'; then
@@ -31214,8 +30887,6 @@ fi
 
 
 
-
-
 #
 # Check for XML delegate library.
 #
@@ -31224,237 +30895,98 @@ fi
 if test "${with_xml+set}" = set; then :
   withval=$with_xml; with_xml=$withval
 else
-  with_xml=$have_x
+  with_xml='yes'
 fi
 
 
-if test "$with_xml" != 'yes' ; then
+if test "$with_xml" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-xml=$with_xml "
 fi
 
-have_xml='no'
-XML_LIBS=''
-if test "$with_xml" != 'no'; then
+XML_PKG=""
+if test "x$with_xml" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XML" >&5
-$as_echo_n "checking for XML... " >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for XML2" >&5
+$as_echo_n "checking for XML2... " >&6; }
+
+if test -n "$XML2_CFLAGS"; then
+    pkg_cv_XML2_CFLAGS="$XML2_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libxml-2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libxml-2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_XML2_CFLAGS=`$PKG_CONFIG --cflags "libxml-2.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$XML2_LIBS"; then
+    pkg_cv_XML2_LIBS="$XML2_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libxml-2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libxml-2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_XML2_LIBS=`$PKG_CONFIG --libs "libxml-2.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        XML2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libxml-2.0" 2>&1`
+        else
+	        XML2_PKG_ERRORS=`$PKG_CONFIG --print-errors "libxml-2.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$XML2_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_xml=no
+elif test $pkg_failed = untried; then
+	have_xml=no
+else
+	XML2_CFLAGS=$pkg_cv_XML2_CFLAGS
+	XML2_LIBS=$pkg_cv_XML2_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_xml=yes
+fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    PERSIST_LDFLAGS=$LDFLAGS
-    PERSIST_CPPFLAGS=$CPPFLAGS
-    xml2_config=''
-    # Extract the first word of "xml2-config", so it can be a program name with args.
-set dummy xml2-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_xml2_config+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $xml2_config in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_xml2_config="$xml2_config" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_xml2_config="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-xml2_config=$ac_cv_path_xml2_config
-if test -n "$xml2_config"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $xml2_config" >&5
-$as_echo "$xml2_config" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 fi
 
-    if test -n "$xml2_config"; then
-        # Debian installs libxml headers under /usr/include/libxml2/libxml with
-        # the shared library installed under /usr/lib, whereas the package
-        # installs itself under $prefix/libxml and $prefix/lib.
-        xml2_prefix=`xml2-config --prefix`
-        if test -d "${xml2_prefix}/include/libxml2"; then
-            CPPFLAGS="$CPPFLAGS -I${xml2_prefix}/include/libxml2"
-        fi
-        if test "${xml2_prefix}" != '/usr'; then
-            LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
-        fi
-    fi
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "libxml/parser.h" "ac_cv_header_libxml_parser_h" "$ac_includes_default"
-if test "x$ac_cv_header_libxml_parser_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlSAXVersion in -lxml2" >&5
-$as_echo_n "checking for xmlSAXVersion in -lxml2... " >&6; }
-if ${ac_cv_lib_xml2_xmlSAXVersion+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char xmlSAXVersion ();
-int
-main ()
-{
-return xmlSAXVersion ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_xmlSAXVersion=yes
-else
-  ac_cv_lib_xml2_xmlSAXVersion=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_xmlSAXVersion" >&5
-$as_echo "$ac_cv_lib_xml2_xmlSAXVersion" >&6; }
-if test "x$ac_cv_lib_xml2_xmlSAXVersion" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlParseChunk in -lxml2" >&5
-$as_echo_n "checking for xmlParseChunk in -lxml2... " >&6; }
-if ${ac_cv_lib_xml2_xmlParseChunk+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char xmlParseChunk ();
-int
-main ()
-{
-return xmlParseChunk ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_xmlParseChunk=yes
-else
-  ac_cv_lib_xml2_xmlParseChunk=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_xmlParseChunk" >&5
-$as_echo "$ac_cv_lib_xml2_xmlParseChunk" >&6; }
-if test "x$ac_cv_lib_xml2_xmlParseChunk" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlCreatePushParserCtxt in -lxml2" >&5
-$as_echo_n "checking for xmlCreatePushParserCtxt in -lxml2... " >&6; }
-if ${ac_cv_lib_xml2_xmlCreatePushParserCtxt+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char xmlCreatePushParserCtxt ();
-int
-main ()
-{
-return xmlCreatePushParserCtxt ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_xmlCreatePushParserCtxt=yes
-else
-  ac_cv_lib_xml2_xmlCreatePushParserCtxt=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_xmlCreatePushParserCtxt" >&5
-$as_echo "$ac_cv_lib_xml2_xmlCreatePushParserCtxt" >&6; }
-if test "x$ac_cv_lib_xml2_xmlCreatePushParserCtxt" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if XML package is complete" >&5
-$as_echo_n "checking if XML package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_xml='no (failed tests)'
-            LDFLAGS="$PERSIST_LDFLAGS"
-            CPPFLAGS="$PERSIST_CPPFLAGS"
-        else
-            XML_LIBS='-lxml2'
-            LIBS="$XML_LIBS $LIBS"
+if test "$have_xml" = 'yes'; then
 
 $as_echo "#define XML_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_xml='yes'
-        fi
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$XML_CFLAGS $CPPFLAGS"
     fi
 fi
+
  if test "$have_xml" = 'yes'; then
   XML_DELEGATE_TRUE=
   XML_DELEGATE_FALSE='#'
@@ -31462,6 +30994,7 @@ else
   XML_DELEGATE_TRUE='#'
   XML_DELEGATE_FALSE=
 fi
+
 
 
 
