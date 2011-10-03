@@ -600,14 +600,20 @@ void Magick::Image::colorize ( const unsigned int alphaRed_,
 			    "Pen color argument is invalid");
   }
 
-  char alpha[MaxTextExtent];
-  FormatLocaleString(alpha,MaxTextExtent,"%u/%u/%u",alphaRed_,alphaGreen_,alphaBlue_);
+  char blend[MaxTextExtent];
+  FormatLocaleString(blend,MaxTextExtent,"%u/%u/%u",alphaRed_,alphaGreen_,alphaBlue_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  PixelInfo target;
+  GetPixelInfo(image(),&target);
+  PixelPacket pixel=static_cast<PixelPacket>(penColor_);
+  target.red=pixel.red;
+  target.green=pixel.green;
+  target.blue=pixel.blue;
+  target.alpha=pixel.alpha;
   MagickCore::Image* newImage =
-  ColorizeImage ( image(), alpha,
-		  penColor_, &exceptionInfo );
+    ColorizeImage ( image(), blend, &target, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

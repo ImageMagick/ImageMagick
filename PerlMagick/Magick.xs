@@ -208,7 +208,7 @@ static struct
     { "Label", { {"label", StringReference} } },
     { "AddNoise", { {"noise", MagickNoiseOptions},
       {"channel", MagickChannelOptions} } },
-    { "Colorize", { {"fill", StringReference}, {"opacity", StringReference} } },
+    { "Colorize", { {"fill", StringReference}, {"blend", StringReference} } },
     { "Border", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference}, {"color", StringReference},
@@ -7509,12 +7509,13 @@ Mogrify(ref,...)
         }
         case 4:  /* Colorize */
         {
-          PixelPacket
+          PixelInfo
             target;
 
           Quantum
             virtual_pixel[MaxPixelChannels];
 
+          GetPixelInfo(image,&target);
           (void) GetOneVirtualPixel(image,0,0,virtual_pixel,exception);
           target.red=virtual_pixel[RedPixelChannel];
           target.green=virtual_pixel[GreenPixelChannel];
@@ -7525,7 +7526,7 @@ Mogrify(ref,...)
               AllCompliance,&target,exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100%";
-          image=ColorizeImage(image,argument_list[1].string_reference,target,
+          image=ColorizeImage(image,argument_list[1].string_reference,&target,
             exception);
           break;
         }

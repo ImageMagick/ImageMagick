@@ -1367,12 +1367,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       if (LocaleCompare((const char *) tag,"colorize") == 0)
         {
           char
-            opacity[MaxTextExtent];
+            blend[MaxTextExtent];
 
           Image
             *colorize_image;
 
-          PixelPacket
+          PixelInfo
             target;
 
           /*
@@ -1384,8 +1384,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          target=msl_info->image[n]->background_color;
-          (void) CopyMagickString(opacity,"100",MaxTextExtent);
+          GetPixelInfo(msl_info->image[n],&target);
+          (void) CopyMagickString(blend,"100",MaxTextExtent);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
@@ -1396,25 +1396,25 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               CloneString(&value,attribute);
               switch (*keyword)
               {
-                case 'F':
-                case 'f':
+                case 'B':
+                case 'b':
                 {
-                  if (LocaleCompare(keyword,"fill") == 0)
+                  if (LocaleCompare(keyword,"blend") == 0)
                     {
-                      (void) QueryColorCompliance(value,AllCompliance,&target,
-                        &msl_info->image[n]->exception);
+                      (void) CopyMagickString(blend,value,MaxTextExtent);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
                     keyword);
                   break;
                 }
-                case 'O':
-                case 'o':
+                case 'F':
+                case 'f':
                 {
-                  if (LocaleCompare(keyword,"opacity") == 0)
+                  if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) CopyMagickString(opacity,value,MaxTextExtent);
+                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                        &target,&msl_info->image[n]->exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1429,7 +1429,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          colorize_image=ColorizeImage(msl_info->image[n],opacity,target,
+          colorize_image=ColorizeImage(msl_info->image[n],blend,&target,
             &msl_info->image[n]->exception);
           if (colorize_image == (Image *) NULL)
             break;

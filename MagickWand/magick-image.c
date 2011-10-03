@@ -1434,7 +1434,7 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
 %  The format of the MagickColorizeImage method is:
 %
 %      MagickBooleanType MagickColorizeImage(MagickWand *wand,
-%        const PixelWand *colorize,const PixelWand *alpha)
+%        const PixelWand *colorize,const PixelWand *blend)
 %
 %  A description of each parameter follows:
 %
@@ -1446,16 +1446,19 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
-  const PixelWand *colorize,const PixelWand *alpha)
+  const PixelWand *colorize,const PixelWand *blend)
 {
   char
-    percent_opaque[MaxTextExtent];
+    percent_blend[MaxTextExtent];
 
   Image
     *colorize_image;
 
-  PixelPacket
+  PixelInfo
     target;
+
+  Quantum
+    virtual_pixel[MaxPixelChannels];
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -1463,14 +1466,29 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(percent_opaque,MaxTextExtent,
-    "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-    PixelGetRedQuantum(alpha)),(double) (100.0*QuantumScale*
-    PixelGetGreenQuantum(alpha)),(double) (100.0*QuantumScale*
-    PixelGetBlueQuantum(alpha)),(double) (100.0*QuantumScale*
-    PixelGetAlphaQuantum(alpha)));
-  PixelGetQuantumPacket(colorize,&target);
-  colorize_image=ColorizeImage(wand->images,percent_opaque,target,
+  if (target.colorspace != CMYKColorspace)
+    (void) FormatLocaleString(percent_blend,MaxTextExtent,
+      "%g,%g,%g,%g",(double) (100.0*QuantumScale*
+      PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetAlphaQuantum(blend)));
+  else
+    (void) FormatLocaleString(percent_blend,MaxTextExtent,
+      "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
+      PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetAlphaQuantum(blend)));
+  PixelGetQuantumPixel(wand->images,colorize,virtual_pixel);
+  GetPixelInfo(wand->images,&target);
+  target.red=virtual_pixel[RedPixelChannel];
+  target.green=virtual_pixel[GreenPixelChannel];
+  target.blue=virtual_pixel[BluePixelChannel];
+  target.black=virtual_pixel[BlackPixelChannel];
+  target.alpha=virtual_pixel[AlphaPixelChannel];
+  colorize_image=ColorizeImage(wand->images,percent_blend,&target,
     wand->exception);
   if (colorize_image == (Image *) NULL)
     return(MagickFalse);
