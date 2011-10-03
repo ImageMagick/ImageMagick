@@ -5162,7 +5162,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       tint_image=DestroyImage(tint_image);
       return((Image *) NULL);
     }
-  if (opacity == (const char *) NULL)
+  if (blend == (const char *) NULL)
     return(tint_image);
   /*
     Determine RGB values of the color.
