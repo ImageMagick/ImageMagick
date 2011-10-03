@@ -1457,9 +1457,6 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
   PixelInfo
     target;
 
-  Quantum
-    virtual_pixel[MaxPixelChannels];
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
@@ -1481,13 +1478,7 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
       PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
       PixelGetAlphaQuantum(blend)));
-  PixelGetQuantumPixel(wand->images,colorize,virtual_pixel);
-  GetPixelInfo(wand->images,&target);
-  target.red=virtual_pixel[RedPixelChannel];
-  target.green=virtual_pixel[GreenPixelChannel];
-  target.blue=virtual_pixel[BluePixelChannel];
-  target.black=virtual_pixel[BlackPixelChannel];
-  target.alpha=virtual_pixel[AlphaPixelChannel];
+  target=PixelGetPixel(tint);
   colorize_image=ColorizeImage(wand->images,percent_blend,&target,
     wand->exception);
   if (colorize_image == (Image *) NULL)
@@ -11281,7 +11272,7 @@ WandExport MagickBooleanType MagickThumbnailImage(MagickWand *wand,
 %  The format of the MagickTintImage method is:
 %
 %      MagickBooleanType MagickTintImage(MagickWand *wand,
-%        const PixelWand *tint,const PixelWand *alpha)
+%        const PixelWand *tint,const PixelWand *blend)
 %
 %  A description of each parameter follows:
 %
@@ -11293,10 +11284,10 @@ WandExport MagickBooleanType MagickThumbnailImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
-  const PixelWand *tint,const PixelWand *alpha)
+  const PixelWand *tint,const PixelWand *blend)
 {
   char
-    percent_opaque[MaxTextExtent];
+    percent_blend[MaxTextExtent];
 
   Image
     *tint_image;
@@ -11311,22 +11302,22 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (wand->images->colorspace != CMYKColorspace)
-    (void) FormatLocaleString(percent_opaque,MaxTextExtent,
+    (void) FormatLocaleString(percent_blend,MaxTextExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetRedQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetGreenQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetBlueQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetAlphaQuantum(alpha)));
+      PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetAlphaQuantum(blend)));
   else
-    (void) FormatLocaleString(percent_opaque,MaxTextExtent,
+    (void) FormatLocaleString(percent_blend,MaxTextExtent,
       "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetCyanQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetMagentaQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetYellowQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetBlackQuantum(alpha)),(double) (100.0*QuantumScale*
-      PixelGetAlphaQuantum(alpha)));
+      PixelGetCyanQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetMagentaQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetYellowQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
+      PixelGetAlphaQuantum(blend)));
   target=PixelGetPixel(tint);
-  tint_image=TintImage(wand->images,percent_opaque,&target,wand->exception);
+  tint_image=TintImage(wand->images,percent_blend,&target,wand->exception);
   if (tint_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,tint_image);

@@ -428,7 +428,7 @@ static struct
     { "Thumbnail", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
     { "Strip", },
-    { "Tint", { {"fill", StringReference}, {"opacity", StringReference} } },
+    { "Tint", { {"fill", StringReference}, {"blend", StringReference} } },
     { "Channel", { {"channel", MagickChannelOptions} } },
     { "Splice", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
