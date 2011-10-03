@@ -41,7 +41,7 @@ extern MagickExport Image
   *BlueShiftImage(const Image *,const double,ExceptionInfo *),
   *CharcoalImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
-  *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
+  *ColorizeImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
   *ColorMatrixImage(const Image *,const KernelInfo *kernel,ExceptionInfo *),
   *FxImage(const Image *,const char *,ExceptionInfo *),
   *ImplodeImage(const Image *,const double,const PixelInterpolateMethod,

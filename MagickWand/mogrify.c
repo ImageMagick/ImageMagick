@@ -1124,8 +1124,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Colorize the image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            mogrify_image=ColorizeImage(*image,argv[i+1],draw_info->fill,
-              exception);
+            mogrify_image=ColorizeImage(*image,argv[i+1],&fill,exception);
             break;
           }
         if (LocaleCompare("color-matrix",option+1) == 0)

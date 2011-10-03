@@ -674,14 +674,14 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
 %
 %  The format of the ColorizeImage method is:
 %
-%      Image *ColorizeImage(const Image *image,const char *opacity,
-%        const PixelPacket colorize,ExceptionInfo *exception)
+%      Image *ColorizeImage(const Image *image,const char *blend,
+%        const PixelInfo *colorize,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o opacity:  A character string indicating the level of opacity as a
+%    o blend:  A character string indicating the level of blending as a
 %      percentage.
 %
 %    o colorize: A color value.
@@ -689,8 +689,8 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
-  const PixelPacket colorize,ExceptionInfo *exception)
+MagickExport Image *ColorizeImage(const Image *image,const char *blend,
+  const PixelInfo *colorize,ExceptionInfo *exception)
 {
 #define ColorizeImageTag  "Colorize/Image"
 
@@ -710,11 +710,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    pixel;
-
   MagickStatusType
     flags;
+
+  PixelInfo
+    pixel;
 
   ssize_t
     y;
@@ -737,22 +737,31 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
-  if (opacity == (const char *) NULL)
+  if (blend == (const char *) NULL)
     return(colorize_image);
   /*
     Determine RGB values of the pen color.
   */
-  flags=ParseGeometry(opacity,&geometry_info);
+  flags=ParseGeometry(blend,&geometry_info);
+  GetPixelInfo(image,&pixel);
   pixel.red=geometry_info.rho;
   pixel.green=geometry_info.rho;
   pixel.blue=geometry_info.rho;
-  pixel.alpha=(MagickRealType) OpaqueAlpha;
+  pixel.alpha=100.0;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
     pixel.blue=geometry_info.xi;
   if ((flags & PsiValue) != 0)
     pixel.alpha=geometry_info.psi;
+  if (pixel.colorspace == CMYKColorspace)
+    {
+      pixel.black=geometry_info.rho;
+      if ((flags & PsiValue) != 0)
+        pixel.black=geometry_info.psi;
+      if ((flags & ChiValue) != 0)
+        pixel.alpha=geometry_info.chi;
+    }
   /*
     Colorize DirectClass image.
   */
@@ -789,14 +798,68 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(colorize_image,ClampToQuantum((GetPixelRed(image,p)*
-        (100.0-pixel.red)+colorize.red*pixel.red)/100.0),q);
-      SetPixelGreen(colorize_image,ClampToQuantum((GetPixelGreen(image,p)*
-        (100.0-pixel.green)+colorize.green*pixel.green)/100.0),q);
-      SetPixelBlue(colorize_image,ClampToQuantum((GetPixelBlue(image,p)*
-        (100.0-pixel.blue)+colorize.blue*pixel.blue)/100.0),q);
-      SetPixelAlpha(colorize_image,ClampToQuantum((GetPixelAlpha(image,p)*
-        (100.0-pixel.alpha)+colorize.alpha*pixel.alpha)/100.0),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          colorize_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        colorize_traits=GetPixelChannelMapTraits(colorize_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (colorize_traits == UndefinedPixelTrait))
+          continue;
+        if ((colorize_traits & CopyPixelTrait) != 0)
+          {
+            SetPixelChannel(colorize_image,channel,p[i],q);
+            continue;
+          }
+        switch (channel)
+        {
+          case RedPixelChannel:
+          {
+            SetPixelChannel(colorize_image,channel,ClampToQuantum((p[i]*
+              (100.0-pixel.red)+colorize->red*pixel.red)/100.0),q);
+            break;
+          }
+          case GreenPixelChannel:
+          {
+            SetPixelChannel(colorize_image,channel,ClampToQuantum((p[i]*
+              (100.0-pixel.green)+colorize->green*pixel.green)/100.0),q);
+            break;
+          }
+          case BluePixelChannel:
+          {
+            SetPixelChannel(colorize_image,channel,ClampToQuantum((p[i]*
+              (100.0-pixel.blue)+colorize->blue*pixel.blue)/100.0),q);
+            break;
+          }
+          case BlackPixelChannel:
+          {
+            SetPixelChannel(colorize_image,channel,ClampToQuantum((p[i]*
+              (100.0-pixel.black)+colorize->black*pixel.black)/100.0),q);
+            break;
+          }
+          case AlphaPixelChannel:
+          {
+            SetPixelChannel(colorize_image,channel,ClampToQuantum((p[i]*
+              (100.0-pixel.alpha)+colorize->alpha*pixel.alpha)/100.0),q);
+            break;
+          }
+          default:
+          {
+            SetPixelChannel(colorize_image,channel,p[i],q);
+            break;
+          }
+        }
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(colorize_image);
     }

@@ -2256,8 +2256,7 @@ MagickExport MagickBooleanType QueryColorname(const Image *image,
 %
 */
 MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
-  const ComplianceType compliance,PixelInfo *color,
-  ExceptionInfo *exception)
+  const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
   GeometryInfo
     geometry_info;
