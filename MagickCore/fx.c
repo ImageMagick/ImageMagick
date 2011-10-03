@@ -742,8 +742,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   /*
     Determine RGB values of the pen color.
   */
-  flags=ParseGeometry(blend,&geometry_info);
   GetPixelInfo(image,&pixel);
+  flags=ParseGeometry(blend,&geometry_info);
   pixel.red=geometry_info.rho;
   pixel.green=geometry_info.rho;
   pixel.blue=geometry_info.rho;
@@ -5097,21 +5097,21 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 %
 %  The format of the TintImage method is:
 %
-%      Image *TintImage(const Image *image,const char *opacity,
+%      Image *TintImage(const Image *image,const char *blend,
 %        const PixelInfo *tint,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o opacity: A color value used for tinting.
+%    o blend: A color value used for tinting.
 %
 %    o tint: A color value used for tinting.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *TintImage(const Image *image,const char *opacity,
+MagickExport Image *TintImage(const Image *image,const char *blend,
   const PixelInfo *tint,ExceptionInfo *exception)
 {
 #define TintImageTag  "Tint/Image"
@@ -5168,26 +5168,25 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
     Determine RGB values of the color.
   */
   GetPixelInfo(image,&pixel);
-  flags=ParseGeometry(opacity,&geometry_info);
+  flags=ParseGeometry(blend,&geometry_info);
   pixel.red=geometry_info.rho;
   pixel.green=geometry_info.rho;
   pixel.blue=geometry_info.rho;
-  pixel.black=geometry_info.rho;
   pixel.alpha=OpaqueAlpha;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
     pixel.blue=geometry_info.xi;
+  if ((flags & PsiValue) != 0)
+    pixel.alpha=geometry_info.psi;
   if (image->colorspace == CMYKColorspace)
     {
+      pixel.black=geometry_info.rho;
       if ((flags & PsiValue) != 0)
         pixel.black=geometry_info.psi;
       if ((flags & ChiValue) != 0)
         pixel.alpha=geometry_info.chi;
     }
-  else
-    if ((flags & PsiValue) != 0)
-      pixel.alpha=geometry_info.psi;
   intensity=(MagickRealType) GetPixelInfoIntensity(tint);
   color_vector.red=(MagickRealType) (pixel.red*tint->red/100.0-intensity);
   color_vector.green=(MagickRealType) (pixel.green*tint->green/100.0-intensity);
