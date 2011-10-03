@@ -80,12 +80,10 @@
 #if defined(__MINGW32__)
 #  undef interface
 #endif
-#if defined(MAGICKCORE_HAVE_FT2BUILD_H)
-#  include <ft2build.h>
-#endif
 #if defined(FT_FREETYPE_H)
 #  include FT_FREETYPE_H
 #else
+#  include <ft2build.h>
 #  include <freetype/freetype.h>
 #endif
 #if defined(FT_GLYPH_H)
