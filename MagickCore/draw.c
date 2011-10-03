@@ -4509,7 +4509,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel,
           exception);
       if (draw_info->alpha != OpaqueAlpha)
-        (void) SetImageOpacity(composite_image,draw_info->alpha);
+        (void) SetImageAlpha(composite_image,draw_info->alpha);
       SetGeometry(image,&geometry);
       image->gravity=draw_info->gravity;
       geometry.x=x;

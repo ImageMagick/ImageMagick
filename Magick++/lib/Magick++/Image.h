@@ -333,7 +333,7 @@ namespace Magick
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement alpha value using method.
-    void            floodFillOpacity ( const ::ssize_t x_,
+    void            floodFillAlpha ( const ::ssize_t x_,
                                        const ::ssize_t y_,
                                        const unsigned int alpha_,
                                        const PaintMethod method_ );

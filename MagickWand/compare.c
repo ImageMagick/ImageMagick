@@ -1081,8 +1081,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[BlueChannel]);
                   if (image->matte != MagickFalse)
                     (void) FormatLocaleFile(stderr,"    alpha: %g (%g)\n",
-                      QuantumRange*channel_distortion[OpacityChannel],
-                      channel_distortion[OpacityChannel]);
+                      QuantumRange*channel_distortion[AlphaChannel],
+                      channel_distortion[AlphaChannel]);
                   break;
                 }
                 case CMYKColorspace:
@@ -1101,8 +1101,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[BlackChannel]);
                   if (image->matte != MagickFalse)
                     (void) FormatLocaleFile(stderr,"    alpha: %g (%g)\n",
-                      QuantumRange*channel_distortion[OpacityChannel],
-                      channel_distortion[OpacityChannel]);
+                      QuantumRange*channel_distortion[AlphaChannel],
+                      channel_distortion[AlphaChannel]);
                   break;
                 }
                 case GRAYColorspace:
@@ -1112,8 +1112,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[GrayChannel]);
                   if (image->matte != MagickFalse)
                     (void) FormatLocaleFile(stderr,"    alpha: %g (%g)\n",
-                      QuantumRange*channel_distortion[OpacityChannel],
-                      channel_distortion[OpacityChannel]);
+                      QuantumRange*channel_distortion[AlphaChannel],
+                      channel_distortion[AlphaChannel]);
                   break;
                 }
               }
@@ -1139,7 +1139,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[BlueChannel]);
                   if (image->matte != MagickFalse)
                     (void) FormatLocaleFile(stderr,"    alpha: %g\n",
-                      channel_distortion[OpacityChannel]);
+                      channel_distortion[AlphaChannel]);
                   break;
                 }
                 case CMYKColorspace:
@@ -1154,7 +1154,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[BlackChannel]);
                   if (image->matte != MagickFalse)
                     (void) FormatLocaleFile(stderr,"    alpha: %g\n",
-                      channel_distortion[OpacityChannel]);
+                      channel_distortion[AlphaChannel]);
                   break;
                 }
                 case GRAYColorspace:
@@ -1163,7 +1163,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[GrayChannel]);
                   if (image->matte != MagickFalse)
                     (void) FormatLocaleFile(stderr,"    alpha: %g\n",
-                      channel_distortion[OpacityChannel]);
+                      channel_distortion[AlphaChannel]);
                   break;
                 }
               }
