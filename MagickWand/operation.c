@@ -143,12 +143,12 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
 }
 
 /*
-** SparseColorOption() parse the complex -sparse-color argument into an
-** an array of floating point values than call SparseColorImage().
-** Argument is a complex mix of floating-point pixel coodinates, and color
-** specifications (or direct floating point numbers).  The number of floats
-** needed to represent a color varies depending on teh current channel
-** setting.
+  SparseColorOption() parse the complex -sparse-color argument into an
+  an array of floating point values than call SparseColorImage().
+  Argument is a complex mix of floating-point pixel coodinates, and color
+  specifications (or direct floating point numbers).  The number of floats
+  needed to represent a color varies depending on teh current channel
+  setting.
 */
 static Image *SparseColorOption(const Image *image,
   const SparseColorMethod method,const char *arguments,
@@ -291,7 +291,8 @@ static Image *SparseColorOption(const Image *image,
       if ( token[0] == '\0' ) break;
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
-        (void) QueryMagickColorCompliance(token,&color,exception);
+        (void) QueryMagickColorCompliance(token,AllComplience,&color,
+                  exception);
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.red;
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -461,13 +462,13 @@ WandExport MagickBooleanType SettingsOptionInfo(ImageInfo *image_info,
           if (*argv[0] == '+')
             {
               (void) DeleteImageOption(image_info,argv[0]+1);
-              (void) QueryColorCompliance(BackgroundColor,
+              (void) QueryColorCompliance(BackgroundColor,AllComplience,
                 &image_info->background_color,exception);
               break;
             }
           (void) SetImageOption(image_info,argv[0]+1,argv[1]);
-          (void) QueryColorCompliance(argv[1],&image_info->background_color,
-            exception);
+          (void) QueryColorCompliance(argv[1],AllComplience,
+	    &image_info->background_color,exception);
           break;
         }
       if (LocaleCompare("bias",argv[0]+1) == 0)
@@ -505,11 +506,11 @@ WandExport MagickBooleanType SettingsOptionInfo(ImageInfo *image_info,
           if (*argv[0] == '+')
             {
               (void) DeleteImageOption(image_info,argv[0]+1);
-              (void) QueryColorCompliance(BorderColor,&image_info->border_color,
-                exception);
+              (void) QueryColorCompliance(BorderColor,AllComplience,
+                &image_info->border_color,exception);
               break;
             }
-          (void) QueryColorCompliance(argv[1],&image_info->border_color,
+          (void) QueryColorCompliance(argv[1],AllCompliece,&image_info->border_color,
             exception);
           (void) SetImageOption(image_info,argv[0]+1,argv[1]);
           break;
@@ -1076,12 +1077,12 @@ WandExport MagickBooleanType SettingsOptionInfo(ImageInfo *image_info,
           if (*argv[0] == '+')
             {
               (void) SetImageOption(image_info,argv[0]+1,argv[1]);
-              (void) QueryColorCompliance(MatteColor,&image_info->matte_color,
-                exception);
+              (void) QueryColorCompliance(MatteColor,AllComplience,
+                &image_info->matte_color,exception);
               break;
             }
           (void) SetImageOption(image_info,argv[0]+1,argv[1]);
-          (void) QueryColorCompliance(argv[1],&image_info->matte_color,
+          (void) QueryColorCompliance(argv[1],AllComplience,&image_info->matte_color,
             exception);
           break;
         }
@@ -1378,11 +1379,13 @@ WandExport MagickBooleanType SettingsOptionInfo(ImageInfo *image_info,
         {
           if (*argv[0] == '+')
             {
-              (void) QueryColorCompliance("none",&image_info->transparent_color,                  exception);
+              (void) QueryColorCompliance("none",AllComplience,
+                  &image_info->transparent_color,exception);
               (void) SetImageOption(image_info,argv[0]+1,"none");
               break;
             }
-          (void) QueryColorCompliance(argv[1],&image_info->transparent_color,
+              (void) QueryColorCompliance("none",AllComplience,
+                  &image_info->transparent_color,exception);
             exception);
           (void) SetImageOption(image_info,argv[0]+1,argv[1]);
           break;
@@ -1574,7 +1577,8 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
   assert((*image)->signature == MagickSignature);
   if ((*image)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
-
+  if (argc < 0)
+    return(MagickTrue);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   quantize_info=AcquireQuantizeInfo(image_info);
   SetGeometryInfo(&geometry_info);
@@ -1612,7 +1616,7 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           (void) SyncImageSettings(image_info,*image);
           (void) ParseRegionGeometry(*image,argv[1],&geometry,exception);
           new_image=AdaptiveResizeImage(*image,geometry.width,
-            geometry.height,exception);
+            geometry.height,interpolate_method,exception);
           break;
         }
       if (LocaleCompare("adaptive-sharpen",argv[0]+1) == 0)
@@ -1811,24 +1815,24 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           flags=ParsePageGeometry(*image,argv[1],&geometry,exception);
           if ((flags & SigmaValue) == 0)
             geometry.height=geometry.width;
-          new_image=BorderImage(*image,&geometry,exception);
+          new_image=BorderImage(*image,&geometry,compose,exception);
           break;
         }
       if (LocaleCompare("bordercolor",argv[0]+1) == 0)
         {
           if (*argv[0] == '+')
             {
-              (void) QueryColorCompliance(BorderColor,&draw_info->border_color,
-                exception);
+              (void) QueryColorCompliance(BorderColor,AllComplience,
+                &draw_info->border_color,exception);
               break;
             }
-          (void) QueryColorCompliance(argv[1],&draw_info->border_color,
+          (void) QueryColorCompliance(argv[1],AllComplience,&draw_info->border_color,
             exception);
           break;
         }
       if (LocaleCompare("box",argv[0]+1) == 0)
         {
-          (void) QueryColorCompliance(argv[1],&draw_info->undercolor,
+          (void) QueryColorCompliance(argv[1],AllComplience,&draw_info->undercolor,
             exception);
           break;
         }
@@ -1986,7 +1990,7 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           }
           mask_view=DestroyCacheView(mask_view);
           mask_image->matte=MagickTrue;
-          (void) SetImageClipMask(*image,mask_image);
+          (void) SetImageClipMask(*image,mask_image,exception);
           mask_image=DestroyImage(mask_image);
           InheritException(exception,&(*image)->exception);
           break;
@@ -2053,6 +2057,13 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
             MagickColorspaceOptions,MagickFalse,argv[1]);
           (void) TransformImageColorspace(*image,colorspace);
           InheritException(exception,&(*image)->exception);
+          break;
+        }
+      if (LocaleCompare("compose",argv[0]+1) == 0)
+        {
+          (void) SyncImageSettings(image_info,*image);
+          compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
+            MagickFalse,argv[1]);
           break;
         }
       if (LocaleCompare("contrast",argv[0]+1) == 0)
@@ -2425,15 +2436,17 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           GetPixelInfo(*image,&fill);
           if (*argv[0] == '+')
             {
-              (void) QueryMagickColorCompliance("none",&fill,exception);
-              (void) QueryColorCompliance("none",&draw_info->fill,exception);
+              (void) QueryMagickColorCompliance("none",AllCompliance,&fill,
+	         exception);
+              (void) QueryColorCompliance("none",AllComplience,&draw_info->fill,
+                exception);
               if (draw_info->fill_pattern != (Image *) NULL)
                 draw_info->fill_pattern=DestroyImage(draw_info->fill_pattern);
               break;
             }
           sans=AcquireExceptionInfo();
-          (void) QueryMagickColorCompliance(argv[1],&fill,sans);
-          status=QueryColorCompliance(argv[1],&draw_info->fill,sans);
+          (void) QueryMagickColorCompliance(argv[1],AllCompliance,&fill,sans);
+          status=QueryColorCompliance(argv[1],AllComplience,&draw_info->fill,sans);
           sans=DestroyExceptionInfo(sans);
           if (status == MagickFalse)
             draw_info->fill_pattern=GetImageCache(image_info,argv[1],
@@ -2468,7 +2481,8 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           */
           (void) SyncImageSettings(image_info,*image);
           (void) ParsePageGeometry(*image,argv[1],&geometry,exception);
-          (void) QueryMagickColorCompliance(argv[2],&target,exception);
+          (void) QueryMagickColorCompliance(argv[2],AllCompliance,&target,
+                        exception);
           (void) FloodfillPaintImage(*image,draw_info,&target,geometry.x,
             geometry.y,*argv[0] == '-' ? MagickFalse : MagickTrue,exception);
           break;
@@ -2509,7 +2523,7 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           frame_info.y=(ssize_t) frame_info.height;
           frame_info.width=(*image)->columns+2*frame_info.width;
           frame_info.height=(*image)->rows+2*frame_info.height;
-          new_image=FrameImage(*image,&frame_info,exception);
+          new_image=FrameImage(*image,&frame_info,compose,exception);
           break;
         }
       if (LocaleCompare("function",argv[0]+1) == 0)
@@ -2677,7 +2691,8 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           */
           (void) SyncImageSettings(image_info,*image);
           (void) ParseGeometry(argv[1],&geometry_info);
-          new_image=ImplodeImage(*image,geometry_info.rho,exception);
+          new_image=ImplodeImage(*image,geometry_info.rho,
+            interpolate_method,exception);
           break;
         }
       if (LocaleCompare("interline-spacing",argv[0]+1) == 0)
@@ -2687,6 +2702,12 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           else
             (void) ParseGeometry(argv[1],&geometry_info);
           draw_info->interline_spacing=geometry_info.rho;
+          break;
+        }
+      if (LocaleCompare("interpolate",argv[0]+1) == 0)
+        {
+          interpolate_method=(PixelInterpolateMethod) ParseCommandOption(
+            MagickInterpolateOptions,MagickFalse,argv[1]);
           break;
         }
       if (LocaleCompare("interword-spacing",argv[0]+1) == 0)
@@ -2782,9 +2803,11 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           p=(const char *) argv[1];
           GetMagickToken(p,&p,token);  /* get black point color */
           if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
-            (void) QueryMagickColorCompliance(token,&black_point,exception);
+            (void) QueryMagickColorCompliance(token,AllCompliance,
+                      &black_point,exception);
           else
-            (void) QueryMagickColorCompliance("#000000",&black_point,exception);
+            (void) QueryMagickColorCompliance("#000000",AllCompliance,
+                      &black_point,exception);
           if (isalpha((int) token[0]) || (token[0] == '#'))
             GetMagickToken(p,&p,token);
           if (*token == '\0')
@@ -2794,9 +2817,11 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
               if ((isalpha((int) *token) == 0) && ((*token == '#') == 0))
                 GetMagickToken(p,&p,token); /* Get white point color. */
               if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
-                (void) QueryMagickColorCompliance(token,&white_point,exception);
+                (void) QueryMagickColorCompliance(token,AllCompliance,
+                           &white_point,exception);
               else
-                (void) QueryMagickColorCompliance("#ffffff",&white_point,exception);
+                (void) QueryMagickColorCompliance("#ffffff",AllCompliance,
+                           &white_point,exception);
             }
           (void) LevelImageColors(*image,&black_point,&white_point,
             *argv[0] == '+' ? MagickTrue : MagickFalse,exception);
@@ -3064,7 +3089,8 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
             target;
 
           (void) SyncImageSettings(image_info,*image);
-          (void) QueryMagickColorCompliance(argv[1],&target,exception);
+          (void) QueryMagickColorCompliance(argv[1],AllCompliance,&target,
+                       exception);
           (void) OpaquePaintImage(*image,&target,&fill,*argv[0] == '-' ?
             MagickFalse : MagickTrue,exception);
           break;
@@ -3091,10 +3117,12 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
         {
           if (*argv[0] == '+')
             {
-              (void) QueryColorCompliance("none",&draw_info->fill,exception);
+              (void) QueryColorCompliance("none",AllComplience,&draw_info->fill,
+                 exception);
               break;
             }
-          (void) QueryColorCompliance(argv[1],&draw_info->fill,exception);
+          (void) QueryColorCompliance(argv[1],AllComplience,&draw_info->fill,
+                 exception);
           break;
         }
       if (LocaleCompare("pointsize",argv[0]+1) == 0)
@@ -3464,9 +3492,6 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           char
             *value;
 
-          /*
-            Set image argv[0].
-          */
           if (*argv[0] == '+')
             {
               if (LocaleNCompare(argv[1],"registry:",9) == 0)
@@ -3489,9 +3514,8 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
             (void) SetImageRegistry(StringRegistryType,argv[1]+9,value,
               exception);
           else
-            if (LocaleNCompare(argv[1],"argv[0]:",7) == 0)
+            if (LocaleNCompare(argv[1],"option:",7) == 0)
               {
-                (void) SetImageOption(image_info,argv[1]+7,value);
                 (void) SetImageOption(image_info,argv[1]+7,value);
                 (void) SetImageArtifact(*image,argv[1]+7,value);
               }
@@ -3694,14 +3718,15 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
 
           if (*argv[0] == '+')
             {
-              (void) QueryColorCompliance("none",&draw_info->stroke,exception);
+              (void) QueryColorCompliance("none",AllComplience,&draw_info->stroke,
+                exception);
               if (draw_info->stroke_pattern != (Image *) NULL)
                 draw_info->stroke_pattern=DestroyImage(
                   draw_info->stroke_pattern);
               break;
             }
           sans=AcquireExceptionInfo();
-          status=QueryColorCompliance(argv[1],&draw_info->stroke,sans);
+          status=QueryColorCompliance(argv[1],AllComplience,&draw_info->stroke,sans);
           sans=DestroyExceptionInfo(sans);
           if (status == MagickFalse)
             draw_info->stroke_pattern=GetImageCache(image_info,argv[1],
@@ -3805,7 +3830,8 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
             target;
 
           (void) SyncImageSettings(image_info,*image);
-          (void) QueryMagickColorCompliance(argv[1],&target,exception);
+          (void) QueryMagickColorCompliance(argv[1],AllCompliance,&target,
+                       exception);
           (void) TransparentPaintImage(*image,&target,(Quantum)
             TransparentAlpha,*argv[0] == '-' ? MagickFalse : MagickTrue,
             &(*image)->exception);
@@ -3864,7 +3890,7 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
     {
       if (LocaleCompare("undercolor",argv[0]+1) == 0)
         {
-          (void) QueryColorCompliance(argv[1],&draw_info->undercolor,
+          (void) QueryColorCompliance(argv[1],AllComplience,&draw_info->undercolor,
             exception);
           break;
         }
@@ -3960,7 +3986,7 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=WaveImage(*image,geometry_info.rho,
-            geometry_info.sigma,exception);
+            geometry_info.sigma,interpolate_method,exception);
           break;
         }
       if (LocaleCompare("weight",argv[0]+1) == 0)
@@ -4006,9 +4032,9 @@ MagickExport MagickBooleanType SimpleOperationImage(ImageInfo *image_info,
   */
   quantize_info=DestroyQuantizeInfo(quantize_info);
   draw_info=DestroyDrawInfo(draw_info);
-  status=(*image)->exception.severity == UndefinedException ? 1 : 0;
-
-  return(status);
+  status=(MagickStatusType) ((*image)->exception.severity ==
+    UndefinedException ? 1 : 0);
+  return(status == 0 ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -4064,10 +4090,8 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
-
-  quantize_info=AcquireQuantizeInfo(image_info);
-  channel=image_info->channel;
-
+  if ((argc <= 0) || (*argv == (char *) NULL))
+    return(MagickTrue);
   status=MagickTrue;
 
   switch (*(argv[0]+1))
@@ -4154,7 +4178,7 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
               status=MagickFalse;
               break;
             }
-          (void) ClutImageChannel(image,channel,clut_image);
+          (void) ClutImage(image,clut_image,interpolate_method,exception);
           clut_image=DestroyImage(clut_image);
           *images=DestroyImageList(*images);
           *images=image;
@@ -4948,6 +4972,8 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
   }
   quantize_info=DestroyQuantizeInfo(quantize_info);
 
+  status=(MagickStatusType) ((*image)->exception.severity ==
+    UndefinedException ? 1 : 0);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 #endif

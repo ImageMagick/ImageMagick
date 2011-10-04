@@ -35,24 +35,27 @@ struct _MagickWand
     id;
 
   char
-    name[MaxTextExtent];
+    name[MaxTextExtent];  /* Wand name to use for MagickWand Logs */
+
+  Image
+    *images;          /* The images in this wand */
+
+  ImageInfo
+    *image_info;      /* Global settings used for images in Wand */
+
+  QuantizeInfo
+    *quantize_info;   /* for CLI API usage, not used by MagickWand API */
+
+  DrawInfo
+    *draw_info;       /* for CLI API usage, not used by MagickWand API */
+
+  MagickBooleanType
+    set_first,        /* wand set to first image, prepend new images */
+    image_pending,    /* this image is pending Next Iteration */
+    debug;            /* Log calls to MagickWand library */
 
   ExceptionInfo
     *exception;
-
-  ImageInfo
-    *image_info;
-
-  QuantizeInfo
-    *quantize_info;
-
-  Image
-    *images;
-
-  MagickBooleanType
-    active,
-    pend,
-    debug;
 
   size_t
     signature;
