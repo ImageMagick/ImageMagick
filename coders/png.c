@@ -7574,8 +7574,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    * but merely passes information to applications that read the resulting
    * PNG image.
    *
-   * To do: recognize other variants of the sRGB profile.  Check the
-   * "intent" field within the profile instead of assuming it's "perceptual".
+   * To do: recognize other variants of the sRGB profile, using the CRC to
+   * verify all recognized variants including the 3 already known.
+   *
+   * Use something other than image->rendering_intent to record the fact
+   * that the sRGB profile was found.
+   *
+   * Record the ICC version (currently v2 or v4) of the incoming sRGB ICC
+   * profile.  Record the Blackpoint Compensation, if any.
    */
    if (ping_exclude_sRGB == MagickFalse)
    {
@@ -7596,80 +7602,54 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (LocaleCompare(name,"ICM") == 0))
 
              {
+                 int
+                   icheck;
+
+                 /* 0: not a known sRGB profile
+                  * 1: HP-Microsoft sRGB v2
+                  * 2: ICC sRGB v4 perceptual
+                  * 3: ICC sRGB v2 perceptual no black-compensation
+                  */
+                 png_uint_32
+                   check_crc[4] = {0, 0xf29e526dUL, 0xbbef7812UL, 0x427ebb21UL},
+                   check_len[4] = {0, 3144, 60960, 3052};
+
+                 png_uint_32
+                   length,
+                   profile_crc;
+
                  unsigned char
                    *data;
 
-                 png_uint_32
-                   length;
-
                  length=(png_uint_32) GetStringInfoLength(profile);
 
-                 if (length == 3144)
+                 for (icheck=3; icheck > 0; icheck--)
                  {
-                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "    got a 3144-byte ICC profile (potentially sRGB)");
-
-                   data=GetStringInfoDatum(profile);
-
-                   if (data[52]=='s' && data[53]=='R' &&
-                       data[54]=='G' && data[55]=='B')
+                   if (length == check_len[icheck])
                    {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is the HP-Microsoft sRGB)");
-                      if (image->rendering_intent==UndefinedIntent)
-                        image->rendering_intent=PerceptualIntent;
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "    Got a %lu-byte ICC profile (potentially sRGB)",
+                         (unsigned long) length);
+
+                     data=GetStringInfoDatum(profile);
+                     profile_crc=crc32(0,data,length);
+
+                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "      with crc=%8x",profile_crc);
+
+                     if (profile_crc == check_crc[icheck])
+                     {
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "      It is sRGB.");
+                        if (image->rendering_intent==UndefinedIntent)
+                          image->rendering_intent=PerceptualIntent;
+                        break;
+                     }
                    }
-                   else
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is not sRGB (%c%c%c%c)",data[52],
-                          data[53],data[54],data[55]);
-                   
                  }
-                 else if (length == 60960)
-                 {
-                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "    got a 60960-byte ICC profile (potentially sRGB)");
-
-                   data=GetStringInfoDatum(profile);
-
-                   if (data[269]=='s' && data[271]=='R' &&
-                       data[273]=='G' && data[275]=='B')
-                   {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is the ICC v4 sRGB)");
-                      if (image->rendering_intent==UndefinedIntent)
-                        image->rendering_intent=PerceptualIntent;
-                   }
-                   else
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is not sRGB (%c%c%c%c)",
-                          data[269],data[271],data[273],data[275]);
-                   
-                 }
-                 else if (length == 3052)
-                 {
-                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "    got a 3052-byte ICC profile (potentially sRGB)");
-
-                   data=GetStringInfoDatum(profile);
-
-                   if (data[336]=='s' && data[337]=='R' &&
-                       data[338]=='G' && data[339]=='B')
-                   {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is the ICC no-black sRGB)");
-                      if (image->rendering_intent==UndefinedIntent)
-                        image->rendering_intent=PerceptualIntent;
-                   }
-                   else
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    It is not sRGB (%c%c%c%c)",data[336],
-                          data[337],data[338],data[339]);
-                   
-                 }
-                 else
+                 if (icheck == 0)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "    got a %lu-byte ICC profile",
+                        "    Got a %lu-byte ICC profile",
                         (unsigned long) length);
               }
           }
