@@ -1,7 +1,8 @@
 2011-10-04  7.0.0-0 Anthony  <anthony@griffith...>
-  * rename and handling of Wand iteration flags to be more logical
-  * addition of "draw_info" in Wand for use by CLI interface (for now)
-  * also make "quantize_info" in Wand, for CLI interface use only (for now)
+  * Rename adjust handling of wand iteration flags to be more logical
+  * Remove initialization of unused "quantize_info" in wand
+  * Both "quantize_info" and added "draw_info" wand elements for CLI use only
+
 
 2011-09-21  7.0.0-0 Anthony  <anthony@griffith...>
   * new module "operator.c" which will holds the standard CLI options
