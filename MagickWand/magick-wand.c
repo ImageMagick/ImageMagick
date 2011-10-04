@@ -149,7 +149,7 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
   if ( wand->draw_info == (DrawInfo *) NULL )
     clone_wand->draw_info=(DrawInfo *) NULL;
   else
-    clone_wand->draw_info=CloneDrawInfo(wand->draw_info);
+    clone_wand->draw_info=CloneDrawInfo(wand->image_info,wand->draw_info);
   clone_wand->images=CloneImageList(wand->images,clone_wand->exception);
   clone_wand->debug=IsEventLogging();
   if (clone_wand->debug != MagickFalse)
