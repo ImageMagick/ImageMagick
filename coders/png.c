@@ -7635,7 +7635,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                      profile_crc=crc32(0,data,length);
 
                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "      with crc=%8x",profile_crc);
+                         "      with crc=%8x",(unsigned int) profile_crc);
 
                      if (profile_crc == check_crc[icheck])
                      {
