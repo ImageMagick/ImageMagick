@@ -10,6 +10,7 @@
 
 2011-09-30  6.7.2-10 Glenn Randers-Pehrson <glennrp@image...>
   * Recognize the sRGB version 4 ICC profile and write PNG sRGB chunk instead.
+  * Use crc32 instead of "sRGB" string to recognize certain sRGB profiles.
 
 2011-09-26  6.7.2-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-9.
