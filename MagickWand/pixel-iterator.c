@@ -82,7 +82,7 @@ struct _PixelIterator
     region;
 
   MagickBooleanType
-    active;
+    active;           /* user has been given pixel data */
 
   ssize_t
     y;

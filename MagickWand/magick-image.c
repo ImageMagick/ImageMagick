@@ -377,7 +377,11 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickAddImage() adds the specified images at the current image location.
+%  MagickAddImage() adds a clone of the images in the second wand and
+%  inserts them into the first wand, at the current image location.
+%
+%  Use MagickSetFirstIterator(), to insert new images before all the current
+%  images in the wand, otherwise image is placed after the current image.
 %
 %  The format of the MagickAddImage method is:
 %
@@ -397,36 +401,55 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
   Image
-    *sentinel;
+    *current;
 
-  sentinel=wand->images;
-  if (sentinel == (Image *) NULL)
+  current=wand->images;  /* note the current image */
+
+  /* if no images in wand, just add them and set first image as current */
+  if (current == (Image *) NULL)
     {
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
     }
-  if (wand->active == MagickFalse)
+
+  /* user jumped to first image, so prepend new images - remain active */
+  if ((wand->set_first != MagickFalse) &&
+       (current->previous == (Image *) NULL) )
     {
-      if ((wand->pend != MagickFalse) && (sentinel->next == (Image *) NULL))
+      PrependImageToList(&current,images);
+      wand->images=GetFirstImageInList(images);
+      return(MagickTrue);
+    }
+  wand->set_first = MagickFalse; /* flag no longer valid */
+
+  /* Current image was flaged as 'pending' iterative processing. */
+  if (wand->image_pending != MagickFalse)
+    {
+      /* current pending image is the last, append new images */
+      if (current->next == (Image *) NULL)
         {
-          AppendImageToList(&sentinel,images);
+          AppendImageToList(&current,images);
           wand->images=GetLastImageInList(images);
           return(MagickTrue);
         }
-      if ((wand->pend != MagickFalse) && (sentinel->previous == (Image *) NULL))
+      /* current pending image is the first image, prepend it */
+      if (current->previous == (Image *) NULL)
         {
-          PrependImageToList(&sentinel,images);
+          PrependImageToList(&current,images);
           wand->images=GetFirstImageInList(images);
           return(MagickTrue);
         }
     }
-  if (sentinel->next == (Image *) NULL)
+
+  /* if at last image append new images */
+  if (current->next == (Image *) NULL)
     {
-      InsertImageInList(&sentinel,images);
+      InsertImageInList(&current,images);
       wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  InsertImageInList(&sentinel,images);
+  /* otherwise just insert image, just after the current image */
+  InsertImageInList(&current,images);
   wand->images=GetFirstImageInList(images);
   return(MagickTrue);
 }
@@ -445,6 +468,8 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
   assert(add_wand->signature == WandSignature);
   if (add_wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",add_wand->name);
+
+  /* clone images in second wand, and insert into first */
   images=CloneImageList(add_wand->images,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
@@ -3566,7 +3591,7 @@ WandExport MagickBooleanType MagickGetImageBackgroundColor(MagickWand *wand,
 %
 %  MagickGetImageBlob() implements direct to memory image formats.  It returns
 %  the image as a blob (a formatted "file" in memory) and its length, starting
-%  from the current position in the image sequence.  Use MagickSetImageFormat() 
+%  from the current position in the image sequence.  Use MagickSetImageFormat()
 %  to set the format to write to the blob (GIF, JPEG,  PNG, etc.).
 %
 %  Utilize MagickResetIterator() to ensure the write is from the beginning of
@@ -6740,7 +6765,8 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickNextImage() associates the next image in the image list with a magick
-%  wand.
+%  wand.  It returns true if the it succeeds, meaning the current image is the
+%  next image to be iterated over.
 %
 %  The format of the MagickNextImage method is:
 %
@@ -6759,16 +6785,16 @@ WandExport MagickBooleanType MagickNextImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if (wand->pend != MagickFalse)
+  /* If current image is 'pending' just return true.  */
+  if (wand->image_pending != MagickFalse)
     {
-      wand->pend=MagickFalse;
+      wand->image_pending=MagickFalse;
       return(MagickTrue);
     }
+  /* If there is no next image, (Iterator is finished) */
   if (GetNextImageInList(wand->images) == (Image *) NULL)
-    {
-      wand->pend=MagickTrue;
       return(MagickFalse);
-    }
+  /* just move to next image - current image is not 'pending' */
   wand->images=GetNextImageInList(wand->images);
   return(MagickTrue);
 }
@@ -7039,7 +7065,7 @@ WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickPingImage() is like MagickReadImage() except the only valid
+%  MagickPingImage() is the same as MagickReadImage() except the only valid
 %  information returned is the image width, height, size, and format.  It
 %  is designed to efficiently obtain this information from a file without
 %  reading the entire image sequence into memory.
@@ -7353,16 +7379,12 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if (wand->pend != MagickFalse)
-    {
-      wand->pend=MagickFalse;
-      return(MagickTrue);
-    }
+
+  wand->image_pending=MagickFalse;  /* pending status has no meaning */
+  /* If there is no prev image, return false (Iterator is finished) */
   if (GetPreviousImageInList(wand->images) == (Image *) NULL)
-    {
-      wand->pend=MagickTrue;
       return(MagickFalse);
-    }
+  /* just do it - current image is not 'pending' */
   wand->images=GetPreviousImageInList(wand->images);
   return(MagickTrue);
 }
@@ -7689,10 +7711,11 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickReadImage() reads an image or image sequence.  The images are inserted
-%  at the current image pointer position.   Use MagickSetFirstIterator(),
-%  MagickSetLastIterator, or MagickSetImageIndex() to specify the current
-%  image pointer position at the beginning of the image list, the end, or
-%  anywhere in-between respectively.
+%  at the current image pointer position.
+%
+%  Use MagickSetFirstIterator(), to insert new images before all the current
+%  images in the wand, MagickSetLastIterator() to append add to the end,
+%  MagickSetImageIndex() to place images just after the given index.
 %
 %  The format of the MagickReadImage method is:
 %
@@ -7740,6 +7763,7 @@ WandExport MagickBooleanType MagickReadImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickReadImageBlob() reads an image or image sequence from a blob.
+%  In all other respects it is like MagickReadImage().
 %
 %  The format of the MagickReadImageBlob method is:
 %
@@ -7782,8 +7806,8 @@ WandExport MagickBooleanType MagickReadImageBlob(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickReadImageFile() reads an image or image sequence from an open file
-%  descriptor.
+%  MagickReadImageFile() reads an image or image sequence from an already
+%  opened file descriptor.  Otherwise it is like MagickReadImage().
 %
 %  The format of the MagickReadImageFile method is:
 %

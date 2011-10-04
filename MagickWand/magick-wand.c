@@ -72,7 +72,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClearMagickWand() clears resources associated with the wand.
+%  ClearMagickWand() clears resources associated with the wand, leaving the
+%  wand blank, and ready to be used for a new set of images.
 %
 %  The format of the ClearMagickWand method is:
 %
@@ -89,10 +90,11 @@ WandExport void ClearMagickWand(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
-  wand->image_info=DestroyImageInfo(wand->image_info);
   wand->images=DestroyImageList(wand->images);
-  wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
+  if (wand->quantize_info != (QuantizeInfo *) NULL )
+    wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
+  if (wand->draw_info != (DrawInfo *) NULL )
+    wand->draw_info=DestroyDrawInfo(wand->draw_info);
   wand->image_info=AcquireImageInfo();
   ClearMagickException(wand->exception);
   wand->debug=IsEventLogging();
@@ -140,7 +142,14 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
-  clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
+  if ( wand->quantize_info == (QuantizeInfo *) NULL )
+    clone_wand->quantize_info=(QuantizeInfo *) NULL;
+  else
+    clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
+  if ( wand->draw_info == (DrawInfo *) NULL )
+    clone_wand->draw_info=(DrawInfo *) NULL;
+  else
+    clone_wand->draw_info=CloneDrawInfo(wand->draw_info);
   clone_wand->images=CloneImageList(wand->images,clone_wand->exception);
   clone_wand->debug=IsEventLogging();
   if (clone_wand->debug != MagickFalse)
@@ -177,7 +186,10 @@ WandExport MagickWand *DestroyMagickWand(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
+  if (wand->quantize_info != (QuantizeInfo *) NULL )
+    wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
+  if (wand->draw_info != (DrawInfo *) NULL )
+    wand->draw_info=DestroyDrawInfo(wand->draw_info);
   wand->image_info=DestroyImageInfo(wand->image_info);
   wand->images=DestroyImageList(wand->images);
   wand->exception=DestroyExceptionInfo(wand->exception);
@@ -827,9 +839,9 @@ WandExport void MagickResetIterator(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->active=MagickFalse;
-  wand->pend=MagickTrue;
   wand->images=GetFirstImageInList(wand->images);
+  wand->set_first=MagickFalse;    /* we did not jump to the first image */
+  wand->image_pending=MagickTrue; /* this image is the 'next' image */
 }
 
 /*
@@ -860,9 +872,9 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->active=MagickTrue;
-  wand->pend=MagickFalse;
   wand->images=GetFirstImageInList(wand->images);
+  wand->set_first=MagickTrue;       /* we jumped to the first image */
+  wand->image_pending=MagickFalse;  /* but this image is not 'next' */
 }
 
 /*
@@ -909,9 +921,9 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
       InheritException(wand->exception,&wand->images->exception);
       return(MagickFalse);
     }
-  wand->active=MagickTrue;
-  wand->pend=MagickFalse;
   wand->images=image;
+  wand->set_first=MagickFalse;     /* we are not at very start of list */
+  wand->image_pending=MagickFalse; /* but it is not iteration pending */
   return(MagickTrue);
 }
 /*
@@ -942,9 +954,9 @@ WandExport void MagickSetLastIterator(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->active=MagickFalse;
-  wand->pend=MagickTrue;
   wand->images=GetLastImageInList(wand->images);
+  wand->set_first=MagickFalse;     /* we are not at very start of list */
+  wand->image_pending=MagickFalse; /* and is not iteration pending  */
 }
 
 /*
@@ -1039,10 +1051,11 @@ WandExport MagickWand *NewMagickWand(void)
   wand->id=AcquireWandId();
   (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",MagickWandId,
     (double) wand->id);
-  wand->exception=AcquireExceptionInfo();
-  wand->image_info=AcquireImageInfo();
-  wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   wand->images=NewImageList();
+  wand->image_info=AcquireImageInfo();
+  wand->quantize_info=(QuantizeInfo *) NULL; /* not used in MagickWand API */
+  wand->draw_info=(DrawInfo *) NULL;         /* not used in MagickWand API */
+  wand->exception=AcquireExceptionInfo();
   wand->debug=IsEventLogging();
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
