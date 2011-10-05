@@ -972,9 +972,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->verbose=image_info->verbose;
   if (image_info->view != (char *) NULL)
     (void) CloneString(&clone_info->view,image_info->view);
-  if (image_info->authenticate != (char *) NULL)
-    (void) CloneString(&clone_info->authenticate,image_info->authenticate);
-  (void) CloneImageOptions(clone_info,image_info);
   clone_info->progress_monitor=image_info->progress_monitor;
   clone_info->client_data=image_info->client_data;
   clone_info->cache=image_info->cache;
@@ -993,6 +990,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   (void) CopyMagickString(clone_info->filename,image_info->filename,
     MaxTextExtent);
   clone_info->channel=image_info->channel;
+
+  (void) CloneImageOptions(clone_info,image_info);
   clone_info->debug=IsEventLogging();
   clone_info->signature=image_info->signature;
   return(clone_info);
@@ -1289,15 +1288,12 @@ MagickExport ImageInfo *DestroyImageInfo(ImageInfo *image_info)
     image_info->density=DestroyString(image_info->density);
   if (image_info->view != (char *) NULL)
     image_info->view=DestroyString(image_info->view);
-  if (image_info->authenticate != (char *) NULL)
-    image_info->authenticate=DestroyString(
-      image_info->authenticate);
-  DestroyImageOptions(image_info);
   if (image_info->cache != (void *) NULL)
     image_info->cache=DestroyPixelCache(image_info->cache);
   if (image_info->profile != (StringInfo *) NULL)
     image_info->profile=(void *) DestroyStringInfo((StringInfo *)
       image_info->profile);
+  DestroyImageOptions(image_info);
   image_info->signature=(~MagickSignature);
   image_info=(ImageInfo *) RelinquishMagickMemory(image_info);
   return(image_info);

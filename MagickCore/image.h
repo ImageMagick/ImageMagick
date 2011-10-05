@@ -426,8 +426,8 @@ struct _ImageInfo
     verbose;                 /* verbose output enable/disable */
 
   char
-    *view,
-    *authenticate;
+    *view;
+    /* authenticate -- moved to ImageOptions()
 
   ChannelType
     channel;
