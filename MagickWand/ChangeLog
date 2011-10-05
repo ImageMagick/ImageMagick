@@ -3,7 +3,6 @@
   * Remove initialization of unused "quantize_info" in wand
   * Both "quantize_info" and added "draw_info" wand elements for CLI use only
 
-
 2011-09-21  7.0.0-0 Anthony  <anthony@griffith...>
   * new module "operator.c" which will holds the standard CLI options
 
