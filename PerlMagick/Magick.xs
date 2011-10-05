@@ -1150,7 +1150,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"authenticate") == 0)
         {
           if (info)
-            (void) CloneString(&info->image_info->authenticate,SvPV(sval,na));
+            SetImageOption(info->image_info,attribute,SvPV(sval,na));
           break;
         }
       if (info)
@@ -4292,7 +4292,14 @@ Get(ref,...)
           if (LocaleCompare(attribute,"authenticate") == 0)
             {
               if (info)
-                s=newSVpv(info->image_info->authenticate,0);
+                {
+                  const char
+                    *option;
+
+                  option=GetImageOption(info->image_info,attribute);
+                  if (option != (const char *) NULL)
+                    s=newSVpv(option,0);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
