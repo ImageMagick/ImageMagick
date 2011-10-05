@@ -1597,7 +1597,8 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DefineImageOption() associates a key/value pair with an image option.
+%  DefineImageOption() associates an assignment string of the form
+%  "key=value" with an image option.
 %
 %  The format of the DefineImageOption method is:
 %
@@ -1608,7 +1609,7 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
 %
 %    o image_info: the image info.
 %
-%    o option: the image option.
+%    o option: the image option assignment string.
 %
 */
 MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,

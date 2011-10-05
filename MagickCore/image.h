@@ -274,7 +274,7 @@ struct _Image
     dither;            /* dithering on/off */
 
   MagickSizeType
-    extent;
+    extent;            /* Size of image read from disk */
 
   MagickBooleanType
     ping;
@@ -317,25 +317,25 @@ struct _Image
     *generic_profile;
 
   char
-    filename[MaxTextExtent],   /* images input filename */
-    magick_filename[MaxTextExtent],
-    magick[MaxTextExtent];
+    filename[MaxTextExtent],        /* images input filename */
+    magick_filename[MaxTextExtent], /* given image filename (with read mods) */
+    magick[MaxTextExtent];          /* images file format (file magic) */
 
   size_t
     magick_columns,
     magick_rows;
 
   BlobInfo
-    *blob;
+    *blob;             /* image file as in-memory string of 'extent' */
 
   ExceptionInfo
-    exception;        /* Error handling report */
+    exception;         /* Error handling report */
 
   MagickBooleanType
-    debug;            /* debug output attribute */
+    debug;             /* debug output attribute */
 
   volatile ssize_t
-    reference_count;
+    reference_count;   /* image data sharing memory management */
 
   SemaphoreInfo
     *semaphore;
@@ -375,22 +375,22 @@ struct _ImageInfo
     depth;
 
   InterlaceType
-    interlace;
+    interlace;          /* interlace for image write */
 
   EndianType
-    endian;
+    endian;             /* integer endian order for raw image data */
 
   ResolutionType
-    units;
+    units;              /* denisty pixels/inch or pixel/cm */
 
   size_t
-    quality;
+    quality;            /* compression quality */
 
   char
-    *sampling_factor,
-    *server_name,
-    *font,
-    *texture,
+    *sampling_factor,   /* JPEG write sampling factor */
+    *server_name,       /* X windows server name - display/animate */
+    *font,              /* draw_info */
+    *texture,           /* montage/display background tile */
     *density;
 
   double
@@ -403,8 +403,8 @@ struct _ImageInfo
     matte_color;
 
   MagickBooleanType
-    dither,
-    monochrome;
+    dither,            /* dither enable-disable */
+    monochrome;        /* read/write pcl,pdf,ps,xps as monocrome image */
 
   size_t
     colors;
@@ -422,8 +422,8 @@ struct _ImageInfo
     group;
 
   MagickBooleanType
-    ping,
-    verbose;
+    ping,                    /* fast read image attributes, not image data */
+    verbose;                 /* verbose output enable/disable */
 
   char
     *view,
@@ -433,7 +433,7 @@ struct _ImageInfo
     channel;
 
   void
-    *options;
+    *options;                /* splay tree of use options */
 
   VirtualPixelMethod
     virtual_pixel_method;
@@ -467,10 +467,10 @@ struct _ImageInfo
     length;
 
   char
-    magick[MaxTextExtent],
-    unique[MaxTextExtent],
-    zero[MaxTextExtent],
-    filename[MaxTextExtent];
+    magick[MaxTextExtent],    /* image file format (file magick) */
+    unique[MaxTextExtent],    /* unique tempory filename - delegates */
+    zero[MaxTextExtent],      /* unique filename ? - delegates */
+    filename[MaxTextExtent];  /* filename when reading/writing image */
 
   MagickBooleanType
     debug;

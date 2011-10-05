@@ -846,9 +846,9 @@ MagickExport Image **ImageListToArray(const Image *images,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InsertImageInList() inserts the second image or image list into the first
-%  image list immediately after the image pointed to.  The given image list
-%  pointer is unchanged unless previously empty.
+%  InsertImageInList() insert second given image or image list, into the first
+%  image list, immediately AFTER the image pointed to.  The given image list
+%  pointer is left unchanged unless previously empty.
 %
 %  The format of the InsertImageInList method is:
 %
@@ -928,6 +928,7 @@ MagickExport Image *NewImageList(void)
 */
 MagickExport void PrependImageToList(Image **images,Image *image)
 {
+  /* prepend, append the two lists with order swapped! */
   AppendImageToList(&image,*images);
 }
 
