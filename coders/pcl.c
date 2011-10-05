@@ -157,6 +157,9 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     options[MaxTextExtent],
     input_filename[MaxTextExtent];
 
+  const char
+    *option;
+
   const DelegateInfo
     *delegate_info;
 
@@ -347,9 +350,10 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  if (read_info->authenticate != (char *) NULL)
+  option=GetImageOption(read_info,"authenticate");
+  if (option != (const char *) NULL)
     (void) FormatLocaleString(options+strlen(options),MaxTextExtent,
-      " -sPCLPassword=%s",read_info->authenticate);
+      " -sPCLPassword=%s",option);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(read_info->filename);
   (void) FormatLocaleString(command,MaxTextExtent,

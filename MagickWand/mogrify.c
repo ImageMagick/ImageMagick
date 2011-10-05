@@ -6162,19 +6162,17 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
         if (LocaleCompare("attenuate",option+1) == 0)
           {
             if (*option == '+')
-              {
-                (void) DeleteImageOption(image_info,option+1);
-                break;
-              }
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
+              (void) DeleteImageOption(image_info,option+1);
+            else
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("authenticate",option+1) == 0)
           {
             if (*option == '+')
-              (void) CloneString(&image_info->authenticate,(char *) NULL);
+              (void) DeleteImageOption(image_info,option+1);
             else
-              (void) CloneString(&image_info->authenticate,argv[i+1]);
+              (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         break;

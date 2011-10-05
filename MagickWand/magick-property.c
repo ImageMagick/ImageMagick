@@ -2594,7 +2594,7 @@ WandExport MagickBooleanType MagickSetPassphrase(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) CloneString(&wand->image_info->authenticate,passphrase);
+  (void) SetImageOption(wand->image_info,"authenticate",passphrase);
   return(MagickTrue);
 }
 
