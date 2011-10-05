@@ -288,12 +288,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         icon_image=BlobToImage(read_info,png,length+12,exception);
         read_info=DestroyImageInfo(read_info);
         png=(unsigned char *) RelinquishMagickMemory(png);
-        if (icon_image != (Image *) NULL)
+        if (icon_image == (Image *) NULL)
           {
-            DestroyBlob(icon_image);
-            icon_image->blob=ReferenceBlob(image->blob);
-            ReplaceImageInList(&image,icon_image);
+            image=DestroyImageList(image);
+            return((Image *) NULL);
           }
+        DestroyBlob(icon_image);
+        icon_image->blob=ReferenceBlob(image->blob);
+        ReplaceImageInList(&image,icon_image);
       }
     else
       {
