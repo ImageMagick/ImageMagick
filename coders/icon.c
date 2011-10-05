@@ -367,7 +367,6 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         (void) CopyMagickString(read_info->magick,"PNG",MaxTextExtent);
         icon_image=BlobToImage(read_info,pixels,length,exception);
         read_info=DestroyImageInfo(read_info);
-        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         if (icon_image == (Image *) NULL)
           {
             image=DestroyImageList(image);
