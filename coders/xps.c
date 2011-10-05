@@ -59,6 +59,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
@@ -111,7 +112,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     input_filename[MaxTextExtent];
 
   const char
-    option;
+    *option;
 
   const DelegateInfo
     *delegate_info;
