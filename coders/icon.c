@@ -551,7 +551,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
                 SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
-                SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+                SetPixelRed(image,ScaleCharToQuantum(*p++),q);
                 if (icon_info.bits_per_pixel == 32)
                   SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
                 q+=GetPixelChannels(image);
