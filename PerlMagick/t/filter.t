@@ -54,7 +54,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Charcoal.miff', 'Charcoa
 testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/ColorFloodfill.miff', 'ColorFloodfill', q/geometry=>"+25+45"/, 0.03, 1.02);
 ++$test;
 
-testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Colorize.miff', 'Colorize', q/fill=>"red", opacity=>"50%"/, 0.02, 0.5 );
+testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Colorize.miff', 'Colorize', q/fill=>"red", blend=>"50%"/, 0.02, 0.5 );
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Contrast.miff', 'Contrast', q//, 0.06, 0.6);
