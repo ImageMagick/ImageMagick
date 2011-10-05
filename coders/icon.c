@@ -198,6 +198,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     bit,
     byte,
     bytes_per_line,
+    length,
     one,
     scanline_pad;
 
@@ -205,6 +206,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     count,
     offset,
     y;
+
+  unsigned char
+    *pixels;
 
   /*
     Open image file.
@@ -253,8 +257,102 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     icon_info.size=ReadBlobLSBLong(image);
     icon_info.width=(unsigned char) ((int) ReadBlobLSBLong(image));
     icon_info.height=(unsigned char) ((int) ReadBlobLSBLong(image)/2);
-    if ((icon_file.directory[i].width == 0) && 
-        (icon_file.directory[i].height == 0))
+    icon_info.planes=ReadBlobLSBShort(image);
+    icon_info.bits_per_pixel=ReadBlobLSBShort(image);
+    if (icon_info.bits_per_pixel > 32)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    icon_info.compression=ReadBlobLSBLong(image);
+    icon_info.image_size=ReadBlobLSBLong(image);
+    icon_info.x_pixels=ReadBlobLSBLong(image);
+    icon_info.y_pixels=ReadBlobLSBLong(image);
+    icon_info.number_colors=ReadBlobLSBLong(image);
+    icon_info.colors_important=ReadBlobLSBLong(image);
+    image->matte=MagickTrue;
+    image->columns=(size_t) icon_file.directory[i].width;
+    if ((ssize_t) image->columns > icon_info.width)
+      image->columns=(size_t) icon_info.width;
+    if (image->columns == 0)
+      image->columns=256;
+    image->rows=(size_t) icon_file.directory[i].height;
+    if ((ssize_t) image->rows > icon_info.height)
+      image->rows=(size_t) icon_info.height;
+    if (image->rows == 0)
+      image->rows=256;
+    image->depth=icon_info.bits_per_pixel;
+    if (image->debug != MagickFalse)
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          " scene    = %.20g",(double) i);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   size   = %.20g",(double) icon_info.size);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   width  = %.20g",(double) icon_file.directory[i].width);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   height = %.20g",(double) icon_file.directory[i].height);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   colors = %.20g",(double ) icon_info.number_colors);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   planes = %.20g",(double) icon_info.planes);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   bpp    = %.20g",(double) icon_info.bits_per_pixel);
+      }
+  if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel <= 16))
+    {
+      image->storage_class=PseudoClass;
+      image->colors=icon_info.number_colors;
+      if (image->colors == 0)
+        image->colors=one << icon_info.bits_per_pixel;
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      register ssize_t
+        i;
+
+      size_t
+        number_colors,
+        one;
+
+      unsigned char
+        *icon_colormap;
+
+      /*
+        Read Icon raster colormap.
+      */
+      one=1;
+      number_colors=one << icon_info.bits_per_pixel;
+      if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
+        image->colors,4UL*sizeof(*icon_colormap));
+      if (icon_colormap == (unsigned char *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      count=ReadBlob(image,(size_t) (4*image->colors),icon_colormap);
+      if (count != (ssize_t) (4*image->colors))
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      p=icon_colormap;
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        image->colormap[i].blue=(Quantum) ScaleCharToQuantum(*p++);
+        image->colormap[i].green=(Quantum) ScaleCharToQuantum(*p++);
+        image->colormap[i].red=(Quantum) ScaleCharToQuantum(*p++);
+        p++;
+      }
+      icon_colormap=(unsigned char *) RelinquishMagickMemory(icon_colormap);
+    }
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
+    length=icon_file.directory[i].size-40;
+    pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+    if (pixels == (unsigned char *) NULL)
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    count=ReadBlob(image,length,pixels);
+    if (count != (ssize_t) length)
+      {
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      }
+    if (memcmp(pixels,"\211PNG\r\n\032\n",8) == 0)
       {
         Image
           *icon_image;
@@ -262,32 +360,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         ImageInfo
           *read_info;
 
-        size_t
-          length;
-
-        unsigned char
-          *png;
-
         /*
           Icon image encoded as a compressed PNG image.
         */
-        length=icon_file.directory[i].size;
-        png=(unsigned char *) AcquireQuantumMemory(length+12,sizeof(*png));
-        if (png == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) CopyMagickMemory(png,"\211PNG\r\n\032\n\000\000\000\015",12);
-        count=ReadBlob(image,length-12,png+12);
-        if (count != (ssize_t) (length-12))
-          {
-            png=(unsigned char *) RelinquishMagickMemory(png);
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
-          }
         read_info=CloneImageInfo(image_info);
         (void) CopyMagickString(read_info->magick,"PNG",MaxTextExtent);
-        icon_image=BlobToImage(read_info,png,length+12,exception);
+        icon_image=BlobToImage(read_info,pixels,length,exception);
         read_info=DestroyImageInfo(read_info);
-        png=(unsigned char *) RelinquishMagickMemory(png);
+        pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         if (icon_image == (Image *) NULL)
           {
             image=DestroyImageList(image);
@@ -299,97 +379,18 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       }
     else
       {
-        icon_info.planes=ReadBlobLSBShort(image);
-        icon_info.bits_per_pixel=ReadBlobLSBShort(image);
-        if (icon_info.bits_per_pixel > 32)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        icon_info.compression=ReadBlobLSBLong(image);
-        icon_info.image_size=ReadBlobLSBLong(image);
-        icon_info.x_pixels=ReadBlobLSBLong(image);
-        icon_info.y_pixels=ReadBlobLSBLong(image);
-        icon_info.number_colors=ReadBlobLSBLong(image);
-        icon_info.colors_important=ReadBlobLSBLong(image);
-        image->matte=MagickTrue;
-        image->columns=(size_t) icon_file.directory[i].width;
-        if ((ssize_t) image->columns > icon_info.width)
-          image->columns=(size_t) icon_info.width;
-        image->rows=(size_t) icon_file.directory[i].height;
-        if ((ssize_t) image->rows > icon_info.height)
-          image->rows=(size_t) icon_info.height;
-        image->depth=icon_info.bits_per_pixel;
-        if (image->debug != MagickFalse)
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              " scene    = %.20g",(double) i);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   size   = %.20g",(double) icon_info.size);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   width  = %.20g",(double) icon_file.directory[i].width);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   height = %.20g",(double) icon_file.directory[i].height);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   colors = %.20g",(double ) icon_info.number_colors);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   planes = %.20g",(double) icon_info.planes);
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   bpp    = %.20g",(double) icon_info.bits_per_pixel);
-          }
-      if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel <= 16))
-        {
-          image->storage_class=PseudoClass;
-          image->colors=icon_info.number_colors;
-          if (image->colors == 0)
-            image->colors=one << icon_info.bits_per_pixel;
-        }
-      if (image->storage_class == PseudoClass)
-        {
-          register ssize_t
-            i;
+        register unsigned char
+          *p;
 
-          size_t
-            number_colors,
-            one;
-
-          unsigned char
-            *icon_colormap;
-
-          /*
-            Read Icon raster colormap.
-          */
-          one=1;
-          number_colors=one << icon_info.bits_per_pixel;
-          if (AcquireImageColormap(image,number_colors,exception) == MagickFalse)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
-            image->colors,4UL*sizeof(*icon_colormap));
-          if (icon_colormap == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          count=ReadBlob(image,(size_t) (4*image->colors),icon_colormap);
-          if (count != (ssize_t) (4*image->colors))
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
-          p=icon_colormap;
-          for (i=0; i < (ssize_t) image->colors; i++)
-          {
-            image->colormap[i].blue=(Quantum) ScaleCharToQuantum(*p++);
-            image->colormap[i].green=(Quantum) ScaleCharToQuantum(*p++);
-            image->colormap[i].red=(Quantum) ScaleCharToQuantum(*p++);
-            p++;
-          }
-          icon_colormap=(unsigned char *) RelinquishMagickMemory(icon_colormap);
-        }
         /*
           Convert Icon raster image to pixel packets.
         */
-        if ((image_info->ping != MagickFalse) &&
-            (image_info->number_scenes != 0))
-          if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-            break;
         bytes_per_line=(((image->columns*icon_info.bits_per_pixel)+31) &
           ~31) >> 3;
         (void) bytes_per_line;
         scanline_pad=((((image->columns*icon_info.bits_per_pixel)+31) & ~31)-
           (image->columns*icon_info.bits_per_pixel)) >> 3;
+        p=pixels;
         switch (icon_info.bits_per_pixel)
         {
           case 1:
@@ -404,7 +405,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) (image->columns-7); x+=8)
               {
-                byte=(size_t) ReadBlobByte(image);
+                byte=(size_t) *p++;
                 for (bit=0; bit < 8; bit++)
                 {
                   SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
@@ -414,7 +415,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               }
               if ((image->columns % 8) != 0)
                 {
-                  byte=(size_t) ReadBlobByte(image);
+                  byte=(size_t) *p++;
                   for (bit=0; bit < (image->columns % 8); bit++)
                   {
                     SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
@@ -423,7 +424,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                   }
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
-                (void) ReadBlobByte(image);
+                (void) *p++;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -448,7 +449,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < ((ssize_t) image->columns-1); x+=2)
               {
-                byte=(size_t) ReadBlobByte(image);
+                byte=(size_t) *p++;
                 SetPixelIndex(image,((byte >> 4) & 0xf),q);
                 q+=GetPixelChannels(image);
                 SetPixelIndex(image,((byte) & 0xf),q);
@@ -456,12 +457,12 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               }
               if ((image->columns % 2) != 0)
                 {
-                  byte=(size_t) ReadBlobByte(image);
+                  byte=(size_t) *p++;
                   SetPixelIndex(image,((byte >> 4) & 0xf),q);
                   q+=GetPixelChannels(image);
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
-                (void) ReadBlobByte(image);
+                (void) *p++;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -486,12 +487,12 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                byte=(size_t) ReadBlobByte(image);
+                byte=(size_t) *p++;
                 SetPixelIndex(image,byte,q);
                 q+=GetPixelChannels(image);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
-                (void) ReadBlobByte(image);
+                (void) *p++;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -516,13 +517,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                byte=(size_t) ReadBlobByte(image);
-                byte|=(size_t) (ReadBlobByte(image) << 8);
+                byte=(size_t) *p++;
+                byte|=(size_t) (*p++ << 8);
                 SetPixelIndex(image,byte,q);
                 q+=GetPixelChannels(image);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
-                (void) ReadBlobByte(image);
+                (void) *p++;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -548,20 +549,16 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image)),q);
-                SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image)),q);
-                SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-                  ReadBlobByte(image)),q);
+                SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
+                SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
+                SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
                 if (icon_info.bits_per_pixel == 32)
-                  SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-                    ReadBlobByte(image)),q);
+                  SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
                 q+=GetPixelChannels(image);
               }
               if (icon_info.bits_per_pixel == 24)
                 for (x=0; x < (ssize_t) scanline_pad; x++)
-                  (void) ReadBlobByte(image);
+                  (void) *p++;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
               if (image->previous == (Image *) NULL)
@@ -592,7 +589,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < ((ssize_t) image->columns-7); x+=8)
               {
-                byte=(size_t) ReadBlobByte(image);
+                byte=(size_t) *p++;
                 for (bit=0; bit < 8; bit++)
                 {
                   SetPixelAlpha(image,(((byte & (0x80 >> bit)) != 0) ?
@@ -602,7 +599,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               }
               if ((image->columns % 8) != 0)
                 {
-                  byte=(size_t) ReadBlobByte(image);
+                  byte=(size_t) *p++;
                   for (bit=0; bit < (image->columns % 8); bit++)
                   {
                     SetPixelAlpha(image,(((byte & (0x80 >> bit)) != 0) ?
@@ -612,7 +609,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 }
               if ((image->columns % 32) != 0)
                 for (x=0; x < (ssize_t) ((32-(image->columns % 32))/8); x++)
-                  (void) ReadBlobByte(image);
+                  (void) *p++;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
             }
@@ -624,6 +621,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             break;
           }
       }
+    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     /*
       Proceed to next image.
     */
