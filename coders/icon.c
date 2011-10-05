@@ -255,8 +255,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     icon_info.size=ReadBlobLSBLong(image);
     icon_info.width=(unsigned char) ((int) ReadBlobLSBLong(image));
     icon_info.height=(unsigned char) ((int) ReadBlobLSBLong(image)/2);
-    if ((icon_file.directory[i].width == 0) && 
-        (icon_file.directory[i].height == 0))
+    icon_info.planes=ReadBlobLSBShort(image);
+    icon_info.bits_per_pixel=ReadBlobLSBShort(image);
+    if ((icon_info.planes == 18505) && (icon_info.bits_per_pixel == 21060))
       {
         Image
           *icon_image;
@@ -274,12 +275,16 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           Icon image encoded as a compressed PNG image.
         */
         length=icon_file.directory[i].size;
-        png=(unsigned char *) AcquireQuantumMemory(length+12,sizeof(*png));
+        png=(unsigned char *) AcquireQuantumMemory(length+16,sizeof(*png));
         if (png == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         (void) CopyMagickMemory(png,"\211PNG\r\n\032\n\000\000\000\015",12);
-        count=ReadBlob(image,length-12,png+12);
-        if (count != (ssize_t) (length-12))
+        png[12]=(unsigned char) icon_info.planes;
+        png[13]=(unsigned char) (icon_info.planes >> 8);
+        png[14]=(unsigned char) icon_info.bits_per_pixel;
+        png[15]=(unsigned char) (icon_info.bits_per_pixel >> 8);
+        count=ReadBlob(image,length-16,png+16);
+        if (count != (ssize_t) (length-16))
           {
             png=(unsigned char *) RelinquishMagickMemory(png);
             ThrowReaderException(CorruptImageError,
@@ -287,7 +292,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           }
         read_info=CloneImageInfo(image_info);
         (void) CopyMagickString(read_info->magick,"PNG",MaxTextExtent);
-        icon_image=BlobToImage(read_info,png,length+12,exception);
+        icon_image=BlobToImage(read_info,png,length+16,exception);
         read_info=DestroyImageInfo(read_info);
         png=(unsigned char *) RelinquishMagickMemory(png);
         if (icon_image == (Image *) NULL)
@@ -301,8 +306,6 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       }
     else
       {
-        icon_info.planes=ReadBlobLSBShort(image);
-        icon_info.bits_per_pixel=ReadBlobLSBShort(image);
         if (icon_info.bits_per_pixel > 32)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         icon_info.compression=ReadBlobLSBLong(image);
