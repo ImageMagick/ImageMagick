@@ -427,7 +427,7 @@ struct _ImageInfo
 
   char
     *view;
-    /* authenticate -- moved to ImageOptions()
+    /* authenticate -- moved to ImageOptions() */
 
   ChannelType
     channel;
