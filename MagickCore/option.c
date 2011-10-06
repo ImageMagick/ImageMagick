@@ -1732,11 +1732,8 @@ MagickExport void DestroyImageOptions(ImageInfo *image_info)
 %
 */
 MagickExport const char *GetImageOption(const ImageInfo *image_info,
-  const char *key)
+  const char *option)
 {
-  const char
-    *option;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   if (image_info->debug != MagickFalse)
@@ -1744,9 +1741,9 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
       image_info->filename);
   if (image_info->options == (void *) NULL)
     return((const char *) NULL);
-  option=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
-    image_info->options,key);
-  return(option);
+
+  return( (const char *) GetValueFromSplayTree((SplayTreeInfo *)
+    image_info->options,key) );
 }
 
 /*
@@ -2510,20 +2507,26 @@ MagickExport void ResetImageOptionIterator(const ImageInfo *image_info)
 MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
   const char *option,const char *value)
 {
-  MagickBooleanType
-    status;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   if (image_info->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+
+  /* Delete Option if NULL */
+  if ( value = (const char *)NULL )
+    return(DeleteImageOption(image_info,option);
+
+  /* This should not be here! - but others might */
   if (LocaleCompare(option,"size") == 0)
     (void) CloneString(&image_info->size,value);
+
+  /* create tree if needed */
   if (image_info->options == (void *) NULL)
     image_info->options=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
-  status=AddValueToSplayTree((SplayTreeInfo *) image_info->options,
-    ConstantString(option),ConstantString(value));
-  return(status);
+
+  /* add option and return */
+  return( AddValueToSplayTree((SplayTreeInfo *) image_info->options,
+    ConstantString(option),ConstantString(value))) );
 }
