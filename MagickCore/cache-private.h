@@ -237,7 +237,7 @@ extern MagickPrivate Quantum
     const size_t,const size_t,NexusInfo *,ExceptionInfo *),
   *GetPixelCacheNexusPixels(const Cache,NexusInfo *),
   *QueueAuthenticNexus(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,NexusInfo *,ExceptionInfo *);
+    const size_t,const MagickBooleanType,NexusInfo *,ExceptionInfo *);
 
 extern MagickPrivate size_t
   GetPixelCacheChannels(const Cache);
