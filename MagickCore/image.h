@@ -407,7 +407,7 @@ struct _ImageInfo
     monochrome;        /* read/write pcl,pdf,ps,xps as monocrome image */
 
   size_t
-    colors;
+    colors;            /* record the user requested color reduction! */
 
   ColorspaceType
     colorspace;
