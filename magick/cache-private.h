@@ -236,7 +236,7 @@ extern MagickExport PixelPacket
     const size_t,const size_t,NexusInfo *,ExceptionInfo *),
   *GetPixelCacheNexusPixels(const Cache,NexusInfo *),
   *QueueAuthenticNexus(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,NexusInfo *,ExceptionInfo *);
+    const size_t,const MagickBooleanType,NexusInfo *,ExceptionInfo *);
 
 extern MagickExport size_t
   GetPixelCacheChannels(const Cache);
