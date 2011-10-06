@@ -1820,7 +1820,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) (width*width-1.0);
-  kernel_info->bias=image->bias;
+  kernel_info->bias=image->bias;   /* FUTURE: User bias on a edge image? */
   edge_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
@@ -1915,7 +1915,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     }
     k--;
   }
-  kernel_info->bias=image->bias;
+  kernel_info->bias=image->bias;  /* FUTURE: user bias on an edge image */
   emboss_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
@@ -1991,7 +1991,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->bias=bias;
+  kernel_info->bias=bias;  /* FUTURE: user bias on Gaussian Blur! non-sense */
   kernel_info->signature=MagickSignature;
   kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
@@ -2595,6 +2595,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case SharpenPreview:
       {
+        /* FUTURE: user bias on sharpen! This is non-sensical! */
         preview_image=SharpenImage(thumbnail,radius,sigma,image->bias,
           exception);
         (void) FormatLocaleString(label,MaxTextExtent,"sharpen %gx%g",
@@ -2603,6 +2604,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case BlurPreview:
       {
+        /* FUTURE: user bias on blur! This is non-sensical! */
         preview_image=BlurImage(thumbnail,radius,sigma,image->bias,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"blur %gx%g",radius,
           sigma);
@@ -2715,6 +2717,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case CharcoalDrawingPreview:
       {
+        /* FUTURE: user bias on charcoal! This is non-sensical! */
         preview_image=CharcoalImage(thumbnail,(double) radius,(double) sigma,
           image->bias,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",
@@ -3677,7 +3680,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->bias=bias;
+  kernel_info->bias=bias;   /* FUTURE: user bias - non-sensical! */
   kernel_info->signature=MagickSignature;
   kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
     kernel_info->width*sizeof(*kernel_info->values));
@@ -4599,7 +4602,11 @@ MagickExport Image *UnsharpMaskImage(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
+
+
+  /* FUTURE:  use of bias on sharpen is non-sensical */
   unsharp_image=BlurImage(image,radius,sigma,image->bias,exception);
+
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
   quantum_threshold=(MagickRealType) QuantumRange*threshold;
