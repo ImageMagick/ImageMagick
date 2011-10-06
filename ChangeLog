@@ -1,8 +1,14 @@
 2011-11-01  6.7.3-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-0.
 
+
 2011-11-01  6.7.3-0 Cristy  <quetzlzacatenango@image...>
   * 
+
+2011-10-05  6.7.3-0 Glenn Randers-Pehrson <glennrp@image...>
+  * Add "png:format" property with possible values png8, png24, and png32,
+    for use when prepending the format type to the filename is not convenient
+    or is not possible, e.g., when embedding the PNG in a PNG-encoded ICO.
 
 2011-10-04  6.7.2-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.2-10.
