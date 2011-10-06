@@ -4146,8 +4146,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   length=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
-  status=AcquireMagickResource(AreaResource,cache_info->length);
-  if ((status == MagickFalse) || (length != (MagickSizeType) ((size_t) length)))
+  if (length != (MagickSizeType) ((size_t) length))
     cache_info->type=DiskCache;
   else
     {
