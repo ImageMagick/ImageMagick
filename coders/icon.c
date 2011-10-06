@@ -318,9 +318,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         image->columns=(size_t) icon_file.directory[i].width;
         if ((ssize_t) image->columns > icon_info.width)
           image->columns=(size_t) icon_info.width;
+        if (image->columns == 0)
+          image->columns=256;
         image->rows=(size_t) icon_file.directory[i].height;
         if ((ssize_t) image->rows > icon_info.height)
           image->rows=(size_t) icon_info.height;
+        if (image->rows == 0)
+          image->rows=256;
         image->depth=icon_info.bits_per_pixel;
         if (image->debug != MagickFalse)
           {
@@ -845,7 +849,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   next=image;
   do
   {
-    if ((next->columns == 256) && (next->rows == 256))
+    if (next->compression == ZipCompression)
       {
         Image
           *write_image;
