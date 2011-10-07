@@ -1722,13 +1722,13 @@ MagickExport void DestroyImageOptions(ImageInfo *image_info)
 %  The format of the GetImageOption method is:
 %
 %      const char *GetImageOption(const ImageInfo *image_info,
-%        const char *key)
+%        const char *option)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
-%    o key: the key.
+%    o option: the option.
 %
 */
 MagickExport const char *GetImageOption(const ImageInfo *image_info,
@@ -1741,9 +1741,8 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
       image_info->filename);
   if (image_info->options == (void *) NULL)
     return((const char *) NULL);
-
-  return( (const char *) GetValueFromSplayTree((SplayTreeInfo *)
-    image_info->options,key) );
+  return((const char *) GetValueFromSplayTree((SplayTreeInfo *)
+    image_info->options,option));
 }
 
 /*
@@ -2514,8 +2513,8 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
       image_info->filename);
 
   /* Delete Option if NULL */
-  if ( value = (const char *)NULL )
-    return(DeleteImageOption(image_info,option);
+  if (value == (const char *) NULL)
+    return(DeleteImageOption(image_info,option));
 
   /* This should not be here! - but others might */
   if (LocaleCompare(option,"size") == 0)
@@ -2527,6 +2526,6 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
       RelinquishMagickMemory,RelinquishMagickMemory);
 
   /* add option and return */
-  return( AddValueToSplayTree((SplayTreeInfo *) image_info->options,
-    ConstantString(option),ConstantString(value))) );
+  return(AddValueToSplayTree((SplayTreeInfo *) image_info->options,
+    ConstantString(option),ConstantString(value)));
 }
