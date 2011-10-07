@@ -572,46 +572,40 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
         {
           image_info->channel=(ChannelType) (
                IfSetOption ? ParseChannelOption(argv[1]) : DefaultChannels );
-          /* this is also a SimpleImageOperator ??? why ??? */
-          break;
-        }
-      if (LocaleCompare("colors",option) == 0)
-        {
-          /* Why is this saved */
-          image_info->colors=StringToUnsignedLong(argv[1]);
+          /* This is also a SimpleImageOperator */
           break;
         }
       if (LocaleCompare("colorspace",option) == 0)
         {
-          if (*argv[0] == '+')
+          /* This is also a SimpleImageOperator */
+          if (IfSetOption)
             {
-              image_info->colorspace=UndefinedColorspace;
-              (void) SetImageOption(image_info,option,"undefined");
+              image_info->colorspace=(ColorspaceType) ParseCommandOption(
+                MagickColorspaceOptions,MagickFalse,argv[1]);
               break;
             }
-          image_info->colorspace=(ColorspaceType) ParseCommandOption(
-            MagickColorspaceOptions,MagickFalse,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+          image_info->colorspace=UndefinedColorspace;
+          (void) SetImageOption(image_info,option,"undefined");
           break;
         }
       if (LocaleCompare("comment",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) DeleteImageOption(image_info,option);
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : DeleteOption);
           break;
         }
       if (LocaleCompare("compose",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          /* FUTURE: What should be used?  image_info  or ImageOption ???
+             The former is more efficent, the later cristy prefers!
+          */
+          const char
+            *value;
+
+          value = IfSetOption ? argv[1] : "undefined";
+          (void) SetImageOption(image_info,option,value);
+          image_info->compose=(CompositeOperator) ParseCommandOption(
+               MagickComposeOptions,MagickFalse,value);
           break;
         }
       if (LocaleCompare("compress",option) == 0)
@@ -1986,6 +1980,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           ColorspaceType
             colorspace;
 
+          /* FUTURE: default colorspace should be sRGB! unless linear is set */
+          /* This is a Image Setting, which has already been applied */
           (void) SyncImageSettings(image_info,*image);
           if (*argv[0] == '+')
             {
@@ -1993,17 +1989,11 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
               InheritException(exception,&(*image)->exception);
               break;
             }
-          colorspace=(ColorspaceType) ParseCommandOption(
-            MagickColorspaceOptions,MagickFalse,argv[1]);
+          /* colorspace=(ColorspaceType) ParseCommandOption(
+              MagickColorspaceOptions,MagickFalse,argv[1]); */
+          colorspace=image_info->colorspace;
           (void) TransformImageColorspace(*image,colorspace);
           InheritException(exception,&(*image)->exception);
-          break;
-        }
-      if (LocaleCompare("compose",argv[0]+1) == 0)
-        {
-          (void) SyncImageSettings(image_info,*image);
-          compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
-            MagickFalse,argv[1]);
           break;
         }
       if (LocaleCompare("contrast",argv[0]+1) == 0)
