@@ -271,16 +271,7 @@ if WIN32_NATIVE_BUILD
 MAGICKCORE_PLATFORM_SRCS = \
 	MagickCore/nt-base.c \
 	MagickCore/nt-base.h \
-	MagickCore/nt-feature.c \
-	MagickCore/nt-feature.h
-else
-if CYGWIN_BUILD
-MAGICKCORE_PLATFORM_SRCS = \
-	MagickCore/nt-feature.c \
-	MagickCore/nt-feature.h
-else
-MAGICKCORE_PLATFORM_SRCS =
-endif # if CYGWIN_BUILD
+	MagickCore/nt-base-private.h
 endif # if WIN32_NATIVE_BUILD
 
 MAGICKCORE_INCLUDE_HDRS = \
@@ -341,6 +332,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/monitor.h \
 	MagickCore/montage.h \
 	MagickCore/morphology.h \
+	MagickCore/nt-base.h \
 	MagickCore/option.h \
 	MagickCore/paint.h \
 	MagickCore/pixel.h \
@@ -409,8 +401,7 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/module-private.h \
 	MagickCore/monitor-private.h \
 	MagickCore/morphology-private.h \
-	MagickCore/nt-base.h \
-	MagickCore/nt-feature.h \
+	MagickCore/nt-base-private.h \
  	MagickCore/policy-private.h \
  	MagickCore/profile-private.h \
 	MagickCore/quantum-private.h \
@@ -447,7 +438,6 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/config.h_vms \
 	MagickCore/mac.c \
 	MagickCore/nt-base.c \
-	MagickCore/nt-feature.c \
 	MagickCore/vms.c \
 	MagickCore/xwdfile.h_vms 
 
