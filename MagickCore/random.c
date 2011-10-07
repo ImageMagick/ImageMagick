@@ -185,7 +185,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->reservoir=AcquireStringInfo(GetSignatureDigestsize(
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
-  random_info->normalize=1.0/(~0UL);
+  random_info->normalize=1.0/(double) MagickResourceInfinity;
   random_info->semaphore=AllocateSemaphoreInfo();
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
