@@ -578,14 +578,11 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
       if (LocaleCompare("colorspace",option) == 0)
         {
           /* This is also a SimpleImageOperator */
-          if (IfSetOption)
-            {
-              image_info->colorspace=(ColorspaceType) ParseCommandOption(
-                MagickColorspaceOptions,MagickFalse,argv[1]);
-              break;
-            }
+          /* Undefined colorspace means don't modify images */
           image_info->colorspace=UndefinedColorspace;
-          (void) SetImageOption(image_info,option,"undefined");
+          if (IfSetOption)
+            image_info->colorspace=(ColorspaceType) ParseCommandOption(
+                 MagickColorspaceOptions,MagickFalse,argv[1])
           break;
         }
       if (LocaleCompare("comment",option) == 0)
@@ -1977,22 +1974,15 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("colorspace",argv[0]+1) == 0)
         {
-          ColorspaceType
-            colorspace;
-
-          /* FUTURE: default colorspace should be sRGB! unless linear is set */
-          /* This is a Image Setting, which has already been applied */
+          /* This is a Image Setting, which should already been set */
+          /* FUTURE: default colorspace should be sRGB!
+             Unless some type of 'linear colorspace' mode is set.
+             Note that +colorspace sets "undefined" or no effect on
+             new images, but forces images already in memory back to RGB!
+          */
           (void) SyncImageSettings(image_info,*image);
-          if (*argv[0] == '+')
-            {
-              (void) TransformImageColorspace(*image,RGBColorspace);
-              InheritException(exception,&(*image)->exception);
-              break;
-            }
-          /* colorspace=(ColorspaceType) ParseCommandOption(
-              MagickColorspaceOptions,MagickFalse,argv[1]); */
-          colorspace=image_info->colorspace;
-          (void) TransformImageColorspace(*image,colorspace);
+          (void) TransformImageColorspace(*image,
+                    IfSetOption ? image_info->colorspace : RGBColorspace);
           InheritException(exception,&(*image)->exception);
           break;
         }
