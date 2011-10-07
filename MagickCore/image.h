@@ -169,7 +169,8 @@ struct _Image
     columns,         /* physical size of image */
     rows,
     depth,           /* depth of image on read/write */
-    colors;          /* size of color table on read */
+    colors;          /* Size of color table, or actual color count if known */
+                     /* Only valid if image is not DirectClass */
 
   PixelPacket
     *colormap,
@@ -405,9 +406,6 @@ struct _ImageInfo
   MagickBooleanType
     dither,            /* dither enable-disable */
     monochrome;        /* read/write pcl,pdf,ps,xps as monocrome image */
-
-  size_t
-    colors;            /* record the user requested color reduction! */
 
   ColorspaceType
     colorspace;

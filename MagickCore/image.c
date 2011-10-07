@@ -962,7 +962,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->transparent_color=image_info->transparent_color;
   clone_info->dither=image_info->dither;
   clone_info->monochrome=image_info->monochrome;
-  clone_info->colors=image_info->colors;
   clone_info->colorspace=image_info->colorspace;
   clone_info->type=image_info->type;
   clone_info->orientation=image_info->orientation;
@@ -4206,9 +4205,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->border_color,
       &image->exception);
-  option=GetImageOption(image_info,"colors");
-  if (option != (const char *) NULL)
-    image->colors=StringToUnsignedLong(option);
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)
     image->compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,

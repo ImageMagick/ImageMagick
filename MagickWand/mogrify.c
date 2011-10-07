@@ -6283,11 +6283,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             image_info->channel=(ChannelType) ParseChannelOption(argv[i+1]);
             break;
           }
-        if (LocaleCompare("colors",option+1) == 0)
-          {
-            image_info->colors=StringToUnsignedLong(argv[i+1]);
-            break;
-          }
         if (LocaleCompare("colorspace",option+1) == 0)
           {
             if (*option == '+')
