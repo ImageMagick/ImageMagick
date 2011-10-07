@@ -191,6 +191,7 @@ extern "C" {
 #include "MagickCore/monitor.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
+#include "MagickCore/nt-base.h"
 #include "MagickCore/option.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel.h"
