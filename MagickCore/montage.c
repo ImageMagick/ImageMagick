@@ -822,7 +822,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               shadow_image=ShadowImage(image,80.0,2.0,5,5,exception);
               if (shadow_image != (Image *) NULL)
                 {
-                  InheritException(&shadow_image->exception,exception);
                   (void) CompositeImage(shadow_image,OverCompositeOp,image,0,0);
                   image=DestroyImage(image);
                   image=shadow_image;
