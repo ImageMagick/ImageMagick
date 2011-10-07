@@ -1120,13 +1120,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->compression=JPEGCompression;
   image->interlace=JPEGInterlace;
 #endif
-  if ((image_info->colors > 8) && (image_info->colors <= 256))
+  option=GetImageOption(image_info,"jpeg:colors");
+  if (option != (const char *) NULL)
     {
-      /*
-        Let the JPEG library quantize for us.
-      */
+      /* Let the JPEG library quantize the image */
       jpeg_info.quantize_colors=MagickTrue;
-      jpeg_info.desired_number_of_colors=(int) image_info->colors;
+      jpeg_info.desired_number_of_colors=(int) StringToUnsignedLong(option);
     }
   option=GetImageOption(image_info,"jpeg:block-smoothing");
   if (option != (const char *) NULL)
@@ -1180,8 +1179,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     image->colorspace=YCbCrColorspace;
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
-  if ((image_info->colors != 0) && (image_info->colors <= 256))
-    if (AcquireImageColormap(image,image_info->colors,exception) == MagickFalse)
+  option=GetImageOption(image_info,"jpeg:colors");
+  if (option != (const char *) NULL)
+    if (AcquireImageColormap(image,StringToUnsignedLong(option),exception)
+         == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((jpeg_info.output_components == 1) &&
       (jpeg_info.quantize_colors == MagickFalse))
