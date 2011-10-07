@@ -1191,8 +1191,6 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           if ((IsSceneGeometry(subimage,MagickFalse) == MagickFalse) &&
               (IsGeometry(subimage) == MagickFalse))
             *subimage='\0';
-          else
-            *q='\0';
         }
     }
 #if defined(__OS2__)
