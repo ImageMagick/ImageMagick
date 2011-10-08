@@ -2601,7 +2601,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
               linejoin;
 
             GetMagickToken(q,&q,token);
-            linejoin=ParseCommandOption(MagickLineJoinOptions,MagickFalse,token);
+            linejoin=ParseCommandOption(MagickLineJoinOptions,MagickFalse,
+              token);
             if (linejoin == -1)
               status=MagickFalse;
             else
