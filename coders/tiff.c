@@ -90,6 +90,12 @@
 # if !defined(PREDICTOR_HORIZONTAL)
 # define PREDICTOR_HORIZONTAL  2
 # endif
+# if !defined(TIFFTAG_COPYRIGHT)
+#  define TIFFTAG_COPYRIGHT  33432
+# endif
+# if !defined(TIFFTAG_OPIIMAGEID)
+#  define TIFF_OPIIMAGEID  32781
+# endif
 
 /*
   Typedef declarations.
@@ -540,28 +546,53 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
 static void TIFFGetProperties(TIFF *tiff,Image *image)
 {
   char
+    message[MaxTextExtent],
     *text;
+
+  uint32
+    count;
 
   if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
     (void) SetImageProperty(image,"tiff:artist",text);
+  if (TIFFGetField(tiff,TIFFTAG_COPYRIGHT,&text) == 1)
+    (void) SetImageProperty(image,"tiff:copyright",text);
   if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
     (void) SetImageProperty(image,"tiff:timestamp",text);
-  if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
-    (void) SetImageProperty(image,"tiff:software",text);
-  if (TIFFGetField(tiff,TIFFTAG_HOSTCOMPUTER,&text) == 1)
-    (void) SetImageProperty(image,"tiff:hostcomputer",text);
   if (TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1)
     (void) SetImageProperty(image,"tiff:document",text);
+  if (TIFFGetField(tiff,TIFFTAG_HOSTCOMPUTER,&text) == 1)
+    (void) SetImageProperty(image,"tiff:hostcomputer",text);
+  if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
+    (void) SetImageProperty(image,"comment",text);
   if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
     (void) SetImageProperty(image,"tiff:make",text);
   if (TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1)
     (void) SetImageProperty(image,"tiff:model",text);
-  if (TIFFGetField(tiff,33432,&text) == 1)
-    (void) SetImageProperty(image,"tiff:copyright",text);
+  if (TIFFGetField(tiff,TIFFTAG_OPIIMAGEID,&count,&text) == 1)
+    {
+      if (count >= MaxTextExtent)
+        count=MaxTextExtent-1;
+      (void) FormatLocaleString(message,text,count+1);
+      (void) SetImageProperty(image,"tiff:image-id",message);
+    }
   if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
     (void) SetImageProperty(image,"label",text);
-  if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
-    (void) SetImageProperty(image,"comment",text);
+  if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
+    (void) SetImageProperty(image,"tiff:software",text);
+  if (TIFFGetField(tiff,33423,&count,&text) == 1)
+    {
+      if (count >= MaxTextExtent)
+        count=MaxTextExtent-1;
+      (void) FormatLocaleString(message,text,mcount+1);
+      (void) SetImageProperty(image,"tiff:kodak-33423",message);
+    }
+  if (TIFFGetField(tiff,36867,&count,&text) == 1)
+    {
+      if (count >= MaxTextExtent)
+        count=MaxTextExtent-1;
+      (void) FormatLocaleString(message,text,count+1);
+      (void) SetImageProperty(image,"tiff:kodak-36867",message);
+    }
 }
 
 static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
@@ -2065,7 +2096,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     {
       columns/=2;
       rows/=2;
-      pyramid_image=ResizeImage(next,columns,rows,UndefinedFilter,image->blur,
+      pyramid_image=ResizeImage(next,columns,rows,image->filter,image->blur,
         &image->exception);
       AppendImageToList(&images,pyramid_image);
     }
@@ -2328,7 +2359,7 @@ static void TIFFSetProperties(TIFF *tiff,Image *image)
     (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,value);
   value=GetImageProperty(image,"tiff:copyright");
   if (value != (const char *) NULL)
-    (void) TIFFSetField(tiff,33432,value);
+    (void) TIFFSetField(tiff,TIFFTAG_COPYRIGHT,value);
   value=GetImageProperty(image,"kodak-33423");
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,33423,value);
