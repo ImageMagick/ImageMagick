@@ -1895,11 +1895,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             fill_rule=ParseCommandOption(MagickFillRuleOptions,MagickFalse,
               token);
             if (fill_rule == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->fill_rule=(FillRule) fill_rule;
+              status=MagickFalse;
+            else
+              graphic_context[n]->fill_rule=(FillRule) fill_rule;
             break;
           }
         if (LocaleCompare("clip-units",keyword) == 0)
@@ -1952,11 +1950,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             decorate=ParseCommandOption(MagickDecorateOptions,MagickFalse,
               token);
             if (decorate == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->decorate=(DecorationType) decorate;
+              status=MagickFalse;
+            else
+              graphic_context[n]->decorate=(DecorationType) decorate;
             break;
           }
         status=MagickFalse;
@@ -2026,11 +2022,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             fill_rule=ParseCommandOption(MagickFillRuleOptions,MagickFalse,
               token);
             if (fill_rule == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->fill_rule=(FillRule) fill_rule;
+              status=MagickFalse;
+            else
+              graphic_context[n]->fill_rule=(FillRule) fill_rule;
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2063,11 +2057,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             stretch=ParseCommandOption(MagickStretchOptions,MagickFalse,token);
             if (stretch == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->stretch=(StretchType) stretch;
+              status=MagickFalse;
+            else
+              graphic_context[n]->stretch=(StretchType) stretch;
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)
@@ -2078,11 +2070,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             style=ParseCommandOption(MagickStyleOptions,MagickFalse,token);
             if (style == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->style=(StyleType) style;
+              status=MagickFalse;
+            else
+              graphic_context[n]->style=(StyleType) style;
             break;
           }
         if (LocaleCompare("font-weight",keyword) == 0)
@@ -2122,11 +2112,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,token);
             if (gravity == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->gravity=(GravityType) gravity;
+              status=MagickFalse;
+            else
+              graphic_context[n]->gravity=(GravityType) gravity;
             break;
           }
         status=MagickFalse;
@@ -2144,11 +2132,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             compose=ParseCommandOption(MagickComposeOptions,MagickFalse,token);
             if (compose == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->compose=(CompositeOperator) compose;
+              status=MagickFalse;
+            else
+              graphic_context[n]->compose=(CompositeOperator) compose;
             break;
           }
         if (LocaleCompare("interline-spacing",keyword) == 0)
@@ -2185,22 +2171,18 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       case 'L':
       {
         if (LocaleCompare("line",keyword) == 0)
-          {
-            primitive_type=LinePrimitive;
-            break;
-          }
-        status=MagickFalse;
+          primitive_type=LinePrimitive;
+        else
+          status=MagickFalse;
         break;
       }
       case 'm':
       case 'M':
       {
         if (LocaleCompare("matte",keyword) == 0)
-          {
-            primitive_type=MattePrimitive;
-            break;
-          }
-        status=MagickFalse;
+          primitive_type=MattePrimitive;
+        else
+          status=MagickFalse;
         break;
       }
       case 'o':
@@ -2608,11 +2590,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             linecap=ParseCommandOption(MagickLineCapOptions,MagickFalse,token);
             if (linecap == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->linecap=(LineCap) linecap;
+              status=MagickFalse;
+            else
+              graphic_context[n]->linecap=(LineCap) linecap;
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
@@ -2623,11 +2603,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             linejoin=ParseCommandOption(MagickLineJoinOptions,MagickFalse,token);
             if (linejoin == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->linejoin=(LineJoin) linejoin;
+              status=MagickFalse;
+            else
+              graphic_context[n]->linejoin=(LineJoin) linejoin;
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
@@ -2670,11 +2648,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             align=ParseCommandOption(MagickAlignOptions,MagickFalse,token);
             if (align == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->align=(AlignType) align;
+              status=MagickFalse;
+            else
+              graphic_context[n]->align=(AlignType) align;
             break;
           }
         if (LocaleCompare("text-anchor",keyword) == 0)
@@ -2685,11 +2661,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
             GetMagickToken(q,&q,token);
             align=ParseCommandOption(MagickAlignOptions,MagickFalse,token);
             if (align == -1)
-              {
-                status=MagickFalse;
-                break;
-              }
-            graphic_context[n]->align=(AlignType) align;
+              status=MagickFalse;
+            else
+              graphic_context[n]->align=(AlignType) align;
             break;
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
@@ -3047,11 +3021,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         GetMagickToken(q,&q,token);
         method=ParseCommandOption(MagickMethodOptions,MagickFalse,token);
         if (method == -1)
-          {
-            status=MagickFalse;
-            break;
-          }
-        primitive_info[j].method=(PaintMethod) method;
+          status=MagickFalse;
+        else
+          primitive_info[j].method=(PaintMethod) method;
         break;
       }
       case TextPrimitive:
@@ -3168,7 +3140,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
 %
 %    o image: the image.
 %
-%    o _info: the draw info.
+%    o draw_info: the draw info.
 %
 */
 
