@@ -627,8 +627,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
     case UniformNoise:
     default:
     {
-      noise=(double) pixel+ScaleCharToQuantum((unsigned char)
-        (SigmaUniform*(alpha)));
+      noise=(double) pixel+QuantumRange*SigmaUniform*(alpha-0.5)/255.0;
       break;
     }
     case GaussianNoise:
@@ -643,30 +642,29 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       gamma=sqrt(-2.0*log(alpha));
       sigma=gamma*cos((double) (2.0*MagickPI*beta));
       tau=gamma*sin((double) (2.0*MagickPI*beta));
-      noise=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
-        TauGaussian*tau;
+      noise=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma/255.0+
+        QuantumRange*TauGaussian*tau/255.0;
       break;
     }
     case MultiplicativeGaussianNoise:
     {
-      if (alpha <= NoiseEpsilon)
-        sigma=(double) QuantumRange;
-      else
+      sigma=1.0;
+      if (alpha > NoiseEpsilon)
         sigma=sqrt(-2.0*log(alpha));
       beta=GetPseudoRandomValue(random_info);
-      noise=(double) pixel+pixel*SigmaMultiplicativeGaussian*sigma/2.0*
-        cos((double) (2.0*MagickPI*beta));
+      noise=(double) pixel+pixel*SigmaMultiplicativeGaussian*sigma*
+        cos((double) (2.0*MagickPI*beta))/2.0/255.0;
       break;
     }
     case ImpulseNoise:
     {
       if (alpha < (SigmaImpulse/2.0))
         noise=0.0;
-       else
-         if (alpha >= (1.0-(SigmaImpulse/2.0)))
-           noise=(double) QuantumRange;
-         else
-           noise=(double) pixel;
+      else
+        if (alpha >= (1.0-(SigmaImpulse/2.0)))
+          noise=(double) QuantumRange;
+        else
+          noise=(double) pixel;
       break;
     }
     case LaplacianNoise:
@@ -676,16 +674,16 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
           if (alpha <= NoiseEpsilon)
             noise=(double) pixel-(double) QuantumRange;
           else
-            noise=(double) pixel+ScaleCharToQuantum((unsigned char)
-              (SigmaLaplacian*log((2.0*alpha))+0.5));
+            noise=(double) pixel+QuantumRange*SigmaLaplacian*
+              log(2.0*alpha)/255.0+0.5;
           break;
         }
       beta=1.0-alpha;
       if (beta <= (0.5*NoiseEpsilon))
         noise=(double) (pixel+QuantumRange);
       else
-        noise=(double) pixel-ScaleCharToQuantum((unsigned char)
-          (SigmaLaplacian*log((2.0*beta))+0.5));
+        noise=(double) pixel-QuantumRange*SigmaLaplacian*log(2.0*beta)/255.0+
+          0.5;
       break;
     }
     case PoissonNoise:
@@ -696,13 +694,13 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       register ssize_t
         i;
 
-      poisson=exp(-SigmaPoisson*ScaleQuantumToChar(pixel));
+      poisson=exp(-SigmaPoisson*255.0*QuantumScale*pixel);
       for (i=0; alpha > poisson; i++)
       {
         beta=GetPseudoRandomValue(random_info);
         alpha*=beta;
       }
-      noise=(double) ScaleCharToQuantum((unsigned char) (i/SigmaPoisson));
+      noise=(double) QuantumRange*i/SigmaPoisson/255.0;
       break;
     }
     case RandomNoise:
