@@ -1556,6 +1556,9 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
   const char
     *format;
 
+  double
+    attenuate;
+
   DrawInfo
     *draw_info;
 
@@ -1590,6 +1593,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
   SetGeometryInfo(&geometry_info);
   GetPixelInfo(*image,&fill);
   SetPixelInfoPacket(*image,&(*image)->background_color,&fill);
+  attenuate=1.0;
   channel=image_info->channel;
   format=GetImageOption(image_info,"format");
 
@@ -1677,6 +1681,16 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           draw_info->affine.sy=cos(DegreesToRadians(
             fmod(geometry_info.sigma,360.0)));
           (void) AnnotateImage(*image,draw_info,exception);
+          break;
+        }
+      if (LocaleCompare("attenuate",option+1) == 0)
+        {
+          if (*option == '+')
+            {
+              attenuate=1.0;
+              break;
+            }
+          attenuate=InterpretLocaleValue(argv[i+1],(char **) NULL);
           break;
         }
       if (LocaleCompare("auto-gamma",argv[0]+1) == 0)
@@ -2989,7 +3003,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
 
               noise=(NoiseType) ParseCommandOption(MagickNoiseOptions,
                 MagickFalse,argv[1]);
-              new_image=AddNoiseImage(*image,noise,exception);
+              new_image=AddNoiseImage(*image,noise,attenuate,exception);
             }
           break;
         }

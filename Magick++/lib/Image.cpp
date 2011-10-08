@@ -330,7 +330,7 @@ void Magick::Image::addNoise( const NoiseType noiseType_ )
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
     AddNoiseImage ( image(),
-		    noiseType_,
+		    noiseType_, 1.0,
 		    &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -345,7 +345,7 @@ void Magick::Image::addNoiseChannel( const ChannelType channel_,
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_);
   MagickCore::Image* newImage =
     AddNoiseImage ( image(),
-                           noiseType_,
+                           noiseType_, 1.0,
                            &exceptionInfo );
   (void) SetPixelChannelMap( image(), channel_mask );
   replaceImage( newImage );

@@ -625,6 +625,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
     *format,
     *option;
 
+  double
+    attenuate;
+
   DrawInfo
     *draw_info;
 
@@ -676,6 +679,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   SetGeometryInfo(&geometry_info);
   GetPixelInfo(*image,&fill);
   SetPixelInfoPacket(*image,&(*image)->background_color,&fill);
+  attenuate=1.0;
   compose=(*image)->compose;
   interpolate_method=UndefinedInterpolatePixel;
   channel=mogrify_info->channel;
@@ -811,6 +815,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               MagickFalse;
             draw_info->text_antialias=(*option == '-') ? MagickTrue :
               MagickFalse;
+            break;
+          }
+        if (LocaleCompare("attenuate",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                attenuate=1.0;
+                break;
+              }
+            attenuate=InterpretLocaleValue(argv[i+1],(char **) NULL);
             break;
           }
         if (LocaleCompare("auto-gamma",option+1) == 0)
@@ -2186,7 +2200,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 
                 noise=(NoiseType) ParseCommandOption(MagickNoiseOptions,
                   MagickFalse,argv[i+1]);
-                mogrify_image=AddNoiseImage(*image,noise,exception);
+                mogrify_image=AddNoiseImage(*image,noise,attenuate,exception);
               }
             break;
           }
@@ -6157,14 +6171,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
         if (LocaleCompare("antialias",option+1) == 0)
           {
             image_info->antialias=(*option == '-') ? MagickTrue : MagickFalse;
-            break;
-          }
-        if (LocaleCompare("attenuate",option+1) == 0)
-          {
-            if (*option == '+')
-              (void) DeleteImageOption(image_info,option+1);
-            else
-              (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("authenticate",option+1) == 0)

@@ -289,7 +289,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression)
 %  The format of the AddNoiseImage method is:
 %
 %      Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
-%        ExceptionInfo *exception)
+%        const double attenuate,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -300,19 +300,19 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression)
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
 %      Impulse, Laplacian, or Poisson.
 %
+%    o attenuate:  attenuate the random distribution.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,  ExceptionInfo *exception)
+MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
+  const double attenuate,ExceptionInfo *exception)
 {
 #define AddNoiseImageTag  "AddNoise/Image"
 
   CacheView
     *image_view,
     *noise_view;
-
-  const char
-    *option;
 
   Image
     *noise_image;
@@ -322,9 +322,6 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 
   MagickOffsetType
     progress;
-
-  MagickRealType
-    attenuate;
 
   RandomInfo
     **restrict random_info;
@@ -352,10 +349,6 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   /*
     Add noise in each row.
   */
-  attenuate=1.0;
-  option=GetImageArtifact(image,"attenuate");
-  if (option != (char *) NULL)
-    attenuate=InterpretLocaleValue(option,(char **) NULL);
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();

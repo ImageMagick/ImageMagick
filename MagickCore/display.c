@@ -8199,7 +8199,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       noise_image=AddNoiseImage(*image,(NoiseType) ParseCommandOption(
-        MagickNoiseOptions,MagickFalse,noise_type),exception);
+        MagickNoiseOptions,MagickFalse,noise_type),1.0,exception);
       if (noise_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
