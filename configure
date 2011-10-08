@@ -3584,7 +3584,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5525
+MAGICK_SVN_REVISION=5563
 
 
 
@@ -28536,38 +28536,44 @@ FREETYPE_LIBS=''
 if test "$with_freetype" != 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType 2.0" >&5
-$as_echo_n "checking for FreeType 2.0... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType 2.0 " >&5
+$as_echo_n "checking for FreeType 2.0 ... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
     failed=0
     passed=0
-    PERSIST_LIBS="$LIBS"
+    PERSIST_LDFLAGS="$LDFLAGS"
     PERSIST_CPPFLAGS="$CPPFLAGS"
-    if test "$enable_delegate_build" != 'no' && test -d "$builddir/freetype/include"; then
-        :
-    else
-        freetype_config=''
-        for ac_prog in freetype-config
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
+    freetype_config=''
+    # Allow the user to specify the location of freetype.
+    if test "$with_freetype" != 'yes'; then
+      if test -x "${with_freetype}/bin/freetype-config"; then
+        freetype_config="${with_freetype}/bin/freetype-config"
+      elif test -x "${with_freetype}"; then
+        freetype_config=${with_freetype}
+      fi
+    fi
+    if test -z "$freetype_config"; then
+      # Extract the first word of "freetype-config", so it can be a program name with args.
+set dummy freetype-config; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_freetype_config+:} false; then :
+if ${ac_cv_path_freetype_config+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  if test -n "$freetype_config"; then
-  ac_cv_prog_freetype_config="$freetype_config" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+  case $freetype_config in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_freetype_config="$freetype_config" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_freetype_config="$ac_prog"
+    ac_cv_path_freetype_config="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -28575,9 +28581,10 @@ done
   done
 IFS=$as_save_IFS
 
+  ;;
+esac
 fi
-fi
-freetype_config=$ac_cv_prog_freetype_config
+freetype_config=$ac_cv_path_freetype_config
 if test -n "$freetype_config"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $freetype_config" >&5
 $as_echo "$freetype_config" >&6; }
@@ -28586,19 +28593,16 @@ else
 $as_echo "no" >&6; }
 fi
 
-
-  test -n "$freetype_config" && break
-done
-        if test -n "$freetype_config"; then
-            freetype_cflags=`$freetype_config --cflags`
-            freetype_libs=`$freetype_config --libs`
-            LIBS="$LIBS $freetype_libs"
-            CPPFLAGS="$freetype_cflags $CPPFLAGS"
-        fi
+    fi
+    if test -n "$freetype_config"; then
+      freetype_prefix=`${freetype_config} --prefix`
+      freetype_exec_prefix=`${freetype_config} --exec-prefix`
+      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
+      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
     fi
 
     if test "$FREETYPE_LIBS" = ''; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_Init_FreeType in -lfreetype" >&5
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_Init_FreeType in -lfreetype" >&5
 $as_echo_n "checking for FT_Init_FreeType in -lfreetype... " >&6; }
 if ${ac_cv_lib_freetype_FT_Init_FreeType+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -28638,12 +28642,12 @@ if test "x$ac_cv_lib_freetype_FT_Init_FreeType" = xyes; then :
   FREETYPE_LIBS='-lfreetype'
 fi
 
-        if test "$FREETYPE_LIBS" != ''; then
-            passed=`expr $passed + 1`
-        else
-            failed=`expr $failed + 1`
-            LIBS="$PERSIST_LIBS"
-        fi
+      if test "$FREETYPE_LIBS" != ''; then
+        passed=`expr $passed + 1`
+      else
+        failed=`expr $failed + 1`
+        LDFLAGS="$PERSIST_LDFLAGS"
+      fi
     fi
 
     ac_fn_c_check_header_mongrel "$LINENO" "ft2build.h" "ac_cv_header_ft2build_h" "$ac_includes_default"
@@ -28663,37 +28667,37 @@ else
 fi
 
 
-    if test "$ac_cv_header_ft2build_h" = 'yes' || test "$have_freetype_h" = 'yes'; then
-        passed=`expr $passed + 1`
+    if test "$have_freetype_h" = 'yes'; then
+      passed=`expr $passed + 1`
     else
-        failed=`expr $failed + 1`
-        CPPFLAGS="$PERSIST_CPPFLAGS"
+      failed=`expr $failed + 1`
+      CPPFLAGS="$PERSIST_CPPFLAGS"
     fi
 
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking if FreeType package is complete" >&5
 $as_echo_n "checking if FreeType package is complete... " >&6; }
     if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            FREETYPE_LIBS=''
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+      if test $failed -gt 0; then
+        FREETYPE_LIBS=''
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
-            have_freetype='no (failed tests)'
-        else
-            LIBS="$FREETYPE_LIBS $LIBS"
+        have_freetype='no (failed tests)'
+      else
+        LIBS="$FREETYPE_LIBS $LIBS"
 
 $as_echo "#define FREETYPE_DELEGATE 1" >>confdefs.h
 
-            if test "$ac_cv_header_ft2build_h" = 'yes'; then
+        if test "$ac_cv_header_ft2build_h" = 'yes'; then
 
 $as_echo "#define HAVE_FT2BUILD_H 1" >>confdefs.h
 
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_freetype='yes'
         fi
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+        have_freetype='yes'
+      fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     fi
 fi
@@ -28704,7 +28708,6 @@ else
   FREETYPE_DELEGATE_TRUE='#'
   FREETYPE_DELEGATE_FALSE=
 fi
-
 
 
 
