@@ -393,21 +393,30 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelRed(image,p),noise_type,attenuate)),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelGreen(image,p),noise_type,attenuate)),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelBlue(image,p),noise_type,attenuate)),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(noise_image,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelBlack(image,p),noise_type,attenuate)),q);
-      if ((GetPixelAlphaTraits(image) & CopyPixelTrait) != 0)
-        SetPixelAlpha(noise_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          noise_traits,
+          traits;
+
+        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        noise_traits=GetPixelChannelMapTraits(noise_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (noise_traits == UndefinedPixelTrait))
+          continue;
+        if ((noise_traits & UpdatePixelTrait) == 0) 
+          continue;
+        SetPixelChannel(noise_image,channel,ClampToQuantum(
+          GenerateDifferentialNoise(random_info[id],p[i],noise_type,attenuate)),
+          q);
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(noise_image);
     }
@@ -3995,6 +4004,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   picture_image=DestroyImage(picture_image);
   if (bend_image == (Image *) NULL)
     return((Image *) NULL);
+  InheritException(&bend_image->exception,exception);
   picture_image=bend_image;
   rotate_image=RotateImage(picture_image,-90.0,exception);
   picture_image=DestroyImage(picture_image);
