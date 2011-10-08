@@ -37,7 +37,7 @@ typedef enum
 } NoiseType;
 
 extern MagickExport Image
-  *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
+  *AddNoiseImage(const Image *,const NoiseType,const double,ExceptionInfo *),
   *BlueShiftImage(const Image *,const double,ExceptionInfo *),
   *CharcoalImage(const Image *,const double,const double,const double,
     ExceptionInfo *),

@@ -492,7 +492,7 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
 %  The format of the MagickAddNoiseImage method is:
 %
 %      MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
-%        const NoiseType noise_type)
+%        const NoiseType noise_type,const double attenuate)
 %
 %  A description of each parameter follows:
 %
@@ -501,9 +501,11 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
 %      Impulse, Laplacian, or Poisson.
 %
+%    o attenuate:  attenuate the random distribution.
+%
 */
 WandExport MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
-  const NoiseType noise_type)
+  const NoiseType noise_type,const double attenuate)
 {
   Image
     *noise_image;
@@ -514,7 +516,7 @@ WandExport MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  noise_image=AddNoiseImage(wand->images,noise_type,wand->exception);
+  noise_image=AddNoiseImage(wand->images,noise_type,attenuate,wand->exception);
   if (noise_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,noise_image);

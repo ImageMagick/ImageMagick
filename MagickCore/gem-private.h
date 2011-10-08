@@ -24,7 +24,7 @@ extern "C" {
 
 extern MagickPrivate double
   GenerateDifferentialNoise(RandomInfo *,const Quantum,const NoiseType,
-    const MagickRealType);
+    const double);
 
 extern MagickPrivate size_t
   GetOptimalKernelWidth(const double,const double),

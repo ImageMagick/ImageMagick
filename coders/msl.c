@@ -742,7 +742,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
-          noise_image=AddNoiseImage(msl_info->image[n],noise,
+          noise_image=AddNoiseImage(msl_info->image[n],noise,1.0,
             &msl_info->image[n]->exception);
           (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
           if (noise_image == (Image *) NULL)
