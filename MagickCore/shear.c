@@ -1563,8 +1563,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
             }
           SetPixelInfo(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
-            &source,(MagickRealType) GetPixelAlpha(image,p),area,
-            &destination);
+            &source,(MagickRealType) GetPixelAlpha(image,p),area,&destination);
           SetPixelPixelInfo(image,&destination,q);
           SetPixelInfo(image,p,&pixel);
           p+=GetPixelChannels(image);
@@ -1596,8 +1595,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
             continue;
           SetPixelInfo(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
-            &source,(MagickRealType) GetPixelAlpha(image,p),area,
-            &destination);
+            &source,(MagickRealType) GetPixelAlpha(image,p),area,&destination);
           SetPixelPixelInfo(image,&destination,q);
           SetPixelInfo(image,p,&pixel);
         }
