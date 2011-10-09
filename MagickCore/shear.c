@@ -1099,11 +1099,11 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
           register const Quantum
             *restrict p;
 
-          register ssize_t
-            y;
-
           register Quantum
             *restrict q;
+
+          register ssize_t
+            y;
 
           size_t
             height,
