@@ -1200,7 +1200,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 180 degrees.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-      #pragma omp parallel for schedule(static,8) shared(progress,status) omp_throttle(1)
+      #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
