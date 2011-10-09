@@ -1786,14 +1786,14 @@ static MagickBooleanType RenderPostscript(Image *image,
     }
   if (draw_info->fill.alpha != TransparentAlpha)
     {
+      CacheView
+        *annotate_view;
+
       MagickBooleanType
         sync;
 
       PixelPacket
         fill_color;
-
-      CacheView
-        *annotate_view;
 
       /*
         Render fill color.
