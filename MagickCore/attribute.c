@@ -884,11 +884,11 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   image_view=DestroyCacheView(image_view);
   if (image->storage_class == PseudoClass)
     {
-      register ssize_t
-        i;
-
       register PixelPacket
         *restrict p;
+
+      register ssize_t
+        i;
 
       p=image->colormap;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
