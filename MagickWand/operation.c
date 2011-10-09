@@ -462,14 +462,8 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
                IfSetOption ? MagickTrue : MagickFalse;
           break;
         }
-      if (LocaleCompare("attenuate",option) == 0)
-        {
-          (void) SetImageOption(image_info,option,
-               IfSetOption ? argv[1] : DeleteOption);
-          break;
-        }
       if (LocaleCompare("authenticate",option) == 0)
-        {
+      {
           (void) SetImageOption(image_info,option,
                IfSetOption ? argv[1] : DeleteOption);
           break;
@@ -594,28 +588,33 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
       if (LocaleCompare("compose",option) == 0)
         {
           /* FUTURE: What should be used?  image_info  or ImageOption ???
-             The former is more efficent, the later cristy prefers!
+             The former is more efficent, but Crisy prefers the latter!
           */
-          const char
-            *value;
-
-          value = IfSetOption ? argv[1] : "undefined";
-          (void) SetImageOption(image_info,option,value);
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : DeleteOption);
           image_info->compose=(CompositeOperator) ParseCommandOption(
-               MagickComposeOptions,MagickFalse,value);
+               MagickComposeOptions,MagickFalse,
+               IfSetOption ? argv[1] : "undefined");
           break;
         }
       if (LocaleCompare("compress",option) == 0)
         {
-          if (*argv[0] == '+')
+          /* FUTURE: What should be used?  image_info  or ImageOption ???
+             The former is more efficent, but Crisy prefers the latter!
+
+             The coders appears to use image_info, not Image_Option
+             however the image attribute (for save) is set from the
+             ImageOption!
+          */
+          if (IfSetOption)
             {
-              image_info->compression=UndefinedCompression;
-              (void) SetImageOption(image_info,option,"undefined");
+              image_info->compression=(CompressionType) ParseCommandOption(
+                MagickCompressOptions,MagickFalse,argv[1]);
+              (void) SetImageOption(image_info,option,argv[1]);
               break;
             }
-          image_info->compression=(CompressionType) ParseCommandOption(
-            MagickCompressOptions,MagickFalse,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+          image_info->compression=UndefinedCompression;
+          (void) SetImageOption(image_info,option,"undefined");
           break;
         }
       break;
@@ -624,110 +623,104 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
     {
       if (LocaleCompare("debug",option) == 0)
         {
-          if (*argv[0] == '+')
-            (void) SetLogEventMask("none");
-          else
-            (void) SetLogEventMask(argv[1]);
-          image_info->debug=IsEventLogging();
+          if (IfSetOption)
+          (void) SetLogEventMask(IfSetOption?argv[1]:"none");
+          image_info->debug=IsEventLogging(); /* extract logging*/
+          wand->debug=IsEventLogging();
           break;
         }
       if (LocaleCompare("define",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              if (LocaleNCompare(argv[1],"registry:",9) == 0)
-                (void) DeleteImageRegistry(argv[1]+9);
-              else
-                (void) DeleteImageOption(image_info,argv[1]);
-              break;
-            }
+          /* FUTURE both -set and -define sets ImageOption
+             But differs in that -set tried to set image properity (attribute)
+          */
           if (LocaleNCompare(argv[1],"registry:",9) == 0)
             {
-              (void) DefineImageRegistry(StringRegistryType,argv[1]+9,
-                exception);
+              if (IfSetOption)
+                (void) DefineImageRegistry(StringRegistryType,argv[1]+9,
+                    exception);
+              else
+                (void) DefineImageOption(image_info,argv[1]);
               break;
             }
-          (void) DefineImageOption(image_info,argv[1]);
+          if (IfSetOption)
+            (void) DefineImageOption(image_info,argv[1]);
+          else
+            (void) DeleteImageOption(image_info,argv[1]);
           break;
         }
       if (LocaleCompare("delay",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"0");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          /* transfered to new images only via AcquireImage()
+             -set delay must be used to set attributes directly.
+          */
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : "0");
           break;
         }
       if (LocaleCompare("density",option) == 0)
         {
-          /*
-            Set image density.
+          /* FUTURE: At this time everyone is using image_info string
+             The Image Option is not being used.
           */
-          if (*argv[0] == '+')
+          if (IsSetOption)
             {
-              if (image_info->density != (char *) NULL)
-                image_info->density=DestroyString(image_info->density);
-              (void) SetImageOption(image_info,option,"72");
+              (void) CloneString(&image_info->density,argv[1]);
+              (void) CloneString(&draw_info->density,argv[1]);
+              (void) SetImageOption(image_info,option,argv[1]);
               break;
             }
-          (void) CloneString(&image_info->density,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+          if (image_info->density != (char *) NULL)
+            image_info->density=DestroyString(image_info->density);
+          if (draw_info->density != (char *) NULL)
+            draw_info->density=DestroyString(draw_info->density);
+          (void) SetImageOption(image_info,option,"72");
           break;
         }
       if (LocaleCompare("depth",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->depth=MAGICKCORE_QUANTUM_DEPTH;
-              break;
-            }
-          image_info->depth=StringToUnsignedLong(argv[1]);
+          /* This is also a SimpleImageOperator! */
+          image_info->depth=IsSetOption?StringToUnsignedLong(argv[1])
+                                       :MAGICKCORE_QUANTUM_DEPTH;
           break;
         }
       if (LocaleCompare("direction",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          /* Image Option is only used to det draw_info */
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : "undefined");
+          draw_info->direction=(DirectionType) ParseCommandOption(
+                         MagickDirectionOptions,MagickFalse,
+                         IfSetOption ? argv[1] : "undefined");
           break;
         }
       if (LocaleCompare("display",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              if (image_info->server_name != (char *) NULL)
-                image_info->server_name=DestroyString(
-                  image_info->server_name);
-              break;
-            }
-          (void) CloneString(&image_info->server_name,argv[1]);
+          if (IfSetOption)
+            (void) CloneString(&image_info->server_name,argv[1]);
+          else
+            if (image_info->server_name != (char *) NULL)
+              image_info->server_name=DestroyString(image_info->server_name);
           break;
         }
       if (LocaleCompare("dispose",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : "undefined");
           break;
         }
       if (LocaleCompare("dither",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->dither=MagickFalse;
-              (void) SetImageOption(image_info,option,"none");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
-          image_info->dither=MagickTrue;
+          /* FUTURE: Merge boolean image_info->dither with Dither type */
+          (void) SetImageOption(image_info,option,
+                       IfSetOption ? argv[1] : "none");
+          image_info->dither = quantize_info->dither =
+                    IfSetOption?MagickTrue:MagickFalse;
+          quantize_info->dither_method=(DitherMethod) ParseCommandOption(
+                           MagickDitherOptions,MagickFalse,
+                           IfSetOption ? argv[1] : "none");
+          if (quantize_info->dither_method == NoDitherMethod)
+                image_info->dither=quantize_info->dither=MagickFalse;
           break;
         }
       break;
@@ -742,6 +735,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
               break;
             }
           (void) SetImageOption(image_info,option,argv[1]);
+          (void) CloneString(&draw_info->encoding,argv[1]);
           break;
         }
       if (LocaleCompare("endian",option) == 0)
@@ -1553,11 +1547,11 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
   ChannelType
     channel;
 
+  ComposeOperation
+     compose;
+
   const char
     *format;
-
-  double
-    attenuate;
 
   DrawInfo
     *draw_info;
@@ -1593,7 +1587,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
   SetGeometryInfo(&geometry_info);
   GetPixelInfo(*image,&fill);
   SetPixelInfoPacket(*image,&(*image)->background_color,&fill);
-  attenuate=1.0;
   channel=image_info->channel;
   format=GetImageOption(image_info,"format");
 
@@ -1681,16 +1674,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           draw_info->affine.sy=cos(DegreesToRadians(
             fmod(geometry_info.sigma,360.0)));
           (void) AnnotateImage(*image,draw_info,exception);
-          break;
-        }
-      if (LocaleCompare("attenuate",option+1) == 0)
-        {
-          if (*option == '+')
-            {
-              attenuate=1.0;
-              break;
-            }
-          attenuate=InterpretLocaleValue(argv[i+1],(char **) NULL);
           break;
         }
       if (LocaleCompare("auto-gamma",argv[0]+1) == 0)
@@ -1793,6 +1776,20 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("border",argv[0]+1) == 0)
         {
+          ComposeOperator
+            compose;
+
+          const char*
+          const char*
+            value;
+
+          value=GetImageOption(image_info,"compose");
+          if (value != (const char *) NULL)
+            compose=(CompositeOperator) ParseCommandOption(
+                 MagickComposeOptions,MagickFalse,value);
+          else
+            compose=OverCompositeOp;  /* use Over not image->compose */
+
           (void) SyncImageSettings(image_info,*image);
           flags=ParsePageGeometry(*image,argv[1],&geometry,exception);
           if ((flags & SigmaValue) == 0)
@@ -2090,23 +2087,12 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             }
           break;
         }
-      if (LocaleCompare("density",argv[0]+1) == 0)
-        {
-          /*
-            Set image density.
-          */
-          (void) CloneString(&draw_info->density,argv[1]);
-          break;
-        }
       if (LocaleCompare("depth",argv[0]+1) == 0)
         {
+          /* the image_info->depth setting has already bee set
+           * We just need to apply it to all images in current sequence */
           (void) SyncImageSettings(image_info,*image);
-          if (*argv[0] == '+')
-            {
-              (void) SetImageDepth(*image,MAGICKCORE_QUANTUM_DEPTH);
-              break;
-            }
-          (void) SetImageDepth(*image,StringToUnsignedLong(argv[1]));
+          (void) SetImageDepth(*image,image_info->depth);
           break;
         }
       if (LocaleCompare("deskew",argv[0]+1) == 0)
@@ -2214,25 +2200,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           arguments=(double *) RelinquishMagickMemory(arguments);
           break;
         }
-      if (LocaleCompare("dither",argv[0]+1) == 0)
-        {
-          if (*argv[0] == '+')
-            {
-              quantize_info->dither=MagickFalse;
-              break;
-            }
-          quantize_info->dither=MagickTrue;
-          quantize_info->dither_method=(DitherMethod) ParseCommandOption(
-            MagickDitherOptions,MagickFalse,argv[1]);
-          if (quantize_info->dither_method == NoDitherMethod)
-            quantize_info->dither=MagickFalse;
-          break;
-        }
       if (LocaleCompare("draw",argv[0]+1) == 0)
         {
-          /*
-            Draw image.
-          */
           (void) SyncImageSettings(image_info,*image);
           (void) CloneString(&draw_info->primitive,argv[1]);
           (void) DrawImage(*image,draw_info,exception);
@@ -2244,9 +2213,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
     {
       if (LocaleCompare("edge",argv[0]+1) == 0)
         {
-          /*
-            Enhance edges in the image.
-          */
           (void) SyncImageSettings(image_info,*image);
           flags=ParseGeometry(argv[1],&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2257,9 +2223,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("emboss",argv[0]+1) == 0)
         {
-          /*
-            Gaussian embossen image.
-          */
           (void) SyncImageSettings(image_info,*image);
           flags=ParseGeometry(argv[1],&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2273,9 +2236,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           StringInfo
             *passkey;
 
-          /*
-            Encipher pixels.
-          */
           (void) SyncImageSettings(image_info,*image);
           passkey=FileToStringInfo(argv[1],~0,exception);
           if (passkey != (StringInfo *) NULL)
@@ -2283,11 +2243,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
               (void) PasskeyEncipherImage(*image,passkey,exception);
               passkey=DestroyStringInfo(passkey);
             }
-          break;
-        }
-      if (LocaleCompare("encoding",argv[0]+1) == 0)
-        {
-          (void) CloneString(&draw_info->encoding,argv[1]);
           break;
         }
       if (LocaleCompare("enhance",argv[0]+1) == 0)
@@ -2457,7 +2412,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           frame_info.y=(ssize_t) frame_info.height;
           frame_info.width=(*image)->columns+2*frame_info.width;
           frame_info.height=(*image)->rows+2*frame_info.height;
-          new_image=FrameImage(*image,&frame_info,compose,exception);
+          new_image=FrameImage(*image,&frame_info,COMPOSE,exception);
           break;
         }
       if (LocaleCompare("function",argv[0]+1) == 0)
@@ -3003,7 +2958,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
 
               noise=(NoiseType) ParseCommandOption(MagickNoiseOptions,
                 MagickFalse,argv[1]);
-              new_image=AddNoiseImage(*image,noise,attenuate,exception);
+              new_image=AddNoiseImage(*image,noise,exception);
             }
           break;
         }
@@ -4160,6 +4115,29 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
           RectangleInfo
             geometry;
 
+          ComposeOperator
+            compose;
+
+          const char*
+            value;
+
+          value=GetImageOption(image_info,"compose");
+          if (value != (const char *) NULL)
+            compose=(CompositeOperator) ParseCommandOption(
+                 MagickComposeOptions,MagickFalse,value);
+          else
+            compose=OverCompositeOp;  /* use Over not image->compose */
+
+          const char*
+            value=GetImageOption(image_info,"compose");
+
+           if (value != (const char *) NULL)
+             compose=(CompositeOperator) ParseCommandOption(
+                  MagickComposeOptions,MagickFalse,value);
+           else
+             compose=OverCompositeOp;  /* use Over not image->compose */
+
+
           (void) SyncImagesSettings(image_info,*images);
           image=RemoveFirstImageFromList(images);
           composite_image=RemoveFirstImageFromList(images);
@@ -4177,8 +4155,8 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
           mask_image=RemoveFirstImageFromList(images);
           if (mask_image != (Image *) NULL)
             {
-              if ((image->compose == DisplaceCompositeOp) ||
-                  (image->compose == DistortCompositeOp))
+              if ((compose == DisplaceCompositeOp) ||
+                  (compose == DistortCompositeOp))
                 {
                   /*
                     Merge Y displacement into X displacement image.
@@ -4197,7 +4175,7 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
                   (void) NegateImage(image->mask,MagickFalse,exception);
                 }
             }
-          (void) CompositeImage(image,image->compose,composite_image,
+          (void) CompositeImage(image,compose,composite_image,
             geometry.x,geometry.y);
           if (mask_image != (Image *) NULL)
             mask_image=image->mask=DestroyImage(image->mask);
@@ -4549,14 +4527,24 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
             }
             case CompositeLayer:
             {
-              CompositeOperator
-                compose;
-
               Image
                 *source;
 
               RectangleInfo
                 geometry;
+
+              ComposeOperator
+                compose;
+
+              const char*
+                value;
+
+              value=GetImageOption(image_info,"compose");
+              if (value != (const char *) NULL)
+                compose=(CompositeOperator) ParseCommandOption(
+                      MagickComposeOptions,MagickFalse,value);
+              else
+                compose=OverCompositeOp;  /* use Over not image->compose */
 
               /*
                 Split image sequence at the first 'NULL:' image.
@@ -4603,11 +4591,10 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
                 (*images)->page.width : (*images)->columns,
                 (*images)->page.height != 0 ? (*images)->page.height :
                 (*images)->rows,(*images)->gravity,&geometry);
-              compose=OverCompositeOp;
-              argv[0]=GetImageOption(image_info,"compose");
-              if (argv[0] != (const char *) NULL)
-                compose=(CompositeOperator) ParseCommandOption(
-                  MagickComposeOptions,MagickFalse,argv[0]);
+
+              /*
+                Compose the two image sequences together
+              */
               CompositeLayers(*images,compose,source,geometry.x,geometry.y,
                 exception);
               source=DestroyImageList(source);
