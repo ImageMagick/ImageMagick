@@ -1105,11 +1105,11 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
           register IndexPacket
             *restrict rotate_indexes;
 
-          register ssize_t
-            y;
-
           register PixelPacket
             *restrict q;
+
+          register ssize_t
+            y;
 
           size_t
             height,
@@ -1216,11 +1216,11 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         register IndexPacket
           *restrict rotate_indexes;
 
-        register ssize_t
-          x;
-
         register PixelPacket
           *restrict q;
+
+        register ssize_t
+          x;
 
         if (status == MagickFalse)
           continue;
@@ -1303,11 +1303,11 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
           register IndexPacket
             *restrict rotate_indexes;
 
-          register ssize_t
-            y;
-
           register PixelPacket
             *restrict q;
+
+          register ssize_t
+            y;
 
           size_t
             height,
