@@ -206,7 +206,7 @@ static struct
   {
     { "Comment", { {"comment", StringReference} } },
     { "Label", { {"label", StringReference} } },
-    { "AddNoise", { {"noise", MagickNoiseOptions},
+    { "AddNoise", { {"noise", MagickNoiseOptions}, {"attenuate", RealReference},
       {"channel", MagickChannelOptions} } },
     { "Colorize", { {"fill", StringReference}, {"blend", StringReference} } },
     { "Border", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -4314,10 +4314,10 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
-                QuantumFormat "," QuantumFormat "," QuantumFormat,
-                image->background_color.red,image->background_color.green,
-                image->background_color.blue,image->background_color.alpha);
+              (void) FormatLocaleString(color,MaxTextExtent,
+                "%.20g,%.20g,%.20g,%.20g",image->background_color.red,
+                image->background_color.green,image->background_color.blue,
+                image->background_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4379,10 +4379,10 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
-                QuantumFormat "," QuantumFormat "," QuantumFormat,
-                image->border_color.red,image->border_color.green,
-                image->border_color.blue,image->border_color.alpha);
+              (void) FormatLocaleString(color,MaxTextExtent,
+                "%.20g,%.20g,%.20g,%.20g",image->border_color.red,
+                image->border_color.green,image->border_color.blue,
+                image->border_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4505,10 +4505,10 @@ Get(ref,...)
               (void) items;
               if (j > (ssize_t) image->colors)
                 j%=image->colors;
-              (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
-                QuantumFormat "," QuantumFormat "," QuantumFormat,
-                image->colormap[j].red,image->colormap[j].green,
-                image->colormap[j].blue,image->colormap[j].alpha);
+              (void) FormatLocaleString(color,MaxTextExtent,
+                "%.20g,%.20g,%.20g,%.20g",image->colormap[j].red,
+                image->colormap[j].green,image->colormap[j].blue,
+                image->colormap[j].alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4977,10 +4977,10 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
-                QuantumFormat "," QuantumFormat "," QuantumFormat,
-                image->matte_color.red,image->matte_color.green,
-                image->matte_color.blue,image->matte_color.alpha);
+              (void) FormatLocaleString(color,MaxTextExtent,
+                "%.20g,%.20g,%.20g,%.20g",image->matte_color.red,
+                image->matte_color.green,image->matte_color.blue,
+                image->matte_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5287,10 +5287,10 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              (void) FormatLocaleString(color,MaxTextExtent,QuantumFormat ","
-                QuantumFormat "," QuantumFormat "," QuantumFormat,
-                image->transparent_color.red,image->transparent_color.green,
-                image->transparent_color.blue,image->transparent_color.alpha);
+              (void) FormatLocaleString(color,MaxTextExtent,
+                "%.20g,%.20g,%.20g,%.20g",image->transparent_color.red,
+                image->transparent_color.green,image->transparent_color.blue,
+                image->transparent_color.alpha);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -6004,22 +6004,22 @@ Histogram(ref,...)
       EXTEND(sp,6*count);
       for (i=0; i < (ssize_t) number_colors; i++)
       {
-        (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
+        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
           histogram[i].red);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
+        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
           histogram[i].green);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
+        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
           histogram[i].blue);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         if (image->colorspace == CMYKColorspace)
           {
-            (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
+            (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
               histogram[i].black);
             PUSHs(sv_2mortal(newSVpv(message,0)));
           }
-        (void) FormatLocaleString(message,MaxTextExtent,QuantumFormat,
+        (void) FormatLocaleString(message,MaxTextExtent,"%.20g",
           histogram[i].alpha);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         (void) FormatLocaleString(message,MaxTextExtent,"%.20g",(double)
@@ -7503,13 +7503,19 @@ Mogrify(ref,...)
         }
         case 3:  /* AddNoise */
         {
+          double
+            attenuate;
+
           if (attribute_flag[0] == 0)
             argument_list[0].integer_reference=UniformNoise;
+          attenuate=1.0;
           if (attribute_flag[1] != 0)
-            channel=(ChannelType) argument_list[1].integer_reference;
+            attenuate=argument_list[1].real_reference;
+          if (attribute_flag[2] != 0)
+            channel=(ChannelType) argument_list[2].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=AddNoiseImage(image,(NoiseType)
-            argument_list[0].integer_reference,exception);
+            argument_list[0].integer_reference,attenuate,exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
@@ -7529,7 +7535,7 @@ Mogrify(ref,...)
           target.blue=virtual_pixel[BluePixelChannel];
           target.alpha=virtual_pixel[AlphaPixelChannel];
           if (attribute_flag[0] != 0)
-            (void) QueryColorCompliance(argument_list[0].string_reference,
+            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
               AllCompliance,&target,exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100%";
@@ -8212,8 +8218,8 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             (void) QueryColorCompliance(argument_list[3].string_reference,
               AllCompliance,&draw_info->fill,exception);
-          (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,
-            virtual_pixel,exception);
+          (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
+            exception);
           target.red=virtual_pixel[RedPixelChannel];
           target.green=virtual_pixel[GreenPixelChannel];
           target.blue=virtual_pixel[BluePixelChannel];
@@ -8779,8 +8785,8 @@ Mogrify(ref,...)
             geometry.y=argument_list[2].integer_reference;
           if (image->matte == MagickFalse)
             (void) SetImageAlpha(image,OpaqueAlpha);
-          (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,
-            virtual_pixel,exception);
+          (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
+            exception);
           target.red=virtual_pixel[RedPixelChannel];
           target.green=virtual_pixel[GreenPixelChannel];
           target.blue=virtual_pixel[BluePixelChannel];
@@ -10263,8 +10269,8 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             (void) QueryColorCompliance(argument_list[3].string_reference,
               AllCompliance,&draw_info->fill,exception);
-          (void) GetOneVirtualMagickPixel(image,geometry.x,geometry.y,
-            virtual_pixel,exception);
+          (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
+            exception);
           target.red=virtual_pixel[RedPixelChannel];
           target.green=virtual_pixel[GreenPixelChannel];
           target.blue=virtual_pixel[BluePixelChannel];
