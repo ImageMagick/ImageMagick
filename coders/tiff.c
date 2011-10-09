@@ -572,7 +572,7 @@ static void TIFFGetProperties(TIFF *tiff,Image *image)
     {
       if (count >= MaxTextExtent)
         count=MaxTextExtent-1;
-      (void) FormatLocaleString(message,text,count+1);
+      (void) CopyMagickString(message,text,count+1);
       (void) SetImageProperty(image,"tiff:image-id",message);
     }
   if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
@@ -583,14 +583,14 @@ static void TIFFGetProperties(TIFF *tiff,Image *image)
     {
       if (count >= MaxTextExtent)
         count=MaxTextExtent-1;
-      (void) FormatLocaleString(message,text,mcount+1);
+      (void) CopyMagickString(message,text,mcount+1);
       (void) SetImageProperty(image,"tiff:kodak-33423",message);
     }
   if (TIFFGetField(tiff,36867,&count,&text) == 1)
     {
       if (count >= MaxTextExtent)
         count=MaxTextExtent-1;
-      (void) FormatLocaleString(message,text,count+1);
+      (void) CopyMagickString(message,text,count+1);
       (void) SetImageProperty(image,"tiff:kodak-36867",message);
     }
 }
