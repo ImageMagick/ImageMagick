@@ -1177,7 +1177,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_IntegralRotateImage)
+            #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
@@ -1199,7 +1199,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 180 degrees.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-      #pragma omp parallel for schedule(static,8) shared(progress,status)
+      #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1260,7 +1260,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_IntegralRotateImage)
+            #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             proceed=SetImageProgress(image,RotateImageTag,progress++,
               image->rows);
@@ -1386,7 +1386,7 @@ static Image *IntegralRotateImage(const Image *image,size_t rotations,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_IntegralRotateImage)
+            #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
@@ -1621,7 +1621,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_XShearImage)
+        #pragma omp critical (MagickCore_XShearImage)
 #endif
         proceed=SetImageProgress(image,XShearImageTag,progress++,height);
         if (proceed == MagickFalse)
@@ -1841,7 +1841,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_YShearImage)
+        #pragma omp critical (MagickCore_YShearImage)
 #endif
         proceed=SetImageProgress(image,YShearImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
