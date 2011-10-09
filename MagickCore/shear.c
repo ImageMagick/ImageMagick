@@ -739,7 +739,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if (GetPixelIntensity(image,p) < threshold)
+      if ((double) GetPixelIntensity(image,p) < threshold)
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -788,7 +788,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if (GetPixelIntensity(image,p) < threshold)
+      if ((double) GetPixelIntensity(image,p) < threshold)
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -862,15 +862,15 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
     }
   }
   image_view=DestroyCacheView(image_view);
-  image->background_color.red=ClampToQuantum((MagickRealType) QuantumRange*
-    background.red/count);
-  image->background_color.green=ClampToQuantum((MagickRealType) QuantumRange*
-    background.green/count);
-  image->background_color.blue=ClampToQuantum((MagickRealType) QuantumRange*
-    background.blue/count);
+  image->background_color.red=(double) ClampToQuantum((MagickRealType)
+    QuantumRange*background.red/count);
+  image->background_color.green=(double) ClampToQuantum((MagickRealType)
+    QuantumRange*background.green/count);
+  image->background_color.blue=(double) ClampToQuantum((MagickRealType)
+    QuantumRange*background.blue/count);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-    image->background_color.alpha=ClampToQuantum((MagickRealType) QuantumRange*
-      background.alpha/count);
+    image->background_color.alpha=(double) ClampToQuantum((MagickRealType)
+      QuantumRange*background.alpha/count);
 }
 
 MagickExport Image *DeskewImage(const Image *image,const double threshold,
