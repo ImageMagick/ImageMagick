@@ -338,7 +338,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  noise_image=CloneImage(image,0,0,MagickTrue,exception);
+  noise_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(noise_image,DirectClass,exception) == MagickFalse)
@@ -404,8 +404,11 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
         if ((traits == UndefinedPixelTrait) ||
             (noise_traits == UndefinedPixelTrait))
           continue;
-        if ((noise_traits & UpdatePixelTrait) == 0) 
-          continue;
+        if ((noise_traits & CopyPixelTrait) != 0)  
+          {
+            SetPixelChannel(noise_image,channel,p[i],q);
+            continue;
+          }
         SetPixelChannel(noise_image,channel,ClampToQuantum(
           GenerateDifferentialNoise(random_info[id],p[i],noise_type,attenuate)),
           q);
