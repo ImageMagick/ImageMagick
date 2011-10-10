@@ -903,6 +903,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   {
     if (0 && (image_info->verbose != MagickFalse))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
+    TIFFGetEXIFProperties(tiff,image);
+    TIFFGetProfiles(tiff,image,exception);
+    TIFFGetProperties(tiff,image);
     (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
       "lsb" : "msb");
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
@@ -1024,9 +1027,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->chromaticity.blue_primary.x=chromaticity[4];
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
-    TIFFGetProperties(tiff,image);
-    TIFFGetEXIFProperties(tiff,image);
-    TIFFGetProfiles(tiff,image,exception);
     /*
       Allocate memory for the image and pixel buffer.
     */
