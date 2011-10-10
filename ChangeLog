@@ -1,3 +1,9 @@
+2011-10-15  6.7.3-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.3-1.
+
+2011-10-15  6.7.3-1 Cristy  <quetzlzacatenango@image...>
+  * Read TIFF EXIF profile before reading the image data.
+
 2011-10-09  6.7.3-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-0.
 
