@@ -433,7 +433,6 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
   image_info=wand->image_info;
   draw_info=wand->_info;
 
-#define DeleteOption (const char*)NULL
 #define IfSetOption ((*argv[0])=='-')
 
   switch (*option)
@@ -465,7 +464,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
       if (LocaleCompare("authenticate",option) == 0)
       {
           (void) SetImageOption(image_info,option,
-               IfSetOption ? argv[1] : DeleteOption);
+               IfSetOption ? argv[1] : (const char*)NULL);
           break;
         }
       break;
@@ -559,7 +558,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
       if (LocaleCompare("caption",option) == 0)
         {
           (void) SetImageOption(image_info,option,
-               IfSetOption ? argv[1] : DeleteOption);
+               IfSetOption ? argv[1] : (const char*)NULL);
           break;
         }
       if (LocaleCompare("channel",option) == 0)
@@ -582,7 +581,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
       if (LocaleCompare("comment",option) == 0)
         {
           (void) SetImageOption(image_info,option,
-               IfSetOption ? argv[1] : DeleteOption);
+               IfSetOption ? argv[1] : (const char*)NULL);
           break;
         }
       if (LocaleCompare("compose",option) == 0)
@@ -591,7 +590,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
              The former is more efficent, but Crisy prefers the latter!
           */
           (void) SetImageOption(image_info,option,
-               IfSetOption ? argv[1] : DeleteOption);
+               IfSetOption ? argv[1] : (const char*)NULL);
           image_info->compose=(CompositeOperator) ParseCommandOption(
                MagickComposeOptions,MagickFalse,
                IfSetOption ? argv[1] : "undefined");
@@ -686,7 +685,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
         }
       if (LocaleCompare("direction",option) == 0)
         {
-          /* Image Option is only used to det draw_info */
+          /* Image Option is only used to set draw_info */
           (void) SetImageOption(image_info,option,
                IfSetOption ? argv[1] : "undefined");
           draw_info->direction=(DirectionType) ParseCommandOption(
@@ -715,12 +714,12 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
           (void) SetImageOption(image_info,option,
                        IfSetOption ? argv[1] : "none");
           image_info->dither = quantize_info->dither =
-                    IfSetOption?MagickTrue:MagickFalse;
+                    IfSetOption ? MagickTrue : MagickFalse;
           quantize_info->dither_method=(DitherMethod) ParseCommandOption(
-                           MagickDitherOptions,MagickFalse,
-                           IfSetOption ? argv[1] : "none");
+                    MagickDitherOptions,MagickFalse,
+                    IfSetOption ? argv[1] : "none");
           if (quantize_info->dither_method == NoDitherMethod)
-                image_info->dither=quantize_info->dither=MagickFalse;
+                image_info->dither = quantize_info->dither = MagickFalse;
           break;
         }
       break;
@@ -729,79 +728,77 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
     {
       if (LocaleCompare("encoding",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
-          (void) CloneString(&draw_info->encoding,argv[1]);
+          (void) CloneString(&draw_info->encoding,
+                       IfSetOption ? argv[1] : "undefined");
+          (void) SetImageOption(image_info,option,&draw_info->encoding);
           break;
         }
       if (LocaleCompare("endian",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->endian=UndefinedEndian;
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
+          const char
+            value;
+
+          value=IfSetOption?argv[1]:"undefined";
+          (void) SetImageOption(image_info,option,value);
           image_info->endian=(EndianType) ParseCommandOption(
-            MagickEndianOptions,MagickFalse,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+              MagickEndianOptions,MagickFalse,value);
           break;
         }
       if (LocaleCompare("extract",option) == 0)
         {
-          /*
-            Set image extract geometry.
-          */
-          if (*argv[0] == '+')
-            {
-              if (image_info->extract != (char *) NULL)
-                image_info->extract=DestroyString(image_info->extract);
-              break;
-            }
-          (void) CloneString(&image_info->extract,argv[1]);
+          (void) CloneString(&image_info->extract,
+               IfSetOption?argv[1]:(const char *) NULL);
           break;
         }
       break;
     }
     case 'f':
     {
+      if (LocaleCompare("family",argv[0]+1) == 0)
+        {
+          (void) CloneString(&draw_info->family,
+               IfSetOption ? argv[1] : (const char *) NULL);
+          break;
+        }
       if (LocaleCompare("fill",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"none");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          const char
+            value;
+
+          ExceptionInfo
+            *sans;
+
+          value = IfSetOption ? argv[1] : "none";
+          (void) SetImageOption(image_info,option,value);
+
+          sans=AcquireExceptionInfo();
+          /*(void) QueryMagickColorCompliance(value,AllCompliance,&fill,sans);*/
+          status=QueryColorCompliance(value,AllCompliance,&draw_info->fill,sans);
+          sans=DestroyExceptionInfo(sans);
+
+          if (draw_info->fill_pattern != (Image *) NULL)
+            draw_info->fill_pattern=DestroyImage(draw_info->fill_pattern);
+          if (status == MagickFalse)
+            draw_info->fill_pattern=GetImageCache(image_info,value,
+              exception);
           break;
         }
       if (LocaleCompare("filter",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          (void) SetImageOption(image_info,option,
+                IfSetOption ? argv[1] : "undefined");
           break;
         }
-      if (LocaleCompare("font",option) == 0)
+      if (LocaleCompare("font",argv[0]+1) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              if (image_info->font != (char *) NULL)
-                image_info->font=DestroyString(image_info->font);
-              break;
-            }
-          (void) CloneString(&image_info->font,argv[1]);
+          (void) CloneString(&draw_info->font,
+               IfSetOption ? argv[1] : (const char *) NULL);
+          (void) CloneString(&image_info->font,draw_info->font);
           break;
         }
       if (LocaleCompare("format",option) == 0)
         {
+          /* FUTURE: why the ping test, the user could set ping after this! */
           register const char
             *q;
 
@@ -813,6 +810,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
         }
       if (LocaleCompare("fuzz",option) == 0)
         {
+          /* FUTURE: image_info and ImageOption! */
           if (*argv[0] == '+')
             {
               image_info->fuzz=0.0;
@@ -833,9 +831,12 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
           if (*argv[0] == '+')
             {
               (void) SetImageOption(image_info,option,"undefined");
+              draw_info->gravity=UndefinedGravity;
               break;
             }
           (void) SetImageOption(image_info,option,argv[1]);
+          draw_info->gravity=(GravityType) ParseCommandOption(
+            MagickGravityOptions,MagickFalse,argv[1]);
           break;
         }
       if (LocaleCompare("green-primary",option) == 0)
@@ -2247,18 +2248,12 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("enhance",argv[0]+1) == 0)
         {
-          /*
-            Enhance image.
-          */
           (void) SyncImageSettings(image_info,*image);
           new_image=EnhanceImage(*image,exception);
           break;
         }
       if (LocaleCompare("equalize",argv[0]+1) == 0)
         {
-          /*
-            Equalize image.
-          */
           (void) SyncImageSettings(image_info,*image);
           (void) EqualizeImage(*image,exception);
           break;
@@ -2280,9 +2275,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("extent",argv[0]+1) == 0)
         {
-          /*
-            Set the image extent.
-          */
           (void) SyncImageSettings(image_info,*image);
           flags=ParseGravityGeometry(*image,argv[1],&geometry,exception);
           if (geometry.width == 0)
@@ -2296,50 +2288,11 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
     }
     case 'f':
     {
-      if (LocaleCompare("family",argv[0]+1) == 0)
-        {
-          if (*argv[0] == '+')
-            {
-              if (draw_info->family != (char *) NULL)
-                draw_info->family=DestroyString(draw_info->family);
-              break;
-            }
-          (void) CloneString(&draw_info->family,argv[1]);
-          break;
-        }
       if (LocaleCompare("features",argv[0]+1) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) DeleteImageArtifact(*image,"identify:features");
-              break;
-            }
-          (void) SetImageArtifact(*image,"identify:features",argv[1]);
-          break;
-        }
-      if (LocaleCompare("fill",argv[0]+1) == 0)
-        {
-          ExceptionInfo
-            *sans;
-
-          GetPixelInfo(*image,&fill);
-          if (*argv[0] == '+')
-            {
-              (void) QueryMagickColorCompliance("none",AllCompliance,&fill,
-                 exception);
-              (void) QueryColorCompliance("none",AllCompliance,&draw_info->fill,
-                exception);
-              if (draw_info->fill_pattern != (Image *) NULL)
-                draw_info->fill_pattern=DestroyImage(draw_info->fill_pattern);
-              break;
-            }
-          sans=AcquireExceptionInfo();
-          (void) QueryMagickColorCompliance(argv[1],AllCompliance,&fill,sans);
-          status=QueryColorCompliance(argv[1],AllCompliance,&draw_info->fill,sans);
-          sans=DestroyExceptionInfo(sans);
-          if (status == MagickFalse)
-            draw_info->fill_pattern=GetImageCache(image_info,argv[1],
-              exception);
+          /* FUTURE: Assign Artifact all images */
+          (void) SetImageArtifact(*image,"identify:features",
+              IfSetOption ? argv[1] : (const char *) NULL);
           break;
         }
       if (LocaleCompare("flip",argv[0]+1) == 0)
@@ -2376,22 +2329,13 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             geometry.y,*argv[0] == '-' ? MagickFalse : MagickTrue,exception);
           break;
         }
-      if (LocaleCompare("font",argv[0]+1) == 0)
-        {
-          if (*argv[0] == '+')
-            {
-              if (draw_info->font != (char *) NULL)
-                draw_info->font=DestroyString(draw_info->font);
-              break;
-            }
-          (void) CloneString(&draw_info->font,argv[1]);
-          break;
-        }
+      /* FUTURE: should be from  ImageOption "format"
       if (LocaleCompare("format",argv[0]+1) == 0)
         {
           format=argv[1];
           break;
         }
+      */
       if (LocaleCompare("frame",argv[0]+1) == 0)
         {
           FrameInfo
@@ -2526,17 +2470,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           else
             new_image=ResizeImage(*image,geometry.width,geometry.height,
               (*image)->filter,(*image)->blur,exception);
-          break;
-        }
-      if (LocaleCompare("gravity",argv[0]+1) == 0)
-        {
-          if (*argv[0] == '+')
-            {
-              draw_info->gravity=UndefinedGravity;
-              break;
-            }
-          draw_info->gravity=(GravityType) ParseCommandOption(
-            MagickGravityOptions,MagickFalse,argv[1]);
           break;
         }
       break;
