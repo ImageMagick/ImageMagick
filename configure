@@ -3584,7 +3584,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5563
+MAGICK_SVN_REVISION=5603
 
 
 
@@ -30070,8 +30070,8 @@ fi
 
   if test $passed -gt 0; then
     for var in 5 4 2 '' ; do
-      if test "$have_png" == 'no' ; then
-        if test "x${var}" == 'x' ; then
+      if test "$have_png" = 'no' ; then
+        if test "x${var}" = 'x' ; then
           pnglib='png'
         else
           pnglib="png1${var}"
@@ -30080,7 +30080,7 @@ fi
 #       Test for compatible LIBPNG library
         failed=0
         passed=0
-        if test "$with_png" == 'yes' -o "$with_png" == "libpng1${var}" ; then
+        if test "$with_png" = 'yes' -o "$with_png" = "libpng1${var}" ; then
           if test "${pnglib}" != 'png' ; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG1${var} support " >&5
 $as_echo_n "checking for LIBPNG1${var} support ... " >&6; }
