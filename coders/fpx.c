@@ -190,6 +190,9 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *g,
     *r;
 
+  size_t
+    memory_limit;
+
   ssize_t
     y;
 
@@ -198,7 +201,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     height,
-    memory_limit,
     tile_width,
     tile_height,
     width;
