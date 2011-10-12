@@ -210,9 +210,9 @@ struct _Image
     extract_info;
 
   double
-    bias,           /* depreciated ? */
-    blur,
-    fuzz;           /* current color fuzz attribute */
+    bias,           /* FUTURE: depreciated -- convolve bias */
+    blur,           /* FUTURE: depreciated -- resize file blur */
+    fuzz;           /* current color fuzz attribute - make image_info */
 
   FilterTypes
     filter;         /* resize/distort filter to apply */
@@ -392,11 +392,11 @@ struct _ImageInfo
     *server_name,       /* X windows server name - display/animate */
     *font,              /* draw_info */
     *texture,           /* montage/display background tile */
-    *density;
+    *density;           /* for image and draw_info */
 
   double
     pointsize,
-    fuzz;
+    fuzz;               /* current color fuzz attribute */
 
   PixelPacket
     background_color,
