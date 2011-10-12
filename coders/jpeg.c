@@ -272,7 +272,7 @@ static MagickBooleanType IsITUFaxImage(const Image *image)
   return(MagickFalse);
 }
 
-static MagickBooleanType JPEGErrorHandler(j_common_ptr jpeg_info)
+static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
   char
     message[JMSG_LENGTH_MAX];
