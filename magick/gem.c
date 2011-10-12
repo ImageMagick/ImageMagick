@@ -611,7 +611,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 #define SigmaImpulse  (attenuate*0.1)
 #define SigmaLaplacian (attenuate*0.0390625)
 #define SigmaMultiplicativeGaussian  (attenuate*0.5)
-#define SigmaPoisson  (attenuate*0.05/0.0001953125)
+#define SigmaPoisson  (attenuate*12.75)
 #define TauGaussian  (attenuate*0.078125)
 
   double
