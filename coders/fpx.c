@@ -190,7 +190,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *g,
     *r;
 
-  size_t
+  unsigned int
     memory_limit;
 
   ssize_t
