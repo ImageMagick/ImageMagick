@@ -3,6 +3,10 @@
 
 2011-10-15  6.7.3-1 Cristy  <quetzlzacatenango@image...>
   * Read TIFF EXIF profile before reading the image data.
+  * Fix "test: no: unexpected operator" in the configure script (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19615).
+  * Off by one error when writing the JPEG XMP profile (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19616).
 
 2011-10-09  6.7.3-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-0.

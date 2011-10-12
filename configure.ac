@@ -2439,8 +2439,8 @@ if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
 
   if test $passed -gt 0; then
     for var in 5 4 2 '' ; do
-      if test "$have_png" == 'no' ; then
-        if test "x${var}" == 'x' ; then
+      if test "$have_png" = 'no' ; then
+        if test "x${var}" = 'x' ; then
           pnglib='png'
         else
           pnglib="png1${var}"
@@ -2449,7 +2449,7 @@ if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
 #       Test for compatible LIBPNG library
         failed=0
         passed=0
-        if test "$with_png" == 'yes' -o "$with_png" == "libpng1${var}" ; then
+        if test "$with_png" = 'yes' -o "$with_png" = "libpng1${var}" ; then
           if test "${pnglib}" != 'png' ; then
             AC_MSG_CHECKING(for LIBPNG1${var} support )
             AC_TRY_COMPILE(
