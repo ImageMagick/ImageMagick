@@ -49,6 +49,7 @@
 #include "MagickCore/hashmap.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/splay-tree.h"
@@ -91,9 +92,6 @@
 #define FC_WEIGHT_BLACK            210
 #define FC_WEIGHT_HEAVY            FC_WEIGHT_BLACK
 #endif
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include "MagickCore/nt-feature.h"
 #endif
 
 /*

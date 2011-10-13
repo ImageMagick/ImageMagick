@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include "MagickCore/splay-tree.h"
+#include "MagickCore/geometry.h"
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 extern MagickExport void

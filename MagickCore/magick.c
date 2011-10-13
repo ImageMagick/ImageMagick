@@ -64,9 +64,7 @@
 #include "MagickCore/mime-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/module-private.h"
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include "MagickCore/nt-feature.h"
-#endif
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/random-private.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/registry-private.h"

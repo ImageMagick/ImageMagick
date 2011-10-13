@@ -6732,9 +6732,8 @@ WandExport MagickBooleanType MagickNegateImage(MagickWand *wand,
 %    o background: the image color.
 %
 */
-WandExport MagickBooleanType MagickNewImage(MagickWand *wand,
-  const size_t width,const size_t height,
-  const PixelWand *background)
+WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
+  const size_t height,const PixelWand *background)
 {
   Image
     *images;
@@ -6747,11 +6746,9 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   PixelGetMagickColor(background,&pixel);
-  images=NewMagickImage(wand->image_info,width,height,&pixel);
+  images=NewMagickImage(wand->image_info,width,height,&pixel,&wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
-  if (images->exception.severity != UndefinedException)
-    InheritException(wand->exception,&images->exception);
   return(InsertImageInWand(wand,images));
 }
 
