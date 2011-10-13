@@ -650,7 +650,7 @@ MagickPrivate int IsWindows95(void)
 %    o argv:  the  wide-character command line arguments.
 %
 */
-MagickPrivate char **NTArgvToUTF8(const int argc,wchar_t **argv)
+MagickExport char **NTArgvToUTF8(const int argc,wchar_t **argv)
 {
   char
     **utf8;
@@ -1689,7 +1689,7 @@ MagickPrivate int NTGhostscriptDLL(char *path,int length)
 %      const GhostInfo *NTGhostscriptDLLVectors(void)
 %
 */
-MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
+MagickExport const GhostInfo *NTGhostscriptDLLVectors(void)
 {
   if (NTGhostscriptLoadDLL() == FALSE)
     return((GhostInfo *) NULL);
@@ -1865,7 +1865,7 @@ MagickPrivate int NTGhostscriptLoadDLL(void)
 %      int NTGhostscriptUnLoadDLL(void)
 %
 */
-MagickPrivate int NTGhostscriptUnLoadDLL(void)
+MagickExport int NTGhostscriptUnLoadDLL(void)
 {
   int
     status;

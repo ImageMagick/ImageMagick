@@ -352,11 +352,7 @@ typedef UINT
 #endif
 
 extern MagickPrivate char
-  *NTGetLastError(void),
-  **NTArgvToUTF8(const int argc,wchar_t **);
-
-extern MagickPrivate const GhostInfo
-  *NTGhostscriptDLLVectors(void);
+  *NTGetLastError(void);
 
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 extern MagickPrivate const char
@@ -389,7 +385,6 @@ extern MagickPrivate int
   NTGhostscriptEXE(char *,int),
   NTGhostscriptFonts(char *,int),
   NTGhostscriptLoadDLL(void),
-  NTGhostscriptUnLoadDLL(void),
   NTInitializeLibrary(void),
   NTSetSearchPath(const char *),
   NTSyncMemory(void *,size_t,int),
