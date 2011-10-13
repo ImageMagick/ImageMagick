@@ -250,6 +250,12 @@
 #define MAGICKCORE_HAVE_DECL_PWRITE 1
 #endif
 
+/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
+   don't. */
+#ifndef MAGICKCORE_HAVE_DECL_STRERROR_R
+#define MAGICKCORE_HAVE_DECL_STRERROR_R 1
+#endif
+
 /* Define to 1 if you have the declaration of `strlcpy', and to 0 if you
    don't. */
 #ifndef MAGICKCORE_HAVE_DECL_STRLCPY
@@ -1401,6 +1407,11 @@
 /* Define to 1 if you have the ANSI C header files. */
 #ifndef MAGICKCORE_STDC_HEADERS
 #define MAGICKCORE_STDC_HEADERS 1
+#endif
+
+/* Define to 1 if strerror_r returns char *. */
+#ifndef MAGICKCORE_STRERROR_R_CHAR_P
+#define MAGICKCORE_STRERROR_R_CHAR_P 1
 #endif
 
 /* Define if you have POSIX threads libraries and header files. */
