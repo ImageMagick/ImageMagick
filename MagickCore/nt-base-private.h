@@ -417,12 +417,10 @@ extern MagickPrivate unsigned char
   *NTResourceToBlob(const char *);
 
 extern MagickPrivate void
-  NTErrorHandler(const ExceptionType,const char *,const char *),
   *NTGetLibrarySymbol(void *,const char *),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),
   *NTOpenLibrary(const char *),
-  NTSeekDirectory(DIR *,ssize_t),
-  NTWarningHandler(const ExceptionType,const char *,const char *);
+  NTSeekDirectory(DIR *,ssize_t);
 
 #endif /* !XS_VERSION */
 
