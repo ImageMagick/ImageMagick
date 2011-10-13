@@ -27,7 +27,7 @@ extern "C" {
 #include "MagickCore/memory_.h"
 
 static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
-  const ssize_t x,const ssize_t y,PixelPacket *fill,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,PixelInfo *fill,ExceptionInfo *exception)
 {
   if (draw_info->fill_pattern == (Image *) NULL)
     {
@@ -59,7 +59,7 @@ static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
 }
 
 static inline MagickBooleanType GetStrokeColor(const DrawInfo *draw_info,
-  const ssize_t x,const ssize_t y,PixelPacket *stroke,ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,PixelInfo *stroke,ExceptionInfo *exception)
 {
   if (draw_info->stroke_pattern == (Image *) NULL)
     {

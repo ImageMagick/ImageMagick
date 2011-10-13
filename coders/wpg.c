@@ -295,7 +295,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           {
             index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
           }
           p++;
@@ -306,7 +306,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
             {
               index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
               SetPixelIndex(image,index,q);
-              SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+              SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
               q+=GetPixelChannels(image);
             }
             p++;
@@ -324,19 +324,19 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p) & 0x3);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
             q+=GetPixelChannels(image);
         }
@@ -344,21 +344,21 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           {
             index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
             if ((image->columns % 4) >= 1)
 
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
                 SetPixelIndex(image,index,q);
-                SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+                SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(image);
                 if ((image->columns % 4) >= 2)
 
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
                     SetPixelIndex(image,index,q);
-                    SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+                    SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
                     q+=GetPixelChannels(image);
                   }
               }
@@ -378,11 +378,11 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           { 
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p) & 0x0f);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
             q+=GetPixelChannels(image);
           }
@@ -390,7 +390,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
             q+=GetPixelChannels(image);
           }
@@ -407,7 +407,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           {
             index=ConstrainColormapIndex(image,*p);
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
             q+=GetPixelChannels(image);
           }
@@ -1108,7 +1108,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 {
                   if (bpp < 24)
                     if ( (image->colors < (one << bpp)) && (bpp != 24) )
-                      image->colormap=(PixelPacket *) ResizeQuantumMemory(
+                      image->colormap=(PixelInfo *) ResizeQuantumMemory(
                         image->colormap,(size_t) (one << bpp),
                         sizeof(*image->colormap));
                 }
@@ -1281,7 +1281,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 {
                   if(bpp < 24)
                     if( image->colors<(one << bpp) && bpp!=24 )
-                      image->colormap=(PixelPacket *) ResizeQuantumMemory(
+                      image->colormap=(PixelInfo *) ResizeQuantumMemory(
                        image->colormap,(size_t) (one << bpp),
                        sizeof(*image->colormap));
                 }

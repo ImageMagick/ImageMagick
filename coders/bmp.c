@@ -555,11 +555,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,2,magick);
   do
   {
-    PixelLongPacket
-      shift;
+    PixelInfo
+      quantum_bits;
 
     PixelPacket
-      quantum_bits;
+      shift;
 
     size_t
       profile_data,

@@ -272,7 +272,7 @@ static int
     (printf,2,3)));
 
 static void
-  MvgAppendColor(DrawingWand *,const PixelPacket *);
+  MvgAppendColor(DrawingWand *,const PixelInfo *);
 
 /*
   "Printf" for MVG commands
@@ -386,7 +386,7 @@ static int MvgAutoWrapPrintf(DrawingWand *wand,const char *format,...)
   return(count);
 }
 
-static void MvgAppendColor(DrawingWand *wand,const PixelPacket *packet)
+static void MvgAppendColor(DrawingWand *wand,const PixelInfo *packet)
 {
   if ((packet->red == 0) && (packet->green == 0) && (packet->blue == 0) &&
       (packet->alpha == (Quantum) TransparentAlpha))
@@ -4486,7 +4486,7 @@ WandExport void DrawScale(DrawingWand *wand,const double x,const double y)
 WandExport void DrawSetBorderColor(DrawingWand *wand,
   const PixelWand *border_wand)
 {
-  PixelPacket
+  PixelInfo
     *current_border,
     border_color,
     new_border;
@@ -4500,7 +4500,7 @@ WandExport void DrawSetBorderColor(DrawingWand *wand,
   new_border=border_color;
   current_border=(&CurrentContext->border_color);
   if ((wand->filter_off != MagickFalse) ||
-      (IsPixelPacketEquivalent(current_border,&new_border) == MagickFalse))
+      (IsPixelInfoEquivalent(current_border,&new_border) == MagickFalse))
     {
       CurrentContext->border_color=new_border;
       (void) MvgPrintf(wand,"border-color '");
@@ -4678,7 +4678,7 @@ WandExport void DrawSetClipUnits(DrawingWand *wand,
 */
 WandExport void DrawSetFillColor(DrawingWand *wand,const PixelWand *fill_wand)
 {
-  PixelPacket
+  PixelInfo
     *current_fill,
     fill_color,
     new_fill;
@@ -4692,7 +4692,7 @@ WandExport void DrawSetFillColor(DrawingWand *wand,const PixelWand *fill_wand)
   new_fill=fill_color;
   current_fill=(&CurrentContext->fill);
   if ((wand->filter_off != MagickFalse) ||
-      (IsPixelPacketEquivalent(current_fill,&new_fill) == MagickFalse))
+      (IsPixelInfoEquivalent(current_fill,&new_fill) == MagickFalse))
     {
       CurrentContext->fill=new_fill;
       (void) MvgPrintf(wand,"fill '");
@@ -5253,7 +5253,7 @@ WandExport void DrawSetGravity(DrawingWand *wand,const GravityType gravity)
 WandExport void DrawSetStrokeColor(DrawingWand *wand,
   const PixelWand *stroke_wand)
 {
-  PixelPacket
+  PixelInfo
     *current_stroke,
     new_stroke,
     stroke_color;
@@ -5267,7 +5267,7 @@ WandExport void DrawSetStrokeColor(DrawingWand *wand,
   new_stroke=stroke_color;
   current_stroke=(&CurrentContext->stroke);
   if ((wand->filter_off != MagickFalse) ||
-      (IsPixelPacketEquivalent(current_stroke,&new_stroke) == MagickFalse))
+      (IsPixelInfoEquivalent(current_stroke,&new_stroke) == MagickFalse))
     {
       CurrentContext->stroke=new_stroke;
       (void) MvgPrintf(wand,"stroke '");
@@ -6073,7 +6073,7 @@ WandExport void DrawSetTextInterwordSpacing(DrawingWand *wand,
 WandExport void DrawSetTextUnderColor(DrawingWand *wand,
   const PixelWand *under_wand)
 {
-  PixelPacket
+  PixelInfo
     under_color;
 
   assert(wand != (DrawingWand *) NULL);
@@ -6083,7 +6083,7 @@ WandExport void DrawSetTextUnderColor(DrawingWand *wand,
   assert(under_wand != (const PixelWand *) NULL);
   PixelGetQuantumPacket(under_wand,&under_color);
   if ((wand->filter_off != MagickFalse) ||
-      (IsPixelPacketEquivalent(&CurrentContext->undercolor,&under_color) == MagickFalse))
+      (IsPixelInfoEquivalent(&CurrentContext->undercolor,&under_color) == MagickFalse))
     {
       CurrentContext->undercolor=under_color;
       (void) MvgPrintf(wand,"text-undercolor '");

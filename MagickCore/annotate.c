@@ -1384,7 +1384,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           MagickRealType
             fill_opacity;
 
-          PixelPacket
+          PixelInfo
             fill_color;
 
           register Quantum
@@ -1792,7 +1792,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       MagickBooleanType
         sync;
 
-      PixelPacket
+      PixelInfo
         fill_color;
 
       /*

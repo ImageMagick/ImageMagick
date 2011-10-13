@@ -1703,7 +1703,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   PointInfo
     point;
 
-  PixelPacket
+  PixelInfo
     start_color;
 
   PrimitiveInfo
@@ -2481,7 +2481,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           }
         if (LocaleCompare("stop-color",keyword) == 0)
           {
-            PixelPacket
+            PixelInfo
               stop_color;
 
             GetMagickToken(q,&q,token);
@@ -3865,7 +3865,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         MagickBooleanType
           sync;
 
-        PixelPacket
+        PixelInfo
           pixel;
 
         register ssize_t
@@ -3884,13 +3884,14 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
             status=MagickFalse;
             continue;
           }
+        GetPixelInfo(image,&pixel);
         for ( ; x <= stop; x++)
         {
           if ((x == (ssize_t) ceil(primitive_info->point.x-0.5)) &&
               (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             {
               (void) GetStrokeColor(draw_info,x,y,&pixel,exception);
-              SetPixelPacket(image,&pixel,q);
+              SetPixelPixelInfo(image,&pixel,q);
             }
           q+=GetPixelChannels(image);
         }
@@ -3922,7 +3923,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       fill_opacity,
       stroke_opacity;
 
-    PixelPacket
+    PixelInfo
       fill_color,
       stroke_color;
 
@@ -4140,7 +4141,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   {
     case PointPrimitive:
     {
-      PixelPacket
+      PixelInfo
         fill_color;
 
       register Quantum
@@ -4166,7 +4167,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         case PointMethod:
         default:
         {
-          PixelPacket
+          PixelInfo
             pixel;
 
           register Quantum
@@ -4175,8 +4176,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
           if (q == (Quantum *) NULL)
             break;
+          GetPixelInfo(image,&pixel);
           (void) GetFillColor(draw_info,x,y,&pixel,exception);
-          SetPixelPacket(image,&pixel,q);
+          SetPixelPixelInfo(image,&pixel,q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
         }
@@ -4185,7 +4187,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           MagickBooleanType
             sync;
 
-          PixelPacket
+          PixelInfo
             pixel,
             target;
 
@@ -4209,14 +4211,14 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              GetPixelPacketPixel(image,q,&pixel);
-              if (IsFuzzyEquivalencePixelPacket(image,&pixel,&target) == MagickFalse)
+              GetPixelInfoPixel(image,q,&pixel);
+              if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
                 {
                   q+=GetPixelChannels(image);
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelPacket(image,&pixel,q);
+              SetPixelPixelInfo(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4248,9 +4250,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           MagickBooleanType
             sync;
 
-          PixelPacket
+          PixelInfo
             pixel;
 
+          GetPixelInfo(image,&pixel);
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
@@ -4266,7 +4269,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelPacket(image,&pixel,q);
+              SetPixelPixelInfo(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4287,7 +4290,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         case PointMethod:
         default:
         {
-          PixelPacket
+          PixelInfo
             pixel;
 
           register Quantum
@@ -4306,7 +4309,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           MagickBooleanType
             sync;
 
-          PixelPacket
+          PixelInfo
             pixel,
             target;
 
@@ -4333,8 +4336,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              GetPixelPacketPixel(image,q,&pixel);
-              if (IsFuzzyEquivalencePixelPacket(image,&pixel,&target) == MagickFalse)
+              GetPixelInfoPixel(image,q,&pixel);
+              if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
                 {
                   q+=GetPixelChannels(image);
                   continue;
@@ -4377,7 +4380,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           MagickBooleanType
             sync;
 
-          PixelPacket
+          PixelInfo
             pixel;
 
           for (y=0; y < (ssize_t) image->rows; y++)

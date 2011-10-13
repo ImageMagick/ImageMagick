@@ -1076,7 +1076,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
   MagickStatusType
     flags;
 
-  PixelPacket
+  PixelInfo
     *color,
     target_color;
 
@@ -3921,7 +3921,7 @@ Flatten(ref)
     Image
       *image;
 
-    PixelPacket
+    PixelInfo
       background_color;
 
     register ssize_t
@@ -5947,7 +5947,7 @@ Histogram(ref,...)
     char
       message[MaxTextExtent];
 
-    PixelPacket
+    PixelInfo
       *histogram;
 
     ExceptionInfo
@@ -5998,7 +5998,7 @@ Histogram(ref,...)
     for ( ; image; image=image->next)
     {
       histogram=GetImageHistogram(image,&number_colors,&image->exception);
-      if (histogram == (PixelPacket *) NULL)
+      if (histogram == (PixelInfo *) NULL)
         continue;
       count+=(ssize_t) number_colors;
       EXTEND(sp,6*count);
@@ -6026,7 +6026,7 @@ Histogram(ref,...)
           histogram[i].count);
         PUSHs(sv_2mortal(newSVpv(message,0)));
       }
-      histogram=(PixelPacket *) RelinquishMagickMemory(histogram);
+      histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
     }
 
   PerlException:
@@ -7249,7 +7249,7 @@ Mogrify(ref,...)
     MagickStatusType
       flags;
 
-    PixelPacket
+    PixelInfo
       fill_color;
 
     RectangleInfo
@@ -11911,7 +11911,7 @@ QueryColorname(ref,...)
     Image
       *image;
 
-    PixelPacket
+    PixelInfo
       target_color;
 
     register ssize_t

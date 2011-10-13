@@ -3638,7 +3638,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(size_t) width;
     image->rows=(size_t) height;
     image->depth=depth;
-    if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
+    if ((image->colormap == (PixelInfo *) NULL) && (samples_per_pixel == 1))
       {
         size_t
           one;
@@ -3774,7 +3774,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           byte;
 
-        PixelLongPacket
+        PixelPacket
           pixel;
 
         /*

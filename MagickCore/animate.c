@@ -888,7 +888,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
               (next->colors > (size_t) visual_info->colormap_size))
             break;
           for (i=0; i < (ssize_t) images->colors; i++)
-            if (IsPixelPacketEquivalent(next->colormap+i,images->colormap+i) == MagickFalse)
+            if (IsPixelInfoEquivalent(next->colormap+i,images->colormap+i) == MagickFalse)
               break;
           if (i < (ssize_t) images->colors)
             break;
@@ -1510,7 +1510,7 @@ MagickExport Image *XAnimateImages(Display *display,
               (next->colors > (size_t) visual_info->colormap_size))
             break;
           for (i=0; i < (ssize_t) images->colors; i++)
-            if (IsPixelPacketEquivalent(next->colormap+i,images->colormap+i) == MagickFalse)
+            if (IsPixelInfoEquivalent(next->colormap+i,images->colormap+i) == MagickFalse)
               break;
           if (i < (ssize_t) images->colors)
             break;

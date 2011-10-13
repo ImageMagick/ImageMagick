@@ -198,34 +198,13 @@ static inline PixelTrait GetPixelRedTraits(const Image *image)
   return(image->channel_map[RedPixelChannel].traits);
 }
 
-static inline void GetPixelPacketPixel(const Image *image,const Quantum *pixel,
-  PixelPacket *packet)
+static inline void GetPixelInfoPixel(const Image *image,const Quantum *pixel,
+  PixelInfo *packet)
 {
   packet->red=(double) pixel[image->channel_map[RedPixelChannel].channel];
   packet->green=(double) pixel[image->channel_map[GreenPixelChannel].channel];
   packet->blue=(double) pixel[image->channel_map[BluePixelChannel].channel];
   packet->alpha=(double) pixel[image->channel_map[AlphaPixelChannel].channel];
-}
-
-static inline Quantum GetPixelPacketIntensity(const PixelPacket *pixel)
-{
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((pixel->red == pixel->green) && (pixel->green == pixel->blue))
-    return((Quantum) pixel->red);
-  return((Quantum) (0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue+0.5));
-#else
-  {
-    double
-      alpha,
-      beta;
-
-    alpha=pixel->red-pixel->green;
-    beta=pixel->green-pixel->blue;
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
-      return((Quantum) pixel->red);
-    return((Quantum) (0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue));
-  }
-#endif
 }
 
 static inline PixelTrait GetPixelTraits(const Image *image,
@@ -255,7 +234,7 @@ static inline PixelTrait GetPixelYellowTraits(const Image *image)
 }
 
 static inline MagickBooleanType IsPixelEquivalent(const Image *image,
-  const Quantum *p,const PixelPacket *q)
+  const Quantum *p,const PixelInfo *q)
 {
   if (((double) p[image->channel_map[RedPixelChannel].channel] == q->red) &&
       ((double) p[image->channel_map[GreenPixelChannel].channel] == q->green) &&
@@ -347,15 +326,7 @@ static inline MagickBooleanType IsPixelMonochrome(const Image *image,
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsPixelPacketEquivalent(const PixelPacket *p,
-  const PixelPacket *q)
-{
-  if ((p->red == q->red) && (p->green == q->green) && (p->blue == q->blue))
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-static inline MagickBooleanType IsPixelPacketGray(const PixelPacket *pixel)
+static inline MagickBooleanType IsPixelInfoGray(const PixelInfo *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((pixel->red == pixel->green) && (pixel->green == pixel->blue))
@@ -375,8 +346,8 @@ static inline MagickBooleanType IsPixelPacketGray(const PixelPacket *pixel)
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsPixelPacketMonochrome(
-  const PixelPacket *pixel)
+static inline MagickBooleanType IsPixelInfoMonochrome(
+  const PixelInfo *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (((pixel->red == 0) || (pixel->red == (Quantum) QuantumRange)) &&
@@ -400,7 +371,7 @@ static inline MagickBooleanType IsPixelPacketMonochrome(
 }
 
 static inline void SetPacketPixelInfo(const Image *image,
-  const PixelInfo *pixel_info,PixelPacket *packet)
+  const PixelInfo *pixel_info,PixelInfo *packet)
 {
   packet->red=pixel_info->red;
   packet->green=pixel_info->green;
@@ -554,20 +525,8 @@ static inline void SetPixelInfo(const Image *image,const Quantum *pixel,
       pixel[image->channel_map[IndexPixelChannel].channel];
 }
 
-static inline void SetPixelInfoBias(const Image *image,PixelInfo *pixel_info)
-{
-  /*
-    Obsoleted by MorphologyApply().
-  */
-  pixel_info->red=image->bias;
-  pixel_info->green=image->bias;
-  pixel_info->blue=image->bias;
-  pixel_info->alpha=image->bias;
-  pixel_info->black=image->bias;
-}
-
 static inline void SetPixelInfoPacket(const Image *image,
-  const PixelPacket *pixel,PixelInfo *pixel_info)
+  const PixelInfo *pixel,PixelInfo *pixel_info)
 {
   pixel_info->red=(MagickRealType) pixel->red;
   pixel_info->green=(MagickRealType) pixel->green;
@@ -610,19 +569,6 @@ static inline void SetPixelRed(const Image *image,const Quantum red,
 static inline void SetPixelRedTraits(Image *image,const PixelTrait traits)
 {
   image->channel_map[RedPixelChannel].traits=traits;
-}
-
-static inline void SetPixelPacket(const Image *image,const PixelPacket *packet,
-  Quantum *pixel)
-{
-  pixel[image->channel_map[RedPixelChannel].channel]=
-    ClampToQuantum(packet->red);
-  pixel[image->channel_map[GreenPixelChannel].channel]=
-    ClampToQuantum(packet->green);
-  pixel[image->channel_map[BluePixelChannel].channel]=
-    ClampToQuantum(packet->blue);
-  pixel[image->channel_map[AlphaPixelChannel].channel]=
-    ClampToQuantum(packet->alpha);
 }
 
 static inline void SetPixelPixelInfo(const Image *image,

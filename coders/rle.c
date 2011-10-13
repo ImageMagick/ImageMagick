@@ -545,7 +545,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                 }
             }
-            image->colormap=(PixelPacket *) RelinquishMagickMemory(
+            image->colormap=(PixelInfo *) RelinquishMagickMemory(
               image->colormap);
             image->storage_class=DirectClass;
             image->colors=0;

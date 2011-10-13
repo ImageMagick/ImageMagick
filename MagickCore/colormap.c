@@ -125,13 +125,13 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   image->colors=colors;
   length=(size_t) colors;
-  if (image->colormap == (PixelPacket *) NULL)
-    image->colormap=(PixelPacket *) AcquireQuantumMemory(length,
+  if (image->colormap == (PixelInfo *) NULL)
+    image->colormap=(PixelInfo *) AcquireQuantumMemory(length,
       sizeof(*image->colormap));
   else
-    image->colormap=(PixelPacket *) ResizeQuantumMemory(image->colormap,length,
+    image->colormap=(PixelInfo *) ResizeQuantumMemory(image->colormap,length,
       sizeof(*image->colormap));
-  if (image->colormap == (PixelPacket *) NULL)
+  if (image->colormap == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   for (i=0; i < (ssize_t) image->colors; i++)
@@ -225,7 +225,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       if (index < 0)
         index+=(ssize_t) image->colors;
       SetPixelIndex(image,(Quantum) index,q);
-      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -268,17 +268,17 @@ extern "C" {
 
 static int IntensityCompare(const void *x,const void *y)
 {
-  const PixelPacket
+  const PixelInfo
     *color_1,
     *color_2;
 
   int
     intensity;
 
-  color_1=(const PixelPacket *) x;
-  color_2=(const PixelPacket *) y;
-  intensity=(int) GetPixelPacketIntensity(color_2)-(int)
-    GetPixelPacketIntensity(color_1);
+  color_1=(const PixelInfo *) x;
+  color_2=(const PixelInfo *) y;
+  intensity=(int) GetPixelInfoIntensity(color_2)-(int)
+    GetPixelInfoIntensity(color_1);
   return(intensity);
 }
 
@@ -362,7 +362,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
     {
       index=(Quantum) pixels[(ssize_t) GetPixelIndex(image,q)];
       SetPixelIndex(image,index,q);
-      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

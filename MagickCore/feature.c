@@ -140,7 +140,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
 {
   typedef struct _ChannelStatistics
   {
-    PixelDoublePacket
+    PixelInfo
       direction[4];  /* horizontal, vertical, left and right diagonals */
   } ChannelStatistics;
 
@@ -167,7 +167,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     sum_squares,
     variance;
 
-  PixelLongPacket
+  PixelPacket
     gray,
     *grays;
 
@@ -203,8 +203,8 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   /*
     Form grays.
   */
-  grays=(PixelLongPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*grays));
-  if (grays == (PixelLongPacket *) NULL)
+  grays=(PixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*grays));
+  if (grays == (PixelPacket *) NULL)
     {
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
@@ -261,7 +261,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     {
-      grays=(PixelLongPacket *) RelinquishMagickMemory(grays);
+      grays=(PixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
       return(channel_features);
@@ -335,7 +335,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
           cooccurrence=(ChannelStatistics **) RelinquishMagickMemory(
             cooccurrence);
         }
-      grays=(PixelLongPacket *) RelinquishMagickMemory(grays);
+      grays=(PixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -384,7 +384,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       density_y=(ChannelStatistics *) RelinquishMagickMemory(density_y);
       density_xy=(ChannelStatistics *) RelinquishMagickMemory(density_xy);
       density_x=(ChannelStatistics *) RelinquishMagickMemory(density_x);
-      grays=(PixelLongPacket *) RelinquishMagickMemory(grays);
+      grays=(PixelPacket *) RelinquishMagickMemory(grays);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -510,7 +510,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       p+=GetPixelChannels(image);
     }
   }
-  grays=(PixelLongPacket *) RelinquishMagickMemory(grays);
+  grays=(PixelPacket *) RelinquishMagickMemory(grays);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     {

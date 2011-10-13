@@ -888,7 +888,7 @@ MagickPrivate void ColorComponentTerminus(void)
 %
 %  The format of the GetColorInfo method is:
 %
-%      const PixelPacket *GetColorInfo(const char *name,
+%      const PixelInfo *GetColorInfo(const char *name,
 %        const ComplianceType compliance,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -972,7 +972,7 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
 %
 %  The format of the GetColorInfo method is:
 %
-%      const PixelPacket *GetColorInfo(const char *name,
+%      const PixelInfo *GetColorInfo(const char *name,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1532,8 +1532,8 @@ static MagickBooleanType InitializeColorList(ExceptionInfo *exception)
 %
 %  The format of the IsEquivalentAlpha method is:
 %
-%      void IsEquivalentAlpha(const Image *image,const PixelPacket *p,
-%        const PixelPacket *q)
+%      void IsEquivalentAlpha(const Image *image,const PixelInfo *p,
+%        const PixelInfo *q)
 %
 %  A description of each parameter follows:
 %
@@ -1553,7 +1553,7 @@ static inline double MagickMax(const double x,const double y)
 }
 
 MagickExport MagickBooleanType IsEquivalentAlpha(const Image *image,
-  const PixelPacket *p,const PixelPacket *q)
+  const PixelInfo *p,const PixelInfo *q)
 {
   MagickRealType
     fuzz,
@@ -2122,7 +2122,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
 %  The format of the QueryColorCompliance method is:
 %
 %      MagickBooleanType QueryColorCompliance(const char *name,
-%        const ComplianceType compliance,PixelPacket *color,
+%        const ComplianceType compliance,PixelInfo *color,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2146,7 +2146,7 @@ static inline double MagickMin(const double x,const double y)
 }
 
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
-  const ComplianceType compliance,PixelPacket *color,ExceptionInfo *exception)
+  const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -2195,7 +2195,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 %  The format of the QueryColorname method is:
 %
 %      MagickBooleanType QueryColorname(const Image *image,
-%        const PixelPacket *color,const ComplianceType compliance,char *name,
+%        const PixelInfo *color,const ComplianceType compliance,char *name,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -2212,7 +2212,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 %
 */
 MagickExport MagickBooleanType QueryColorname(const Image *image,
-  const PixelPacket *color,const ComplianceType compliance,char *name,
+  const PixelInfo *color,const ComplianceType compliance,char *name,
   ExceptionInfo *exception)
 {
   PixelInfo
@@ -2292,7 +2292,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
       char
         c;
 
-      PixelLongPacket
+      PixelPacket
         pixel;
 
       QuantumAny
@@ -2445,7 +2445,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           (LocaleCompare(colorspace,"HSL") == 0) ||
           (LocaleCompare(colorspace,"HWB") == 0))
         {
-          PixelPacket
+          PixelInfo
             pixel;
 
           scale=1.0/360.0;
@@ -2512,7 +2512,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
 %  The format of the QueryMagickColorname method is:
 %
 %      MagickBooleanType QueryMagickColorname(const Image *image,
-%        const PixelPacket *color,const ComplianceType compliance,char *name,
+%        const PixelInfo *color,const ComplianceType compliance,char *name,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.

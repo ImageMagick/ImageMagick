@@ -405,7 +405,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
           if (image->storage_class == PseudoClass)
             SetPixelIndex(image,j,r);
-          SetPixelPacket(image,image->colormap+j,r);
+          SetPixelPixelInfo(image,image->colormap+j,r);
           p+=width;
           r+=GetPixelChannels(image);
         }
@@ -693,9 +693,9 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   if (transparent != MagickFalse)
     {
       colors++;
-      picon->colormap=(PixelPacket *) ResizeQuantumMemory((void **)
+      picon->colormap=(PixelInfo *) ResizeQuantumMemory((void **)
         picon->colormap,(size_t) colors,sizeof(*picon->colormap));
-      if (picon->colormap == (PixelPacket *) NULL)
+      if (picon->colormap == (PixelInfo *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationError");
       for (y=0; y < (ssize_t) picon->rows; y++)
       {

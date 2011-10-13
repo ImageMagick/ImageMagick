@@ -137,7 +137,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  PixelPacket
+  PixelInfo
     pixel;
 
   Quantum

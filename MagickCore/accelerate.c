@@ -118,24 +118,24 @@
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 #define CLOptions "-DMAGICKCORE_HDRI_SUPPORT=1 -DCLQuantum=float " \
   "-DCLPixelType=float4 -DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_float4
+#define CLPixelInfo  cl_float4
 #else
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define CLOptions "-DCLQuantum=uchar -DCLPixelType=uchar4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_uchar4
+#define CLPixelInfo  cl_uchar4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define CLOptions "-DCLQuantum=ushort -DCLPixelType=ushort4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_ushort4
+#define CLPixelInfo  cl_ushort4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define CLOptions "-DCLQuantum=uint -DCLPixelType=uint4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_uint4
+#define CLPixelInfo  cl_uint4
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
 #define CLOptions "-DCLQuantum=ussize_t -DCLPixelType=ussize_t4 " \
   "-DQuantumRange=%g -DMagickEpsilon=%g"
-#define CLPixelPacket  cl_ulong4
+#define CLPixelInfo  cl_ulong4
 #endif
 #endif
 
@@ -337,7 +337,7 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
   */
   length=image->columns*image->rows;
   convolve_info->pixels=clCreateBuffer(convolve_info->context,(cl_mem_flags)
-    (CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR),length*sizeof(CLPixelPacket),
+    (CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR),length*sizeof(CLPixelInfo),
     (void *) pixels,&status);
   if ((convolve_info->pixels == (cl_mem) NULL) || (status != CL_SUCCESS))
     return(MagickFalse);
@@ -350,7 +350,7 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
   length=image->columns*image->rows;
   convolve_info->convolve_pixels=clCreateBuffer(convolve_info->context,
     (cl_mem_flags) (CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR),length*
-    sizeof(CLPixelPacket),convolve_pixels,&status);
+    sizeof(CLPixelInfo),convolve_pixels,&status);
   if ((convolve_info->convolve_pixels == (cl_mem) NULL) ||
       (status != CL_SUCCESS))
     return(MagickFalse);
@@ -438,7 +438,7 @@ static MagickBooleanType EnqueueConvolveKernel(ConvolveInfo *convolve_info,
 
   length=image->columns*image->rows;
   status=clEnqueueWriteBuffer(convolve_info->command_queue,
-    convolve_info->pixels,CL_TRUE,0,length*sizeof(CLPixelPacket),pixels,0,NULL,
+    convolve_info->pixels,CL_TRUE,0,length*sizeof(CLPixelInfo),pixels,0,NULL,
     NULL);
   length=width*height;
   status=clEnqueueWriteBuffer(convolve_info->command_queue,
@@ -454,7 +454,7 @@ static MagickBooleanType EnqueueConvolveKernel(ConvolveInfo *convolve_info,
     return(MagickFalse);
   length=image->columns*image->rows;
   status=clEnqueueReadBuffer(convolve_info->command_queue,
-    convolve_info->convolve_pixels,CL_TRUE,0,length*sizeof(CLPixelPacket),
+    convolve_info->convolve_pixels,CL_TRUE,0,length*sizeof(CLPixelInfo),
     convolve_pixels,0,NULL,NULL);
   if (status != CL_SUCCESS)
     return(MagickFalse);

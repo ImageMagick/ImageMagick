@@ -2819,7 +2819,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ssize_t
         y;
 
-      PixelPacket
+      PixelInfo
         fill_color;
 
       register ssize_t

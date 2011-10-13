@@ -75,14 +75,14 @@ namespace Magick
     // Return X11 color specification string
     /* virtual */ operator std::string() const;
 
-    // Return ImageMagick PixelPacket
-    operator PixelPacket() const;
+    // Return ImageMagick PixelInfo
+    operator PixelInfo() const;
 
-    // Construct color via ImageMagick PixelPacket
-    Color ( const PixelPacket &color_ );
+    // Construct color via ImageMagick PixelInfo
+    Color ( const PixelInfo &color_ );
 
-    // Set color via ImageMagick PixelPacket
-    const Color& operator= ( const PixelPacket &color_ );
+    // Set color via ImageMagick PixelInfo
+    const Color& operator= ( const PixelInfo &color_ );
 
     //
     // Public methods beyond this point are for Magick++ use only.
@@ -115,7 +115,7 @@ namespace Magick
 
   protected:
 
-    // PixelType specifies the interpretation of PixelPacket members
+    // PixelType specifies the interpretation of PixelInfo members
     // RGBPixel:
     //   Red      = red;
     //   Green    = green;
@@ -137,25 +137,25 @@ namespace Magick
       CYMKPixel
     };
 
-    // Constructor to construct with PixelPacket*
+    // Constructor to construct with PixelInfo*
     // Used to point Color at a pixel in an image
-    Color ( PixelPacket* rep_, PixelType pixelType_ );
+    Color ( PixelInfo* rep_, PixelType pixelType_ );
 
     // Set pixel
     // Used to point Color at a pixel in an image
-    void pixel ( PixelPacket* rep_, PixelType pixelType_ );
+    void pixel ( PixelInfo* rep_, PixelType pixelType_ );
 
-    // PixelPacket represents a color pixel:
+    // PixelInfo represents a color pixel:
     //  red     = red   (range 0 to QuantumRange)
     //  green   = green (range 0 to QuantumRange)
     //  blue    = blue  (range 0 to QuantumRange)
     //  alpha = alpha (range OpaqueAlpha=0 to TransparentAlpha=QuantumRange)
     //  index   = PseudoColor colormap index
-    PixelPacket*     _pixel;
+    PixelInfo*     _pixel;
 
   private:
 
-    // Common initializer for PixelPacket representation
+    // Common initializer for PixelInfo representation
     void initPixel();
 
     // Set true if we allocated pixel
@@ -193,8 +193,8 @@ namespace Magick
     ColorHSL& operator= ( const Color& color_ );
 
   protected:
-    // Constructor to construct with PixelPacket*
-    ColorHSL ( PixelPacket* rep_, PixelType pixelType_ );
+    // Constructor to construct with PixelInfo*
+    ColorHSL ( PixelInfo* rep_, PixelType pixelType_ );
   };
   
   //
@@ -217,8 +217,8 @@ namespace Magick
     ColorGray& operator= ( const Color& color_ );
 
   protected:
-    // Constructor to construct with PixelPacket*
-    ColorGray ( PixelPacket* rep_, PixelType pixelType_ );
+    // Constructor to construct with PixelInfo*
+    ColorGray ( PixelInfo* rep_, PixelType pixelType_ );
   };
   
   //
@@ -241,8 +241,8 @@ namespace Magick
     ColorMono& operator= ( const Color& color_ );
 
   protected:
-    // Constructor to construct with PixelPacket*
-    ColorMono ( PixelPacket* rep_, PixelType pixelType_ );
+    // Constructor to construct with PixelInfo*
+    ColorMono ( PixelInfo* rep_, PixelType pixelType_ );
   };
   
   //
@@ -270,8 +270,8 @@ namespace Magick
     ColorRGB& operator= ( const Color& color_ );
 
   protected:
-    // Constructor to construct with PixelPacket*
-    ColorRGB ( PixelPacket* rep_, PixelType pixelType_ );
+    // Constructor to construct with PixelInfo*
+    ColorRGB ( PixelInfo* rep_, PixelType pixelType_ );
   };
   
   //
@@ -302,8 +302,8 @@ namespace Magick
     ColorYUV& operator= ( const Color& color_ );
 
   protected:
-    // Constructor to construct with PixelPacket*
-    ColorYUV ( PixelPacket* rep_, PixelType pixelType_ );
+    // Constructor to construct with PixelInfo*
+    ColorYUV ( PixelInfo* rep_, PixelType pixelType_ );
   };
 } // namespace Magick
 
@@ -315,7 +315,7 @@ namespace Magick
 // Color
 //
 
-// Common initializer for PixelPacket representation
+// Common initializer for PixelInfo representation
 // Initialized transparent black
 inline void Magick::Color::initPixel()
 {
@@ -369,8 +369,8 @@ inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
   return _pixel->alpha;
 }
 
-// Return ImageMagick PixelPacket struct based on color.
-inline Magick::Color::operator MagickCore::PixelPacket () const
+// Return ImageMagick PixelInfo struct based on color.
+inline Magick::Color::operator MagickCore::PixelInfo () const
 {
   return *_pixel;
 }
@@ -388,7 +388,7 @@ inline double Magick::Color::alpha ( void ) const
 //
 // ColorHSL
 //
-inline Magick::ColorHSL::ColorHSL ( Magick::PixelPacket* rep_,
+inline Magick::ColorHSL::ColorHSL ( Magick::PixelInfo* rep_,
                                     Magick::Color::PixelType pixelType_ )
 : Color( rep_, pixelType_ )
 {
@@ -397,7 +397,7 @@ inline Magick::ColorHSL::ColorHSL ( Magick::PixelPacket* rep_,
 //
 // ColorGray
 //
-inline Magick::ColorGray::ColorGray ( Magick::PixelPacket* rep_,
+inline Magick::ColorGray::ColorGray ( Magick::PixelInfo* rep_,
                                       Magick::Color::PixelType pixelType_ )
 : Color( rep_, pixelType_ )
 {
@@ -406,7 +406,7 @@ inline Magick::ColorGray::ColorGray ( Magick::PixelPacket* rep_,
 //
 // ColorMono
 //
-inline Magick::ColorMono::ColorMono ( Magick::PixelPacket* rep_,
+inline Magick::ColorMono::ColorMono ( Magick::PixelInfo* rep_,
                                       Magick::Color::PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
@@ -415,7 +415,7 @@ inline Magick::ColorMono::ColorMono ( Magick::PixelPacket* rep_,
 //
 // ColorRGB
 //
-inline Magick::ColorRGB::ColorRGB ( Magick::PixelPacket* rep_,
+inline Magick::ColorRGB::ColorRGB ( Magick::PixelInfo* rep_,
                                     Magick::Color::PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
@@ -455,7 +455,7 @@ inline double Magick::ColorRGB::blue ( void ) const
 // ColorYUV
 //
 
-inline Magick::ColorYUV::ColorYUV ( Magick::PixelPacket* rep_,
+inline Magick::ColorYUV::ColorYUV ( Magick::PixelInfo* rep_,
                                     Magick::Color::PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {

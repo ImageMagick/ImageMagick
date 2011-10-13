@@ -4624,7 +4624,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   MagickBooleanType
     status;
 
-  PixelPacket
+  PixelInfo
     pixel;
 
   register Quantum
@@ -4702,19 +4702,19 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
           case 0:
           {
             SetPixelRed(image,SetBit(GetPixelRed(image,q),j,GetBit(
-              GetPixelPacketIntensity(&pixel),i)),q);
+              GetPixelInfoIntensity(&pixel),i)),q);
             break;
           }
           case 1:
           {
             SetPixelGreen(image,SetBit(GetPixelGreen(image,q),j,GetBit(
-              GetPixelPacketIntensity(&pixel),i)),q);
+              GetPixelInfoIntensity(&pixel),i)),q);
             break;
           }
           case 2:
           {
             SetPixelBlue(image,SetBit(GetPixelBlue(image,q),j,GetBit(
-              GetPixelPacketIntensity(&pixel),i)),q);
+              GetPixelInfoIntensity(&pixel),i)),q);
             break;
           }
         }

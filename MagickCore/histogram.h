@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-extern MagickExport PixelPacket
+extern MagickExport PixelInfo
   *GetImageHistogram(const Image *,size_t *,ExceptionInfo *);
 
 extern MagickExport Image

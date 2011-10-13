@@ -118,7 +118,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  PixelPacket
+  PixelInfo
     pixel;
 
   register Quantum

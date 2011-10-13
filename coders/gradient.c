@@ -100,7 +100,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  PixelPacket
+  PixelInfo
     start_color,
     stop_color;
 
@@ -128,7 +128,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) CopyMagickString(colorname,"white",MaxTextExtent);
-  if (GetPixelPacketIntensity(&start_color) > (Quantum) (QuantumRange/2))
+  if (GetPixelInfoIntensity(&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
   status=QueryColorCompliance(colorname,AllCompliance,&stop_color,exception);

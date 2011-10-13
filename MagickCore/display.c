@@ -3751,7 +3751,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           }
           case ReplaceMethod:
           {
-            PixelPacket
+            PixelInfo
               pixel,
               target;
 
@@ -3777,8 +3777,8 @@ static MagickBooleanType XColorEditImage(Display *display,
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
                   {
-                    GetPixelPacketPixel(*image,q,&pixel);
-                    if (IsFuzzyEquivalencePixelPacket(*image,&pixel,&target))
+                    GetPixelInfoPixel(*image,q,&pixel);
+                    if (IsFuzzyEquivalencePixelInfo(&pixel,&target))
                       {
                         SetPixelRed(*image,ScaleShortToQuantum(
                           color.red),q);
@@ -3796,7 +3796,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             else
               {
                 for (i=0; i < (ssize_t) (*image)->colors; i++)
-                  if (IsFuzzyEquivalencePixelPacket(*image,(*image)->colormap+i,&target))
+                  if (IsFuzzyEquivalencePixelInfo((*image)->colormap+i,&target))
                     {
                       (*image)->colormap[i].red=ScaleShortToQuantum(
                         color.red);
@@ -6566,7 +6566,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       ssize_t
         bytes;
 
-      bytes=(ssize_t) ((*image)->columns*(*image)->rows*sizeof(PixelPacket));
+      bytes=(ssize_t) ((*image)->columns*(*image)->rows*sizeof(PixelInfo));
       if (undo_image != (Image *) NULL)
         {
           /*
@@ -6576,14 +6576,14 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
           while (previous_image != (Image *) NULL)
           {
             bytes+=previous_image->list->columns*previous_image->list->rows*
-              sizeof(PixelPacket);
+              sizeof(PixelInfo);
             if (bytes <= (ssize_t) (resource_info->undo_cache << 20))
               {
                 previous_image=GetPreviousImageInList(previous_image);
                 continue;
               }
             bytes-=previous_image->list->columns*previous_image->list->rows*
-              sizeof(PixelPacket);
+              sizeof(PixelInfo);
             if (previous_image == undo_image)
               undo_image=NewImageList();
             else
@@ -10103,7 +10103,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           }
           case ReplaceMethod:
           {
-            PixelPacket
+            PixelInfo
               pixel,
               target;
 
@@ -10127,8 +10127,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                GetPixelPacketPixel(*image,q,&pixel);
-                if (IsFuzzyEquivalencePixelPacket(*image,&pixel,&target))
+                GetPixelInfoPixel(*image,q,&pixel);
+                if (IsFuzzyEquivalencePixelInfo(&pixel,&target))
                   SetPixelAlpha(*image,(Quantum) StringToLong(matte),q);
                 q+=GetPixelChannels(*image);
               }
@@ -13215,7 +13215,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         x_offset,
         y_offset;
 
-      PixelPacket
+      PixelInfo
         pixel;
 
       Quantum
@@ -13231,6 +13231,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         Ensure all the images exist.
       */
       tile=0;
+      GetPixelInfo(image,&pixel);
       for (p=image->directory; *p != '\0'; p++)
       {
         CacheView
@@ -13266,7 +13267,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
             break;
           for (j=0; j < (int) width; j++)
           {
-            SetPixelPacket(image,&pixel,s);
+            SetPixelPixelInfo(image,&pixel,s);
             s+=GetPixelChannels(image);
           }
           if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

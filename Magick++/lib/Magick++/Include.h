@@ -459,8 +459,8 @@ namespace Magick
   using MagickCore::PixelsPerInchResolution;
   using MagickCore::PixelsPerCentimeterResolution;
 
-  // PixelPacket structure
-  using MagickCore::PixelPacket;
+  // PixelInfo structure
+  using MagickCore::PixelInfo;
   using MagickCore::Quantum;
 
   // Sparse Color methods

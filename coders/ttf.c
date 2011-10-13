@@ -190,7 +190,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  PixelPacket
+  PixelInfo
     background_color;
 
   register ssize_t
@@ -237,7 +237,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPacket(image,&background_color,q);
+      SetPixelPixelInfo(image,&background_color,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

@@ -49,7 +49,7 @@ typedef struct _MontageInfo
   MagickBooleanType
     shadow;
 
-  PixelPacket
+  PixelInfo
     fill,
     stroke,
     background_color,

@@ -1745,7 +1745,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 %
 %    o image: the image.
 %
-%    o pixel: Specifies a pointer to a PixelPacket structure.
+%    o pixel: Specifies a pointer to a PixelInfo structure.
 %
 */
 MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
@@ -5286,103 +5286,6 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
     return(MagickFalse);
   pixel=p->blue-q->blue;
   distance+=pixel*pixel*scale;
-  if (distance > fuzz)
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I s F u z z y E q u i v a l e n c e P i x e l P a c k e t                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsFuzzyEquivalencePixelPacket() returns MagickTrue if the distance between
-%  two pixels is less than the specified distance in a linear three (or four)
-%  dimensional color space.
-%
-%  The format of the IsFuzzyEquivalencePixelPacket method is:
-%
-%      void IsFuzzyEquivalencePixelPacket(const Image *image,
-%        const PixelPacket *p,const PixelPacket *q)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o p: Pixel p.
-%
-%    o q: Pixel q.
-%
-*/
-MagickExport MagickBooleanType IsFuzzyEquivalencePixelPacket(const Image *image,
-  const PixelPacket *p,const PixelPacket *q)
-{
-  MagickRealType
-    fuzz,
-    pixel;
-
-  register MagickRealType
-    distance,
-    scale;
-
-  if ((image->fuzz == 0.0) && (image->matte == MagickFalse))
-    return(IsPixelPacketEquivalent(p,q));
-  fuzz=MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2)*
-    MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2);
-  scale=1.0;
-  distance=0.0;
-  if (image->matte != MagickFalse)
-    {
-      /*
-        Transparencies are involved - set alpha distance
-      */
-      pixel=(MagickRealType) ((image->matte != MagickFalse ? p->alpha :
-        OpaqueAlpha)-(image->matte != MagickFalse ? q->alpha : OpaqueAlpha));
-      distance=pixel*pixel;
-      if (distance > fuzz)
-        return(MagickFalse);
-      /*
-        Generate a alpha scaling factor to generate a 4D cone on colorspace
-        Note that if one color is transparent, distance has no color component.
-      */
-      scale=QuantumScale*p->alpha;
-      scale*=QuantumScale*q->alpha;
-      if (scale <= MagickEpsilon)
-        return(MagickTrue);
-    }
-  /*
-    RGB or CMY color cube
-  */
-  distance*=3.0;  /* rescale appropriately */
-  fuzz*=3.0;
-  pixel=p->red-(MagickRealType) q->red;
-  if ((image->colorspace == HSLColorspace) ||
-      (image->colorspace == HSBColorspace) ||
-      (image->colorspace == HWBColorspace))
-    {
-      /*
-        Compute an arc distance for hue.  It should be a vector angle of
-        'S'/'W' length with 'L'/'B' forming appropriate cones.
-      */
-      if (fabs((double) pixel) > (QuantumRange/2))
-        pixel-=QuantumRange;
-      pixel*=2;
-    }
-  distance+=scale*pixel*pixel;
-  if (distance > fuzz)
-    return(MagickFalse);
-  pixel=(MagickRealType) p->green-q->green;
-  distance+=scale*pixel*pixel;
-  if (distance > fuzz)
-    return(MagickFalse);
-  pixel=(MagickRealType) p->blue-q->blue;
-  distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
   return(MagickTrue);
