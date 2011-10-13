@@ -25,6 +25,18 @@ extern "C" {
 #include "MagickCore/geometry.h"
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
+typedef struct _GhostInfo
+  GhostInfo_;
+
+extern MagickExport char
+  **NTArgvToUTF8(const int argc,wchar_t **);
+
+extern MagickExport const GhostInfo_
+  *NTGhostscriptDLLVectors(void);
+
+extern MagickExport int
+  NTGhostscriptUnLoadDLL(void);
+
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
   *ImageToHBITMAP(Image *),
