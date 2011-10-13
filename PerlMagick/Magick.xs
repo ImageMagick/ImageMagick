@@ -1818,7 +1818,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               {
                 if ((strchr(SvPV(sval,na),',') == 0) ||
                     (strchr(SvPV(sval,na),')') != 0))
-                  QueryMagickColorCompliance(SvPV(sval,na),AllCompliance,
+                  QueryColorCompliance(SvPV(sval,na),AllCompliance,
                     &pixel,exception);
                 else
                   {
@@ -7535,7 +7535,7 @@ Mogrify(ref,...)
           target.blue=virtual_pixel[BluePixelChannel];
           target.alpha=virtual_pixel[AlphaPixelChannel];
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+            (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&target,exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100%";
@@ -8227,7 +8227,7 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[4] != 0)
             {
-              QueryMagickColorCompliance(argument_list[4].string_reference,
+              QueryColorCompliance(argument_list[4].string_reference,
                 AllCompliance,&target,exception);
               invert=MagickTrue;
             }
@@ -8792,7 +8792,7 @@ Mogrify(ref,...)
           target.blue=virtual_pixel[BluePixelChannel];
           target.alpha=virtual_pixel[AlphaPixelChannel];
           if (attribute_flag[4] != 0)
-            QueryMagickColorCompliance(argument_list[4].string_reference,
+            QueryColorCompliance(argument_list[4].string_reference,
               AllCompliance,&target,exception);
           if (attribute_flag[3] != 0)
             target.alpha=SiPrefixToDouble(argument_list[3].string_reference,
@@ -8882,15 +8882,15 @@ Mogrify(ref,...)
             fill_color,
             target;
 
-          (void) QueryMagickColorCompliance("none",AllCompliance,&target,
+          (void) QueryColorCompliance("none",AllCompliance,&target,
              exception);
-          (void) QueryMagickColorCompliance("none",AllCompliance,&fill_color,
+          (void) QueryColorCompliance("none",AllCompliance,&fill_color,
             exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+            (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&target,exception);
           if (attribute_flag[1] != 0)
-            (void) QueryMagickColorCompliance(argument_list[1].string_reference,
+            (void) QueryColorCompliance(argument_list[1].string_reference,
               AllCompliance,&fill_color,exception);
           if (attribute_flag[2] != 0)
             image->fuzz=SiPrefixToDouble(argument_list[2].string_reference,
@@ -9058,10 +9058,10 @@ Mogrify(ref,...)
           PixelInfo
             target;
 
-          (void) QueryMagickColorCompliance("none",AllCompliance,&target,
+          (void) QueryColorCompliance("none",AllCompliance,&target,
             exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+            (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&target,exception);
           opacity=TransparentAlpha;
           if (attribute_flag[1] != 0)
@@ -9748,7 +9748,7 @@ Mogrify(ref,...)
 
           GetPixelInfo(image,&tint);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+            (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&tint,exception);
           if (attribute_flag[1] == 0)
             argument_list[1].string_reference="100";
@@ -10276,7 +10276,7 @@ Mogrify(ref,...)
           target.blue=virtual_pixel[BluePixelChannel];
           target.alpha=virtual_pixel[AlphaPixelChannel];
           if (attribute_flag[4] != 0)
-            QueryMagickColorCompliance(argument_list[4].string_reference,
+            QueryColorCompliance(argument_list[4].string_reference,
               AllCompliance,&target,exception);
           if (attribute_flag[5] != 0)
             image->fuzz=SiPrefixToDouble(argument_list[5].string_reference,
@@ -10619,16 +10619,16 @@ Mogrify(ref,...)
             black_point,
             white_point;
 
-          (void) QueryMagickColorCompliance("#000000",AllCompliance,
+          (void) QueryColorCompliance("#000000",AllCompliance,
             &black_point,exception);
-          (void) QueryMagickColorCompliance("#ffffff",AllCompliance,
+          (void) QueryColorCompliance("#ffffff",AllCompliance,
             &white_point,exception);
           if (attribute_flag[1] != 0)
-             (void) QueryMagickColorCompliance(
+             (void) QueryColorCompliance(
                argument_list[1].string_reference,AllCompliance,&black_point,
                exception);
           if (attribute_flag[2] != 0)
-             (void) QueryMagickColorCompliance(
+             (void) QueryColorCompliance(
                argument_list[2].string_reference,AllCompliance,&white_point,
                exception);
           if (attribute_flag[3] != 0)
@@ -10757,10 +10757,10 @@ Mogrify(ref,...)
           PixelInfo
             color;
 
-          (void) QueryMagickColorCompliance("none",AllCompliance,&color,
+          (void) QueryColorCompliance("none",AllCompliance,&color,
             exception);
           if (attribute_flag[0] != 0)
-            (void) QueryMagickColorCompliance(argument_list[0].string_reference,
+            (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&color,exception);
           (void) SetImageColor(image,&color);
           break;
@@ -10946,7 +10946,7 @@ Montage(ref,...)
     */
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     montage_info=CloneMontageInfo(info->image_info,(MontageInfo *) NULL);
-    (void) QueryMagickColorCompliance("none",AllCompliance,&transparent_color,
+    (void) QueryColorCompliance("none",AllCompliance,&transparent_color,
       exception);
     for (i=2; i < items; i+=2)
     {
@@ -11222,7 +11222,7 @@ Montage(ref,...)
               PixelInfo
                 transparent_color;
 
-              QueryMagickColorCompliance(SvPV(ST(i),na),AllCompliance,
+              QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
                 &transparent_color,exception);
               for (next=image; next; next=next->next)
                 (void) TransparentPaintImage(next,&transparent_color,
@@ -11860,7 +11860,7 @@ QueryColor(ref,...)
     for (i=1; i < items; i++)
     {
       name=(char *) SvPV(ST(i),na);
-      if (QueryMagickColorCompliance(name,AllCompliance,&color,exception) == MagickFalse)
+      if (QueryColorCompliance(name,AllCompliance,&color,exception) == MagickFalse)
         {
           PUSHs(&sv_undef);
           continue;

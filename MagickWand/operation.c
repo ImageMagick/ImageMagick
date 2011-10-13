@@ -291,7 +291,7 @@ static Image *SparseColorOption(const Image *image,
       if ( token[0] == '\0' ) break;
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
-        (void) QueryMagickColorCompliance(token,AllCompliance,&color,
+        (void) QueryColorCompliance(token,AllCompliance,&color,
                   exception);
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.red;
@@ -772,7 +772,7 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
           (void) SetImageOption(image_info,option,value);
 
           sans=AcquireExceptionInfo();
-          /*(void) QueryMagickColorCompliance(value,AllCompliance,&fill,sans);*/
+          /*(void) QueryColorCompliance(value,AllCompliance,&fill,sans);*/
           status=QueryColorCompliance(value,AllCompliance,&draw_info->fill,sans);
           sans=DestroyExceptionInfo(sans);
 
@@ -2323,7 +2323,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           */
           (void) SyncImageSettings(image_info,*image);
           (void) ParsePageGeometry(*image,argv[1],&geometry,exception);
-          (void) QueryMagickColorCompliance(argv[2],AllCompliance,&target,
+          (void) QueryColorCompliance(argv[2],AllCompliance,&target,
                         exception);
           (void) FloodfillPaintImage(*image,draw_info,&target,geometry.x,
             geometry.y,*argv[0] == '-' ? MagickFalse : MagickTrue,exception);
@@ -2625,10 +2625,10 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           p=(const char *) argv[1];
           GetMagickToken(p,&p,token);  /* get black point color */
           if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
-            (void) QueryMagickColorCompliance(token,AllCompliance,
+            (void) QueryColorCompliance(token,AllCompliance,
                       &black_point,exception);
           else
-            (void) QueryMagickColorCompliance("#000000",AllCompliance,
+            (void) QueryColorCompliance("#000000",AllCompliance,
                       &black_point,exception);
           if (isalpha((int) token[0]) || (token[0] == '#'))
             GetMagickToken(p,&p,token);
@@ -2639,10 +2639,10 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
               if ((isalpha((int) *token) == 0) && ((*token == '#') == 0))
                 GetMagickToken(p,&p,token); /* Get white point color. */
               if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
-                (void) QueryMagickColorCompliance(token,AllCompliance,
+                (void) QueryColorCompliance(token,AllCompliance,
                            &white_point,exception);
               else
-                (void) QueryMagickColorCompliance("#ffffff",AllCompliance,
+                (void) QueryColorCompliance("#ffffff",AllCompliance,
                            &white_point,exception);
             }
           (void) LevelImageColors(*image,&black_point,&white_point,
@@ -2911,7 +2911,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             target;
 
           (void) SyncImageSettings(image_info,*image);
-          (void) QueryMagickColorCompliance(argv[1],AllCompliance,&target,
+          (void) QueryColorCompliance(argv[1],AllCompliance,&target,
                        exception);
           (void) OpaquePaintImage(*image,&target,&fill,*argv[0] == '-' ?
             MagickFalse : MagickTrue,exception);
@@ -3652,7 +3652,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             target;
 
           (void) SyncImageSettings(image_info,*image);
-          (void) QueryMagickColorCompliance(argv[1],AllCompliance,&target,
+          (void) QueryColorCompliance(argv[1],AllCompliance,&target,
                        exception);
           (void) TransparentPaintImage(*image,&target,(Quantum)
             TransparentAlpha,*argv[0] == '-' ? MagickFalse : MagickTrue,

@@ -1540,7 +1540,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
               p+=strlen(name);
             }
           else
-            if (QueryMagickColorCompliance(name,AllCompliance,&pixel,fx_info->exception) != MagickFalse)
+            if (QueryColorCompliance(name,AllCompliance,&pixel,fx_info->exception) != MagickFalse)
               {
                 (void) AddValueToSplayTree(fx_info->colors,ConstantString(name),
                   ClonePixelInfo(&pixel));

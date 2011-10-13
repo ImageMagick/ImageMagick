@@ -7528,7 +7528,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows)
   y+=height;
   (void) XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,tuple,(int) strlen(tuple));
-  (void) QueryMagickColorname(windows->image.image,&pixel,SVGCompliance,tuple,
+  (void) QueryColorname(windows->image.image,&pixel,SVGCompliance,tuple,
      &windows->image.image->exception);
   y+=height;
   (void) XDrawImageString(display,windows->magnify.pixmap,

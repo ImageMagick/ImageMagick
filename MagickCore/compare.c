@@ -161,17 +161,17 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       return((Image *) NULL);
     }
   (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel,exception);
-  (void) QueryMagickColorCompliance("#f1001ecc",AllCompliance,&highlight,
+  (void) QueryColorCompliance("#f1001ecc",AllCompliance,&highlight,
     exception);
   artifact=GetImageArtifact(image,"highlight-color");
   if (artifact != (const char *) NULL)
-    (void) QueryMagickColorCompliance(artifact,AllCompliance,&highlight,
+    (void) QueryColorCompliance(artifact,AllCompliance,&highlight,
       exception);
-  (void) QueryMagickColorCompliance("#ffffffcc",AllCompliance,&lowlight,
+  (void) QueryColorCompliance("#ffffffcc",AllCompliance,&lowlight,
     exception);
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
-    (void) QueryMagickColorCompliance(artifact,AllCompliance,&lowlight,
+    (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,
       exception);
   if (highlight_image->colorspace == CMYKColorspace)
     {

@@ -534,7 +534,7 @@ static Image *SparseColorOption(const Image *image,
       if ( token[0] == '\0' ) break;
       if ( isalpha((int) token[0]) || token[0] == '#' ) {
         /* Color string given */
-        (void) QueryMagickColorCompliance(token,AllCompliance,&color,exception);
+        (void) QueryColorCompliance(token,AllCompliance,&color,exception);
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           sparse_arguments[x++] = QuantumScale*color.red;
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -1565,7 +1565,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             GetPixelInfo(*image,&fill);
             if (*option == '+')
               {
-                (void) QueryMagickColorCompliance("none",AllCompliance,&fill,
+                (void) QueryColorCompliance("none",AllCompliance,&fill,
                   exception);
                 (void) QueryColorCompliance("none",AllCompliance,
                   &draw_info->fill,exception);
@@ -1574,7 +1574,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 break;
               }
             sans=AcquireExceptionInfo();
-            (void) QueryMagickColorCompliance(argv[i+1],AllCompliance,&fill,
+            (void) QueryColorCompliance(argv[i+1],AllCompliance,&fill,
               sans);
             status=QueryColorCompliance(argv[i+1],AllCompliance,
               &draw_info->fill,sans);
@@ -1603,7 +1603,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image);
             (void) ParsePageGeometry(*image,argv[i+1],&geometry,exception);
-            (void) QueryMagickColorCompliance(argv[i+2],AllCompliance,&target,
+            (void) QueryColorCompliance(argv[i+2],AllCompliance,&target,
               exception);
             (void) FloodfillPaintImage(*image,draw_info,&target,geometry.x,
               geometry.y,*option == '-' ? MagickFalse : MagickTrue,exception);
@@ -1934,10 +1934,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             p=(const char *) argv[i+1];
             GetMagickToken(p,&p,token);  /* get black point color */
             if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
-              (void) QueryMagickColorCompliance(token,AllCompliance,
+              (void) QueryColorCompliance(token,AllCompliance,
                 &black_point,exception);
             else
-              (void) QueryMagickColorCompliance("#000000",AllCompliance,
+              (void) QueryColorCompliance("#000000",AllCompliance,
                 &black_point,exception);
             if (isalpha((int) token[0]) || (token[0] == '#'))
               GetMagickToken(p,&p,token);
@@ -1948,10 +1948,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 if ((isalpha((int) *token) == 0) && ((*token == '#') == 0))
                   GetMagickToken(p,&p,token); /* Get white point color. */
                 if ((isalpha((int) *token) != 0) || ((*token == '#') != 0))
-                  (void) QueryMagickColorCompliance(token,AllCompliance,
+                  (void) QueryColorCompliance(token,AllCompliance,
                     &white_point,exception);
                 else
-                  (void) QueryMagickColorCompliance("#ffffff",AllCompliance,
+                  (void) QueryColorCompliance("#ffffff",AllCompliance,
                     &white_point,exception);
               }
             (void) LevelImageColors(*image,&black_point,&white_point,
@@ -2220,7 +2220,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               target;
 
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) QueryMagickColorCompliance(argv[i+1],AllCompliance,&target,
+            (void) QueryColorCompliance(argv[i+1],AllCompliance,&target,
               exception);
             (void) OpaquePaintImage(*image,&target,&fill,*option == '-' ?
               MagickFalse : MagickTrue,exception);
@@ -2996,7 +2996,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               target;
 
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) QueryMagickColorCompliance(argv[i+1],AllCompliance,&target,
+            (void) QueryColorCompliance(argv[i+1],AllCompliance,&target,
               exception);
             (void) TransparentPaintImage(*image,&target,(Quantum)
               TransparentAlpha,*option == '-' ? MagickFalse : MagickTrue,
