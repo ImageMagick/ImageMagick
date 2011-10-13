@@ -51,7 +51,6 @@
 #undef RadiansToDegrees
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility-private.h"

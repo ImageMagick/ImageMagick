@@ -27,7 +27,9 @@ extern "C" {
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
-  *ImageToHBITMAP(Image *);
+  *ImageToHBITMAP(Image *),
+  NTErrorHandler(const ExceptionType,const char *,const char *),
+  NTWarningHandler(const ExceptionType,const char *,const char *);
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -843,7 +843,7 @@ MagickPrivate double NTElapsedTime(void)
 %    o description: Specifies any description to the reason.
 %
 */
-MagickPrivate void NTErrorHandler(const ExceptionType severity,
+MagickExport void NTErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   char
@@ -2893,7 +2893,7 @@ MagickPrivate double NTUserTime(void)
 %    o description: Specifies any description to the reason.
 %
 */
-MagickPrivate void NTWarningHandler(const ExceptionType severity,
+MagickExport void NTWarningHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   char
