@@ -24590,6 +24590,7 @@ main ()
 	  char buf[100];
 	  char x = *strerror_r (0, buf, sizeof buf);
 	  char *p = strerror_r (0, buf, sizeof buf);
+	  return !p || x;
 
   ;
   return 0;
@@ -24618,7 +24619,7 @@ main ()
 {
 char buf[100];
 	  char x = *strerror_r (0, buf, sizeof buf);
-	  exit (!isalpha (x));
+	  return ! isalpha (x);
   ;
   return 0;
 }
