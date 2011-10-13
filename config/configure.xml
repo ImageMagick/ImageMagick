@@ -9,7 +9,7 @@
   <configure name="NAME" value="ImageMagick"/>
   <configure name="VERSION" value="6.7.3"/>
   <configure name="LIB_VERSION" value="0x673"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,7,3,1"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,7,3,2"/>
   <configure name="SVN_REVISION" value="5603" />
   <configure name="RELEASE_DATE" value="2011-10-12"/>
   <configure name="CONFIGURE" value="./configure "/>
