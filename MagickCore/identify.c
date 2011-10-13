@@ -147,7 +147,7 @@
 %
 */
 
-static ssize_t PrintChannelFeatures(FILE *file,const ChannelType channel,
+static ssize_t PrintChannelFeatures(FILE *file,const PixelChannel channel,
   const char *name,const ChannelFeatures *channel_features)
 {
 #define PrintFeature(feature) \
@@ -208,7 +208,7 @@ static ssize_t PrintChannelFeatures(FILE *file,const ChannelType channel,
   return(n);
 }
 
-static ssize_t PrintChannelStatistics(FILE *file,const ChannelType channel,
+static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   const char *name,const double scale,
   const ChannelStatistics *channel_statistics)
 {
@@ -446,35 +446,35 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         default:
         {
           (void) FormatLocaleFile(file,"    red: %.20g-bit\n",(double)
-            channel_statistics[RedChannel].depth);
+            channel_statistics[RedPixelChannel].depth);
           (void) FormatLocaleFile(file,"    green: %.20g-bit\n",(double)
-            channel_statistics[GreenChannel].depth);
+            channel_statistics[GreenPixelChannel].depth);
           (void) FormatLocaleFile(file,"    blue: %.20g-bit\n",(double)
-            channel_statistics[BlueChannel].depth);
+            channel_statistics[BluePixelChannel].depth);
           break;
         }
         case CMYKColorspace:
         {
           (void) FormatLocaleFile(file,"    cyan: %.20g-bit\n",(double)
-            channel_statistics[CyanChannel].depth);
+            channel_statistics[CyanPixelChannel].depth);
           (void) FormatLocaleFile(file,"    magenta: %.20g-bit\n",(double)
-            channel_statistics[MagentaChannel].depth);
+            channel_statistics[MagentaPixelChannel].depth);
           (void) FormatLocaleFile(file,"    yellow: %.20g-bit\n",(double)
-            channel_statistics[YellowChannel].depth);
+            channel_statistics[YellowPixelChannel].depth);
           (void) FormatLocaleFile(file,"    black: %.20g-bit\n",(double)
-            channel_statistics[BlackChannel].depth);
+            channel_statistics[BlackPixelChannel].depth);
           break;
         }
         case GRAYColorspace:
         {
           (void) FormatLocaleFile(file,"    gray: %.20g-bit\n",(double)
-            channel_statistics[GrayChannel].depth);
+            channel_statistics[GrayPixelChannel].depth);
           break;
         }
       }
       if (image->matte != MagickFalse)
         (void) FormatLocaleFile(file,"    alpha: %.20g-bit\n",(double)
-          channel_statistics[OpacityChannel].depth);
+          channel_statistics[AlphaPixelChannel].depth);
       scale=1;
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
         scale=QuantumRange/((size_t) QuantumRange >> ((size_t)
@@ -488,41 +488,41 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelStatistics(file,RedChannel,"Red",1.0/scale,
-            channel_statistics);
-          (void) PrintChannelStatistics(file,GreenChannel,"Green",1.0/scale,
-            channel_statistics);
-          (void) PrintChannelStatistics(file,BlueChannel,"Blue",1.0/scale,
-            channel_statistics);
+          (void) PrintChannelStatistics(file,RedPixelChannel,"Red",1.0/
+            scale,channel_statistics);
+          (void) PrintChannelStatistics(file,GreenPixelChannel,"Green",1.0/
+            scale,channel_statistics);
+          (void) PrintChannelStatistics(file,BluePixelChannel,"Blue",1.0/
+            scale,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelStatistics(file,CyanChannel,"Cyan",1.0/scale,
-            channel_statistics);
-          (void) PrintChannelStatistics(file,MagentaChannel,"Magenta",1.0/scale,
-            channel_statistics);
-          (void) PrintChannelStatistics(file,YellowChannel,"Yellow",1.0/scale,
-            channel_statistics);
-          (void) PrintChannelStatistics(file,BlackChannel,"Black",1.0/scale,
-            channel_statistics);
+          (void) PrintChannelStatistics(file,CyanPixelChannel,"Cyan",1.0/
+            scale,channel_statistics);
+          (void) PrintChannelStatistics(file,MagentaPixelChannel,"Magenta",1.0/
+            scale,channel_statistics);
+          (void) PrintChannelStatistics(file,YellowPixelChannel,"Yellow",1.0/
+            scale,channel_statistics);
+          (void) PrintChannelStatistics(file,BlackPixelChannel,"Black",1.0/
+            scale,channel_statistics);
           break;
         }
         case GRAYColorspace:
         {
-          (void) PrintChannelStatistics(file,GrayChannel,"Gray",1.0/scale,
-            channel_statistics);
+          (void) PrintChannelStatistics(file,GrayPixelChannel,"Gray",1.0/
+            scale,channel_statistics);
           break;
         }
       }
       if (image->matte != MagickFalse)
-        (void) PrintChannelStatistics(file,AlphaChannel,"Alpha",1.0/scale,
-          channel_statistics);
+        (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
+          scale,channel_statistics);
       if (colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
-          (void) PrintChannelStatistics(file,CompositeChannels,"Overall",1.0/
-            scale,channel_statistics);
+          (void) PrintChannelStatistics(file,MaxPixelChannels,"Overall",
+            1.0/scale,channel_statistics);
         }
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);
@@ -536,31 +536,36 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         case RGBColorspace:
         default:
         {
-          (void) PrintChannelFeatures(file,RedChannel,"Red",channel_features);
-          (void) PrintChannelFeatures(file,GreenChannel,"Green",
+          (void) PrintChannelFeatures(file,RedPixelChannel,"Red",
             channel_features);
-          (void) PrintChannelFeatures(file,BlueChannel,"Blue",channel_features);
+          (void) PrintChannelFeatures(file,GreenPixelChannel,"Green",
+            channel_features);
+          (void) PrintChannelFeatures(file,BluePixelChannel,"Blue",
+            channel_features);
           break;
         }
         case CMYKColorspace:
         {
-          (void) PrintChannelFeatures(file,CyanChannel,"Cyan",channel_features);
-          (void) PrintChannelFeatures(file,MagentaChannel,"Magenta",
+          (void) PrintChannelFeatures(file,CyanPixelChannel,"Cyan",
             channel_features);
-          (void) PrintChannelFeatures(file,YellowChannel,"Yellow",
+          (void) PrintChannelFeatures(file,MagentaPixelChannel,"Magenta",
             channel_features);
-          (void) PrintChannelFeatures(file,BlackChannel,"Black",
+          (void) PrintChannelFeatures(file,YellowPixelChannel,"Yellow",
+            channel_features);
+          (void) PrintChannelFeatures(file,BlackPixelChannel,"Black",
             channel_features);
           break;
         }
         case GRAYColorspace:
         {
-          (void) PrintChannelFeatures(file,GrayChannel,"Gray",channel_features);
+          (void) PrintChannelFeatures(file,GrayPixelChannel,"Gray",
+            channel_features);
           break;
         }
       }
       if (image->matte != MagickFalse)
-        (void) PrintChannelFeatures(file,AlphaChannel,"Alpha",channel_features);
+        (void) PrintChannelFeatures(file,AlphaPixelChannel,"Alpha",
+          channel_features);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
         channel_features);
     }

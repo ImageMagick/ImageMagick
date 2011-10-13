@@ -128,32 +128,32 @@
 %
 */
 
-typedef struct _WenusInfo
+typedef struct _PixelChannels
 {
   MagickRealType
     channel[MaxPixelChannels];
-} WenusInfo;
+} PixelChannels;
 
-static WenusInfo **DestroyPixelThreadSet(WenusInfo **pixels)
+static PixelChannels **DestroyPixelThreadSet(PixelChannels **pixels)
 {
   register ssize_t
     i;
 
-  assert(pixels != (WenusInfo **) NULL);
+  assert(pixels != (PixelChannels **) NULL);
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
-    if (pixels[i] != (WenusInfo *) NULL)
-      pixels[i]=(WenusInfo *) RelinquishMagickMemory(pixels[i]);
-  pixels=(WenusInfo **) RelinquishMagickMemory(pixels);
+    if (pixels[i] != (PixelChannels *) NULL)
+      pixels[i]=(PixelChannels *) RelinquishMagickMemory(pixels[i]);
+  pixels=(PixelChannels **) RelinquishMagickMemory(pixels);
   return(pixels);
 }
 
-static WenusInfo **AcquirePixelThreadSet(const Image *image,
+static PixelChannels **AcquirePixelThreadSet(const Image *image,
   const size_t number_images)
 {
   register ssize_t
     i;
 
-  WenusInfo
+  PixelChannels
     **pixels;
 
   size_t
@@ -161,9 +161,9 @@ static WenusInfo **AcquirePixelThreadSet(const Image *image,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixels=(WenusInfo **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
-  if (pixels == (WenusInfo **) NULL)
-    return((WenusInfo **) NULL);
+  pixels=(PixelChannels **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
+  if (pixels == (PixelChannels **) NULL)
+    return((PixelChannels **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
@@ -173,8 +173,8 @@ static WenusInfo **AcquirePixelThreadSet(const Image *image,
     length=image->columns;
     if (length < number_images)
       length=number_images;
-    pixels[i]=(WenusInfo *) AcquireQuantumMemory(length,sizeof(**pixels));
-    if (pixels[i] == (WenusInfo *) NULL)
+    pixels[i]=(PixelChannels *) AcquireQuantumMemory(length,sizeof(**pixels));
+    if (pixels[i] == (PixelChannels *) NULL)
       return(DestroyPixelThreadSet(pixels));
     for (j=0; j < (ssize_t) length; j++)
     {
@@ -201,7 +201,7 @@ extern "C" {
 
 static int IntensityCompare(const void *x,const void *y)
 {
-  const WenusInfo
+  const PixelChannels
     *color_1,
     *color_2;
 
@@ -211,8 +211,8 @@ static int IntensityCompare(const void *x,const void *y)
   register ssize_t
     i;
 
-  color_1=(const WenusInfo *) x;
-  color_2=(const WenusInfo *) y;
+  color_1=(const PixelChannels *) x;
+  color_2=(const PixelChannels *) y;
   distance=0.0;
   for (i=0; i < MaxPixelChannels; i++)
     distance+=color_1->channel[i]-(MagickRealType) color_2->channel[i];
@@ -435,7 +435,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   MagickOffsetType
     progress;
 
-  WenusInfo
+  PixelChannels
     **restrict evaluate_pixels;
 
   RandomInfo
@@ -477,7 +477,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     }
   number_images=GetImageListLength(images);
   evaluate_pixels=AcquirePixelThreadSet(images,number_images);
-  if (evaluate_pixels == (WenusInfo **) NULL)
+  if (evaluate_pixels == (PixelChannels **) NULL)
     {
       evaluate_image=DestroyImage(evaluate_image);
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -506,7 +506,7 @@ MagickExport Image *EvaluateImages(const Image *images,
       const int
         id = GetOpenMPThreadId();
 
-      register WenusInfo
+      register PixelChannels
         *evaluate_pixel;
 
       register Quantum
@@ -616,7 +616,7 @@ MagickExport Image *EvaluateImages(const Image *images,
         i,
         x;
 
-      register WenusInfo
+      register PixelChannels
         *evaluate_pixel;
 
       register Quantum
