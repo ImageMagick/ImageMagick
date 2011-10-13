@@ -24,6 +24,10 @@ extern "C" {
 
 #include "MagickCore/geometry.h"
 
+#if !defined(isatty)
+#  define isatty _isatty
+#endif
+
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
