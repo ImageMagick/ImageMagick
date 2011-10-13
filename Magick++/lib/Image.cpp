@@ -1490,9 +1490,9 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
   PixelInfo pen;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  (void) QueryMagickColorCompliance(std::string(opaqueColor_).c_str(),
+  (void) QueryColorCompliance(std::string(opaqueColor_).c_str(),
     AllCompliance, &opaque, &exceptionInfo);
-  (void) QueryMagickColorCompliance(std::string(penColor_).c_str(),
+  (void) QueryColorCompliance(std::string(penColor_).c_str(),
     AllCompliance, &pen, &exceptionInfo);
   OpaquePaintImage ( image(), &opaque, &pen, MagickFalse, &exceptionInfo );
   throwException( exceptionInfo );
@@ -2149,7 +2149,7 @@ void Magick::Image::transparent ( const Color &color_ )
   std::string color = color_;
 
   PixelInfo target;
-  (void) QueryMagickColorCompliance(std::string(color_).c_str(),AllCompliance,
+  (void) QueryColorCompliance(std::string(color_).c_str(),AllCompliance,
     &target,&image()->exception);
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -2175,9 +2175,9 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
 
   PixelInfo targetLow;
   PixelInfo targetHigh;
-  (void) QueryMagickColorCompliance(std::string(colorLow_).c_str(),
+  (void) QueryColorCompliance(std::string(colorLow_).c_str(),
     AllCompliance,&targetLow,&image()->exception);
-  (void) QueryMagickColorCompliance(std::string(colorHigh_).c_str(),
+  (void) QueryColorCompliance(std::string(colorHigh_).c_str(),
     AllCompliance,&targetHigh,&image()->exception);
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );

@@ -127,7 +127,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->rows == 0)
     image->rows=1;
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
-  status=QueryMagickColorCompliance((char *) image_info->filename,AllCompliance,
+  status=QueryColorCompliance((char *) image_info->filename,AllCompliance,
     &color,exception);
   if (status == MagickFalse)
     {

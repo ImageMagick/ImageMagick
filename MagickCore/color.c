@@ -1954,7 +1954,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"color") == 0)
           {
-            (void) QueryMagickColorCompliance(token,AllCompliance,
+            (void) QueryColorCompliance(token,AllCompliance,
               &color_info->color,exception);
             break;
           }
@@ -2110,14 +2110,14 @@ static MagickBooleanType LoadColorLists(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   Q u e r y C o l o r C o m p l i e n c e                                   %
++   Q u e r y C o l o r C o m p l i a n c e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  QueryColorCompliance() returns the red, green, blue, and opacity intensities
-%  for a given color name.
+%  QueryColorCompliance() returns the red, green, blue, and alpha
+%  intensities for a given color name and standards compliance.
 %
 %  The format of the QueryColorCompliance method is:
 %
@@ -2137,125 +2137,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
-  const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status;
-
-  PixelInfo
-    pixel;
-
-  status=QueryMagickColorCompliance(name,compliance,&pixel,exception);
-  color->alpha=ClampToQuantum(pixel.alpha);
-  if (pixel.colorspace == CMYKColorspace)
-    {
-      color->red=ClampToQuantum((MagickRealType)
-        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
-        pixel.red*(QuantumRange-pixel.black)+pixel.black))));
-      color->green=ClampToQuantum((MagickRealType)
-        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
-        pixel.green*(QuantumRange-pixel.black)+pixel.black))));
-      color->blue=ClampToQuantum((MagickRealType)
-        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
-        pixel.blue*(QuantumRange-pixel.black)+pixel.black))));
-      color->black=ClampToQuantum((MagickRealType)
-        (QuantumRange-MagickMin(QuantumRange,(MagickRealType) (QuantumScale*
-        pixel.black*(QuantumRange-pixel.black)+pixel.black))));
-      return(status);
-    }
-  color->red=ClampToQuantum(pixel.red);
-  color->green=ClampToQuantum(pixel.green);
-  color->blue=ClampToQuantum(pixel.blue);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  Q u e r y C o l o r n a m e                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  QueryColorname() returns a named color for the given color intensity.  If
-%  an exact match is not found, a rgb() color is returned instead.
-%
-%  The format of the QueryColorname method is:
-%
-%      MagickBooleanType QueryColorname(const Image *image,
-%        const PixelInfo *color,const ComplianceType compliance,char *name,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows.
-%
-%    o image: the image.
-%
-%    o color: the color intensities.
-%
-%    o compliance: Adhere to this color standard: SVG, X11, or XPM.
-%
-%    o name: Return the color name or hex value.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType QueryColorname(const Image *image,
-  const PixelInfo *color,const ComplianceType compliance,char *name,
-  ExceptionInfo *exception)
-{
-  PixelInfo
-    pixel;
-
-  GetPixelInfo(image,&pixel);
-  SetPixelInfoPacket(image,color,&pixel);
-  return(QueryMagickColorname(image,&pixel,compliance,name,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   Q u e r y M a g i c k C o l o r C o m p l i a n c e                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  QueryMagickColorCompliance() returns the red, green, blue, and alpha
-%  intensities for a given color name and standards compliance.
-%
-%  The format of the QueryMagickColorCompliance method is:
-%
-%      MagickBooleanType QueryMagickColorCompliance(const char *name,
-%        const ComplianceType compliance,PixelInfo *color,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o name: the color name (e.g. white, blue, yellow).
-%
-%    o compliance: Adhere to this color standard: SVG, X11, or XPM.
-%
-%    o color: the red, green, blue, and opacity intensities values of the
-%      named color in this structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
   GeometryInfo
@@ -2498,20 +2380,20 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  Q u e r y M a g i c k C o l o r n a m e                                    %
+%  Q u e r y C o l o r n a m e                                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  QueryMagickColorname() returns a named color for the given color intensity.
+%  QueryColorname() returns a named color for the given color intensity.
 %  If an exact match is not found, a hex value is returned instead.  For
 %  example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223)
 %  returns #dfdfdf.
 %
-%  The format of the QueryMagickColorname method is:
+%  The format of the QueryColorname method is:
 %
-%      MagickBooleanType QueryMagickColorname(const Image *image,
+%      MagickBooleanType QueryColorname(const Image *image,
 %        const PixelInfo *color,const ComplianceType compliance,char *name,
 %        ExceptionInfo *exception)
 %
@@ -2528,7 +2410,15 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType QueryMagickColorname(const Image *image,
+
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+MagickExport MagickBooleanType QueryColorname(const Image *image,
   const PixelInfo *color,const ComplianceType compliance,char *name,
   ExceptionInfo *exception)
 {

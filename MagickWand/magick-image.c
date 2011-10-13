@@ -6747,7 +6747,7 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   PixelGetMagickColor(background,&pixel);
-  images=NewMagickImage(wand->image_info,width,height,&pixel,&wand->exception);
+  images=NewMagickImage(wand->image_info,width,height,&pixel,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
   return(InsertImageInWand(wand,images));

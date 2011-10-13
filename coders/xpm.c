@@ -741,7 +741,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
-    (void) QueryMagickColorname(image,&pixel,XPMCompliance,name,exception);
+    (void) QueryColorname(image,&pixel,XPMCompliance,name,exception);
     if (transparent != MagickFalse)
       {
         if (i == (ssize_t) (colors-1))
@@ -977,7 +977,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
-    (void) QueryMagickColorname(image,&pixel,XPMCompliance,name,exception);
+    (void) QueryColorname(image,&pixel,XPMCompliance,name,exception);
     if (i == opacity)
       (void) CopyMagickString(name,"None",MaxTextExtent);
     /*

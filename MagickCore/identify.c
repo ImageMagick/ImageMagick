@@ -605,7 +605,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
               GetPixelInfo(image,&pixel);
               SetPixelInfo(image,p,&pixel);
-              (void) QueryMagickColorname(image,&pixel,SVGCompliance,tuple,
+              (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
                 exception);
               (void) FormatLocaleFile(file,"  Alpha: %s ",tuple);
               GetColorTuple(&pixel,MagickTrue,tuple);
@@ -670,7 +670,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                   X11Compliance,tuple);
               }
             (void) ConcatenateMagickString(tuple,")",MaxTextExtent);
-            (void) QueryMagickColorname(image,&pixel,SVGCompliance,color,
+            (void) QueryColorname(image,&pixel,SVGCompliance,color,
               exception);
             GetColorTuple(&pixel,MagickTrue,hex);
             (void) FormatLocaleFile(file,"  %8ld: %s %s %s\n",(long) i,tuple,

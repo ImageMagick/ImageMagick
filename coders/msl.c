@@ -1413,7 +1413,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &target,&msl_info->image[n]->exception);
                       break;
                     }
@@ -1659,7 +1659,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"bordercolor") == 0)
                     {
-                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &target,&exception);
                       paint_method=FillToBorderMethod;
                       break;
@@ -3688,7 +3688,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"bordercolor") == 0)
                     {
-                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &target,&exception);
                       paint_method=FillToBorderMethod;
                       break;
@@ -4225,9 +4225,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          (void) QueryMagickColorCompliance("none",AllCompliance,&target,
+          (void) QueryColorCompliance("none",AllCompliance,&target,
             &exception);
-          (void) QueryMagickColorCompliance("none",AllCompliance,&fill_color,
+          (void) QueryColorCompliance("none",AllCompliance,&fill_color,
             &exception);
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -4260,7 +4260,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fill") == 0)
                     {
-                      (void) QueryMagickColorCompliance(value,AllCompliance,
+                      (void) QueryColorCompliance(value,AllCompliance,
                         &fill_color,&exception);
                       break;
                     }
@@ -7198,7 +7198,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 PixelInfo
                   target;
 
-                (void) QueryMagickColorCompliance(value,AllCompliance,&target,
+                (void) QueryColorCompliance(value,AllCompliance,&target,
                   &exception);
                 (void) TransparentPaintImage(msl_info->image[n],&target,
                   TransparentAlpha,MagickFalse,&msl_info->image[n]->exception);

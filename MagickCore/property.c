@@ -2086,7 +2086,7 @@ MagickExport const char *GetImageProperty(const Image *image,
               char
                 name[MaxTextExtent];
 
-              (void) QueryMagickColorname(image,&pixel,SVGCompliance,name,
+              (void) QueryColorname(image,&pixel,SVGCompliance,name,
                 exception);
               (void) SetImageProperty((Image *) image,property,name);
               return(GetImageProperty(image,property));

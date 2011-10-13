@@ -836,7 +836,7 @@ extern "C" {
 #define QuantizeImages  PrependMagickMethod(QuantizeImages)
 #define QueryColorDatabase  PrependMagickMethod(QueryColorDatabase)
 #define QueryColorname  PrependMagickMethod(QueryColorname)
-#define QueryMagickColorname  PrependMagickMethod(QueryMagickColorname)
+#define QueryColorname  PrependMagickMethod(QueryColorname)
 #define QueryMagickColor  PrependMagickMethod(QueryMagickColor)
 #define QueueAuthenticNexus  PrependMagickMethod(QueueAuthenticNexus)
 #define QueueAuthenticPixels  PrependMagickMethod(QueueAuthenticPixels)
