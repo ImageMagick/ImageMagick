@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+#include "MagickCore/memory_.h"
+#include "MagickCore/nt-base-private.h"
+
 extern MagickPrivate char
   **GetPathComponents(const char *,size_t *),
   **ListFiles(const char *,const char *,size_t *);
@@ -60,7 +63,7 @@ static inline int access_utf8(const char *path,int mode)
      return(-1);
    count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
    status=_waccess(path_wide,mode);
-   path_wide=RelinquishMagickMemory(path_wide);
+   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(status);
 #endif
 }
@@ -90,13 +93,13 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
    mode_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*mode_wide));
    if (mode_wide == (WCHAR *) NULL)
      {
-       path_wide=RelinquishMagickMemory(path_wide);
+       path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
        return((FILE *) NULL);
      }
    count=MultiByteToWideChar(CP_UTF8,0,mode,-1,mode_wide,count);
    file=_wfopen(path_wide,mode_wide);
-   mode_wide=RelinquishMagickMemory(mode_wide);
-   path_wide=RelinquishMagickMemory(path_wide);
+   mode_wide=(WCHAR *) RelinquishMagickMemory(mode_wide);
+   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(file);
 #endif
 }
@@ -120,7 +123,7 @@ static inline int open_utf8(const char *path,int flags,int mode)
      return(-1);
    count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
    status=_wopen(path_wide,flags,mode);
-   path_wide=RelinquishMagickMemory(path_wide);
+   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(status);
 #endif
 }
@@ -150,13 +153,13 @@ static inline FILE *popen_utf8(const char *command,const char *type)
    type_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*type_wide));
    if (type_wide == (WCHAR *) NULL)
      {
-       command_wide=RelinquishMagickMemory(command_wide);
+       command_wide=(WCHAR *) RelinquishMagickMemory(command_wide);
        return((FILE *) NULL);
      }
    count=MultiByteToWideChar(CP_UTF8,0,type,-1,type_wide,count);
    file=_wpopen(command_wide,type_wide);
-   type_wide=RelinquishMagickMemory(type_wide);
-   command_wide=RelinquishMagickMemory(command_wide);
+   type_wide=(WCHAR *) RelinquishMagickMemory(type_wide);
+   command_wide=(WCHAR *) RelinquishMagickMemory(command_wide);
    return(file);
 #endif
 }
@@ -180,7 +183,7 @@ static inline int remove_utf8(const char *path)
      return(-1);
    count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
    status=_wremove(path_wide);
-   path_wide=RelinquishMagickMemory(path_wide);
+   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(status);
 #endif
 }
@@ -209,13 +212,13 @@ static inline int rename_utf8(const char *source,const char *destination)
      sizeof(*destination_wide));
    if (destination_wide == (WCHAR *) NULL)
      {
-       source_wide=RelinquishMagickMemory(source_wide);
+       source_wide=(WCHAR *) RelinquishMagickMemory(source_wide);
        return(-1);
      }
    count=MultiByteToWideChar(CP_UTF8,0,destination,-1,destination_wide,count);
    status=_wrename(source_wide,destination_wide);
-   destination_wide=RelinquishMagickMemory(destination_wide);
-   source_wide=RelinquishMagickMemory(source_wide);
+   destination_wide=(WCHAR *) RelinquishMagickMemory(destination_wide);
+   source_wide=(WCHAR *) RelinquishMagickMemory(source_wide);
    return(status);
 #endif
 }
@@ -238,8 +241,8 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
    if (path_wide == (WCHAR *) NULL)
      return(-1);
    count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   status=wstat(path_wide,attributes);
-   path_wide=RelinquishMagickMemory(path_wide);
+   status=_wstat64(path_wide,attributes);
+   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(status);
 #endif
 }

@@ -27,6 +27,7 @@ extern "C" {
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
 #include "MagickCore/exception.h"
+#include "MagickCore/splay-tree.h"
 
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN

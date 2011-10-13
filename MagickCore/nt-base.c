@@ -41,15 +41,25 @@
 #include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include "MagickCore/client.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/color.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/image.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/resource-private.h"
 #include "MagickCore/timer.h"
+#include "MagickCore/type.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
 #if defined(MAGICKCORE_LTDL_DELEGATE)
@@ -584,8 +594,6 @@ MagickExport void *ImageToHBITMAP(Image *image)
   GlobalFree((HGLOBAL) bitmap_bitsH);
   return((void *) bitmapH);
 }
-
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
