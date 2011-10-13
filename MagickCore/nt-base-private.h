@@ -135,6 +135,9 @@ extern "C" {
 #if !defined(inline)
 #  define inline __inline
 #endif
+#if !defined(isatty)
+#  define isatty  _isatty
+#endif
 #if !defined(locale_t)
 #define locale_t _locale_t
 #endif
