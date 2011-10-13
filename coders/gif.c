@@ -443,7 +443,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
         break;
       index=ConstrainColormapIndex(image,(size_t) c);
       SetPixelIndex(image,index,q);
-      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
       SetPixelAlpha(image,(ssize_t) index == opacity ? TransparentAlpha :
         OpaqueAlpha,q);
       x++;
@@ -1652,7 +1652,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) WriteBlobByte(image,(unsigned char) c);
         for (j=0; j < (ssize_t) image->colors; j++)
-          if (IsPixelPacketEquivalent(&image->background_color,image->colormap+j))
+          if (IsPixelInfoEquivalent(&image->background_color,image->colormap+j))
             break;
         (void) WriteBlobByte(image,(unsigned char)
           (j == (ssize_t) image->colors ? 0 : j));  /* background color */

@@ -2046,7 +2046,7 @@ MagickPrivate void XDisplayImageInfo(Display *display,
   for (levels=0; undo_image != (Image *) NULL; levels++)
   {
     number_pixels=undo_image->list->columns*undo_image->list->rows;
-    bytes+=number_pixels*sizeof(PixelPacket);
+    bytes+=number_pixels*sizeof(PixelInfo);
     undo_image=GetPreviousImageInList(undo_image);
   }
   (void) FormatLocaleFile(file,"Undo Edit Cache\n  levels: %u\n",levels);
@@ -2142,7 +2142,7 @@ static void XDitherImage(Image *image,XImage *ximage)
     value,
     y;
 
-  PixelPacket
+  PixelInfo
     color;
 
   register char
@@ -2506,7 +2506,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
           /*
             Set this pixel to the background color.
           */
-          SetPixelPacket(draw_image,&draw_image->background_color,q);
+          SetPixelPixelInfo(draw_image,&draw_image->background_color,q);
           SetPixelAlpha(draw_image,(Quantum) (draw_info->stencil ==
             OpaqueStencil ? TransparentAlpha : OpaqueAlpha),q);
         }
@@ -3002,7 +3002,7 @@ MagickPrivate void XGetMapInfo(const XVisualInfo *visual_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  XGetPixelInfo() initializes the PixelPacket structure.
+%  XGetPixelInfo() initializes the PixelInfo structure.
 %
 %  The format of the XGetPixelInfo method is:
 %
@@ -3856,7 +3856,7 @@ MagickPrivate MagickBooleanType XGetWindowColor(Display *display,
     x,
     y;
 
-  PixelPacket
+  PixelInfo
     pixel;
 
   RectangleInfo
@@ -4489,7 +4489,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               {
                 index=(Quantum) XGetPixel(ximage,x,y);
                 SetPixelIndex(composite_image,index,q);
-                SetPixelPacket(composite_image,
+                SetPixelPixelInfo(composite_image,
                   composite_image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(composite_image);
               }
@@ -5953,11 +5953,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       foreground=(unsigned char)
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ? 0x80 : 0x00);
-      polarity=(unsigned short) ((GetPixelPacketIntensity(
+      polarity=(unsigned short) ((GetPixelInfoIntensity(
         &canvas->colormap[0])) < ((Quantum) QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
-        polarity=GetPixelPacketIntensity(&canvas->colormap[0]) <
-          GetPixelPacketIntensity(&canvas->colormap[1]);
+        polarity=GetPixelInfoIntensity(&canvas->colormap[0]) <
+          GetPixelInfoIntensity(&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
         p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
@@ -6580,11 +6580,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       foreground=(unsigned char)
         (XPixelIntensity(&window->pixel_info->background_color) <
          XPixelIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
-      polarity=(unsigned short) ((GetPixelPacketIntensity(
+      polarity=(unsigned short) ((GetPixelInfoIntensity(
         &canvas->colormap[0])) < ((Quantum) QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
-        polarity=GetPixelPacketIntensity(&canvas->colormap[0]) <
-          GetPixelPacketIntensity(&canvas->colormap[1]);
+        polarity=GetPixelInfoIntensity(&canvas->colormap[0]) <
+          GetPixelInfoIntensity(&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
         p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
@@ -8655,7 +8655,7 @@ MagickPrivate MagickBooleanType XMagickProgressMonitor(const char *tag,
 %
 %    o target: Specifies the color to lookup in the X color database.
 %
-%    o color: A pointer to an PixelPacket structure.  The RGB value of the target
+%    o color: A pointer to an PixelInfo structure.  The RGB value of the target
 %      color is returned as this value.
 %
 */

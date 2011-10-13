@@ -805,16 +805,16 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
   clone_image->dither=image->dither;
-  if (image->colormap != (PixelPacket *) NULL)
+  if (image->colormap != (PixelInfo *) NULL)
     {
       /*
         Allocate and copy the image colormap.
       */
       clone_image->colors=image->colors;
       length=(size_t) image->colors;
-      clone_image->colormap=(PixelPacket *) AcquireQuantumMemory(length,
+      clone_image->colormap=(PixelInfo *) AcquireQuantumMemory(length,
         sizeof(*clone_image->colormap));
-      if (clone_image->colormap == (PixelPacket *) NULL)
+      if (clone_image->colormap == (PixelInfo *) NULL)
         ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
       (void) CopyMagickMemory(clone_image->colormap,image->colormap,length*
         sizeof(*clone_image->colormap));
@@ -1217,8 +1217,8 @@ MagickExport Image *DestroyImage(Image *image)
     image->montage=DestroyString(image->montage);
   if (image->directory != (char *) NULL)
     image->directory=DestroyString(image->directory);
-  if (image->colormap != (PixelPacket *) NULL)
-    image->colormap=(PixelPacket *) RelinquishMagickMemory(image->colormap);
+  if (image->colormap != (PixelInfo *) NULL)
+    image->colormap=(PixelInfo *) RelinquishMagickMemory(image->colormap);
   if (image->geometry != (char *) NULL)
     image->geometry=DestroyString(image->geometry);
   DestroyImageProfiles(image);
@@ -2482,7 +2482,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       PixelInfo
         background;
 
-      PixelPacket
+      PixelInfo
         pixel;
 
       ssize_t
@@ -2639,7 +2639,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   PixelInfo
     background;
 
-  PixelPacket
+  PixelInfo
     pixel;
 
   ssize_t
@@ -4092,7 +4092,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     {
       index=PushColormapIndex(image,(size_t) GetPixelIndex(image,q),
         &range_exception);
-      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

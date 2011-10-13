@@ -141,7 +141,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     fill,
     pixel;
 
-  PixelPacket
+  PixelInfo
     fill_color;
 
   register SegmentInfo
@@ -382,8 +382,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %  The format of the GradientImage method is:
 %
 %      MagickBooleanType GradientImage(Image *image,const GradientType type,
-%        const SpreadMethod method,const PixelPacket *start_color,
-%        const PixelPacket *stop_color,ExceptionInfo *exception)
+%        const SpreadMethod method,const PixelInfo *start_color,
+%        const PixelInfo *stop_color,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -408,7 +408,7 @@ static inline double MagickMax(const double x,const double y)
 
 MagickExport MagickBooleanType GradientImage(Image *image,
   const GradientType type,const SpreadMethod method,
-  const PixelPacket *start_color,const PixelPacket *stop_color,
+  const PixelInfo *start_color,const PixelInfo *stop_color,
   ExceptionInfo *exception)
 {
   DrawInfo
@@ -430,8 +430,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(start_color != (const PixelPacket *) NULL);
-  assert(stop_color != (const PixelPacket *) NULL);
+  assert(start_color != (const PixelInfo *) NULL);
+  assert(stop_color != (const PixelInfo *) NULL);
   draw_info=AcquireDrawInfo();
   gradient=(&draw_info->gradient);
   gradient->type=type;
@@ -469,8 +469,8 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   draw_info=DestroyDrawInfo(draw_info);
   if ((start_color->alpha == OpaqueAlpha) && (stop_color->alpha == OpaqueAlpha))
     image->matte=MagickFalse;
-  if ((IsPixelPacketGray(start_color) != MagickFalse) &&
-      (IsPixelPacketGray(stop_color) != MagickFalse))
+  if ((IsPixelInfoGray(start_color) != MagickFalse) &&
+      (IsPixelInfoGray(stop_color) != MagickFalse))
     image->type=GrayscaleType;
   return(status);
 }
@@ -729,7 +729,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %  The format of the OpaquePaintImage method is:
 %
 %      MagickBooleanType OpaquePaintImage(Image *image,
-%        const PixelPacket *target,const PixelPacket *fill,
+%        const PixelInfo *target,const PixelInfo *fill,
 %        const MagickBooleanType invert,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:

@@ -652,7 +652,7 @@ extern "C" {
 #define IsBlobExempt  PrependMagickMethod(IsBlobExempt)
 #define IsBlobSeekable  PrependMagickMethod(IsBlobSeekable)
 #define IsBlobTemporary  PrependMagickMethod(IsBlobTemporary)
-#define IsFuzzyEquivalencePixelPacket  PrependMagickMethod(IsFuzzyEquivalencePixelPacket)
+#define IsFuzzyEquivalencePixelInfo  PrependMagickMethod(IsFuzzyEquivalencePixelInfo)
 #define IsEventLogging  PrependMagickMethod(IsEventLogging)
 #define IsGeometry  PrependMagickMethod(IsGeometry)
 #define IsGlob  PrependMagickMethod(IsGlob)

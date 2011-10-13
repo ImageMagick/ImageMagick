@@ -508,7 +508,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   MagickOffsetType
     progress;
 
-  PixelPacket
+  PixelInfo
     *cdl_map;
 
   register ssize_t
@@ -701,8 +701,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
         "  color_correction.saturation: %g",color_correction.saturation);
     }
-  cdl_map=(PixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*cdl_map));
-  if (cdl_map == (PixelPacket *) NULL)
+  cdl_map=(PixelInfo *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*cdl_map));
+  if (cdl_map == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -803,7 +803,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  cdl_map=(PixelPacket *) RelinquishMagickMemory(cdl_map);
+  cdl_map=(PixelInfo *) RelinquishMagickMemory(cdl_map);
   return(status);
 }
 

@@ -43,7 +43,7 @@ static inline MagickRealType MagickOver_(const MagickRealType p,
   return(Sa*p-Sa*Da*q+Da*q);
 }
 
-static inline void CompositePixelOver(const Image *image,const PixelPacket *p,
+static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
   const MagickRealType alpha,const Quantum *q,const MagickRealType beta,
   Quantum *composite)
 {

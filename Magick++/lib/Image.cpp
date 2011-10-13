@@ -607,7 +607,7 @@ void Magick::Image::colorize ( const unsigned int alphaRed_,
   GetExceptionInfo( &exceptionInfo );
   PixelInfo target;
   GetPixelInfo(image(),&target);
-  PixelPacket pixel=static_cast<PixelPacket>(penColor_);
+  PixelInfo pixel=static_cast<PixelInfo>(penColor_);
   target.red=pixel.red;
   target.green=pixel.green;
   target.blue=pixel.blue;
@@ -1010,7 +1010,7 @@ void Magick::Image::floodFillAlpha( const ssize_t x_,
   modifyImage();
   PixelInfo target;
   GetPixelInfo(image(),&target);
-  PixelPacket pixel=static_cast<PixelPacket>(pixelColor(x_,y_));
+  PixelInfo pixel=static_cast<PixelInfo>(pixelColor(x_,y_));
   target.red=pixel.red;
   target.green=pixel.green;
   target.blue=pixel.blue;
@@ -1083,9 +1083,9 @@ void Magick::Image::floodFillTexture( const ssize_t x_,
 
   PixelInfo target;
   GetPixelInfo(constImage(),&target);
-  target.red=static_cast<PixelPacket>(borderColor_).red;
-  target.green=static_cast<PixelPacket>(borderColor_).green;
-  target.blue=static_cast<PixelPacket>(borderColor_).blue;
+  target.red=static_cast<PixelInfo>(borderColor_).red;
+  target.green=static_cast<PixelInfo>(borderColor_).green;
+  target.blue=static_cast<PixelInfo>(borderColor_).blue;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   FloodfillPaintImage ( image(),
@@ -1343,9 +1343,9 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   modifyImage();
   PixelInfo target;
   GetPixelInfo(constImage(),&target);
-  target.red=static_cast<PixelPacket>(target_).red;
-  target.green=static_cast<PixelPacket>(target_).green;
-  target.blue=static_cast<PixelPacket>(target_).blue;
+  target.red=static_cast<PixelInfo>(target_).red;
+  target.green=static_cast<PixelInfo>(target_).green;
+  target.blue=static_cast<PixelInfo>(target_).blue;
   target.alpha=alpha_;
   ChannelType channel_mask = SetPixelChannelMask( image(), AlphaChannel );
   ExceptionInfo exceptionInfo;
@@ -2610,7 +2610,7 @@ void Magick::Image::classType ( const ClassType class_ )
       // color map and then set to DirectClass type.
       modifyImage();
       SyncImage( image() );
-      image()->colormap = (PixelPacket *)
+      image()->colormap = (PixelInfo *)
         RelinquishMagickMemory( image()->colormap );
       image()->storage_class = static_cast<MagickCore::ClassType>(DirectClass);
       return;
@@ -2723,14 +2723,14 @@ void Magick::Image::colorMapSize ( const size_t entries_ )
     {
       // Allocate colormap
       imageptr->colormap =
-        static_cast<PixelPacket*>(AcquireMagickMemory(entries_*sizeof(PixelPacket)));
+        static_cast<PixelInfo*>(AcquireMagickMemory(entries_*sizeof(PixelInfo)));
       imageptr->colors = 0;
     }
   else if ( entries_ > imageptr->colors )
     {
       // Re-allocate colormap
-      imageptr->colormap=(PixelPacket *)
-        ResizeMagickMemory(imageptr->colormap,(entries_)*sizeof(PixelPacket));
+      imageptr->colormap=(PixelInfo *)
+        ResizeMagickMemory(imageptr->colormap,(entries_)*sizeof(PixelInfo));
     }
 
   // Initialize any new colormap entries as all black
@@ -3475,8 +3475,8 @@ void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
   Pixels pixels(*this);
     // Set pixel value
   Quantum *pixel = pixels.get(x_, y_, 1, 1 );
-  PixelPacket packet = color_;
-  MagickCore::SetPixelPacket(constImage(),&packet,pixel);
+  PixelInfo packet = color_;
+  MagickCore::SetPixelPixelInfo(constImage(),&packet,pixel);
   // Tell ImageMagick that pixels have been updated
   pixels.sync();
 
@@ -3493,8 +3493,8 @@ Magick::Color Magick::Image::pixelColor ( const ssize_t x_,
   const Quantum* pixel = getConstPixels( x_, y_, 1, 1 );
   if ( pixel )
     {
-      PixelPacket packet;
-      MagickCore::GetPixelPacketPixel(constImage(),pixel,&packet);
+      PixelInfo packet;
+      MagickCore::GetPixelInfoPixel(constImage(),pixel,&packet);
       return Color( packet );
     }
 

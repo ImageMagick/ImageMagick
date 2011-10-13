@@ -172,7 +172,7 @@ struct _Image
     colors;          /* Size of color table, or actual color count if known */
                      /* Only valid if image is not DirectClass */
 
-  PixelPacket
+  PixelInfo
     *colormap,
     background_color, /* current background color attribute */
     border_color,     /* current bordercolor attribute */
@@ -255,7 +255,7 @@ struct _Image
   MagickBooleanType
     black_point_compensation;
 
-  PixelPacket
+  PixelInfo
     transparent_color; /* color for 'transparent' color index in GIF */
 
   struct _Image
@@ -398,7 +398,7 @@ struct _ImageInfo
     pointsize,
     fuzz;               /* current color fuzz attribute */
 
-  PixelPacket
+  PixelInfo
     background_color,
     border_color,
     matte_color;
@@ -436,7 +436,7 @@ struct _ImageInfo
   VirtualPixelMethod
     virtual_pixel_method;
 
-  PixelPacket
+  PixelInfo
     transparent_color;
 
   void

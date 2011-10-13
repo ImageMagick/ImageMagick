@@ -301,7 +301,7 @@ MagickExport size_t GetImageDepth(const Image *image,
     current_depth[id]=1;
   if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
     {
-      register const PixelPacket
+      register const PixelInfo
         *restrict p;
 
       register ssize_t
@@ -884,7 +884,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   image_view=DestroyCacheView(image_view);
   if (image->storage_class == PseudoClass)
     {
-      register PixelPacket
+      register PixelInfo
         *restrict p;
 
       register ssize_t

@@ -78,16 +78,6 @@ typedef struct _PixelChannelMap
     traits;
 } PixelChannelMap;
 
-typedef struct _PixelDoublePacket
-{
-  double
-    red,
-    green,
-    blue,
-    alpha,
-    black;
-} PixelDoublePacket;
-
 typedef struct _PixelInfo
 {
   ClassType
@@ -117,7 +107,7 @@ typedef struct _PixelInfo
     index;
 } PixelInfo;
 
-typedef struct _PixelLongPacket
+typedef struct _PixelPacket
 {
   unsigned int
     red,
@@ -125,35 +115,6 @@ typedef struct _PixelLongPacket
     blue,
     alpha,
     black;
-} PixelLongPacket;
-
-typedef struct _PixelPacket
-{
-  ClassType
-    storage_class;
-
-  ColorspaceType
-    colorspace;
-
-  MagickBooleanType
-    matte;
-
-  double
-    fuzz;
-
-  size_t
-    depth;
-
-  MagickSizeType
-    count;
-
-  double
-    red,
-    green,
-    blue,
-    black,
-    alpha,
-    index;
 } PixelPacket;
 
 typedef struct _CacheView
@@ -178,9 +139,7 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   IsFuzzyEquivalencePixel(const Image *,const Quantum *,
     const Quantum *),
-  IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *),
-  IsFuzzyEquivalencePixelPacket(const Image *,const PixelPacket *,
-    const PixelPacket *);
+  IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *);
 
 extern MagickExport PixelChannelMap
   *AcquirePixelChannelMap(void),

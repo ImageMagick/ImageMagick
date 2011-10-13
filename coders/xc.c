@@ -99,7 +99,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PixelInfo
     color;
 
-  PixelPacket
+  PixelInfo
     pixel;
 
   register ssize_t
@@ -145,7 +145,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPacket(image,&pixel,q);
+      SetPixelPixelInfo(image,&pixel,q);
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(image,pixel.black,q);
       q+=GetPixelChannels(image);

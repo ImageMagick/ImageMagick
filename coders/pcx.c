@@ -1094,11 +1094,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             /*
               Convert PseudoClass image to a PCX monochrome image.
             */
-            polarity=(Quantum) (GetPixelPacketIntensity(
+            polarity=(Quantum) (GetPixelInfoIntensity(
               &image->colormap[0]) < ((Quantum) QuantumRange/2) ? 1 : 0);
             if (image->colors == 2)
-              polarity=(Quantum) (GetPixelPacketIntensity(&image->colormap[0]) <
-                GetPixelPacketIntensity(&image->colormap[1]) ? 1 : 0);
+              polarity=(Quantum) (GetPixelInfoIntensity(&image->colormap[0]) <
+                GetPixelInfoIntensity(&image->colormap[1]) ? 1 : 0);
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);

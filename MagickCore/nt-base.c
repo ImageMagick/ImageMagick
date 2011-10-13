@@ -218,8 +218,8 @@ MagickExport void *CropImageToHBITMAP(Image *image,
       break;
 
 #if MAGICKCORE_QUANTUM_DEPTH == 8
-      /* Form of PixelPacket is identical to RGBQUAD when MAGICKCORE_QUANTUM_DEPTH==8 */
-      CopyMagickMemory((void*)q,(const void*)p,page.width*sizeof(PixelPacket));
+      /* Form of PixelInfo is identical to RGBQUAD when MAGICKCORE_QUANTUM_DEPTH==8 */
+      CopyMagickMemory((void*)q,(const void*)p,page.width*sizeof(PixelInfo));
       q += page.width;
 
 #else  /* 16 or 32 bit Quantum */

@@ -373,7 +373,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y,
     y_offset;
 
-  PixelLongPacket
+  PixelInfo
     pixel;
 
   MagickBooleanType
@@ -454,19 +454,19 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->colorspace == CMYKColorspace)
           {
             if (image->matte != MagickFalse)
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u,%u",&x_offset,
-                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black,
-                &pixel.alpha);
+              count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf,%lf",
+                &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
+                &pixel.black,&pixel.alpha);
             else
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
+              count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",&x_offset,
                 &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black);
           }
         else
           if (image->matte != MagickFalse)
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u,%u",&x_offset,
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",&x_offset,
               &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.alpha);
           else
-            count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u",&x_offset,
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf",&x_offset,
               &y_offset,&pixel.red,&pixel.green,&pixel.blue);
         if (count < 5)
           continue;

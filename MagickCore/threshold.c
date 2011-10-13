@@ -650,7 +650,7 @@ MagickExport MagickBooleanType ClampImage(Image *image)
       register ssize_t
         i;
 
-      register PixelPacket
+      register PixelInfo
         *restrict q;
 
       q=image->colormap;

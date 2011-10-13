@@ -168,7 +168,7 @@ typedef struct
     green,
     blue,
     alpha;
-} XCFPixelPacket;
+} XCFPixelInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -349,12 +349,12 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   unsigned char
     *graydata;
 
-  XCFPixelPacket
+  XCFPixelInfo
     *xcfdata,
     *xcfodata;
 
-  xcfdata=(XCFPixelPacket *) AcquireQuantumMemory(data_length,sizeof(*xcfdata));
-  if (xcfdata == (XCFPixelPacket *) NULL)
+  xcfdata=(XCFPixelInfo *) AcquireQuantumMemory(data_length,sizeof(*xcfdata));
+  if (xcfdata == (XCFPixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   xcfodata=xcfdata;
@@ -398,7 +398,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
      if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
        break;
   }
-  xcfodata=(XCFPixelPacket *) RelinquishMagickMemory(xcfodata);
+  xcfodata=(XCFPixelInfo *) RelinquishMagickMemory(xcfodata);
   return MagickTrue;
 }
 

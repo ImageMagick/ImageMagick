@@ -583,7 +583,7 @@ Magick::DrawableFillColor::~DrawableFillColor( void )
 void Magick::DrawableFillColor::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  PixelPacket color = static_cast<PixelPacket>(_color);
+  PixelInfo color = static_cast<PixelInfo>(_color);
   PixelWand *pixel_wand=NewPixelWand();
   PixelSetQuantumPacket(pixel_wand,&color);
   DrawSetFillColor(context_,pixel_wand);
@@ -1210,7 +1210,7 @@ Magick::DrawableStrokeColor::~DrawableStrokeColor ( void )
 void Magick::DrawableStrokeColor::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  PixelPacket color = static_cast<PixelPacket>(_color);
+  PixelInfo color = static_cast<PixelInfo>(_color);
   PixelWand *pixel_wand=NewPixelWand();
   PixelSetQuantumPacket(pixel_wand,&color);
   DrawSetStrokeColor(context_,pixel_wand);
@@ -1356,7 +1356,7 @@ Magick::DrawableTextUnderColor::~DrawableTextUnderColor ( void )
 void Magick::DrawableTextUnderColor::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  PixelPacket color = static_cast<PixelPacket>(_color);
+  PixelInfo color = static_cast<PixelInfo>(_color);
   PixelWand *pixel_wand=NewPixelWand();
   PixelSetQuantumPacket(pixel_wand,&color);
   DrawSetTextUnderColor(context_,pixel_wand);

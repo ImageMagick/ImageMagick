@@ -538,7 +538,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     Cluster
       *cluster;
 
-    register const PixelPacket
+    register const PixelInfo
       *restrict p;
 
     register ssize_t

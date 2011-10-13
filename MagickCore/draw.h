@@ -217,7 +217,7 @@ typedef struct _DrawInfo
   GravityType
     gravity;
 
-  PixelPacket
+  PixelInfo
     fill,
     stroke;
 
@@ -288,7 +288,7 @@ typedef struct _DrawInfo
   AlignType
     align;
 
-  PixelPacket
+  PixelInfo
     undercolor,
     border_color;
 

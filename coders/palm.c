@@ -175,20 +175,20 @@ static MagickBooleanType
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  FindColor() returns the index of the matching entry from PalmPalette for a
-%  given PixelPacket.
+%  given PixelInfo.
 %
 %  The format of the FindColor method is:
 %
-%      int FindColor(const Image *image,PixelPacket *pixel)
+%      int FindColor(const Image *image,PixelInfo *pixel)
 %
 %  A description of each parameter follows:
 %
 %    o int: the index of the matching color or -1 if not found/
 %
-%    o pixel: a pointer to the PixelPacket to be matched.
+%    o pixel: a pointer to the PixelInfo to be matched.
 %
 */
-static int FindColor(const Image *image,PixelPacket *packet)
+static int FindColor(const Image *image,PixelInfo *packet)
 {
   register ssize_t
     i;
@@ -489,7 +489,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               ThrowReaderException(CorruptImageError,"CorruptImage");
             index=(Quantum) (mask-(((*ptr) & (mask << bit)) >> bit));
             SetPixelIndex(image,index,q);
-            SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             if (bit)
               bit-=bits_per_pixel;
             else
@@ -668,7 +668,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   MagickSizeType
     cc;
 
-  PixelPacket
+  PixelInfo
     transpix;
 
   QuantizeInfo

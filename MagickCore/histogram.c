@@ -75,7 +75,7 @@ typedef struct _NodeInfo
   struct _NodeInfo
     *child[16];
 
-  PixelPacket
+  PixelInfo
     *list;
 
   MagickSizeType
@@ -266,12 +266,12 @@ static CubeInfo *ClassifyImageColors(const Image *image,
       else
         {
           if (node_info->number_unique == 0)
-            node_info->list=(PixelPacket *) AcquireMagickMemory(
+            node_info->list=(PixelInfo *) AcquireMagickMemory(
               sizeof(*node_info->list));
           else
-            node_info->list=(PixelPacket *) ResizeQuantumMemory(node_info->list,
+            node_info->list=(PixelInfo *) ResizeQuantumMemory(node_info->list,
               (size_t) (i+1),sizeof(*node_info->list));
-          if (node_info->list == (PixelPacket *) NULL)
+          if (node_info->list == (PixelInfo *) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -317,7 +317,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
 %  The format of the DefineImageHistogram method is:
 %
 %      DefineImageHistogram(const Image *image,NodeInfo *node_info,
-%        PixelPacket **unique_colors)
+%        PixelInfo **unique_colors)
 %
 %  A description of each parameter follows.
 %
@@ -330,7 +330,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
 %
 */
 static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
-  PixelPacket **histogram)
+  PixelInfo **histogram)
 {
   register ssize_t
     i;
@@ -347,7 +347,7 @@ static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
       DefineImageHistogram(image,node_info->child[i],histogram);
   if (node_info->level == (MaxTreeDepth-1))
     {
-      register PixelPacket
+      register PixelInfo
         *p;
 
       p=node_info->list;
@@ -449,8 +449,8 @@ static void DestroyColorCube(const Image *image,NodeInfo *node_info)
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
       DestroyColorCube(image,node_info->child[i]);
-  if (node_info->list != (PixelPacket *) NULL)
-    node_info->list=(PixelPacket *) RelinquishMagickMemory(node_info->list);
+  if (node_info->list != (PixelInfo *) NULL)
+    node_info->list=(PixelInfo *) RelinquishMagickMemory(node_info->list);
 }
 
 /*
@@ -523,28 +523,28 @@ static CubeInfo *GetCubeInfo(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport PixelPacket *GetImageHistogram(const Image *image,
+MagickExport PixelInfo *GetImageHistogram(const Image *image,
   size_t *number_colors,ExceptionInfo *exception)
 {
-  PixelPacket
+  PixelInfo
     *histogram;
 
   CubeInfo
     *cube_info;
 
   *number_colors=0;
-  histogram=(PixelPacket *) NULL;
+  histogram=(PixelInfo *) NULL;
   cube_info=ClassifyImageColors(image,exception);
   if (cube_info != (CubeInfo *) NULL)
     {
-      histogram=(PixelPacket *) AcquireQuantumMemory((size_t) cube_info->colors,
+      histogram=(PixelInfo *) AcquireQuantumMemory((size_t) cube_info->colors,
         sizeof(*histogram));
-      if (histogram == (PixelPacket *) NULL)
+      if (histogram == (PixelInfo *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       else
         {
-          PixelPacket
+          PixelInfo
             *root;
 
           *number_colors=cube_info->colors;
@@ -737,12 +737,12 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=(PixelPacket *) AcquireMagickMemory(
+            node_info->list=(PixelInfo *) AcquireMagickMemory(
               sizeof(*node_info->list));
           else
-            node_info->list=(PixelPacket *) ResizeQuantumMemory(node_info->list,
+            node_info->list=(PixelInfo *) ResizeQuantumMemory(node_info->list,
               (size_t) (i+1),sizeof(*node_info->list));
-          if (node_info->list == (PixelPacket *) NULL)
+          if (node_info->list == (PixelInfo *) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -897,12 +897,12 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=(PixelPacket *) AcquireMagickMemory(
+            node_info->list=(PixelInfo *) AcquireMagickMemory(
               sizeof(*node_info->list));
           else
-            node_info->list=(PixelPacket *) ResizeQuantumMemory(node_info->list,
+            node_info->list=(PixelInfo *) ResizeQuantumMemory(node_info->list,
               (size_t) (i+1),sizeof(*node_info->list));
-          if (node_info->list == (PixelPacket *) NULL)
+          if (node_info->list == (PixelInfo *) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 ResourceLimitError,"MemoryAllocationFailed","`%s'",
@@ -1065,12 +1065,12 @@ extern "C" {
 
 static int HistogramCompare(const void *x,const void *y)
 {
-  const PixelPacket
+  const PixelInfo
     *color_1,
     *color_2;
 
-  color_1=(const PixelPacket *) x;
-  color_2=(const PixelPacket *) y;
+  color_1=(const PixelInfo *) x;
+  color_2=(const PixelInfo *) y;
   if (color_2->red != color_1->red)
     return((int) color_1->red-(int) color_2->red);
   if (color_2->green != color_1->green)
@@ -1094,7 +1094,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
     hex[MaxTextExtent],
     tuple[MaxTextExtent];
 
-  PixelPacket
+  PixelInfo
     *histogram;
 
   MagickBooleanType
@@ -1103,7 +1103,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   PixelInfo
     pixel;
 
-  register PixelPacket
+  register PixelInfo
     *p;
 
   register ssize_t
@@ -1125,7 +1125,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
       return(number_colors);
     }
   histogram=GetImageHistogram(image,&number_colors,exception);
-  if (histogram == (PixelPacket *) NULL)
+  if (histogram == (PixelInfo *) NULL)
     return(number_colors);
   qsort((void *) histogram,(size_t) number_colors,sizeof(*histogram),
     HistogramCompare);
@@ -1171,7 +1171,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
     p++;
   }
   (void) fflush(file);
-  histogram=(PixelPacket *) RelinquishMagickMemory(histogram);
+  histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
   if (status == MagickFalse)
     return(0);
   return(number_colors);
@@ -1226,7 +1226,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
         node_info->child[i],exception);
   if (node_info->level == (MaxTreeDepth-1))
     {
-      register PixelPacket
+      register PixelInfo
         *p;
 
       register Quantum

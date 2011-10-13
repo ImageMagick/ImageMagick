@@ -129,7 +129,7 @@
 #endif
 
 /* Macros for left-bit-replication to ensure that pixels
- * and PixelPackets all have the image->depth, and for use
+ * and PixelInfos all have the image->depth, and for use
  * in PNG8 quantization.
  */
 
@@ -903,7 +903,7 @@ typedef struct _MngInfo
     magn_methx,
     magn_methy;
 
-  PixelPacket
+  PixelInfo
     mng_global_bkgd;
 
   /* Added at version 6.6.6-7 */
@@ -1145,7 +1145,7 @@ static MagickBooleanType ImageIsGray(Image *image)
   if (image->storage_class == PseudoClass)
     {
       for (i=0; i < (ssize_t) image->colors; i++)
-        if (IsPixelPacketGray(image->colormap+i) == MagickFalse)
+        if (IsPixelInfoGray(image->colormap+i) == MagickFalse)
           return(MagickFalse);
       return(MagickTrue);
     }
@@ -2000,7 +2000,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   double
     file_gamma;
 
-  PixelLongPacket
+  PixelInfo
     transparent_color;
 
   MagickBooleanType
@@ -2627,7 +2627,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   "    Raw tRNS graylevel is %d.",ping_trans_color->gray);
 
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    scaled graylevel is %d.",transparent_color.alpha);
+                  "    scaled graylevel is %.20g.",transparent_color.alpha);
               }
               transparent_color.red=transparent_color.alpha;
               transparent_color.green=transparent_color.alpha;
@@ -4602,7 +4602,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     previous_fb;
 
 #if defined(MNG_INSERT_LAYERS)
-  PixelPacket
+  PixelInfo
     mng_background_color;
 #endif
 
@@ -7979,7 +7979,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    int
      n;
 
-   PixelPacket
+   PixelInfo
      opaque[260],
      semitransparent[260],
      transparent[260];
@@ -8074,7 +8074,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_opaque == 0)
                      {
-                       GetPixelPacketPixel(image, q, opaque);
+                       GetPixelInfoPixel(image, q, opaque);
                        opaque[0].alpha=OpaqueAlpha;
                        number_opaque=1;
                      }
@@ -8089,7 +8089,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_opaque < 259)
                      {
                        number_opaque++;
-                       GetPixelPacketPixel(image, q, opaque+i);
+                       GetPixelInfoPixel(image, q, opaque+i);
                        opaque[i].alpha=OpaqueAlpha;
                      }
                  }
@@ -8100,7 +8100,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_transparent == 0)
                      {
-                       GetPixelPacketPixel(image, q, transparent);
+                       GetPixelInfoPixel(image, q, transparent);
                        ping_trans_color.red=(unsigned short)
                          GetPixelRed(image,q);
                        ping_trans_color.green=(unsigned short)
@@ -8122,7 +8122,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_transparent < 259)
                      {
                        number_transparent++;
-                       GetPixelPacketPixel(image,q,transparent+i);
+                       GetPixelInfoPixel(image,q,transparent+i);
                      }
                  }
              }
@@ -8132,7 +8132,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                  {
                    if (number_semitransparent == 0)
                      {
-                       GetPixelPacketPixel(image,q,semitransparent);
+                       GetPixelInfoPixel(image,q,semitransparent);
                        number_semitransparent = 1;
                      }
 
@@ -8148,7 +8148,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        number_semitransparent < 259)
                      {
                        number_semitransparent++;
-                       GetPixelPacketPixel(image, q, semitransparent+i);
+                       GetPixelInfoPixel(image, q, semitransparent+i);
                      }
                  }
              }
@@ -8270,7 +8270,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
      if (image_colors < 257)
        {
-         PixelPacket
+         PixelInfo
            colormap[260];
 
          /*
@@ -8491,7 +8491,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           {
               if (GetPixelAlpha(image,r) < OpaqueAlpha/2)
                 {
-                  SetPixelPacket(image,&image->background_color,r);
+                  SetPixelPixelInfo(image,&image->background_color,r);
                   SetPixelAlpha(image,TransparentAlpha,r);
                 }
               else
@@ -9360,7 +9360,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (ScaleQuantumToShort(image->colormap[0].blue) & mask);
 
               ping_trans_color.gray=(png_uint_16)
-                (ScaleQuantumToShort(GetPixelPacketIntensity(
+                (ScaleQuantumToShort(GetPixelInfoIntensity(
                    image->colormap)) & mask);
 
               ping_trans_color.index=(png_byte) 0;
@@ -9639,7 +9639,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16)
-           ((maxval/255.)*((GetPixelPacketIntensity(&image->background_color)))
+           ((maxval/255.)*((GetPixelInfoIntensity(&image->background_color)))
                                     +.5);
 
          if (logging != MagickFalse)

@@ -234,7 +234,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       if (bit == 8)
         bit=0;
       SetPixelIndex(image,index,q);
-      SetPixelPacket(image,image->colormap+(ssize_t) index,q);
+      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

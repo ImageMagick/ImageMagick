@@ -4027,7 +4027,7 @@ WandExport MagickBooleanType MagickGetImageColormapColor(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if ((wand->images->colormap == (PixelPacket *) NULL) ||
+  if ((wand->images->colormap == (PixelInfo *) NULL) ||
       (index >= wand->images->colors))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4719,7 +4719,7 @@ WandExport size_t MagickGetImageHeight(MagickWand *wand)
 WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
   size_t *number_colors)
 {
-  PixelPacket
+  PixelInfo
     *histogram;
 
   PixelWand
@@ -4739,7 +4739,7 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
       return((PixelWand **) NULL);
     }
   histogram=GetImageHistogram(wand->images,number_colors,wand->exception);
-  if (histogram == (PixelPacket *) NULL)
+  if (histogram == (PixelInfo *) NULL)
     return((PixelWand **) NULL);
   pixel_wands=NewPixelWands(*number_colors);
   for (i=0; i < (ssize_t) *number_colors; i++)
@@ -4747,7 +4747,7 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
     PixelSetQuantumPacket(pixel_wands[i],&histogram[i]);
     PixelSetColorCount(pixel_wands[i],(size_t) histogram[i].count);
   }
-  histogram=(PixelPacket *) RelinquishMagickMemory(histogram);
+  histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
   return(pixel_wands);
 }
 
@@ -8867,7 +8867,7 @@ WandExport MagickBooleanType MagickSetImageColormapColor(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if ((wand->images->colormap == (PixelPacket *) NULL) ||
+  if ((wand->images->colormap == (PixelInfo *) NULL) ||
       (index >= wand->images->colors))
     ThrowWandException(WandError,"InvalidColormapIndex",wand->name);
   PixelGetQuantumPacket(color,wand->images->colormap+index);

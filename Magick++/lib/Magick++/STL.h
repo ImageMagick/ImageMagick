@@ -2101,7 +2101,7 @@ namespace Magick
 
     // Obtain histogram array
     size_t colors;
-    MagickCore::PixelPacket *histogram_array = 
+    MagickCore::PixelInfo *histogram_array = 
       MagickCore::GetImageHistogram( image.constImage(), &colors, &exceptionInfo );
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
@@ -2120,7 +2120,7 @@ namespace Magick
       }
     
     // Deallocate histogram array
-    histogram_array=(MagickCore::PixelPacket *)
+    histogram_array=(MagickCore::PixelInfo *)
       MagickCore::RelinquishMagickMemory(histogram_array);
   }
                       
