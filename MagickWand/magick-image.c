@@ -1490,6 +1490,7 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  GetPixelInfo(wand->images,&target);
   if (target.colorspace != CMYKColorspace)
     (void) FormatLocaleString(percent_blend,MaxTextExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
