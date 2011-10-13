@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #include "magick/memory_.h"
-#include "magick/mt-base.h"
+#include "magick/nt-base.h"
 
 /*
   Windows UTF8 compatibility methods.
