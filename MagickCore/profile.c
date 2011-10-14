@@ -5678,7 +5678,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           if (GlobExpression(name,arguments[i],MagickTrue) != MagickFalse)
             {
               (void) DeleteImageProfile(image,name);
-              ResetImageProfileIterator(image);
               break;
             }
         }
