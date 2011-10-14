@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+
 #include "magick/delegate.h"
 #include "magick/delegate-private.h"
 #include "magick/exception.h"
@@ -418,6 +420,8 @@ extern MagickExport void
   NTWarningHandler(const ExceptionType,const char *,const char *);
 
 #endif /* !XS_VERSION */
+
+#endif /* MAGICK_WINDOWS_SUPPORT */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
