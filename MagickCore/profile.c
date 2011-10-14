@@ -101,6 +101,24 @@
 #endif
 
 /*
+  Typedef declarations
+*/
+struct ProfileInfo
+{
+  char
+    *name;
+
+  size_t
+    length;
+
+  unsigned char
+    *info;
+
+  size_t
+    signature;
+};
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -134,10 +152,6 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clone_image != (const Image *) NULL);
   assert(clone_image->signature == MagickSignature);
-  image->color_profile.length=clone_image->color_profile.length;
-  image->color_profile.info=clone_image->color_profile.info;
-  image->iptc_profile.length=clone_image->iptc_profile.length;
-  image->iptc_profile.info=clone_image->iptc_profile.info;
   if (clone_image->profiles != (void *) NULL)
     image->profiles=CloneSplayTree((SplayTreeInfo *) clone_image->profiles,
       (void *(*)(void *)) ConstantString,(void *(*)(void *)) CloneStringInfo);
@@ -5618,8 +5632,7 @@ static int LCMSExceptionHandler(int severity,const char *message)
 #endif
 
 MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
-  const void *datum,const size_t length,
-  const MagickBooleanType magick_unused(clone))
+  const void *datum,const size_t length,ExceptionInfo *exception)
 {
 #define ProfileImageTag  "Profile/Image"
 #define ThrowProfileException(severity,tag,context) \
@@ -5630,9 +5643,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
     (void) cmsCloseProfile(target_profile); \
   ThrowBinaryException(severity,tag,context); \
 }
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -5645,7 +5655,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(name != (const char *) NULL);
-  exception=(&image->exception);
   if ((datum == (const void *) NULL) || (length == 0))
     {
       char

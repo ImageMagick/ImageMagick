@@ -1725,19 +1725,13 @@ WandExport const char *MagickGetVersion(size_t *version)
 WandExport MagickBooleanType MagickProfileImage(MagickWand *wand,
   const char *name,const void *profile,const size_t length)
 {
-  MagickBooleanType
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ProfileImage(wand->images,name,profile,length,MagickTrue);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(ProfileImage(wand->images,name,profile,length,wand->exception));
 }
 
 /*

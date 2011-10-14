@@ -9300,7 +9300,7 @@ Mogrify(ref,...)
                     Remove a profile from the image.
                   */
                   (void) ProfileImage(image,name,(const unsigned char *) NULL,0,
-                    MagickTrue);
+                    exception);
                   break;
                 }
               /*
@@ -9310,7 +9310,7 @@ Mogrify(ref,...)
               SetStringInfoDatum(profile,(const unsigned char *)
                 argument_list[1].string_reference);
               (void) ProfileImage(image,name,GetStringInfoDatum(profile),
-                (size_t) GetStringInfoLength(profile),MagickFalse);
+                (size_t) GetStringInfoLength(profile),exception);
               profile=DestroyStringInfo(profile);
               break;
             }
@@ -9333,7 +9333,7 @@ Mogrify(ref,...)
             profile=GetImageProfile(profile_image,name);
             if (profile != (const StringInfo *) NULL)
               (void) ProfileImage(image,name,GetStringInfoDatum(profile),
-                (size_t) GetStringInfoLength(profile),MagickFalse);
+                (size_t) GetStringInfoLength(profile),exception);
             name=GetNextImageProfile(profile_image);
           }
           profile_image=DestroyImage(profile_image);
@@ -10645,7 +10645,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) ClampImage(image);
+          (void) ClampImage(image,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }

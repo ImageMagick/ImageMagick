@@ -601,11 +601,13 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 %
 %  The format of the ClampImage method is:
 %
-%      MagickBooleanType ClampImage(Image *image)
+%      MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -622,15 +624,12 @@ static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 #endif
 }
 
-MagickExport MagickBooleanType ClampImage(Image *image)
+MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 {
 #define ClampImageTag  "Clamp/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -669,7 +668,6 @@ MagickExport MagickBooleanType ClampImage(Image *image)
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)

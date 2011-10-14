@@ -1870,8 +1870,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
       if (LocaleCompare("clamp",argv[0]+1) == 0)
         {
           (void) SyncImageSettings(image_info,*image);
-          (void) ClampImage(*image);
-          InheritException(exception,&(*image)->exception);
+          (void) ClampImage(*image,exception);
           break;
         }
       if (LocaleCompare("clip",argv[0]+1) == 0)
@@ -3029,8 +3028,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
                 Remove a profile from the image.
               */
               (void) ProfileImage(*image,argv[1],(const unsigned char *)
-                NULL,0,MagickTrue);
-              InheritException(exception,&(*image)->exception);
+                NULL,0,exception);
               break;
             }
           /*
@@ -3055,7 +3053,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
                 {
                   (void) ProfileImage(*image,profile_info->magick,
                     GetStringInfoDatum(profile),(size_t)
-                    GetStringInfoLength(profile),MagickFalse);
+                    GetStringInfoLength(profile),exception);
                   profile=DestroyStringInfo(profile);
                 }
               profile_info=DestroyImageInfo(profile_info);
@@ -3068,7 +3066,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             profile=GetImageProfile(profile_image,name);
             if (profile != (StringInfo *) NULL)
               (void) ProfileImage(*image,name,GetStringInfoDatum(profile),
-                (size_t) GetStringInfoLength(profile),MagickFalse);
+                (size_t) GetStringInfoLength(profile),exception);
             name=GetNextImageProfile(profile_image);
           }
           profile_image=DestroyImage(profile_image);
