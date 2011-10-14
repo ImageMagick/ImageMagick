@@ -60,7 +60,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-7.0.0//"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick//"
 #endif
 
 /* Define if you have Display Postscript */
@@ -1262,7 +1262,7 @@
 
 /* Name of package */
 #ifndef MAGICKCORE_PACKAGE
-#define MAGICKCORE_PACKAGE "ImageMagick-7.0.0"
+#define MAGICKCORE_PACKAGE "ImageMagick"
 #endif
 
 /* Define to the address where bug reports for this package should be sent. */
@@ -1282,7 +1282,7 @@
 
 /* Define to the one symbol short name of this package. */
 #ifndef MAGICKCORE_PACKAGE_TARNAME
-#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick-7.0.0"
+#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick"
 #endif
 
 /* Define to the home page for this package. */
