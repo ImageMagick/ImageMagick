@@ -14,7 +14,7 @@
 #
 #  Copyright (C) 2003 - 2008 GraphicsMagick Group
 
-AC_PREREQ(2.64)
+AC_PREREQ(2.67)
 
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [7])
@@ -23,7 +23,7 @@ m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
 
-AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick-magick_version])
+AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick])
 AC_CONFIG_SRCDIR([magick/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
@@ -127,7 +127,7 @@ AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 # Ensure that make can run correctly
 AM_SANITY_CHECK
 
-AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
+AM_INIT_AUTOMAKE([color-tests foreign parallel-tests silent-rules subdir-objects dist-zip dist-bzip2 dist-xz])
 
 # Enable support for silent build rules
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])

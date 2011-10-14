@@ -2619,7 +2619,6 @@ top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
-AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-zip dist-bzip2 dist-xz foreign
 topincludedir = @includedir@/ImageMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake

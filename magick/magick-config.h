@@ -60,7 +60,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-6.7.3//"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick//"
 #endif
 
 /* Define if you have Display Postscript */
@@ -1260,6 +1260,11 @@
 /* Define if you have OPENEXR library */
 /* #undef OPENEXR_DELEGATE */
 
+/* Name of package */
+#ifndef MAGICKCORE_PACKAGE
+#define MAGICKCORE_PACKAGE "ImageMagick"
+#endif
+
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef MAGICKCORE_PACKAGE_BUGREPORT
 #define MAGICKCORE_PACKAGE_BUGREPORT "http://www.imagemagick.org"
@@ -1277,7 +1282,7 @@
 
 /* Define to the one symbol short name of this package. */
 #ifndef MAGICKCORE_PACKAGE_TARNAME
-#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick-6.7.3"
+#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick"
 #endif
 
 /* Define to the home page for this package. */
@@ -1453,6 +1458,11 @@
 # define __EXTENSIONS__ 1
 #endif
 
+
+/* Version number of package */
+#ifndef MAGICKCORE_VERSION
+#define MAGICKCORE_VERSION "6.7.3"
+#endif
 
 /* Define if you have WEBP library */
 /* #undef WEBP_DELEGATE */

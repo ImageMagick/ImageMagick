@@ -573,7 +573,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='ImageMagick'
-PACKAGE_TARNAME='ImageMagick-6.7.3'
+PACKAGE_TARNAME='ImageMagick'
 PACKAGE_VERSION='6.7.3'
 PACKAGE_STRING='ImageMagick 6.7.3'
 PACKAGE_BUGREPORT='http://www.imagemagick.org'
@@ -1764,8 +1764,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root
-                          [DATAROOTDIR/doc/ImageMagick-6.7.3]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -4007,6 +4006,18 @@ else
 fi
 rmdir .tst 2>/dev/null
 
+# Check whether --enable-silent-rules was given.
+if test "${enable_silent_rules+set}" = set; then :
+  enableval=$enable_silent_rules;
+fi
+
+case $enable_silent_rules in
+yes) AM_DEFAULT_VERBOSITY=0;;
+no)  AM_DEFAULT_VERBOSITY=1;;
+*)   AM_DEFAULT_VERBOSITY=1;;
+esac
+AM_BACKSLASH='\'
+
 if test "`cd $srcdir && pwd`" != "`pwd`"; then
   # Use -I$(srcdir) only when $(srcdir) != ., so that make's output
   # is not polluted with repeated "-I."
@@ -4028,9 +4039,18 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE=$PACKAGE_NAME
- VERSION="${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
+ PACKAGE='ImageMagick'
+ VERSION='6.7.3'
 
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE "$PACKAGE"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define VERSION "$VERSION"
+_ACEOF
 
 # Some tools Automake needs.
 

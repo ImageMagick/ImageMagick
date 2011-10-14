@@ -109,7 +109,7 @@ It was originally developed to be used by CGI scripts for Web pages.
 
 A web page has been set up for this extension. See:
 
-	 file:///usr/local/share/doc/ImageMagick-6.7.3//www/perl-magick.html
+	 file:///usr/local/share/doc/ImageMagick//www/perl-magick.html
 	 http://www.imagemagick.org/script/perl-magick.php
 
 If you have problems, go to
