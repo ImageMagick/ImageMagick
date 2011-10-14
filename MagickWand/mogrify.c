@@ -1050,8 +1050,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Clamp image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) ClampImage(*image);
-            InheritException(exception,&(*image)->exception);
+            (void) ClampImage(*image,exception);
             break;
           }
         if (LocaleCompare("clip",option+1) == 0)
@@ -2338,8 +2337,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   Remove a profile from the image.
                 */
                 (void) ProfileImage(*image,argv[i+1],(const unsigned char *)
-                  NULL,0,MagickTrue);
-                InheritException(exception,&(*image)->exception);
+                  NULL,0,exception);
                 break;
               }
             /*

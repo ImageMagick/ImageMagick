@@ -36,7 +36,7 @@ extern MagickExport ThresholdMap
 extern MagickExport MagickBooleanType
   BilevelImage(Image *,const double),
   BlackThresholdImage(Image *,const char *,ExceptionInfo *),
-  ClampImage(Image *),
+  ClampImage(Image *,ExceptionInfo *),
   ListThresholdMaps(FILE *,ExceptionInfo *),
   OrderedPosterizeImage(Image *,const char *,ExceptionInfo *),
   RandomThresholdImage(Image *,const char *,ExceptionInfo *),

@@ -25,19 +25,7 @@ extern "C" {
 #include "MagickCore/string_.h"
 
 typedef struct _ProfileInfo
-{
-  char
-    *name;
-
-  size_t
-    length;
-
-  unsigned char
-    *info;
-
-  size_t
-    signature;
-} ProfileInfo;
+  ProfileInfo;
 
 typedef enum
 {
@@ -57,8 +45,7 @@ extern MagickExport const StringInfo
 extern MagickExport MagickBooleanType
   CloneImageProfiles(Image *,const Image *),
   DeleteImageProfile(Image *,const char *),
-  ProfileImage(Image *,const char *,const void *,const size_t,
-    const MagickBooleanType),
+  ProfileImage(Image *,const char *,const void *,const size_t,ExceptionInfo *),
   SetImageProfile(Image *,const char *,const StringInfo *);
 
 extern MagickExport StringInfo

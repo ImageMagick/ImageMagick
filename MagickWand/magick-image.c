@@ -1197,19 +1197,13 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 */
 WandExport MagickBooleanType MagickClampImage(MagickWand *wand)
 {
-  MagickBooleanType
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=ClampImage(wand->images);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(ClampImage(wand->images,wand->exception));
 }
 
 /*

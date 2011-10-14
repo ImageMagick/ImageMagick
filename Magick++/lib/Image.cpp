@@ -3526,12 +3526,14 @@ void Magick::Image::profile( const std::string name_,
                              const Magick::Blob &profile_ )
 {
   modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   ssize_t result = ProfileImage( image(), name_.c_str(),
                              (unsigned char *)profile_.data(),
-                             profile_.length(), MagickTrue);
+                             profile_.length(), &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 
-  if( !result )
-    throwImageException();
 }
 
 // Retrieve a named profile from the image.

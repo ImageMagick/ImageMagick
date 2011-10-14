@@ -4361,7 +4361,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     Remove a profile from the image.
                   */
                   (void) ProfileImage(msl_info->image[n],keyword,
-                    (const unsigned char *) NULL,0,MagickTrue);
+                    (const unsigned char *) NULL,0,&exception);
                   continue;
                 }
               /*

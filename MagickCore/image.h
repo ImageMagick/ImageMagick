@@ -313,8 +313,6 @@ struct _Image
     *ascii85;
 
   ProfileInfo
-    color_profile,
-    iptc_profile,
     *generic_profile;
 
   char
