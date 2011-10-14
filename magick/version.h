@@ -34,7 +34,7 @@ extern "C" {
 #define MagickLibAddendum  "-2"
 #define MagickLibInterface  5
 #define MagickLibMinInterface  5
-#define MagickReleaseDate  "2011-10-13"
+#define MagickReleaseDate  "2011-10-14"
 #define MagickChangeDate   "20111015"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -58,7 +58,7 @@ extern "C" {
 #define MagickZeroConfigurationFeature  " "
 #endif
 #define MagickFeatures MagickOpenMPFeature MagickOpenCLFeature MagickHDRIFeature MagickZeroConfigurationFeature
-#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.7.3//index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick//index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
 #define MagickQuantumRange  "255"
