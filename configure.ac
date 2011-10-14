@@ -23,7 +23,7 @@ m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
 
-AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick-magick_version])
+AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick])
 AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])

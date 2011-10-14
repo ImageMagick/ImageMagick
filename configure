@@ -573,7 +573,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='ImageMagick'
-PACKAGE_TARNAME='ImageMagick-7.0.0'
+PACKAGE_TARNAME='ImageMagick'
 PACKAGE_VERSION='7.0.0'
 PACKAGE_STRING='ImageMagick 7.0.0'
 PACKAGE_BUGREPORT='http://www.imagemagick.org'
@@ -1764,8 +1764,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root
-                          [DATAROOTDIR/doc/ImageMagick-7.0.0]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/ImageMagick]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -4040,7 +4039,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='ImageMagick-7.0.0'
+ PACKAGE='ImageMagick'
  VERSION='7.0.0'
 
 
@@ -9608,11 +9607,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_sys_file_offset_bits=64; $as_echo "#define _FILE_OFFSET_BITS 64" >>confdefs.h
 
-         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+         { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -23588,29 +23587,29 @@ _ACEOF
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for signed 8-bit type" >&5
 $as_echo_n "checking for signed 8-bit type... " >&6; }
 INT8_T='signed char'
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT8_T" >&5
-$as_echo "$INT8_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $INT8_T" >&5
+$as_echo "$as_me: $INT8_T" >&6;}
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned 8-bit type" >&5
 $as_echo_n "checking for unsigned 8-bit type... " >&6; }
 UINT8_T='unsigned char'
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT8_T" >&5
-$as_echo "$UINT8_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $UINT8_T" >&5
+$as_echo "$as_me: $UINT8_T" >&6;}
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for signed 16-bit type" >&5
 $as_echo_n "checking for signed 16-bit type... " >&6; }
 INT16_T='signed short'
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT16_T" >&5
-$as_echo "$INT16_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $INT16_T" >&5
+$as_echo "$as_me: $INT16_T" >&6;}
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned 16-bit type" >&5
 $as_echo_n "checking for unsigned 16-bit type... " >&6; }
 UINT16_T='unsigned short'
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT16_T" >&5
-$as_echo "$UINT16_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $UINT16_T" >&5
+$as_echo "$as_me: $UINT16_T" >&6;}
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for signed 32-bit type" >&5
@@ -23624,8 +23623,8 @@ elif test $ac_cv_sizeof_signed_long -eq 4; then
   INT32_T='signed long'
   INT32_F='"l"'
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT32_T" >&5
-$as_echo "$INT32_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $INT32_T" >&5
+$as_echo "$as_me: $INT32_T" >&6;}
 
 
 
@@ -23640,8 +23639,8 @@ elif test $ac_cv_sizeof_unsigned_long -eq 4; then
   UINT32_T='unsigned long'
   UINT32_F='"l"'
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT32_T" >&5
-$as_echo "$UINT32_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $UINT32_T" >&5
+$as_echo "$as_me: $UINT32_T" >&6;}
 
 
 
@@ -23661,8 +23660,8 @@ case "${build_os}" in
     INT64_F='"I64"'
     ;;
 esac
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT64_T" >&5
-$as_echo "$INT64_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $INT64_T" >&5
+$as_echo "$as_me: $INT64_T" >&6;}
 
 
 
@@ -23682,8 +23681,8 @@ case "${build_os}" in
     UINT64_F='"I64"'
     ;;
 esac
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT64_T" >&5
-$as_echo "$UINT64_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $UINT64_T" >&5
+$as_echo "$as_me: $UINT64_T" >&6;}
 
 
 
@@ -23698,8 +23697,8 @@ elif test "$UINT32_T" != 'none'; then
   UINTMAX_T=$UINT32_T
   UINTMAX_F=$UINT32_F
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINTMAX_T" >&5
-$as_echo "$UINTMAX_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $UINTMAX_T" >&5
+$as_echo "$as_me: $UINTMAX_T" >&6;}
 
 
 
@@ -23714,8 +23713,8 @@ elif test $ac_cv_sizeof_unsigned_long_long -eq $ac_cv_sizeof_unsigned_intp; then
   UINTPTR_T='unsigned long long'
   UINTPTR_F='"ll"'
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINTPTR_T" >&5
-$as_echo "$UINTPTR_T" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: $UINTPTR_T" >&5
+$as_echo "$as_me: $UINTPTR_T" >&6;}
 
 
 
@@ -23733,11 +23732,11 @@ main ()
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether our compiler supports __FUNCTION__" >&5
 $as_echo_n "checking whether our compiler supports __FUNCTION__... " >&6; }
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -23752,14 +23751,14 @@ main ()
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
 
 $as_echo "#define __func__ __FUNCTION__" >>confdefs.h
 
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
 
 $as_echo "#define __func__ __FILE__" >>confdefs.h
 
@@ -24929,15 +24928,15 @@ clockid_t clockType = CLOCK_REALTIME;
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
 
 $as_echo "#define HAVE_CLOCK_REALTIME 1" >>confdefs.h
 
 
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
@@ -25707,8 +25706,8 @@ $as_echo_n "checking whether C++ compiler is sufficient for Magick++... " >&6; }
     else
         have_magick_plus_plus='no (failed tests)'
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_magick_plus_plus" >&5
-$as_echo "$have_magick_plus_plus" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $have_magick_plus_plus" >&5
+$as_echo "$as_me: $have_magick_plus_plus" >&6;}
     LIBS="$OLIBS"
 fi
  if test "$have_magick_plus_plus" = 'yes'; then
@@ -26152,8 +26151,8 @@ UMEM_LIBS=''
 if test "$with_umem" != 'no'; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for UMEM support " >&5
 $as_echo_n "checking for UMEM support ... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
   failed=0
   passed=0
   ac_fn_c_check_header_mongrel "$LINENO" "umem.h" "ac_cv_header_umem_h" "$ac_includes_default"
@@ -26252,8 +26251,8 @@ fi
 $as_echo_n "checking if umem memory allocation library is complete... " >&6; }
   if test $passed -gt 0; then
     if test $failed -gt 0; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
       have_umem='no (failed tests)'
     else
       UMEM_LIBS='-lumem'
@@ -26261,13 +26260,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define HasUMEM 1" >>confdefs.h
 
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
       have_umem='yes'
     fi
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
   fi
 fi
  if test "$have_umem" = 'yes'; then
@@ -26410,12 +26409,12 @@ fi
 have_bzlib='no'
 if test "$with_bzlib" != 'no'; then
     BZLIB_LIBS=''
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZLIB" >&5
 $as_echo_n "checking for BZLIB... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     found_libbz=0
@@ -26518,8 +26517,8 @@ fi
 $as_echo_n "checking if BZLIB package is complete... " >&6; }
     if test $passed -gt 0; then
       if test $failed -gt 0; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
         have_bzlib='no (failed tests)'
       else
         BZLIB_LIBS='-lbz2'
@@ -26527,13 +26526,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define BZLIB_DELEGATE 1" >>confdefs.h
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
         have_bzlib='yes'
       fi
     else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_bzlib" = 'yes'; then
@@ -27237,12 +27236,12 @@ fi
 fi
 
 if test "$no_x" != 'yes'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for X11" >&5
 $as_echo_n "checking for X11... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     LDFLAGS="$LDFLAGS $X_LIBS"
     X11_LIBS="$X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
     LIBS="$X11_LIBS $LIBS"
@@ -27457,12 +27456,12 @@ fi
 have_zlib='no'
 ZLIB_LIBS=''
 if test "$with_zlib" != 'no' || test "$with_png" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ZLIB" >&5
 $as_echo_n "checking for ZLIB... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     ZLIB_LIBS=''
     failed=0
     passed=0
@@ -27738,8 +27737,8 @@ fi
 $as_echo_n "checking if ZLIB package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_zlib='no (failed tests)'
         else
             ZLIB_LIBS='-lz'
@@ -27747,13 +27746,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define ZLIB_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_zlib='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_zlib" = 'yes'; then
@@ -27837,8 +27836,8 @@ AUTOTRACE_CFLAGS=""
 AUTOTRACE_LIBS=""
 AUTOTRACE_PKG=""
 if test "x$with_autotrace" = "xyes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for AUTOTRACE" >&5
@@ -27906,8 +27905,8 @@ else
 $as_echo "yes" >&6; }
 	have_autotrace=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
 if test "$have_autotrace" = 'yes'; then
@@ -27951,12 +27950,12 @@ fi
 have_dps='no'
 DPS_LIBS=''
 if test "$with_dps" != 'no' && test "$with_x" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DPS" >&5
 $as_echo_n "checking for DPS... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     PERSIST_CPPFLAGS="$CPPFLAGS"
@@ -28118,8 +28117,8 @@ fi
 $as_echo_n "checking if DPS package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_dps='no (failed tests)'
             CPPFLAGS="$PERSIST_CPPFLAGS"
         else
@@ -28128,13 +28127,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define DPS_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_dps='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
         CPPFLAGS=$PERSIST_CPPFLAGS
     fi
 fi
@@ -28168,12 +28167,12 @@ fi
 have_djvu='no'
 DJVU_LIBS=''
 if test "$with_djvu" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for DJVU" >&5
 $as_echo_n "checking for DJVU... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "libdjvu/ddjvuapi.h" "ac_cv_header_libdjvu_ddjvuapi_h" "$ac_includes_default"
@@ -28230,8 +28229,8 @@ fi
 $as_echo_n "checking if DJVU package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_djvu='no (failed tests)'
         else
             DJVU_LIBS='-ldjvulibre'
@@ -28239,13 +28238,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define DJVU_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_djvu='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_djvu" = 'yes'; then
@@ -28295,12 +28294,12 @@ fi
 have_fftw='no'
 FFTW_LIBS=''
 if test "$with_fftw" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FFTW" >&5
 $as_echo_n "checking for FFTW... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "fftw3.h" "ac_cv_header_fftw3_h" "$ac_includes_default"
@@ -28357,8 +28356,8 @@ fi
 $as_echo_n "checking if FFTW package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_fftw='no (failed tests)'
         else
             FFTW_LIBS='-lfftw3'
@@ -28366,13 +28365,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define FFTW_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_fftw='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_fftw" = 'yes'; then
@@ -28405,12 +28404,12 @@ fi
 have_fpx='no'
 FPX_LIBS=''
 if test "$with_fpx" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FlashPIX" >&5
 $as_echo_n "checking for FlashPIX... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_ext=cpp
@@ -28480,22 +28479,22 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 $as_echo_n "checking if FlashPIX package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_fpx='no (failed tests)'
         else
             FPX_LIBS='-lfpx'
 
 $as_echo "#define FPX_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_fpx='yes'
             PERLMAINCC="$CXX"
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_fpx" = 'yes'; then
@@ -28530,8 +28529,8 @@ FONTCONFIG_CFLAGS=""
 FONTCONFIG_LIBS=""
 FONTCONFIG_PKG=""
 if test "x$with_fontconfig" = "xyes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FONTCONFIG" >&5
@@ -28599,8 +28598,8 @@ else
 $as_echo "yes" >&6; }
 	have_fontconfig=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
 if test "$have_fontconfig" = 'yes'; then
@@ -28644,12 +28643,12 @@ fi
 have_freetype='no'
 FREETYPE_LIBS=''
 if test "$with_freetype" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType 2.0 " >&5
 $as_echo_n "checking for FreeType 2.0 ... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     PERSIST_LDFLAGS="$LDFLAGS"
@@ -28789,8 +28788,8 @@ $as_echo_n "checking if FreeType package is complete... " >&6; }
     if test $passed -gt 0; then
       if test $failed -gt 0; then
         FREETYPE_LIBS=''
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
         have_freetype='no (failed tests)'
       else
         LIBS="$FREETYPE_LIBS $LIBS"
@@ -28802,13 +28801,13 @@ $as_echo "#define FREETYPE_DELEGATE 1" >>confdefs.h
 $as_echo "#define HAVE_FT2BUILD_H 1" >>confdefs.h
 
         fi
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
         have_freetype='yes'
       fi
     else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_freetype" = 'yes'; then
@@ -28845,12 +28844,12 @@ fi
 have_gslib='no'
 GS_LIBS=''
 if test "$with_gslib" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Ghostscript" >&5
 $as_echo_n "checking for Ghostscript... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     framework=0
     failed=0
     passed=0
@@ -28956,18 +28955,18 @@ fi
 $as_echo_n "checking if Ghostscript package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_gslib='no (failed tests)'
         else
             if test $framework -gt 0; then
                 GS_LIBS='-framework Ghostscript'
                 gslib_framework='yes'
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, using framework." >&5
-$as_echo "yes, using framework." >&6; }
+                { $as_echo "$as_me:${as_lineno-$LINENO}: yes, using framework." >&5
+$as_echo "$as_me: yes, using framework." >&6;}
             else
-                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, using library." >&5
-$as_echo "yes, using library." >&6; }
+                { $as_echo "$as_me:${as_lineno-$LINENO}: yes, using library." >&5
+$as_echo "$as_me: yes, using library." >&6;}
                 GS_LIBS='-lgs'
             fi
             LIBS="$GS_LIBS $LIBS"
@@ -28977,8 +28976,8 @@ $as_echo "#define GS_DELEGATE 1" >>confdefs.h
             have_gslib='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_gslib" = 'yes'; then
@@ -29047,8 +29046,8 @@ fi
 
 GVC_PKG=""
 if test "x$with_gvc" = "xyes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GVC" >&5
@@ -29116,8 +29115,8 @@ else
 $as_echo "yes" >&6; }
 	have_gvc=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
 if test "$have_gvc" = 'yes'; then
@@ -29157,12 +29156,12 @@ fi
 have_jbig='no'
 JBIG_LIBS=''
 if test "$with_jbig" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JBIG" >&5
 $as_echo_n "checking for JBIG... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "jbig.h" "ac_cv_header_jbig_h" "$ac_includes_default"
@@ -29219,8 +29218,8 @@ fi
 $as_echo_n "checking if JBIG package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_jbig='no (failed tests)'
         else
             JBIG_LIBS='-ljbig'
@@ -29228,13 +29227,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define JBIG_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_jbig='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_jbig" = 'yes'; then
@@ -29267,12 +29266,12 @@ fi
 have_jpeg='no'
 JPEG_LIBS=''
 if test "$with_jpeg" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JPEG" >&5
 $as_echo_n "checking for JPEG... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "jconfig.h" "ac_cv_header_jconfig_h" "$ac_includes_default"
@@ -29390,8 +29389,8 @@ fi
 $as_echo_n "checking if JPEG package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_jpeg='no (failed tests)'
         else
             JPEG_LIBS='-ljpeg'
@@ -29399,13 +29398,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define JPEG_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_jpeg='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_jpeg" = 'yes'; then
@@ -29438,12 +29437,12 @@ fi
 have_jp2='no'
 JP2_LIBS=''
 if test "$with_jp2" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for JPEG Version 2" >&5
 $as_echo_n "checking for JPEG Version 2... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "jasper/jasper.h" "ac_cv_header_jasper_jasper_h" "$ac_includes_default"
@@ -29500,8 +29499,8 @@ fi
 $as_echo_n "checking if JPEG version 2 support package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_jp2='no (failed tests)'
         else
             JP2_LIBS='-ljasper'
@@ -29509,13 +29508,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define JP2_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_jp2='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_jp2" = 'yes'; then
@@ -29561,12 +29560,12 @@ fi
 have_lcms2='no'
 LCMS_LIBS=''
 if test "$with_lcms2" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS v2" >&5
 $as_echo_n "checking for LCMS v2... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     have_lcms_header='no'
@@ -29652,19 +29651,19 @@ fi
 $as_echo_n "checking if LCMS v2 package is complete... " >&6; }
     if test $passed -gt 0; then
       if test $failed -gt 0; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
         have_lcms2='no (failed tests)'
       else
         LCMS_LIBS='-llcms2'
         LIBS="$LCMS_LIBS $LIBS"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
         have_lcms2='yes'
       fi
     else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
 
@@ -29677,12 +29676,12 @@ fi
 
 have_lcms='no'
 if test "$with_lcms" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS v1.1X" >&5
 $as_echo_n "checking for LCMS v1.1X... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     have_lcms_header='no'
@@ -29770,19 +29769,19 @@ fi
 $as_echo_n "checking if LCMS package is complete... " >&6; }
     if test $passed -gt 0; then
       if test $failed -gt 0; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
         have_lcms='no (failed tests)'
       else
         LCMS_LIBS='-llcms'
         LIBS="$LCMS_LIBS $LIBS"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
         have_lcms='yes'
       fi
     else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
 
@@ -29824,8 +29823,8 @@ LQR_CFLAGS=""
 LQR_LIBS=""
 LQR_PKG=""
 if test "x$with_lqr" = "xyes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LQR" >&5
@@ -29893,8 +29892,8 @@ else
 $as_echo "yes" >&6; }
 	have_lqr=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
 if test "$have_lqr" = 'yes'; then
@@ -29935,12 +29934,12 @@ fi
 have_lzma='no'
 LZMA_LIBS=''
 if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA" >&5
 $as_echo_n "checking for LZMA... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
   failed=0
   passed=0
   ac_fn_c_check_header_mongrel "$LINENO" "lzma.h" "ac_cv_header_lzma_h" "$ac_includes_default"
@@ -29997,8 +29996,8 @@ fi
 $as_echo_n "checking if LZMA package is complete... " >&6; }
   if test $passed -gt 0; then
     if test $failed -gt 0; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
       have_lzma='no (failed tests)'
     else
       LZMA_LIBS='-llzma'
@@ -30006,13 +30005,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define LZMA_DELEGATE 1" >>confdefs.h
 
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
       have_lzma='yes'
     fi
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
   fi
 fi
  if test "$have_lzma" = 'yes'; then
@@ -30047,8 +30046,8 @@ OPENEXR_CFLAGS=""
 OPENEXR_LIBS=""
 OPENEXR_PKG=""
 if test "x$with_openexr" = "xyes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OPENEXR" >&5
@@ -30116,8 +30115,8 @@ else
 $as_echo "yes" >&6; }
 	have_openexr=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
 if test "$have_openexr" = 'yes'; then
@@ -30161,12 +30160,12 @@ have_png='no'
 PNG_LIBS=''
 
 if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PNG support " >&5
 $as_echo_n "checking for PNG support ... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
   failed=0
   passed=0
   ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
@@ -30222,17 +30221,17 @@ fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
             if test "$ac_cv_libpng_ok" = 'yes' ; then
               passed=`expr $passed + 1`
-              { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+              { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             else
               failed=`expr $failed + 1`
-              { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+              { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
             fi
           else
             passed=`expr $passed + 1`
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
           fi
         fi
 
@@ -30502,8 +30501,8 @@ fi
 $as_echo_n "checking if ${pnglib} package is complete... " >&6; }
             if test $passed -gt 0 ; then
               if test $failed -gt 0 ; then
-                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
                   have_png='no (failed tests)'
               else
                   PNG_LIBS="-l${pnglib}"
@@ -30511,8 +30510,8 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define PNG_DELEGATE 1" >>confdefs.h
 
-                  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+                  { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
                   have_png='yes'
               fi
             fi
@@ -30557,8 +30556,8 @@ RSVG_CFLAGS=""
 RSVG_LIBS=""
 RSVG_PKG=""
 if test "x$with_rsvg" = "xyes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for RSVG" >&5
@@ -30626,8 +30625,8 @@ else
 $as_echo "yes" >&6; }
 	have_rsvg=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CAIRO_SVG" >&5
@@ -30695,8 +30694,8 @@ else
 $as_echo "yes" >&6; }
 	have_cairo=yes
 fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
 if test "$have_rsvg" = 'yes'; then
@@ -30756,12 +30755,12 @@ fi
 have_tiff='no'
 TIFF_LIBS=''
 if test "$with_tiff" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for TIFF" >&5
 $as_echo_n "checking for TIFF... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "tiff.h" "ac_cv_header_tiff_h" "$ac_includes_default"
@@ -31036,8 +31035,8 @@ fi
 $as_echo_n "checking if TIFF package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_tiff='no (failed tests)'
         else
             TIFF_LIBS='-ltiff'
@@ -31045,8 +31044,8 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define TIFF_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_tiff='yes'
             for ac_header in tiffconf.h
 do :
@@ -31076,8 +31075,8 @@ done
 
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_tiff" = 'yes'; then
@@ -31110,12 +31109,12 @@ fi
 have_webp='no'
 WEBP_LIBS=''
 if test "$with_webp" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WEBP" >&5
 $as_echo_n "checking for WEBP... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "webp/decode.h" "ac_cv_header_webp_decode_h" "$ac_includes_default"
@@ -31172,8 +31171,8 @@ fi
 $as_echo_n "checking if WEBP package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_webp='no (failed tests)'
         else
             WEBP_LIBS='-lwebp'
@@ -31181,13 +31180,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define WEBP_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_webp='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_webp" = 'yes'; then
@@ -31236,12 +31235,12 @@ fi
 have_wmf='no'
 WMF_LIBS=''
 if test "$with_wmf" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WMF" >&5
 $as_echo_n "checking for WMF... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     failed=0
     passed=0
     ac_fn_c_check_header_mongrel "$LINENO" "libwmf/eps.h" "ac_cv_header_libwmf_eps_h" "$ac_includes_default"
@@ -31298,8 +31297,8 @@ fi
 $as_echo_n "checking if WMF package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_wmf='no (failed tests)'
         else
             WMF_LIBS='-lwmf -lwmflite'
@@ -31307,13 +31306,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define WMF_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_wmf='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_wmf" = 'yes'; then
@@ -31348,12 +31347,12 @@ fi
 have_xml='no'
 XML_LIBS=''
 if test "$with_xml" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XML" >&5
 $as_echo_n "checking for XML... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     PERSIST_LDFLAGS=$LDFLAGS
     PERSIST_CPPFLAGS=$CPPFLAGS
     xml2_config=''
@@ -31548,8 +31547,8 @@ fi
 $as_echo_n "checking if XML package is complete... " >&6; }
     if test $passed -gt 0; then
         if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: no -- some components failed test" >&5
+$as_echo "$as_me: no -- some components failed test" >&6;}
             have_xml='no (failed tests)'
             LDFLAGS="$PERSIST_LDFLAGS"
             CPPFLAGS="$PERSIST_CPPFLAGS"
@@ -31559,13 +31558,13 @@ $as_echo "no -- some components failed test" >&6; }
 
 $as_echo "#define XML_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
+            { $as_echo "$as_me:${as_lineno-$LINENO}: yes" >&5
+$as_echo "$as_me: yes" >&6;}
             have_xml='yes'
         fi
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: no" >&5
+$as_echo "$as_me: no" >&6;}
     fi
 fi
  if test "$have_xml" = 'yes'; then
@@ -31734,12 +31733,12 @@ _ACEOF
 configure_transform_name=`echo ${program_transform_name} | sed 's,\\$\\$,$,'`
 
 # Default delegate definitions
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ImageMagick delegate programs" >&5
 $as_echo_n "checking for ImageMagick delegate programs... " >&6; }
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 AutotraceDecodeDelegateDefault='autotrace'
 BlenderDecodeDelegateDefault='blender'
 BZIPDelegateDefault='bzip2'
@@ -33648,11 +33647,11 @@ else
 fi
 if test "${dejavu_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-dejavu.xml" />'
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $dejavu_font_dir" >&5
-$as_echo "$dejavu_font_dir" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: $dejavu_font_dir" >&5
+$as_echo "$as_me: $dejavu_font_dir" >&6;}
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found!" >&5
-$as_echo "not found!" >&6; };
+  { $as_echo "$as_me:${as_lineno-$LINENO}: not found!" >&5
+$as_echo "$as_me: not found!" >&6;};
 fi
 
 
@@ -33712,11 +33711,11 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-ghostscript.xml" />'
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ghostscript_font_dir" >&5
-$as_echo "$ghostscript_font_dir" >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: $ghostscript_font_dir" >&5
+$as_echo "$as_me: $ghostscript_font_dir" >&6;}
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found!" >&5
-$as_echo "not found!" >&6; };
+  { $as_echo "$as_me:${as_lineno-$LINENO}: not found!" >&5
+$as_echo "$as_me: not found!" >&6;};
 fi
 
 case "${build_os}" in
@@ -34093,12 +34092,12 @@ if test -z "$PCLVersion"; then
     PCLVersion='unknown'
 fi
 if test $have_pcl = 'yes'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PCL" >&5
 $as_echo_n "checking for PCL... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     # PCLColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcl color device" >&5
 $as_echo_n "checking for pcl color device... " >&6; }
@@ -34107,8 +34106,8 @@ $as_echo_n "checking for pcl color device... " >&6; }
     else
         PCLColorDevice=ppmraw
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PCLColorDevice" >&5
-$as_echo "$PCLColorDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $PCLColorDevice" >&5
+$as_echo "$as_me: $PCLColorDevice" >&6;}
 
     # PCLCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcl CMYK device" >&5
@@ -34118,8 +34117,8 @@ $as_echo_n "checking for pcl CMYK device... " >&6; }
     else
         PCLCMYKDevice=$PCLColorDevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PCLCMYKDevice" >&5
-$as_echo "$PCLCMYKDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $PCLCMYKDevice" >&5
+$as_echo "$as_me: $PCLCMYKDevice" >&6;}
 
     # PCLMonoDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcl mono device" >&5
@@ -34129,8 +34128,8 @@ $as_echo_n "checking for pcl mono device... " >&6; }
     else
         PCLMonoDevice=$PCLColorDevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PCLMonoDevice" >&5
-$as_echo "$PCLMonoDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $PCLMonoDevice" >&5
+$as_echo "$as_me: $PCLMonoDevice" >&6;}
 fi
 
 
@@ -34148,12 +34147,12 @@ if test -z "$XPSVersion"; then
     XPSVersion='unknown'
 fi
 if test $have_xps = 'yes'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XPS" >&5
 $as_echo_n "checking for XPS... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     # XPSColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xps color device" >&5
 $as_echo_n "checking for xps color device... " >&6; }
@@ -34162,8 +34161,8 @@ $as_echo_n "checking for xps color device... " >&6; }
     else
         XPSColorDevice=ppmraw
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XPSColorDevice" >&5
-$as_echo "$XPSColorDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $XPSColorDevice" >&5
+$as_echo "$as_me: $XPSColorDevice" >&6;}
 
     # XPSCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xps CMYK device" >&5
@@ -34173,8 +34172,8 @@ $as_echo_n "checking for xps CMYK device... " >&6; }
     else
         XPSCMYKDevice=$XPSColorDevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XPSCMYKDevice" >&5
-$as_echo "$XPSCMYKDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $XPSCMYKDevice" >&5
+$as_echo "$as_me: $XPSCMYKDevice" >&6;}
 
     # XPSMonoDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xps mono device" >&5
@@ -34184,8 +34183,8 @@ $as_echo_n "checking for xps mono device... " >&6; }
     else
         XPSMonoDevice=$XPSColorDevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XPSMonoDevice" >&5
-$as_echo "$XPSMonoDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $XPSMonoDevice" >&5
+$as_echo "$as_me: $XPSMonoDevice" >&6;}
 fi
 
 
@@ -34205,12 +34204,12 @@ GSPSDevice=pswrite
 GSEPSDevice=epswrite
 GSVersion='unknown'
 if test $have_gs = 'yes'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Ghostscript" >&5
 $as_echo_n "checking for Ghostscript... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Ghostscript version" >&5
 $as_echo_n "checking for Ghostscript version... " >&6; }
     if GSVersion=`$PSDelegate --version`; then
@@ -34218,8 +34217,8 @@ $as_echo_n "checking for Ghostscript version... " >&6; }
     else
         GSVersion=`$PSDelegate --help | sed -e '1q' | awk '{ print $3 }'`
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSVersion" >&5
-$as_echo "$GSVersion" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSVersion" >&5
+$as_echo "$as_me: $GSVersion" >&6;}
 
     # GSAlphaDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs alpha device" >&5
@@ -34229,8 +34228,8 @@ $as_echo_n "checking for gs alpha device... " >&6; }
     else
         GSAlphaDevice=pnmraw
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSAlphaDevice" >&5
-$as_echo "$GSAlphaDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSAlphaDevice" >&5
+$as_echo "$as_me: $GSAlphaDevice" >&6;}
 
     # GSColorDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs color device" >&5
@@ -34240,8 +34239,8 @@ $as_echo_n "checking for gs color device... " >&6; }
     else
         GSColorDevice=pnmraw
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSColorDevice" >&5
-$as_echo "$GSColorDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSColorDevice" >&5
+$as_echo "$as_me: $GSColorDevice" >&6;}
 
     # GSCMYKDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs CMYK device" >&5
@@ -34251,8 +34250,8 @@ $as_echo_n "checking for gs CMYK device... " >&6; }
     else
         GSCMYKDevice=bmpsep8
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSCMYKDevice" >&5
-$as_echo "$GSCMYKDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSCMYKDevice" >&5
+$as_echo "$as_me: $GSCMYKDevice" >&6;}
 
     # GSMonoDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs mono device" >&5
@@ -34262,8 +34261,8 @@ $as_echo_n "checking for gs mono device... " >&6; }
     else
         GSMonoDevice=$GSColorDevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSMonoDevice" >&5
-$as_echo "$GSMonoDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSMonoDevice" >&5
+$as_echo "$as_me: $GSMonoDevice" >&6;}
 
     # GSPDFDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PDF writing device" >&5
@@ -34273,8 +34272,8 @@ $as_echo_n "checking for gs PDF writing device... " >&6; }
     else
         GSPDFDevice=nodevice
     fi
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSPDFDevice" >&5
-$as_echo "$GSPDFDevice" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: $GSPDFDevice" >&5
+$as_echo "$as_me: $GSPDFDevice" >&6;}
 
     # GSPSDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PS writing device" >&5
@@ -34284,8 +34283,8 @@ $as_echo_n "checking for gs PS writing device... " >&6; }
     else
         GSPSDevice=nodevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSPSDevice" >&5
-$as_echo "$GSPSDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSPSDevice" >&5
+$as_echo "$as_me: $GSPSDevice" >&6;}
 
     # GSEPSDevice
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs EPS writing device" >&5
@@ -34295,8 +34294,8 @@ $as_echo_n "checking for gs EPS writing device... " >&6; }
     else
         GSEPSDevice=nodevice
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSEPSDevice" >&5
-$as_echo "$GSEPSDevice" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: $GSEPSDevice" >&5
+$as_echo "$as_me: $GSEPSDevice" >&6;}
 fi
 
 
@@ -34316,12 +34315,12 @@ fi
 # If name/path of desired PERL interpreter is specified, look for that one first
 have_perl='no'
 if test "$with_perl" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Perl" >&5
 $as_echo_n "checking for Perl... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
     if test "$with_perl" != 'yes'; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for perl" >&5
 $as_echo_n "checking for perl... " >&6; }
@@ -34749,10 +34748,10 @@ ac_config_commands="$ac_config_commands Magick++-config.in"
 ac_config_commands="$ac_config_commands PerlMagick/check.sh.in"
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: Update ImageMagick configuration" >&5
-$as_echo "Update ImageMagick configuration" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: Update ImageMagick configuration" >&5
+$as_echo "$as_me: Update ImageMagick configuration" >&6;}
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -37758,7 +37757,7 @@ if test "${windows_font_dir}x" != 'x'; then
     result_windows_font_dir=${windows_font_dir}
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result:
+{ $as_echo "$as_me:${as_lineno-$LINENO}:
 ImageMagick is configured as follows. Please verify that this configuration
 matches your expectations.
 
@@ -37833,7 +37832,7 @@ Options used to compile and link:
   CXXFLAGS        = $CXXFLAGS
   FEATURES        = $MAGICK_FEATURES
 " >&5
-$as_echo "
+$as_echo "$as_me:
 ImageMagick is configured as follows. Please verify that this configuration
 matches your expectations.
 
@@ -37907,4 +37906,4 @@ Options used to compile and link:
   CXX             = $CXX
   CXXFLAGS        = $CXXFLAGS
   FEATURES        = $MAGICK_FEATURES
-" >&6; }
+" >&6;}
