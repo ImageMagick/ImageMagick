@@ -1260,6 +1260,11 @@
 /* Define if you have OPENEXR library */
 /* #undef OPENEXR_DELEGATE */
 
+/* Name of package */
+#ifndef MAGICKCORE_PACKAGE
+#define MAGICKCORE_PACKAGE "ImageMagick-7.0.0"
+#endif
+
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef MAGICKCORE_PACKAGE_BUGREPORT
 #define MAGICKCORE_PACKAGE_BUGREPORT "http://www.imagemagick.org"
@@ -1453,6 +1458,11 @@
 # define __EXTENSIONS__ 1
 #endif
 
+
+/* Version number of package */
+#ifndef MAGICKCORE_VERSION
+#define MAGICKCORE_VERSION "7.0.0"
+#endif
 
 /* Define if you have WEBP library */
 /* #undef WEBP_DELEGATE */
