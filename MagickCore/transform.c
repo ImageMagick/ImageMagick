@@ -1068,7 +1068,7 @@ MagickExport Image *ExtentImage(const Image *image,
     extent_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(extent_image);
   (void) CompositeImage(extent_image,image->compose,image,-geometry->x,
-    -geometry->y);
+    -geometry->y,exception);
   return(extent_image);
 }
 
@@ -1951,7 +1951,7 @@ MagickExport Image *SpliceImage(const Image *image,
 %  The format of the TransformImage method is:
 %
 %      MagickBooleanType TransformImage(Image **image,const char *crop_geometry,
-%        const char *image_geometry)
+%        const char *image_geometry,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1963,9 +1963,11 @@ MagickExport Image *SpliceImage(const Image *image,
 %    o image_geometry: An image geometry string.  This geometry defines the
 %      final size of the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType TransformImage(Image **image,
-  const char *crop_geometry,const char *image_geometry)
+  const char *crop_geometry,const char *image_geometry,ExceptionInfo *exception)
 {
   Image
     *resize_image,
@@ -1990,9 +1992,9 @@ MagickExport MagickBooleanType TransformImage(Image **image,
       /*
         Crop image to a user specified size.
       */
-      crop_image=CropImageToTiles(*image,crop_geometry,&(*image)->exception);
+      crop_image=CropImageToTiles(*image,crop_geometry,exception);
       if (crop_image == (Image *) NULL)
-        transform_image=CloneImage(*image,0,0,MagickTrue,&(*image)->exception);
+        transform_image=CloneImage(*image,0,0,MagickTrue,exception);
       else
         {
           transform_image=DestroyImage(transform_image);
@@ -2006,14 +2008,13 @@ MagickExport MagickBooleanType TransformImage(Image **image,
   /*
     Scale image to a user specified size.
   */
-  flags=ParseRegionGeometry(transform_image,image_geometry,&geometry,
-    &(*image)->exception);
+  flags=ParseRegionGeometry(transform_image,image_geometry,&geometry,exception);
   (void) flags;
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return(MagickTrue);
   resize_image=ResizeImage(transform_image,geometry.width,geometry.height,
-    transform_image->filter,transform_image->blur,&(*image)->exception);
+    transform_image->filter,transform_image->blur,exception);
   if (resize_image == (Image *) NULL)
     return(MagickFalse);
   transform_image=DestroyImage(transform_image);
@@ -2038,7 +2039,8 @@ MagickExport MagickBooleanType TransformImage(Image **image,
 %  The format of the TransformImage method is:
 %
 %      MagickBooleanType TransformImages(Image **image,
-%        const char *crop_geometry,const char *image_geometry)
+%        const char *crop_geometry,const char *image_geometry,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2050,9 +2052,11 @@ MagickExport MagickBooleanType TransformImage(Image **image,
 %    o image_geometry: An image geometry string.  This geometry defines the
 %      final size of the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType TransformImages(Image **images,
-  const char *crop_geometry,const char *image_geometry)
+  const char *crop_geometry,const char *image_geometry,ExceptionInfo *exception)
 {
   Image
     *image,
@@ -2070,7 +2074,7 @@ MagickExport MagickBooleanType TransformImages(Image **images,
   if ((*images)->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
-  image_list=ImageListToArray(*images,&(*images)->exception);
+  image_list=ImageListToArray(*images,exception);
   if (image_list == (Image **) NULL)
     return(MagickFalse);
   status=MagickTrue;
@@ -2078,7 +2082,7 @@ MagickExport MagickBooleanType TransformImages(Image **images,
   for (i=0; image_list[i] != (Image *) NULL; i++)
   {
     image=image_list[i];
-    status|=TransformImage(&image,crop_geometry,image_geometry);
+    status|=TransformImage(&image,crop_geometry,image_geometry,exception);
     AppendImageToList(&transform_images,image);
   }
   *images=transform_images;

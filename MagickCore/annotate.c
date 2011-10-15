@@ -1748,7 +1748,7 @@ static MagickBooleanType RenderPostscript(Image *image,
         resolution.y=resolution.x;
     }
   if (identity == MagickFalse)
-    (void) TransformImage(&annotate_image,"0x0",(char *) NULL);
+    (void) TransformImage(&annotate_image,"0x0",(char *) NULL,exception);
   else
     {
       RectangleInfo
@@ -1762,7 +1762,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       (void) FormatLocaleString(geometry,MaxTextExtent,
         "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
         crop_info.height,(double) crop_info.x,(double) crop_info.y);
-      (void) TransformImage(&annotate_image,geometry,(char *) NULL);
+      (void) TransformImage(&annotate_image,geometry,(char *) NULL,exception);
     }
   metrics->pixels_per_em.x=(resolution.y/DefaultResolution)*
     ExpandAffine(&draw_info->affine)*draw_info->pointsize;
@@ -1835,7 +1835,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       annotate_view=DestroyCacheView(annotate_view);
       (void) CompositeImage(image,OverCompositeOp,annotate_image,
         (ssize_t) ceil(offset->x-0.5),(ssize_t) ceil(offset->y-(metrics->ascent+
-        metrics->descent)-0.5));
+        metrics->descent)-0.5),exception);
     }
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);

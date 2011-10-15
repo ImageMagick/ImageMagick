@@ -4358,7 +4358,7 @@ static MagickBooleanType XCompositeImage(Display *display,
     Composite image with X Image window.
   */
   (void) CompositeImage(image,compose,composite_image,composite_info.x,
-    composite_info.y);
+    composite_info.y,exception);
   composite_image=DestroyImage(composite_image);
   XSetCursorState(display,windows,MagickFalse);
   /*
@@ -6483,10 +6483,11 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.height=(int) cache_image->rows;
       (void) FormatLocaleString(image_geometry,MaxTextExtent,"%dx%d!",
         windows->image.ximage->width,windows->image.ximage->height);
-      (void) TransformImage(image,windows->image.crop_geometry,image_geometry);
+      (void) TransformImage(image,windows->image.crop_geometry,image_geometry,
+        exception);
       if (windows->image.crop_geometry != (char *) NULL)
-        windows->image.crop_geometry=(char *)
-          RelinquishMagickMemory(windows->image.crop_geometry);
+        windows->image.crop_geometry=(char *) RelinquishMagickMemory(
+          windows->image.crop_geometry);
       windows->image.crop_geometry=cache_image->geometry;
       if (redo_image != (Image *) NULL)
         redo_image=DestroyImage(redo_image);
@@ -7446,10 +7447,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       (void) FormatLocaleString(image_geometry,MaxTextExtent,"%dx%d!",
         windows->image.ximage->width,windows->image.ximage->height);
-      (void) TransformImage(image,windows->image.crop_geometry,image_geometry);
+      (void) TransformImage(image,windows->image.crop_geometry,image_geometry,
+        exception);
       if (windows->image.crop_geometry != (char *) NULL)
-        windows->image.crop_geometry=(char *)
-          RelinquishMagickMemory(windows->image.crop_geometry);
+        windows->image.crop_geometry=(char *) RelinquishMagickMemory(
+          windows->image.crop_geometry);
       windows->image.x=0;
       windows->image.y=0;
       XConfigureImageColormap(display,resource_info,windows,*image);
@@ -8306,7 +8308,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       threshold=SiPrefixToDouble(factor,QuantumRange);
-      (void) BilevelImage(*image,threshold);
+      (void) BilevelImage(*image,threshold,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
         break;
@@ -10921,7 +10923,8 @@ static MagickBooleanType XPasteImage(Display *display,
   /*
     Paste image with X Image window.
   */
-  (void) CompositeImage(image,compose,paste_image,paste_info.x,paste_info.y);
+  (void) CompositeImage(image,compose,paste_image,paste_info.x,paste_info.y,
+    exception);
   paste_image=DestroyImage(paste_image);
   XSetCursorState(display,windows,MagickFalse);
   /*
@@ -11004,7 +11007,8 @@ static MagickBooleanType XPrintImage(Display *display,
     return(MagickFalse);
   (void) FormatLocaleString(geometry,MaxTextExtent,"%dx%d!",
     windows->image.ximage->width,windows->image.ximage->height);
-  (void) TransformImage(&print_image,windows->image.crop_geometry,geometry);
+  (void) TransformImage(&print_image,windows->image.crop_geometry,geometry,
+    exception);
   /*
     Print image.
   */
@@ -11654,7 +11658,7 @@ static MagickBooleanType XROIImage(Display *display,
                 SaveToUndoBufferCommand,image,exception);
               windows->image.orphan=MagickFalse;
               (void) CompositeImage(*image,CopyCompositeOp,roi_image,
-                crop_info.x,crop_info.y);
+                crop_info.x,crop_info.y,exception);
               roi_image=DestroyImage(roi_image);
               (void) SetImageProgressMonitor(*image,progress_monitor,
                 (*image)->client_data);
@@ -12623,7 +12627,8 @@ static MagickBooleanType XSaveImage(Display *display,
     return(MagickFalse);
   (void) FormatLocaleString(geometry,MaxTextExtent,"%dx%d!",
     windows->image.ximage->width,windows->image.ximage->height);
-  (void) TransformImage(&save_image,windows->image.crop_geometry,geometry);
+  (void) TransformImage(&save_image,windows->image.crop_geometry,geometry,
+    exception);
   /*
     Write image.
   */

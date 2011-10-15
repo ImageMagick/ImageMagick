@@ -1515,7 +1515,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       Initialize BMP raster file header.
     */
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace);
+      (void) TransformImageColorspace(image,RGBColorspace,exception);
     (void) ResetMagickMemory(&bmp_info,0,sizeof(bmp_info));
     bmp_info.file_size=14+12;
     if (type > 2)

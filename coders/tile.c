@@ -125,7 +125,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
       tile_image->tile_offset.x=0;
       tile_image->tile_offset.y=0;
     }
-  (void) TextureImage(image,tile_image);
+  (void) TextureImage(image,tile_image,exception);
   tile_image=DestroyImage(tile_image);
   return(GetFirstImageInList(image));
 }

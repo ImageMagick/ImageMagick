@@ -1474,7 +1474,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
         distort alpha channel separately
       */
       channel_mask=SetPixelChannelMask(tmp_image,AlphaChannel);
-      (void) SeparateImage(tmp_image);
+      (void) SeparateImage(tmp_image,exception);
       SetPixelChannelMap(tmp_image,channel_mask);
       (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel,exception);
       resize_alpha=DistortImage(tmp_image,AffineDistortion,12,distort_args,
@@ -1498,10 +1498,12 @@ MagickExport Image *DistortResizeImage(const Image *image,
           return((Image *) NULL);
         }
       /* replace resize images alpha with the separally distorted alpha */
-      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,exception);
-      (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel,exception);
+      (void) SetImageAlphaChannel(resize_image,DeactivateAlphaChannel,
+        exception);
+      (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel,
+        exception);
       (void) CompositeImage(resize_image,CopyOpacityCompositeOp,resize_alpha,
-        0,0);
+        0,0,exception);
       resize_alpha=DestroyImage(resize_alpha);
     }
   (void) SetImageVirtualPixelMethod(resize_image,vp_save);

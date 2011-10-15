@@ -1015,7 +1015,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
       Convert MIFF to YCbCr raster pixels.
     */
     if (image->colorspace != YCbCrColorspace)
-      (void) TransformImageColorspace(image,YCbCrColorspace);
+      (void) TransformImageColorspace(image,YCbCrColorspace,exception);
     if ((LocaleCompare(image_info->magick,"YCbCrA") == 0) &&
         (image->matte == MagickFalse))
       (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);

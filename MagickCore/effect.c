@@ -2615,8 +2615,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) BilevelImage(thumbnail,
-          (double) (percentage*((MagickRealType) QuantumRange+1.0))/100.0);
+        (void) BilevelImage(thumbnail,(double) (percentage*((MagickRealType)
+          QuantumRange+1.0))/100.0,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"threshold %g",
           (double) (percentage*((MagickRealType) QuantumRange+1.0))/100.0);
         break;

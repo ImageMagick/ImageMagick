@@ -339,7 +339,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 %  The format of the BilevelImage method is:
 %
-%      MagickBooleanType BilevelImage(Image *image,const double threshold)
+%      MagickBooleanType BilevelImage(Image *image,const double threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -347,19 +348,19 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 %    o threshold: define the threshold values.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %  Aside: You can get the same results as operator using LevelImages()
 %  with the 'threshold' value for both the black_point and the white_point.
 %
 */
-MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold)
+MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
+  ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -374,7 +375,6 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   /*

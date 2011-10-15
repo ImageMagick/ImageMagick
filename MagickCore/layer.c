@@ -280,7 +280,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   */
   dispose_image=CloneImage(coalesce_image,0,0,MagickTrue,exception);
   (void) CompositeImage(coalesce_image,CopyCompositeOp,next,next->page.x,
-    next->page.y);
+    next->page.y,exception);
   next=GetNextImageInList(next);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
@@ -332,7 +332,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     coalesce_image=GetNextImageInList(coalesce_image);
     coalesce_image->matte=MagickTrue;
     (void) CompositeImage(coalesce_image,next->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp,next,next->page.x,next->page.y);
+      OverCompositeOp : CopyCompositeOp,next,next->page.x,next->page.y,
+      exception);
     (void) CloneImageProfiles(coalesce_image,next);
     (void) CloneImageProperties(coalesce_image,next);
     (void) CloneImageArtifacts(coalesce_image,next);
@@ -425,7 +426,8 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     (void) CompositeImage(current_image,curr->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp,curr,curr->page.x,curr->page.y);
+      OverCompositeOp : CopyCompositeOp,curr,curr->page.x,curr->page.y,
+      exception);
 
     /*
       Handle Background dispose: image is displayed for the delay period.
@@ -796,7 +798,8 @@ MagickExport Image *CompareImagesLayers(const Image *image,
   image_a->page=next->page;
   image_a->page.x=0;
   image_a->page.y=0;
-  (void) CompositeImage(image_a,CopyCompositeOp,next,next->page.x,next->page.y);
+  (void) CompositeImage(image_a,CopyCompositeOp,next,next->page.x,next->page.y,
+    exception);
   /*
     Compute the bounding box of changes for the later images
   */
@@ -812,7 +815,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
         return((Image *) NULL);
       }
     (void) CompositeImage(image_a,CopyCompositeOp,next,next->page.x,
-                           next->page.y);
+      next->page.y,exception);
     bounds[i]=CompareImagesBounds(image_b,image_a,method,exception);
 
     image_b=DestroyImage(image_b);
@@ -1500,7 +1503,8 @@ MagickExport void OptimizeImageTransparency(const Image *image,
         return;
       }
     (void) CompositeImage(current_image,next->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp, next,next->page.x,next->page.y);
+      OverCompositeOp : CopyCompositeOp, next,next->page.x,next->page.y,
+      exception);
     /*
       At this point the image would be displayed, for the delay period
     **
@@ -1543,7 +1547,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
     next=GetNextImageInList(next);
     if ( next != (Image *) NULL ) {
       (void) CompositeImage(next, ChangeMaskCompositeOp,
-          dispose_image, -(next->page.x), -(next->page.y) );
+        dispose_image, -(next->page.x), -(next->page.y), exception );
     }
   }
   dispose_image=DestroyImage(dispose_image);
@@ -1747,13 +1751,15 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static inline void CompositeCanvas(Image *destination,
-  const CompositeOperator compose, Image *source,ssize_t x_offset,
-  ssize_t y_offset )
+  const CompositeOperator compose,Image *source,ssize_t x_offset,
+  ssize_t y_offset,ExceptionInfo *exception)
 {
   x_offset+=source->page.x-destination->page.x;
   y_offset+=source->page.y-destination->page.y;
-  (void) CompositeImage(destination,compose,source,x_offset,y_offset);
+  (void) CompositeImage(destination,compose,source,x_offset,y_offset,
+    exception);
 }
 
 MagickExport void CompositeLayers(Image *destination,
@@ -1768,7 +1774,7 @@ MagickExport void CompositeLayers(Image *destination,
   assert(exception->signature == MagickSignature);
   if (source->debug != MagickFalse || destination->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s - %s",
-         source->filename, destination->filename);
+      source->filename, destination->filename);
 
   /*
     Overlay single source image over destation image/list
@@ -1776,7 +1782,8 @@ MagickExport void CompositeLayers(Image *destination,
   if ( source->previous == (Image *) NULL && source->next == (Image *) NULL )
     while ( destination != (Image *) NULL )
     {
-      CompositeCanvas(destination, compose, source, x_offset, y_offset);
+      CompositeCanvas(destination, compose, source, x_offset, y_offset,
+        exception);
       destination=GetNextImageInList(destination);
     }
 
@@ -1792,7 +1799,8 @@ MagickExport void CompositeLayers(Image *destination,
   {
     Image *dest = CloneImage(destination,0,0,MagickTrue,exception);
 
-    CompositeCanvas(destination, compose, source, x_offset, y_offset);
+    CompositeCanvas(destination, compose, source, x_offset, y_offset,
+      exception);
     /* copy source image attributes ? */
     if ( source->next != (Image *) NULL )
       {
@@ -1807,7 +1815,8 @@ MagickExport void CompositeLayers(Image *destination,
            CloneImage(dest,0,0,MagickTrue,exception));
       destination=GetLastImageInList(destination);
 
-      CompositeCanvas(destination, compose, source, x_offset, y_offset);
+      CompositeCanvas(destination, compose, source, x_offset, y_offset,
+        exception);
       destination->delay = source->delay;
       destination->iterations = source->iterations;
       source=GetNextImageInList(source);
@@ -1822,7 +1831,8 @@ MagickExport void CompositeLayers(Image *destination,
   else
     while ( source != (Image *) NULL && destination != (Image *) NULL )
     {
-      CompositeCanvas(destination, compose, source, x_offset, y_offset);
+      CompositeCanvas(destination, compose, source, x_offset, y_offset,
+        exception);
       source=GetNextImageInList(source);
       destination=GetNextImageInList(destination);
     }
@@ -1881,8 +1891,8 @@ MagickExport void CompositeLayers(Image *destination,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *MergeImageLayers(Image *image,
-  const ImageLayerMethod method,ExceptionInfo *exception)
+MagickExport Image *MergeImageLayers(Image *image,const ImageLayerMethod method,
+  ExceptionInfo *exception)
 {
 #define MergeLayersTag  "Merge/Layers"
 
@@ -2017,7 +2027,7 @@ MagickExport Image *MergeImageLayers(Image *image,
   for (scene=0; scene < (ssize_t) number_images; scene++)
   {
     (void) CompositeImage(canvas,image->compose,image,image->page.x-
-      canvas->page.x,image->page.y-canvas->page.y);
+      canvas->page.x,image->page.y-canvas->page.y,exception);
     proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
       number_images);
     if (proceed == MagickFalse)

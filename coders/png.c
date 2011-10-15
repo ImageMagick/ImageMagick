@@ -7724,7 +7724,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace,exception);
 
   /*
     Sometimes we get PseudoClass images whose RGB values don't match
@@ -10057,7 +10057,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       /* Add an opaque matte channel */
       image->matte = MagickTrue;
-      (void) SetImageAlpha(image,OpaqueAlpha);
+      (void) SetImageAlpha(image,OpaqueAlpha,exception);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11665,7 +11665,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
       channel_mask=SetPixelChannelMask(jpeg_image,AlphaChannel);
-      status=SeparateImage(jpeg_image);
+      status=SeparateImage(jpeg_image,exception);
       (void) SetPixelChannelMap(jpeg_image,channel_mask);
       jpeg_image->matte=MagickFalse;
 

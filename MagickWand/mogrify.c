@@ -1177,13 +1177,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '+')
               {
-                (void) TransformImageColorspace(*image,RGBColorspace);
+                (void) TransformImageColorspace(*image,RGBColorspace,exception);
                 InheritException(exception,&(*image)->exception);
                 break;
               }
             colorspace=(ColorspaceType) ParseCommandOption(
               MagickColorspaceOptions,MagickFalse,argv[i+1]);
-            (void) TransformImageColorspace(*image,colorspace);
+            (void) TransformImageColorspace(*image,colorspace,exception);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -2455,8 +2455,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 */
                 (void) CompositeImage(region_image,region_image->matte !=
                    MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
-                   region_geometry.x,region_geometry.y);
-                InheritException(exception,&region_image->exception);
+                   region_geometry.x,region_geometry.y,exception);
                 *image=DestroyImage(*image);
                 *image=region_image;
                 region_image = (Image *) NULL;
@@ -2870,8 +2869,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Strip image of profiles and comments.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            (void) StripImage(*image);
-            InheritException(exception,&(*image)->exception);
+            (void) StripImage(*image,exception);
             break;
           }
         if (LocaleCompare("stroke",option+1) == 0)
@@ -2942,7 +2940,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               threshold=(double) QuantumRange/2;
             else
               threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
-            (void) BilevelImage(*image,threshold);
+            (void) BilevelImage(*image,threshold,exception);
             InheritException(exception,&(*image)->exception);
             break;
           }
@@ -3200,8 +3198,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       (void) SyncImageSettings(mogrify_info,*image);
       (void) CompositeImage(region_image,region_image->matte !=
          MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
-         region_geometry.x,region_geometry.y);
-      InheritException(exception,&region_image->exception);
+         region_geometry.x,region_geometry.y,exception);
       *image=DestroyImage(*image);
       *image=region_image;
       region_image = (Image *) NULL;
@@ -7444,7 +7441,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             (void) TransformImage(&composite_image,(char *) NULL,
-              composite_image->geometry);
+              composite_image->geometry,exception);
             SetGeometry(composite_image,&geometry);
             (void) ParseAbsoluteGeometry(composite_image->geometry,&geometry);
             GravityAdjustGeometry(image->columns,image->rows,image->gravity,
@@ -7459,7 +7456,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       Merge Y displacement into X displacement image.
                     */
                     (void) CompositeImage(composite_image,CopyGreenCompositeOp,
-                      mask_image,0,0);
+                      mask_image,0,0,exception);
                     mask_image=DestroyImage(mask_image);
                   }
                 else
@@ -7473,7 +7470,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   }
               }
             (void) CompositeImage(image,image->compose,composite_image,
-              geometry.x,geometry.y);
+              geometry.x,geometry.y,exception);
             if (mask_image != (Image *) NULL)
               mask_image=image->mask=DestroyImage(image->mask);
             composite_image=DestroyImage(composite_image);

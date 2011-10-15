@@ -226,7 +226,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       break;
     default:
     {
-      (void) TransformImageColorspace(image,image->colorspace);
+      (void) TransformImageColorspace(image,image->colorspace,exception);
       break;
     }
   }
@@ -1214,7 +1214,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
 %  The format of the TransformImageColorspace method is:
 %
 %      MagickBooleanType TransformImageColorspace(Image *image,
-%        const ColorspaceType colorspace)
+%        const ColorspaceType colorspace,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1222,9 +1222,11 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
 %
 %    o colorspace: the colorspace.
 %
+%   o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType TransformImageColorspace(Image *image,
-  const ColorspaceType colorspace)
+  const ColorspaceType colorspace,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1234,7 +1236,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (colorspace == UndefinedColorspace)
-    return(SetImageColorspace(image,colorspace,&image->exception));
+    return(SetImageColorspace(image,colorspace,exception));
   if (image->colorspace == colorspace)
     return(MagickTrue);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))

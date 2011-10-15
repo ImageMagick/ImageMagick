@@ -526,9 +526,12 @@ void Magick::Image::channel ( const ChannelType channel_ )
 {
   modifyImage();
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
-  SeparateImage ( image() );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SeparateImage ( image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   (void) SetPixelChannelMap( image(), channel_mask );
-  throwImageException();
 }
 
 // Set or obtain modulus channel depth
@@ -674,12 +677,15 @@ void Magick::Image::composite ( const Image &compositeImage_,
   // results in updating current image.
   modifyImage();
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   CompositeImage( image(),
 		  compose_,
 		  compositeImage_.constImage(),
 		  xOffset_,
-                  yOffset_ );
-  throwImageException();
+                  yOffset_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 void Magick::Image::composite ( const Image &compositeImage_,
 				const Geometry &offset_,
@@ -696,11 +702,14 @@ void Magick::Image::composite ( const Image &compositeImage_,
 		      &x, &y,
 		      &width, &height );
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   CompositeImage( image(),
 		  compose_,
 		  compositeImage_.constImage(),
-		  x, y );
-  throwImageException();
+		  x, y, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 void Magick::Image::composite ( const Image &compositeImage_,
 				const GravityType gravity_,
@@ -713,11 +722,14 @@ void Magick::Image::composite ( const Image &compositeImage_,
   SetGeometry(compositeImage_.constImage(), &geometry);
   GravityAdjustGeometry(columns(), rows(), gravity_, &geometry);
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   CompositeImage( image(),
 		  compose_,
 		  compositeImage_.constImage(),
-		  geometry.x, geometry.y );
-  throwImageException();
+		  geometry.x, geometry.y, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Contrast image
@@ -1464,7 +1476,11 @@ void Magick::Image::oilPaint ( const double radius_, const double sigma_ )
 void Magick::Image::alpha ( const unsigned int alpha_ )
 {
   modifyImage();
-  SetImageAlpha( image(), alpha_ );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageAlpha( image(), alpha_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Change the color of an opaque pixel to the pen color.
@@ -1599,7 +1615,8 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
   EvaluateImage( crop_image, operator_, rvalue_, &exceptionInfo );
   (void) SetPixelChannelMap( image(), channel_mask );
   (void) CompositeImage( image(), image()->matte != MagickFalse ?
-    OverCompositeOp : CopyCompositeOp, crop_image, geometry.x, geometry.y );
+    OverCompositeOp : CopyCompositeOp, crop_image, geometry.x, geometry.y,
+    &exceptionInfo );
   crop_image = DestroyImageList(crop_image);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2107,34 +2124,46 @@ void Magick::Image::swirl ( const double degrees_ )
 void Magick::Image::texture ( const Image &texture_ )
 {
   modifyImage();
-  TextureImage( image(), texture_.constImage() );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  TextureImage( image(), texture_.constImage(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Threshold image
 void Magick::Image::threshold ( const double threshold_ )
 {
   modifyImage();
-  BilevelImage( image(), threshold_ );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  BilevelImage( image(), threshold_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Transform image based on image geometry only
 void Magick::Image::transform ( const Geometry &imageGeometry_ )
 {
   modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   TransformImage ( &(image()), 0,
-		   std::string(imageGeometry_).c_str() );
-  throwImageException();
+		   std::string(imageGeometry_).c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 // Transform image based on image and crop geometries
 void Magick::Image::transform ( const Geometry &imageGeometry_,
 				const Geometry &cropGeometry_ )
 {
   modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   TransformImage ( &(image()), std::string(cropGeometry_).c_str(),
-		   std::string(imageGeometry_).c_str() );
-  throwImageException();
+		   std::string(imageGeometry_).c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Add matte image to image, setting pixels matching color to transparent
@@ -3342,9 +3371,13 @@ void Magick::Image::matte ( const bool matteFlag_ )
   // matte channel, then create an opaque matte channel.  Likewise, if
   // the image already has a matte channel but a matte channel is not
   // desired, then set the matte channel to opaque.
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   if ((matteFlag_ && !constImage()->matte) ||
       (constImage()->matte && !matteFlag_))
-    SetImageAlpha(image(),OpaqueAlpha);
+    SetImageAlpha(image(),OpaqueAlpha,&exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 
   image()->matte = (MagickBooleanType) matteFlag_;
 }
@@ -3779,8 +3812,11 @@ void Magick::Image::statistics ( ImageStatistics *statistics )
 void Magick::Image::strip ( void )
 {
   modifyImage();
-  StripImage( image() );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  StripImage( image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // enabled/disable stroke anti-aliasing
@@ -3898,7 +3934,7 @@ Magick::Image  Magick::Image::strokePattern ( void  ) const
                     MagickTrue, // orphan
                     &exceptionInfo);
       throwException( exceptionInfo );
-  (void) DestroyExceptionInfo( &exceptionInfo );
+      (void) DestroyExceptionInfo( &exceptionInfo );
       texture.replaceImage( image );
     }
   return texture;

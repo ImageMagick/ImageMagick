@@ -943,7 +943,7 @@ ModuleExport void UnregisterPCDImage(void)
 */
 
 static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
-  const char *tile_geometry)
+  const char *tile_geometry,ExceptionInfo *exception)
 {
   GeometryInfo
     geometry_info;
@@ -1012,9 +1012,9 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       tile_image=DestroyImage(tile_image);
       tile_image=bordered_image;
     }
-  (void) TransformImage(&tile_image,(char *) NULL,tile_geometry);
+  (void) TransformImage(&tile_image,(char *) NULL,tile_geometry,exception);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(tile_image,YCCColorspace);
+    (void) TransformImageColorspace(tile_image,YCCColorspace,exception);
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,TriangleFilter,1.0,&image->exception);
   if (downsample_image == (Image *) NULL)
@@ -1103,7 +1103,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(pcd_image,RGBColorspace);
+    (void) TransformImageColorspace(pcd_image,RGBColorspace,exception);
   /*
     Write PCD image header.
   */
@@ -1140,9 +1140,9 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
   /*
     Write PCD tiles.
   */
-  status=WritePCDTile(pcd_image,"768x512>","192x128");
-  status=WritePCDTile(pcd_image,"768x512>","384x256");
-  status=WritePCDTile(pcd_image,"768x512>","768x512");
+  status=WritePCDTile(pcd_image,"768x512>","192x128",exception);
+  status=WritePCDTile(pcd_image,"768x512>","384x256",exception);
+  status=WritePCDTile(pcd_image,"768x512>","768x512",exception);
   (void) CloseBlob(pcd_image);
   if (pcd_image != image)
     pcd_image=DestroyImage(pcd_image);

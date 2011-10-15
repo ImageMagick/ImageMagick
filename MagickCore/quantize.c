@@ -511,12 +511,12 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
     (void) TransformImageColorspace((Image *) image,
-      cube_info->quantize_info->colorspace);
+      cube_info->quantize_info->colorspace,exception);
   else
     if ((image->colorspace != GRAYColorspace) &&
         (IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYColorspace))
-      (void) TransformImageColorspace((Image *) image,RGBColorspace);
+      (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -679,7 +679,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   (void) SyncImage(image);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,RGBColorspace);
+    (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
   return(MagickTrue);
 }
 
@@ -797,12 +797,12 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
     (void) TransformImageColorspace((Image *) image,
-      cube_info->quantize_info->colorspace);
+      cube_info->quantize_info->colorspace,exception);
   else
     if ((image->colorspace != GRAYColorspace) &&
         (image->colorspace != CMYColorspace) &&
         (IsRGBColorspace(image->colorspace) == MagickFalse))
-      (void) TransformImageColorspace((Image *) image,RGBColorspace);
+      (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
   midpoint.red=(MagickRealType) QuantumRange/2.0;
   midpoint.green=(MagickRealType) QuantumRange/2.0;
   midpoint.blue=(MagickRealType) QuantumRange/2.0;
@@ -997,7 +997,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   image_view=DestroyCacheView(image_view);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,RGBColorspace);
+    (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
   return(MagickTrue);
 }
 
@@ -3241,7 +3241,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->type != GrayscaleType)
-    (void) TransformImageColorspace(image,GRAYColorspace);
+    (void) TransformImageColorspace(image,GRAYColorspace,exception);
   colormap_index=(ssize_t *) AcquireQuantumMemory(MaxMap+1,
     sizeof(*colormap_index));
   if (colormap_index == (ssize_t *) NULL)

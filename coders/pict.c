@@ -1240,7 +1240,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               if ((code == 0x9a) || (code == 0x9b) ||
                   ((bytes_per_line & 0x8000) != 0))
                 (void) CompositeImage(image,CopyCompositeOp,tile_image,
-                  destination.left,destination.top);
+                  destination.left,destination.top,exception);
             tile_image=DestroyImage(tile_image);
             break;
           }
@@ -1384,9 +1384,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           MagickMax(image->columns,tile_image->columns),
           MagickMax(image->rows,tile_image->rows),exception);
         if (IsRGBColorspace(image->colorspace) == MagickFalse)
-          (void) TransformImageColorspace(image,tile_image->colorspace);
+          (void) TransformImageColorspace(image,tile_image->colorspace,
+            exception);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
-          frame.right);
+          frame.right,exception);
         image->compression=tile_image->compression;
         tile_image=DestroyImage(tile_image);
         continue;
@@ -1601,7 +1602,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace,exception);
   /*
     Initialize image info.
   */

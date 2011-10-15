@@ -734,16 +734,16 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   do
   {
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace);
+      (void) TransformImageColorspace(image,RGBColorspace,exception);
     count=GetNumberColors(image,NULL,exception);
     for (bits_per_pixel=1;  (one << bits_per_pixel) < count; bits_per_pixel*=2) ;
     if (image_info->depth > 100)
       bits_per_pixel=image_info->depth-100;
     if (bits_per_pixel < 16)
-      (void) TransformImageColorspace(image,image->colorspace);
+      (void) TransformImageColorspace(image,image->colorspace,exception);
     if (bits_per_pixel < 8)
       {
-        (void) TransformImageColorspace(image,GRAYColorspace);
+        (void) TransformImageColorspace(image,GRAYColorspace,exception);
         (void) SetImageType(image,PaletteType,exception);
         (void) SortColormapByIntensity(image,exception);
       }
@@ -817,7 +817,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
           affinity_image=ConstituteImage(256,1,"RGB",CharPixel,&PalmPalette,
             exception);
           (void) TransformImageColorspace(affinity_image,
-            affinity_image->colorspace);
+            affinity_image->colorspace,exception);
           (void) RemapImage(quantize_info,image,affinity_image,exception);
           for (y=0; y < (ssize_t) image->rows; y++)
           {

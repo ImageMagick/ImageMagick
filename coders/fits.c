@@ -638,7 +638,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace,exception);
   /*
     Allocate image memory.
   */

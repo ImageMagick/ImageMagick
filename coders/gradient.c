@@ -117,7 +117,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  (void) SetImageAlpha(image,(Quantum) TransparentAlpha);
+  (void) SetImageAlpha(image,(Quantum) TransparentAlpha,exception);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
   (void) sscanf(image_info->filename,"%[^-]",colorname);

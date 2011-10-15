@@ -1225,7 +1225,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
       Convert MIFF to CMYK raster pixels.
     */
     if (image->colorspace != CMYKColorspace)
-      (void) TransformImageColorspace(image,CMYKColorspace);
+      (void) TransformImageColorspace(image,CMYKColorspace,exception);
     if ((LocaleCompare(image_info->magick,"CMYKA") == 0) &&
         (image->matte == MagickFalse))
       (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
