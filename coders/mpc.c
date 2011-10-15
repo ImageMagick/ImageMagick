@@ -260,7 +260,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (comment == (char *) NULL)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           *p='\0';
-          (void) SetImageProperty(image,"comment",comment);
+          (void) SetImageProperty(image,"comment",comment,exception);
           comment=DestroyString(comment);
           c=ReadBlobByte(image);
         }
@@ -344,7 +344,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       &image->border_color,exception);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'c':
@@ -396,7 +396,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->columns=StringToUnsignedLong(options);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'd':
@@ -424,7 +424,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->dispose=(DisposeType) dispose;
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'e':
@@ -448,7 +448,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       options,(char **) NULL);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'g':
@@ -469,7 +469,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         image->chromaticity.green_primary.x;
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'i':
@@ -485,7 +485,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->iterations=StringToUnsignedLong(options);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'm':
@@ -526,7 +526,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     (void) CloneString(&image->montage,options);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'o':
@@ -556,7 +556,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->orientation=(OrientationType) orientation;
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'p':
@@ -584,11 +584,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (profile == (StringInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,
                         "MemoryAllocationFailed");
-                    (void) SetImageProfile(image,keyword+8,profile);
+                    (void) SetImageProfile(image,keyword+8,profile,exception);
                     profile=DestroyStringInfo(profile);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'q':
@@ -604,7 +604,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     quantum_depth=StringToUnsignedLong(options);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'r':
@@ -644,7 +644,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->rows=StringToUnsignedLong(options);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 's':
@@ -655,7 +655,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->scene=StringToUnsignedLong(options);
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 't':
@@ -687,7 +687,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->type=(ImageType) type;
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'u':
@@ -698,14 +698,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     ssize_t
                       units;
 
-                    units=ParseCommandOption(MagickResolutionOptions,MagickFalse,
-                      options);
+                    units=ParseCommandOption(MagickResolutionOptions,
+                      MagickFalse,options);
                     if (units < 0)
                       break;
                     image->units=(ResolutionType) units;
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               case 'w':
@@ -721,12 +721,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         image->chromaticity.white_point.x;
                     break;
                   }
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
               default:
               {
-                (void) SetImageProperty(image,keyword,options);
+                (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
             }
@@ -1283,7 +1283,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     {
       (void) FormatLocaleString(buffer,MaxTextExtent,"%s=",property);
       (void) WriteBlobString(image,buffer);
-      value=GetImageProperty(image,property);
+      value=GetImageProperty(image,property,exception);
       if (value != (const char *) NULL)
         {
           for (i=0; i < (ssize_t) strlen(value); i++)

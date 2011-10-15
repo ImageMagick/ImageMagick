@@ -239,7 +239,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (comment == (char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         *p='\0';
-        (void) SetImageProperty(image,"comment",comment);
+        (void) SetImageProperty(image,"comment",comment,exception);
         comment=DestroyString(comment);
         c=ReadBlobByte(image);
       }
@@ -295,7 +295,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
-              (void) SetImageProperty(image,tag,value);
+              (void) SetImageProperty(image,tag,value,exception);
               break;
             }
             case 'G':
@@ -307,7 +307,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
-              (void) SetImageProperty(image,tag,value);
+              (void) SetImageProperty(image,tag,value,exception);
               break;
             }
             case 'P':
@@ -334,7 +334,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
-              (void) SetImageProperty(image,tag,value);
+              (void) SetImageProperty(image,tag,value,exception);
               break;
             }
             case 'Y':
@@ -352,13 +352,13 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
-              (void) SetImageProperty(image,tag,value);
+              (void) SetImageProperty(image,tag,value,exception);
               break;
             }
             default:
             {
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);
-              (void) SetImageProperty(image,tag,value);
+              (void) SetImageProperty(image,tag,value,exception);
               break;
             }
           }
@@ -694,14 +694,14 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
   (void) ResetMagickMemory(header,' ',MaxTextExtent);
   length=CopyMagickString(header,"#?RGBE\n",MaxTextExtent);
   (void) WriteBlob(image,length,(unsigned char *) header);
-  property=GetImageProperty(image,"comment");
+  property=GetImageProperty(image,"comment",exception);
   if ((property != (const char *) NULL) &&
       (strchr(property,'\n') == (char *) NULL))
     {
       count=FormatLocaleString(header,MaxTextExtent,"#%s\n",property);
       (void) WriteBlob(image,(size_t) count,(unsigned char *) header);
     }
-  property=GetImageProperty(image,"hdr:exposure");
+  property=GetImageProperty(image,"hdr:exposure",exception);
   if (property != (const char *) NULL)
     {
       count=FormatLocaleString(header,MaxTextExtent,"EXPOSURE=%g\n",

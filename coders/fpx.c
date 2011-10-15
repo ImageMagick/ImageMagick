@@ -314,7 +314,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         (void) CopyMagickString(label,(char *) summary_info.title.ptr,
           summary_info.title.length+1);
-        (void) SetImageProperty(image,"label",label);
+        (void) SetImageProperty(image,"label",label,exception);
         label=DestroyString(label);
       }
   if (summary_info.comments_valid)
@@ -338,7 +338,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         (void) CopyMagickString(comments,(char *) summary_info.comments.ptr,
           summary_info.comments.length+1);
-        (void) SetImageProperty(image,"comment",comments);
+        (void) SetImageProperty(image,"comment",comments,exception);
         comments=DestroyString(comments);
       }
   /*

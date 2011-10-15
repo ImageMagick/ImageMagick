@@ -473,12 +473,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         name[i]='\0';
         value=AcquireString(name);
         (void) SubstituteString(&value,"#20"," ");
-        (void) SetImageProperty(image,property,value);
+        (void) SetImageProperty(image,property,value,exception);
         value=DestroyString(value);
         continue;
       }
     if (LocaleNCompare(PDFVersion,command,strlen(PDFVersion)) == 0)
-      (void) SetImageProperty(image,"pdf:Version",command);
+      (void) SetImageProperty(image,"pdf:Version",command,exception);
     count=0;
     if (cropbox != MagickFalse)
       {
@@ -532,7 +532,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) FormatLocaleString(geometry,MaxTextExtent,
           "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
            bounds.x1,bounds.y1);
-        (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry);
+        (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry,
+          exception);
         page.width=(size_t) floor(bounds.x2-bounds.x1+0.5);
         page.height=(size_t) floor(bounds.y2-bounds.y1+0.5);
         hires_bounds=bounds;
@@ -1130,11 +1131,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,"<<\n");
       (void) WriteBlobString(image,"/Subtype /XML\n");
       *modify_date='\0';
-      value=GetImageProperty(image,"date:modify");
+      value=GetImageProperty(image,"date:modify",exception);
       if (value != (const char *) NULL)
         (void) CopyMagickString(modify_date,value,MaxTextExtent);
       *create_date='\0';
-      value=GetImageProperty(image,"date:create");
+      value=GetImageProperty(image,"date:create",exception);
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,MaxTextExtent);
       (void) FormatMagickTime(time((time_t *) NULL),MaxTextExtent,timestamp);
@@ -1318,7 +1319,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (image_info->pointsize != 0.0)
       pointsize=image_info->pointsize;
     text_size=0;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     (void) text_size;
@@ -1336,7 +1337,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/Resources <<\n");
     labels=(char **) NULL;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       labels=StringToList(value);
     if (labels != (char **) NULL)

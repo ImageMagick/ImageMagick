@@ -701,7 +701,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
   property=AcquireString(pathname);
   (void) FormatLocaleString(property,MaxTextExtent,"8BIM:1999,2998:%s",
     pathname);
-  value=GetImageProperty(image,property);
+  value=GetImageProperty(image,property,exception);
   property=DestroyString(property);
   if (value == (const char *) NULL)
     {
@@ -1760,10 +1760,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         value=(const char *) NULL;
         if ((image_info != (const ImageInfo *) NULL) &&
             (image != (const Image *) NULL))
-          value=GetMagickProperty(image_info,image,pattern);
+          value=GetMagickProperty(image_info,image,pattern,&image->exception);
         else
           if (image != (Image *) NULL)
-            value=GetImageProperty(image,pattern);
+            value=GetImageProperty(image,pattern,&image->exception);
           else
             if (image_info != (ImageInfo *) NULL)
               value=GetImageOption(image_info,pattern);

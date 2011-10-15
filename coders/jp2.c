@@ -622,7 +622,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CorruptImageError,"MemoryAllocationFailed");
           icc_profile=(StringInfo *) GetImageProfile(image,"icc");
           if (icc_profile == (StringInfo *) NULL)
-            (void) SetImageProfile(image,"icc",profile);
+            (void) SetImageProfile(image,"icc",profile,exception);
           else
             (void) ConcatenateStringInfo(icc_profile,profile);
           profile=DestroyStringInfo(profile);

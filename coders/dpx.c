@@ -889,11 +889,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dpx.television.time_code=(unsigned int) ReadBlobLong(image);
       offset+=4;
       TimeCodeToString(dpx.television.time_code,value);
-      (void) SetImageProperty(image,"dpx:television.time.code",value);
+      (void) SetImageProperty(image,"dpx:television.time.code",value,exception);
       dpx.television.user_bits=(unsigned int) ReadBlobLong(image);
       offset+=4;
       TimeCodeToString(dpx.television.user_bits,value);
-      (void) SetImageProperty(image,"dpx:television.user.bits",value);
+      (void) SetImageProperty(image,"dpx:television.user.bits",value,exception);
       dpx.television.interlace=(unsigned char) ReadBlobByte(image);
       offset++;
       if (dpx.television.interlace != 0)
@@ -988,7 +988,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
            offset+=ReadBlob(image,GetStringInfoLength(profile),
              GetStringInfoDatum(profile));
-           (void) SetImageProfile(image,"dpx",profile);
+           (void) SetImageProfile(image,"dpx",profile,exception);
            profile=DestroyStringInfo(profile);
         }
     }
@@ -1238,7 +1238,7 @@ ModuleExport void UnregisterDPXImage(void)
 */
 
 static inline const char *GetDPXProperty(const ImageInfo *image_info,
-  const Image *image,const char *property)
+  const Image *image,const char *property,ExceptionInfo *exception)
 {
   const char
     *value;
@@ -1246,7 +1246,7 @@ static inline const char *GetDPXProperty(const ImageInfo *image_info,
   value=GetImageOption(image_info,property);
   if (value != (const char *) NULL)
     return(value);
-  return(GetImageProperty(image,property));
+  return(GetImageProperty(image,property,exception));
 }
 
 static unsigned int StringToTimeCode(const char *key)
@@ -1402,7 +1402,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       dpx.file.user_size=(((dpx.file.user_size+0x2000-1)/0x2000)*0x2000);
     }
   offset+=WriteBlobLong(image,dpx.file.user_size);
-  value=GetDPXProperty(image_info,image,"dpx:file.filename");
+  value=GetDPXProperty(image_info,image,"dpx:file.filename",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.filename,value,sizeof(dpx.file.filename));
   offset+=WriteBlob(image,sizeof(dpx.file.filename),(unsigned char *)
@@ -1414,20 +1414,19 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.file.timestamp);
   (void) strncpy(dpx.file.creator,GetMagickVersion((size_t *) NULL),
     sizeof(dpx.file.creator));
-  value=GetDPXProperty(image_info,image,"dpx:file.creator");
+  value=GetDPXProperty(image_info,image,"dpx:file.creator",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.creator,value,sizeof(dpx.file.creator));
   offset+=WriteBlob(image,sizeof(dpx.file.creator),(unsigned char *)
     dpx.file.creator);
-  value=GetDPXProperty(image_info,image,"dpx:file.project");
+  value=GetDPXProperty(image_info,image,"dpx:file.project",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.file.project,value,sizeof(dpx.file.project));
   offset+=WriteBlob(image,sizeof(dpx.file.project),(unsigned char *)
     dpx.file.project);
-  value=GetDPXProperty(image_info,image,"dpx:file.copyright");
+  value=GetDPXProperty(image_info,image,"dpx:file.copyright",exception);
   if (value != (const char *) NULL)
-    (void) strncpy(dpx.file.copyright,value,
-      sizeof(dpx.file.copyright));
+    (void) strncpy(dpx.file.copyright,value,sizeof(dpx.file.copyright));
   offset+=WriteBlob(image,sizeof(dpx.file.copyright),(unsigned char *)
     dpx.file.copyright);
   dpx.file.encrypt_key=(~0U);
@@ -1530,36 +1529,36 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       (void) DeleteImageProperty(image,"dpx:orientation.y_size");
     }
   dpx.orientation.x_offset=0U;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.x_offset");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.x_offset",exception);
   if (value != (const char *) NULL)
     dpx.orientation.x_offset=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.x_offset);
   dpx.orientation.y_offset=0U;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.y_offset");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.y_offset",exception);
   if (value != (const char *) NULL)
     dpx.orientation.y_offset=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.y_offset);
   dpx.orientation.x_center=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.x_center");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.x_center",exception);
   if (value != (const char *) NULL)
     dpx.orientation.x_center=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.orientation.x_center);
   dpx.orientation.y_center=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.y_center");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.y_center",exception);
   if (value != (const char *) NULL)
     dpx.orientation.y_center=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.orientation.y_center);
   dpx.orientation.x_size=0U;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.x_size");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.x_size",exception);
   if (value != (const char *) NULL)
     dpx.orientation.x_size=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.x_size);
   dpx.orientation.y_size=0U;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.y_size");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.y_size",exception);
   if (value != (const char *) NULL)
     dpx.orientation.y_size=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.orientation.y_size);
-  value=GetDPXProperty(image_info,image,"dpx:orientation.filename");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.filename",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.filename,value,
       sizeof(dpx.orientation.filename));
@@ -1567,19 +1566,19 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.orientation.filename);
   offset+=WriteBlob(image,sizeof(dpx.orientation.timestamp),(unsigned char *)
     dpx.orientation.timestamp);
-  value=GetDPXProperty(image_info,image,"dpx:orientation.device");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.device",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.device,value,sizeof(dpx.orientation.device));
   offset+=WriteBlob(image,sizeof(dpx.orientation.device),(unsigned char *)
     dpx.orientation.device);
-  value=GetDPXProperty(image_info,image,"dpx:orientation.serial");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.serial",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.orientation.serial,value,sizeof(dpx.orientation.serial));
   offset+=WriteBlob(image,sizeof(dpx.orientation.serial),(unsigned char *)
     dpx.orientation.serial);
   for (i=0; i < 4; i++)
     dpx.orientation.border[i]=0;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.border");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.border",exception);
   if (value != (const char *) NULL)
     {
       flags=ParseGeometry(value,&geometry_info);
@@ -1594,7 +1593,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     offset+=WriteBlobShort(image,dpx.orientation.border[i]);
   for (i=0; i < 2; i++)
     dpx.orientation.aspect_ratio[i]=0U;
-  value=GetDPXProperty(image_info,image,"dpx:orientation.aspect_ratio");
+  value=GetDPXProperty(image_info,image,"dpx:orientation.aspect_ratio",
+    exception);
   if (value != (const char *) NULL)
     {
       flags=ParseGeometry(value,&geometry_info);
@@ -1611,72 +1611,72 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     Write film header.
   */
   *dpx.film.id='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.id");
+  value=GetDPXProperty(image_info,image,"dpx:film.id",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.id,value,sizeof(dpx.film.id));
   offset+=WriteBlob(image,sizeof(dpx.film.id),(unsigned char *) dpx.film.id);
   *dpx.film.type='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.type");
+  value=GetDPXProperty(image_info,image,"dpx:film.type",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.type,value,sizeof(dpx.film.type));
   offset+=WriteBlob(image,sizeof(dpx.film.type),(unsigned char *)
     dpx.film.type);
   *dpx.film.offset='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.offset");
+  value=GetDPXProperty(image_info,image,"dpx:film.offset",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.offset,value,sizeof(dpx.film.offset));
   offset+=WriteBlob(image,sizeof(dpx.film.offset),(unsigned char *)
     dpx.film.offset);
   *dpx.film.prefix='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.prefix");
+  value=GetDPXProperty(image_info,image,"dpx:film.prefix",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.prefix,value,sizeof(dpx.film.prefix));
   offset+=WriteBlob(image,sizeof(dpx.film.prefix),(unsigned char *)
     dpx.film.prefix);
   *dpx.film.count='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.count");
+  value=GetDPXProperty(image_info,image,"dpx:film.count",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.count,value,sizeof(dpx.film.count));
   offset+=WriteBlob(image,sizeof(dpx.film.count),(unsigned char *)
     dpx.film.count);
   *dpx.film.format='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.format");
+  value=GetDPXProperty(image_info,image,"dpx:film.format",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.format,value,sizeof(dpx.film.format));
   offset+=WriteBlob(image,sizeof(dpx.film.format),(unsigned char *)
     dpx.film.format);
   dpx.film.frame_position=0U;
-  value=GetDPXProperty(image_info,image,"dpx:film.frame_position");
+  value=GetDPXProperty(image_info,image,"dpx:film.frame_position",exception);
   if (value != (const char *) NULL)
     dpx.film.frame_position=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.film.frame_position);
   dpx.film.sequence_extent=0U;
-  value=GetDPXProperty(image_info,image,"dpx:film.sequence_extent");
+  value=GetDPXProperty(image_info,image,"dpx:film.sequence_extent",exception);
   if (value != (const char *) NULL)
     dpx.film.sequence_extent=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.film.sequence_extent);
   dpx.film.held_count=0U;
-  value=GetDPXProperty(image_info,image,"dpx:film.held_count");
+  value=GetDPXProperty(image_info,image,"dpx:film.held_count",exception);
   if (value != (const char *) NULL)
     dpx.film.held_count=(unsigned int) StringToUnsignedLong(value);
   offset+=WriteBlobLong(image,dpx.film.held_count);
   dpx.film.frame_rate=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:film.frame_rate");
+  value=GetDPXProperty(image_info,image,"dpx:film.frame_rate",exception);
   if (value != (const char *) NULL)
     dpx.film.frame_rate=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.frame_rate);
   dpx.film.shutter_angle=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:film.shutter_angle");
+  value=GetDPXProperty(image_info,image,"dpx:film.shutter_angle",exception);
   if (value != (const char *) NULL)
     dpx.film.shutter_angle=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.film.shutter_angle);
   *dpx.film.frame_id='\0';
-  value=GetDPXProperty(image_info,image,"dpx:film.frame_id");
+  value=GetDPXProperty(image_info,image,"dpx:film.frame_id",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.frame_id,value,sizeof(dpx.film.frame_id));
   offset+=WriteBlob(image,sizeof(dpx.film.frame_id),(unsigned char *)
     dpx.film.frame_id);
-  value=GetDPXProperty(image_info,image,"dpx:film.slate");
+  value=GetDPXProperty(image_info,image,"dpx:film.slate",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.film.slate,value,sizeof(dpx.film.slate));
   offset+=WriteBlob(image,sizeof(dpx.film.slate),(unsigned char *)
@@ -1686,82 +1686,85 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   /*
     Write television header.
   */
-  value=GetDPXProperty(image_info,image,"dpx:television.time.code");
+  value=GetDPXProperty(image_info,image,"dpx:television.time.code",exception);
   if (value != (const char *) NULL)
     dpx.television.time_code=StringToTimeCode(value);
   offset+=WriteBlobLong(image,dpx.television.time_code);
-  value=GetDPXProperty(image_info,image,"dpx:television.user.bits");
+  value=GetDPXProperty(image_info,image,"dpx:television.user.bits",exception);
   if (value != (const char *) NULL)
     dpx.television.user_bits=StringToTimeCode(value);
   offset+=WriteBlobLong(image,dpx.television.user_bits);
-  value=GetDPXProperty(image_info,image,"dpx:television.interlace");
+  value=GetDPXProperty(image_info,image,"dpx:television.interlace",exception);
   if (value != (const char *) NULL)
     dpx.television.interlace=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.interlace);
-  value=GetDPXProperty(image_info,image,"dpx:television.field_number");
+  value=GetDPXProperty(image_info,image,"dpx:television.field_number",
+    exception);
   if (value != (const char *) NULL)
     dpx.television.field_number=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.field_number);
   dpx.television.video_signal=0;
-  value=GetDPXProperty(image_info,image,"dpx:television.video_signal");
+  value=GetDPXProperty(image_info,image,"dpx:television.video_signal",exception);
   if (value != (const char *) NULL)
     dpx.television.video_signal=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.video_signal);
   dpx.television.padding=0;
-  value=GetDPXProperty(image_info,image,"dpx:television.padding");
+  value=GetDPXProperty(image_info,image,"dpx:television.padding",exception);
   if (value != (const char *) NULL)
     dpx.television.padding=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.padding);
   dpx.television.horizontal_sample_rate=0.0f;
   value=GetDPXProperty(image_info,image,
-    "dpx:television.horizontal_sample_rate");
+    "dpx:television.horizontal_sample_rate",exception);
   if (value != (const char *) NULL)
     dpx.television.horizontal_sample_rate=InterpretLocaleValue(value,
       (char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.horizontal_sample_rate);
   dpx.television.vertical_sample_rate=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.vertical_sample_rate");
+  value=GetDPXProperty(image_info,image,"dpx:television.vertical_sample_rate",
+    exception);
   if (value != (const char *) NULL)
     dpx.television.vertical_sample_rate=InterpretLocaleValue(value,
       (char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.vertical_sample_rate);
   dpx.television.frame_rate=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.frame_rate");
+  value=GetDPXProperty(image_info,image,"dpx:television.frame_rate",exception);
   if (value != (const char *) NULL)
     dpx.television.frame_rate=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.frame_rate);
   dpx.television.time_offset=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.time_offset");
+  value=GetDPXProperty(image_info,image,"dpx:television.time_offset",exception);
   if (value != (const char *) NULL)
     dpx.television.time_offset=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.time_offset);
   dpx.television.gamma=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.gamma");
+  value=GetDPXProperty(image_info,image,"dpx:television.gamma",exception);
   if (value != (const char *) NULL)
     dpx.television.gamma=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.gamma);
   dpx.television.black_level=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.black_level");
+  value=GetDPXProperty(image_info,image,"dpx:television.black_level",exception);
   if (value != (const char *) NULL)
     dpx.television.black_level=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.black_level);
   dpx.television.black_gain=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.black_gain");
+  value=GetDPXProperty(image_info,image,"dpx:television.black_gain",exception);
   if (value != (const char *) NULL)
     dpx.television.black_gain=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.black_gain);
   dpx.television.break_point=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.break_point");
+  value=GetDPXProperty(image_info,image,"dpx:television.break_point",exception);
   if (value != (const char *) NULL)
     dpx.television.break_point=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.break_point);
   dpx.television.white_level=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.white_level");
+  value=GetDPXProperty(image_info,image,"dpx:television.white_level",exception);
   if (value != (const char *) NULL)
     dpx.television.white_level=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.white_level);
   dpx.television.integration_times=0.0f;
-  value=GetDPXProperty(image_info,image,"dpx:television.integration_times");
+  value=GetDPXProperty(image_info,image,"dpx:television.integration_times",
+    exception);
   if (value != (const char *) NULL)
     dpx.television.integration_times=InterpretLocaleValue(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.integration_times);
@@ -1770,7 +1773,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   /*
     Write user header.
   */
-  value=GetDPXProperty(image_info,image,"dpx:user.id");
+  value=GetDPXProperty(image_info,image,"dpx:user.id",exception);
   if (value != (const char *) NULL)
     (void) strncpy(dpx.user.id,value,sizeof(dpx.user.id));
   offset+=WriteBlob(image,sizeof(dpx.user.id),(unsigned char *) dpx.user.id);

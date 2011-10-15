@@ -304,7 +304,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
       (void) WriteBlobString(image,"<html>\n");
       (void) WriteBlobString(image,"<head>\n");
-      value=GetImageProperty(image,"label");
+      value=GetImageProperty(image,"label",exception);
       if (value != (const char *) NULL)
         (void) FormatLocaleString(buffer,MaxTextExtent,"<title>%s</title>\n",
           value);

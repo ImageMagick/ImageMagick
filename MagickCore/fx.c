@@ -3919,7 +3919,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     image->rows)/25.0,10.0);
   height=image->rows+2*quantum;
   caption_image=(Image *) NULL;
-  value=GetImageProperty(image,"Caption");
+  value=GetImageProperty(image,"caption",exception);
   if (value != (const char *) NULL)
     {
       char

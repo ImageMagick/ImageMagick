@@ -837,9 +837,9 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   (void) CopyMagickMemory(input_block,digest,MagickMin(AESBlocksize,
     GetSignatureDigestsize(signature_info))*sizeof(*input_block));
   signature=StringInfoToHexString(GetSignatureDigest(signature_info));
-  (void) SetImageProperty(image,"cipher:type","AES");
-  (void) SetImageProperty(image,"cipher:mode","CFB");
-  (void) SetImageProperty(image,"cipher:nonce",signature);
+  (void) SetImageProperty(image,"cipher:type","AES",exception);
+  (void) SetImageProperty(image,"cipher:mode","CFB",exception);
+  (void) SetImageProperty(image,"cipher:nonce",signature,exception);
   signature=DestroyString(signature);
   signature_info=DestroySignatureInfo(signature_info);
   /*

@@ -2683,7 +2683,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   (void) SetImageArtifact(*image,argv[i+1]+7,value);
                 }
               else
-                (void) SetImageProperty(*image,argv[i+1],value);
+                (void) SetImageProperty(*image,argv[i+1],value,exception);
             value=DestroyString(value);
             break;
           }

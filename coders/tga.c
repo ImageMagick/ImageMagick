@@ -278,7 +278,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       count=ReadBlob(image,tga_info.id_length,(unsigned char *) comment);
       comment[tga_info.id_length]='\0';
-      (void) SetImageProperty(image,"comment",comment);
+      (void) SetImageProperty(image,"comment",comment,exception);
       comment=DestroyString(comment);
     }
   (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
@@ -682,7 +682,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace);
   targa_info.id_length=0;
-  value=GetImageProperty(image,"comment");
+  value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     targa_info.id_length=(unsigned char) MagickMin(strlen(value),255);
   targa_info.colormap_type=0;

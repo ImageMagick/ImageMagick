@@ -2401,7 +2401,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       break;
     (void) SetImageProgressMonitor(thumbnail,(MagickProgressMonitor) NULL,
       (void *) NULL);
-    (void) SetImageProperty(thumbnail,"label",DefaultTileLabel);
+    (void) SetImageProperty(thumbnail,"label",DefaultTileLabel,exception);
     if (i == (NumberTiles/2))
       {
         (void) QueryColorCompliance("#dfdfdf",AllCompliance,
@@ -2784,7 +2784,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
     if (preview_image == (Image *) NULL)
       break;
     (void) DeleteImageProperty(preview_image,"label");
-    (void) SetImageProperty(preview_image,"label",label);
+    (void) SetImageProperty(preview_image,"label",label,exception);
     AppendImageToList(&images,preview_image);
     proceed=SetImageProgress(image,PreviewImageTag,(MagickOffsetType) i,
       NumberTiles);

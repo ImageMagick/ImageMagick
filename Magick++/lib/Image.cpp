@@ -2437,11 +2437,20 @@ void Magick::Image::attribute ( const std::string name_,
                                 const std::string value_ )
 {
   modifyImage();
-  SetImageProperty( image(), name_.c_str(), value_.c_str() );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageProperty( image(), name_.c_str(), value_.c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 std::string Magick::Image::attribute ( const std::string name_ )
 {
-  const char *value = GetImageProperty( constImage(), name_.c_str() );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  const char *value = GetImageProperty( constImage(), name_.c_str(),
+    &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 
   if ( value )
     return std::string( value );
@@ -2812,14 +2821,22 @@ Magick::ColorspaceType Magick::Image::colorspaceType ( void ) const
 void Magick::Image::comment ( const std::string &comment_ )
 {
   modifyImage();
-  SetImageProperty( image(), "Comment", NULL );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageProperty( image(), "Comment", NULL, &exceptionInfo );
   if ( comment_.length() > 0 )
-    SetImageProperty( image(), "Comment", comment_.c_str() );
-  throwImageException();
+    SetImageProperty( image(), "Comment", comment_.c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 std::string Magick::Image::comment ( void ) const
 {
-  const char *value = GetImageProperty( constImage(), "Comment" );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  const char *value = GetImageProperty( constImage(), "Comment",
+    &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 
   if ( value )
     return std::string( value );
@@ -3010,8 +3027,12 @@ void Magick::Image::exifProfile( const Magick::Blob &exifProfile_ )
     {
       StringInfo * exif_profile = AcquireStringInfo( exifProfile_.length() );
       SetStringInfoDatum(exif_profile ,(unsigned char *) exifProfile_.data());
-      (void) SetImageProfile( image(), "exif", exif_profile);
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      (void) SetImageProfile( image(), "exif", exif_profile, &exceptionInfo);
       exif_profile =DestroyStringInfo( exif_profile );
+      throwException( exceptionInfo );
+      (void) DestroyExceptionInfo( &exceptionInfo );
     }
 }
 Magick::Blob Magick::Image::exifProfile( void ) const
@@ -3095,7 +3116,7 @@ Magick::Image  Magick::Image::fillPattern ( void  ) const
                     &exceptionInfo);
       texture.replaceImage( image );
       throwException( exceptionInfo );
-  (void) DestroyExceptionInfo( &exceptionInfo );
+      (void) DestroyExceptionInfo( &exceptionInfo );
     }
   return texture;
 }
@@ -3228,8 +3249,12 @@ void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
     {
       StringInfo * iptc_profile = AcquireStringInfo( iptcProfile_.length() );
       SetStringInfoDatum(iptc_profile ,(unsigned char *) iptcProfile_.data());
-      (void) SetImageProfile( image(), "iptc", iptc_profile);
-       iptc_profile =DestroyStringInfo( iptc_profile );
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      (void) SetImageProfile( image(), "iptc", iptc_profile, &exceptionInfo);
+      iptc_profile =DestroyStringInfo( iptc_profile );
+      throwException( exceptionInfo );
+      (void) DestroyExceptionInfo( &exceptionInfo );
     }
 }
 Magick::Blob Magick::Image::iptcProfile( void ) const
@@ -3269,14 +3294,21 @@ bool Magick::Image::isValid ( void ) const
 void Magick::Image::label ( const std::string &label_ )
 {
   modifyImage();
-  SetImageProperty ( image(), "Label", NULL );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageProperty ( image(), "Label", NULL, &exceptionInfo );
   if ( label_.length() > 0 )
-    SetImageProperty ( image(), "Label", label_.c_str() );
-  throwImageException();
+    SetImageProperty ( image(), "Label", label_.c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 std::string Magick::Image::label ( void ) const
 {
-  const char *value = GetImageProperty( constImage(), "Label" );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  const char *value = GetImageProperty( constImage(), "Label", &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 
   if ( value )
     return std::string( value );
@@ -3648,15 +3680,16 @@ std::string Magick::Image::signature ( const bool force_ ) const
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   if ( force_ ||
-       !GetImageProperty(constImage(), "Signature") ||
+       !GetImageProperty(constImage(), "Signature", &exceptionInfo) ||
        constImage()->taint )
     {
       SignatureImage( const_cast<MagickCore::Image *>(constImage()), &exceptionInfo );
     }
 
+  const char *property = GetImageProperty(constImage(), "Signature",
+    &exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-  const char *property = GetImageProperty(constImage(), "Signature");
 
   return std::string( property );
 }

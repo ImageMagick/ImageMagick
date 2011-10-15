@@ -148,7 +148,8 @@ static inline ssize_t ConstrainPixel(Image *image,const ssize_t offset,
   return(offset);
 }
 
-static size_t PNMInteger(Image *image,const unsigned int base)
+static size_t PNMInteger(Image *image,const unsigned int base,
+  ExceptionInfo *exception)
 {
   char
     *comment;
@@ -204,7 +205,7 @@ static size_t PNMInteger(Image *image,const unsigned int base)
   } while (isdigit(c) == MagickFalse);
   if (comment != (char *) NULL)
     {
-      (void) SetImageProperty(image,"comment",comment);
+      (void) SetImageProperty(image,"comment",comment,exception);
       comment=DestroyString(comment);
     }
   if (base == 2)
@@ -298,8 +299,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           PBM, PGM, PPM, and PNM.
         */
-        image->columns=PNMInteger(image,10);
-        image->rows=PNMInteger(image,10);
+        image->columns=PNMInteger(image,10,exception);
+        image->rows=PNMInteger(image,10,exception);
         if ((format == 'f') || (format == 'F'))
           {
             char
@@ -313,7 +314,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((format == '1') || (format == '4'))
               max_value=1;  /* bitmap */
             else
-              max_value=PNMInteger(image,10);
+              max_value=PNMInteger(image,10,exception);
           }
       }
     else
@@ -441,7 +442,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,PNMInteger(image,2) == 0 ? QuantumRange : 0,q);
+            SetPixelRed(image,PNMInteger(image,2,exception) == 0 ?
+              QuantumRange : 0,q);
             SetPixelGreen(image,GetPixelRed(image,q),q);
             SetPixelBlue(image,GetPixelRed(image,q),q);
             q+=GetPixelChannels(image);
@@ -494,7 +496,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            intensity=PNMInteger(image,10);
+            intensity=PNMInteger(image,10,exception);
             SetPixelRed(image,intensity,q);
             if (scale != (Quantum *) NULL)
               SetPixelRed(image,scale[ConstrainPixel(image,(ssize_t) intensity,
@@ -552,9 +554,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            pixel.red=(MagickRealType) PNMInteger(image,10);
-            pixel.green=(MagickRealType) PNMInteger(image,10);
-            pixel.blue=(MagickRealType) PNMInteger(image,10);
+            pixel.red=(MagickRealType) PNMInteger(image,10,exception);
+            pixel.green=(MagickRealType) PNMInteger(image,10,exception);
+            pixel.blue=(MagickRealType) PNMInteger(image,10,exception);
             if (scale != (Quantum *) NULL)
               {
                 pixel.red=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
@@ -1540,7 +1542,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
     }
     (void) FormatLocaleString(buffer,MaxTextExtent,"P%c\n",format);
     (void) WriteBlobString(image,buffer);
-    value=GetImageProperty(image,"comment");
+    value=GetImageProperty(image,"comment",exception);
     if (value != (const char *) NULL)
       {
         register const char

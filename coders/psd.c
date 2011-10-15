@@ -406,7 +406,7 @@ static const char *ModeToString(PSDImageType type)
 }
 
 static MagickBooleanType ParseImageResourceBlocks(Image *image,
-  const unsigned char *blocks,size_t length)
+  const unsigned char *blocks,size_t length,ExceptionInfo *exception)
 {
   const unsigned char
     *p;
@@ -426,7 +426,7 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
     return(MagickFalse);
   profile=BlobToStringInfo((const void *) NULL,length);
   SetStringInfoDatum(profile,blocks);
-  (void) SetImageProfile(image,"8bim",profile);
+  (void) SetImageProfile(image,"8bim",profile,exception);
   profile=DestroyStringInfo(profile);
   for (p=blocks; (p >= blocks) && (p < (blocks+length-16)); )
   {
@@ -452,14 +452,14 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->x_resolution=(double) resolution;
         (void) FormatLocaleString(value,MaxTextExtent,"%g",image->x_resolution);
-        (void) SetImageProperty(image,"tiff:XResolution",value);
+        (void) SetImageProperty(image,"tiff:XResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
         image->y_resolution=(double) resolution;
         (void) FormatLocaleString(value,MaxTextExtent,"%g",image->y_resolution);
-        (void) SetImageProperty(image,"tiff:YResolution",value);
+        (void) SetImageProperty(image,"tiff:YResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
@@ -916,7 +916,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      (void) ParseImageResourceBlocks(image,blocks,(size_t) length);
+      (void) ParseImageResourceBlocks(image,blocks,(size_t) length,
+        exception);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
@@ -1233,7 +1234,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) SetImageArtifact(layer_info[i].image,"psd:layer.opacity",
               message);
             (void) SetImageProperty(layer_info[i].image,"label",(char *)
-              layer_info[i].name);
+              layer_info[i].name,exception);
           }
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2241,7 +2242,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
     channelLength=(size_t) (next_image->columns*next_image->rows*packet_size+2);
     layer_info_size+=(size_t) (4*4+2+num_channels*6+(psd_info.version == 1 ? 8 :
       16)+4*1+4+num_channels*channelLength);
-    property=(const char *) GetImageProperty(next_image,"label");
+    property=(const char *) GetImageProperty(next_image,"label",exception);
     if (property == (const char *) NULL)
       layer_info_size+=16;
     else
@@ -2338,7 +2339,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobByte(image,0);
         (void) WriteBlobByte(image,1); /* layer propertys - visible, etc. */
         (void) WriteBlobByte(image,0);
-        property=(const char *) GetImageProperty(next_image,"label");
+        property=(const char *) GetImageProperty(next_image,"label",exception);
         if (property == (const char *) NULL)
           {
             (void) WriteBlobMSBLong(image,16);

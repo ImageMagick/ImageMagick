@@ -3261,32 +3261,35 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   if (strstr(image->magick_filename,"//") == (char *) NULL)
     (void) FormatLocaleString(value,MaxTextExtent,"file://%s",
       image->magick_filename);
-  (void) SetImageProperty(thumbnail_image,"Thumb::URI",value);
+  (void) SetImageProperty(thumbnail_image,"Thumb::URI",value,exception);
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse)
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
         attributes.st_mtime);
-      (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value);
+      (void) SetImageProperty(thumbnail_image,"Thumb::MTime",value,exception);
     }
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     attributes.st_mtime);
   (void) FormatMagickSize(GetBlobSize(image),MagickFalse,value);
   (void) ConcatenateMagickString(value,"B",MaxTextExtent);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Size",value);
+  (void) SetImageProperty(thumbnail_image,"Thumb::Size",value,exception);
   (void) FormatLocaleString(value,MaxTextExtent,"image/%s",image->magick);
   LocaleLower(value);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value);
-  (void) SetImageProperty(thumbnail_image,"software",
-    GetMagickVersion(&version));
+  (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",value,exception);
+  (void) SetImageProperty(thumbnail_image,"software",GetMagickVersion(&version),
+    exception);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     image->magick_columns);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value);
+  (void) SetImageProperty(thumbnail_image,"Thumb::Image::Width",value,
+    exception);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     image->magick_rows);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value);
+  (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value,
+    exception);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     GetImageListLength(image));
-  (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value);
+  (void) SetImageProperty(thumbnail_image,"Thumb::Document::Pages",value,
+    exception);
   return(thumbnail_image);
 }

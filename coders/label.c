@@ -125,9 +125,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   (void) ResetImagePage(image,"0x0+0+0");
   property=InterpretImageProperties(image_info,image,image_info->filename,
     exception);
-  (void) SetImageProperty(image,"label",property);
+  (void) SetImageProperty(image,"label",property,exception);
   property=DestroyString(property);
-  label=GetImageProperty(image,"label");
+  label=GetImageProperty(image,"label",exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(label);
   if (((image->columns != 0) || (image->rows != 0)) &&
@@ -204,7 +204,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
 
       (void) FormatLocaleString(pointsize,MaxTextExtent,"%.20g",
         draw_info->pointsize);
-      (void) SetImageProperty(image,"label:pointsize",pointsize);
+      (void) SetImageProperty(image,"label:pointsize",pointsize,exception);
     }
   draw_info=DestroyDrawInfo(draw_info);
   return(GetFirstImageInList(image));

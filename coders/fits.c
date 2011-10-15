@@ -381,7 +381,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             fits_info.endian=LSBEndian;
         }
       (void) FormatLocaleString(property,MaxTextExtent,"fits:%s",keyword);
-      (void) SetImageProperty(image,property,p);
+      (void) SetImageProperty(image,property,p,exception);
     }
     c=0;
     while (((TellBlob(image) % FITSBlocksize) != 0) && (c != EOF))
@@ -398,7 +398,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   */
   if (comment != (char *) NULL)
     {
-      (void) SetImageProperty(image,"comment",comment);
+      (void) SetImageProperty(image,"comment",comment,exception);
       comment=DestroyString(comment);
     }
   if (EOFBlob(image) != MagickFalse)

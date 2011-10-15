@@ -981,7 +981,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     if (image_info->pointsize != 0.0)
       pointsize=image_info->pointsize;
     text_size=0;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     page++;
@@ -1038,7 +1038,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         /*
           Font resources
         */
-        value=GetImageProperty(image,"label");
+        value=GetImageProperty(image,"label",exception);
         if (value != (const char *) NULL)
           (void) WriteBlobString(image,
             "%%DocumentNeededResources: font Helvetica\n");
@@ -1072,7 +1072,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         /*
           One label line for each line in label string.
         */
-        value=GetImageProperty(image,"label");
+        value=GetImageProperty(image,"label",exception);
         if (value != (const char *) NULL)
           {
               (void) WriteBlobString(image,"\n  %% Labels.\n  /Helvetica "
@@ -1130,7 +1130,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       Page font resource if there's a label.
     */
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Helvetica\n");
     /*
@@ -1144,7 +1144,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         const char
           *value;
 
-        value=GetImageProperty(image,image->clip_mask->magick_filename);
+        value=GetImageProperty(image,image->clip_mask->magick_filename,
+          exception);
         if (value == (const char *) NULL)
           return(MagickFalse);
         (void) WriteBlobString(image,value);
@@ -1184,7 +1185,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       Output labels.
     */
     labels=(char **) NULL;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       labels=StringToList(value);
     if (labels != (char **) NULL)

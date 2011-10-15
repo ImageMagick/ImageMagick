@@ -427,7 +427,8 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
 }
 #endif
 
-static MagickBooleanType SetAdobeRGB1998ImageProfile(Image *image)
+static MagickBooleanType SetAdobeRGB1998ImageProfile(Image *image,
+  ExceptionInfo *exception)
 {
   static unsigned char
     AdobeRGB1998Profile[] =
@@ -497,12 +498,13 @@ static MagickBooleanType SetAdobeRGB1998ImageProfile(Image *image)
     return(MagickFalse);
   profile=AcquireStringInfo(sizeof(AdobeRGB1998Profile));
   SetStringInfoDatum(profile,AdobeRGB1998Profile);
-  status=SetImageProfile(image,"icm",profile);
+  status=SetImageProfile(image,"icm",profile,exception);
   profile=DestroyStringInfo(profile);
   return(status);
 }
 
-static MagickBooleanType SetsRGBImageProfile(Image *image)
+static MagickBooleanType SetsRGBImageProfile(Image *image,
+  ExceptionInfo *exception)
 {
   static unsigned char
     sRGBProfile[] =
@@ -5601,7 +5603,7 @@ static MagickBooleanType SetsRGBImageProfile(Image *image)
     return(MagickFalse);
   profile=AcquireStringInfo(sizeof(sRGBProfile));
   SetStringInfoDatum(profile,sRGBProfile);
-  status=SetImageProfile(image,"icm",profile);
+  status=SetImageProfile(image,"icm",profile,exception);
   profile=DestroyStringInfo(profile);
   return(status);
 }
@@ -5704,7 +5706,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   profile=AcquireStringInfo((size_t) length);
   SetStringInfoDatum(profile,(unsigned char *) datum);
   if ((LocaleCompare(name,"icc") != 0) && (LocaleCompare(name,"icm") != 0))
-    status=SetImageProfile(image,name,profile);
+    status=SetImageProfile(image,name,profile,exception);
   else
     {
       const StringInfo
@@ -5717,15 +5719,15 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           const char
             *value;
 
-          value=GetImageProperty(image,"exif:ColorSpace");
+          value=GetImageProperty(image,"exif:ColorSpace",exception);
           if (LocaleCompare(value,"1") != 0)
-            (void) SetsRGBImageProfile(image);
-          value=GetImageProperty(image,"exif:InteroperabilityIndex");
+            (void) SetsRGBImageProfile(image,exception);
+          value=GetImageProperty(image,"exif:InteroperabilityIndex",exception);
           if (LocaleCompare(value,"R98.") != 0)
-            (void) SetsRGBImageProfile(image);
-          value=GetImageProperty(image,"exif:InteroperabilityIndex");
+            (void) SetsRGBImageProfile(image,exception);
+          value=GetImageProperty(image,"exif:InteroperabilityIndex",exception);
           if (LocaleCompare(value,"R03.") != 0)
-            (void) SetAdobeRGB1998ImageProfile(image);
+            (void) SetAdobeRGB1998ImageProfile(image,exception);
           icc_profile=GetImageProfile(image,"icc");
         }
       if ((icc_profile != (const StringInfo *) NULL) &&
@@ -5755,7 +5757,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             "ColorspaceColorProfileMismatch",name);
         if ((cmsGetDeviceClass(source_profile) != cmsSigLinkClass) &&
             (icc_profile == (StringInfo *) NULL))
-          status=SetImageProfile(image,name,profile);
+          status=SetImageProfile(image,name,profile,exception);
         else
           {
             CacheView
@@ -6117,7 +6119,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             source_pixels=DestroyPixelThreadSet(source_pixels);
             transform=DestroyTransformThreadSet(transform);
             if (cmsGetDeviceClass(source_profile) != cmsSigLinkClass)
-              status=SetImageProfile(image,name,profile);
+              status=SetImageProfile(image,name,profile,exception);
             if (target_profile != (cmsHPROFILE) NULL)
               (void) cmsCloseProfile(target_profile);
           }
@@ -6278,7 +6280,7 @@ static inline const unsigned char *ReadResourceShort(const unsigned char *p,
 }
 
 static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
-  const StringInfo *resource_block)
+  const StringInfo *resource_block,ExceptionInfo *exception)
 {
   const unsigned char
     *datum;
@@ -6341,7 +6343,7 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         */
         profile=AcquireStringInfo(count);
         SetStringInfoDatum(profile,p);
-        (void) SetImageProfile(image,"iptc",profile);
+        (void) SetImageProfile(image,"iptc",profile,exception);
         profile=DestroyStringInfo(profile);
         p+=count;
         break;
@@ -6361,7 +6363,7 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         */
         profile=AcquireStringInfo(count);
         SetStringInfoDatum(profile,p);
-        (void) SetImageProfile(image,"icc",profile);
+        (void) SetImageProfile(image,"icc",profile,exception);
         profile=DestroyStringInfo(profile);
         p+=count;
         break;
@@ -6373,7 +6375,7 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         */
         profile=AcquireStringInfo(count);
         SetStringInfoDatum(profile,p);
-        (void) SetImageProfile(image,"exif",profile);
+        (void) SetImageProfile(image,"exif",profile,exception);
         profile=DestroyStringInfo(profile);
         p+=count;
         break;
@@ -6385,7 +6387,7 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
         */
         profile=AcquireStringInfo(count);
         SetStringInfoDatum(profile,p);
-        (void) SetImageProfile(image,"xmp",profile);
+        (void) SetImageProfile(image,"xmp",profile,exception);
         profile=DestroyStringInfo(profile);
         p+=count;
         break;
@@ -6403,7 +6405,7 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
 }
 
 MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
-  const StringInfo *profile)
+  const StringInfo *profile,ExceptionInfo *exception)
 {
   char
     key[MaxTextExtent],
@@ -6424,12 +6426,12 @@ MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
     ConstantString(key),CloneStringInfo(profile));
   if ((status != MagickFalse) &&
       ((LocaleCompare(name,"iptc") == 0) || (LocaleCompare(name,"8bim") == 0)))
-    (void) GetProfilesFromResourceBlock(image,profile);
+    (void) GetProfilesFromResourceBlock(image,profile,exception);
   /*
     Inject profile into image properties.
   */
   (void) FormatLocaleString(property,MaxTextExtent,"%s:sans",name);
-  (void) GetImageProperty(image,property);
+  (void) GetImageProperty(image,property,exception);
   return(status);
 }
 

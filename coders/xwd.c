@@ -244,7 +244,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,length,(unsigned char *) comment);
   comment[length]='\0';
-  (void) SetImageProperty(image,"comment",comment);
+  (void) SetImageProperty(image,"comment",comment,exception);
   comment=DestroyString(comment);
   if (count != (ssize_t) length)
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
@@ -656,7 +656,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
   */
   (void) ResetMagickMemory(&xwd_info,0,sizeof(xwd_info));
   xwd_info.header_size=(CARD32) sz_XWDheader;
-  value=GetImageProperty(image,"comment");
+  value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     xwd_info.header_size+=(CARD32) strlen(value);
   xwd_info.header_size++;

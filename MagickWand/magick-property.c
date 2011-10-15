@@ -625,7 +625,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((char **) NULL);
     }
-  (void) GetImageProperty(wand->images,"exif:*");
+  (void) GetImageProperty(wand->images,"exif:*",wand->exception);
   length=1024;
   artifacts=(char **) AcquireQuantumMemory(length,sizeof(*artifacts));
   if (artifacts == (char **) NULL)
@@ -853,7 +853,7 @@ WandExport char *MagickGetImageProperty(MagickWand *wand,const char *property)
         "ContainsNoImages","`%s'",wand->name);
       return((char *) NULL);
     }
-  value=GetImageProperty(wand->images,property);
+  value=GetImageProperty(wand->images,property,wand->exception);
   if (value == (const char *) NULL)
     return((char *) NULL);
   return(ConstantString(value));
@@ -914,7 +914,7 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((char **) NULL);
     }
-  (void) GetImageProperty(wand->images,"exif:*");
+  (void) GetImageProperty(wand->images,"exif:*",wand->exception);
   length=1024;
   properties=(char **) AcquireQuantumMemory(length,sizeof(*properties));
   if (properties == (char **) NULL)
@@ -2304,7 +2304,7 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   profile_info=AcquireStringInfo((size_t) length);
   SetStringInfoDatum(profile_info,(unsigned char *) profile);
-  status=SetImageProfile(wand->images,name,profile_info);
+  status=SetImageProfile(wand->images,name,profile_info,wand->exception);
   profile_info=DestroyStringInfo(profile_info);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
@@ -2350,9 +2350,7 @@ WandExport MagickBooleanType MagickSetImageProperty(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageProperty(wand->images,property,value);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=SetImageProperty(wand->images,property,value,wand->exception);
   return(status);
 }
 

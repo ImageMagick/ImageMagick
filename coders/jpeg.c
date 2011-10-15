@@ -396,7 +396,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   for (p=comment; i-- >= 0; p++)
     *p=(char) GetCharacter(jpeg_info);
   *p='\0';
-  (void) SetImageProperty(image,"comment",comment);
+  (void) SetImageProperty(image,"comment",comment,exception);
   comment=DestroyString(comment);
   return(MagickTrue);
 }
@@ -475,7 +475,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      status=SetImageProfile(image,"icc",profile);
+      status=SetImageProfile(image,"icc",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -575,7 +575,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
     }
   else
     {
-      status=SetImageProfile(image,"8bim",profile);
+      status=SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -683,7 +683,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
         GetStringInfoDatum(previous_profile),
         GetStringInfoLength(previous_profile));
     }
-  status=SetImageProfile(image,name,profile);
+  status=SetImageProfile(image,name,profile,exception);
   profile=DestroyStringInfo(profile);
   if (status == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -872,7 +872,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
   }
 }
 
-static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,  Image *image)
+static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,  Image *image,ExceptionInfo *exception)
 {
   char
     sampling_factor[MaxTextExtent];
@@ -930,7 +930,8 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
       break;
     }
   }
-  (void) SetImageProperty(image,"jpeg:sampling-factor",sampling_factor);
+  (void) SetImageProperty(image,"jpeg:sampling-factor",sampling_factor,
+    exception);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Sampling Factors: %s",
     sampling_factor);
 }
@@ -1208,10 +1209,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         (int) jpeg_info.output_width,(int) jpeg_info.output_height);
     }
   JPEGSetImageQuality(&jpeg_info,image);
-  JPEGSetImageSamplingFactor(&jpeg_info,image);
+  JPEGSetImageSamplingFactor(&jpeg_info,image,exception);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     jpeg_info.out_color_space);
-  (void) SetImageProperty(image,"jpeg:colorspace",value);
+  (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
   if (image_info->ping != MagickFalse)
     {
       jpeg_destroy_decompress(&jpeg_info);
@@ -2049,7 +2050,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
 #endif
     }
   sampling_factor=(const char *) NULL;
-  value=GetImageProperty(image,"jpeg:sampling-factor");
+  value=GetImageProperty(image,"jpeg:sampling-factor",exception);
   if (value != (char *) NULL)
     {
       sampling_factor=value;
@@ -2231,7 +2232,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   /*
     Write JPEG profiles.
   */
-  value=GetImageProperty(image,"comment");
+  value=GetImageProperty(image,"comment",exception);
   if (value != (char *) NULL)
     for (i=0; i < (ssize_t) strlen(value); i+=65533L)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) value+i,

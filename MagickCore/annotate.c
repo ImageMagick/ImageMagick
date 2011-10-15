@@ -1246,7 +1246,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       draw_info->encoding != (char *) NULL ? draw_info->encoding : "none",
       draw_info->pointsize);
   flags=FT_LOAD_NO_BITMAP;
-  value=GetImageProperty(image,"type:hinting");
+  value=GetImageProperty(image,"type:hinting",exception);
   if ((value != (const char *) NULL) && (LocaleCompare(value,"off") == 0))
     flags|=FT_LOAD_NO_HINTING;
   glyph.id=0;

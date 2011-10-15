@@ -619,20 +619,20 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       density=DisplayGamma;
       gamma=DisplayGamma;
-      value=GetImageProperty(image,"gamma");
+      value=GetImageProperty(image,"gamma",exception);
       if (value != (const char *) NULL)
         gamma=1.0/fabs(InterpretLocaleValue(value,(char **) NULL)) >=
           MagickEpsilon ? InterpretLocaleValue(value,(char **) NULL) : 1.0;
       film_gamma=FilmGamma;
-      value=GetImageProperty(image,"film-gamma");
+      value=GetImageProperty(image,"film-gamma",exception);
       if (value != (const char *) NULL)
         film_gamma=InterpretLocaleValue(value,(char **) NULL);
       reference_black=ReferenceBlack;
-      value=GetImageProperty(image,"reference-black");
+      value=GetImageProperty(image,"reference-black",exception);
       if (value != (const char *) NULL)
         reference_black=InterpretLocaleValue(value,(char **) NULL);
       reference_white=ReferenceWhite;
-      value=GetImageProperty(image,"reference-white");
+      value=GetImageProperty(image,"reference-white",exception);
       if (value != (const char *) NULL)
         reference_white=InterpretLocaleValue(value,(char **) NULL);
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
@@ -2067,20 +2067,20 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       density=DisplayGamma;
       gamma=DisplayGamma;
-      value=GetImageProperty(image,"gamma");
+      value=GetImageProperty(image,"gamma",exception);
       if (value != (const char *) NULL)
         gamma=1.0/fabs(InterpretLocaleValue(value,(char **) NULL)) >=
           MagickEpsilon ? InterpretLocaleValue(value,(char **) NULL) : 1.0;
       film_gamma=FilmGamma;
-      value=GetImageProperty(image,"film-gamma");
+      value=GetImageProperty(image,"film-gamma",exception);
       if (value != (const char *) NULL)
         film_gamma=InterpretLocaleValue(value,(char **) NULL);
       reference_black=ReferenceBlack;
-      value=GetImageProperty(image,"reference-black");
+      value=GetImageProperty(image,"reference-black",exception);
       if (value != (const char *) NULL)
         reference_black=InterpretLocaleValue(value,(char **) NULL);
       reference_white=ReferenceWhite;
-      value=GetImageProperty(image,"reference-white");
+      value=GetImageProperty(image,"reference-white",exception);
       if (value != (const char *) NULL)
         reference_white=InterpretLocaleValue(value,(char **) NULL);
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
