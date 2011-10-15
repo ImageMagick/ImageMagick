@@ -3412,7 +3412,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((i == (ssize_t) length) || (length > 4))
           {
             (void) SubstituteString(&attribute," ","");
-            (void) SetImageProperty(image,attribute,(char *) data);
+            (void) SetImageProperty(image,attribute,(char *) data,exception);
           }
         attribute=DestroyString(attribute);
       }
@@ -3568,7 +3568,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             while (property != (const char *) NULL)
             {
               (void) SetImageProperty(jpeg_image,property,
-                GetImageProperty(image,property));
+                GetImageProperty(image,property,exception),exception);
               property=GetNextImageProperty(image);
             }
             AppendImageToList(&images,jpeg_image);

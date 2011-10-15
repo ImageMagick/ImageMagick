@@ -290,7 +290,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     count=ReadBlob(image,512,(unsigned char *) viff_info.comment);
     viff_info.comment[511]='\0';
     if (strlen(viff_info.comment) > 4)
-      (void) SetImageProperty(image,"comment",viff_info.comment);
+      (void) SetImageProperty(image,"comment",viff_info.comment,exception);
     if ((viff_info.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_info.machine_dependency == VFF_DEP_NSORDER))
       {
@@ -984,7 +984,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     viff_info.version=3;
     viff_info.machine_dependency=VFF_DEP_IEEEORDER;  /* IEEE byte ordering */
     *viff_info.comment='\0';
-    value=GetImageProperty(image,"comment");
+    value=GetImageProperty(image,"comment",exception);
     if (value != (const char *) NULL)
       (void) CopyMagickString(viff_info.comment,value,MagickMin(strlen(value),
         511)+1);

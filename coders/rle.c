@@ -275,7 +275,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             count=ReadBlob(image,length-1,(unsigned char *) comment);
             comment[length-1]='\0';
-            (void) SetImageProperty(image,"comment",comment);
+            (void) SetImageProperty(image,"comment",comment,exception);
             comment=DestroyString(comment);
             if ((length & 0x01) == 0)
               (void) ReadBlobByte(image);

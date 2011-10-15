@@ -1091,7 +1091,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               header[count]='\0';
               (void) ConcatenateString(&comments,(const char *) header);
             }
-            (void) SetImageProperty(image,"comment",comments);
+            (void) SetImageProperty(image,"comment",comments,exception);
             comments=DestroyString(comments);
             break;
           }
@@ -1184,7 +1184,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 else
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
                     header);
-                (void) SetImageProfile(image,name,profile);
+                (void) SetImageProfile(image,name,profile,exception);
                 profile=DestroyStringInfo(profile);
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "      profile name=%s",name);
@@ -1681,7 +1681,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
           0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
         if ((LocaleCompare(write_info->magick,"GIF87") != 0) &&
-            (GetImageProperty(image,"comment") != (const char *) NULL))
+            (GetImageProperty(image,"comment",exception) != (const char *) NULL))
           {
             const char
               *value;
@@ -1697,7 +1697,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
             */
             (void) WriteBlobByte(image,(unsigned char) 0x21);
             (void) WriteBlobByte(image,(unsigned char) 0xfe);
-            value=GetImageProperty(image,"comment");
+            value=GetImageProperty(image,"comment",exception);
             p=value;
             while (strlen(p) != 0)
             {

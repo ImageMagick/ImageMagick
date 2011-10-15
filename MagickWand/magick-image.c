@@ -850,9 +850,7 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
     PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
     PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
-  status=BlackThresholdImage(wand->images,thresholds,&wand->images->exception);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=BlackThresholdImage(wand->images,thresholds,wand->exception);
   return(status);
 }
 
@@ -1640,9 +1638,7 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageProperty(wand->images,"comment",comment);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=SetImageProperty(wand->images,"comment",comment,wand->exception);
   return(status);
 }
 
@@ -5325,7 +5321,7 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
   status=SignatureImage(wand->images,wand->exception);
   if (status == MagickFalse)
     return((char *) NULL);
-  value=GetImageProperty(wand->images,"signature");
+  value=GetImageProperty(wand->images,"signature",wand->exception);
   if (value == (const char *) NULL)
     return((char *) NULL);
   return(AcquireString(value));
@@ -6021,9 +6017,7 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageProperty(wand->images,"label",label);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=SetImageProperty(wand->images,"label",label,wand->exception);
   return(status);
 }
 

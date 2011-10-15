@@ -264,7 +264,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (scanlines == (ssize_t *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (*rla_info.description != '\0')
-    (void) SetImageProperty(image,"comment",rla_info.description);
+    (void) SetImageProperty(image,"comment",rla_info.description,exception);
   /*
     Read offsets to each scanline data.
   */

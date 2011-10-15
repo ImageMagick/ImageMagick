@@ -469,7 +469,7 @@ static MagickBooleanType ReadProfile(Image *image,const char *name,
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  status=SetImageProfile(image,name,profile);
+  status=SetImageProfile(image,name,profile,exception);
   profile=DestroyStringInfo(profile);
   if (status == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -544,7 +544,7 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length,exception);
 }
 
-static void TIFFGetProperties(TIFF *tiff,Image *image)
+static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
 {
   char
     message[MaxTextExtent],
@@ -554,49 +554,50 @@ static void TIFFGetProperties(TIFF *tiff,Image *image)
     count;
 
   if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
-    (void) SetImageProperty(image,"tiff:artist",text);
+    (void) SetImageProperty(image,"tiff:artist",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_COPYRIGHT,&text) == 1)
-    (void) SetImageProperty(image,"tiff:copyright",text);
+    (void) SetImageProperty(image,"tiff:copyright",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
-    (void) SetImageProperty(image,"tiff:timestamp",text);
+    (void) SetImageProperty(image,"tiff:timestamp",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1)
-    (void) SetImageProperty(image,"tiff:document",text);
+    (void) SetImageProperty(image,"tiff:document",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_HOSTCOMPUTER,&text) == 1)
-    (void) SetImageProperty(image,"tiff:hostcomputer",text);
+    (void) SetImageProperty(image,"tiff:hostcomputer",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
-    (void) SetImageProperty(image,"comment",text);
+    (void) SetImageProperty(image,"comment",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
-    (void) SetImageProperty(image,"tiff:make",text);
+    (void) SetImageProperty(image,"tiff:make",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1)
-    (void) SetImageProperty(image,"tiff:model",text);
+    (void) SetImageProperty(image,"tiff:model",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_OPIIMAGEID,&count,&text) == 1)
     {
       if (count >= MaxTextExtent)
         count=MaxTextExtent-1;
       (void) CopyMagickString(message,text,count+1);
-      (void) SetImageProperty(image,"tiff:image-id",message);
+      (void) SetImageProperty(image,"tiff:image-id",message,exception);
     }
   if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
-    (void) SetImageProperty(image,"label",text);
+    (void) SetImageProperty(image,"label",text,exception);
   if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
-    (void) SetImageProperty(image,"tiff:software",text);
+    (void) SetImageProperty(image,"tiff:software",text,exception);
   if (TIFFGetField(tiff,33423,&count,&text) == 1)
     {
       if (count >= MaxTextExtent)
         count=MaxTextExtent-1;
       (void) CopyMagickString(message,text,count+1);
-      (void) SetImageProperty(image,"tiff:kodak-33423",message);
+      (void) SetImageProperty(image,"tiff:kodak-33423",message,exception);
     }
   if (TIFFGetField(tiff,36867,&count,&text) == 1)
     {
       if (count >= MaxTextExtent)
         count=MaxTextExtent-1;
       (void) CopyMagickString(message,text,count+1);
-      (void) SetImageProperty(image,"tiff:kodak-36867",message);
+      (void) SetImageProperty(image,"tiff:kodak-36867",message,exception);
     }
 }
 
-static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
+static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
+  ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
   char
@@ -673,7 +674,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
         break;
     }
     if (*value != '\0')
-      (void) SetImageProperty(image,exif_info[i].property,value);
+      (void) SetImageProperty(image,exif_info[i].property,value,exception);
   }
   TIFFSetDirectory(tiff,directory);
 #else
@@ -903,11 +904,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   {
     if (0 && (image_info->verbose != MagickFalse))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
-    TIFFGetEXIFProperties(tiff,image);
+    TIFFGetEXIFProperties(tiff,image,exception);
     TIFFGetProfiles(tiff,image,exception);
-    TIFFGetProperties(tiff,image);
+    TIFFGetProperties(tiff,image,exception);
     (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
-      "lsb" : "msb");
+      "lsb" : "msb",exception);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGEWIDTH,&width);
@@ -917,7 +918,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
     if (sample_format == SAMPLEFORMAT_IEEEFP)
-      (void) SetImageProperty(image,"quantum:format","floating-point");
+      (void) SetImageProperty(image,"quantum:format","floating-point",
+        exception);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
@@ -925,42 +927,44 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       case PHOTOMETRIC_MINISBLACK:
       {
-        (void) SetImageProperty(image,"tiff:photometric","min-is-black");
+        (void) SetImageProperty(image,"tiff:photometric","min-is-black",
+          exception);
         break;
       }
       case PHOTOMETRIC_MINISWHITE:
       {
-        (void) SetImageProperty(image,"tiff:photometric","min-is-white");
+        (void) SetImageProperty(image,"tiff:photometric","min-is-white",
+          exception);
         break;
       }
       case PHOTOMETRIC_PALETTE:
       {
-        (void) SetImageProperty(image,"tiff:photometric","palette");
+        (void) SetImageProperty(image,"tiff:photometric","palette",exception);
         break;
       }
       case PHOTOMETRIC_RGB:
       {
-        (void) SetImageProperty(image,"tiff:photometric","RGB");
+        (void) SetImageProperty(image,"tiff:photometric","RGB",exception);
         break;
       }
       case PHOTOMETRIC_CIELAB:
       {
-        (void) SetImageProperty(image,"tiff:photometric","CIELAB");
+        (void) SetImageProperty(image,"tiff:photometric","CIELAB",exception);
         break;
       }
       case PHOTOMETRIC_SEPARATED:
       {
-        (void) SetImageProperty(image,"tiff:photometric","separated");
+        (void) SetImageProperty(image,"tiff:photometric","separated",exception);
         break;
       }
       case PHOTOMETRIC_YCBCR:
       {
-        (void) SetImageProperty(image,"tiff:photometric","YCBCR");
+        (void) SetImageProperty(image,"tiff:photometric","YCBCR",exception);
         break;
       }
       default:
       {
-        (void) SetImageProperty(image,"tiff:photometric","unknown");
+        (void) SetImageProperty(image,"tiff:photometric","unknown",exception);
         break;
       }
     }
@@ -977,7 +981,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Max sample value: %u",max_sample_value);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Photometric "
-          "interpretation: %s",GetImageProperty(image,"tiff:photometric"));
+          "interpretation: %s",GetImageProperty(image,"tiff:photometric",
+          exception));
       }
     image->columns=(size_t) width;
     image->rows=(size_t) height;
@@ -1060,7 +1065,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
            (void) FormatLocaleString(sampling_factor,MaxTextExtent,"%dx%d",
              horizontal,vertical);
            (void) SetImageProperty(image,"jpeg:sampling-factor",
-             sampling_factor);
+             sampling_factor,exception);
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "Sampling Factors: %s",sampling_factor);
            if ((samples_per_pixel > 1) && (photometric == PHOTOMETRIC_YCBCR))
@@ -1137,7 +1142,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         MagickFalse;
     if (image->matte != MagickFalse)
       (void) SetImageProperty(image,"tiff:alpha",
-        associated_alpha != MagickFalse ? "associated" : "unassociated");
+        associated_alpha != MagickFalse ? "associated" : "unassociated",
+        exception);
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
@@ -1174,7 +1180,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         method=ReadStripMethod;
         (void) FormatLocaleString(value,MaxTextExtent,"%u",
           (unsigned int) rows_per_strip);
-        (void) SetImageProperty(image,"tiff:rows-per-strip",value);
+        (void) SetImageProperty(image,"tiff:rows-per-strip",value,exception);
       }
     if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_CONTIG))
       method=ReadRGBAMethod;
@@ -2341,48 +2347,49 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
   }
 }
 
-static void TIFFSetProperties(TIFF *tiff,Image *image)
+static void TIFFSetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
 {
   const char
     *value;
 
   (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
-  value=GetImageProperty(image,"tiff:hostcomputer");
+  value=GetImageProperty(image,"tiff:hostcomputer",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_HOSTCOMPUTER,value);
-  value=GetImageProperty(image,"tiff:artist");
+  value=GetImageProperty(image,"tiff:artist",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_ARTIST,value);
-  value=GetImageProperty(image,"tiff:timestamp");
+  value=GetImageProperty(image,"tiff:timestamp",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_DATETIME,value);
-  value=GetImageProperty(image,"tiff:make");
+  value=GetImageProperty(image,"tiff:make",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_MAKE,value);
-  value=GetImageProperty(image,"tiff:model");
+  value=GetImageProperty(image,"tiff:model",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_MODEL,value);
-  value=GetImageProperty(image,"tiff:software");
+  value=GetImageProperty(image,"tiff:software",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,value);
-  value=GetImageProperty(image,"tiff:copyright");
+  value=GetImageProperty(image,"tiff:copyright",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_COPYRIGHT,value);
-  value=GetImageProperty(image,"kodak-33423");
+  value=GetImageProperty(image,"kodak-33423",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,33423,value);
-  value=GetImageProperty(image,"kodak-36867");
+  value=GetImageProperty(image,"kodak-36867",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,36867,value);
-  value=GetImageProperty(image,"label");
+  value=GetImageProperty(image,"label",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,value);
-  value=GetImageProperty(image,"comment");
+  value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,value);
 }
 
-static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
+static void TIFFSetEXIFProperties(TIFF *tiff,Image *image,
+  ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
   const char
@@ -2401,7 +2408,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
   (void) TIFFSetField(tiff,TIFFTAG_SUBIFD,1,&offset);
   for (i=0; exif_info[i].tag != 0; i++)
   {
-    value=GetImageProperty(image,exif_info[i].property);
+    value=GetImageProperty(image,exif_info[i].property,exception);
     if (value == (const char *) NULL)
       continue;
     switch (exif_info[i].type)
@@ -2818,7 +2825,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
          compress_tag=COMPRESSION_NONE;
          endian=FILLORDER_MSB2LSB;
        }
-    option=GetImageProperty(image,"tiff:fill-order");
+    option=GetImageProperty(image,"tiff:fill-order",exception);
     if (option != (const char *) NULL)
       {
         if (LocaleNCompare(option,"msb",3) == 0)
@@ -2841,7 +2848,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         */
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_UNASSALPHA;
-        option=GetImageProperty(image,"tiff:alpha");
+        option=GetImageProperty(image,"tiff:alpha",exception);
         if ((option != (const char *) NULL) &&
             (LocaleCompare(option,"associated") == 0))
           sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
@@ -2916,7 +2923,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
             (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
             sampling_factor=(const char *) NULL;
-            value=GetImageProperty(image,"jpeg:sampling-factor");
+            value=GetImageProperty(image,"jpeg:sampling-factor",exception);
             if (value != (char *) NULL)
               {
                 sampling_factor=value;
@@ -3065,9 +3072,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
       (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
     }
-    (void) TIFFSetProperties(tiff,image);
+    (void) TIFFSetProperties(tiff,image,exception);
     if (0)
-      (void) TIFFSetEXIFProperties(tiff,image);
+      (void) TIFFSetEXIFProperties(tiff,image,exception);
     /*
       Write image scanlines.
     */

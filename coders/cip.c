@@ -207,7 +207,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   (void) WriteBlobString(image,"<CiscoIPPhoneImage>\n");
-  value=GetImageProperty(image,"label");
+  value=GetImageProperty(image,"label",exception);
   if (value != (const char *) NULL)
     (void) FormatLocaleString(buffer,MaxTextExtent,"<Title>%s</Title>\n",value);
   else

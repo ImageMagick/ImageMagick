@@ -568,7 +568,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   number_lines=0;
   for (i=0; i < (ssize_t) number_images; i++)
   {
-    value=GetImageProperty(image_list[i],"label");
+    value=GetImageProperty(image_list[i],"label",exception);
     if (value == (const char *) NULL)
       continue;
     if (MultilineCensus(value) > number_lines)
@@ -791,7 +791,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           extract_info=frame_info;
           extract_info.width=width+2*frame_info.width;
           extract_info.height=height+2*frame_info.height;
-          value=GetImageProperty(image,"label");
+          value=GetImageProperty(image,"label",exception);
           if (value != (const char *) NULL)
             extract_info.height+=(size_t) ((metrics.ascent-
               metrics.descent+4)*MultilineCensus(value));
@@ -829,7 +829,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           }
           (void) CompositeImage(montage,image->compose,image,x_offset+x,
             y_offset+y);
-          value=GetImageProperty(image,"label");
+          value=GetImageProperty(image,"label",exception);
           if (value != (const char *) NULL)
             {
               char

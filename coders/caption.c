@@ -134,9 +134,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   */
   property=InterpretImageProperties(image_info,image,image_info->filename,
     exception);
-  (void) SetImageProperty(image,"caption",property);
+  (void) SetImageProperty(image,"caption",property,exception);
   property=DestroyString(property);
-  caption=ConstantString(GetImageProperty(image,"caption"));
+  caption=ConstantString(GetImageProperty(image,"caption",exception));
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=ConstantString(caption);
   gravity=GetImageOption(image_info,"gravity");

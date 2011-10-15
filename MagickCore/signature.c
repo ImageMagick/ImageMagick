@@ -550,7 +550,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   FinalizeSignature(signature_info);
   hex_signature=StringInfoToHexString(GetSignatureDigest(signature_info));
   (void) DeleteImageProperty(image,"signature");
-  (void) SetImageProperty(image,"signature",hex_signature);
+  (void) SetImageProperty(image,"signature",hex_signature,exception);
   /*
     Free resources.
   */

@@ -549,7 +549,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     if (image_info->pointsize != 0.0)
       pointsize=image_info->pointsize;
     text_size=0;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     if (page == 1)
@@ -591,7 +591,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
               bounds.y1,bounds.x2,bounds.y2);
           }
         (void) WriteBlobString(image,buffer);
-        value=GetImageProperty(image,"label");
+        value=GetImageProperty(image,"label",exception);
         if (value != (const char *) NULL)
           (void) WriteBlobString(image,
             "%%DocumentNeededResources: font Helvetica\n");
@@ -653,7 +653,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
           (void) WriteBlobString(image,buffer);
           (void) WriteBlobByte(image,'\n');
         }
-        value=GetImageProperty(image,"label");
+        value=GetImageProperty(image,"label",exception);
         if (value != (const char *) NULL)
           for (j=(ssize_t) MultilineCensus(value)-1; j >= 0; j--)
           {
@@ -689,7 +689,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       bounds.x2=(double) geometry.x+geometry.width-1;
     if ((double) (geometry.y+(geometry.height+text_size)-1) > bounds.y2)
       bounds.y2=(double) geometry.y+(geometry.height+text_size)-1;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
@@ -708,7 +708,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       (double) geometry.x,(double) geometry.y,scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       labels=StringToList(value);
     if (labels != (char **) NULL)

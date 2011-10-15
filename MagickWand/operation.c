@@ -639,13 +639,13 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
                 (void) DefineImageRegistry(StringRegistryType,argv[1]+9,
                     exception);
               else
-                (void) DefineImageOption(image_info,argv[1]);
+                (void) DefineImageOption(image_info,argv[1],exception);
               break;
             }
           if (IfSetOption)
-            (void) DefineImageOption(image_info,argv[1]);
+            (void) DefineImageOption(image_info,argv[1],exception);
           else
-            (void) DeleteImageOption(image_info,argv[1]);
+            (void) DeleteImageOption(image_info,argv[1],exception);
           break;
         }
       if (LocaleCompare("delay",option) == 0)
@@ -3340,7 +3340,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
                 (void) SetImageArtifact(*image,argv[1]+7,value);
               }
             else
-              (void) SetImageProperty(*image,argv[1],value);
+              (void) SetImageProperty(*image,argv[1],value,exception);
           value=DestroyString(value);
           break;
         }

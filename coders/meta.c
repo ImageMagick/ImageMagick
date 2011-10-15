@@ -1150,7 +1150,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      status=SetImageProfile(image,"8bim",profile);
+      status=SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1259,7 +1259,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      status=SetImageProfile(image,name,profile);
+      status=SetImageProfile(image,name,profile,exception);
       profile=DestroyStringInfo(profile);
       if (status == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1291,7 +1291,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      (void) SetImageProfile(image,"icc",profile);
+      (void) SetImageProfile(image,"icc",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1346,7 +1346,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       p[10]=(unsigned char) (length >> 8);
       p[11]=(unsigned char) (length & 0xff);
       SetStringInfoDatum(profile,GetBlobStreamData(buff));
-      (void) SetImageProfile(image,"8bim",profile);
+      (void) SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
@@ -1375,7 +1375,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      (void) SetImageProfile(image,"xmp",profile);
+      (void) SetImageProfile(image,"xmp",profile,exception);
       profile=DestroyStringInfo(profile);
       blob=DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);

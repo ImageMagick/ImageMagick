@@ -408,7 +408,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     (void) DeleteImageProperty(p,"label");
-    (void) SetImageProperty(p,"label",DefaultTileLabel);
+    (void) SetImageProperty(p,"label",DefaultTileLabel,exception);
   }
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   (void) CopyMagickString(montage_info->filename,image_info->filename,

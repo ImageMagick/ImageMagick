@@ -348,7 +348,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       iris_info.name);
     iris_info.name[sizeof(iris_info.name)-1]='\0';
     if (*iris_info.name != '\0')
-      (void) SetImageProperty(image,"label",iris_info.name);
+      (void) SetImageProperty(image,"label",iris_info.name,exception);
     iris_info.pixel_format=ReadBlobMSBLong(image);
     if (iris_info.pixel_format != 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -954,7 +954,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobMSBLong(image,(unsigned int) iris_info.minimum_value);
     (void) WriteBlobMSBLong(image,(unsigned int) iris_info.maximum_value);
     (void) WriteBlobMSBLong(image,(unsigned int) iris_info.sans);
-    value=GetImageProperty(image,"label");
+    value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       (void) CopyMagickString(iris_info.name,value,sizeof(iris_info.name));
     (void) WriteBlob(image,sizeof(iris_info.name),(unsigned char *)

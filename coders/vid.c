@@ -172,7 +172,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     label=InterpretImageProperties(image_info,next_image,DefaultTileLabel,
       exception);
-    (void) SetImageProperty(next_image,"label",label);
+    (void) SetImageProperty(next_image,"label",label,exception);
     label=DestroyString(label);
     if (image_info->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -326,7 +326,7 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image,
     Create the visual image directory.
   */
   for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
-    (void) SetImageProperty(p,"label",DefaultTileLabel);
+    (void) SetImageProperty(p,"label",DefaultTileLabel,exception);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImageList(image_info,montage_info,image,exception);
   montage_info=DestroyMontageInfo(montage_info);

@@ -2863,10 +2863,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
       image->matte=MagickTrue;
       SetImageProperty(image,"svg:base-uri",
-        rsvg_handle_get_base_uri(svg_handle));
-      SetImageProperty(image,"svg:title",rsvg_handle_get_title(svg_handle));
+        rsvg_handle_get_base_uri(svg_handle),exception);
+      SetImageProperty(image,"svg:title",rsvg_handle_get_title(svg_handle),
+        exception);
       SetImageProperty(image,"svg:description",
-        rsvg_handle_get_desc(svg_handle));
+        rsvg_handle_get_desc(svg_handle),exception);
       if ((image->columns == 0) || (image->rows == 0))
         {
 #if !defined(MAGICKCORE_CAIRO_DELEGATE)
@@ -3079,9 +3080,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image != (Image *) NULL)
     {
       if (svg_info->title != (char *) NULL)
-        (void) SetImageProperty(image,"svg:title",svg_info->title);
+        (void) SetImageProperty(image,"svg:title",svg_info->title,exception);
       if (svg_info->comment != (char *) NULL)
-        (void) SetImageProperty(image,"svg:comment",svg_info->comment);
+        (void) SetImageProperty(image,"svg:comment",svg_info->comment,
+          exception);
     }
   svg_info=DestroySVGInfo(svg_info);
   (void) RelinquishUniqueFileResource(filename);

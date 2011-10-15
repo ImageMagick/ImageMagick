@@ -29,16 +29,16 @@ extern MagickExport char
   *RemoveImageProperty(Image *,const char *);
 
 extern MagickExport const char
-  *GetImageProperty(const Image *,const char *),
-  *GetMagickProperty(const ImageInfo *,Image *,const char *);
+  *GetImageProperty(const Image *,const char *,ExceptionInfo *),
+  *GetMagickProperty(const ImageInfo *,Image *,const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   CloneImageProperties(Image *,const Image *),
-  DefineImageProperty(Image *,const char *),
+  DefineImageProperty(Image *,const char *,ExceptionInfo *),
   DeleteImageProperty(Image *,const char *),
   FormatImageProperty(Image *,const char *,const char *,...)
     magick_attribute((format (printf,3,4))),
-  SetImageProperty(Image *,const char *,const char *);
+  SetImageProperty(Image *,const char *,const char *,ExceptionInfo *);
 
 extern MagickExport void
   DestroyImageProperties(Image *),

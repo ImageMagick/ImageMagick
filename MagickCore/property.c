@@ -192,7 +192,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %  The format of the DefineImageProperty method is:
 %
 %      MagickBooleanType DefineImageProperty(Image *image,
-%        const char *property)
+%        const char *property,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -200,9 +200,11 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %
 %    o property: the image property.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType DefineImageProperty(Image *image,
-  const char *property)
+  const char *property,ExceptionInfo *exception)
 {
   char
     key[MaxTextExtent],
@@ -221,7 +223,7 @@ MagickExport MagickBooleanType DefineImageProperty(Image *image,
   if (*p == '=')
     (void) CopyMagickString(value,p+1,MaxTextExtent);
   *p='\0';
-  return(SetImageProperty(image,key,value));
+  return(SetImageProperty(image,key,value,exception));
 }
 
 /*
@@ -341,7 +343,7 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
   n=FormatLocaleStringList(value,MaxTextExtent,format,operands);
   (void) n;
   va_end(operands);
-  return(SetImageProperty(image,property,value));
+  return(SetImageProperty(image,property,value,&image->exception));
 }
 
 /*
@@ -359,13 +361,16 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 %
 %  The format of the GetImageProperty method is:
 %
-%      const char *GetImageProperty(const Image *image,const char *key)
+%      const char *GetImageProperty(const Image *image,const char *key,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o key: the key.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -375,7 +380,8 @@ static char
   *TraceSVGClippath(const unsigned char *,size_t,const size_t,
     const size_t);
 
-static MagickBooleanType GetIPTCProperty(const Image *image,const char *key)
+static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
+  ExceptionInfo *exception)
 {
   char
     *attribute,
@@ -435,7 +441,8 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key)
       return(MagickFalse);
     }
   attribute[strlen(attribute)-1]='\0';
-  (void) SetImageProperty((Image *) image,key,(const char *) attribute);
+  (void) SetImageProperty((Image *) image,key,(const char *) attribute,
+    exception);
   attribute=DestroyString(attribute);
   return(MagickTrue);
 }
@@ -517,7 +524,8 @@ static inline unsigned short ReadPropertyMSBShort(const unsigned char **p,
   return((unsigned short) (value & 0xffff));
 }
 
-static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
+static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
+  ExceptionInfo *exception)
 {
   char
     *attribute,
@@ -640,7 +648,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
         length-=count;
         if ((id <= 1999) || (id >= 2999))
           (void) SetImageProperty((Image *) image,key,(const char *)
-            attribute);
+            attribute,exception);
         else
           {
             char
@@ -652,7 +660,8 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
             else
               path=TracePSClippath((unsigned char *) attribute,(size_t) count,
                 image->columns,image->rows);
-            (void) SetImageProperty((Image *) image,key,(const char *) path);
+            (void) SetImageProperty((Image *) image,key,(const char *) path,
+              exception);
             path=DestroyString(path);
           }
         attribute=DestroyString(attribute);
@@ -698,7 +707,7 @@ static inline size_t ReadPropertyLong(const EndianType endian,
 }
 
 static MagickBooleanType GetEXIFProperty(const Image *image,
-  const char *property)
+  const char *property,ExceptionInfo *exception)
 {
 #define MaxDirectoryStack  16
 #define EXIF_DELIMITER  "\n"
@@ -1429,7 +1438,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
                   image->properties,key);
               if (p == (const char *) NULL)
-                (void) SetImageProperty((Image *) image,key,value);
+                (void) SetImageProperty((Image *) image,key,value,exception);
               value=DestroyString(value);
               status=MagickTrue;
             }
@@ -1936,11 +1945,8 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
 }
 
 MagickExport const char *GetImageProperty(const Image *image,
-  const char *property)
+  const char *property,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   FxInfo
     *fx_info;
 
@@ -1978,14 +1984,13 @@ MagickExport const char *GetImageProperty(const Image *image,
   if ((property == (const char *) NULL) ||
       (strchr(property,':') == (char *) NULL))
     return(p);
-  exception=(&((Image *) image)->exception);
   switch (*property)
   {
     case '8':
     {
       if (LocaleNCompare("8bim:",property,5) == 0)
         {
-          if ((Get8BIMProperty(image,property) != MagickFalse) &&
+          if ((Get8BIMProperty(image,property,exception) != MagickFalse) &&
               (image->properties != (void *) NULL))
             {
               p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
@@ -2000,7 +2005,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("exif:",property,5) == 0)
         {
-          if ((GetEXIFProperty(image,property) != MagickFalse) &&
+          if ((GetEXIFProperty(image,property,exception) != MagickFalse) &&
               (image->properties != (void *) NULL))
             {
               p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
@@ -2026,7 +2031,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 
               (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
                 GetMagickPrecision(),(double) alpha);
-              (void) SetImageProperty((Image *) image,property,value);
+              (void) SetImageProperty((Image *) image,property,value,exception);
             }
           if (image->properties != (void *) NULL)
             {
@@ -2042,7 +2047,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("iptc:",property,5) == 0)
         {
-          if ((GetIPTCProperty(image,property) != MagickFalse) &&
+          if ((GetIPTCProperty(image,property,exception) != MagickFalse) &&
               (image->properties != (void *) NULL))
             {
               p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
@@ -2088,8 +2093,8 @@ MagickExport const char *GetImageProperty(const Image *image,
 
               (void) QueryColorname(image,&pixel,SVGCompliance,name,
                 exception);
-              (void) SetImageProperty((Image *) image,property,name);
-              return(GetImageProperty(image,property));
+              (void) SetImageProperty((Image *) image,property,name,exception);
+              return(GetImageProperty(image,property,exception));
             }
         }
       break;
@@ -2131,7 +2136,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 %  The format of the GetMagickProperty method is:
 %
 %      const char *GetMagickProperty(const ImageInfo *image_info,Image *image,
-%        const char *key)
+%        const char *key,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2141,9 +2146,11 @@ MagickExport const char *GetImageProperty(const Image *image,
 %
 %    o key: the key.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
-  Image *image,const char *property)
+  Image *image,const char *property,ExceptionInfo *exception)
 {
   char
     value[MaxTextExtent],
@@ -2471,7 +2478,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
      (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
        ConstantString(property),ConstantString(value));
    }
-  return(GetImageProperty(image,property));
+  return(GetImageProperty(image,property,exception));
 }
 
 /*
@@ -2650,7 +2657,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           pattern[i]=(*p++);
         }
         pattern[i]='\0';
-        value=GetImageProperty(image,pattern);
+        value=GetImageProperty(image,pattern,exception);
         if (value != (const char *) NULL)
           {
             length=strlen(value);
@@ -2679,7 +2686,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
               {
                 if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
                   {
-                    value=GetImageProperty(image,key);
+                    value=GetImageProperty(image,key,exception);
                     if (value != (const char *) NULL)
                       {
                         length=strlen(key)+strlen(value)+2;
@@ -2699,7 +2706,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
                 key=GetNextImageProperty(image);
               }
             }
-        value=GetMagickProperty(image_info,image,pattern);
+        value=GetMagickProperty(image_info,image,pattern,exception);
         if (value != (const char *) NULL)
           {
             length=strlen(value);
@@ -2752,7 +2759,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 'c':  /* image comment properity */
       {
-        value=GetImageProperty(image,"comment");
+        value=GetImageProperty(image,"comment",exception);
         if (value == (const char *) NULL)
           break;
         length=strlen(value);
@@ -2819,7 +2826,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 'l': /* Image label  */
       {
-        value=GetImageProperty(image,"label");
+        value=GetImageProperty(image,"label",exception);
         if (value == (const char *) NULL)
           break;
         length=strlen(value);
@@ -3016,7 +3023,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       case '#': /* Image signature */
       {
         (void) SignatureImage(image,exception);
-        value=GetImageProperty(image,"signature");
+        value=GetImageProperty(image,"signature",exception);
         if (value == (const char *) NULL)
           break;
         q+=CopyMagickString(q,value,extent);
@@ -3138,7 +3145,7 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 %  The format of the SetImageProperty method is:
 %
 %      MagickBooleanType SetImageProperty(Image *image,const char *property,
-%        const char *value)
+%        const char *value,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3148,13 +3155,12 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 %
 %    o values: the image property values.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetImageProperty(Image *image,
-  const char *property,const char *value)
+  const char *property,const char *value,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   MagickBooleanType
     status;
 
@@ -3172,7 +3178,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   if ((value == (const char *) NULL) || (*value == '\0'))
     return(DeleteImageProperty(image,property));
   status=MagickTrue;
-  exception=(&image->exception);
   switch (*property)
   {
     case 'B':
@@ -3381,7 +3386,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           (void) SetImageInfo(image_info,1,exception);
           profile=FileToStringInfo(image_info->filename,~0UL,exception);
           if (profile != (StringInfo *) NULL)
-            status=SetImageProfile(image,image_info->magick,profile);
+            status=SetImageProfile(image,image_info->magick,profile,exception);
           image_info=DestroyImageInfo(image_info);
           break;
         }

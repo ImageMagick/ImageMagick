@@ -1276,7 +1276,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   break;
                 profile=BlobToStringInfo((const void *) NULL,length);
                 SetStringInfoDatum(profile,info);
-                status=SetImageProfile(image,"icc",profile);
+                status=SetImageProfile(image,"icc",profile,exception);
                 profile=DestroyStringInfo(profile);
                 if (status == MagickFalse)
                   ThrowReaderException(ResourceLimitError,
@@ -1289,7 +1289,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   break;
                 profile=BlobToStringInfo((const void *) NULL,length);
                 SetStringInfoDatum(profile,info);
-                status=SetImageProfile(image,"iptc",profile);
+                status=SetImageProfile(image,"iptc",profile,exception);
                 if (status == MagickFalse)
                   ThrowReaderException(ResourceLimitError,
                     "MemoryAllocationFailed");

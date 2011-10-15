@@ -647,16 +647,16 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
       next->magick_rows=next->rows;
-    value=GetImageProperty(next,"tiff:Orientation");
+    value=GetImageProperty(next,"tiff:Orientation",exception);
     if (value == (char *) NULL)
-      value=GetImageProperty(next,"exif:Orientation");
+      value=GetImageProperty(next,"exif:Orientation",exception);
     if (value != (char *) NULL)
       {
         next->orientation=(OrientationType) StringToLong(value);
         (void) DeleteImageProperty(next,"tiff:Orientation");
         (void) DeleteImageProperty(next,"exif:Orientation");
       }
-    value=GetImageProperty(next,"exif:XResolution");
+    value=GetImageProperty(next,"exif:XResolution",exception);
     if (value != (char *) NULL)
       {
         geometry_info.rho=next->x_resolution;
@@ -666,7 +666,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           next->x_resolution=geometry_info.rho/geometry_info.sigma;
         (void) DeleteImageProperty(next,"exif:XResolution");
       }
-    value=GetImageProperty(next,"exif:YResolution");
+    value=GetImageProperty(next,"exif:YResolution",exception);
     if (value != (char *) NULL)
       {
         geometry_info.rho=next->y_resolution;
@@ -676,9 +676,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           next->y_resolution=geometry_info.rho/geometry_info.sigma;
         (void) DeleteImageProperty(next,"exif:YResolution");
       }
-    value=GetImageProperty(next,"tiff:ResolutionUnit");
+    value=GetImageProperty(next,"tiff:ResolutionUnit",exception);
     if (value == (char *) NULL)
-      value=GetImageProperty(next,"exif:ResolutionUnit");
+      value=GetImageProperty(next,"exif:ResolutionUnit",exception);
     if (value != (char *) NULL)
       {
         next->units=(ResolutionType) (StringToLong(value)-1);
@@ -693,21 +693,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     if (option != (const char *) NULL)
       {
         property=InterpretImageProperties(read_info,next,option,exception);
-        (void) SetImageProperty(next,"caption",property);
+        (void) SetImageProperty(next,"caption",property,exception);
         property=DestroyString(property);
       }
     option=GetImageOption(read_info,"comment");
     if (option != (const char *) NULL)
       {
         property=InterpretImageProperties(read_info,next,option,exception);
-        (void) SetImageProperty(next,"comment",property);
+        (void) SetImageProperty(next,"comment",property,exception);
         property=DestroyString(property);
       }
     option=GetImageOption(read_info,"label");
     if (option != (const char *) NULL)
       {
         property=InterpretImageProperties(read_info,next,option,exception);
-        (void) SetImageProperty(next,"label",property);
+        (void) SetImageProperty(next,"label",property,exception);
         property=DestroyString(property);
       }
     if (LocaleCompare(next->magick,"TEXT") == 0)
@@ -754,10 +754,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       profile=GetImageProfile(next,"8bim");
     (void) FormatMagickTime(GetBlobProperties(next)->st_mtime,MaxTextExtent,
       timestamp);
-    (void) SetImageProperty(next,"date:modify",timestamp);
+    (void) SetImageProperty(next,"date:modify",timestamp,exception);
     (void) FormatMagickTime(GetBlobProperties(next)->st_ctime,MaxTextExtent,
       timestamp);
-    (void) SetImageProperty(next,"date:create",timestamp);
+    (void) SetImageProperty(next,"date:create",timestamp,exception);
     option=GetImageOption(image_info,"delay");
     if (option != (const char *) NULL)
       {

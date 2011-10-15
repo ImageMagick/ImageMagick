@@ -1798,7 +1798,7 @@ static png_free_ptr Magick_png_free(png_structp png_ptr,png_voidp ptr)
 
 static int
 Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
-   png_textp text,int ii)
+   png_textp text,int ii,ExceptionInfo *exception)
 {
   register ssize_t
     i;
@@ -1886,7 +1886,7 @@ Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
   /*
     We have already read "Raw profile type.
   */
-  (void) SetImageProfile(image,&text[ii].key[17],profile);
+  (void) SetImageProfile(image,&text[ii].key[17],profile,exception);
   profile=DestroyStringInfo(profile);
 
   if (image_info->verbose)
@@ -2305,7 +2305,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             return((Image *) NULL);
           }
           SetStringInfoDatum(profile,(const unsigned char *) info);
-          (void) SetImageProfile(image,"icc",profile);
+          (void) SetImageProfile(image,"icc",profile,exception);
           profile=DestroyStringInfo(profile);
       }
     }
@@ -2766,17 +2766,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      (void) FormatLocaleString(msg,MaxTextExtent,
          "%d, %d",(int) ping_width, (int) ping_height);
-     (void) SetImageProperty(image,"PNG:IHDR.width,height    ",msg);
+     (void) SetImageProperty(image,"PNG:IHDR.width,height    ",msg,exception);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
-     (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg);
+     (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg,exception);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
-     (void) SetImageProperty(image,"PNG:IHDR.color_type      ",msg);
+     (void) SetImageProperty(image,"PNG:IHDR.color_type      ",msg,exception);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",
         (int) ping_interlace_method);
-     (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg);
+     (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg,exception);
    }
 
   /*
@@ -3347,7 +3347,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
         if (memcmp(text[i].key, "Raw profile type ",17) == 0)
           {
-            (void) Magick_png_read_raw_profile(image,image_info,text,(int) i);
+            (void) Magick_png_read_raw_profile(image,image_info,text,(int) i,
+              exception);
             num_raw_profiles++;
           }
 
@@ -3375,7 +3376,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs) ||
                 (LocaleCompare(text[i].key,"density") != 0 &&
                 LocaleCompare(text[i].key,"units") != 0))
-               (void) SetImageProperty(image,text[i].key,value);
+               (void) SetImageProperty(image,text[i].key,value,exception);
 
             if (logging != MagickFalse)
             {
@@ -3501,38 +3502,38 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
          (void) FormatLocaleString(msg,MaxTextExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
-         (void) SetImageProperty(image,"PNG:text                 ",msg);
+         (void) SetImageProperty(image,"PNG:text                 ",msg,exception);
        }
 
      if (num_raw_profiles != 0)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
             "%d were found", num_raw_profiles);
-         (void) SetImageProperty(image,"PNG:text-encoded profiles",msg);
+         (void) SetImageProperty(image,"PNG:text-encoded profiles",msg,exception);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
-         (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
+         (void) SetImageProperty(image,"PNG:cHRM                 ",msg,exception);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Background color, above)");
-         (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
+         (void) SetImageProperty(image,"PNG:bKGD                 ",msg,exception);
        }
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
      if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
-        (void) SetImageProperty(image,"PNG:iCCP                 ",msg);
+        (void) SetImageProperty(image,"PNG:iCCP                 ",msg,exception);
 
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
-        (void) SetImageProperty(image,"PNG:tRNS                 ",msg);
+        (void) SetImageProperty(image,"PNG:tRNS                 ",msg,exception);
 
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
@@ -3540,7 +3541,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "intent=%d (See Rendering intent)",
             (int) intent);
-         (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
+         (void) SetImageProperty(image,"PNG:sRGB                 ",msg,exception);
        }
 #endif
 
@@ -3549,7 +3550,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)",
             file_gamma);
-         (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
+         (void) SetImageProperty(image,"PNG:gAMA                 ",msg,exception);
        }
 
 #if defined(PNG_pHYs_SUPPORTED)
@@ -3558,7 +3559,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
-         (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
+         (void) SetImageProperty(image,"PNG:pHYs                 ",msg,exception);
        }
 #endif
 
@@ -3567,7 +3568,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
-         (void) SetImageProperty(image,"PNG:oFFs                 ",msg);
+         (void) SetImageProperty(image,"PNG:oFFs                 ",msg,exception);
        }
 #endif
 
@@ -3577,7 +3578,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "width=%.20g, height=%.20g",
             (double) image->page.width,(double) image->page.height);
-         (void) SetImageProperty(image,"PNG:vpAg                 ",msg);
+         (void) SetImageProperty(image,"PNG:vpAg                 ",msg,exception);
        }
    }
 
@@ -10635,7 +10636,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       png_textp
         text;
 
-      value=GetImageProperty(image,property);
+      value=GetImageProperty(image,property,exception);
 
       /* Don't write any "png:" properties; those are just for "identify" */
       if (LocaleNCompare(property,"png:",4) != 0 &&
@@ -10762,7 +10763,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   s[0]=(char) ping_bit_depth;
   s[1]='\0';
 
-  (void) SetImageProperty(IMimage,"png:bit-depth-written",s);
+  (void) SetImageProperty(IMimage,"png:bit-depth-written",s,exception);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11711,7 +11712,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             &image->exception);
 
           /* Retrieve sample depth used */
-          value=GetImageProperty(jpeg_image,"png:bit-depth-written");
+          value=GetImageProperty(jpeg_image,"png:bit-depth-written",exception);
           if (value != (char *) NULL)
             jng_alpha_sample_depth= (unsigned int) value[0];
         }

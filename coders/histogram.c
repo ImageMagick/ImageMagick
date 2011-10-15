@@ -366,7 +366,8 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
           property=FileToString(filename,~0UL,exception);
           if (property != (char *) NULL)
             {
-              (void) SetImageProperty(histogram_image,"comment",property);
+              (void) SetImageProperty(histogram_image,"comment",property,
+                exception);
               property=DestroyString(property);
             }
         }

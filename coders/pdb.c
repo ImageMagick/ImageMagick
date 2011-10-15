@@ -572,7 +572,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *p='\0';
       if (comment == (char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      (void) SetImageProperty(image,"comment",comment);
+      (void) SetImageProperty(image,"comment",comment,exception);
       comment=DestroyString(comment);
     }
   (void) CloseBlob(image);
@@ -770,7 +770,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) CopyMagickMemory(pdb_info.id,"View",4);
   pdb_info.seed=0;
   pdb_info.next_record=0;
-  comment=GetImageProperty(image,"comment");
+  comment=GetImageProperty(image,"comment",exception);
   pdb_info.number_records=(comment == (const char *) NULL ? 1 : 2);
   (void) WriteBlob(image,32,(unsigned char *) pdb_info.name);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_info.attributes);

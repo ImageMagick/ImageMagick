@@ -8971,7 +8971,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (unique_file == -1)
         XNoticeWidget(display,windows,"Unable to edit image comment",
           image_info->filename);
-      value=GetImageProperty(*image,"comment");
+      value=GetImageProperty(*image,"comment",exception);
       if (value == (char *) NULL)
         unique_file=close(unique_file)-1;
       else
@@ -9006,7 +9006,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           comment=FileToString(image_info->filename,~0UL,exception);
           if (comment != (char *) NULL)
             {
-              (void) SetImageProperty(*image,"comment",comment);
+              (void) SetImageProperty(*image,"comment",comment,exception);
               (*image)->taint=MagickTrue;
             }
         }
@@ -9099,7 +9099,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         ParseCommandOption(MagickPreviewOptions,MagickFalse,preview_type);
       image_info->group=(ssize_t) windows->image.id;
       (void) DeleteImageProperty(*image,"label");
-      (void) SetImageProperty(*image,"label","Preview");
+      (void) SetImageProperty(*image,"label","Preview",exception);
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"preview:%s",
         filename);
@@ -9132,7 +9132,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=(ssize_t) windows->image.id;
       (void) DeleteImageProperty(*image,"label");
-      (void) SetImageProperty(*image,"label","Histogram");
+      (void) SetImageProperty(*image,"label","Histogram",exception);
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"histogram:%s",
         filename);
@@ -9171,7 +9171,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=(ssize_t) windows->image.id;
       (void) DeleteImageProperty(*image,"label");
-      (void) SetImageProperty(*image,"label","Matte");
+      (void) SetImageProperty(*image,"label","Matte",exception);
       (void) AcquireUniqueFilename(filename);
       (void) FormatLocaleString((*image)->filename,MaxTextExtent,"matte:%s",
         filename);
@@ -13682,7 +13682,7 @@ static Image *XVisualDirectoryImage(Display *display,
       {
         (void) DeleteImageProperty(next_image,"label");
         (void) SetImageProperty(next_image,"label",InterpretImageProperties(
-          read_info,next_image,DefaultTileLabel,exception));
+          read_info,next_image,DefaultTileLabel,exception),exception);
         (void) ParseRegionGeometry(next_image,read_info->size,&geometry,
           exception);
         thumbnail_image=ThumbnailImage(next_image,geometry.width,
