@@ -772,7 +772,6 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
           (void) SetImageOption(image_info,option,value);
 
           sans=AcquireExceptionInfo();
-          /*(void) QueryColorCompliance(value,AllCompliance,&fill,sans);*/
           status=QueryColorCompliance(value,AllCompliance,&draw_info->fill,sans);
           sans=DestroyExceptionInfo(sans);
 
@@ -810,16 +809,19 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
         }
       if (LocaleCompare("fuzz",option) == 0)
         {
-          /* FUTURE: image_info and ImageOption! */
-          if (*argv[0] == '+')
+          /* FUTURE: image_info and ImageOption!
+             Option used to set image fuzz! unless blank canvas (from color)
+             image attribute used for color compare operations
+             Can't find anything using image_info->fuzz (except cloning)!
+          */
+          if (IfSetOption)
             {
-              image_info->fuzz=0.0;
-              (void) SetImageOption(image_info,option,"0");
+              image_info->fuzz=SiPrefixToDouble(argv[1],(double) QuantumRange+1.0);
+              (void) SetImageOption(image_info,option,argv[1]);
               break;
             }
-          image_info->fuzz=SiPrefixToDouble(argv[1],(double) QuantumRange+
-            1.0);
-          (void) SetImageOption(image_info,option,argv[1]);
+          image_info->fuzz=0.0;
+          (void) SetImageOption(image_info,option,"0");
           break;
         }
       break;
@@ -1390,7 +1392,6 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
             }
               (void) QueryColorCompliance("none",AllCompliance,
                   &image_info->transparent_color,exception);
-            exception);
           (void) SetImageOption(image_info,option,argv[1]);
           break;
         }
@@ -1993,8 +1994,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           */
           (void) SyncImageSettings(image_info,*image);
           (void) TransformImageColorspace(*image,
-                    IfSetOption ? image_info->colorspace : RGBColorspace);
-          InheritException(exception,&(*image)->exception);
+                    IfSetOption ? image_info->colorspace : RGBColorspace,
+                    exception);
           break;
         }
       if (LocaleCompare("contrast",argv[0]+1) == 0)
@@ -2424,9 +2425,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
     {
       if (LocaleCompare("gamma",argv[0]+1) == 0)
         {
-          /*
-            Gamma image.
-          */
           (void) SyncImageSettings(image_info,*image);
           if (*argv[0] == '+')
             (*image)->gamma=InterpretLocaleValue(argv[1],(char **) NULL);
@@ -2438,9 +2436,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
       if ((LocaleCompare("gaussian-blur",argv[0]+1) == 0) ||
           (LocaleCompare("gaussian",argv[0]+1) == 0))
         {
-          /*
-            Gaussian blur image.
-          */
           (void) SyncImageSettings(image_info,*image);
           flags=ParseGeometry(argv[1],&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2454,7 +2449,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
       if (LocaleCompare("geometry",argv[0]+1) == 0)
         {
             /*
-              Record Image offset, Resize last image.
+              Record Image offset for composition,
+              Resize last image. -- FUTURE depreciate this aspect
             */
           (void) SyncImageSettings(image_info,*image);
           if (*argv[0] == '+')
@@ -3527,8 +3523,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             Strip image of profiles and comments.
           */
           (void) SyncImageSettings(image_info,*image);
-          (void) StripImage(*image);
-          InheritException(exception,&(*image)->exception);
+          (void) StripImage(*image,exception);
           break;
         }
       if (LocaleCompare("stroke",argv[0]+1) == 0)
@@ -3598,8 +3593,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             threshold=(double) QuantumRange/2;
           else
             threshold=SiPrefixToDouble(argv[1],QuantumRange);
-          (void) BilevelImage(*image,threshold);
-          InheritException(exception,&(*image)->exception);
+          (void) BilevelImage(*image,threshold,exception);
           break;
         }
       if (LocaleCompare("thumbnail",argv[0]+1) == 0)
@@ -4078,7 +4072,7 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
               break;
             }
           (void) TransformImage(&composite_image,(char *) NULL,
-            composite_image->geometry);
+            composite_image->geometry,exception);
           SetGeometry(composite_image,&geometry);
           (void) ParseAbsoluteGeometry(composite_image->geometry,&geometry);
           GravityAdjustGeometry(image->columns,image->rows,image->gravity,
@@ -4093,7 +4087,7 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
                     Merge Y displacement into X displacement image.
                   */
                   (void) CompositeImage(composite_image,CopyGreenCompositeOp,
-                    mask_image,0,0);
+                    mask_image,0,0,exception);
                   mask_image=DestroyImage(mask_image);
                 }
               else
@@ -4107,11 +4101,10 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
                 }
             }
           (void) CompositeImage(image,compose,composite_image,
-            geometry.x,geometry.y);
+            geometry.x,geometry.y,exception);
           if (mask_image != (Image *) NULL)
             mask_image=image->mask=DestroyImage(image->mask);
           composite_image=DestroyImage(composite_image);
-          InheritException(exception,&image->exception);
           *images=DestroyImageList(*images);
           *images=image;
           break;
