@@ -4457,7 +4457,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickFalse,option);
   option=GetImageOption(image_info,"fuzz");
   if (option != (const char *) NULL)
-    image->fuzz=SiPrefixToDouble(option,QuantumRange);
+    image->fuzz=SiPrefixToDouble(option,(double) QuantumRange+1.0);
   option=GetImageOption(image_info,"gravity");
   if (option != (const char *) NULL)
     image->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,

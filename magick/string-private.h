@@ -31,6 +31,9 @@ static inline double SiPrefixToDouble(const char *string,const double interval)
     scale,
     value;
 
+  /*
+    Interpret string with International System of Units (SI) unit prefix.
+  */
   value=InterpretLocaleValue(string,&q);
   scale=1000.0;
   if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
