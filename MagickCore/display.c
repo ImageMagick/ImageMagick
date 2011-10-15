@@ -3541,7 +3541,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],1.0*
+                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],(double)
                   QuantumRange+1.0);
                 break;
               }
@@ -3551,7 +3551,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=SiPrefixToDouble(fuzz,1.0*QuantumRange+1.0);
+            (*image)->fuzz=SiPrefixToDouble(fuzz,(double) QuantumRange+1.0);
             break;
           }
           case ColorEditUndoCommand:
@@ -9854,7 +9854,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],1.0*
+                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],(double)
                   QuantumRange+1.0);
                 break;
               }
@@ -9864,7 +9864,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=SiPrefixToDouble(fuzz,1.0*QuantumRange+1.0);
+            (*image)->fuzz=SiPrefixToDouble(fuzz,(double) QuantumRange+1.0);
             break;
           }
           case MatteEditValueCommand:
