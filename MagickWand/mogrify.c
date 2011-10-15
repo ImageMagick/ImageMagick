@@ -1178,13 +1178,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               {
                 (void) TransformImageColorspace(*image,RGBColorspace,exception);
-                InheritException(exception,&(*image)->exception);
                 break;
               }
             colorspace=(ColorspaceType) ParseCommandOption(
               MagickColorspaceOptions,MagickFalse,argv[i+1]);
             (void) TransformImageColorspace(*image,colorspace,exception);
-            InheritException(exception,&(*image)->exception);
             break;
           }
         if (LocaleCompare("compose",option+1) == 0)
