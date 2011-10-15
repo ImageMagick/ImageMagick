@@ -214,9 +214,9 @@ static MagickBooleanType
 
 static void
   XMakeImageLSBFirst(const XResourceInfo *,const XWindowInfo *,Image *,
-    XImage *,XImage *),
+    XImage *,XImage *,ExceptionInfo *),
   XMakeImageMSBFirst(const XResourceInfo *,const XWindowInfo *,Image *,
-    XImage *,XImage *);
+    XImage *,XImage *,ExceptionInfo *);
 
 static Window
   XSelectWindow(Display *,RectangleInfo *);
@@ -633,7 +633,8 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
       */
       (void) FormatLocaleString(image_geometry,MaxTextExtent,"%ux%u",
         width,height);
-      (void) TransformImage(&annotate_image,(char *) NULL,image_geometry);
+      (void) TransformImage(&annotate_image,(char *) NULL,image_geometry,
+        exception);
     }
   if (annotate_info->degrees != 0.0)
     {
@@ -702,7 +703,8 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
   (void) CompositeImage(image,annotate_image->matte != MagickFalse ?
-    OverCompositeOp : CopyCompositeOp,annotate_image,(ssize_t) x,(ssize_t) y);
+    OverCompositeOp : CopyCompositeOp,annotate_image,(ssize_t) x,(ssize_t) y,
+    exception);
   image->matte=matte;
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);
@@ -2547,7 +2549,8 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
       */
       (void) FormatLocaleString(image_geometry,MaxTextExtent,"%ux%u",
         width,height);
-      (void) TransformImage(&draw_image,(char *) NULL,image_geometry);
+      (void) TransformImage(&draw_image,(char *) NULL,image_geometry,
+        exception);
     }
   if (draw_info->degrees != 0.0)
     {
@@ -2638,12 +2641,12 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
     (void) CompositeImage(image,CopyOpacityCompositeOp,draw_image,(ssize_t) x,
-      (ssize_t) y);
+      (ssize_t) y,exception);
   else
     {
       matte=image->matte;
       (void) CompositeImage(image,OverCompositeOp,draw_image,(ssize_t) x,
-        (ssize_t) y);
+        (ssize_t) y,exception);
       image->matte=matte;
     }
   draw_image=DestroyImage(draw_image);
@@ -4519,7 +4522,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         if (y_offset < 0)
           y_offset=0;
         (void) CompositeImage(image,CopyCompositeOp,composite_image,(ssize_t)
-          x_offset,(ssize_t) y_offset);
+          x_offset,(ssize_t) y_offset,exception);
       }
       /*
         Relinquish resources.
@@ -4527,8 +4530,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
       while (colormap_info != (ColormapInfo *) NULL)
       {
         next=colormap_info->next;
-        colormap_info->colors=(XColor *)
-          RelinquishMagickMemory(colormap_info->colors);
+        colormap_info->colors=(XColor *) RelinquishMagickMemory(
+          colormap_info->colors);
         colormap_info=(ColormapInfo *) RelinquishMagickMemory(colormap_info);
         colormap_info=next;
       }
@@ -5778,10 +5781,10 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
       if ((ximage->byte_order == LSBFirst) || ((ximage->format == XYBitmap) &&
           (ximage->bitmap_bit_order == LSBFirst)))
         XMakeImageLSBFirst(resource_info,window,window->image,ximage,
-          matte_image);
+          matte_image,exception);
       else
         XMakeImageMSBFirst(resource_info,window,window->image,ximage,
-          matte_image);
+          matte_image,exception);
     }
   if (window->matte_image != (XImage *) NULL)
     {
@@ -5841,7 +5844,8 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
 %
 %  The format of the XMakeImageLSBFirst method is:
 %
-%      void XMakeImageLSBFirst(Display *display,XWindows *windows)
+%      void XMakeImageLSBFirst(Display *display,XWindows *windows,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5857,9 +5861,12 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
 %    o matte_image: Specifies a pointer to a XImage structure;  returned from
 %      XCreateImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
-  const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image)
+  const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image,
+  ExceptionInfo *exception)
 {
   CacheView
     *canvas_view;
@@ -5925,7 +5932,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         {
           canvas=CloneImage(image,0,0,MagickTrue,&image->exception);
           if (canvas != (Image *) NULL)
-            (void) CompositeImage(canvas,DstOverCompositeOp,pattern,0,0);
+            (void) CompositeImage(canvas,DstOverCompositeOp,pattern,0,0,
+              exception);
           pattern=DestroyImage(pattern);
         }
     }
@@ -6468,7 +6476,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 %
 %  The format of the XMakeImageMSBFirst method is:
 %
-%      XMakeImageMSBFirst(resource_info,window,image,ximage,matte_image)
+%      XMakeImageMSBFirst(resource_info,window,image,ximage,matte_image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -6484,9 +6493,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 %    o matte_image: Specifies a pointer to a XImage structure;  returned from
 %      XCreateImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
-  const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image)
+  const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image,
+  ExceptionInfo *exception)
 {
   CacheView
     *canvas_view;
@@ -6552,7 +6564,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         {
           canvas=CloneImage(image,0,0,MagickTrue,&image->exception);
           if (canvas != (Image *) NULL)
-            (void) CompositeImage(canvas,DstOverCompositeOp,pattern,0,0);
+            (void) CompositeImage(canvas,DstOverCompositeOp,pattern,0,0,
+              exception);
           pattern=DestroyImage(pattern);
         }
     }

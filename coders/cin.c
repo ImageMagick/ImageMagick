@@ -912,7 +912,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   if (image->colorspace != LogColorspace)
-    (void) TransformImageColorspace(image,LogColorspace);
+    (void) TransformImageColorspace(image,LogColorspace,exception);
   /*
     Write image information.
   */

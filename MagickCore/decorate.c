@@ -600,7 +600,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         frame_info->inner_bevel);
       y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
         frame_info->inner_bevel);
-      (void) CompositeImage(frame_image,compose,image,x,y);
+      (void) CompositeImage(frame_image,compose,image,x,y,exception);
     }
   return(frame_image);
 }

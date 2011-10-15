@@ -1929,7 +1929,7 @@ MagickExport Image *XAnimateImages(Display *display,
     /*
       Create X image.
     */
-    (void) TransformImageColorspace(image_list[scene],RGBColorspace);
+    (void) TransformImageColorspace(image_list[scene],RGBColorspace,exception);
     windows->image.pixmap=(Pixmap) NULL;
     windows->image.matte_pixmap=(Pixmap) NULL;
     if ((resource_info->map_type != (char *) NULL) ||

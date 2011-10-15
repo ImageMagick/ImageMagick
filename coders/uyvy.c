@@ -330,7 +330,7 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   uyvy_image=CloneImage(image,0,0,MagickTrue,exception);
   if (uyvy_image == (Image *) NULL)
     return(MagickFalse);
-  (void) TransformImageColorspace(uyvy_image,YCbCrColorspace);
+  (void) TransformImageColorspace(uyvy_image,YCbCrColorspace,exception);
   full=MagickFalse;
   (void) ResetMagickMemory(&pixel,0,sizeof(PixelInfo));
   for (y=0; y < (ssize_t) image->rows; y++)

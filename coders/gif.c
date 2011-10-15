@@ -1564,7 +1564,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   do
   {
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace);
+      (void) TransformImageColorspace(image,RGBColorspace,exception);
     opacity=(-1);
     if (IsImageOpaque(image,exception) != MagickFalse)
       {

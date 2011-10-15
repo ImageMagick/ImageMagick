@@ -679,7 +679,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     progress_monitor=SetImageProgressMonitor(montage,(MagickProgressMonitor)
       NULL,montage->client_data);
     if (texture != (Image *) NULL)
-      (void) TextureImage(montage,texture);
+      (void) TextureImage(montage,texture,exception);
     if (montage_info->title != (char *) NULL)
       {
         char
@@ -822,13 +822,14 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               shadow_image=ShadowImage(image,80.0,2.0,5,5,exception);
               if (shadow_image != (Image *) NULL)
                 {
-                  (void) CompositeImage(shadow_image,OverCompositeOp,image,0,0);
+                  (void) CompositeImage(shadow_image,OverCompositeOp,image,0,0,
+                    exception);
                   image=DestroyImage(image);
                   image=shadow_image;
                 }
           }
           (void) CompositeImage(montage,image->compose,image,x_offset+x,
-            y_offset+y);
+            y_offset+y,exception);
           value=GetImageProperty(image,"label",exception);
           if (value != (const char *) NULL)
             {

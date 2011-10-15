@@ -1923,7 +1923,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           SetImageType(composite_image,TrueColorMatteType,
                             &exception);
                           (void) CompositeImage(composite_image,
-                            CopyOpacityCompositeOp,msl_info->image[j],0,0);
+                            CopyOpacityCompositeOp,msl_info->image[j],0,0,
+                            &exception);
                           break;
                         }
                     }
@@ -1953,13 +1954,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if (compose != DissolveCompositeOp)
                         {
                           (void) SetImageAlpha(composite_image,(Quantum)
-                            opacity);
+                            opacity,&exception);
                           break;
                         }
                       (void) SetImageArtifact(msl_info->image[n],
                                             "compose:args",value);
                       if (composite_image->matte != MagickTrue)
-                        (void) SetImageAlpha(composite_image,OpaqueAlpha);
+                        (void) SetImageAlpha(composite_image,OpaqueAlpha,
+                          &exception);
                       composite_view=AcquireCacheView(composite_image);
                       for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
@@ -2024,10 +2026,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                          {
                            if (rotate_image != (Image *) NULL)
                              (void) CompositeImage(image,compose,rotate_image,
-                               x,y);
+                               x,y,&exception);
                            else
                              (void) CompositeImage(image,compose,
-                               composite_image,x,y);
+                               composite_image,x,y,&exception);
                          }
                       if (rotate_image != (Image *) NULL)
                         rotate_image=DestroyImage(rotate_image);
@@ -2078,7 +2080,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             &exception);
           channel_mask=SetPixelChannelMask(image,channel);
           if (rotate_image == (Image *) NULL)
-            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
+            CompositeImage(image,compose,composite_image,geometry.x,geometry.y,
+              &exception);
           else
             {
               /*
@@ -2088,7 +2091,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-
                 composite_image->rows)/2;
-              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
+              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y,
+                &exception);
               rotate_image=DestroyImage(rotate_image);
             }
           (void) SetPixelChannelMask(image,channel_mask);
@@ -6069,7 +6073,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     ThrowMSLException(OptionError,"UnrecognizedColorspace",
                       value);
                   (void) TransformImageColorspace(msl_info->image[n],
-                    (ColorspaceType) colorspace);
+                    (ColorspaceType) colorspace,&exception);
                   break;
                 }
               (void) SetMSLAttributes(msl_info,keyword,value);
@@ -6110,7 +6114,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     opac = (int)(QuantumRange * ((float)opac/100));
                   } else
                     opac = StringToLong( value );
-                  (void) SetImageAlpha( msl_info->image[n], (Quantum) opac );
+                  (void) SetImageAlpha( msl_info->image[n], (Quantum) opac,
+                    &exception);
                   break;
               }
               (void) SetMSLAttributes(msl_info,keyword,value);
@@ -7139,7 +7144,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) TextureImage(msl_info->image[n],texture_image);
+          (void) TextureImage(msl_info->image[n],texture_image,&exception);
           texture_image=DestroyImage(texture_image);
           break;
         }
@@ -7185,8 +7190,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           process image.
         */
         {
-          BilevelImage(msl_info->image[n],threshold);
-        break;
+          BilevelImage(msl_info->image[n],threshold,&exception);
+          break;
         }
       }
       else if (LocaleCompare((const char *) tag, "transparent") == 0)

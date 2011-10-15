@@ -2745,7 +2745,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           else
             {
               if (IsRGBColorspace(image->colorspace) == MagickFalse)
-                (void) TransformImageColorspace(image,RGBColorspace);
+                (void) TransformImageColorspace(image,RGBColorspace,exception);
               photometric=PHOTOMETRIC_RGB;
             }
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
@@ -3219,7 +3219,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image->matte != MagickFalse)
           quantum_type=CMYKAQuantum;
         if (image->colorspace != CMYKColorspace)
-          (void) TransformImageColorspace(image,CMYKColorspace);
+          (void) TransformImageColorspace(image,CMYKColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register const Quantum

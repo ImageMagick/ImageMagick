@@ -4481,13 +4481,14 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           (void) FormatLocaleString(geometry,MaxTextExtent,"%gx%g!",
             primitive_info[1].point.x,primitive_info[1].point.y);
           composite_image->filter=image->filter;
-          (void) TransformImage(&composite_image,(char *) NULL,geometry);
+          (void) TransformImage(&composite_image,(char *) NULL,geometry,
+            exception);
         }
       if (composite_image->matte == MagickFalse)
         (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel,
           exception);
       if (draw_info->alpha != OpaqueAlpha)
-        (void) SetImageAlpha(composite_image,draw_info->alpha);
+        (void) SetImageAlpha(composite_image,draw_info->alpha,exception);
       SetGeometry(image,&geometry);
       image->gravity=draw_info->gravity;
       geometry.x=x;
@@ -4505,7 +4506,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         (void) DrawAffineImage(image,composite_image,&affine);
       else
         (void) CompositeImage(image,draw_info->compose,composite_image,
-          geometry.x,geometry.y);
+          geometry.x,geometry.y,exception);
       composite_image=DestroyImage(composite_image);
       break;
     }

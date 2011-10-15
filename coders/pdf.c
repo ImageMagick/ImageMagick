@@ -1256,7 +1256,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (compression == JPEG2000Compression)
       {
         if (IsRGBColorspace(image->colorspace) == MagickFalse)
-          (void) TransformImageColorspace(image,RGBColorspace);
+          (void) TransformImageColorspace(image,RGBColorspace,exception);
       }
     /*
       Scale relative to dots-per-inch.

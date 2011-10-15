@@ -286,7 +286,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
 
         progress_monitor=SetImageProgressMonitor(image,
           (MagickProgressMonitor) NULL,image->client_data);
-        (void) TextureImage(image,texture);
+        (void) TextureImage(image,texture,exception);
         (void) SetImageProgressMonitor(image,progress_monitor,
           image->client_data);
       }
@@ -321,7 +321,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
 
       progress_monitor=SetImageProgressMonitor(image,
         (MagickProgressMonitor) NULL,image->client_data);
-      (void) TextureImage(image,texture);
+      (void) TextureImage(image,texture,exception);
       (void) SetImageProgressMonitor(image,progress_monitor,image->client_data);
     }
   (void) AnnotateImage(image,draw_info,exception);

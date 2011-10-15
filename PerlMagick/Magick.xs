@@ -1279,7 +1279,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            (void) TransformImageColorspace(image,(ColorspaceType) sp);
+            (void) TransformImageColorspace(image,(ColorspaceType) sp,
+              exception);
           break;
         }
       if (LocaleCompare(attribute,"comment") == 0)
@@ -8269,7 +8270,7 @@ Mogrify(ref,...)
               if (compose != DissolveCompositeOp)
                 (void) SetImageAlpha(composite_image,(Quantum)
                   SiPrefixToDouble(argument_list[6].string_reference,
-                  QuantumRange));
+                  QuantumRange),exception);
               else
                 {
                   CacheView
@@ -8299,7 +8300,7 @@ Mogrify(ref,...)
                   opacity=(Quantum) SiPrefixToDouble(
                     argument_list[6].string_reference,QuantumRange);
                   if (composite_image->matte != MagickTrue)
-                    (void) SetImageAlpha(composite_image,OpaqueAlpha);
+                    (void) SetImageAlpha(composite_image,OpaqueAlpha,exception);
                   composite_view=AcquireCacheView(composite_image);
                   for (y=0; y < (ssize_t) composite_image->rows ; y++)
                   {
@@ -8364,9 +8365,11 @@ Mogrify(ref,...)
                 for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) composite_image->columns)
                 {
                   if (attribute_flag[8] != 0) /* rotate */
-                    (void) CompositeImage(image,compose,rotate_image,x,y);
+                    (void) CompositeImage(image,compose,rotate_image,x,y,
+                      exception);
                   else
-                    (void) CompositeImage(image,compose,composite_image,x,y);
+                    (void) CompositeImage(image,compose,composite_image,x,y,
+                      exception);
                 }
               if (attribute_flag[8] != 0) /* rotate */
                 rotate_image=DestroyImage(rotate_image);
@@ -8400,7 +8403,7 @@ Mogrify(ref,...)
                   composite_image=CloneImage(composite_image,0,0,MagickTrue,
                     &image->exception);
                   (void) CompositeImage(composite_image,CopyGreenCompositeOp,
-                    argument_list[10].image_reference,0,0);
+                    argument_list[10].image_reference,0,0,exception);
                 }
               else
                 {
@@ -8425,7 +8428,8 @@ Mogrify(ref,...)
             exception);
           channel_mask=SetPixelChannelMask(image,channel);
           if (attribute_flag[8] == 0) /* no rotate */
-            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
+            CompositeImage(image,compose,composite_image,geometry.x,geometry.y,
+              exception);
           else
             {
               /*
@@ -8435,7 +8439,8 @@ Mogrify(ref,...)
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-
                 composite_image->rows)/2;
-              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
+              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y,
+                exception);
               rotate_image=DestroyImage(rotate_image);
             }
           if (attribute_flag[10] != 0) /* mask */
@@ -8784,7 +8789,7 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry.y=argument_list[2].integer_reference;
           if (image->matte == MagickFalse)
-            (void) SetImageAlpha(image,OpaqueAlpha);
+            (void) SetImageAlpha(image,OpaqueAlpha,exception);
           (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
             exception);
           target.red=virtual_pixel[RedPixelChannel];
@@ -9026,7 +9031,7 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] == 0)
             break;
-          TextureImage(image,argument_list[0].image_reference);
+          TextureImage(image,argument_list[0].image_reference,exception);
           break;
         }
         case 55:  /* Evalute */
@@ -9091,7 +9096,7 @@ Mogrify(ref,...)
           threshold=SiPrefixToDouble(argument_list[0].string_reference,
             QuantumRange);
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) BilevelImage(image,threshold);
+          (void) BilevelImage(image,threshold,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
@@ -9150,7 +9155,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) SeparateImage(image);
+          (void) SeparateImage(image,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
@@ -9738,7 +9743,7 @@ Mogrify(ref,...)
         }
         case 84:  /* Strip */
         {
-          (void) StripImage(image);
+          (void) StripImage(image,exception);
           break;
         }
         case 85:  /* Tint */
@@ -9761,7 +9766,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
-          (void) SeparateImage(image);
+          (void) SeparateImage(image,exception);
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
@@ -10762,7 +10767,7 @@ Mogrify(ref,...)
           if (attribute_flag[0] != 0)
             (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&color,exception);
-          (void) SetImageColor(image,&color);
+          (void) SetImageColor(image,&color,exception);
           break;
         }
         case 136:  /* Mode */
@@ -10824,7 +10829,7 @@ Mogrify(ref,...)
             Composite region.
           */ 
           status=CompositeImage(region_image,CopyCompositeOp,image,
-            region_info.x,region_info.y);
+            region_info.x,region_info.y,exception);
           (void) status;
           (void) CatchImageException(region_image);
           image=DestroyImage(image);
@@ -14090,7 +14095,7 @@ Transform(ref,...)
       clone=CloneImage(image,0,0,MagickTrue,exception);
       if ((clone == (Image *) NULL) || (exception->severity >= ErrorException))
         goto PerlException;
-      TransformImage(&clone,crop_geometry,geometry);
+      TransformImage(&clone,crop_geometry,geometry,exception);
       for ( ; clone; clone=clone->next)
       {
         AddImageToRegistry(sv,clone);

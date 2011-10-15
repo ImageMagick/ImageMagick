@@ -93,7 +93,7 @@
 %
 %      MagickBooleanType CompositeImage(Image *image,
 %        const CompositeOperator compose,Image *composite_image,
-%        const ssize_t x_offset,const ssize_t y_offset)
+%        const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -129,6 +129,8 @@
 %        of the composite_image by the calling API.
 %
 %        Previous to IM v6.5.3-3  this was called "modify-outside-overlay"
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1545,7 +1547,7 @@ static void HSBComposite(const double hue,const double saturation,
 
 MagickExport MagickBooleanType CompositeImage(Image *image,
   const CompositeOperator compose,const Image *composite_image,
-  const ssize_t x_offset,const ssize_t y_offset)
+  const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define CompositeImageTag  "Composite/Image"
 
@@ -1558,9 +1560,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
   double
     sans;
-
-  ExceptionInfo
-    *exception;
 
   GeometryInfo
     geometry_info;
@@ -1602,7 +1601,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   GetPixelInfo(image,&zero);
@@ -2738,7 +2736,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 %
 %  The format of the TextureImage method is:
 %
-%      MagickBooleanType TextureImage(Image *image,const Image *texture)
+%      MagickBooleanType TextureImage(Image *image,const Image *texture,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2747,16 +2746,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 %    o texture: This image is the texture to layer on the background.
 %
 */
-MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
+MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
+  ExceptionInfo *exception)
 {
 #define TextureImageTag  "Texture/Image"
 
   CacheView
     *image_view,
     *texture_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -2771,7 +2768,6 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   if (texture == (const Image *) NULL)
     return(MagickFalse);
   (void) SetImageVirtualPixelMethod(texture,TileVirtualPixelMethod);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -2798,7 +2794,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
             thread_status;
 
           thread_status=CompositeImage(image,image->compose,texture,x+
-            texture->tile_offset.x,y+texture->tile_offset.y);
+            texture->tile_offset.x,y+texture->tile_offset.y,exception);
           if (thread_status == MagickFalse)
             {
               status=thread_status;

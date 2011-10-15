@@ -419,7 +419,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(filename,MaxTextExtent,"tiff:%s",
     write_info->filename); 
   (void) CopyMagickString(write_info->filename,filename,MaxTextExtent);
-  (void) TransformImage(&write_image,(char *) NULL,"512x512>");
+  (void) TransformImage(&write_image,(char *) NULL,"512x512>",exception);
   if ((write_image->storage_class == DirectClass) ||
       (write_image->colors > 256))
     {

@@ -647,7 +647,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
         (void) CloseBlob(image);
         return(MagickFalse);
       }
-    (void) TransformImageColorspace(yuv_image,YCbCrColorspace);
+    (void) TransformImageColorspace(yuv_image,YCbCrColorspace,exception);
     /*
       Downsample image.
     */
@@ -658,7 +658,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
         (void) CloseBlob(image);
         return(MagickFalse);
       }
-    (void) TransformImageColorspace(chroma_image,YCbCrColorspace);
+    (void) TransformImageColorspace(chroma_image,YCbCrColorspace,exception);
     if (interlace == NoInterlace)
       {
         /*
