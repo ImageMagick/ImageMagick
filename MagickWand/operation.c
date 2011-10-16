@@ -1751,7 +1751,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         {
           (void) SyncImageSettings(image_info,*image);
           (void) BlackThresholdImage(*image,argv[1],exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("blue-shift",argv[0]+1) == 0)
@@ -1819,7 +1818,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             contrast=geometry_info.sigma;
           (void) BrightnessContrastImage(*image,brightness,contrast,
             exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       break;
@@ -1840,7 +1838,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             break;
           (void) ColorDecisionListImage(*image,color_correction_collection,
             exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("channel",argv[0]+1) == 0)
@@ -1940,7 +1937,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           mask_image->matte=MagickTrue;
           (void) SetImageClipMask(*image,mask_image,exception);
           mask_image=DestroyImage(mask_image);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("clip-path",argv[0]+1) == 0)
@@ -2031,7 +2027,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             white_point;
           (void) ContrastStretchImage(*image,black_point,white_point,
             exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("convolve",argv[0]+1) == 0)
@@ -2602,7 +2597,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           else
             (void) LevelImage(*image,black_point,white_point,gamma,
               exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("level-colors",argv[0]+1) == 0)
@@ -2668,7 +2662,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             white_point=(MagickRealType) (*image)->columns*(*image)->rows-
               black_point;
           (void) LinearStretchImage(*image,black_point,white_point,exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("linewidth",argv[0]+1) == 0)
@@ -3164,7 +3157,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
               break;
             }
           (void) ResetImagePage(*image,argv[1]);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       if (LocaleCompare("resample",argv[0]+1) == 0)
@@ -3648,7 +3640,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
                        exception);
           (void) TransparentPaintImage(*image,&target,(Quantum)
             TransparentAlpha,*argv[0] == '-' ? MagickFalse : MagickTrue,
-            &(*image)->exception);
+            exception);
           break;
         }
       if (LocaleCompare("transpose",argv[0]+1) == 0)
@@ -3827,7 +3819,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
           */
           (void) SyncImageSettings(image_info,*image);
           (void) WhiteThresholdImage(*image,argv[1],exception);
-          InheritException(exception,&(*image)->exception);
           break;
         }
       break;
@@ -3846,8 +3837,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
   */
   quantize_info=DestroyQuantizeInfo(quantize_info);
   draw_info=DestroyDrawInfo(draw_info);
-  status=(MagickStatusType) ((*image)->exception.severity ==
-    UndefinedException ? 1 : 0);
+  status=(MagickStatusType) (exception->severity == UndefinedException ? 1 : 0);
   return(status == 0 ? MagickFalse : MagickTrue);
 }
 
@@ -4527,7 +4517,6 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
           }
           if (layers == (Image *) NULL)
             break;
-          InheritException(exception,&layers->exception);
           *images=DestroyImageList(*images);
           *images=layers;
           break;
@@ -4711,7 +4700,6 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
       if (LocaleCompare("reverse",argv[0]+1) == 0)
         {
           ReverseImageList(images);
-          InheritException(exception,&(*images)->exception);
           break;
         }
       break;
@@ -4817,8 +4805,7 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
   }
   quantize_info=DestroyQuantizeInfo(quantize_info);
 
-  status=(MagickStatusType) ((*image)->exception.severity ==
-    UndefinedException ? 1 : 0);
+  status=(MagickStatusType) (exception->severity == UndefinedException ? 1 : 0);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 #endif

@@ -3859,8 +3859,7 @@ Features(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      channel_features=GetImageFeatures(image,distance,
-        &image->exception);
+      channel_features=GetImageFeatures(image,distance,exception);
       if (channel_features == (ChannelFeatures *) NULL)
         continue;
       count++;
@@ -4398,7 +4397,7 @@ Get(ref,...)
 
               if (image == (Image *) NULL)
                 break;
-              page=GetImageBoundingBox(image,&image->exception);
+              page=GetImageBoundingBox(image,exception);
               (void) FormatLocaleString(geometry,MaxTextExtent,
                 "%.20gx%.20g%+.20g%+.20g",(double) page.width,(double)
                 page.height,(double) page.x,(double) page.y);
@@ -4490,7 +4489,7 @@ Get(ref,...)
             {
               if (image != (Image *) NULL)
                 s=newSViv((ssize_t) GetNumberColors(image,(FILE *) NULL,
-                  &image->exception));
+                  exception));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4569,7 +4568,7 @@ Get(ref,...)
             {
               s=newSViv(MAGICKCORE_QUANTUM_DEPTH);
               if (image != (Image *) NULL)
-                s=newSViv((ssize_t) GetImageDepth(image,&image->exception));
+                s=newSViv((ssize_t) GetImageDepth(image,exception));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4694,7 +4693,7 @@ Get(ref,...)
               if (info && (*info->image_info->magick != '\0'))
                 magick_info=GetMagickInfo(info->image_info->magick,exception);
               if (image != (Image *) NULL)
-                magick_info=GetMagickInfo(image->magick,&image->exception);
+                magick_info=GetMagickInfo(image->magick,exception);
               if ((magick_info != (const MagickInfo *) NULL) &&
                   (*magick_info->description != '\0'))
                 s=newSVpv((char *) magick_info->description,0);
@@ -4818,7 +4817,7 @@ Get(ref,...)
                   (void) FormatLocaleString(key,MaxTextExtent,"%.20g\n",(double)
                     id);
                   status=SetImageRegistry(ImageRegistryType,key,image,
-                    &image->exception);
+                    exception);
                   (void) status;
                   s=newSViv(id++);
                 }
@@ -4852,7 +4851,7 @@ Get(ref,...)
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
               (void) items;
               image_view=AcquireCacheView(image);
-              p=GetCacheViewVirtualPixels(image_view,x,y,1,1,&image->exception);
+              p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
               if (p != (const Quantum *) NULL)
                 {
                   (void) FormatLocaleString(name,MaxTextExtent,QuantumFormat,
@@ -5020,7 +5019,7 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 continue;
               j=info ? info->image_info->monochrome :
-                IsImageMonochrome(image,&image->exception);
+                IsImageMonochrome(image,exception);
               s=newSViv(j);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5300,7 +5299,7 @@ Get(ref,...)
             {
               if (image == (Image *) NULL)
                 break;
-              j=(ssize_t) GetImageType(image,&image->exception);
+              j=(ssize_t) GetImageType(image,exception);
               s=newSViv(j);
               (void) sv_setpv(s,CommandOptionToMnemonic(MagickTypeOptions,j));
               SvIOK_on(s);
@@ -5998,7 +5997,7 @@ Histogram(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      histogram=GetImageHistogram(image,&number_colors,&image->exception);
+      histogram=GetImageHistogram(image,&number_colors,exception);
       if (histogram == (PixelInfo *) NULL)
         continue;
       count+=(ssize_t) number_colors;
@@ -6564,7 +6563,7 @@ ImageToBlob(ref,...)
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,(unsigned int)
-      GetImageListLength(image),&image->exception);
+      GetImageListLength(image),exception);
     EXTEND(sp,(ssize_t) GetImageListLength(image));
     for ( ; image; image=image->next)
     {
@@ -6763,19 +6762,16 @@ Layers(ref,...)
       case OptimizeTransLayer:
       {
         OptimizeImageTransparency(image,exception);
-        InheritException(&(image->exception),exception);
         break;
       }
       case RemoveDupsLayer:
       {
         RemoveDuplicateLayers(&image,exception);
-        InheritException(&(image->exception),exception);
         break;
       }
       case RemoveZeroLayer:
       {
         RemoveZeroDelayLayers(&image,exception);
-        InheritException(&(image->exception),exception);
         break;
       }
       case OptimizeLayer:
@@ -6799,7 +6795,6 @@ Layers(ref,...)
         image=layers;
         layers=(Image *) NULL;
         OptimizeImageTransparency(image,exception);
-        InheritException(&(image->exception),exception);
         quantize_info=AcquireQuantizeInfo(info->image_info);
         (void) RemapImages(quantize_info,image,(Image *) NULL,exception);
         quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -6858,7 +6853,6 @@ Layers(ref,...)
           image->rows,image->gravity,&geometry);
         CompositeLayers(image,compose,source,geometry.x,geometry.y,exception);
         source=DestroyImageList(source);
-        InheritException(&(image->exception),exception);
         break;
       }
     }
@@ -8401,7 +8395,7 @@ Mogrify(ref,...)
                     Merge Y displacement into X displacement image.
                   */
                   composite_image=CloneImage(composite_image,0,0,MagickTrue,
-                    &image->exception);
+                    exception);
                   (void) CompositeImage(composite_image,CopyGreenCompositeOp,
                     argument_list[10].image_reference,0,0,exception);
                 }
@@ -8411,7 +8405,7 @@ Mogrify(ref,...)
                     Set a blending mask for the composition.
                   */
                   image->mask=CloneImage(argument_list[10].image_reference,0,0,
-                    MagickTrue,&image->exception);
+                    MagickTrue,exception);
                   (void) NegateImage(image->mask,MagickFalse,exception);
                 }
             }
@@ -9325,7 +9319,7 @@ Mogrify(ref,...)
           profile_info=
             CloneImageInfo(info ? info->image_info : (ImageInfo *) NULL);
           (void) CopyMagickString(profile_info->filename,name,MaxTextExtent);
-          profile_image=ReadImages(profile_info,&image->exception);
+          profile_image=ReadImages(profile_info,exception);
           if (profile_image == (Image *) NULL)
             break;
           ResetImageProfileIterator(profile_image);
@@ -11482,7 +11476,7 @@ Mosaic(ref)
     info=GetPackageInfo(aTHX_ (void *) av,info,exception);
     (void) CopyMagickString(info->image_info->filename,image->filename,
       MaxTextExtent);
-    SetImageInfo(info->image_info,0,&image->exception);
+    SetImageInfo(info->image_info,0,exception);
     exception=DestroyExceptionInfo(exception);
     SvREFCNT_dec(perl_exception);
     XSRETURN(1);
@@ -12239,7 +12233,7 @@ QueryFontMetrics(ref,...)
             {
               if (info)
                 (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
-                  &draw_info->fill,&image->exception);
+                  &draw_info->fill,exception);
               break;
             }
           if (LocaleCompare(attribute,"font") == 0)
@@ -12361,7 +12355,7 @@ QueryFontMetrics(ref,...)
             {
               if (info)
                 (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
-                  &draw_info->stroke,&image->exception);
+                  &draw_info->stroke,exception);
               break;
             }
           if (LocaleCompare(attribute,"style") == 0)
@@ -12644,7 +12638,7 @@ QueryMultilineFontMetrics(ref,...)
             {
               if (info)
                 (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
-                  &draw_info->fill,&image->exception);
+                  &draw_info->fill,exception);
               break;
             }
           if (LocaleCompare(attribute,"font") == 0)
@@ -12734,7 +12728,7 @@ QueryMultilineFontMetrics(ref,...)
             {
               if (info)
                 (void) QueryColorCompliance(SvPV(ST(i),na),AllCompliance,
-                  &draw_info->stroke,&image->exception);
+                  &draw_info->stroke,exception);
               break;
             }
           if (LocaleCompare(attribute,"style") == 0)
@@ -13859,7 +13853,7 @@ Statistics(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      channel_statistics=GetImageStatistics(image,&image->exception);
+      channel_statistics=GetImageStatistics(image,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         continue;
       count++;
@@ -13942,7 +13936,6 @@ SyncAuthenticPixels(ref,...)
     status=SyncAuthenticPixels(image,exception);
     if (status != MagickFalse)
       return;
-    InheritException(exception,&image->exception);
 
   PerlException:
     InheritPerlException(exception,perl_exception);
@@ -14201,7 +14194,7 @@ Write(ref,...)
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,(unsigned int)
-      GetImageListLength(image),&image->exception);
+      GetImageListLength(image),exception);
     for (next=image; next; next=next->next)
     {
       (void) WriteImage(package_info->image_info,next,exception);
