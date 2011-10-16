@@ -504,11 +504,7 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
     iterator->region.y+iterator->y,iterator->region.width,1,
     iterator->exception);
   if (pixels == (const Quantum *) NULL)
-    {
-      InheritException(iterator->exception,GetCacheViewException(
-        iterator->view));
-      return((PixelWand **) NULL);
-    }
+    return((PixelWand **) NULL);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
@@ -688,11 +684,7 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
     iterator->region.y+iterator->y,iterator->region.width,1,
     iterator->exception);
   if (pixels == (const Quantum *) NULL)
-    {
-      InheritException(iterator->exception,GetCacheViewException(
-        iterator->view));
-      return((PixelWand **) NULL);
-    }
+    return((PixelWand **) NULL);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
@@ -750,11 +742,7 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
     iterator->region.y+iterator->y,iterator->region.width,1,
     iterator->exception);
   if (pixels == (const Quantum *) NULL)
-    {
-      InheritException(iterator->exception,GetCacheViewException(
-        iterator->view));
-      return((PixelWand **) NULL);
-    }
+    return((PixelWand **) NULL);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
@@ -923,9 +911,6 @@ WandExport void PixelSetLastIteratorRow(PixelIterator *iterator)
 */
 WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
 {
-  ExceptionInfo
-    *exception;
-
   register ssize_t
     x;
 
@@ -938,25 +923,17 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
   if (SetCacheViewStorageClass(iterator->view,DirectClass) == MagickFalse)
     return(MagickFalse);
-  exception=iterator->exception;
   pixels=GetCacheViewAuthenticPixels(iterator->view,iterator->region.x,
-    iterator->region.y+iterator->y,iterator->region.width,1,exception);
+    iterator->region.y+iterator->y,iterator->region.width,1,
+    iterator->exception);
   if (pixels == (Quantum *) NULL)
-    {
-      InheritException(iterator->exception,GetCacheViewException(
-        iterator->view));
-      return(MagickFalse);
-    }
+    return(MagickFalse);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
     PixelGetQuantumPixel(iterator->image,iterator->pixel_wands[x],pixels);
     pixels+=GetPixelChannels(iterator->image);
   }
-  if (SyncCacheViewAuthenticPixels(iterator->view,exception) == MagickFalse)
-    {
-      InheritException(iterator->exception,GetCacheViewException(
-        iterator->view));
-      return(MagickFalse);
-    }
+  if (SyncCacheViewAuthenticPixels(iterator->view,iterator->exception) == MagickFalse)
+    return(MagickFalse);
   return(MagickTrue);
 }

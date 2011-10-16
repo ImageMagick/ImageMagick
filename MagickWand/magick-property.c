@@ -2240,19 +2240,13 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
 WandExport MagickBooleanType MagickSetImageArtifact(MagickWand *wand,
   const char *artifact,const char *value)
 {
-  MagickBooleanType
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageArtifact(wand->images,artifact,value);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
-  return(status);
+  return(SetImageArtifact(wand->images,artifact,value));
 }
 
 /*
@@ -2306,8 +2300,6 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
   SetStringInfoDatum(profile_info,(unsigned char *) profile);
   status=SetImageProfile(wand->images,name,profile_info,wand->exception);
   profile_info=DestroyStringInfo(profile_info);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
   return(status);
 }
 
