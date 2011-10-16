@@ -263,9 +263,6 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
   WandView *duplex,WandView *destination,DuplexTransferWandViewMethod transfer,
   void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *destination_image,
     *source_image;
@@ -285,8 +282,9 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     return(MagickFalse);
   source_image=source->wand->images;
   destination_image=destination->wand->images;
-  exception=destination->exception;
-  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(destination_image,DirectClass,
+    destination->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -339,7 +337,8 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
       duplex_pixels+=GetPixelChannels(duplex->image);
     }
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
-      destination->extent.x,y,destination->extent.width,1,exception);
+      destination->extent.x,y,destination->extent.width,1,
+      destination->exception);
     if (destination_pixels == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -354,20 +353,17 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     if (transfer(source,duplex,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
-      destination->extent.x,y,destination->extent.width,1,exception);
+      destination->extent.x,y,destination->extent.width,1,
+      destination->exception);
     for (x=0; x < (ssize_t) destination->extent.width; x++)
     {
       PixelGetQuantumPixel(destination->image,destination->pixel_wands[id][x],
         destination_pixels);
       destination_pixels+=GetPixelChannels(destination->image);
     }
-    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
-      {
-        InheritException(destination->exception,GetCacheViewException(
-          source->view));
-        status=MagickFalse;
-      }
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -904,9 +900,6 @@ MagickExport void SetWandViewDescription(WandView *wand_view,
 WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   SetWandViewMethod set,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *destination_image;
 
@@ -924,8 +917,9 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   if (set == (SetWandViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->wand->images;
-  exception=destination->exception;
-  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(destination_image,DirectClass,
+    destination->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -949,11 +943,9 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
     if (status == MagickFalse)
       continue;
     pixels=GetCacheViewAuthenticPixels(destination->view,destination->extent.x,
-      y,destination->extent.width,1,exception);
+      y,destination->extent.width,1,destination->exception);
     if (pixels == (Quantum *) NULL)
       {
-        InheritException(destination->exception,GetCacheViewException(
-          destination->view));
         status=MagickFalse;
         continue;
       }
@@ -965,13 +957,9 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
         pixels);
       pixels+=GetPixelChannels(destination->image);
     }
-    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
-      {
-        InheritException(destination->exception,GetCacheViewException(
-          destination->view));
-        status=MagickFalse;
-      }
+      status=MagickFalse;
     if (destination_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -1075,9 +1063,6 @@ MagickExport void SetWandViewThreads(WandView *image_view,
 WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   WandView *destination,TransferWandViewMethod transfer,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *destination_image,
     *source_image;
@@ -1097,8 +1082,9 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     return(MagickFalse);
   source_image=source->wand->images;
   destination_image=destination->wand->images;
-  exception=destination->exception;
-  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(destination_image,DirectClass,
+    destination->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1137,7 +1123,8 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
       pixels+=GetPixelChannels(source->image);
     }
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
-      destination->extent.x,y,destination->extent.width,1,exception);
+      destination->extent.x,y,destination->extent.width,1,
+      destination->exception);
     if (destination_pixels == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -1152,20 +1139,17 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     if (transfer(source,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
-      destination->extent.x,y,destination->extent.width,1,exception);
+      destination->extent.x,y,destination->extent.width,1,
+      destination->exception);
     for (x=0; x < (ssize_t) destination->extent.width; x++)
     {
       PixelGetQuantumPixel(destination->image,destination->pixel_wands[id][x],
         destination_pixels);
       destination_pixels+=GetPixelChannels(destination->image);
     }
-    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
-      {
-        InheritException(destination->exception,GetCacheViewException(
-          source->view));
-        status=MagickFalse;
-      }
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -1229,9 +1213,6 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   UpdateWandViewMethod update,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *source_image;
 
@@ -1249,8 +1230,8 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   if (update == (UpdateWandViewMethod) NULL)
     return(MagickFalse);
   source_image=source->wand->images;
-  exception=source->exception;
-  if (SetImageStorageClass(source_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(source_image,DirectClass,source->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1262,6 +1243,9 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     const int
       id = GetOpenMPThreadId();
 
+    MagickBooleanType
+      sync;
+
     register ssize_t
       x;
 
@@ -1271,11 +1255,9 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     if (status == MagickFalse)
       continue;
     pixels=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
-      source->extent.width,1,exception);
+      source->extent.width,1,source->exception);
     if (pixels == (Quantum *) NULL)
       {
-        InheritException(source->exception,GetCacheViewException(
-          source->view));
         status=MagickFalse;
         continue;
       }
@@ -1291,11 +1273,9 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
       PixelGetQuantumPixel(source->image,source->pixel_wands[id][x],pixels);
       pixels+=GetPixelChannels(source->image);
     }
-    if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
-      {
-        InheritException(source->exception,GetCacheViewException(source->view));
-        status=MagickFalse;
-      }
+    sync=SyncCacheViewAuthenticPixels(source->view,source->exception);
+    if (sync == MagickFalse)
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType

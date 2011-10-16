@@ -565,8 +565,7 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
     }
   (void) CloneString(&draw_info->text,text);
   (void) ResetMagickMemory(&metrics,0,sizeof(metrics));
-  status=GetTypeMetrics(wand->images,draw_info,&metrics,
-    &wand->images->exception);
+  status=GetTypeMetrics(wand->images,draw_info,&metrics,wand->exception);
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)
     {
@@ -674,7 +673,7 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
   (void) CloneString(&draw_info->text,text);
   (void) ResetMagickMemory(&metrics,0,sizeof(metrics));
   status=GetMultilineTypeMetrics(wand->images,draw_info,&metrics,
-    &wand->images->exception);
+    wand->exception);
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)
     {
@@ -918,7 +917,8 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
   image=GetImageFromList(wand->images,index);
   if (image == (Image *) NULL)
     {
-      InheritException(wand->exception,&wand->images->exception);
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "NoSuchImage","`%s'",wand->name);
       return(MagickFalse);
     }
   wand->images=image;
