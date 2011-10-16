@@ -21,7 +21,7 @@ m4_define([magick_minor_version], [7])
 m4_define([magick_micro_version], [3])
 m4_define([magick_patchlevel_version], [0])
 m4_define([magick_version],
-          [magick_major_version.magick_minor_version.magick_micro_version.magick_patchlevel_version])
+          [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
 
 AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick])
