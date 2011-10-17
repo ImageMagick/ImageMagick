@@ -4226,9 +4226,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       GeometryInfo
         geometry_info;
 
-      /*
-        Set image density.
-      */
       flags=ParseGeometry(option,&geometry_info);
       image->x_resolution=geometry_info.rho;
       image->y_resolution=geometry_info.sigma;
