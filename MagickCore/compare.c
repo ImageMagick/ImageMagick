@@ -1517,7 +1517,7 @@ static double GetNCCDistortion(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-     register ssize_t
+      register ssize_t
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
