@@ -2504,8 +2504,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           if (status == MagickFalse)
             break;
           zip_info.next_out=compress_pixels;
-          zip_info.avail_out=(uInt) ZipMaxExtent(packet_size*
-            image->columns);
+          zip_info.avail_out=(uInt) ZipMaxExtent(packet_size*image->columns);
           code=deflate(&zip_info,Z_FINISH);
           length=(size_t) (zip_info.next_out-compress_pixels);
           if (length > 6)
