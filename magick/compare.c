@@ -989,7 +989,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   progress=0;
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
     distortion[i]=0.0;
-  area=1.0/((MagickRealType) image->columns*image->rows);
+  area=1.0/((MagickRealType) image->columns*image->rows-1);
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1747,7 +1747,7 @@ static double GetNCCDistortion(const Image *image,
   image_statistics=GetImageChannelStatistics(image,exception);
   status=MagickTrue;
   distortion=0.0;
-  area=1.0/((MagickRealType) image->columns*image->rows);
+  area=1.0/((MagickRealType) image->columns*image->rows-1);
   image_view=AcquireCacheView(image);
   reconstruct_view=AcquireCacheView(reconstruct_image);
   for (y=0; y < (ssize_t) image->rows; y++)
