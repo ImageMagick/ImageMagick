@@ -1445,13 +1445,16 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 %  The format of the SimilarityImageImage method is:
 %
 %      Image *SimilarityImage(const Image *image,const Image *reference,
-%        RectangleInfo *offset,double *similarity,ExceptionInfo *exception)
+%        const MetricType metric,RectangleInfo *offset,double *similarity,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o reference: find an area of the image that closely resembles this image.
+%
+%    o metric: the metric.
 %
 %    o the best match offset of the reference image within the image.
 %
@@ -1461,117 +1464,18 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 %
 */
 
-static double GetNCCDistortion(const Image *image,
-  const Image *reconstruct_image,
-  const ChannelStatistics *reconstruct_statistics,ExceptionInfo *exception)
-{
-#define SimilarityImageTag  "Similarity/Image"
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
-
-  ChannelStatistics
-    *image_statistics;
-
-  double
-    distortion;
-
-  MagickBooleanType
-    status;
-
-  MagickRealType
-    area,
-    gamma;
-
-  ssize_t
-    y;
-
-  /*
-    Normalize to account for variation due to lighting and exposure condition.
-  */
-  image_statistics=GetImageStatistics(image,exception);
-  status=MagickTrue;
-  distortion=0.0;
-  area=1.0/((MagickRealType) image->columns*image->rows-1);
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const Quantum
-      *restrict p,
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
-      1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
-        reconstruct_traits=GetPixelChannelMapTraits(reconstruct_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (reconstruct_traits == UndefinedPixelTrait))
-          continue;
-        if ((reconstruct_traits & UpdatePixelTrait) == 0)
-          continue;
-        distortion+=area*QuantumScale*(p[i]-image_statistics[i].mean)*
-          (GetPixelChannel(reconstruct_image,channel,q)-
-          reconstruct_statistics[channel].mean);
-      }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(reconstruct_image);
-    }
-  }
-  reconstruct_view=DestroyCacheView(reconstruct_view);
-  image_view=DestroyCacheView(image_view);
-  /*
-    Divide by the standard deviation.
-  */
-  gamma=image_statistics[MaxPixelChannels].standard_deviation*
-    reconstruct_statistics[MaxPixelChannels].standard_deviation;
-  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-  distortion=QuantumRange*gamma*distortion;
-  distortion=sqrt(distortion/GetImageChannels(image));
-  /*
-    Free resources.
-  */
-  image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-    image_statistics);
-  return(1.0-distortion);
-}
-
 static double GetSimilarityMetric(const Image *image,const Image *reference,
-  const ChannelStatistics *reference_statistics,const ssize_t x_offset,
-  const ssize_t y_offset,ExceptionInfo *exception)
+  const MetricType metric,const ssize_t x_offset,const ssize_t y_offset,
+  ExceptionInfo *exception)
 {
   double
     distortion;
 
   Image
     *similarity_image;
+
+  MagickBooleanType
+    status;
 
   RectangleInfo
     geometry;
@@ -1582,22 +1486,23 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   similarity_image=CropImage(image,&geometry,exception);
   if (similarity_image == (Image *) NULL)
     return(0.0);
-  distortion=GetNCCDistortion(reference,similarity_image,reference_statistics,
+  distortion=0.0;
+  status=GetImageDistortion(similarity_image,reference,metric,&distortion,
     exception);
   similarity_image=DestroyImage(similarity_image);
+  if (status == MagickFalse)
+    return(0.0);
   return(distortion);
 }
 
 MagickExport Image *SimilarityImage(Image *image,const Image *reference,
-  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+  const MetricType metric,RectangleInfo *offset,double *similarity_metric,
+  ExceptionInfo *exception)
 {
 #define SimilarityImageTag  "Similarity/Image"
 
   CacheView
     *similarity_view;
-
-  ChannelStatistics
-    *reference_statistics;
 
   Image
     *similarity_image;
@@ -1637,7 +1542,6 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   */
   status=MagickTrue;
   progress=0;
-  reference_statistics=GetImageStatistics(reference,exception);
   similarity_view=AcquireCacheView(similarity_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -1667,8 +1571,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       register ssize_t
         i;
 
-      similarity=GetSimilarityMetric(image,reference,reference_statistics,x,y,
-        exception);
+      similarity=GetSimilarityMetric(image,reference,metric,x,y,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SimilarityImage)
 #endif
@@ -1717,7 +1620,5 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
-  reference_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-    reference_statistics);
   return(similarity_image);
 }
