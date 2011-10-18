@@ -3768,7 +3768,7 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 %  example, like this:
 %
 %      channel_features=MagickGetImageFeatures(wand,1);
-%      contrast=channel_features[RedChannel].contrast[0];
+%      contrast=channel_features[RedPixelChannel].contrast[0];
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
 %
@@ -3950,7 +3950,7 @@ WandExport MagickBooleanType MagickGetImageRange(MagickWand *wand,
 %  You can access the red channel mean, for example, like this:
 %
 %      channel_statistics=MagickGetImageStatistics(wand);
-%      red_mean=channel_statistics[RedChannel].mean;
+%      red_mean=channel_statistics[RedPixelChannel].mean;
 %
 %  Use MagickRelinquishMemory() to free the statistics buffer.
 %
@@ -6050,7 +6050,8 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o channel: Identify which channel to level: RedChannel, GreenChannel,
+%    o channel: Identify which channel to level: RedPixelChannel,
+%      GreenPixelChannel, etc.
 %
 %    o black_point: the black point.
 %

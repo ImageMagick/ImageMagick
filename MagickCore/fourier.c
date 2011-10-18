@@ -80,7 +80,7 @@
 */
 typedef struct _FourierInfo
 {
-  ChannelType
+  PixelChannel
     channel;
 
   MagickBooleanType
@@ -300,40 +300,34 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     {
       switch (fourier_info->channel)
       {
-        case RedChannel:
+        case RedPixelChannel:
         default:
         {
           SetPixelRed(magnitude_image,ClampToQuantum(QuantumRange*
             magnitude_source[i]),q);
           break;
         }
-        case GreenChannel:
+        case GreenPixelChannel:
         {
           SetPixelGreen(magnitude_image,ClampToQuantum(QuantumRange*
             magnitude_source[i]),q);
           break;
         }
-        case BlueChannel:
+        case BluePixelChannel:
         {
           SetPixelBlue(magnitude_image,ClampToQuantum(QuantumRange*
             magnitude_source[i]),q);
           break;
         }
-        case BlackChannel:
+        case BlackPixelChannel:
         {
           SetPixelBlack(magnitude_image,ClampToQuantum(QuantumRange*
             magnitude_source[i]),q);
           break;
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           SetPixelAlpha(magnitude_image,ClampToQuantum(QuantumRange*
-            magnitude_source[i]),q);
-          break;
-        }
-        case GrayChannels:
-        {
-          SetPixelGray(magnitude_image,ClampToQuantum(QuantumRange*
             magnitude_source[i]),q);
           break;
         }
@@ -356,40 +350,34 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     {
       switch (fourier_info->channel)
       {
-        case RedChannel:
+        case RedPixelChannel:
         default:
         {
           SetPixelRed(phase_image,ClampToQuantum(QuantumRange*
             phase_source[i]),q);
           break;
         }
-        case GreenChannel:
+        case GreenPixelChannel:
         {
           SetPixelGreen(phase_image,ClampToQuantum(QuantumRange*
             phase_source[i]),q);
           break;
         }
-        case BlueChannel:
+        case BluePixelChannel:
         {
           SetPixelBlue(phase_image,ClampToQuantum(QuantumRange*
             phase_source[i]),q);
           break;
         }
-        case BlackChannel:
+        case BlackPixelChannel:
         {
           SetPixelBlack(phase_image,ClampToQuantum(QuantumRange*
             phase_source[i]),q);
           break;
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           SetPixelAlpha(phase_image,ClampToQuantum(QuantumRange*
-            phase_source[i]),q);
-          break;
-        }
-        case GrayChannels:
-        {
-          SetPixelGray(phase_image,ClampToQuantum(QuantumRange*
             phase_source[i]),q);
           break;
         }
@@ -459,35 +447,30 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     {
       switch (fourier_info->channel)
       {
-        case RedChannel:
+        case RedPixelChannel:
         default:
         {
           source[i]=QuantumScale*GetPixelRed(image,p);
           break;
         }
-        case GreenChannel:
+        case GreenPixelChannel:
         {
           source[i]=QuantumScale*GetPixelGreen(image,p);
           break;
         }
-        case BlueChannel:
+        case BluePixelChannel:
         {
           source[i]=QuantumScale*GetPixelBlue(image,p);
           break;
         }
-        case BlackChannel:
+        case BlackPixelChannel:
         {
           source[i]=QuantumScale*GetPixelBlack(image,p);
           break;
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           source[i]=QuantumScale*GetPixelAlpha(image,p);
-          break;
-        }
-        case GrayChannels:
-        {
-          source[i]=QuantumScale*GetPixelGray(image,p);
           break;
         }
       }
@@ -554,7 +537,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
 }
 
 static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
-  const ChannelType channel,const MagickBooleanType modulus,
+  const PixelChannel channel,const MagickBooleanType modulus,
   Image *fourier_image,ExceptionInfo *exception)
 {
   double
@@ -686,10 +669,10 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 
                 if (is_gray != MagickFalse)
                   thread_status=ForwardFourierTransformChannel(image,
-                    GrayChannels,modulus,fourier_image,exception);
+                    GrayPixelChannel,modulus,fourier_image,exception);
                 else
                   thread_status=ForwardFourierTransformChannel(image,
-                    RedChannel,modulus,fourier_image,exception);
+                    RedPixelChannel,modulus,fourier_image,exception);
                 if (thread_status == MagickFalse)
                   status=thread_status;
               }
@@ -703,7 +686,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
                 thread_status=MagickTrue;
                 if (is_gray == MagickFalse)
                   thread_status=ForwardFourierTransformChannel(image,
-                    GreenChannel,modulus,fourier_image,exception);
+                    GreenPixelChannel,modulus,fourier_image,exception);
                 if (thread_status == MagickFalse)
                   status=thread_status;
               }
@@ -717,7 +700,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
                 thread_status=MagickTrue;
                 if (is_gray == MagickFalse)
                   thread_status=ForwardFourierTransformChannel(image,
-                    BlueChannel,modulus,fourier_image,exception);
+                    BluePixelChannel,modulus,fourier_image,exception);
                 if (thread_status == MagickFalse)
                   status=thread_status;
               }
@@ -731,7 +714,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
                 thread_status=MagickTrue;
                 if (image->colorspace == CMYKColorspace)
                   thread_status=ForwardFourierTransformChannel(image,
-                    BlackChannel,modulus,fourier_image,exception);
+                    BlackPixelChannel,modulus,fourier_image,exception);
                 if (thread_status == MagickFalse)
                   status=thread_status;
               }
@@ -745,7 +728,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
                 thread_status=MagickTrue;
                 if (image->matte != MagickFalse)
                   thread_status=ForwardFourierTransformChannel(image,
-                    AlphaChannel,modulus,fourier_image,exception);
+                    AlphaPixelChannel,modulus,fourier_image,exception);
                 if (thread_status == MagickFalse)
                   status=thread_status;
               }
@@ -880,35 +863,30 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     {
       switch (fourier_info->channel)
       {
-        case RedChannel:
+        case RedPixelChannel:
         default:
         {
           magnitude_source[i]=QuantumScale*GetPixelRed(magnitude_image,p);
           break;
         }
-        case GreenChannel:
+        case GreenPixelChannel:
         {
           magnitude_source[i]=QuantumScale*GetPixelGreen(magnitude_image,p);
           break;
         }
-        case BlueChannel:
+        case BluePixelChannel:
         {
           magnitude_source[i]=QuantumScale*GetPixelBlue(magnitude_image,p);
           break;
         }
-        case BlackChannel:
+        case BlackPixelChannel:
         {
           magnitude_source[i]=QuantumScale*GetPixelBlack(magnitude_image,p);
           break;
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           magnitude_source[i]=QuantumScale*GetPixelAlpha(magnitude_image,p);
-          break;
-        }
-        case GrayChannels:
-        {
-          magnitude_source[i]=QuantumScale*GetPixelGray(magnitude_image,p);
           break;
         }
       }
@@ -928,35 +906,30 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     {
       switch (fourier_info->channel)
       {
-        case RedChannel:
+        case RedPixelChannel:
         default:
         {
           phase_source[i]=QuantumScale*GetPixelRed(phase_image,p);
           break;
         }
-        case GreenChannel:
+        case GreenPixelChannel:
         {
           phase_source[i]=QuantumScale*GetPixelGreen(phase_image,p);
           break;
         }
-        case BlueChannel:
+        case BluePixelChannel:
         {
           phase_source[i]=QuantumScale*GetPixelBlue(phase_image,p);
           break;
         }
-        case BlackChannel:
+        case BlackPixelChannel:
         {
           phase_source[i]=QuantumScale*GetPixelBlack(phase_image,p);
           break;
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           phase_source[i]=QuantumScale*GetPixelAlpha(phase_image,p);
-          break;
-        }
-        case GrayChannels:
-        {
-          phase_source[i]=QuantumScale*GetPixelGray(phase_image,p);
           break;
         }
       }
@@ -1092,35 +1065,30 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     {
       switch (fourier_info->channel)
       {
-        case RedChannel:
+        case RedPixelChannel:
         default:
         {
           SetPixelRed(image,ClampToQuantum(QuantumRange*source[i]),q);
           break;
         }
-        case GreenChannel:
+        case GreenPixelChannel:
         {
           SetPixelGreen(image,ClampToQuantum(QuantumRange*source[i]),q);
           break;
         }
-        case BlueChannel:
+        case BluePixelChannel:
         {
           SetPixelBlue(image,ClampToQuantum(QuantumRange*source[i]),q);
           break;
         }
-        case BlackChannel:
+        case BlackPixelChannel:
         {
           SetPixelBlack(image,ClampToQuantum(QuantumRange*source[i]),q);
           break;
         }
-        case AlphaChannel:
+        case AlphaPixelChannel:
         {
           SetPixelAlpha(image,ClampToQuantum(QuantumRange*source[i]),q);
-          break;
-        }
-        case GrayChannels:
-        {
-          SetPixelGray(image,ClampToQuantum(QuantumRange*source[i]),q);
           break;
         }
       }
@@ -1137,7 +1105,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
 
 static MagickBooleanType InverseFourierTransformChannel(
   const Image *magnitude_image,const Image *phase_image,
-  const ChannelType channel,const MagickBooleanType modulus,
+  const PixelChannel channel,const MagickBooleanType modulus,
   Image *fourier_image,ExceptionInfo *exception)
 {
   double
@@ -1262,10 +1230,10 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
 
             if (is_gray != MagickFalse)
               thread_status=InverseFourierTransformChannel(magnitude_image,
-                phase_image,GrayChannels,modulus,fourier_image,exception);
+                phase_image,GrayPixelChannel,modulus,fourier_image,exception);
             else
               thread_status=InverseFourierTransformChannel(magnitude_image,
-                phase_image,RedChannel,modulus,fourier_image,exception);
+                phase_image,RedPixelChannel,modulus,fourier_image,exception);
             if (thread_status == MagickFalse)
               status=thread_status;
           }
@@ -1279,7 +1247,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
             thread_status=MagickTrue;
             if (is_gray == MagickFalse)
               thread_status=InverseFourierTransformChannel(magnitude_image,
-                phase_image,GreenChannel,modulus,fourier_image,exception);
+                phase_image,GreenPixelChannel,modulus,fourier_image,exception);
             if (thread_status == MagickFalse)
               status=thread_status;
           }
@@ -1293,7 +1261,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
             thread_status=MagickTrue;
             if (is_gray == MagickFalse)
               thread_status=InverseFourierTransformChannel(magnitude_image,
-                phase_image,BlueChannel,modulus,fourier_image,exception);
+                phase_image,BluePixelChannel,modulus,fourier_image,exception);
             if (thread_status == MagickFalse)
               status=thread_status;
           }
@@ -1307,7 +1275,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
             thread_status=MagickTrue;
             if (magnitude_image->colorspace == CMYKColorspace)
               thread_status=InverseFourierTransformChannel(magnitude_image,
-                phase_image,BlackChannel,modulus,fourier_image,exception);
+                phase_image,BlackPixelChannel,modulus,fourier_image,exception);
             if (thread_status == MagickFalse)
               status=thread_status;
           }
@@ -1321,7 +1289,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
             thread_status=MagickTrue;
             if (magnitude_image->matte != MagickFalse)
               thread_status=InverseFourierTransformChannel(magnitude_image,
-                phase_image,AlphaChannel,modulus,fourier_image,exception);
+                phase_image,AlphaPixelChannel,modulus,fourier_image,exception);
             if (thread_status == MagickFalse)
               status=thread_status;
           }

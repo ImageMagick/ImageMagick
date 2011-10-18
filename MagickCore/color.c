@@ -1327,7 +1327,7 @@ MagickExport char **GetColorList(const char *pattern,
 */
 
 static void ConcatentateHexColorComponent(const PixelInfo *pixel,
-  const ChannelType channel,char *tuple)
+  const PixelChannel channel,char *tuple)
 {
   char
     component[MaxTextExtent];
@@ -1338,27 +1338,27 @@ static void ConcatentateHexColorComponent(const PixelInfo *pixel,
   color=0.0;
   switch (channel)
   {
-    case RedChannel:
+    case RedPixelChannel:
     {
       color=pixel->red;
       break;
     }
-    case GreenChannel:
+    case GreenPixelChannel:
     {
       color=pixel->green;
       break;
     }
-    case BlueChannel:
+    case BluePixelChannel:
     {
       color=pixel->blue;
       break;
     }
-    case AlphaChannel:
+    case AlphaPixelChannel:
     {
       color=pixel->alpha;
       break;
     }
-    case BlackChannel:
+    case BlackPixelChannel:
     {
       color=pixel->black;
       break;
@@ -1410,13 +1410,13 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
         Convert pixel to hex color.
       */
       (void) ConcatenateMagickString(tuple,"#",MaxTextExtent);
-      ConcatentateHexColorComponent(pixel,RedChannel,tuple);
-      ConcatentateHexColorComponent(pixel,GreenChannel,tuple);
-      ConcatentateHexColorComponent(pixel,BlueChannel,tuple);
+      ConcatentateHexColorComponent(pixel,RedPixelChannel,tuple);
+      ConcatentateHexColorComponent(pixel,GreenPixelChannel,tuple);
+      ConcatentateHexColorComponent(pixel,BluePixelChannel,tuple);
       if (pixel->colorspace == CMYKColorspace)
-        ConcatentateHexColorComponent(pixel,BlackChannel,tuple);
+        ConcatentateHexColorComponent(pixel,BlackPixelChannel,tuple);
       if ((pixel->matte != MagickFalse) && (pixel->alpha != OpaqueAlpha))
-        ConcatentateHexColorComponent(pixel,AlphaChannel,tuple);
+        ConcatentateHexColorComponent(pixel,AlphaPixelChannel,tuple);
       return;
     }
   /*
