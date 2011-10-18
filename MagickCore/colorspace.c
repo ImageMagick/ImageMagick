@@ -95,13 +95,15 @@ typedef struct _TransformPacket
 %  The format of the RGBTransformImage method is:
 %
 %      MagickBooleanType RGBTransformImage(Image *image,
-%        const ColorspaceType colorspace)
+%        const ColorspaceType colorspace,EsceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o colorspace: the colorspace to transform the image to.
+%
+%   o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -178,15 +180,12 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
 }
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
-  const ColorspaceType colorspace)
+  const ColorspaceType colorspace,ExceptionInfo *exception)
 {
 #define RGBTransformImageTag  "RGBTransform/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status,
@@ -230,7 +229,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       break;
     }
   }
-  exception=(&image->exception);
   if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -1240,13 +1238,13 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (image->colorspace == colorspace)
     return(MagickTrue);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
-    return(TransformRGBImage(image,image->colorspace));
+    return(TransformRGBImage(image,image->colorspace,exception));
   status=MagickTrue;
   if ((image->colorspace != RGBColorspace) &&
       (image->colorspace != TransparentColorspace) &&
       (image->colorspace != GRAYColorspace))
-    status=TransformRGBImage(image,image->colorspace);
-  if (RGBTransformImage(image,colorspace) == MagickFalse)
+    status=TransformRGBImage(image,image->colorspace,exception);
+  if (RGBTransformImage(image,colorspace,exception) == MagickFalse)
     status=MagickFalse;
   return(status);
 }
@@ -1270,13 +1268,15 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %  The format of the TransformRGBImage method is:
 %
 %      MagickBooleanType TransformRGBImage(Image *image,
-%        const ColorspaceType colorspace)
+%        const ColorspaceType colorspace,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o colorspace: the colorspace to transform the image to.
+%
+%   o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1372,7 +1372,7 @@ static inline void ConvertCMYKToRGB(PixelInfo *pixel)
 }
 
 MagickExport MagickBooleanType TransformRGBImage(Image *image,
-  const ColorspaceType colorspace)
+  const ColorspaceType colorspace,ExceptionInfo *exception)
 {
 #define D50X  (0.9642)
 #define D50Y  (1.0)
@@ -1621,9 +1621,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   CacheView
     *image_view;
 
-  ExceptionInfo
-    *exception;
-
   MagickBooleanType
     status;
 
@@ -1659,7 +1656,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   }
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   switch (colorspace)
   {
     case CMYColorspace:
