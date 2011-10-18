@@ -968,9 +968,6 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
     (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
     root=HKEY_LOCAL_MACHINE;
     mode=KEY_READ;
-#if defined(KEY_WOW64_32KEY)
-    mode|=KEY_WOW64_32KEY;
-#endif
     if (RegOpenKeyExA(root,key,0,mode,&hkey) == ERROR_SUCCESS)
       {
         DWORD
