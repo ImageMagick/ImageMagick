@@ -1712,125 +1712,18 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
 %
 */
 
-static double GetNCCDistortion(const Image *image,
-  const Image *reconstruct_image,
-  const ChannelStatistics *reconstruct_statistics,ExceptionInfo *exception)
-{
-#define SimilarityImageTag  "Similarity/Image"
-
-  CacheView
-    *image_view,
-    *reconstruct_view;
-
-  ChannelStatistics
-    *image_statistics;
-
-  double
-    distortion;
-
-  MagickBooleanType
-    status;
-
-  MagickRealType
-    area,
-    gamma;
-
-  ssize_t
-    y;
-
-  unsigned long
-    number_channels;
-  
-  /*
-    Normalize to account for variation due to lighting and exposure condition.
-  */
-  image_statistics=GetImageChannelStatistics(image,exception);
-  status=MagickTrue;
-  distortion=0.0;
-  area=1.0/((MagickRealType) image->columns*image->rows-1);
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register const IndexPacket
-      *restrict indexes,
-      *restrict reconstruct_indexes;
-
-    register const PixelPacket
-      *restrict p,
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
-      1,exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewVirtualIndexQueue(image_view);
-    reconstruct_indexes=GetCacheViewVirtualIndexQueue(reconstruct_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      distortion+=area*QuantumScale*(GetPixelRed(p)-
-        image_statistics[RedChannel].mean)*(GetPixelRed(q)-
-        reconstruct_statistics[RedChannel].mean);
-      distortion+=area*QuantumScale*(GetPixelGreen(p)-
-        image_statistics[GreenChannel].mean)*(GetPixelGreen(q)-
-        reconstruct_statistics[GreenChannel].mean);
-      distortion+=area*QuantumScale*(GetPixelBlue(p)-
-        image_statistics[BlueChannel].mean)*(q->blue-
-        reconstruct_statistics[BlueChannel].mean);
-      if (image->matte != MagickFalse)
-        distortion+=area*QuantumScale*(GetPixelOpacity(p)-
-          image_statistics[OpacityChannel].mean)*(GetPixelOpacity(q)-
-          reconstruct_statistics[OpacityChannel].mean);
-      if ((image->colorspace == CMYKColorspace) &&
-          (reconstruct_image->colorspace == CMYKColorspace))
-        distortion+=area*QuantumScale*(GetPixelIndex(indexes+x)-
-          image_statistics[BlackChannel].mean)*(GetPixelIndex(
-          reconstruct_indexes+x)-reconstruct_statistics[BlackChannel].mean);
-      p++;
-      q++;
-    }
-  }
-  reconstruct_view=DestroyCacheView(reconstruct_view);
-  image_view=DestroyCacheView(image_view);
-  /*
-    Divide by the standard deviation.
-  */
-  gamma=image_statistics[CompositeChannels].standard_deviation*
-    reconstruct_statistics[CompositeChannels].standard_deviation;
-  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-  distortion=QuantumRange*gamma*distortion;
-  number_channels=3;
-  if (image->matte != MagickFalse)
-    number_channels++;
-  if (image->colorspace == CMYKColorspace)
-    number_channels++;
-  distortion=sqrt(distortion/number_channels);
-  /*
-    Free resources.
-  */
-  image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-    image_statistics);
-  return(1.0-distortion);
-}
-
 static double GetSimilarityMetric(const Image *image,const Image *reference,
-  const ChannelStatistics *reference_statistics,const ssize_t x_offset,
-  const ssize_t y_offset,ExceptionInfo *exception)
+  const MetricType metric,const ssize_t x_offset,const ssize_t y_offset,
+  ExceptionInfo *exception)
 {
   double
     distortion;
 
   Image
     *similarity_image;
+
+  MagickBooleanType
+    status;
 
   RectangleInfo
     geometry;
@@ -1841,7 +1734,8 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   similarity_image=CropImage(image,&geometry,exception);
   if (similarity_image == (Image *) NULL)
     return(0.0);
-  distortion=GetNCCDistortion(reference,similarity_image,reference_statistics,
+  distortion=0.0;
+  status=GetImageDistortion(similarity_image,reference,metric,&distortion,
     exception);
   similarity_image=DestroyImage(similarity_image);
   return(distortion);
@@ -1850,13 +1744,22 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
 MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+  Image
+    *similarity_image;
+
+  similarity_image=SimilarityMetricImage(image,reference,
+    RootMeanSquaredErrorMetric,offset,similarity_metric,exception);
+  return(similarity_image);
+}
+
+MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
+  const MetricType metric,RectangleInfo *offset,double *similarity_metric,
+  ExceptionInfo *exception)
+{
 #define SimilarityImageTag  "Similarity/Image"
 
   CacheView
     *similarity_view;
-
-  ChannelStatistics
-    *reference_statistics;
 
   Image
     *similarity_image;
@@ -1896,7 +1799,6 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   */
   status=MagickTrue;
   progress=0;
-  reference_statistics=GetImageChannelStatistics(reference,exception);
   similarity_view=AcquireCacheView(similarity_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -1923,8 +1825,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       }
     for (x=0; x < (ssize_t) (image->columns-reference->columns+1); x++)
     {
-      similarity=GetSimilarityMetric(image,reference,reference_statistics,x,y,
-        exception);
+      similarity=GetSimilarityMetric(image,reference,metric,x,y,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SimilarityImage)
 #endif
@@ -1957,7 +1858,5 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
-  reference_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-    reference_statistics);
   return(similarity_image);
 }

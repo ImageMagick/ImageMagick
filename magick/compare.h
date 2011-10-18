@@ -48,7 +48,9 @@ extern MagickExport Image
   *CompareImages(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
   *SimilarityImage(Image *,const Image *,RectangleInfo *,double *,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  *SimilarityMetricImage(Image *,const Image *,const MetricType,
+    RectangleInfo *,double *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageChannelDistortion(Image *,const Image *,const ChannelType,
