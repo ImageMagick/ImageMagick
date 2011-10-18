@@ -947,8 +947,8 @@ WandExport MagickBooleanType CompareImageCommand(ImageInfo *image_info,
   reconstruct_image=GetImageFromList(image,1);
   if (subimage_search != MagickFalse)
     {
-      similarity_image=SimilarityImage(image,reconstruct_image,&offset,
-        &similarity_metric,exception);
+      similarity_image=SimilarityMetricImage(image,reconstruct_image,metric,
+        &offset,&similarity_metric,exception);
       if (similarity_metric > dissimilarity_threshold)
         ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
     }
