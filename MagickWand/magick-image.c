@@ -10474,7 +10474,8 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
 %  The format of the MagickSimilarityImage method is:
 %
 %      MagickWand *MagickSimilarityImage(MagickWand *wand,
-%        const MagickWand *reference,RectangeInfo *offset,double *similarity)
+%        const MagickWand *reference,const MetricType metric,
+%        RectangeInfo *offset,double *similarity)
 %
 %  A description of each parameter follows:
 %
@@ -10482,13 +10483,16 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
 %
 %    o reference: the reference wand.
 %
+%    o metric: the metric.
+%
 %    o offset: the best match offset of the reference image within the image.
 %
 %    o similarity: the computed similarity between the images.
 %
 */
 WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
-  const MagickWand *reference,RectangleInfo *offset,double *similarity)
+  const MagickWand *reference,const MetricType metric,RectangleInfo *offset,
+  double *similarity)
 {
   Image
     *similarity_image;
@@ -10503,7 +10507,7 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
-  similarity_image=SimilarityImage(wand->images,reference->images,offset,
+  similarity_image=SimilarityImage(wand->images,reference->images,metric,offset,
     similarity,wand->exception);
   if (similarity_image == (Image *) NULL)
     return((MagickWand *) NULL);
