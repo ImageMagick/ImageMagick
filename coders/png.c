@@ -127,7 +127,7 @@
 #endif
 
 /* Macros for left-bit-replication to ensure that pixels
- * and PixelPackets all have the image->depth, and for use
+ * and PixelPackets all have the same image->depth, and for use
  * in PNG8 quantization.
  */
 
