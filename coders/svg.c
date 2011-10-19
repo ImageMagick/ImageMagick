@@ -2044,8 +2044,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   affine.ty;
               }
               (void) FormatLocaleFile(svg_info->file,
-                "affine %g %g %g %g 0.0 0.0\n",transform.sx,transform.rx,
-                transform.ry,transform.sy);
+                "affine %g %g %g %g %g %g\n",transform.sx,transform.rx,
+                transform.ry,transform.sy,transform.tx,transform.ty);
               for (j=0; tokens[j] != (char *) NULL; j++)
                 tokens[j]=DestroyString(tokens[j]);
               tokens=(char **) RelinquishMagickMemory(tokens);
