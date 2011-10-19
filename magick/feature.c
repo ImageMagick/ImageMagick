@@ -420,7 +420,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-(ssize_t) distance,y,image->columns+
-      2*distance,distance+1,exception);
+      2*distance,distance+2,exception);
     if (p == (const PixelPacket *) NULL)
       {
         status=MagickFalse;
