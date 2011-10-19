@@ -419,7 +419,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         status=MagickFalse;
         continue;
       }
-    p+=distance*GetPixelChannels(image);;
+    p+=distance*GetPixelChannels(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       for (i=0; i < 4; i++)
