@@ -330,7 +330,7 @@ static NodeInfo
 static MagickBooleanType
   AssignImageColors(Image *,CubeInfo *,ExceptionInfo *),
   ClassifyImageColors(CubeInfo *,const Image *,ExceptionInfo *),
-  DitherImage(Image *,CubeInfo *),
+  DitherImage(Image *,CubeInfo *,ExceptionInfo *),
   SetGrayscaleImage(Image *,ExceptionInfo *);
 
 static size_t
@@ -529,7 +529,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   */
   if ((cube_info->quantize_info->dither != MagickFalse) &&
       (cube_info->quantize_info->dither_method != NoDitherMethod))
-    (void) DitherImage(image,cube_info);
+    (void) DitherImage(image,cube_info,exception);
   else
     {
       CacheView
@@ -542,7 +542,6 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         status;
 
       status=MagickTrue;
-      exception=(&image->exception);
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -649,7 +648,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       image_view=DestroyCacheView(image_view);
     }
   if (cube_info->quantize_info->measure_error != MagickFalse)
-    (void) GetImageQuantizeError(image);
+    (void) GetImageQuantizeError(image,exception);
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
     {
@@ -1181,7 +1180,7 @@ MagickExport MagickBooleanType CompressImageColormap(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsPaletteImage(image,&image->exception) == MagickFalse)
+  if (IsPaletteImage(image,exception) == MagickFalse)
     return(MagickFalse);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;
@@ -1398,13 +1397,16 @@ MagickExport QuantizeInfo *DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  The format of the DitherImage method is:
 %
-%      MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
+%      MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image: the image.
 %
 %    o cube_info: A pointer to the Cube structure.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -1469,15 +1471,13 @@ static inline ssize_t CacheOffset(CubeInfo *cube_info,
   return(offset);
 }
 
-static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
+static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
+  ExceptionInfo *exception)
 {
 #define DitherImageTag  "Dither/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -1494,7 +1494,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
   pixels=AcquirePixelThreadSet(image->columns);
   if (pixels == (RealPixelInfo **) NULL)
     return(MagickFalse);
-  exception=(&image->exception);
   status=MagickTrue;
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1662,40 +1661,53 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
 }
 
 static MagickBooleanType
-  RiemersmaDither(Image *,CacheView *,CubeInfo *,const unsigned int);
+  RiemersmaDither(Image *,CacheView *,CubeInfo *,const unsigned int,
+    ExceptionInfo *exception);
 
 static void Riemersma(Image *image,CacheView *image_view,CubeInfo *cube_info,
-  const size_t level,const unsigned int direction)
+  const size_t level,const unsigned int direction,ExceptionInfo *exception)
 {
   if (level == 1)
     switch (direction)
     {
       case WestGravity:
       {
-        (void) RiemersmaDither(image,image_view,cube_info,EastGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,WestGravity);
+        (void) RiemersmaDither(image,image_view,cube_info,EastGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,WestGravity,
+          exception);
         break;
       }
       case EastGravity:
       {
-        (void) RiemersmaDither(image,image_view,cube_info,WestGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,EastGravity);
+        (void) RiemersmaDither(image,image_view,cube_info,WestGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,EastGravity,
+          exception);
         break;
       }
       case NorthGravity:
       {
-        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,EastGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity);
+        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,EastGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity,
+          exception);
         break;
       }
       case SouthGravity:
       {
-        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,WestGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity);
+        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,WestGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity,
+          exception);
         break;
       }
       default:
@@ -1706,46 +1718,74 @@ static void Riemersma(Image *image,CacheView *image_view,CubeInfo *cube_info,
     {
       case WestGravity:
       {
-        Riemersma(image,image_view,cube_info,level-1,NorthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,EastGravity);
-        Riemersma(image,image_view,cube_info,level-1,WestGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity);
-        Riemersma(image,image_view,cube_info,level-1,WestGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,WestGravity);
-        Riemersma(image,image_view,cube_info,level-1,SouthGravity);
+        Riemersma(image,image_view,cube_info,level-1,NorthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,EastGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,WestGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,WestGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,WestGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,SouthGravity,
+          exception);
         break;
       }
       case EastGravity:
       {
-        Riemersma(image,image_view,cube_info,level-1,SouthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,WestGravity);
-        Riemersma(image,image_view,cube_info,level-1,EastGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity);
-        Riemersma(image,image_view,cube_info,level-1,EastGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,EastGravity);
-        Riemersma(image,image_view,cube_info,level-1,NorthGravity);
+        Riemersma(image,image_view,cube_info,level-1,SouthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,WestGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,EastGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,EastGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,EastGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,NorthGravity,
+          exception);
         break;
       }
       case NorthGravity:
       {
-        Riemersma(image,image_view,cube_info,level-1,WestGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity);
-        Riemersma(image,image_view,cube_info,level-1,NorthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,EastGravity);
-        Riemersma(image,image_view,cube_info,level-1,NorthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity);
-        Riemersma(image,image_view,cube_info,level-1,EastGravity);
+        Riemersma(image,image_view,cube_info,level-1,WestGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,NorthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,EastGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,NorthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,EastGravity,
+          exception);
         break;
       }
       case SouthGravity:
       {
-        Riemersma(image,image_view,cube_info,level-1,EastGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity);
-        Riemersma(image,image_view,cube_info,level-1,SouthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,WestGravity);
-        Riemersma(image,image_view,cube_info,level-1,SouthGravity);
-        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity);
-        Riemersma(image,image_view,cube_info,level-1,WestGravity);
+        Riemersma(image,image_view,cube_info,level-1,EastGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,NorthGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,SouthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,WestGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,SouthGravity,
+          exception);
+        (void) RiemersmaDither(image,image_view,cube_info,SouthGravity,
+          exception);
+        Riemersma(image,image_view,cube_info,level-1,WestGravity,
+          exception);
         break;
       }
       default:
@@ -1754,7 +1794,7 @@ static void Riemersma(Image *image,CacheView *image_view,CubeInfo *cube_info,
 }
 
 static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
-  CubeInfo *cube_info,const unsigned int direction)
+  CubeInfo *cube_info,const unsigned int direction,ExceptionInfo *exception)
 {
 #define DitherImageTag  "Dither/Image"
 
@@ -1775,9 +1815,6 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
   if ((p->x >= 0) && (p->x < (ssize_t) image->columns) &&
       (p->y >= 0) && (p->y < (ssize_t) image->rows))
     {
-      ExceptionInfo
-        *exception;
-
       register Quantum
         *restrict q;
 
@@ -1787,7 +1824,6 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
       /*
         Distribute error.
       */
-      exception=(&image->exception);
       q=GetCacheViewAuthenticPixels(image_view,p->x,p->y,1,1,exception);
       if (q == (Quantum *) NULL)
         return(MagickFalse);
@@ -1891,7 +1927,8 @@ static inline ssize_t MagickMin(const ssize_t x,const ssize_t y)
   return(y);
 }
 
-static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
+static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -1906,7 +1943,7 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
     depth;
 
   if (cube_info->quantize_info->dither_method != RiemersmaDitherMethod)
-    return(FloydSteinbergDither(image,cube_info));
+    return(FloydSteinbergDither(image,cube_info,exception));
   /*
     Distribute quantization error along a Hilbert curve.
   */
@@ -1923,8 +1960,8 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info)
   cube_info->span=(MagickSizeType) image->columns*image->rows;
   image_view=AcquireCacheView(image);
   if (depth > 1)
-    Riemersma(image,image_view,cube_info,depth-1,NorthGravity);
-  status=RiemersmaDither(image,image_view,cube_info,ForgetGravity);
+    Riemersma(image,image_view,cube_info,depth-1,NorthGravity,exception);
+  status=RiemersmaDither(image,image_view,cube_info,ForgetGravity,exception);
   image_view=DestroyCacheView(image_view);
   return(status);
 }
@@ -2136,20 +2173,21 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t id,
 %
 %  The format of the GetImageQuantizeError method is:
 %
-%      MagickBooleanType GetImageQuantizeError(Image *image)
+%      MagickBooleanType GetImageQuantizeError(Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
+MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickRealType
     alpha,
@@ -2170,7 +2208,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
+  image->total_colors=GetNumberColors(image,(FILE *) NULL,exception);
   (void) ResetMagickMemory(&image->error,0,sizeof(image->error));
   if (image->storage_class == DirectClass)
     return(MagickTrue);
@@ -2180,7 +2218,6 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image)
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
   mean_error=0.0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2696,8 +2733,8 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
   if ((image->columns*image->rows) <= maximum_colors)
-    (void) DirectToColormapImage(image,&image->exception);
-  if ((IsImageGray(image,&image->exception) != MagickFalse) &&
+    (void) DirectToColormapImage(image,exception);
+  if ((IsImageGray(image,exception) != MagickFalse) &&
       (image->matte == MagickFalse))
     (void) SetGrayscaleImage(image,exception);
   if ((image->storage_class == PseudoClass) &&
@@ -2727,7 +2764,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  status=ClassifyImageColors(cube_info,image,&image->exception);
+  status=ClassifyImageColors(cube_info,image,exception);
   if (status != MagickFalse)
     {
       /*
@@ -2835,7 +2872,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
   cube_info=GetCubeInfo(quantize_info,depth,maximum_colors);
   if (cube_info == (CubeInfo *) NULL)
     {
-      (void) ThrowMagickException(&images->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       return(MagickFalse);
     }
@@ -2845,7 +2882,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
   {
     progress_monitor=SetImageProgressMonitor(image,(MagickProgressMonitor) NULL,
       image->client_data);
-    status=ClassifyImageColors(cube_info,image,&image->exception);
+    status=ClassifyImageColors(cube_info,image,exception);
     if (status == MagickFalse)
       break;
     (void) SetImageProgressMonitor(image,progress_monitor,image->client_data);
@@ -3074,7 +3111,7 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  status=ClassifyImageColors(cube_info,remap_image,&image->exception);
+  status=ClassifyImageColors(cube_info,remap_image,exception);
   if (status != MagickFalse)
     {
       /*
@@ -3362,7 +3399,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   image_view=DestroyCacheView(image_view);
   colormap_index=(ssize_t *) RelinquishMagickMemory(colormap_index);
   image->type=GrayscaleType;
-  if (IsImageMonochrome(image,&image->exception) != MagickFalse)
+  if (IsImageMonochrome(image,exception) != MagickFalse)
     image->type=BilevelType;
   return(status);
 }

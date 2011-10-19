@@ -538,8 +538,11 @@ void Magick::Image::channel ( const ChannelType channel_ )
 void Magick::Image::channelDepth ( const size_t depth_ )
 {
   modifyImage();
-  SetImageDepth( image(), depth_);
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageDepth( image(), depth_, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 size_t Magick::Image::channelDepth ( )
 {
@@ -3429,7 +3432,11 @@ double Magick::Image::meanErrorPerPixel ( void ) const
 void Magick::Image::modulusDepth ( const size_t depth_ )
 {
   modifyImage();
-  SetImageDepth( image(), depth_ );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageDepth( image(), depth_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   options()->depth( depth_ );
 }
 size_t Magick::Image::modulusDepth ( void ) const

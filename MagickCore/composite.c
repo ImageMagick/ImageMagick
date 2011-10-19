@@ -1738,7 +1738,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
       */
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-        &image->exception);
+        exception);
       if (destination_image == (Image *) NULL)
         return(MagickFalse);
       /*
@@ -1784,8 +1784,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Blur Image by resampling.
       */
       pixel=zero;
-      exception=(&image->exception);
-      resample_filter=AcquireResampleFilter(image,&image->exception);
+      resample_filter=AcquireResampleFilter(image,exception);
       SetResampleFilter(resample_filter,CubicFilter,2.0);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
@@ -1808,7 +1807,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
         q=QueueCacheViewAuthenticPixels(destination_view,0,y,
-          destination_image->columns,1,&image->exception);
+          destination_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
         for (x=0; x < (ssize_t) composite_image->columns; x++)
@@ -1876,7 +1875,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           compose:args = x_scale[,y_scale[,center.x,center.y]]
       */
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-        &image->exception);
+        exception);
       if (destination_image == (Image *) NULL)
         return(MagickFalse);
       SetGeometryInfo(&geometry_info);
@@ -1957,7 +1956,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         displacement/distortion map.  -- Like a lens...
       */
       pixel=zero;
-      exception=(&image->exception);
       image_view=AcquireCacheView(image);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
@@ -1980,7 +1978,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
         q=QueueCacheViewAuthenticPixels(destination_view,0,y,
-          destination_image->columns,1,&image->exception);
+          destination_image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
         for (x=0; x < (ssize_t) composite_image->columns; x++)
@@ -2132,7 +2130,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
   GetPixelInfo(composite_image,&zero);
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
