@@ -1369,7 +1369,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (info)
             info->image_info->depth=SvIV(sval);
           for ( ; image; image=image->next)
-            (void) SetImageDepth(image,SvIV(sval));
+            (void) SetImageDepth(image,SvIV(sval),exception);
           break;
         }
       if (LocaleCompare(attribute,"dispose") == 0)

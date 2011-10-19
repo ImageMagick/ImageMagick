@@ -2260,12 +2260,15 @@ namespace Magick
         // Calculate quantization error
         if ( measureError_ )
           {
-            MagickCore::GetImageQuantizeError( image );
-            if ( image->exception.severity > MagickCore::UndefinedException )
+            MagickCore::ExceptionInfo exceptionInfo;
+            MagickCore::GetExceptionInfo( &exceptionInfo );
+            MagickCore::GetImageQuantizeError( image, &exceptionInfo );
+            if ( exceptionInfo.severity > MagickCore::UndefinedException )
               {
                 unlinkImages( first_, last_ );
                 throwException( exceptionInfo );
               }
+            (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
           }
   
         // Udate DirectClass representation of pixels
@@ -2407,7 +2410,7 @@ namespace Magick
       {
   // Calculate quantization error
   if ( measureError_ )
-    MagickCore::GetImageQuantizeError( image );
+    MagickCore::GetImageQuantizeError( image,  &exceptionInfo );
 
   // Update DirectClass representation of pixels
   MagickCore::SyncImage( image );

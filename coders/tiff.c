@@ -2715,7 +2715,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case JPEGCompression:
       {
         (void) SetImageStorageClass(image,DirectClass,exception);
-        (void) SetImageDepth(image,8);
+        (void) SetImageDepth(image,8,exception);
         break;
       }
       default:
@@ -2740,7 +2740,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               photometric=PHOTOMETRIC_YCBCR;
               (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,1,1);
               (void) SetImageStorageClass(image,DirectClass,exception);
-              (void) SetImageDepth(image,8);
+              (void) SetImageDepth(image,8,exception);
             }
           else
             {

@@ -9069,7 +9069,7 @@ WandExport MagickBooleanType MagickSetImageDepth(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(SetImageDepth(wand->images,depth));
+  return(SetImageDepth(wand->images,depth,wand->exception));
 }
 
 /*

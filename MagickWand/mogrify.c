@@ -1290,10 +1290,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '+')
               {
-                (void) SetImageDepth(*image,MAGICKCORE_QUANTUM_DEPTH);
+                (void) SetImageDepth(*image,MAGICKCORE_QUANTUM_DEPTH,exception);
                 break;
               }
-            (void) SetImageDepth(*image,StringToUnsignedLong(argv[i+1]));
+            (void) SetImageDepth(*image,StringToUnsignedLong(argv[i+1]),
+              exception);
             break;
           }
         if (LocaleCompare("deskew",option+1) == 0)
