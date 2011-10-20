@@ -290,11 +290,11 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%.20g '%s'\n",
          (double) y, Phrase);
     ConcatenateString(&draw_info->primitive,buffer);
-    if (i <= 8)
+    if (i < 8)
       i++;
-    else if (i <= 12)
+    else if (i < 12)
       i+=2;
-    else if (i <= 24)
+    else if (i < 24)
       i+=6;
     else
       i+=12;
