@@ -278,7 +278,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ConcatenateString(&draw_info->primitive,buffer);
   y+=12*(ssize_t) MultilineCensus((char *) Text);
   /* FUTURE: A setting to specify the text to use */
-  for (i=6; i <= 72; )
+  for (i=5; i <= 72; )
   {
     y += (i+2>12) ? i+2 : 12;  /* line spacing */
     ConcatenateString(&draw_info->primitive," font-size 12\n");
