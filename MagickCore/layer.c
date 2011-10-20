@@ -84,7 +84,8 @@
 %
 %  The format is:
 %
-%      void ClearBounds(Image *image,RectangleInfo *bounds)
+%      void ClearBounds(Image *image,RectangleInfo *bounds
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -92,18 +93,17 @@
 %
 %    o bounds: the area to be clear within the imag image
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-static void ClearBounds(Image *image,RectangleInfo *bounds)
+static void ClearBounds(Image *image,RectangleInfo *bounds,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   ssize_t
     y;
 
   if (bounds->x < 0)
     return;
-  exception=(&image->exception);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   for (y=0; y < (ssize_t) bounds->height; y++)
@@ -322,7 +322,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       Clear the overlaid area of the coalesced bounds for background disposal
     */
     if (next->previous->dispose == BackgroundDispose)
-      ClearBounds(dispose_image, &bounds);
+      ClearBounds(dispose_image,&bounds,exception);
     /*
       Next image is the dispose image, overlaid with next frame in sequence.
     */
@@ -451,7 +451,7 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
           }
         if ((ssize_t) (bounds.y+bounds.height) > (ssize_t) current_image->rows)
           bounds.height=current_image->rows-bounds.y;
-        ClearBounds(current_image,&bounds);
+        ClearBounds(current_image,&bounds,exception);
       }
     /*
       Select the appropriate previous/disposed image.
@@ -1107,7 +1107,7 @@ static Image *OptimizeLayerFrames(const Image *image,
                 return((Image *) NULL);
               }
             dup_bounds=CompareImagesBounds(dup_image,curr,CompareClearLayer,exception);
-            ClearBounds(dup_image,&dup_bounds);
+            ClearBounds(dup_image,&dup_bounds,exception);
             try_bounds=CompareImagesBounds(dup_image,curr,CompareAnyLayer,exception);
             if ( cleared ||
                    dup_bounds.width*dup_bounds.height
@@ -1137,7 +1137,7 @@ static Image *OptimizeLayerFrames(const Image *image,
             return((Image *) NULL);
           }
         bgnd_bounds=bounds[i-1]; /* interum bounds of the previous image */
-        ClearBounds(bgnd_image,&bgnd_bounds);
+        ClearBounds(bgnd_image,&bgnd_bounds,exception);
         try_bounds=CompareImagesBounds(bgnd_image,curr,CompareAnyLayer,exception);
         try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
 #if DEBUG_OPT_FRAME
@@ -1200,7 +1200,7 @@ static Image *OptimizeLayerFrames(const Image *image,
                     (double) bgnd_bounds.x,(double) bgnd_bounds.y );
 #endif
               }
-            ClearBounds(bgnd_image,&bgnd_bounds);
+            ClearBounds(bgnd_image,&bgnd_bounds,exception);
 #if DEBUG_OPT_FRAME
 /* Something strange is happening with a specific animation
  * CompareAnyLayers (normal method) and CompareClearLayers returns the whole
@@ -1531,7 +1531,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
           }
         if ((ssize_t) (bounds.y+bounds.height) > (ssize_t) current_image->rows)
           bounds.height=current_image->rows-bounds.y;
-        ClearBounds(current_image, &bounds);
+        ClearBounds(current_image, &bounds,exception);
       }
     if (next->dispose != PreviousDispose)
       {

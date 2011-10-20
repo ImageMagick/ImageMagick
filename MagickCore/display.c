@@ -2730,7 +2730,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
     /*
       Annotate image with text.
     */
-    status=XAnnotateImage(display,windows->pixel_info,annotate_info,image);
+    status=XAnnotateImage(display,windows->pixel_info,annotate_info,image,
+      exception);
     if (status == 0)
       return(MagickFalse);
     /*

@@ -573,7 +573,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     {
       if (image->colorspace == CMYKColorspace)
         (void) FormatLocaleFile(file,"  Total ink density: %.0f%%\n",100.0*
-          GetImageTotalInkDensity(image)/(double) QuantumRange);
+          GetImageTotalInkDensity(image,exception)/(double) QuantumRange);
       x=0;
       if (image->matte != MagickFalse)
         {

@@ -71,23 +71,24 @@
 %
 %  The format of the GetImageTotalInkDensity method is:
 %
-%      double GetImageTotalInkDensity(const Image *image)
+%      double GetImageTotalInkDensity(const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport double GetImageTotalInkDensity(Image *image)
+MagickExport double GetImageTotalInkDensity(Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
 
   double
     total_ink_density;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -107,7 +108,6 @@ MagickExport double GetImageTotalInkDensity(Image *image)
     }
   status=MagickTrue;
   total_ink_density=0.0;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)

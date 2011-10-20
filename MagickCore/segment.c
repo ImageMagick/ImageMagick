@@ -528,7 +528,6 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   /*
     Do course grain classes.
   */
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
