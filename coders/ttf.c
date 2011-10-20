@@ -278,7 +278,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ConcatenateString(&draw_info->primitive,buffer);
   y+=12*(ssize_t) MultilineCensus((char *) Text);
   /* FUTURE: A setting to specify the text to use */
-  for (i=5; i <= 72; )
+  for (i=4; i <= 72; )
   {
     y += (i+2>12) ? i+2 : 12;  /* line spacing */
     ConcatenateString(&draw_info->primitive," font-size 12\n");
@@ -291,12 +291,16 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%g '%s'\n",
          (double) y, Phrase);
     ConcatenateString(&draw_info->primitive,buffer);
-    if (i < 12)
+    if (i < 14)
       i+=1;
+    else if (i < 20)
+      i+=2;
     else if (i < 24)
       i+=4;
-    else
+    else if ( i < 48 )
       i+=12;
+    else
+      i+=24;
   }
   ConcatenateString(&draw_info->primitive,"pop graphic-context");
   (void) DrawImage(image,draw_info,exception);
