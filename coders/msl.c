@@ -7082,7 +7082,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 }
               }
             }
-          (void) SyncImage(msl_info->image[n]);
+          (void) SyncImage(msl_info->image[n],&exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);

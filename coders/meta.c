@@ -1102,9 +1102,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     }
   image->columns=1;
   image->rows=1;
-  if (SetImageBackgroundColor(image) == MagickFalse)
+  if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
-      InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }

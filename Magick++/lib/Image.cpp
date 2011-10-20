@@ -928,14 +928,18 @@ void Magick::Image::equalize ( void )
   modifyImage();
   EqualizeImage( image(), &exceptionInfo );
   throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Erase image to current "background color"
 void Magick::Image::erase ( void )
 {
   modifyImage();
-  SetImageBackgroundColor( image() );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageBackgroundColor( image(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Extends image as defined by the geometry.
@@ -1936,9 +1940,9 @@ void Magick::Image::segment ( const double clusterThreshold_,
 		 (MagickBooleanType) options()->verbose(),
 		 clusterThreshold_,
 		 smoothingThreshold_, &exceptionInfo );
+  SyncImage( image(), &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-  SyncImage( image() );
 }
 
 // Shade image using distant light source
@@ -2650,7 +2654,11 @@ void Magick::Image::classType ( const ClassType class_ )
       // Use SyncImage to synchronize the DirectClass pixels with the
       // color map and then set to DirectClass type.
       modifyImage();
-      SyncImage( image() );
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      SyncImage( image(), &exceptionInfo );
+      throwException( exceptionInfo );
+      (void) DestroyExceptionInfo( &exceptionInfo );
       image()->colormap = (PixelInfo *)
         RelinquishMagickMemory( image()->colormap );
       image()->storage_class = static_cast<MagickCore::ClassType>(DirectClass);

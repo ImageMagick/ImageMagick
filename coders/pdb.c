@@ -453,7 +453,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           break;
       }
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
     case 2:
@@ -489,7 +489,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           break;
       }
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
     case 4:
@@ -519,7 +519,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           break;
       }
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
     default:

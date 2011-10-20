@@ -515,7 +515,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                 }
             }
-            (void) SyncImage(image);
+            (void) SyncImage(image,exception);
           }
         else
           {

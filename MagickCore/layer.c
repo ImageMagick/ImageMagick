@@ -274,7 +274,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   coalesce_image->page=bounds;
   coalesce_image->dispose=NoneDispose;
   coalesce_image->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(coalesce_image);
+  (void) SetImageBackgroundColor(coalesce_image,exception);
   /*
     Coalesce rest of the images.
   */
@@ -408,7 +408,7 @@ MagickExport Image *DisposeImages(const Image *image,ExceptionInfo *exception)
   dispose_image->page.y=0;
   dispose_image->dispose=NoneDispose;
   dispose_image->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(dispose_image);
+  (void) SetImageBackgroundColor(dispose_image,exception);
   dispose_images=NewImageList();
   for ( ; curr != (Image *) NULL; curr=GetNextImageInList(curr))
   {
@@ -794,7 +794,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
       return((Image *) NULL);
     }
   image_a->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(image_a);
+  (void) SetImageBackgroundColor(image_a,exception);
   image_a->page=next->page;
   image_a->page.x=0;
   image_a->page.y=0;
@@ -1002,7 +1002,7 @@ static Image *OptimizeLayerFrames(const Image *image,
   prev_image->dispose=NoneDispose;
 
   prev_image->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(prev_image);
+  (void) SetImageBackgroundColor(prev_image,exception);
   /*
     Figure out the area of overlay of the first frame
     No pixel could be cleared as all pixels are already cleared.
@@ -1486,7 +1486,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
   dispose_image->page.y=0;
   dispose_image->dispose=NoneDispose;
   dispose_image->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(dispose_image);
+  (void) SetImageBackgroundColor(dispose_image,exception);
 
   while ( next != (Image *) NULL )
   {
@@ -2016,7 +2016,7 @@ MagickExport Image *MergeImageLayers(Image *image,const ImageLayerMethod method,
   canvas=CloneImage(image,width,height,MagickTrue,exception);
   if (canvas == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageBackgroundColor(canvas);
+  (void) SetImageBackgroundColor(canvas,exception);
   canvas->page=page;
   canvas->dispose=UndefinedDispose;
 

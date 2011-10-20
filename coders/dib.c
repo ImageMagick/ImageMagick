@@ -680,7 +680,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
           }
       }
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
     case 4:
@@ -721,7 +721,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
           }
       }
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
     case 8:
@@ -755,7 +755,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
           }
       }
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
     case 16:

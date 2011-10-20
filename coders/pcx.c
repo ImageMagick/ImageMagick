@@ -623,7 +623,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
     if (image->storage_class == PseudoClass)
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     scanline=(unsigned char *) RelinquishMagickMemory(scanline);
     if (pcx_colormap != (unsigned char *) NULL)
       pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);

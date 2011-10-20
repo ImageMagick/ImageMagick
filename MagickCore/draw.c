@@ -1419,26 +1419,26 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
         *clip_mask;
 
       clip_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
-        &image->exception);
+        exception);
       if (clip_mask == (Image *) NULL)
         return(MagickFalse);
       (void) SetImageClipMask(image,clip_mask,exception);
       clip_mask=DestroyImage(clip_mask);
     }
   (void) QueryColorCompliance("#00000000",AllCompliance,
-    &image->clip_mask->background_color,&image->exception);
+    &image->clip_mask->background_color,exception);
   image->clip_mask->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(image->clip_mask);
+  (void) SetImageBackgroundColor(image->clip_mask,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"\nbegin clip-path %s",
       draw_info->clip_mask);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,value);
   (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
-    &image->exception);
+    exception);
   clone_info->clip_mask=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info,exception);
-  status|=NegateImage(image->clip_mask,MagickFalse,&image->exception);
+  status|=NegateImage(image->clip_mask,MagickFalse,exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
@@ -3504,8 +3504,8 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   *pattern=AcquireImage(image_info,&image->exception);
   image_info=DestroyImageInfo(image_info);
   (void) QueryColorCompliance("#00000000",AllCompliance,
-    &(*pattern)->background_color,&image->exception);
-  (void) SetImageBackgroundColor(*pattern);
+    &(*pattern)->background_color,exception);
+  (void) SetImageBackgroundColor(*pattern,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),
       "begin pattern-path %s %s",name,geometry);

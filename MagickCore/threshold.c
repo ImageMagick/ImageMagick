@@ -661,7 +661,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
         q->alpha=ClampToUnsignedQuantum(q->alpha);
         q++;
       }
-      return(SyncImage(image));
+      return(SyncImage(image,exception));
     }
   /*
     Clamp image.

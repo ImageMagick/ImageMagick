@@ -416,7 +416,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                         break;
                         }
                 if (!image->ping)
-                  SyncImage(image);
+                  SyncImage(image,&image->exception);
         } else {
 #if DEBUG
                 printf("%s: expanding PHOTO page/image\n", __FUNCTION__);
@@ -693,7 +693,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 #endif
 
         if (!image->ping)
-          SyncImage(image);
+          SyncImage(image,exception);
         /* mmc: ??? Convert PNM pixels to runlength-encoded MIFF packets. */
         /* image->colors =  */
 

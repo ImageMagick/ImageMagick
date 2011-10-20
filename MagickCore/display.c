@@ -3805,7 +3805,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                       (*image)->colormap[i].blue=ScaleShortToQuantum(
                         color.blue);
                     }
-                (void) SyncImage(*image);
+                (void) SyncImage(*image,exception);
               }
             break;
           }

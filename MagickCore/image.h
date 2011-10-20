@@ -528,7 +528,7 @@ extern MagickExport MagickBooleanType
   SeparateImage(Image *,ExceptionInfo *),
   SetImageAlpha(Image *,const Quantum,ExceptionInfo *),
   SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *),
-  SetImageBackgroundColor(Image *),
+  SetImageBackgroundColor(Image *,ExceptionInfo *),
   SetImageClipMask(Image *,const Image *,ExceptionInfo *),
   SetImageColor(Image *,const PixelInfo *,ExceptionInfo *),
   SetImageExtent(Image *,const size_t,const size_t,ExceptionInfo *),
@@ -537,7 +537,7 @@ extern MagickExport MagickBooleanType
   SetImageStorageClass(Image *,const ClassType,ExceptionInfo *),
   SetImageType(Image *,const ImageType,ExceptionInfo *),
   StripImage(Image *,ExceptionInfo *),
-  SyncImage(Image *),
+  SyncImage(Image *,ExceptionInfo *),
   SyncImageSettings(const ImageInfo *,Image *),
   SyncImagesSettings(ImageInfo *,Image *);
 

@@ -675,7 +675,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         q++;
       }
     }
-  (void) SyncImage(image);
+  (void) SyncImage(image,exception);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
     (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);

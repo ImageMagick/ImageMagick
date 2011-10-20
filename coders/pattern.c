@@ -990,7 +990,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
       pattern_image=image;
       image=AcquireImage(blob_info,exception);
       image->background_color=pattern_image->background_color;
-      (void) SetImageBackgroundColor(image);
+      (void) SetImageBackgroundColor(image,exception);
       (void) TextureImage(image,pattern_image,exception);
       pattern_image=DestroyImage(pattern_image);
     }

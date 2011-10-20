@@ -564,7 +564,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
     if (image->storage_class == PseudoClass)
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     sun_pixels=(unsigned char *) RelinquishMagickMemory(sun_pixels);
     if (EOFBlob(image) != MagickFalse)
       {

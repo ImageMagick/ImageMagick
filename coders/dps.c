@@ -465,7 +465,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   colors=(XColor *) RelinquishMagickMemory(colors);
   XDestroyImage(dps_image);
   if (image->storage_class == PseudoClass)
-    (void) SyncImage(image);
+    (void) SyncImage(image,exception);
   /*
     Rasterize matte image.
   */

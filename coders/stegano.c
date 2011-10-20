@@ -230,7 +230,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       break;
   }
   watermark=DestroyImage(watermark);
-  (void) SyncImage(image);
+  (void) SyncImage(image,exception);
   return(GetFirstImageInList(image));
 }
 

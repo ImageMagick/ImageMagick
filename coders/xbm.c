@@ -376,7 +376,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   data=(unsigned char *) RelinquishMagickMemory(data);
-  (void) SyncImage(image);
+  (void) SyncImage(image,exception);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }

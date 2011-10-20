@@ -199,7 +199,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (image->rows == 0)
     image->rows=(size_t) ((i+1)*draw_info->pointsize+
       draw_info->interline_spacing+draw_info->stroke_width+0.5);
-  if (SetImageBackgroundColor(image) == MagickFalse)
+  if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
       InheritException(exception,&image->exception);
       image=DestroyImageList(image);

@@ -2888,7 +2888,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             }
 #endif
-          (void) SetImageBackgroundColor(image);
+          (void) SetImageBackgroundColor(image,exception);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
           cairo_surface=cairo_image_surface_create_for_data(pixels,
             CAIRO_FORMAT_ARGB32,image->columns,image->rows,4*image->columns);

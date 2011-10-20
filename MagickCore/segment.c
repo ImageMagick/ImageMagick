@@ -651,7 +651,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       }
   }
   image_view=DestroyCacheView(image_view);
-  status&=SyncImage(image);
+  status&=SyncImage(image,exception);
   /*
     Relinquish resources.
   */

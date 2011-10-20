@@ -245,7 +245,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   /*
     Annotate the text image.
   */
-  (void) SetImageBackgroundColor(image);
+  (void) SetImageBackgroundColor(image,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->text,image_info->filename);
   (void) FormatLocaleString(geometry,MaxTextExtent,"0x0%+ld%+ld",(long) page.x,
@@ -308,7 +308,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
     image->next->rows=image->rows;
     image=SyncNextImageInList(image);
     (void) CopyMagickString(image->filename,filename,MaxTextExtent);
-    (void) SetImageBackgroundColor(image);
+    (void) SetImageBackgroundColor(image,exception);
     status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
       GetBlobSize(image));
     if (status == MagickFalse)
@@ -443,7 +443,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->colorspace=(ColorspaceType) type;
     (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
-    (void) SetImageBackgroundColor(image);
+    (void) SetImageBackgroundColor(image,exception);
     range=GetQuantumRange(image->depth);
     for (y=0; y < (ssize_t) image->rows; y++)
     {

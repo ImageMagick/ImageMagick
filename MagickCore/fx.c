@@ -3957,7 +3957,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       else
         {
           caption_image->background_color=image->border_color;
-          (void) SetImageBackgroundColor(caption_image);
+          (void) SetImageBackgroundColor(caption_image,exception);
           (void) CloneString(&annotate_info->text,caption);
           (void) FormatLocaleString(geometry,MaxTextExtent,"+0+%g",
             metrics.ascent);
@@ -3979,7 +3979,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       return((Image *) NULL);
     }
   picture_image->background_color=image->border_color;
-  (void) SetImageBackgroundColor(picture_image);
+  (void) SetImageBackgroundColor(picture_image,exception);
   (void) CompositeImage(picture_image,OverCompositeOp,image,quantum,quantum,
     exception);
   if (caption_image != (Image *) NULL)
@@ -4266,7 +4266,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   /*
     Shadow image.
   */
-  (void) SetImageBackgroundColor(border_image);
+  (void) SetImageBackgroundColor(border_image,exception);
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
   shadow_image=BlurImage(border_image,0.0,sigma,image->bias,exception);
   (void) SetPixelChannelMap(border_image,channel_mask);
@@ -4747,7 +4747,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_view=DestroyCacheView(stegano_view);
   watermark_view=DestroyCacheView(watermark_view);
   if (stegano_image->storage_class == PseudoClass)
-    (void) SyncImage(stegano_image);
+    (void) SyncImage(stegano_image,exception);
   if (status == MagickFalse)
     {
       stegano_image=DestroyImage(stegano_image);
@@ -5366,7 +5366,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     }
   (void) QueryColorCompliance("#000000",AllCompliance,
     &oval_image->background_color,exception);
-  (void) SetImageBackgroundColor(oval_image);
+  (void) SetImageBackgroundColor(oval_image,exception);
   draw_info=CloneDrawInfo((const ImageInfo *) NULL,(const DrawInfo *) NULL);
   (void) QueryColorCompliance("#ffffff",AllCompliance,&draw_info->fill,
     exception);
