@@ -638,7 +638,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       MaxTextExtent);
     montage->columns=MagickMax(bounds.width,1);
     montage->rows=MagickMax(bounds.height,1);
-    (void) SetImageBackgroundColor(montage);
+    (void) SetImageBackgroundColor(montage,exception);
     /*
       Set montage geometry.
     */

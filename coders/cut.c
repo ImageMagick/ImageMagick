@@ -555,7 +555,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       InsertRow(depth,BImgBuff,i,image);
     }
-  (void) SyncImage(image);
+  (void) SyncImage(image,exception);
 
 
   /*detect monochrome image*/

@@ -1033,7 +1033,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
         }
-        (void) SyncImage(image);
+        (void) SyncImage(image,exception);
         break;
       }
       case 4:
@@ -1074,7 +1074,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
         }
-        (void) SyncImage(image);
+        (void) SyncImage(image,exception);
         break;
       }
       case 8:
@@ -1108,7 +1108,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
         }
-        (void) SyncImage(image);
+        (void) SyncImage(image,exception);
         break;
       }
       case 16:

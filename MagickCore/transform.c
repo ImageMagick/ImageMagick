@@ -511,7 +511,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
       crop_image->background_color.alpha=(Quantum) TransparentAlpha;
-      (void) SetImageBackgroundColor(crop_image);
+      (void) SetImageBackgroundColor(crop_image,exception);
       crop_image->page=bounding_box;
       crop_image->page.x=(-1);
       crop_image->page.y=(-1);
@@ -1066,7 +1066,7 @@ MagickExport Image *ExtentImage(const Image *image,
     }
   if (extent_image->background_color.alpha != OpaqueAlpha)
     extent_image->matte=MagickTrue;
-  (void) SetImageBackgroundColor(extent_image);
+  (void) SetImageBackgroundColor(extent_image,exception);
   (void) CompositeImage(extent_image,image->compose,image,-geometry->x,
     -geometry->y,exception);
   return(extent_image);
@@ -1661,7 +1661,7 @@ MagickExport Image *SpliceImage(const Image *image,
       splice_image=DestroyImage(splice_image);
       return((Image *) NULL);
     }
-  (void) SetImageBackgroundColor(splice_image);
+  (void) SetImageBackgroundColor(splice_image,exception);
   /*
     Respect image geometry.
   */
@@ -2429,7 +2429,7 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
       crop_image->background_color.alpha=(Quantum) TransparentAlpha;
-      (void) SetImageBackgroundColor(crop_image);
+      (void) SetImageBackgroundColor(crop_image,exception);
       crop_image->page=image->page;
       crop_image->page.x=(-1);
       crop_image->page.y=(-1);

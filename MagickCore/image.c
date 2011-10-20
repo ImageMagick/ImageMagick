@@ -502,7 +502,7 @@ MagickExport Image *AppendImages(const Image *images,
       return((Image *) NULL);
     }
   append_image->matte=matte;
-  (void) SetImageBackgroundColor(append_image);
+  (void) SetImageBackgroundColor(append_image,exception);
   status=MagickTrue;
   x_offset=0;
   y_offset=0;
@@ -718,7 +718,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     return(MagickFalse);
   if (clip_mask->storage_class == PseudoClass)
     {
-      (void) SyncImage(clip_mask);
+      (void) SyncImage(clip_mask,exception);
       if (SetImageStorageClass(clip_mask,DirectClass,&image->exception) == MagickFalse)
         return(MagickFalse);
     }
@@ -2100,7 +2100,6 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   image->fuzz=background->fuzz;
   image->depth=background->depth;
   status=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -2618,20 +2617,21 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 %
 %  The format of the SetImage method is:
 %
-%      MagickBooleanType SetImageBackgroundColor(Image *image)
+%      MagickBooleanType SetImageBackgroundColor(Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
+MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -2649,7 +2649,6 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  exception=(&image->exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (image->background_color.alpha != OpaqueAlpha)
@@ -3925,7 +3924,7 @@ MagickExport Image *SmushImages(const Image *images,
       return((Image *) NULL);
     }
   smush_image->matte=matte;
-  (void) SetImageBackgroundColor(smush_image);
+  (void) SetImageBackgroundColor(smush_image,exception);
   status=MagickTrue;
   x_offset=0;
   y_offset=0;
@@ -4028,11 +4027,13 @@ MagickExport MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
 %
 %  The format of the SyncImage method is:
 %
-%      MagickBooleanType SyncImage(Image *image)
+%      MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -4045,13 +4046,10 @@ static inline Quantum PushColormapIndex(Image *image,
   return((Quantum) 0);
 }
 
-MagickExport MagickBooleanType SyncImage(Image *image)
+MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     range_exception,
@@ -4068,7 +4066,6 @@ MagickExport MagickBooleanType SyncImage(Image *image)
     return(MagickFalse);
   range_exception=MagickFalse;
   status=MagickTrue;
-  exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(status)

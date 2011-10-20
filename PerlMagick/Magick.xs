@@ -9018,7 +9018,7 @@ Mogrify(ref,...)
         }
         case 53:  /* Sync */
         {
-          (void) SyncImage(image);
+          (void) SyncImage(image,exception);
           break;
         }
         case 54:  /* Texture */

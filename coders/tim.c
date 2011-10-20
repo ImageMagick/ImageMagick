@@ -382,7 +382,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
     if (image->storage_class == PseudoClass)
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     tim_pixels=(unsigned char *) RelinquishMagickMemory(tim_pixels);
     if (EOFBlob(image) != MagickFalse)
       {

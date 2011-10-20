@@ -3215,7 +3215,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       matte=image->matte;
       image->matte=MagickFalse;
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       image->matte=matte;
     }
 
@@ -3227,7 +3227,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
       image->colors=2;
-      (void) SetImageBackgroundColor(image);
+      (void) SetImageBackgroundColor(image,exception);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
@@ -3272,7 +3272,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  }
               }
             }
-          (void) SyncImage(image);
+          (void) SyncImage(image,exception);
         }
 
 #if 1 /* Should have already been done above, but glennrp problem P10
@@ -5372,7 +5372,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->background_color=mng_background_color;
                 image->matte=MagickFalse;
                 image->delay=0;
-                (void) SetImageBackgroundColor(image);
+                (void) SetImageBackgroundColor(image,exception);
 
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -5926,7 +5926,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.x=0;
                 image->page.y=0;
                 image->background_color=mng_background_color;
-                (void) SetImageBackgroundColor(image);
+                (void) SetImageBackgroundColor(image,exception);
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Inserted transparent background layer, W=%.20g, H=%.20g",
@@ -5979,7 +5979,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->page.y=mng_info->clip.top;
             image->background_color=mng_background_color;
             image->matte=MagickFalse;
-            (void) SetImageBackgroundColor(image);
+            (void) SetImageBackgroundColor(image,exception);
 
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6242,12 +6242,12 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
 
                 if (image->matte != MagickFalse)
-                   (void) SetImageBackgroundColor(large_image);
+                   (void) SetImageBackgroundColor(large_image,exception);
 
                 else
                   {
                     large_image->background_color.alpha=OpaqueAlpha;
-                    (void) SetImageBackgroundColor(large_image);
+                    (void) SetImageBackgroundColor(large_image,exception);
 
                     if (magn_methx == 4)
                       magn_methx=2;
@@ -6700,7 +6700,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->columns=1;
                 image->rows=1;
                 image->colors=2;
-                (void) SetImageBackgroundColor(image);
+                (void) SetImageBackgroundColor(image,exception);
                 image->page.width=1;
                 image->page.height=1;
                 image->page.x=0;
@@ -6786,7 +6786,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=MagickFalse;
 
       if (image_info->ping == MagickFalse)
-        (void) SetImageBackgroundColor(image);
+        (void) SetImageBackgroundColor(image,exception);
 
       mng_info->image_found++;
     }
@@ -7717,7 +7717,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      (mng_info->write_png_colortype != 0 &&
      mng_info->write_png_colortype != 4)))
     {
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       image->storage_class = DirectClass;
     }
 
@@ -7742,7 +7742,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     the colors in the colormap.  This code syncs the RGB values.
   */
   if (image->depth <= 8 && image->taint && image->storage_class == PseudoClass)
-     (void) SyncImage(image);
+     (void) SyncImage(image,exception);
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
   if (image->depth > 8)
@@ -11000,7 +11000,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       else
         (void) SetImageType(image,TrueColorType,exception);
 
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     }
 
   if (mng_info->write_png32)
@@ -11015,7 +11015,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       else
         (void) SetImageType(image,TrueColorType,exception);
 
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     }
 
   value=GetImageOption(image_info,"png:bit-depth");

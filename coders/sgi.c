@@ -664,7 +664,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
               }
           }
-        (void) SyncImage(image);
+        (void) SyncImage(image,exception);
       }
     iris_pixels=(unsigned char *) RelinquishMagickMemory(iris_pixels);
     if (EOFBlob(image) != MagickFalse)

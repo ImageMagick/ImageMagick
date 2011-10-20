@@ -824,7 +824,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=psd_info.depth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
-  if (SetImageBackgroundColor(image) == MagickFalse)
+  if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
       InheritException(exception,&image->exception);
       image=DestroyImageList(image);
@@ -1206,7 +1206,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    setting up new layer image");
             if (image_info->ping != MagickFalse)
-              (void) SetImageBackgroundColor(layer_info[i].image);
+              (void) SetImageBackgroundColor(layer_info[i].image,exception);
             layer_info[i].image->compose=
               PSDBlendModeToCompositeOperator(layer_info[i].blendkey);
             if (layer_info[i].visible == MagickFalse)

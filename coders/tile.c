@@ -118,7 +118,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"MustSpecifyAnImageName");
   image->matte=tile_image->matte;
   if (image->matte != MagickFalse)
-    (void) SetImageBackgroundColor(image);
+    (void) SetImageBackgroundColor(image,exception);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   if (LocaleCompare(tile_image->magick,"PATTERN") == 0)
     {

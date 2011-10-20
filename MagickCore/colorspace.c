@@ -242,7 +242,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -297,7 +297,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -351,7 +351,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -411,7 +411,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -471,7 +471,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -531,7 +531,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -1147,7 +1147,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         image->colormap[i].blue=ScaleMapToQuantum(pixel.blue);
       }
       image_view=DestroyCacheView(image_view);
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
   }
@@ -1665,7 +1665,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -1723,7 +1723,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -1780,7 +1780,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -1846,7 +1846,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -1912,7 +1912,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -1978,7 +1978,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       */
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image) == MagickFalse)
+          if (SyncImage(image,exception) == MagickFalse)
             return(MagickFalse);
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
@@ -2642,7 +2642,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         }
       }
       image_view=DestroyCacheView(image_view);
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
       break;
     }
   }

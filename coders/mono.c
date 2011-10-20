@@ -181,7 +181,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  (void) SyncImage(image);
+  (void) SyncImage(image,exception);
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);

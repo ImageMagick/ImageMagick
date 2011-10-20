@@ -8837,7 +8837,7 @@ WandExport MagickBooleanType MagickSetImageColormapColor(MagickWand *wand,
       (index >= wand->images->colors))
     ThrowWandException(WandError,"InvalidColormapIndex",wand->name);
   PixelGetQuantumPacket(color,wand->images->colormap+index);
-  return(SyncImage(wand->images));
+  return(SyncImage(wand->images,wand->exception));
 }
 
 /*

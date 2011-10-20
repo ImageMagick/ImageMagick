@@ -203,7 +203,7 @@ MagickExport Image *ConstituteImage(const size_t columns,
     ThrowImageException(OptionError,"NonZeroWidthAndHeightRequired");
   image->columns=columns;
   image->rows=rows;
-  (void) SetImageBackgroundColor(image);
+  (void) SetImageBackgroundColor(image,exception);
   status=ImportImagePixels(image,0,0,columns,rows,map,storage,pixels,exception);
   if (status == MagickFalse)
      image=DestroyImage(image);
