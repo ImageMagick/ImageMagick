@@ -184,6 +184,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
            "A quick brown fox jumps over the lazy dog.";
            "The quick onyx goblin jumps over the lazy dwarf!";
            "Pack my box with five dozen liquor jugs.";
+           "Five or six big jet planes zoomed quickly by the tower.";
            "Grumpy wizards make toxic brew for the evil Queen and Jack.";
 
            IMv6 used this well known phrase, but it is not a pangram!
