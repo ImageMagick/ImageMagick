@@ -963,7 +963,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
           reference_image=DestroyImage(reference_image);
           continue;
         }
-      (void) SetImageBackgroundColor(reference_image);
+      (void) SetImageBackgroundColor(reference_image,exception);
       status=ImportImagePixels(reference_image,0,0,reference_image->columns,
         reference_image->rows,reference_map[i],reference_storage[j].type,
         pixels,exception);
@@ -984,7 +984,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
         reference_image->rows,exception);
       (void) SetImageColorspace(reconstruct_image,reference_image->colorspace,
         exception);
-      (void) SetImageBackgroundColor(reconstruct_image);
+      (void) SetImageBackgroundColor(reconstruct_image,exception);
       status=ImportImagePixels(reconstruct_image,0,0,reconstruct_image->columns,
         reconstruct_image->rows,reference_map[i],reference_storage[j].type,
         pixels,exception);
