@@ -497,20 +497,19 @@ MagickPrivate int gettimeofday (struct timeval *time_value,
 %
 %  The format of the ImageToHBITMAP method is:
 %
-%      HBITMAP ImageToHBITMAP(Image *image)
+%      HBITMAP ImageToHBITMAP(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image to convert.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport void *ImageToHBITMAP(Image *image)
+MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
 {
   BITMAP
     bitmap;
-
-  ExceptionInfo
-    *exception;
 
   HANDLE
     bitmap_bitsH;
@@ -562,7 +561,6 @@ MagickExport void *ImageToHBITMAP(Image *image)
   if (bitmap.bmBits == NULL)
     bitmap.bmBits=bitmap_bits;
   (void) TransformImageColorspace(image,RGBColorspace,exception);
-  exception=(&image->exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

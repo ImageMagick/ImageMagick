@@ -215,9 +215,6 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   ImageView *source,ImageView *duplex,ImageView *destination,
   DuplexTransferImageViewMethod transfer,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *destination_image,
     *source_image;
@@ -237,8 +234,9 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
     return(MagickFalse);
   source_image=source->image;
   destination_image=destination->image;
-  exception=destination->exception;
-  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(destination_image,DirectClass,
+    destination->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -277,7 +275,8 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
         continue;
       }
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
-      destination->extent.x,y,destination->extent.width,1,exception);
+      destination->extent.x,y,destination->extent.width,1,
+      destination->exception);
     if (destination_pixels == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -285,13 +284,9 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       }
     if (transfer(source,duplex,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
-    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
-      {
-        InheritException(destination->exception,GetCacheViewException(
-          source->view));
-        status=MagickFalse;
-      }
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -314,7 +309,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e V i e w A u t h e n t i c M e t a c o n t e n t %
+%   G e t I m a g e V i e w A u t h e n t i c M e t a c o n t e n t           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -864,9 +859,6 @@ MagickExport void SetImageViewDescription(ImageView *image_view,
 MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   SetImageViewMethod set,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *destination_image;
 
@@ -884,8 +876,9 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   if (set == (SetImageViewMethod) NULL)
     return(MagickFalse);
   destination_image=destination->image;
-  exception=destination->exception;
-  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(destination_image,DirectClass,
+    destination->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -906,23 +899,17 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
     if (status == MagickFalse)
       continue;
     pixels=GetCacheViewAuthenticPixels(destination->view,destination->extent.x,
-      y,destination->extent.width,1,exception);
+      y,destination->extent.width,1,destination->exception);
     if (pixels == (Quantum *) NULL)
       {
-        InheritException(destination->exception,GetCacheViewException(
-          destination->view));
         status=MagickFalse;
         continue;
       }
     if (set(destination,y,id,context) == MagickFalse)
       status=MagickFalse;
-    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
-      {
-        InheritException(destination->exception,GetCacheViewException(
-          destination->view));
-        status=MagickFalse;
-      }
+      status=MagickFalse;
     if (destination_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -1026,9 +1013,6 @@ MagickExport void SetImageViewThreads(ImageView *image_view,
 MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
   ImageView *destination,TransferImageViewMethod transfer,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *destination_image,
     *source_image;
@@ -1048,8 +1032,9 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
     return(MagickFalse);
   source_image=source->image;
   destination_image=destination->image;
-  exception=destination->exception;
-  if (SetImageStorageClass(destination_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(destination_image,DirectClass,
+    destination->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1080,7 +1065,8 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
         continue;
       }
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
-      destination->extent.x,y,destination->extent.width,1,exception);
+      destination->extent.x,y,destination->extent.width,1,
+      destination->exception);
     if (destination_pixels == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -1088,13 +1074,9 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
       }
     if (transfer(source,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
-    sync=SyncCacheViewAuthenticPixels(destination->view,exception);
+    sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
-      {
-        InheritException(destination->exception,GetCacheViewException(
-          source->view));
-        status=MagickFalse;
-      }
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -1158,9 +1140,6 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   UpdateImageViewMethod update,void *context)
 {
-  ExceptionInfo
-    *exception;
-
   Image
     *source_image;
 
@@ -1178,8 +1157,8 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   if (update == (UpdateImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
-  exception=source->exception;
-  if (SetImageStorageClass(source_image,DirectClass,exception) == MagickFalse)
+  status=SetImageStorageClass(source_image,DirectClass,source->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
@@ -1197,20 +1176,17 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
     if (status == MagickFalse)
       continue;
     pixels=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
-      source->extent.width,1,exception);
+      source->extent.width,1,source->exception);
     if (pixels == (Quantum *) NULL)
       {
-        InheritException(source->exception,GetCacheViewException(source->view));
         status=MagickFalse;
         continue;
       }
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
-    if (SyncCacheViewAuthenticPixels(source->view,exception) == MagickFalse)
-      {
-        InheritException(source->exception,GetCacheViewException(source->view));
-        status=MagickFalse;
-      }
+    status=SyncCacheViewAuthenticPixels(source->view,source->exception);
+    if (status == MagickFalse)
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType

@@ -5617,7 +5617,7 @@ WandExport double MagickGetImageTotalInkDensity(MagickWand *wand)
         "ContainsNoImages","`%s'",wand->name);
       return(0.0);
     }
-  return(GetImageTotalInkDensity(wand->images));
+  return(GetImageTotalInkDensity(wand->images,wand->exception));
 }
 
 /*

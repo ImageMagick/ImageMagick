@@ -512,7 +512,8 @@ extern MagickPrivate int
   XCheckDefineCursor(Display *,Window,Cursor);
 
 extern MagickPrivate MagickBooleanType
-  XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
+  XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *,
+    ExceptionInfo *),
   XComponentGenesis(void),
   XDrawImage(Display *,const XPixelInfo *,XDrawInfo *,Image *),
   XGetWindowColor(Display *,XWindows *,char *),

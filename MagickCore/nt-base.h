@@ -39,7 +39,7 @@ extern MagickExport int
 
 extern MagickExport void
   *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
-  *ImageToHBITMAP(Image *),
+  *ImageToHBITMAP(Image *,ExceptionInfo *),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *);
 #endif

@@ -443,7 +443,8 @@ MagickExport void DestroyXResources(void)
 %  The format of the XAnnotateImage method is:
 %
 %      MagickBooleanType XAnnotateImage(Display *display,
-%        const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
+%        const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -456,18 +457,18 @@ MagickExport void DestroyXResources(void)
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
-  const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
+  const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *annotate_view;
 
   GC
     annotate_context;
-
-  ExceptionInfo
-    *exception;
 
   Image
     *annotate_image;

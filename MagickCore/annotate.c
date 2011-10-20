@@ -2062,7 +2062,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
   pixel.pen_color.green=ScaleQuantumToShort(draw_info->fill.green);
   pixel.pen_color.blue=ScaleQuantumToShort(draw_info->fill.blue);
-  status=XAnnotateImage(display,&pixel,&annotate_info,image);
+  status=XAnnotateImage(display,&pixel,&annotate_info,image,exception);
   if (status == 0)
     {
       ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
