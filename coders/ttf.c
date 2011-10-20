@@ -177,13 +177,13 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       "abcdefghijklmnopqrstuvwxyz\n"
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
       "0123456789.:,;(*!?}^)#${%^&-+@\n",
-    *Phrase = (char *) "The quick onyx goblin jumps over the lazy dwarf!";
+    *Phrase = (char *) "The five boxing wizards jump quickly!";
         /* NOTE: These are Pangrams, which contain every letter in English
            See http://www.artlebedev.ru/kovodstvo/sections/33/
 
            "A quick brown fox jumps over the lazy dog.";
+           "The quick onyx goblin jumps over the lazy dwarf!";
            "Pack my box with five dozen liquor jugs.";
-           "The five boxing wizards jump quickly!";
            "Grumpy wizards make toxic brew for the evil Queen and Jack.";
 
            IMv6 used this well known phrase, but it is not a pangram!
@@ -277,25 +277,23 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ConcatenateString(&draw_info->primitive,buffer);
   y+=12*(ssize_t) MultilineCensus((char *) Text);
   /* FUTURE: A setting to specify the text to use */
-  for (i=4; i <= 72; )
+  for (i=6; i <= 72; )
   {
-    y += (i>12) ? i : 12;  /* line spacing */
+    y += (i+2>12) ? i+2 : 12;  /* line spacing */
     ConcatenateString(&draw_info->primitive," font-size 12\n");
-    (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%.20g '%.20g'\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%g '%-2g'\n",
       (double) y,(double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent," font-size %.20g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent," font-size %g\n",
       (double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%.20g '%s'\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%g '%s'\n",
          (double) y, Phrase);
     ConcatenateString(&draw_info->primitive,buffer);
-    if (i < 8)
-      i++;
-    else if (i < 12)
-      i+=2;
+    if (i < 12)
+      i+=1;
     else if (i < 24)
-      i+=6;
+      i+=4;
     else
       i+=12;
   }
