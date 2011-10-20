@@ -465,7 +465,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   /*
     Draw a gradient on the image.
   */
-  status=DrawGradientImage(image,draw_info);
+  status=DrawGradientImage(image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
   if ((start_color->alpha == OpaqueAlpha) && (stop_color->alpha == OpaqueAlpha))
     image->matte=MagickFalse;

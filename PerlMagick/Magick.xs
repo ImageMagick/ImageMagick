@@ -5279,7 +5279,7 @@ Get(ref,...)
             {
               s=newSViv(MAGICKCORE_QUANTUM_DEPTH);
               if (image != (Image *) NULL)
-                s=newSVnv(GetImageTotalInkDensity(image));
+                s=newSVnv(GetImageTotalInkDensity(image,exception));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
