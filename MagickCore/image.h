@@ -538,11 +538,12 @@ extern MagickExport MagickBooleanType
   SetImageType(Image *,const ImageType,ExceptionInfo *),
   StripImage(Image *,ExceptionInfo *),
   SyncImage(Image *,ExceptionInfo *),
-  SyncImageSettings(const ImageInfo *,Image *),
-  SyncImagesSettings(ImageInfo *,Image *);
+  SyncImageSettings(const ImageInfo *,Image *,ExceptionInfo *),
+  SyncImagesSettings(ImageInfo *,Image *,ExceptionInfo *);
 
 extern MagickExport size_t
-  InterpretImageFilename(const ImageInfo *,Image *,const char *,int,char *);
+  InterpretImageFilename(const ImageInfo *,Image *,const char *,int,char *,
+    ExceptionInfo *);
 
 extern MagickExport ssize_t
   GetImageReferenceCount(Image *);

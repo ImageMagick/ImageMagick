@@ -414,7 +414,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
                 Form filename for multi-part images.
               */
               (void) InterpretImageFilename(image_info,(Image *) NULL,
-                image_info->filename,(int) scene,filename);
+                image_info->filename,(int) scene,filename,exception);
               if (LocaleCompare(filename,image_info->filename) == 0)
                 (void) FormatLocaleString(filename,MaxTextExtent,"%s.%.20g",
                   image_info->filename,(double) scene);

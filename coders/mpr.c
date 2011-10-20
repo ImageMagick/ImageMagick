@@ -100,7 +100,7 @@ static Image *ReadMPRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=(Image *) GetImageRegistry(ImageRegistryType,image_info->filename,
     exception);
   if (image != (Image *) NULL)
-    (void) SyncImageSettings(image_info,image);
+    (void) SyncImageSettings(image_info,image,exception);
   return(image);
 }
 

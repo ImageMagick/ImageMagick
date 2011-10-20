@@ -271,7 +271,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
   (void) SetImageVirtualPixelMethod(image,image_info->virtual_pixel_method);
-  (void) SyncImageSettings(image_info,image);
+  (void) SyncImageSettings(image_info,image,exception);
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
@@ -705,25 +705,25 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
   property=DestroyString(property);
   if (value == (const char *) NULL)
     {
-      ThrowFileException(&image->exception,OptionError,"NoClipPathDefined",
+      ThrowFileException(exception,OptionError,"NoClipPathDefined",
         image->filename);
       return(MagickFalse);
     }
   image_info=AcquireImageInfo();
   (void) CopyMagickString(image_info->filename,image->filename,MaxTextExtent);
   (void) ConcatenateMagickString(image_info->filename,pathname,MaxTextExtent);
-  clip_mask=BlobToImage(image_info,value,strlen(value),&image->exception);
+  clip_mask=BlobToImage(image_info,value,strlen(value),exception);
   image_info=DestroyImageInfo(image_info);
   if (clip_mask == (Image *) NULL)
     return(MagickFalse);
   if (clip_mask->storage_class == PseudoClass)
     {
       (void) SyncImage(clip_mask,exception);
-      if (SetImageStorageClass(clip_mask,DirectClass,&image->exception) == MagickFalse)
+      if (SetImageStorageClass(clip_mask,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
   if (inside == MagickFalse)
-    (void) NegateImage(clip_mask,MagickFalse,&image->exception);
+    (void) NegateImage(clip_mask,MagickFalse,exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MaxTextExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
   (void) SetImageClipMask(image,clip_mask,exception);
@@ -1648,7 +1648,8 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %  The format of the InterpretImageFilename method is:
 %
 %      size_t InterpretImageFilename(const ImageInfo *image_info,
-%        Image *image,const char *format,int value,char *filename)
+%        Image *image,const char *format,int value,char *filename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1663,9 +1664,12 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 %    o filename:  return the formatted filename in this character buffer.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
-  Image *image,const char *format,int value,char *filename)
+  Image *image,const char *format,int value,char *filename,
+  ExceptionInfo *exception)
 {
   char
     *q;
@@ -1760,10 +1764,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         value=(const char *) NULL;
         if ((image_info != (const ImageInfo *) NULL) &&
             (image != (const Image *) NULL))
-          value=GetMagickProperty(image_info,image,pattern,&image->exception);
+          value=GetMagickProperty(image_info,image,pattern,exception);
         else
           if (image != (Image *) NULL)
-            value=GetImageProperty(image,pattern,&image->exception);
+            value=GetImageProperty(image,pattern,exception);
           else
             if (image_info != (ImageInfo *) NULL)
               value=GetImageOption(image_info,pattern);
@@ -2854,9 +2858,9 @@ MagickExport MagickBooleanType SetImageClipMask(Image *image,
   image->clip_mask=NewImageList();
   if (clip_mask == (Image *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  image->clip_mask=CloneImage(clip_mask,0,0,MagickTrue,&image->exception);
+  image->clip_mask=CloneImage(clip_mask,0,0,MagickTrue,exception);
   if (image->clip_mask == (Image *) NULL)
     return(MagickFalse);
   return(MagickTrue);
@@ -3153,7 +3157,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         Test for multiple image support (e.g. image%02d.png).
       */
       (void) InterpretImageFilename(image_info,(Image *) NULL,
-        image_info->filename,(int) image_info->scene,filename);
+        image_info->filename,(int) image_info->scene,filename,exception);
       if ((LocaleCompare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=MagickFalse;
@@ -3355,9 +3359,9 @@ MagickExport MagickBooleanType SetImageMask(Image *image,
   image->mask=NewImageList();
   if (mask == (Image *) NULL)
     return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass,&image->exception) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  image->mask=CloneImage(mask,0,0,MagickTrue,&image->exception);
+  image->mask=CloneImage(mask,0,0,MagickTrue,exception);
   if (image->mask == (Image *) NULL)
     return(MagickFalse);
   return(MagickTrue);
@@ -3500,9 +3504,9 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
   {
     case BilevelType:
     {
-      if (IsImageGray(image,&image->exception) == MagickFalse)
+      if (IsImageGray(image,exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
-      if (IsImageMonochrome(image,&image->exception) == MagickFalse)
+      if (IsImageMonochrome(image,exception) == MagickFalse)
         {
           quantize_info=AcquireQuantizeInfo(image_info);
           quantize_info->number_colors=2;
@@ -3515,14 +3519,14 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     }
     case GrayscaleType:
     {
-      if (IsImageGray(image,&image->exception) == MagickFalse)
+      if (IsImageGray(image,exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
       image->matte=MagickFalse;
       break;
     }
     case GrayscaleMatteType:
     {
-      if (IsImageGray(image,&image->exception) == MagickFalse)
+      if (IsImageGray(image,exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
@@ -3576,7 +3580,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,RGBColorspace,exception);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,&image->exception);
+        status=SetImageStorageClass(image,DirectClass,exception);
       image->matte=MagickFalse;
       break;
     }
@@ -3585,7 +3589,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,RGBColorspace,exception);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,&image->exception);
+        status=SetImageStorageClass(image,DirectClass,exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
@@ -3599,7 +3603,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
           status=TransformImageColorspace(image,CMYKColorspace,exception);
         }
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,&image->exception);
+        status=SetImageStorageClass(image,DirectClass,exception);
       image->matte=MagickFalse;
       break;
     }
@@ -3612,7 +3616,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
           status=TransformImageColorspace(image,CMYKColorspace,exception);
         }
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,&image->exception);
+        status=SetImageStorageClass(image,DirectClass,exception);
       if (image->matte == MagickFalse)
         status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
@@ -4101,8 +4105,8 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
   }
   image_view=DestroyCacheView(image_view);
   if (range_exception != MagickFalse)
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+      "InvalidColormapIndex","`%s'",image->filename);
   return(status);
 }
 
@@ -4122,9 +4126,9 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 %  The format of the SyncImageSettings method is:
 %
 %      MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %      MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
-%        Image *image)
+%        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4132,10 +4136,12 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 
 MagickExport MagickBooleanType SyncImagesSettings(ImageInfo *image_info,
-  Image *images)
+  Image *images,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -4148,13 +4154,13 @@ MagickExport MagickBooleanType SyncImagesSettings(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   image=images;
   for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
-    (void) SyncImageSettings(image_info,image);
+    (void) SyncImageSettings(image_info,image,exception);
   (void) DeleteImageOption(image_info,"page");
   return(MagickTrue);
 }
 
 MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
-  Image *image)
+  Image *image,ExceptionInfo *exception)
 {
   char
     property[MaxTextExtent];
@@ -4184,7 +4190,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   option=GetImageOption(image_info,"background");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->background_color,
-      &image->exception);
+      exception);
   option=GetImageOption(image_info,"bias");
   if (option != (const char *) NULL)
     image->bias=SiPrefixToDouble(option,QuantumRange);
@@ -4204,7 +4210,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   option=GetImageOption(image_info,"bordercolor");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->border_color,
-      &image->exception);
+      exception);
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)
     image->compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
@@ -4274,7 +4280,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   option=GetImageOption(image_info,"mattecolor");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->matte_color,
-      &image->exception);
+      exception);
   option=GetImageOption(image_info,"orient");
   if (option != (const char *) NULL)
     image->orientation=(OrientationType) ParseCommandOption(
@@ -4323,7 +4329,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   option=GetImageOption(image_info,"transparent-color");
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->transparent_color,
-      &image->exception);
+      exception);
   option=GetImageOption(image_info,"type");
   if (option != (const char *) NULL)
     image->type=(ImageType) ParseCommandOption(MagickTypeOptions,MagickFalse,

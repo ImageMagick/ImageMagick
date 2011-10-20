@@ -2424,7 +2424,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
             Form filename for multi-part images.
           */
           (void) InterpretImageFilename(image_info,image,image->filename,(int)
-            image->scene,filename);
+            image->scene,filename,exception);
           if ((LocaleCompare(filename,image->filename) == 0) &&
               ((GetPreviousImageInList(image) != (Image *) NULL) ||
                (GetNextImageInList(image) != (Image *) NULL)))
