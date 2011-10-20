@@ -393,7 +393,7 @@ struct _ImageInfo
     *density;           /* for image and draw_info */
 
   double
-    pointsize,
+    pointsize,          /* font pointsize - for draw_info */
     fuzz;               /* current color fuzz attribute */
 
   PixelInfo
