@@ -33,7 +33,7 @@ typedef struct _XImportInfo
 } XImportInfo;
 
 extern MagickExport Image
-  *XImportImage(const ImageInfo *,XImportInfo *);
+  *XImportImage(const ImageInfo *,XImportInfo *,ExceptionInfo *);
 
 extern MagickExport void
   XGetImportInfo(XImportInfo *);

@@ -465,7 +465,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
         for (scene=0; scene < (size_t) MagickMax(snapshots,1); scene++)
         {
           (void) sleep(resource_info.pause);
-          images=XImportImage(image_info,&ximage_info);
+          images=XImportImage(image_info,&ximage_info,exception);
           status&=(images != (Image *) NULL) &&
             (exception->severity < ErrorException);
           if (images == (Image *) NULL)

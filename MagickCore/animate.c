@@ -581,7 +581,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case InfoCommand:
     {
-      XDisplayImageInfo(display,resource_info,windows,(Image *) NULL,*image);
+      XDisplayImageInfo(display,resource_info,windows,(Image *) NULL,*image,
+        exception);
       break;
     }
     case HelpCommand:
@@ -932,7 +933,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     (void) SetImageType(display_image,display_image->matte == MagickFalse ?
       TrueColorType : TrueColorMatteType,exception);
   XMakeStandardColormap(display,visual_info,&resources,display_image,map_info,
-    &pixel);
+    &pixel,exception);
   /*
     Graphic context superclass.
   */
@@ -1562,7 +1563,7 @@ MagickExport Image *XAnimateImages(Display *display,
         display_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,display_image,
-    map_info,pixel);
+    map_info,pixel,exception);
   /*
     Initialize graphic context.
   */
@@ -2635,7 +2636,7 @@ MagickExport Image *XAnimateImages(Display *display,
               Create an icon image.
             */
             XMakeStandardColormap(display,icon_visual,icon_resources,
-              display_image,icon_map,icon_pixel);
+              display_image,icon_map,icon_pixel,exception);
             (void) XMakeImage(display,icon_resources,&windows->icon,
               display_image,windows->icon.width,windows->icon.height,
               exception);
@@ -2743,7 +2744,7 @@ MagickExport Image *XAnimateImages(Display *display,
           {
             if (map_info->colormap == icon_map->colormap)
               XConfigureImageColormap(display,resource_info,windows,
-                display_image);
+                display_image,exception);
             (void) XFreeStandardColormap(display,icon_visual,icon_map,
               icon_pixel);
             windows->icon.mapped=MagickFalse;

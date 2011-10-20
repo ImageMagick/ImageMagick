@@ -109,7 +109,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   option=GetImageOption(image_info,"x:silent");
   if (option != (const char *) NULL)
     ximage_info.silent=IsMagickTrue(option);
-  return(XImportImage(image_info,&ximage_info));
+  return(XImportImage(image_info,&ximage_info,exception));
 }
 #endif
 
