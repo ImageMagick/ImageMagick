@@ -376,13 +376,13 @@ extern MagickExport DrawInfo
   *DestroyDrawInfo(DrawInfo *);
 
 extern MagickExport MagickBooleanType
-  DrawAffineImage(Image *,const Image *,const AffineMatrix *),
+  DrawAffineImage(Image *,const Image *,const AffineMatrix *,ExceptionInfo *),
   DrawClipPath(Image *,const DrawInfo *,const char *,ExceptionInfo *),
-  DrawGradientImage(Image *,const DrawInfo *),
+  DrawGradientImage(Image *,const DrawInfo *,ExceptionInfo *),
   DrawImage(Image *,const DrawInfo *,ExceptionInfo *),
   DrawPatternPath(Image *,const DrawInfo *,const char *,Image **,
     ExceptionInfo *),
-  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *);
+  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *,ExceptionInfo *);
 
 extern MagickExport void
   GetAffineMatrix(AffineMatrix *),

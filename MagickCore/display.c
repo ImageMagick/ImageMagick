@@ -15102,8 +15102,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                           resource_info->image_info->filename,MaxTextExtent,
                           "%s:%s",display_image->magick,
                           display_image->filename);
-                        nexus=ReadImage(resource_info->image_info,
-                          &display_image->exception);
+                        nexus=ReadImage(resource_info->image_info,exception);
                         if (nexus != (Image *) NULL)
                           {
                             nexus=DestroyImage(nexus);
@@ -15493,9 +15492,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 (void) CopyMagickString(resource_info->image_info->filename,
                   ((char *) data)+5,MaxTextExtent);
               }
-            nexus=ReadImage(resource_info->image_info,
-              &display_image->exception);
-            CatchException(&display_image->exception);
+            nexus=ReadImage(resource_info->image_info,exception);
+            CatchException(exception);
             if (nexus != (Image *) NULL)
               *state|=NextImageState | ExitState;
             (void) XFree((void *) data);
@@ -15964,8 +15962,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         (void) CopyMagickString(resource_info->image_info->filename,
           (char *) data,MaxTextExtent);
         (void) XFree((void *) data);
-        nexus=ReadImage(resource_info->image_info,&display_image->exception);
-        CatchException(&display_image->exception);
+        nexus=ReadImage(resource_info->image_info,exception);
+        CatchException(exception);
         if (nexus != (Image *) NULL)
           *state|=NextImageState | ExitState;
         break;
@@ -16144,8 +16142,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
     status=chdir(resource_info->home_directory);
     if (status == -1)
-      (void) ThrowMagickException(&display_image->exception,GetMagickModule(),
-        FileOpenError,"UnableToOpenFile","%s",resource_info->home_directory);
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+        "UnableToOpenFile","%s",resource_info->home_directory);
   }
   *image=display_image;
   return(nexus);

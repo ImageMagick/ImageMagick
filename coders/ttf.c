@@ -176,20 +176,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *Text = (char *)
       "abcdefghijklmnopqrstuvwxyz\n"
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
-      "0123456789.:,;(*!?}^)#${%^&-+@\n",
-    *Phrase = (char *) "The five boxing wizards jump quickly!";
-        /* NOTE: These are Pangrams, which contain every letter in English
-           See http://www.artlebedev.ru/kovodstvo/sections/33/
-
-           "A quick brown fox jumps over the lazy dog.";
-           "The quick onyx goblin jumps over the lazy dwarf!";
-           "Pack my box with five dozen liquor jugs.";
-           "Five or six big jet planes zoomed quickly by the tower.";
-           "Grumpy wizards make toxic brew for the evil Queen and Jack.";
-
-           IMv6 used this well known phrase, but it is not a pangram!
-           "That which does not destroy me, only makes me stronger.";
-        */
+      "0123456789.:,;(*!?}^)#${%^&-+@\n";
 
   const TypeInfo
     *type_info;
@@ -276,31 +263,22 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   text=DestroyString(text);
   (void) FormatLocaleString(buffer,MaxTextExtent,"'\n");
   ConcatenateString(&draw_info->primitive,buffer);
-  y+=12*(ssize_t) MultilineCensus((char *) Text);
-  /* FUTURE: A setting to specify the text to use */
-  for (i=4; i <= 72; )
+  y+=20*(ssize_t) MultilineCensus((char *) Text)+20;
+  for (i=12; i <= 72; i+=6)
   {
-    y += (i+2>12) ? i+2 : 12;  /* line spacing */
-    ConcatenateString(&draw_info->primitive," font-size 12\n");
-    (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%g '%-2g'\n",
+    y+=i+12;
+    ConcatenateString(&draw_info->primitive," font-size 18\n");
+    (void) FormatLocaleString(buffer,MaxTextExtent," text 10,%.20g '%.20g'\n",
       (double) y,(double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent," font-size %g\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent," font-size %.20g\n",
       (double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%g '%s'\n",
-         (double) y, Phrase);
+    (void) FormatLocaleString(buffer,MaxTextExtent," text 50,%.20g "
+      "'That which does not destroy me, only makes me stronger.'\n",(double) y);
     ConcatenateString(&draw_info->primitive,buffer);
-    if (i < 14)
-      i+=1;
-    else if (i < 20)
-      i+=2;
-    else if (i < 24)
-      i+=4;
-    else if ( i < 48 )
-      i+=12;
-    else
-      i+=24;
+    if (i >= 24)
+      i+=6;
   }
   ConcatenateString(&draw_info->primitive,"pop graphic-context");
   (void) DrawImage(image,draw_info,exception);
