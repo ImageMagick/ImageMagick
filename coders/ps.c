@@ -767,7 +767,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     postscript_filename,input_filename);
   status=InvokePostscriptDelegate(read_info->verbose,command,exception);
   (void) InterpretImageFilename(image_info,image,filename,1,
-    read_info->filename);
+    read_info->filename,exception);
   if ((status == MagickFalse) ||
       (IsPostscriptRendered(read_info->filename) == MagickFalse))
     {
@@ -781,7 +781,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=1; ; i++)
     {
       (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename);
+        read_info->filename,exception);
       if (IsPostscriptRendered(read_info->filename) == MagickFalse)
         break;
       (void) RelinquishUniqueFileResource(read_info->filename);
@@ -790,7 +790,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=1; ; i++)
     {
       (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename);
+        read_info->filename,exception);
       if (IsPostscriptRendered(read_info->filename) == MagickFalse)
         break;
       next=ReadImage(read_info,exception);

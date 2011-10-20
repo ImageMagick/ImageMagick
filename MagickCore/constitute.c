@@ -328,7 +328,7 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
-    (int) image_info->scene,filename);
+    (int) image_info->scene,filename,exception);
   if (LocaleCompare(filename,image_info->filename) != 0)
     {
       ExceptionInfo
@@ -351,7 +351,7 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
         (void) InterpretImageFilename(image_info,(Image *) NULL,filename,(int)
-          scene,read_info->filename);
+          scene,read_info->filename,exception);
         image=PingImage(read_info,exception);
         if (image == (Image *) NULL)
           continue;
@@ -840,7 +840,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
-    (int) image_info->scene,filename);
+    (int) image_info->scene,filename,exception);
   if (LocaleCompare(filename,image_info->filename) != 0)
     {
       ExceptionInfo
@@ -868,7 +868,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
         (void) InterpretImageFilename(image_info,(Image *) NULL,filename,(int)
-          scene,read_info->filename);
+          scene,read_info->filename,exception);
         image=ReadImage(read_info,exception);
         if (image == (Image *) NULL)
           continue;

@@ -24,7 +24,7 @@ extern "C" {
 
 #define AppendImageStack(images) \
 { \
-  (void) SyncImagesSettings(image_info,images); \
+  (void) SyncImagesSettings(image_info,images,exception); \
   AppendImageToList(&image_stack[k].image,images); \
   image=image_stack[k].image; \
 }
@@ -42,7 +42,7 @@ extern "C" {
   if (image != (Image *) NULL) \
     { \
       InheritException(exception,&(image)->exception); \
-      (void) SyncImagesSettings(image_info,image); \
+      (void) SyncImagesSettings(image_info,image,exception); \
     } \
 }
 #define FireImageStack(postfix,advance,fire) \
