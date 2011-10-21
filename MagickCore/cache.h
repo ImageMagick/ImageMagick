@@ -37,8 +37,6 @@ extern MagickExport MagickBooleanType
     const ssize_t,const ssize_t,PixelInfo *,ExceptionInfo *),
   GetOneVirtualPixel(const Image *,const ssize_t,const ssize_t,Quantum *,
     ExceptionInfo *),
-  GetOneVirtualMethodPixel(const Image *,const VirtualPixelMethod,const ssize_t,
-    const ssize_t,Quantum *,ExceptionInfo *),
   GetOneAuthenticPixel(Image *,const ssize_t,const ssize_t,Quantum *,
     ExceptionInfo *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,

@@ -1698,7 +1698,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        TileVirtualPixelMethod,geometry.x,geometry.y,&target,
+                        &exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1712,7 +1713,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.x=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        TileVirtualPixelMethod,geometry.x,geometry.y,&target,
+                        &exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1726,7 +1728,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.y=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        TileVirtualPixelMethod,geometry.x,geometry.y,&target,
+                        &exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3730,7 +3733,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        TileVirtualPixelMethod,geometry.x,geometry.y,&target,
+                        &exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3756,7 +3760,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.x=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        TileVirtualPixelMethod,geometry.x,geometry.y,&target,
+                        &exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3770,7 +3775,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       geometry.y=StringToLong(value);
                       (void) GetOneVirtualMagickPixel(msl_info->image[n],
-                        geometry.x,geometry.y,&target,&exception);
+                        TileVirtualPixelMethod,geometry.x,geometry.y,&target,
+                        &exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
