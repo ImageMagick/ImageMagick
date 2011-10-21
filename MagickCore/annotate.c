@@ -1438,6 +1438,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 q+=GetPixelChannels(image);
                 continue;
               }
+            GetPixelInfo(image,&fill_color);
             (void) GetFillColor(draw_info,x_offset,y_offset,&fill_color,
               exception);
             fill_opacity=fill_opacity*fill_color.alpha;

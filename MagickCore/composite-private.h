@@ -52,42 +52,63 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     gamma,
     Sa;
 
+  register ssize_t
+    i;
+
   /*
     Compose pixel p over pixel q with the given opacities.
   */
-  if (fabs(alpha-TransparentAlpha) < MagickEpsilon)
-    {
-      if (composite != q)
-        {
-          SetPixelRed(image,GetPixelRed(image,q),composite);
-          SetPixelGreen(image,GetPixelGreen(image,q),composite);
-          SetPixelBlue(image,GetPixelBlue(image,q),composite);
-          SetPixelAlpha(image,GetPixelAlpha(image,q),composite);
-        }
-      return;
-    }
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
   gamma=Sa*(-Da)+Sa+Da;
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  SetPixelAlpha(image,(Quantum) (QuantumRange*gamma+0.5),composite);
   gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
-  SetPixelRed(image,(Quantum) (gamma*MagickOver_((MagickRealType) p->red,
-    alpha,(MagickRealType) GetPixelRed(image,q),beta)+0.5),composite);
-  SetPixelGreen(image,(Quantum) (gamma*MagickOver_((MagickRealType) p->green,
-    alpha,(MagickRealType) GetPixelGreen(image,q),beta)+0.5),composite);
-  SetPixelBlue(image,(Quantum) (gamma*MagickOver_((MagickRealType) p->blue,
-    alpha,(MagickRealType) GetPixelBlue(image,q),beta)+0.5),composite);
-#else
-  SetPixelAlpha(image,QuantumRange*gamma,composite);
-  gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
-  SetPixelRed(image,(Quantum) (gamma*MagickOver_((MagickRealType) p->red,
-    alpha,(MagickRealType) GetPixelRed(image,q),beta)),composite);
-  SetPixelGreen(image,(Quantum) (gamma*MagickOver_((MagickRealType) p->green,
-    alpha,(MagickRealType) GetPixelGreen(image,q),beta)),composite);
-  SetPixelBlue(image,(Quantum) (gamma*MagickOver_((MagickRealType) p->blue,
-    alpha,(MagickRealType) GetPixelBlue(image,q),beta)),composite);
-#endif
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    PixelTrait
+      traits;
+
+    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    if (traits == UndefinedPixelTrait)
+      continue;
+    switch (channel)
+    {
+      case RedPixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) p->red,
+          alpha,(MagickRealType) q[i],beta));
+        break;
+      }
+      case GreenPixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) p->green,
+          alpha,(MagickRealType) q[i],beta));
+        break;
+      }
+      case BluePixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) p->blue,
+          alpha,(MagickRealType) q[i],beta));
+        break;
+      }
+      case BlackPixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) p->black,
+          alpha,(MagickRealType) q[i],beta));
+        break;
+      }
+      case AlphaPixelChannel:
+      {
+        composite[i]=ClampToQuantum(QuantumRange*gamma);
+        break;
+      }
+      default:
+        break;
+    }
+  }
 }
 
 static inline void CompositePixelInfoOver(const PixelInfo *p,
