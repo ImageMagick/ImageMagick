@@ -160,9 +160,9 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %     double coefficents[8];
 %     ...
 %     GaussJordanElimination(matrix, &coefficents, 8UL, 1UL);
-%
-%  However by specifing more 'columns' (as an 'array of vector columns',
-%  you can use this function to solve a set of 'separable' equations.
+%   
+%  However by specifing more 'columns' (as an 'array of vector columns'),
+%  you can use this function to solve multiple sets of 'separable' equations.
 %
 %  For example a distortion function where    u = U(x,y)   v = V(x,y)
 %  And the functions U() and V() have separate coefficents, but are being
@@ -173,8 +173,9 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %  (Reference to be added - Anthony)
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
-%  though as a 'column first array' rather than a 'row first array'. For
-%  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination.
+%  though as a 'column first array' rather than a 'row first array' (matrix
+%  is transposed). For details see 
+%     http://en.wikipedia.org/wiki/Gauss-Jordan_elimination.
 %
 */
 MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
