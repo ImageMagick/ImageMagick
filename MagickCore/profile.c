@@ -117,6 +117,15 @@ struct ProfileInfo
   size_t
     signature;
 };
+
+typedef struct _CMSExceptionInfo
+{
+  Image
+    *image;
+
+  ExceptionInfo
+    *exception;
+} CMSExceptionInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -425,6 +434,45 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
   }
   return(transform);
 }
+#endif
+
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+#if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
+static void CMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
+  const char *message)
+{
+  CMSExceptionInfo
+    *cms_exception;
+
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  cms_exception=(CMSExceptionInfo *) context;
+  image=cms_exception->image;
+  exception=cms_exception->exception;
+  if (image == (Image *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+        "UnableToTransformColorspace","`%s'","unknown context");
+      return;
+    }
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%u, %s",
+      severity,message != (char *) NULL ? message : "no message");
+  (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+    "UnableToTransformColorspace","`%s'",image->filename);
+}
+#else
+static int CMSExceptionHandler(int severity,const char *message)
+{
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
+    severity,message != (char *) NULL ? message : "no message");
+  return(1);
+}
+#endif
 #endif
 
 static MagickBooleanType SetAdobeRGB1998ImageProfile(Image *image,
@@ -5607,31 +5655,6 @@ static MagickBooleanType SetsRGBImageProfile(Image *image,
   profile=DestroyStringInfo(profile);
   return(status);
 }
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
-static void LCMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
-  const char *message)
-{
-  Image
-    *image;
-
-  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%u, %s",
-    severity,message != (char *) NULL ? message : "no message");
-  image=(Image *) context;
-  if (image != (Image *) NULL)
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      ImageWarning,"UnableToTransformColorspace","`%s'",image->filename);
-
-}
-#else
-static int LCMSExceptionHandler(int severity,const char *message)
-{
-  (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%d, %s",
-    severity,message != (char *) NULL ? message : "no message");
-  return(1);
-}
-#endif
-#endif
 
 MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
   const void *datum,const size_t length,ExceptionInfo *exception)
@@ -5745,11 +5768,16 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         cmsHPROFILE
           source_profile;
 
+        CMSExceptionInfo
+          cms_exception;
+
         /*
           Transform pixel colors as defined by the color profiles.
         */
-        cmsSetLogErrorHandler(LCMSExceptionHandler);
-        source_profile=cmsOpenProfileFromMemTHR(image,
+        cmsSetLogErrorHandler(CMSExceptionHandler);
+        cms_exception.image=image;
+        cms_exception.exception=exception;
+        source_profile=cmsOpenProfileFromMemTHR(&cms_exception,
           GetStringInfoDatum(profile),(cmsUInt32Number)
           GetStringInfoLength(profile));
         if (source_profile == (cmsHPROFILE) NULL)
@@ -5805,7 +5833,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (icc_profile != (StringInfo *) NULL)
               {
                 target_profile=source_profile;
-                source_profile=cmsOpenProfileFromMemTHR(image,
+                source_profile=cmsOpenProfileFromMemTHR(&cms_exception,
                   GetStringInfoDatum(icc_profile),(cmsUInt32Number)
                   GetStringInfoLength(icc_profile));
                 if (source_profile == (cmsHPROFILE) NULL)
