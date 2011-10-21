@@ -682,7 +682,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=AcquireUniqueFileResource(postscript_filename);
   if (file == -1)
     {
-      ThrowFileException(&image->exception,FileOpenError,"UnableToOpenFile",
+      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image_info->filename);
       image=DestroyImageList(image);
       return((Image *) NULL);

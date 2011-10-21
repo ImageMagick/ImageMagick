@@ -1904,7 +1904,6 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickCore::AnimateImages( first_->imageInfo(), first_->image() );
-    MagickCore::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
@@ -2161,7 +2160,6 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickCore::DisplayImages( first_->imageInfo(), first_->image() );
-    MagickCore::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
@@ -2247,7 +2245,6 @@ namespace Magick
     linkImages( first_, last_ );
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
         mapImage_.constImage());
-    MagickCore::GetImageException( first_->image(), &exceptionInfo );
     if ( exceptionInfo.severity != MagickCore::UndefinedException )
       {
         unlinkImages( first_, last_ );
@@ -2272,11 +2269,8 @@ namespace Magick
   
         // Udate DirectClass representation of pixels
         MagickCore::SyncImage( image, &exceptionInfo );
-        if ( image->exception.severity > MagickCore::UndefinedException )
-          {
-            unlinkImages( first_, last_ );
-            throwException( exceptionInfo );
-          }
+        unlinkImages( first_, last_ );
+        throwException( exceptionInfo );
         (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
 
         // Next image
@@ -2337,7 +2331,6 @@ namespace Magick
       }
 
     // Report any transparentImage() error
-    MagickCore::GetImageException( first_->image(), &exceptionInfo );
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
   }
@@ -2398,7 +2391,6 @@ namespace Magick
 
     MagickCore::QuantizeImages( first_->quantizeInfo(),
              first_->image() );
-    MagickCore::GetImageException( first_->image(), &exceptionInfo );
     if ( exceptionInfo.severity > MagickCore::UndefinedException )
       {
   unlinkImages( first_, last_ );

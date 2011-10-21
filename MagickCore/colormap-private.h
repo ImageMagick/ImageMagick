@@ -26,12 +26,13 @@ extern "C" {
 #include <MagickCore/color.h>
 #include <MagickCore/exception-private.h>
 
-static inline Quantum ConstrainColormapIndex(Image *image,const size_t index)
+static inline Quantum ConstrainColormapIndex(Image *image,const size_t index,
+  ExceptionInfo *exception)
 {
   if (index < image->colors)
     return((Quantum) index);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    CorruptImageError,"InvalidColormapIndex","`%s'",image->filename);
+  (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+    "InvalidColormapIndex","`%s'",image->filename);
   return((Quantum) 0);
 }
 

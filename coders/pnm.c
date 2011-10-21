@@ -137,12 +137,12 @@ static MagickBooleanType IsPNM(const unsigned char *magick,const size_t extent)
 */
 
 static inline ssize_t ConstrainPixel(Image *image,const ssize_t offset,
-  const size_t extent)
+  const size_t extent,ExceptionInfo *exception)
 {
   if ((offset < 0) || (offset > (ssize_t) extent))
     {
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        CorruptImageError,"InvalidPixel","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InvalidPixel","`%s'",image->filename);
       return(0);
     }
   return(offset);
@@ -500,7 +500,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,intensity,q);
             if (scale != (Quantum *) NULL)
               SetPixelRed(image,scale[ConstrainPixel(image,(ssize_t) intensity,
-                max_value)],q);
+                max_value,exception)],q);
             SetPixelGreen(image,GetPixelRed(image,q),q);
             SetPixelBlue(image,GetPixelRed(image,q),q);
             q+=GetPixelChannels(image);
@@ -560,11 +560,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (scale != (Quantum *) NULL)
               {
                 pixel.red=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.red,max_value)];
+                  pixel.red,max_value,exception)];
                 pixel.green=(MagickRealType) scale[ConstrainPixel(image,
-                  (ssize_t) pixel.green,max_value)];
+                  (ssize_t) pixel.green,max_value,exception)];
                 pixel.blue=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
-                  pixel.blue,max_value)];
+                  pixel.blue,max_value,exception)];
               }
             SetPixelRed(image,ClampToQuantum(pixel.red),q);
             SetPixelGreen(image,ClampToQuantum(pixel.green),q);

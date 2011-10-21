@@ -3932,7 +3932,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   q=nexus_info->pixels;
   r=GetVirtualPixelsFromNexus(image->mask,MaskVirtualPixelMethod,
     nexus_info->region.x,nexus_info->region.y,nexus_info->region.width,
-    nexus_info->region.height,clip_nexus[0],&image->exception);
+    nexus_info->region.height,clip_nexus[0],exception);
   GetPixelInfo(image,&alpha);
   GetPixelInfo(image,&beta);
   number_pixels=(MagickSizeType) nexus_info->region.width*
@@ -4390,7 +4390,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   cache_info=(CacheInfo *) image->cache;
   status=OpenPixelCache(image,IOMode,exception);
   if (status != MagickFalse)
-    status=ClonePixelCachePixels(cache_info,clone_info,&image->exception);
+    status=ClonePixelCachePixels(cache_info,clone_info,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
   return(status);

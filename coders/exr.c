@@ -456,7 +456,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
   }
   (void) ImfCloseOutputFile(file);
   scanline=(ImfRgba *) RelinquishMagickMemory(scanline);
-  (void) FileToImage(image,write_info->filename);
+  (void) FileToImage(image,write_info->filename,exception);
   (void) RelinquishUniqueFileResource(write_info->filename);
   write_info=DestroyImageInfo(write_info);
   (void) CloseBlob(image);

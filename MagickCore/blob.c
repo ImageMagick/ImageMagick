@@ -1088,7 +1088,8 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   return((ssize_t) length);
 }
 
-MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
+MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
+  ExceptionInfo *exception)
 {
   int
     file;
@@ -1113,8 +1114,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
   file=open_utf8(filename,O_RDONLY | O_BINARY,0);
   if (file == -1)
     {
-      ThrowFileException(&image->exception,BlobError,"UnableToOpenBlob",
-        filename);
+      ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);
       return(MagickFalse);
     }
   quantum=(size_t) MagickMaxBufferExtent;
@@ -1123,8 +1123,8 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
   blob=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
-      ThrowFileException(&image->exception,ResourceLimitError,
-        "MemoryAllocationFailed",filename);
+      ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
+        filename);
       return(MagickFalse);
     }
   for ( ; ; )
@@ -1140,15 +1140,13 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename)
     count=WriteBlobStream(image,length,blob);
     if (count != (ssize_t) length)
       {
-        ThrowFileException(&image->exception,BlobError,"UnableToWriteBlob",
-          filename);
+        ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
         break;
       }
   }
   file=close(file);
   if (file == -1)
-    ThrowFileException(&image->exception,BlobError,"UnableToWriteBlob",
-      filename);
+    ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   return(MagickTrue);
 }

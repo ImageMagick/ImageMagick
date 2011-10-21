@@ -1763,7 +1763,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       /*
         Write image.
       */
-      GetImageException(montage_image,exception);
       (void) CopyMagickString(image_info->filename,argv[argc-1],MaxTextExtent);
       (void) CopyMagickString(montage_image->magick_filename,argv[argc-1],
         MaxTextExtent);

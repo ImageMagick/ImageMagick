@@ -328,7 +328,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Image
         *cmyk_image;
 
-      cmyk_image=ConsolidateCMYKImages(image,&image->exception);
+      cmyk_image=ConsolidateCMYKImages(image,exception);
       if (cmyk_image != (Image *) NULL)
         {
           image=DestroyImageList(image);

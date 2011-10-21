@@ -264,11 +264,9 @@ static void Rd_WP_DWORD(Image *image,size_t *d)
   return;
 }
 
-static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
+static void InsertRow(Image *image,unsigned char *p,ssize_t y,int bpp,
+  ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   int
     bit;
 
@@ -281,7 +279,6 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
   ssize_t
     x;
 
-  exception=(&image->exception);
   switch (bpp)
     {
     case 1:  /* Convert bitmap scanline. */
@@ -322,19 +319,19 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           break;
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
         {
-            index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
+            index=ConstrainColormapIndex(image,(*p >> 6) & 0x3,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
-            index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
+            index=ConstrainColormapIndex(image,(*p >> 4) & 0x3,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
-            index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
+            index=ConstrainColormapIndex(image,(*p >> 2) & 0x3,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
-            index=ConstrainColormapIndex(image,(*p) & 0x3);
+            index=ConstrainColormapIndex(image,(*p) & 0x3,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
@@ -342,21 +339,22 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         }
        if ((image->columns % 4) != 0)
           {
-            index=ConstrainColormapIndex(image,(*p >> 6) & 0x3);
+            index=ConstrainColormapIndex(image,(*p >> 6) & 0x3,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
             if ((image->columns % 4) >= 1)
 
               {
-                index=ConstrainColormapIndex(image,(*p >> 4) & 0x3);
+                index=ConstrainColormapIndex(image,(*p >> 4) & 0x3,exception);
                 SetPixelIndex(image,index,q);
                 SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(image);
                 if ((image->columns % 4) >= 2)
 
                   {
-                    index=ConstrainColormapIndex(image,(*p >> 2) & 0x3);
+                    index=ConstrainColormapIndex(image,(*p >> 2) & 0x3,
+                      exception);
                     SetPixelIndex(image,index,q);
                     SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
                     q+=GetPixelChannels(image);
@@ -376,11 +374,11 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           break;
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           { 
-            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
+            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
-            index=ConstrainColormapIndex(image,(*p) & 0x0f);
+            index=ConstrainColormapIndex(image,(*p) & 0x0f,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
@@ -388,7 +386,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           }
         if ((image->columns % 2) != 0)
           {
-            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
+            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
@@ -405,7 +403,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
 
         for (x=0; x < (ssize_t) image->columns; x++)
           {
-            index=ConstrainColormapIndex(image,*p);
+            index=ConstrainColormapIndex(image,*p,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
@@ -441,13 +439,13 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
   x++; \
   if((ssize_t) x>=ldblk) \
   { \
-    InsertRow(BImgBuff,(ssize_t) y,image,bpp); \
+    InsertRow(image,BImgBuff,(ssize_t) y,bpp,exception); \
     x=0; \
     y++; \
     } \
 }
 /* WPG1 raster reader. */
-static int UnpackWPGRaster(Image *image,int bpp)
+static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
 {
   int
     x,
@@ -513,7 +511,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
                   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                   return(-4);
                 }
-              InsertRow(BImgBuff,y-1,image,bpp);
+              InsertRow(image,BImgBuff,y-1,bpp,exception);
             }
         }
       }
@@ -533,13 +531,13 @@ static int UnpackWPGRaster(Image *image,int bpp)
   x++; \
   if((ssize_t) x >= ldblk) \
   { \
-    InsertRow(BImgBuff,(ssize_t) y,image,bpp); \
+    InsertRow(image,BImgBuff,(ssize_t) y,bpp,exception); \
     x=0; \
     y++; \
    } \
 }
 /* WPG2 raster reader. */
-static int UnpackWPG2Raster(Image *image,int bpp)
+static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
 {
   size_t
     x,
@@ -614,8 +612,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {      
-                InsertRow(BImgBuff,(ssize_t) (image->rows >= y ? y : image->rows-1),
-                          image,bpp);
+                InsertRow(image,BImgBuff,(ssize_t) (image->rows >= y ? y : image->rows-1),
+                          bpp,exception);
                 y++;
               }    
           }
@@ -1128,7 +1126,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
                 }      
 
-              if(UnpackWPGRaster(image,bpp) < 0)
+              if(UnpackWPGRaster(image,bpp,exception) < 0)
                 /* The raster cannot be unpacked */
                 {
                 DecompressionFailed:
@@ -1300,7 +1298,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     for(i=0; i< (ssize_t) image->rows; i++)
                       {
                         (void) ReadBlob(image,ldblk,BImgBuff);
-                        InsertRow(BImgBuff,i,image,bpp);
+                        InsertRow(image,BImgBuff,i,bpp,exception);
                       }
 
                     if(BImgBuff)
@@ -1309,7 +1307,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   }
                 case 1:    /*RLE for WPG2 */
                   {
-                    if( UnpackWPG2Raster(image,bpp) < 0)
+                    if( UnpackWPG2Raster(image,bpp,exception) < 0)
                       goto DecompressionFailed;
                     break;
                   }   

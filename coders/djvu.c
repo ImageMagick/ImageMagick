@@ -321,7 +321,7 @@ process_message(ddjvu_message_t *message)
  * we use the RGB format!
  */
 static void
-get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, const ImageInfo *image_info ) {
+get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, const ImageInfo *image_info, ExceptionInfo *exception ) {
   ddjvu_format_t
     *format;
 
@@ -394,7 +394,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 
                 for (y=0; y < (ssize_t) image->rows; y++)
                         {
-                                Quantum * o = QueueAuthenticPixels(image,0,y,image->columns,1,&image->exception);
+                                Quantum * o = QueueAuthenticPixels(image,0,y,image->columns,1,exception);
                                 if (o == (Quantum *) NULL)
                                         break;
                                 bit=0;
@@ -412,11 +412,11 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                                 byte>>=1;
                                           o+=GetPixelChannels(image);
                                         }
-                                if (SyncAuthenticPixels(image,&image->exception) == MagickFalse)
+                                if (SyncAuthenticPixels(image,exception) == MagickFalse)
                                         break;
                         }
                 if (!image->ping)
-                  SyncImage(image,&image->exception);
+                  SyncImage(image,exception);
         } else {
 #if DEBUG
                 printf("%s: expanding PHOTO page/image\n", __FUNCTION__);
@@ -436,7 +436,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 #if DEBUG
                                if (i % 1000 == 0) printf("%d\n",i);
 #endif
-                               r = QueueAuthenticPixels(image,0,i,image->columns,1,&image->exception);
+                               r = QueueAuthenticPixels(image,0,i,image->columns,1,exception);
                                if (r == (Quantum *) NULL)
                                  break;
                   for (x=0; x < (ssize_t) image->columns; x++)
@@ -447,7 +447,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                     r+=GetPixelChannels(image);
                   }
 
-                              SyncAuthenticPixels(image,&image->exception);
+                              SyncAuthenticPixels(image,exception);
                         }
         }
         q=(unsigned char *) RelinquishMagickMemory(q);
@@ -673,7 +673,8 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 #if 1                           /* per_line */
 
         /* q = QueueAuthenticPixels(image,0,0,image->columns,image->rows); */
-        get_page_image(lc, lc->page, 0, 0, info.width, info.height, image_info);
+        get_page_image(lc, lc->page, 0, 0, info.width, info.height, image_info,
+          exception);
 #else
         int i;
         for (i = 0;i< image->rows; i++)

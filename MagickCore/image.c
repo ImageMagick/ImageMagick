@@ -177,7 +177,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
   image->blur=1.0;
-  GetExceptionInfo(&image->exception);
   (void) QueryColorCompliance(BackgroundColor,AllCompliance,
     &image->background_color,exception);
   (void) QueryColorCompliance(BorderColor,AllCompliance,&image->border_color,
@@ -631,7 +630,6 @@ MagickExport ExceptionType CatchImageException(Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   exception=AcquireExceptionInfo();
-  GetImageException(image,exception);
   CatchException(exception);
   severity=exception->severity;
   exception=DestroyExceptionInfo(exception);
@@ -823,8 +821,6 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   (void) CloneImageProperties(clone_image,image);
   (void) CloneImageArtifacts(clone_image,image);
   GetTimerInfo(&clone_image->timer);
-  GetExceptionInfo(&clone_image->exception);
-  InheritException(&clone_image->exception,&image->exception);
   if (image->ascii85 != (void *) NULL)
     Ascii85Initialize(clone_image);
   clone_image->magick_columns=image->magick_columns;
@@ -1227,7 +1223,6 @@ MagickExport Image *DestroyImage(Image *image)
   if (image->ascii85 != (Ascii85Info*) NULL)
     image->ascii85=(Ascii85Info *) RelinquishMagickMemory(image->ascii85);
   DestroyBlob(image);
-  (void) DestroyExceptionInfo(&image->exception);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
   image->signature=(~MagickSignature);
@@ -1394,52 +1389,6 @@ MagickExport Image *GetImageClipMask(const Image *image,
   if (image->clip_mask == (Image *) NULL)
     return((Image *) NULL);
   return(CloneImage(image->clip_mask,0,0,MagickTrue,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e E x c e p t i o n                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageException() traverses an image sequence and returns any
-%  error more severe than noted by the exception parameter.
-%
-%  The format of the GetImageException method is:
-%
-%      void GetImageException(Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: Specifies a pointer to a list of one or more images.
-%
-%    o exception: return the highest severity exception.
-%
-*/
-MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
-{
-  register Image
-    *next;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
-  {
-    if (next->exception.severity == UndefinedException)
-      continue;
-    if (next->exception.severity > exception->severity)
-      InheritException(exception,&next->exception);
-    next->exception.severity=UndefinedException;
-  }
 }
 
 /*

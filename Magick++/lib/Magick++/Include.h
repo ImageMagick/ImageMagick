@@ -728,7 +728,6 @@ namespace Magick
   using MagickCore::GetAffineMatrix;
   using MagickCore::GetAuthenticMetacontent;
   using MagickCore::GetBlobSize;
-  using MagickCore::GetCacheViewException;
   using MagickCore::GetCacheViewAuthenticMetacontent;
   using MagickCore::GetCacheViewAuthenticPixels;
   using MagickCore::GetColorTuple;

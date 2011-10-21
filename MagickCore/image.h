@@ -327,9 +327,6 @@ struct _Image
   BlobInfo
     *blob;             /* image file as in-memory string of 'extent' */
 
-  ExceptionInfo
-    exception;         /* Error handling report */
-
   MagickBooleanType
     debug;             /* debug output attribute */
 
@@ -556,7 +553,6 @@ extern MagickExport void
   AcquireNextImage(const ImageInfo *,Image *,ExceptionInfo *),
   DestroyImagePixels(Image *),
   DisassociateImageStream(Image *),
-  GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   SetImageInfoBlob(ImageInfo *,const void *,const size_t),
   SetImageInfoFile(ImageInfo *,FILE *);

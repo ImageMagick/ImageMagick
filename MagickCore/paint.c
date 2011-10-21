@@ -178,7 +178,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   /*
     Set floodfill state.
   */
-  floodplane_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  floodplane_image=CloneImage(image,0,0,MagickTrue,exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel,exception);

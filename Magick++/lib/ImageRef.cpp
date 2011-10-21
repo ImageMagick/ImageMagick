@@ -46,10 +46,12 @@ Magick::ImageRef::ImageRef ( void )
     _mutexLock()
 {
   // Allocate default image
-  _image = AcquireImage( _options->imageInfo(), &_image->exception );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
 
-  // Test for error and throw exception (like throwImageException())
-  throwException(_image->exception);
+  _image = AcquireImage( _options->imageInfo(), &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Destructor

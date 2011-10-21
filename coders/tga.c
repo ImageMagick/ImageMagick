@@ -390,7 +390,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=(Quantum) ReadBlobByte(image);
             if (tga_info.colormap_type != 0)
               pixel=image->colormap[(ssize_t) ConstrainColormapIndex(image,
-                1UL*index)];
+                1UL*index,exception)];
             else
               {
                 pixel.red=ScaleCharToQuantum((unsigned char) index);
@@ -419,7 +419,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.alpha=(k & 0x80) == 0 ? (Quantum) OpaqueAlpha :
                 (Quantum) TransparentAlpha; 
             if (image->storage_class == PseudoClass)
-              index=ConstrainColormapIndex(image,((size_t) k << 8)+j);
+              index=ConstrainColormapIndex(image,((size_t) k << 8)+j,exception);
             break;
           }
           case 24:

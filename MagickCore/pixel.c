@@ -3529,8 +3529,8 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
     default:
     {
       quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        OptionError,"UnrecognizedPixelMap","`%s'",map);
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "UnrecognizedPixelMap","`%s'",map);
       break;
     }
   }

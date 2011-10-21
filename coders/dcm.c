@@ -3863,7 +3863,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           0.5)/(window_width-1))+0.5));
                   }
                 index&=mask;
-                index=(int) ConstrainColormapIndex(image,(size_t) index);
+                index=(int) ConstrainColormapIndex(image,(size_t) index,
+                  exception);
                 SetPixelIndex(image,index,q);
                 pixel.red=1UL*image->colormap[index].red;
                 pixel.green=1UL*image->colormap[index].green;
@@ -3992,7 +3993,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             0.5)/(window_width-1))+0.5));
                     }
                   index&=mask;
-                  index=(int) ConstrainColormapIndex(image,(size_t) index);
+                  index=(int) ConstrainColormapIndex(image,(size_t) index,
+                    exception);
                   SetPixelIndex(image,(((size_t) GetPixelIndex(image,q)) |
                     (((size_t) index) << 8)),q);
                   pixel.red=1UL*image->colormap[index].red;

@@ -76,7 +76,7 @@ extern MagickExport MagickBooleanType
   BlobToFile(char *,const void *,const size_t,ExceptionInfo *),
   CloseBlob(Image *),
   DiscardBlobBytes(Image *,const MagickSizeType),
-  FileToImage(Image *,const char *),
+  FileToImage(Image *,const char *,ExceptionInfo *),
   ImageToFile(Image *,char *,ExceptionInfo *),
   InjectImageBlob(const ImageInfo *,Image *,Image *,const char *,
     ExceptionInfo *),

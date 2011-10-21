@@ -2704,7 +2704,7 @@ static MagickBooleanType SyncAuthenticPixelsStream(Image *image,
 %  The format of the WriteStream() method is:
 %
 %      MagickBooleanType WriteStream(const ImageInfo *image_info,Image *,
-%        StreamHandler stream)
+%        StreamHandler stream,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2712,9 +2712,11 @@ static MagickBooleanType SyncAuthenticPixelsStream(Image *image,
 %
 %    o stream: A callback method.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType WriteStream(const ImageInfo *image_info,
-  Image *image,StreamHandler stream)
+  Image *image,StreamHandler stream,ExceptionInfo *exception)
 {
   ImageInfo
     *write_info;
@@ -2731,7 +2733,7 @@ MagickExport MagickBooleanType WriteStream(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   write_info=CloneImageInfo(image_info);
   write_info->stream=stream;
-  status=WriteImage(write_info,image,&image->exception);
+  status=WriteImage(write_info,image,exception);
   write_info=DestroyImageInfo(write_info);
   return(status);
 }

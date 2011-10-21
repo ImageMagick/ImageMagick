@@ -4001,7 +4001,6 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   picture_image=DestroyImage(picture_image);
   if (bend_image == (Image *) NULL)
     return((Image *) NULL);
-  InheritException(&bend_image->exception,exception);
   picture_image=bend_image;
   rotate_image=RotateImage(picture_image,-90.0,exception);
   picture_image=DestroyImage(picture_image);

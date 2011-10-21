@@ -195,7 +195,6 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
                   status&=CompositeImage(*image,composite_options->compose,
                     composite_image,x,y,exception);
-              GetImageException(*image,exception);
             }
           else
             {
@@ -218,7 +217,6 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               */
               status&=CompositeImage(*image,composite_options->compose,
                 composite_image,geometry.x,geometry.y,exception);
-              GetImageException(*image,exception);
             }
     }
   (void) SetPixelChannelMap(composite_image,channel_mask);

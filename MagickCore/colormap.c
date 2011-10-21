@@ -145,7 +145,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
     image->colormap[i].blue=(Quantum) pixel;
     image->colormap[i].alpha=OpaqueAlpha;
   }
-  return(SetImageStorageClass(image,PseudoClass,&image->exception));
+  return(SetImageStorageClass(image,PseudoClass,exception));
 }
 
 /*

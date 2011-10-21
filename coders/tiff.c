@@ -1494,7 +1494,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             ThrowReaderException(CoderError,"ImageIsNotTiled");
           }
-        (void) SetImageStorageClass(image,DirectClass,&image->exception);
+        (void) SetImageStorageClass(image,DirectClass,exception);
         number_pixels=columns*rows;
         tile_pixels=(uint32 *) AcquireQuantumMemory(number_pixels,
           sizeof(*tile_pixels));

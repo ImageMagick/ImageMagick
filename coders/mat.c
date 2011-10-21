@@ -178,11 +178,9 @@ typedef enum
 static const QuantumType z2qtype[4] = {GrayQuantum, BlueQuantum, GreenQuantum, RedQuantum};
 
 
-static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVal,
-                                  double MaxVal)
+static void InsertComplexDoubleRow(Image *image,double *p,int y,double MinVal,
+  double MaxVal,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
 
   double f;
   int x;
@@ -193,7 +191,6 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
   if (MaxVal == 0)
     MaxVal = 1;
 
-  exception=(&image->exception);
   q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
   if (q == (Quantum *) NULL)
     return;
@@ -244,12 +241,9 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 }
 
 
-static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
-                                  double MaxVal)
+static void InsertComplexFloatRow(Image *image,float *p,int y,double MinVal,
+  double MaxVal,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   double f;
   int x;
   register Quantum *q;
@@ -259,7 +253,6 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
   if (MaxVal == 0)
     MaxVal = 1;
 
-  exception=(&image->exception);
   q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
   if (q == (Quantum *) NULL)
     return;
@@ -950,14 +943,16 @@ ExitLoop:
         for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
   {
           ReadBlobDoublesXXX(image2, ldblk, (double *)BImgBuff);
-          InsertComplexDoubleRow((double *)BImgBuff, i, image, MinVal, MaxVal);
+          InsertComplexDoubleRow(image, (double *)BImgBuff, i, MinVal, MaxVal,
+            exception);
   }
 
       if (CellType==miSINGLE)
         for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
   {
           ReadBlobFloatsXXX(image2, ldblk, (float *)BImgBuff);
-          InsertComplexFloatRow((float *)BImgBuff, i, image, MinVal, MaxVal);
+          InsertComplexFloatRow(image,(float *)BImgBuff,i,MinVal,MaxVal,
+            exception);
   }    
     }
 

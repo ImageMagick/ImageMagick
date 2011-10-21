@@ -773,7 +773,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       inject_image->filename);
   (void) ResetMagickMemory(scanline,0,width*sizeof(*scanline));
-  huffman_image=CloneImage(inject_image,0,0,MagickTrue,&image->exception);
+  huffman_image=CloneImage(inject_image,0,0,MagickTrue,exception);
   if (huffman_image == (Image *) NULL)
     {
       scanline=(unsigned char *) RelinquishMagickMemory(scanline);

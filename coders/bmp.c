@@ -1049,17 +1049,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
-            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
+            index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f,exception);
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
-            index=ConstrainColormapIndex(image,*p & 0x0f);
+            index=ConstrainColormapIndex(image,*p & 0x0f,exception);
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
+              index=ConstrainColormapIndex(image,(*p >> 4) & 0xf,exception);
               SetPixelIndex(image,index,q);
               q+=GetPixelChannels(image);
               p++;
@@ -1093,7 +1093,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x = (ssize_t)image->columns; x != 0; --x)
           {
-            index=ConstrainColormapIndex(image,*p++);
+            index=ConstrainColormapIndex(image,*p++,exception);
             SetPixelIndex(image,index,q);
             q+=GetPixelChannels(image);
           }

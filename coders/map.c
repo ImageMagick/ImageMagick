@@ -218,11 +218,12 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=ConstrainColormapIndex(image,*p);
+      index=ConstrainColormapIndex(image,*p,exception);
       p++;
       if (image->colors > 256)
         {
-          index=ConstrainColormapIndex(image,((size_t) index << 8)+(*p));
+          index=ConstrainColormapIndex(image,((size_t) index << 8)+(*p),
+            exception);
           p++;
         }
       SetPixelIndex(image,index,q);
