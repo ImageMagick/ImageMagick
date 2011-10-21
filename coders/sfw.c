@@ -329,8 +329,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) remove_utf8(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        FileOpenError,"UnableToWriteFile","`%s': %s",image->filename,message);
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+        "UnableToWriteFile","`%s': %s",image->filename,message);
       message=DestroyString(message);
       image=DestroyImageList(image);
       return((Image *) NULL);

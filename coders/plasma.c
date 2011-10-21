@@ -98,18 +98,14 @@ static inline size_t MagickMax(const size_t x,const size_t y)
 }
 
 static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
-  double y)
+  double y,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *exception;
-
   QuantumAny
     range;
 
   register Quantum
     *q;
 
-  exception=(&image->exception);
   q=GetAuthenticPixels(image,(ssize_t) ceil(x-0.5),(ssize_t) ceil(y-0.5),1,1,
     exception);
   if (q == (Quantum *) NULL)
@@ -193,20 +189,20 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
         Seed pixels before recursion.
       */
       random_info=AcquireRandomInfo();
-      PlasmaPixel(image,random_info,segment_info.x1,segment_info.y1);
+      PlasmaPixel(image,random_info,segment_info.x1,segment_info.y1,exception);
       PlasmaPixel(image,random_info,segment_info.x1,(segment_info.y1+
-        segment_info.y2)/2);
-      PlasmaPixel(image,random_info,segment_info.x1,segment_info.y2);
+        segment_info.y2)/2,exception);
+      PlasmaPixel(image,random_info,segment_info.x1,segment_info.y2,exception);
       PlasmaPixel(image,random_info,(segment_info.x1+segment_info.x2)/2,
-        segment_info.y1);
+        segment_info.y1,exception);
       PlasmaPixel(image,random_info,(segment_info.x1+segment_info.x2)/2,
-        (segment_info.y1+segment_info.y2)/2);
+        (segment_info.y1+segment_info.y2)/2,exception);
       PlasmaPixel(image,random_info,(segment_info.x1+segment_info.x2)/2,
-        segment_info.y2);
-      PlasmaPixel(image,random_info,segment_info.x2,segment_info.y1);
+        segment_info.y2,exception);
+      PlasmaPixel(image,random_info,segment_info.x2,segment_info.y1,exception);
       PlasmaPixel(image,random_info,segment_info.x2,(segment_info.y1+
-        segment_info.y2)/2);
-      PlasmaPixel(image,random_info,segment_info.x2,segment_info.y2);
+        segment_info.y2)/2,exception);
+      PlasmaPixel(image,random_info,segment_info.x2,segment_info.y2,exception);
       random_info=DestroyRandomInfo(random_info);
     }
   i=(size_t) MagickMax(image->columns,image->rows)/2;

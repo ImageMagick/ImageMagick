@@ -250,39 +250,6 @@ MagickExport ColorspaceType GetCacheViewColorspace(const CacheView *cache_view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t C a c h e V i e w E x c e p t i o n                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewException() returns the image exception associated with the
-%  specified view.
-%
-%  The format of the GetCacheViewException method is:
-%
-%      ExceptionInfo GetCacheViewException(const CacheView *cache_view)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-*/
-MagickExport ExceptionInfo *GetCacheViewException(const CacheView *cache_view)
-{
-  assert(cache_view != (CacheView *) NULL);
-  assert(cache_view->signature == MagickSignature);
-  if (cache_view->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      cache_view->image->filename);
-  return(&cache_view->image->exception);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t C a c h e V i e w E x t e n t                                       %
 %                                                                             %
 %                                                                             %
@@ -905,7 +872,7 @@ MagickExport Quantum *QueueCacheViewAuthenticPixels(CacheView *cache_view,
 %  The format of the SetCacheViewStorageClass method is:
 %
 %      MagickBooleanType SetCacheViewStorageClass(CacheView *cache_view,
-%        const ClassType storage_class)
+%        const ClassType storage_class,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -913,21 +880,18 @@ MagickExport Quantum *QueueCacheViewAuthenticPixels(CacheView *cache_view,
 %
 %    o storage_class: the image storage class: PseudoClass or DirectClass.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType SetCacheViewStorageClass(CacheView *cache_view,
-  const ClassType storage_class)
+  const ClassType storage_class,ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
-
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   if (cache_view->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
-  status=SetImageStorageClass(cache_view->image,storage_class,
-    &cache_view->image->exception);
-  return(status);
+  return(SetImageStorageClass(cache_view->image,storage_class,exception));
 }
 
 /*

@@ -399,7 +399,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       chroma_pixels=GetVirtualPixels(resize_image,0,y,resize_image->columns,1,
-        &resize_image->exception);
+        exception);
       if ((q == (Quantum *) NULL) ||
           (chroma_pixels == (const Quantum *) NULL))
         break;

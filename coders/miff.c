@@ -199,7 +199,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
-  size_t *length,PixelInfo *pixel)
+  size_t *length,PixelInfo *pixel,ExceptionInfo *exception)
 {
   const unsigned char
     *p;
@@ -213,24 +213,25 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         case 32:
         {
           pixel->index=ConstrainColormapIndex(image,
-            (*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3));
+            (*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3),exception);
           p+=4;
           break;
         }
         case 16:
         {
-          pixel->index=ConstrainColormapIndex(image,(*p << 8) | *(p+1));
+          pixel->index=ConstrainColormapIndex(image,(*p << 8) | *(p+1),
+            exception);
           p+=2;
           break;
         }
         case 8:
         {
-          pixel->index=ConstrainColormapIndex(image,*p);
+          pixel->index=ConstrainColormapIndex(image,*p,exception);
           p++;
           break;
         }
         default:
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
       }
       switch (image->depth)
@@ -274,7 +275,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           break;
         }
         default:
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
       }
       *length=(size_t) (*p++)+1;
@@ -352,8 +353,8 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
       break;
     }
     default:
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "ImageDepthNotSupported","`%s'",image->filename);
   }
   *length=(size_t) (*p++)+1;
 }
@@ -1405,7 +1406,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (length == 0)
               {
                 count=ReadBlob(image,packet_size,pixels);
-                PushRunlengthPacket(image,pixels,&length,&pixel);
+                PushRunlengthPacket(image,pixels,&length,&pixel,exception);
               }
             length--;
             if (image->storage_class == PseudoClass)
@@ -1646,7 +1647,7 @@ ModuleExport void UnregisterMIFFImage(void)
 */
 
 static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
-  size_t length,PixelInfo *pixel)
+  size_t length,PixelInfo *pixel,ExceptionInfo *exception)
 {
   if (image->storage_class != DirectClass)
     {
@@ -1665,7 +1666,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           break;
         }
         default:
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
       }
       switch (image->depth)
@@ -1708,7 +1709,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           break;
         }
         default:
-          (void) ThrowMagickException(&image->exception,GetMagickModule(),
+          (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
       }
       *pixels++=(unsigned char) length;
@@ -1788,8 +1789,8 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
       break;
     }
     default:
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        CorruptImageError,"ImageDepthNotSupported","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "ImageDepthNotSupported","`%s'",image->filename);
   }
   *pixels++=(unsigned char) length;
   return(pixels);
@@ -2418,13 +2419,13 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               length++;
             else
               {
-                q=PopRunlengthPacket(image,q,length,&pixel);
+                q=PopRunlengthPacket(image,q,length,&pixel,exception);
                 length=0;
               }
             SetPixelInfo(image,p,&pixel);
             p+=GetPixelChannels(image);
           }
-          q=PopRunlengthPacket(image,q,length,&pixel);
+          q=PopRunlengthPacket(image,q,length,&pixel,exception);
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           break;
         }

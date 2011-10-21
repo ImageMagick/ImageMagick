@@ -6785,12 +6785,10 @@ Layers(ref,...)
         layers=CoalesceImages(image,exception);
         if (layers == (Image *) NULL)
           break;
-        InheritException(&(layers->exception),exception);
         image=layers;
         layers=OptimizeImageLayers(image,exception);
         if (layers == (Image *) NULL)
           break;
-        InheritException(&(layers->exception),exception);
         image=DestroyImageList(image);
         image=layers;
         layers=(Image *) NULL;
@@ -6857,10 +6855,7 @@ Layers(ref,...)
       }
     }
     if (layers != (Image *) NULL)
-      {
-        InheritException(&(layers->exception),exception);
-        image=layers;
-      }
+      image=layers;
     if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
       goto PerlException;
     for ( ; image; image=image->next)

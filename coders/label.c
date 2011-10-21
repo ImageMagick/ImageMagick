@@ -165,7 +165,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   if (status == MagickFalse)
     {
-      InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -192,7 +191,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       0.5);
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
-      InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }

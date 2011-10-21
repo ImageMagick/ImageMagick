@@ -911,6 +911,9 @@ WandExport void PixelSetLastIteratorRow(PixelIterator *iterator)
 */
 WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
 {
+  MagickBooleanType
+    status;
+
   register ssize_t
     x;
 
@@ -921,7 +924,9 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
   assert(iterator->signature == WandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  if (SetCacheViewStorageClass(iterator->view,DirectClass) == MagickFalse)
+  status=SetCacheViewStorageClass(iterator->view,DirectClass,
+    iterator->exception);
+  if (status == MagickFalse)
     return(MagickFalse);
   pixels=GetCacheViewAuthenticPixels(iterator->view,iterator->region.x,
     iterator->region.y+iterator->y,iterator->region.width,1,

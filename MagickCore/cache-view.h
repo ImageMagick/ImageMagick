@@ -67,9 +67,6 @@ extern MagickExport const Quantum
 extern MagickExport const void
   *GetCacheViewVirtualMetacontent(const CacheView *);
 
-extern MagickExport ExceptionInfo
-  *GetCacheViewException(const CacheView *);
-
 extern MagickExport MagickBooleanType
   GetOneCacheViewVirtualPixel(const CacheView *,const ssize_t,const ssize_t,
     Quantum *,ExceptionInfo *),
@@ -77,7 +74,7 @@ extern MagickExport MagickBooleanType
     const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   GetOneCacheViewAuthenticPixel(const CacheView *,const ssize_t,const ssize_t,
     Quantum *,ExceptionInfo *),
-  SetCacheViewStorageClass(CacheView *,const ClassType),
+  SetCacheViewStorageClass(CacheView *,const ClassType,ExceptionInfo *),
   SetCacheViewVirtualPixelMethod(CacheView *,const VirtualPixelMethod),
   SyncCacheViewAuthenticPixels(CacheView *,ExceptionInfo *);
 

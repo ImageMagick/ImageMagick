@@ -285,22 +285,26 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
   ErrorManager
     *error_manager;
 
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
   *message='\0';
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
+  exception=error_manager->exception;
   (jpeg_info->err->format_message)(jpeg_info,message);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "[%s] JPEG Trace: \"%s\"",image->filename,message);
   if (error_manager->finished != MagickFalse)
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      CorruptImageWarning,(char *) message,"`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+      (char *) message,"`%s'",image->filename);
   else
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
-      CorruptImageError,(char *) message,"`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+      (char *) message,"`%s'",image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
@@ -1024,7 +1028,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
         return(GetFirstImageInList(image));
-      InheritException(exception,&image->exception);
       return(DestroyImage(image));
     }
   jpeg_info.client_data=(void *) &error_manager;
@@ -1288,7 +1291,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               pixel=(size_t) GETJSAMPLE(*p);
             else
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
-            index=ConstrainColormapIndex(image,pixel);
+            index=ConstrainColormapIndex(image,pixel,exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
@@ -1326,7 +1329,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_info.output_components == 1)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p));
+          index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p),exception);
           SetPixelIndex(image,index,q);
           SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
           p++;

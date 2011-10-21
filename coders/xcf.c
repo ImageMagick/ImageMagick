@@ -295,7 +295,8 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max)
+static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
+  ExceptionInfo *exception)
 {
   int
     c;
@@ -325,7 +326,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max)
   string[i]='\0';
   offset=SeekBlob(image,(MagickOffsetType) (length-i),SEEK_CUR);
   if (offset < 0)
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+    (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
   return(string);
 }
@@ -436,7 +437,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   xcfodata=xcfdata;
   count=ReadBlob(image, (size_t) data_length, xcfdata);
   xcfdatalimit = xcfodata+count-1;
-  exception=(&image->exception);
+  exception=(exception);
   for (i=0; i < (ssize_t) bytes_per_pixel; i++)
   {
     q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
@@ -779,10 +780,10 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
   outLayer->height = ReadBlobMSBLong(image);
   outLayer->type = ReadBlobMSBLong(image);
   (void) ReadBlobStringWithLongSize(image, outLayer->name,
-    sizeof(outLayer->name));
+    sizeof(outLayer->name),exception);
   /* allocate the image for this layer */
   outLayer->image=CloneImage(image,outLayer->width, outLayer->height,MagickTrue,
-     &image->exception);
+     exception);
   if (outLayer->image == (Image *) NULL)
     return MagickFalse;
   /* read the layer properties! */
@@ -835,7 +836,7 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
      case PROP_PARASITES:
      {
        if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-         ThrowFileException(&image->exception,CorruptImageError,
+         ThrowFileException(exception,CorruptImageError,
            "UnexpectedEndOfFile",image->filename);
 
         /*
@@ -897,7 +898,7 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
   /* read in the hierarchy */
   offset=SeekBlob(image, (MagickOffsetType) hierarchy_offset, SEEK_SET);
   if (offset < 0)
-    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+    (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"InvalidImageHeader","`%s'",image->filename);
   if (load_hierarchy (image, inDocInfo, outLayer) == 0)
     return(MagickFalse);
@@ -1062,7 +1063,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         size_t num_colours = ReadBlobMSBLong(image);
         if (DiscardBlobBytes(image,3*num_colours) == MagickFalse)
-          ThrowFileException(&image->exception,CorruptImageError,
+          ThrowFileException(exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
     /*
       if (info->file_version == 0)
@@ -1110,7 +1111,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
          /* just skip it - we don't care about guides */
         if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-          ThrowFileException(&image->exception,CorruptImageError,
+          ThrowFileException(exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
       }
       break;
@@ -1150,7 +1151,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         /* BOGUS: we may need these for IPTC stuff */
         if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-          ThrowFileException(&image->exception,CorruptImageError,
+          ThrowFileException(exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
         /*
       gssize_t         base = info->cp;
@@ -1179,8 +1180,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
       /* BOGUS: just skip it for now */
         if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-          ThrowFileException(&image->exception,CorruptImageError,
-            "UnexpectedEndOfFile",image->filename);
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
 
         /*
       PathList *paths = xcf_load_bzpaths (gimage, info);
@@ -1197,7 +1198,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* size_t digits =  */ (void) ReadBlobMSBLong(image);
         for (i=0; i<5; i++)
          (void) ReadBlobStringWithLongSize(image, unit_string,
-           sizeof(unit_string));
+           sizeof(unit_string),exception);
       }
      break;
 

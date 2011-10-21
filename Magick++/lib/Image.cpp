@@ -849,8 +849,7 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
     {
       drawable_.operator()(wand);
 
-      if( constImage()->exception.severity == UndefinedException)
-        DrawRender(wand);
+      DrawRender(wand);
 
       wand=DestroyDrawingWand(wand);
     }
@@ -871,12 +870,9 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
            p != drawable_.end(); p++ )
         {
           p->operator()(wand);
-          if( constImage()->exception.severity != UndefinedException)
-            break;
         }
 
-      if( constImage()->exception.severity == UndefinedException)
-        DrawRender(wand);
+      DrawRender(wand);
 
       wand=DestroyDrawingWand(wand);
     }
@@ -1561,12 +1557,13 @@ void Magick::Image::process( std::string name_, const ssize_t argc, const char *
 {
   modifyImage();
 
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
   size_t status = 
     InvokeDynamicImageFilter( name_.c_str(), &image(), argc, argv,
-      &image()->exception );
-
-  if (status == false)
-    throwException( image()->exception );
+      &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Quantize colors in image using current quantization settings
@@ -1695,8 +1692,6 @@ void Magick::Image::read ( const std::string &imageSpec_ )
     }
   replaceImage( image );
   throwException( exceptionInfo );
-  if ( image )
-    throwException( image->exception );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
@@ -1719,8 +1714,6 @@ void Magick::Image::read ( const Blob &blob_ )
 		 blob_.length(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
-  if ( image )
-    throwException( image->exception );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
@@ -1794,8 +1787,6 @@ void Magick::Image::read ( const size_t width_,
                      &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
-  if ( image )
-    throwException( image->exception );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
@@ -2185,10 +2176,10 @@ void Magick::Image::transparent ( const Color &color_ )
   std::string color = color_;
 
   PixelInfo target;
-  (void) QueryColorCompliance(std::string(color_).c_str(),AllCompliance,
-    &target,&image()->exception);
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  (void) QueryColorCompliance(std::string(color_).c_str(),AllCompliance,
+    &target,&exceptionInfo);
   modifyImage();
   TransparentPaintImage ( image(), &target, TransparentAlpha, MagickFalse,
     &exceptionInfo );
@@ -2211,12 +2202,12 @@ void Magick::Image::transparentChroma(const Color &colorLow_,
 
   PixelInfo targetLow;
   PixelInfo targetHigh;
-  (void) QueryColorCompliance(std::string(colorLow_).c_str(),
-    AllCompliance,&targetLow,&image()->exception);
-  (void) QueryColorCompliance(std::string(colorHigh_).c_str(),
-    AllCompliance,&targetHigh,&image()->exception);
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  (void) QueryColorCompliance(std::string(colorLow_).c_str(),
+    AllCompliance,&targetLow,&exceptionInfo);
+  (void) QueryColorCompliance(std::string(colorHigh_).c_str(),
+    AllCompliance,&targetHigh,&exceptionInfo);
   modifyImage();
   TransparentPaintImageChroma ( image(), &targetLow, &targetHigh,
     TransparentAlpha, MagickFalse, &exceptionInfo );
@@ -4436,7 +4427,6 @@ void Magick::Image::modifyImage( void )
 void Magick::Image::throwImageException( void ) const
 {
   // Throw C++ exception while resetting Image exception to default state
-  throwException( const_cast<MagickCore::Image*>(constImage())->exception );
 }
 
 // Register image with image registry or obtain registration id

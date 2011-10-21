@@ -295,7 +295,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       r++;
     if ((row > image->rows) || (r == (PCDTable *) NULL))
       {
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+        (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageWarning,"SkipToSyncByte","`%s'",image->filename);
         while ((sum & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);
@@ -983,7 +983,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   if ((geometry.height % 2) != 0)
     geometry.height--;
   tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
-    1.0,&image->exception);
+    1.0,exception);
   if (tile_image == (Image *) NULL)
     return(MagickFalse);
   flags=ParseGeometry(page_geometry,&geometry_info);
@@ -1006,7 +1006,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       border_info.width=(geometry.width-tile_image->columns+1) >> 1;
       border_info.height=(geometry.height-tile_image->rows+1) >> 1;
       bordered_image=BorderImage(tile_image,&border_info,image->compose,
-        &image->exception);
+        exception);
       if (bordered_image == (Image *) NULL)
         return(MagickFalse);
       tile_image=DestroyImage(tile_image);
@@ -1016,7 +1016,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(tile_image,YCCColorspace,exception);
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
-    tile_image->rows/2,TriangleFilter,1.0,&image->exception);
+    tile_image->rows/2,TriangleFilter,1.0,exception);
   if (downsample_image == (Image *) NULL)
     return(MagickFalse);
   /*
@@ -1024,8 +1024,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   */
   for (y=0; y < (ssize_t) tile_image->rows; y+=2)
   {
-    p=GetVirtualPixels(tile_image,0,y,tile_image->columns,2,
-      &tile_image->exception);
+    p=GetVirtualPixels(tile_image,0,y,tile_image->columns,2,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) (tile_image->columns << 1); x++)
@@ -1033,8 +1032,8 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(tile_image,p)));
       p+=GetPixelChannels(tile_image);
     }
-    q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,
-      1,&downsample_image->exception);
+    q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
+      exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
@@ -1043,8 +1042,8 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
         GetPixelGreen(tile_image,q)));
       q++;
     }
-    q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,
-      1,&downsample_image->exception);
+    q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
+      exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) downsample_image->columns; x++)

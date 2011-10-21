@@ -826,7 +826,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=psd_info.rows;
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
-      InheritException(exception,&image->exception);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -1191,7 +1190,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             layer_info[i].image=CloneImage(image,layer_info[i].page.width,
               layer_info[i].page.height == ~0U ? 1 : layer_info[i].page.height,
-              MagickFalse,&image->exception);
+              MagickFalse,exception);
             if (layer_info[i].image == (Image *) NULL)
               {
                 for (j=0; j < i; j++)
@@ -1693,11 +1692,11 @@ static void WritePackbitsLength(const PSDInfo *psd_info,
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
   {
-    p=GetVirtualPixels(next_image,0,y,next_image->columns,1,&image->exception);
+    p=GetVirtualPixels(next_image,0,y,next_image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     length=ExportQuantumPixels(next_image,(CacheView *) NULL,quantum_info,
-      quantum_type,pixels,&image->exception);
+      quantum_type,pixels,exception);
     length=PSDPackbitsEncodeImage(image,length,pixels,compact_pixels,
       exception);
     (void) SetPSDOffset(psd_info,image,length);
@@ -1738,19 +1737,19 @@ static void WriteOneChannel(const PSDInfo *psd_info,const ImageInfo *image_info,
     (void) WriteBlobMSBShort(image,0);
   if (next_image->depth > 8)
     next_image->depth=16;
-  monochrome=IsImageMonochrome(image,&image->exception) && (image->depth == 1)
-    ? MagickTrue : MagickFalse;
+  monochrome=IsImageMonochrome(image,exception) && (image->depth == 1) ?
+    MagickTrue : MagickFalse;
   packet_size=next_image->depth > 8UL ? 2UL : 1UL;
   (void) packet_size;
   quantum_info=AcquireQuantumInfo(image_info,image);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) next_image->rows; y++)
   {
-    p=GetVirtualPixels(next_image,0,y,next_image->columns,1,&image->exception);
+    p=GetVirtualPixels(next_image,0,y,next_image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     length=ExportQuantumPixels(next_image,(CacheView *) NULL,quantum_info,
-      quantum_type,pixels,&image->exception);
+      quantum_type,pixels,exception);
     if (monochrome != MagickFalse)
       for (i=0; i < (ssize_t) length; i++)
         pixels[i]=(~pixels[i]);
@@ -1794,7 +1793,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   i=0;
-  if (IsImageGray(next_image,&next_image->exception) != MagickFalse)
+  if (IsImageGray(next_image,exception) != MagickFalse)
     {
       if (next_image->compression == RLECompression)
         {
@@ -1844,7 +1843,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
     else
       {
         if (next_image->colorspace == CMYKColorspace)
-          (void) NegateImage(next_image,MagickFalse,&next_image->exception);
+          (void) NegateImage(next_image,MagickFalse,exception);
         if (next_image->compression == RLECompression)
           {
             /*
@@ -1888,7 +1887,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             MagickFalse,exception);
         (void) SetImageProgress(image,SaveImagesTag,5,6);
         if (next_image->colorspace == CMYKColorspace)
-          (void) NegateImage(next_image,MagickFalse,&next_image->exception);
+          (void) NegateImage(next_image,MagickFalse,exception);
       }
   if (next_image->compression == RLECompression)
     compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);

@@ -441,7 +441,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
       c=ReadBlobLZWByte(lzw_info);
       if (c < 0)
         break;
-      index=ConstrainColormapIndex(image,(size_t) c);
+      index=ConstrainColormapIndex(image,(size_t) c,exception);
       SetPixelIndex(image,index,q);
       SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
       SetPixelAlpha(image,(ssize_t) index == opacity ? TransparentAlpha :
@@ -530,7 +530,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
 %
 */
 static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
-  const size_t data_size)
+  const size_t data_size,ExceptionInfo *exception)
 {
 #define MaxCode(number_bits)  ((one << (number_bits))-1)
 #define MaxHashTable  5003
@@ -657,7 +657,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     register ssize_t
       x;
 
-    p=GetVirtualPixels(image,0,offset,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,offset,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     if (y == 0)
@@ -1856,7 +1856,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
     */
     c=(int) MagickMax(bits_per_pixel,2);
     (void) WriteBlobByte(image,(unsigned char) c);
-    status=EncodeImage(write_info,image,(size_t) MagickMax(bits_per_pixel,2)+1);
+    status=EncodeImage(write_info,image,(size_t) MagickMax(bits_per_pixel,2)+1,
+      exception);
     if (status == MagickFalse)
       {
         global_colormap=(unsigned char *) RelinquishMagickMemory(

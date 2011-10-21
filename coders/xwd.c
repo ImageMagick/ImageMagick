@@ -474,7 +474,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             index=ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,
-              (int) y));
+              (int) y),exception);
             SetPixelIndex(image,index,q);
             SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);

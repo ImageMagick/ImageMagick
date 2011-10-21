@@ -3300,7 +3300,7 @@ static MagickBooleanType IsPoint(const char *point)
   return(p != point ? MagickTrue : MagickFalse);
 }
 
-static MagickBooleanType TraceSVGImage(Image *image)
+static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 {
   ssize_t
     y;
@@ -3395,14 +3395,13 @@ static MagickBooleanType TraceSVGImage(Image *image)
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetPixelInfo(image,p,&pixel);
-        (void) QueryColorname(image,&pixel,SVGCompliance,tuple,
-          &image->exception);
+        (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
         (void) FormatLocaleString(message,MaxTextExtent,
           "  <circle cx=\"%.20g\" cy=\"%.20g\" r=\"1\" fill=\"%s\"/>\n",
           (double) x,(double) y,tuple);
@@ -3493,7 +3492,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
     }
   value=GetImageArtifact(image,"MVG");
   if (value == (char *) NULL)
-    return(TraceSVGImage(image));
+    return(TraceSVGImage(image,exception));
   /*
     Write SVG header.
   */

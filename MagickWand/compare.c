@@ -1049,7 +1049,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             *channel_distortion;
 
           channel_distortion=GetImageDistortions(image,reconstruct_image,
-            metric,&image->exception);
+            metric,exception);
           (void) FormatLocaleFile(stderr,"Image: %s\n",image->filename);
           if ((reconstruct_image->columns != image->columns) ||
               (reconstruct_image->rows != image->rows))

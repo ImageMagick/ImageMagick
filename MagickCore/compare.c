@@ -1203,8 +1203,8 @@ MagickExport double *GetImageDistortions(Image *image,
   if ((reconstruct_image->columns != image->columns) ||
       (reconstruct_image->rows != image->rows))
     {
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
-        ImageError,"ImageSizeDiffers","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ImageSizeDiffers","`%s'",image->filename);
       return((double *) NULL);
     }
   /*

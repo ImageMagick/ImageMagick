@@ -333,6 +333,12 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
   char
     value[MaxTextExtent];
 
+  ExceptionInfo
+    *exception;
+
+  MagickBooleanType
+    status;
+
   ssize_t
     n;
 
@@ -343,7 +349,10 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
   n=FormatLocaleStringList(value,MaxTextExtent,format,operands);
   (void) n;
   va_end(operands);
-  return(SetImageProperty(image,property,value,&image->exception));
+  exception=AcquireExceptionInfo();
+  status=SetImageProperty(image,property,value,exception);
+  exception=DestroyExceptionInfo(exception);
+  return(status);
 }
 
 /*
@@ -2193,7 +2202,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             Image storage class and colorspace.
           */
           colorspace=image->colorspace;
-          if (IsImageGray(image,&image->exception) != MagickFalse)
+          if (IsImageGray(image,exception) != MagickFalse)
             colorspace=GRAYColorspace;
           (void) FormatLocaleString(value,MaxTextExtent,"%s",
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
@@ -2270,7 +2279,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             kurtosis,
             skewness;
 
-          (void) GetImageKurtosis(image,&kurtosis,&skewness,&image->exception);
+          (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),kurtosis);
           break;
@@ -2290,7 +2299,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             maximum,
             minimum;
 
-          (void) GetImageRange(image,&minimum,&maximum,&image->exception);
+          (void) GetImageRange(image,&minimum,&maximum,exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),maximum);
           break;
@@ -2302,7 +2311,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             standard_deviation;
 
           (void) GetImageMean(image,&mean,&standard_deviation,
-             &image->exception);
+             exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),mean);
           break;
@@ -2313,7 +2322,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             maximum,
             minimum;
 
-          (void) GetImageRange(image,&minimum,&maximum,&image->exception);
+          (void) GetImageRange(image,&minimum,&maximum,exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),minimum);
           break;
@@ -2336,7 +2345,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           MagickBooleanType
             opaque;
 
-          opaque=IsImageOpaque(image,&image->exception);
+          opaque=IsImageOpaque(image,exception);
           (void) CopyMagickString(value,opaque == MagickFalse ? "false" :
             "true",MaxTextExtent);
           break;
@@ -2390,7 +2399,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             kurtosis,
             skewness;
 
-          (void) GetImageKurtosis(image,&kurtosis,&skewness,&image->exception);
+          (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),skewness);
           break;
@@ -2402,7 +2411,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             standard_deviation;
 
           (void) GetImageMean(image,&mean,&standard_deviation,
-            &image->exception);
+            exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),standard_deviation);
           break;
@@ -2579,7 +2588,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   text=(char *) embed_text;
   if ((*text == '@') && ((*(text+1) == '-') ||
       (IsPathAccessible(text+1) != MagickFalse)))
-    return(FileToString(embed_text+1,~0,&image->exception));
+    return(FileToString(embed_text+1,~0,exception));
   /*
     Translate any embedded format characters.
   */
@@ -2821,7 +2830,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       case 'k': /* Number of unique colors  */
       {
         q+=FormatLocaleString(q,extent,"%.20g",(double) GetNumberColors(image,
-          (FILE *) NULL,&image->exception));
+          (FILE *) NULL,exception));
         break;
       }
       case 'l': /* Image label  */
@@ -2881,7 +2890,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           colorspace;
 
         colorspace=image->colorspace;
-        if (IsImageGray(image,&image->exception) != MagickFalse)
+        if (IsImageGray(image,exception) != MagickFalse)
           colorspace=GRAYColorspace;
         q+=FormatLocaleString(q,extent,"%s%s%s",CommandOptionToMnemonic(
           MagickClassOptions,(ssize_t) image->storage_class),

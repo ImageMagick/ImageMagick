@@ -427,7 +427,8 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
 }
 
 static unsigned char *DecodeImage(Image *blob,Image *image,
-  size_t bytes_per_line,const unsigned int bits_per_pixel,size_t *extent)
+  size_t bytes_per_line,const unsigned int bits_per_pixel,size_t *extent,
+  ExceptionInfo *exception)
 {
   MagickSizeType
     number_pixels;
@@ -501,7 +502,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         if ((q+number_pixels) > (pixels+(*extent)))
           {
-            (void) ThrowMagickException(&image->exception,GetMagickModule(),
+            (void) ThrowMagickException(exception,GetMagickModule(),
               CorruptImageError,"UnableToUncompressImage","`%s'",
               image->filename);
             break;
@@ -523,7 +524,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
       scanline_length=1UL*ReadBlobByte(blob);
     if (scanline_length >= row_bytes)
       {
-        (void) ThrowMagickException(&image->exception,GetMagickModule(),
+        (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"UnableToUncompressImage","`%s'",image->filename);
         break;
       }
@@ -1144,10 +1145,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             if ((code != 0x9a) && (code != 0x9b) &&
                 (bytes_per_line & 0x8000) == 0)
-              pixels=DecodeImage(image,tile_image,1UL*bytes_per_line,1,&extent);
+              pixels=DecodeImage(image,tile_image,1UL*bytes_per_line,1,&extent,
+                exception);
             else
               pixels=DecodeImage(image,tile_image,1UL*bytes_per_line,1U*
-                pixmap.bits_per_pixel,&extent);
+                pixmap.bits_per_pixel,&extent,exception);
             if (pixels == (unsigned char *) NULL)
               {
                 tile_image=DestroyImage(tile_image);
@@ -1170,7 +1172,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 if (tile_image->storage_class == PseudoClass)
                   {
-                    index=ConstrainColormapIndex(tile_image,*p);
+                    index=ConstrainColormapIndex(tile_image,*p,exception);
                     SetPixelIndex(tile_image,index,q);
                     SetPixelRed(tile_image,
                       tile_image->colormap[(ssize_t) index].red,q);

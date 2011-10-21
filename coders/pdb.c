@@ -468,16 +468,16 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (ssize_t) image->columns; x+=4)
         {
-          index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03));
+          index=ConstrainColormapIndex(image,3UL-((*p >> 6) & 0x03),exception);
           SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03));
+          index=ConstrainColormapIndex(image,3UL-((*p >> 4) & 0x03),exception);
           SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03));
+          index=ConstrainColormapIndex(image,3UL-((*p >> 2) & 0x03),exception);
           SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,3UL-((*p) & 0x03));
+          index=ConstrainColormapIndex(image,3UL-((*p) & 0x03),exception);
           SetPixelIndex(image,index,q);
           p++;
           q+=GetPixelChannels(image);
@@ -504,10 +504,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (ssize_t) image->columns; x+=2)
         {
-          index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f));
+          index=ConstrainColormapIndex(image,15UL-((*p >> 4) & 0x0f),exception);
           SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
-          index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f));
+          index=ConstrainColormapIndex(image,15UL-((*p) & 0x0f),exception);
           SetPixelIndex(image,index,q);
           p++;
           q+=GetPixelChannels(image);

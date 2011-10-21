@@ -370,7 +370,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             for (i=0; i < (ssize_t) count; i++)
             {
               ReadBlobByte(image);
-              index=ConstrainColormapIndex(image,255-i);
+              index=ConstrainColormapIndex(image,255-i,exception);
               image->colormap[(int) index].red=
                 ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
               image->colormap[(int) index].green=
@@ -383,7 +383,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         {
           for (i=0; i < (ssize_t) (1L << bits_per_pixel); i++)
           {
-            index=ConstrainColormapIndex(image,255-i);
+            index=ConstrainColormapIndex(image,255-i,exception);
             image->colormap[(int) index].red=
               ScaleCharToQuantum(PalmPalette[i][0]);
             image->colormap[(int) index].green=

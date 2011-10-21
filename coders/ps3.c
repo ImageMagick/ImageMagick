@@ -266,7 +266,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
   q=(*pixels);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     if (image->colorspace != CMYKColorspace)
@@ -330,7 +330,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  pack=IsImageMonochrome(image,&image->exception) == MagickFalse ? 1UL : 8UL;
+  pack=IsImageMonochrome(image,exception) == MagickFalse ? 1UL : 8UL;
   padded_columns=((image->columns+pack-1)/pack)*pack;
   *length=(size_t) padded_columns*image->rows/pack;
   *pixels=(unsigned char *) AcquireQuantumMemory(*length,sizeof(**pixels));
@@ -518,9 +518,9 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   }
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/ReusableStreamDecode filter\n");
-  mask_image=CloneImage(image,0,0,MagickTrue,&image->exception);
+  mask_image=CloneImage(image,0,0,MagickTrue,exception);
   if (mask_image == (Image *) NULL)
-    ThrowWriterException(CoderError,image->exception.reason);
+    ThrowWriterException(CoderError,exception->reason);
   channel_mask=SetPixelChannelMask(mask_image,AlphaChannel);
   status=SeparateImage(mask_image,exception);
   (void) SetPixelChannelMap(mask_image,channel_mask);
