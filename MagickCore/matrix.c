@@ -43,7 +43,6 @@
 #include "MagickCore/matrix.h"
 #include "MagickCore/matrix-private.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,7 +159,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %     double coefficents[8];
 %     ...
 %     GaussJordanElimination(matrix, &coefficents, 8UL, 1UL);
-%   
+%
 %  However by specifing more 'columns' (as an 'array of vector columns'),
 %  you can use this function to solve multiple sets of 'separable' equations.
 %
@@ -174,8 +173,8 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array' (matrix
-%  is transposed). For details see 
-%     http://en.wikipedia.org/wiki/Gauss-Jordan_elimination.
+%  is transposed). For details see
+%     http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
 MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
@@ -257,7 +256,7 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
     rows[i]=row;
     columns[i]=column;
     if (matrix[column][column] == 0.0)
-      return(MagickFalse);  /* sigularity */
+      return(MagickFalse);  /* singularity */
     scale=1.0/matrix[column][column];
     matrix[column][column]=1.0;
     for (j=0; j < (ssize_t) rank; j++)
