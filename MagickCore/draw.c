@@ -4235,7 +4235,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           PixelInfo
             target;
 
-          (void) GetOneVirtualMagickPixel(image,x,y,&target,exception);
+          (void) GetOneVirtualMagickPixel(image,TileVirtualPixelMethod,x,y,
+            &target,exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               target.red=(MagickRealType) draw_info->border_color.red;
@@ -4363,7 +4364,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           PixelInfo
             target;
 
-          (void) GetOneVirtualMagickPixel(image,x,y,&target,exception);
+          (void) GetOneVirtualMagickPixel(image,TileVirtualPixelMethod,x,y,
+            &target,exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               target.red=(MagickRealType) draw_info->border_color.red;

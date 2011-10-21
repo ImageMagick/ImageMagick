@@ -43,6 +43,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/client.h"
 #include "MagickCore/color.h"
@@ -2258,7 +2259,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             }
             default:
             {
-              (void) GetOneVirtualMagickPixel(composite_image,x-x_offset,y-
+              (void) GetOneVirtualMagickPixel(composite_image,
+                GetPixelCacheVirtualMethod(composite_image),x-x_offset,y-
                 y_offset,&composite,exception);
               break;
             }

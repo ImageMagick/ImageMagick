@@ -2255,12 +2255,14 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
 %  The format of the GetOneVirtualMagickPixel() method is:
 %
 %      MagickBooleanType GetOneVirtualMagickPixel(const Image image,
-%        const ssize_t x,const ssize_t y,PixelInfo *pixel,
-%        ExceptionInfo exception)
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,PixelInfo *pixel,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
+%
+%    o virtual_pixel_method: the virtual pixel method.
 %
 %    o x,y:  these values define the location of the pixel to return.
 %
@@ -2270,7 +2272,8 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
 %
 */
 MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
-  const ssize_t x,const ssize_t y,PixelInfo *pixel,ExceptionInfo *exception)
+  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
+  PixelInfo *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2287,8 +2290,8 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  p=GetVirtualPixelsFromNexus(image,GetPixelCacheVirtualMethod(image),x,y,
-    1UL,1UL,cache_info->nexus_info[id],exception);
+  p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
+    cache_info->nexus_info[id],exception);
   GetPixelInfo(image,pixel);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);

@@ -43,6 +43,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/client.h"
 #include "MagickCore/color.h"
 #include "MagickCore/colorspace.h"
@@ -3822,8 +3823,9 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            (void) GetOneVirtualMagickPixel(*image,(ssize_t) x_offset,
-              (ssize_t) y_offset,&target,exception);
+            (void) GetOneVirtualMagickPixel(*image,
+              GetPixelCacheVirtualMethod(*image),(ssize_t) x_offset,(ssize_t)
+              y_offset,&target,exception);
             if (method == FillToBorderMethod)
               {
                 target.red=(MagickRealType)
@@ -10162,8 +10164,9 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using floodfill algorithm.
             */
-            (void) GetOneVirtualMagickPixel(*image,(ssize_t) x_offset,
-              (ssize_t) y_offset,&target,exception);
+            (void) GetOneVirtualMagickPixel(*image,
+              GetPixelCacheVirtualMethod(*image),(ssize_t) x_offset,(ssize_t)
+              y_offset,&target,exception);
             if (method == FillToBorderMethod)
               {
                 target.red=(MagickRealType) ScaleShortToQuantum(
