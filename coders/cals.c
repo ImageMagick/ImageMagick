@@ -265,9 +265,9 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   (void) FormatLocaleString(read_info->filename,MaxTextExtent,"group4:%s",
     filename);
   (void) FormatLocaleString(message,MaxTextExtent,"%lux%lu",width,height);
-  read_info->size=ConstantString(message);
+  (void) CloneString(&read_info->size,message);
   (void) FormatLocaleString(message,MaxTextExtent,"%lu",density);
-  read_info->density=ConstantString(message);
+  (void) CloneString(&read_info->density,message);
   read_info->orientation=(OrientationType) orientation;
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)
