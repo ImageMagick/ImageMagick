@@ -41,19 +41,12 @@ static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
     MagickBooleanType
       status;
 
-    Quantum
-      pixel[MaxPixelChannels];
-
     pattern=draw_info->fill_pattern;
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
     #pragma omp critical
 #endif
-    status=GetOneVirtualMethodPixel(pattern,TileVirtualPixelMethod,x+
-      pattern->tile_offset.x,y+pattern->tile_offset.y,pixel,exception);
-    fill->red=(double) pixel[RedPixelChannel];
-    fill->green=(double) pixel[GreenPixelChannel];
-    fill->blue=(double) pixel[BluePixelChannel];
-    fill->alpha=(double) pixel[AlphaPixelChannel];
+    status=GetOneVirtualMagickPixel(pattern,x+pattern->tile_offset.x,
+      y+pattern->tile_offset.y,fill,exception);
     return(status);
   }
 }
@@ -73,19 +66,12 @@ static inline MagickBooleanType GetStrokeColor(const DrawInfo *draw_info,
     MagickBooleanType
       status;
 
-    Quantum
-      pixel[MaxPixelChannels];
-
     pattern=draw_info->stroke_pattern;
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
   #pragma omp critical
 #endif
-    status=GetOneVirtualMethodPixel(pattern,TileVirtualPixelMethod,x+
-      pattern->tile_offset.x,y+pattern->tile_offset.y,pixel,exception);
-    stroke->red=(double) pixel[RedPixelChannel];
-    stroke->green=(double) pixel[GreenPixelChannel];
-    stroke->blue=(double) pixel[BluePixelChannel];
-    stroke->alpha=(double) pixel[AlphaPixelChannel];
+    status=GetOneVirtualMagickPixel(pattern,x+pattern->tile_offset.x,y+
+      pattern->tile_offset.y,stroke,exception);
     return(status);
   }
 }

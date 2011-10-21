@@ -2147,6 +2147,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
       pixel[RedPixelChannel]=image->background_color.red;
       pixel[GreenPixelChannel]=image->background_color.green;
       pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[BlackPixelChannel]=image->background_color.black;
       pixel[AlphaPixelChannel]=image->background_color.alpha;
       return(MagickFalse);
     }
@@ -2221,6 +2222,7 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
       pixel[RedPixelChannel]=image->background_color.red;
       pixel[GreenPixelChannel]=image->background_color.green;
       pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[BlackPixelChannel]=image->background_color.black;
       pixel[AlphaPixelChannel]=image->background_color.alpha;
       return(MagickFalse);
     }
@@ -2268,8 +2270,7 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
 %
 */
 MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
-  const ssize_t x,const ssize_t y,PixelInfo *pixel,
-  ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,PixelInfo *pixel,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -2364,6 +2365,7 @@ MagickExport MagickBooleanType GetOneVirtualMethodPixel(const Image *image,
       pixel[RedPixelChannel]=image->background_color.red;
       pixel[GreenPixelChannel]=image->background_color.green;
       pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[BlackPixelChannel]=image->background_color.black;
       pixel[AlphaPixelChannel]=image->background_color.alpha;
       return(MagickFalse);
     }
@@ -2442,6 +2444,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
       pixel[RedPixelChannel]=image->background_color.red;
       pixel[GreenPixelChannel]=image->background_color.green;
       pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[BlackPixelChannel]=image->background_color.black;
       pixel[AlphaPixelChannel]=image->background_color.alpha;
       return(MagickFalse);
     }
@@ -2520,6 +2523,7 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
       pixel[RedPixelChannel]=image->background_color.red;
       pixel[GreenPixelChannel]=image->background_color.green;
       pixel[BluePixelChannel]=image->background_color.blue;
+      pixel[BlackPixelChannel]=image->background_color.black;
       pixel[AlphaPixelChannel]=image->background_color.alpha;
       return(MagickFalse);
     }
