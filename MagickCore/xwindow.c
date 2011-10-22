@@ -4437,7 +4437,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
                     ScaleShortToQuantum(colors[index].blue),q);
                   q+=GetPixelChannels(composite_image);
                 }
-                if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
+                status=SyncCacheViewAuthenticPixels(composite_view,exception);
+                if (status == MagickFalse)
                   break;
               }
             else
@@ -4464,7 +4465,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
                     ScaleShortToQuantum((unsigned short) color),q);
                   q+=GetPixelChannels(composite_image);
                 }
-                if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
+                status=SyncCacheViewAuthenticPixels(composite_view,exception);
+                if (status == MagickFalse)
                   break;
               }
             break;
@@ -4474,7 +4476,9 @@ static Image *XGetWindowImage(Display *display,const Window window,
             /*
               Create colormap.
             */
-            if (AcquireImageColormap(composite_image,number_colors,exception) == MagickFalse)
+            status=AcquireImageColormap(composite_image,number_colors,
+              exception);
+            if (status == MagickFalse)
               {
                 XDestroyImage(ximage);
                 composite_image=DestroyImage(composite_image);
@@ -4506,7 +4510,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
                   composite_image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(composite_image);
               }
-              if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
+              status=SyncCacheViewAuthenticPixels(composite_view,exception);
+              if (status == MagickFalse)
                 break;
             }
             break;
