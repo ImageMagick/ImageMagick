@@ -171,13 +171,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     exception);
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
-    (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,
-      exception);
-  if (highlight_image->colorspace == CMYKColorspace)
-    {
-      ConvertRGBToCMYK(&highlight);
-      ConvertRGBToCMYK(&lowlight);
-    }
+    (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,exception);
   /*
     Generate difference image.
   */

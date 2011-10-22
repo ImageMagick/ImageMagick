@@ -2449,8 +2449,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         break;
       GetPixelInfo(image,&background);
       SetPixelInfoPacket(image,&image->background_color,&background);
-      if (image->colorspace == CMYKColorspace)
-        ConvertRGBToCMYK(&background);
       SetPacketPixelInfo(image,&background,&pixel);
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2608,8 +2606,6 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
     image->matte=MagickTrue;
   GetPixelInfo(image,&background);
   SetPixelInfoPacket(image,&image->background_color,&background);
-  if (image->colorspace == CMYKColorspace)
-    ConvertRGBToCMYK(&background);
   SetPacketPixelInfo(image,&background,&pixel);
   /*
     Set image background color.

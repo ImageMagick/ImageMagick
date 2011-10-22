@@ -275,16 +275,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   trough.green=QuantumScale*matte.green*TroughModulate;
   trough.blue=QuantumScale*matte.blue*TroughModulate;
   trough.alpha=matte.alpha;
-  if (image->colorspace == CMYKColorspace)
-    {
-      ConvertRGBToCMYK(&interior);
-      ConvertRGBToCMYK(&matte);
-      ConvertRGBToCMYK(&border);
-      ConvertRGBToCMYK(&accentuate);
-      ConvertRGBToCMYK(&highlight);
-      ConvertRGBToCMYK(&shadow);
-      ConvertRGBToCMYK(&trough);
-    }
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
