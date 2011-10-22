@@ -6,7 +6,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19659).
   * Correct affine translation for certain SVG files (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19664).
-  * -evaluate-sequence multiply no longer hangs (reference
+  * -evaluate-sequence multiply no longer hangs ereference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19549).
 
 2011-10-15  6.7.3-1 Cristy  <quetzlzacatenango@image...>
@@ -1433,12 +1433,12 @@
     the results are synchronized with 'Over' alpha-blending (except "Plus"
     which uses 'plus' alpha-blending).
 
-    By removing the default 'sync' flag from the -channel setting however
+  * By removing the default 'sync' flag from the -channel setting however
     Break this inter-channel synchronization and do the mathematical operations
     only on the individual channels as specified by the -channel setting.
     That is do 'channel' math rather than 'SVG' composition.
 
-    With this change you can then use mathematical composition methods on
+  * With this change you can then use mathematical composition methods on
     individual channels or even with the alpha channel of images.
 
 2010-04-28  6.6.1-6 Anthony Thyssen <A.Thyssen@griffith...>
@@ -1793,7 +1793,7 @@
     QueueCacheViewAuthenticPixels() for the CopyComposite optimization.
 2009-10-04  6.5.6-9 Cristy  <quetzlzacatenango@image...>
   * Use GetCacheViewAuthenticPixels() rather than
-    QueueCacheViewAuthenticPixels() for the CopyComposite optimization.
+  * QueueCacheViewAuthenticPixels() for the CopyComposite optimization.
 
 2009-10-03  6.5.6-8 Nick Wellnhofer <wellnhofer@aevum...>
   * Add missing libraries to the LIBADD entries in coders/Makefile.am,
@@ -2258,9 +2258,9 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13410).
 
 2009-03-24  6.5.0-7 Cristy  <quetzlzacatenango@image...>
-  * Referenced counted blob was incremented incorrectly in CloneImage().
-
+  * Referenced counted blob incremented incorrectly in CloneImage() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13410).
+
 2009-03-23  6.5.0-6 Chris Madison  <madisonblu@gmail...>
   * Assertion failure reading PSD image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=13397).
