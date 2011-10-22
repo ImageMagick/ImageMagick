@@ -181,7 +181,7 @@ make
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-cp -a www/source $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{VERSION}
+cp -a www/source $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
 
 # fix weird perl Magick.so permissions
@@ -289,7 +289,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}-%{VERSION}
+%doc %{_datadir}/doc/%{name}
 %doc LICENSE
 
 %files c++
