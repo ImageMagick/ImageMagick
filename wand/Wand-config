@@ -6,8 +6,6 @@
 
 prefix=/usr/local
 exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include/ImageMagick
 
 usage="\
 Usage: Wand-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
@@ -40,19 +38,19 @@ while test $# -gt 0; do
       echo '6.7.3 Q16 '
       ;;
     --cflags)
-      echo "-I${includedir} -fopenmp"
+      pkg-config --cflags MagickWand
       ;;
     --cxxflags)
-      echo '-g -O2 -pthread'
+      pkg-config --cflags MagickWand
       ;;
     --cppflags)
-      echo '-I/usr/local/include/ImageMagick'
+      pkg-config --cflags MagickWand
       ;;
     --ldflags)
-      echo '-L/usr/local/lib -L/usr/lib'
+      pkg-config --libs MagickWand
       ;;
     --libs)
-      echo "-L${libdir} -lMagickWand -lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"
+      pkg-config --libs MagickWand
       ;;
     *)
       echo "${usage}" 1>&2
