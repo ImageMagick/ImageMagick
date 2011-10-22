@@ -694,7 +694,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           register ssize_t
             j;
 
-          for (j=0; x < (ssize_t) (number_images-1); j++)
+          for (j=0; j < (ssize_t) (number_images-1); j++)
           {
             evaluate_pixel[x].red*=QuantumScale;
             evaluate_pixel[x].green*=QuantumScale;
