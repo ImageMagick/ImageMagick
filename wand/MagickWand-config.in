@@ -6,8 +6,6 @@
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@/ImageMagick
 
 usage="\
 Usage: MagickWand-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
@@ -40,19 +38,19 @@ while test $# -gt 0; do
       echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
       ;;
     --cflags)
-      echo "-I${includedir} @MAGICK_PCFLAGS@"
+      pkg-config --cflags MagickWand
       ;;
     --cxxflags)
-      echo '@MAGICK_CXXFLAGS@'
+      pkg-config --cflags MagickWand
       ;;
     --cppflags)
-      echo '@MAGICK_CPPFLAGS@'
+      pkg-config --cflags MagickWand
       ;;
     --ldflags)
-      echo '@MAGICK_LDFLAGS@'
+      pkg-config --libs MagickWand
       ;;
     --libs)
-      echo "-L${libdir} -lMagickWand @MAGICK_LIBS@"
+      pkg-config --libs MagickWand
       ;;
     *)
       echo "${usage}" 1>&2
