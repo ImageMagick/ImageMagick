@@ -161,10 +161,16 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
@@ -194,7 +200,10 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
 </div>
 </div>
 </div>
@@ -207,7 +216,7 @@
 <div class="main">
 
 <h1>Module color Methods</h1>
-<p class="navigation-index">[<a href="#GetColorInfoList">GetColorInfoList</a> &bull; <a href="#GetColorList">GetColorList</a> &bull; <a href="#ListColorInfo">ListColorInfo</a> &bull; <a href="#LoadColorList">LoadColorList</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorname">QueryColorname</a> &bull; <a href="#QueryMagickColorCompliance">QueryMagickColorCompliance</a> &bull; <a href="#QueryMagickColor">QueryMagickColor</a> &bull; <a href="#QueryMagickColorname">QueryMagickColorname</a>]</p>
+<p class="navigation-index">[<a href="#GetColorInfoList">GetColorInfoList</a> &bull; <a href="#GetColorList">GetColorList</a> &bull; <a href="#ListColorInfo">ListColorInfo</a> &bull; <a href="#LoadColorList">LoadColorList</a> &bull; <a href="#QueryColorCompliance">QueryColorCompliance</a> &bull; <a href="#QueryColorDatabase">QueryColorDatabase</a> &bull; <a href="#QueryColorname">QueryColorname</a> &bull; <a href="#QueryMagickColorCompliance">QueryMagickColorCompliance</a> &bull; <a href="#QueryMagickColor">QueryMagickColor</a> &bull; <a href="#QueryMagickColorname">QueryMagickColorname</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="GetColorInfoList">GetColorInfoList</a></h2>
 <div class="doc-section">
@@ -298,15 +307,15 @@
 <p>return any errors or warnings in this structure.</p>
 
  </div>
-<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorDatabase">QueryColorDatabase</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/color_8c.html" id="QueryColorCompliance">QueryColorCompliance</a></h2>
 <div class="doc-section">
 
-<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name.</p>
+<p>QueryColorCompliance() returns the red, green, blue, and opacity intensities for a given color name.</p>
 
-<p>The format of the QueryColorDatabase method is:</p>
+<p>The format of the QueryColorCompliance method is:</p>
 
 <pre class="code">
-  MagickBooleanType QueryColorDatabase(const char *name,
+  MagickBooleanType QueryColorCompliance(const char *name,
     const ComplianceType compliance,PixelPacket *color,
     ExceptionInfo *exception)
 </pre>
@@ -389,7 +398,7 @@
 <p>The format of the QueryMagickColor method is:</p>
 
 <pre class="code">
-  MagickBooleanType QueryMagickColor(const char *name,
+  MagickBooleanType QueryMagickColorCompilence(const char *name,
     const ComplianceType compliance,MagickPixelPacket *color,
     ExceptionInfo *exception)
 </pre>

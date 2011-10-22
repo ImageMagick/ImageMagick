@@ -161,10 +161,16 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
@@ -194,7 +200,10 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
 </div>
 </div>
 </div>
@@ -298,7 +307,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.2-9 2011-09-01 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.3-2 2011-10-22 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -417,7 +426,7 @@
   <dt class="doc">files</dt>
   <dd>maximum number of open pixel cache files.  When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand. This behavior permits a large number of images to be accessed simultaneously on disk, but without a speed penalty due to repeated open/close calls.</dd>
   <dt class="doc">area</dt>
-  <dd>maximum area in bytes of any one image that can reside in the pixel cache memory.  If this limit is exceeded, the image is automagically cached to disk.</dd>
+  <dd>maximum area in bytes of any one image that can reside in the pixel cache memory.  If this limit is exceeded, the image is automagically cached to disk and optionally memory-mapped.</dd>
   <dt class="doc">memory</dt>
   <dd>maximum amount of memory in bytes to allocate for the pixel cache from the anonymous mapped memory or the heap.</dd>
   <dt class="doc">map</dt>
