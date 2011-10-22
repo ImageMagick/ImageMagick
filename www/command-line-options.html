@@ -165,10 +165,16 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
@@ -198,7 +204,10 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
 </div>
 </div>
 </div>
@@ -1498,6 +1507,10 @@ to '<kbd>false</kbd>'.  </p>
 
 <p><kbd>Lossless</kbd> refers to lossless JPEG, which is only available if the JPEG library has been patched to support it. Use of lossless JPEG is generally not recommended.</p>
 
+<p>
+When writing an ICO file, you may request that the images be encoded in
+PNG format, by specifying <kbd>Zip</kbd> compression.</p>
+
 <p>Use the <a href="#quality">-quality</a> option to set the compression level to be used by JPEG, PNG, MIFF, and MPEG encoders. Use the <a href="#sampling-factor">-sampling-factor</a> option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders for down-sampling the chroma channels.</p>
 
 <div style="margin: auto;">
@@ -1760,6 +1773,13 @@ available:</p>
    that does not support Z_RLE (before 1.2.0) or Z_FIXED (before 1.2.2.2),
    values 3 and 4, respectively, will use the zlib default strategy
    instead.</dd>
+
+<dt>png:format=<em class="arg">value</em></dt>
+   <dd> valid values are <em class="arg">png8</em>, <em class="arg">png24</em>,
+   and <em class="arg">png32</em>.  This property can be useful for specifying
+   the specific PNG format to be used, when the usual method of prepending the
+   format name to the output filename is inconvenient, such as when writing
+   a PNG-encoded ICO file.</dd>
 
 <dt>png:exclude-chunk=<em class="arg">value</em></dt>
 <dt>png:include-chunk=<em class="arg">value</em></dt>
@@ -4465,7 +4485,6 @@ modulate.  Choose from <kbd>HSB</kbd>, <kbd>HSL</kbd> (the default), or
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>transform the image to black and white.</td><td style='text-align:right;'></td></tr></table>
-
 
 <div style="margin: auto;">
   <h4><a id="morph"></a>-morph <em class="arg">frames</em></h4>

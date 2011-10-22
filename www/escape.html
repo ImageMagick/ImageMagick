@@ -162,10 +162,16 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
@@ -195,7 +201,10 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
 </div>
 </div>
 </div>
@@ -214,42 +223,44 @@
 <p>Use the <a href="../www/command-line-options.html#format_identify_">-format</a> option to print properties associated with an image in a format of your choosing. You can include the image filename, type, width, height, EXIF data, or other image attributes by embedding special format characters:</p>
 
 <pre class="text">
-   %b   original file size of image file
+   %b   file size of image read in
    %c   comment property
-   %d   directory path
+   %d   directory component of path
    %e   filename extension or suffix
    %f   filename (including suffix)
-   %g   page geometry   ( = %Wx%H%X%Y )
+   %g   layer canvas page geometry   ( = %Wx%H%X%Y )
    %h   current image height in pixels
-   %i   input filename (full path)
+   %i   image filename (note: becomes output filename for "info:")
    %k   number of unique colors
    %l   label property
-   %m   magick format used during read
-   %n   number of images in sequence
-   %o   output filename
-   %p   index of image in sequence
+   %m   image file format (file magic)
+   %n   exact number of images in current image sequence
+   %o   output filename  (used for delegates)
+   %p   index of image in current image list
    %q   quantum depth (compile-time constant)
    %r   image class and colorspace
    %s   scene number (from input unless re-assigned)
-   %t   top of filename (excluding suffix)
-   %u   unique temporary filename
+   %t   filename without directory or extension (suffix)
+   %u   unique temporary filename (used for delegates)
    %w   current width in pixels
-   %x   x resolution
-   %y   y resolution
-   %z   image depth (as read in)
+   %x   x resolution (density)
+   %y   y resolution (density)
+   %z   image depth (as read in unless modified, image save depth)
    %A   image transparency channel enabled (true/false)
    %C   image compression type
    %D   image dispose method
    %G   image size ( = %wx%h )
    %H   page (canvas) height
+   %M   Magick filename (original file exactly as given,  incliding read mods)
    %O   page (canvas) offset ( = %X%Y )
    %P   page (canvas) size ( = %Wx%H )
-   %Q   image compression quality
+   %Q   image compression quality ( 0 = default )
    %S   ?? scenes ??
    %T   image time delay
    %W   page (canvas) width
    %X   page (canvas) x offset (including sign)
    %Y   page (canvas) y offset (including sign)
+   %Z   unique filename (used for delegates)
    %@   bounding box
    %#   signature
    %%   a percent sign

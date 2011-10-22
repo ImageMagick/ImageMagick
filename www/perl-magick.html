@@ -161,10 +161,16 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc...-->
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
@@ -194,7 +200,10 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
 </div>
 </div>
 </div>
@@ -228,10 +237,10 @@
 
 <p>ImageMagick must already be installed on your system. Next, get
 the <a href="../www/download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
-(e.g., PerlMagick 6.72 for
-ImageMagick 6.7.2) and unpack it as shown below:</p>
+(e.g., PerlMagick 6.73 for
+ImageMagick 6.7.3) and unpack it as shown below:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz PerlMagick-6.72.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span></p>
+<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz PerlMagick-6.73.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span></p>
 <p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
 
 <p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make install</span></p>
@@ -534,7 +543,7 @@ ImageMagick 6.7.2) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">AddNoise</td>
-    <td valign="top">noise=&gt;{Uniform, Gaussian, Multiplicative, Impulse, Laplacian, Poisson}, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">noise=&gt;{Uniform, Gaussian, Multiplicative, Impulse, Laplacian, Poisson}, attenuate=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">add noise to an image</td>
   </tr>
 
@@ -654,7 +663,7 @@ ImageMagick 6.7.2) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Colorize</td>
-    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, opacity=&gt;<i>string</i></td>
+    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>string</i></td>
     <td valign="top">colorize the image with the fill color</td>
   </tr>
 
@@ -1235,7 +1244,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Tint</td>
-    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, opacity=&gt;<i>string</i></td>
+    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>string</i></td>
     <td valign="top">tint the image with the fill color.</td>
   </tr>
 
