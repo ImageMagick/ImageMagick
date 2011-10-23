@@ -219,8 +219,11 @@ static inline void CompositeAtop(const PixelInfo *p,const PixelInfo *q,
 }
 
 /*
-  What is this Composition method for? Can't find any specification!
-  WARNING this is not doing correct 'over' blend handling (Anthony Thyssen).
+  Bumpmap: Multiply by overlay intensity
+  What is this Composition actually method for? Can't find any specification!
+
+  I think this was meant to be a 'HardLight effect' using a Shaded Image!
+  That is a Embossing, using a height map!  Better to do it piecemeal.
 */
 static inline void CompositeBumpmap(const PixelInfo *p,const PixelInfo *q,
   PixelInfo *composite)
@@ -647,15 +650,18 @@ static void CompositeHSB(const MagickRealType red,const MagickRealType green,
     *hue+=1.0;
 }
 
+#if 0
 static inline MagickRealType In(const MagickRealType p,const MagickRealType Sa,
   const MagickRealType magick_unused(q),const MagickRealType Da)
 {
   return(Sa*p*Da);
 }
+#endif
 
 static inline void CompositeIn(const PixelInfo *p,const PixelInfo *q,
   PixelInfo *composite)
 {
+#if 0
   MagickRealType
     gamma,
     Sa,
@@ -666,11 +672,17 @@ static inline void CompositeIn(const PixelInfo *p,const PixelInfo *q,
   gamma=Sa*Da;
   composite->alpha=(MagickRealType) QuantumRange*gamma;
   gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
+  /* really this just preserves the src or p color as is! */
   composite->red=gamma*In(p->red,Sa,q->red,Da);
   composite->green=gamma*In(p->green,Sa,q->green,Da);
   composite->blue=gamma*In(p->blue,Sa,q->blue,Da);
   if (q->colorspace == CMYKColorspace)
     composite->black=gamma*In(p->black,Sa,q->black,Da);
+#else
+  /* Simplified to a multiply of the Alpha Channel */
+  composite=p;
+  composite->alpha=QuantumScale*p->alpha*q->alpha;
+#endif
 }
 
 static inline MagickRealType Lighten(const MagickRealType p,
@@ -1164,15 +1176,18 @@ static inline void CompositeMultiply(const Image *image,const PixelInfo *p,
       QuantumScale*q->black*Da,Da);
 }
 
+#if 0
 static inline MagickRealType Out(const MagickRealType p,const MagickRealType Sa,
   const MagickRealType magick_unused(q),const MagickRealType Da)
 {
   return(Sa*p*(1.0-Da));
 }
+#endif
 
 static inline void CompositeOut(const PixelInfo *p,const PixelInfo *q,
   PixelInfo *composite)
 {
+#if 0
   MagickRealType
     Sa,
     Da,
@@ -1188,6 +1203,11 @@ static inline void CompositeOut(const PixelInfo *p,const PixelInfo *q,
   composite->blue=gamma*Out(p->blue,Sa,q->blue,Da);
   if (q->colorspace == CMYKColorspace)
     composite->black=gamma*Out(p->black,Sa,q->black,Da);
+#else
+  /* Simplified to a negated multiply of the Alpha Channel */
+  composite=p;
+  composite->alpha=p->alpha*(1.0-QuantumScale*q->alpha);
+#endif
 }
 
 static MagickRealType PegtopLight(const MagickRealType Sca,
